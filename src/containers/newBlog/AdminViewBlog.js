@@ -134,13 +134,11 @@ const useStyles = makeStyles((theme) => ({
     background: `${theme.palette.primary.main} !important`,
     color: 'white !important',
     borderRadius: '4px',
-
   },
   selected2: {
     background: `${theme.palette.primary.main} !important`,
     color: 'white !important',
     borderRadius: '4px',
-
   },
   tabsFont: {
     '& .MuiTab-wrapper': {
@@ -182,18 +180,14 @@ const AdminViewBlog = () => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [preview, setPreview] = useState(false);
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
 
   const token = dataes?.token;
   const user_level = dataes?.user_level;
-  
 
- 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-
-
 
   const handleBranch = (event, value) => {
     if (value) {
@@ -201,14 +195,11 @@ const AdminViewBlog = () => {
         value.filter(({ id }) => id === 'all').length === 1
           ? [...branchList].filter(({ id }) => id !== 'all')
           : value;
-          console.log(value.id,"value");
+      console.log(value.id, 'value');
       setSelectedBranch(value);
     }
-  
-   
   };
 
-  
   const months = [
     {
       label: 'January',
@@ -321,24 +312,18 @@ const AdminViewBlog = () => {
   };
   const todayDate = moment();
 
-
   const confirmassign = () => {
-    let body={
-      "is_draft":false,
-      "issue_date":todayDate.format().slice(0,19)
+    let body = {
+      is_draft: false,
+      issue_date: todayDate.format().slice(0, 19),
     };
 
-
     axios
-      .put(
-        `${endpoints.newBlog.confirmAssign}${userId}/`,
-        body,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
+      .put(`${endpoints.newBlog.confirmAssign}${userId}/`, body, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((response) => {
         setAssigned(false);
         setAlert('success', 'Activity Successfully Assign');
@@ -384,43 +369,39 @@ const AdminViewBlog = () => {
         setAssigneds(response?.data?.result);
       });
   };
-  const viewedAssign=(data)=>{
-    localStorage.setItem(
-      'ActivityId',
-      JSON.stringify(data)
-    );
-    console.log(data,"dataId");
+  const viewedAssign = (data) => {
+    localStorage.setItem('ActivityId', JSON.stringify(data));
+    console.log(data, 'dataId');
 
-      history.push({
-        pathname: '/blog/activityreview',
-        state: {
-          data,
-        },
+    history.push({
+      pathname: '/blog/activityreview',
+      state: {
+        data,
+      },
+    });
+  };
+  const fetchBranches = async () => {
+    const newBranches =
+      (await JSON.parse(localStorage.getItem('ActivityManagementSession'))) || {};
+    if(newBranches.length !== undefined){
+      const transformedData = newBranches?.branches?.map((obj) => ({
+        id: obj?.id,
+        name: obj?.name,
+      }));
+      transformedData.unshift({
+        name: 'Select All',
+        id: 'all',
       });
-    };
-    const fetchBranches = () => {
-      // const newBranches = await (JSON.parse(localStorage.getItem('ActivityManagementSession'))) || {};
+      setBranchList(transformedData);
+    }
+  };
+  useEffect(() => {
+    ActvityLocalStorage();
 
-    
-            const transformedData = newBranches?.branches?.map((obj) => ({
-              id: obj.id,
-              name: obj.name,
-            }));
-            transformedData.unshift({
-              name: 'Select All',
-              id: 'all',
-            });
-            console.log(transformedData, 'branchdata');
-            setBranchList(transformedData);
-          }
-          useEffect(() => {
-            ActvityLocalStorage();
+    fetchBranches();
+  }, []);
 
-            fetchBranches();
-          },[])
-    
-
-  console.log(selectedBranch,"selectedBranch")
+  console.log(selectedBranch, 'selectedBranch');
 
   useEffect(() => {
     getUnAssinged();
@@ -431,19 +412,15 @@ const AdminViewBlog = () => {
   const handlePreview = (data) => {
     setPreview(true);
     axios
-      .get(
-        `${endpoints.newBlog.previewDetails}${data?.id}/`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
+      .get(`${endpoints.newBlog.previewDetails}${data?.id}/`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((response) => {
         console.log(response?.data?.result);
         // setAssignPreview(response);
         setPreviewData(response?.data?.result);
-
       });
   };
   // console.log(previewData, 'previewData');
@@ -481,8 +458,7 @@ const AdminViewBlog = () => {
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
-             Authorization: `${token}`,
-
+            Authorization: `${token}`,
           },
         }
       )
@@ -495,22 +471,18 @@ const AdminViewBlog = () => {
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
-
       });
   };
 
-  const EditActivity=(data) => {
+  const EditActivity = (data) => {
     history.push({
       pathname: '/blog/admineditcreateblogs',
       state: {
         data,
       },
     });
-    
+  };
 
-  }
-
-  
   return (
     <Layout>
       <Grid
@@ -536,16 +508,18 @@ const AdminViewBlog = () => {
         <Grid item md={2} xs={2} style={{ visibility: 'hidden' }} />
 
         <Grid item xs={6} md={6} style={{ paddingLeft: '249px' }}>
-          <Button
-            variant='contained'
-            color='primary'
-            size='medium'
-            className={classes.buttonColor}
-            startIcon={<AddCircleIcon />}
-            onClick={createPush}
-          >
-            Create Activity
-          </Button>{' '}
+          
+            <Button
+              variant='contained'
+              color='primary'
+              size='medium'
+              className={classes.buttonColor}
+              startIcon={<AddCircleIcon />}
+              disabled={user_level == 11}
+              onClick={createPush}
+            >
+              Create Activity
+            </Button>
           {/* &nbsp;&nbsp;
           <Button
             variant='outlined'
@@ -606,33 +580,32 @@ const AdminViewBlog = () => {
             ))}
           </TextField>
         </Grid>
-
         <Grid item md={2}>
-
-        <Autocomplete
-              multiple
-              fullWidth
-              size='small'
-              limitTags={1}
-              // style={{ width: '82%', marginLeft: '4px' }}
-              options={branchList || []}
-              value={selectedBranch || []}
-              getOptionLabel={(option) => option?.name}
-              filterSelectedOptions
-              onChange={(event, value) => {
-                handleBranch(event, value);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  required
-                  fullWidth
-                  variant='outlined'
-                  label='Branch'
-                />
-              )}
-            />
-            </Grid>&nbsp;&nbsp;
+          <Autocomplete
+            multiple
+            fullWidth
+            size='small'
+            limitTags={1}
+            // style={{ width: '82%', marginLeft: '4px' }}
+            options={branchList || []}
+            value={selectedBranch || []}
+            getOptionLabel={(option) => option?.name}
+            filterSelectedOptions
+            onChange={(event, value) => {
+              handleBranch(event, value);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                required
+                fullWidth
+                variant='outlined'
+                label='Branch'
+              />
+            )}
+          />
+        </Grid>
+        &nbsp;&nbsp;
         <Grid item md={2}>
           <Button
             variant='contained'
@@ -647,33 +620,57 @@ const AdminViewBlog = () => {
 
       <Grid container>
         <Grid item md={12} xs={12} className={classes.tabStatic}>
+          {user_level == 11?
           <Tabs
+          onChange={handleTab}
+          textColor='primary'
+          indicatorColor='primary'
+          // className={ classes.tabsFont}
+          value={value}
+        >
+         
+          <Tab
+          label='Unassigned'
+        
+          disabled={user_level==11}
+        />
+      <Tab
+        label='Assigned'
+        classes={{
+          selected: classes.selected1,
+        }}
+        className={value === 1 ? classes.tabsFont : classes.tabsFont1}
+      />
+        </Tabs>:<Tabs
             onChange={handleTab}
             textColor='primary'
             indicatorColor='primary'
             // className={ classes.tabsFont}
             value={value}
           >
+           
             <Tab
-              label='Unassigned'
-              classes={{
-                selected: classes.selected2,
-              }}
-              className={value === 0 ? classes.tabsFont : classes.tabsFont1}
-            />
-            <Tab
-              label='Assigned'
-              classes={{
-                selected: classes.selected1,
-              }}
-              className={value === 1 ? classes.tabsFont : classes.tabsFont1}
-            />
-          </Tabs>
+            label='Unassigned'
+            classes={{
+              selected: classes.selected2,
+            }}
+            disabled={user_level==11}
+            className={value === 0 ? classes.tabsFont : classes.tabsFont1}
+          />
+        <Tab
+          label='Assigned'
+          classes={{
+            selected: classes.selected1,
+          }}
+          className={value === 1 ? classes.tabsFont : classes.tabsFont1}
+        />
+          </Tabs>}
+         
           <Divider className={classes.dividerColor} />
         </Grid>
       </Grid>
 
-      {value === 1  && (
+      {value === 1 && (
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
@@ -691,7 +688,9 @@ const AdminViewBlog = () => {
                   <TableCell className={classes.tableCell}>Topic Name</TableCell>
                   <TableCell className={classes.tableCell}>Assigned On</TableCell>
                   <TableCell className={classes.tableCell}>Created By</TableCell>
-                  <TableCell style={{width:"252px"}} className={classes.tableCell}>Action</TableCell>
+                  <TableCell style={{ width: '252px' }} className={classes.tableCell}>
+                    Action
+                  </TableCell>
                 </TableRow>
               </TableHead>
               {assingeds?.map((response, index) => (
@@ -710,17 +709,20 @@ const AdminViewBlog = () => {
                     <TableCell className={classes.tableCells}>
                       {moment(response.submission_date).format('DD-MM-YYYY')}
                     </TableCell>
-                    <TableCell className={classes.tableCells}>{response?.creator?.username}</TableCell>
-                    <TableCell className={classes.tableCells} >
-                    <Button
+                    <TableCell className={classes.tableCells}>
+                      {response?.creator?.name}
+                    </TableCell>
+                    <TableCell className={classes.tableCells}>
+                      <Button
                         variant='outlined'
                         size='small'
                         className={classes.buttonColor2}
                         // style={{whiteSpace: 'nowrap'}}
-                        onClick={()=>viewedAssign(response)}
+                        onClick={() => viewedAssign(response)}
                       >
                         Review
-                      </Button> &nbsp;&nbsp;
+                      </Button>{' '}
+                      &nbsp;&nbsp;
                       <Button
                         variant='outlined'
                         size='small'
@@ -738,14 +740,14 @@ const AdminViewBlog = () => {
                         className={classes.buttonColor2}
                         onClick={viewed}
                       >
-                        VIEW{' '}
+                        View{' '}
                       </Button>{' '}
                     </TableCell>
                   </TableRow>
                 </TableBody>
               ))}
             </Table>
-            <TablePagination
+            {/* <TablePagination
               component='div'
               // count={totalCount}
               // rowsPerPage={limit}
@@ -759,13 +761,14 @@ const AdminViewBlog = () => {
                 spacer: classes.tablePaginationSpacer,
                 toolbar: classes.tablePaginationToolbar,
               }}
-            />
+            /> */}
           </TableContainer>
         </Paper>
       )}
 
-      {value === 0  && (
+      {value === 0 &&
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
+          {user_level==11 ? "":
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
           >
@@ -782,7 +785,9 @@ const AdminViewBlog = () => {
                   <TableCell className={classes.tableCell}>Topic Name</TableCell>
                   <TableCell className={classes.tableCell}>Assigned On</TableCell>
                   <TableCell className={classes.tableCell}>Created By</TableCell>
-                  <TableCell style={{width:"287px"}}className={classes.tableCell}>Action</TableCell>
+                  <TableCell style={{ width: '287px' }} className={classes.tableCell}>
+                    Action
+                  </TableCell>
                 </TableRow>
               </TableHead>
               {unassingeds.map((response, index) => (
@@ -801,13 +806,16 @@ const AdminViewBlog = () => {
                     <TableCell className={classes.tableCells}>
                       {moment(response.submission_date).format('DD-MM-YYYY')}
                     </TableCell>
-                    <TableCell className={classes.tableCells}>{response?.creator?.username}</TableCell>
                     <TableCell className={classes.tableCells}>
-                    <Button
+                      {response?.creator?.name}
+                    </TableCell>
+                    <TableCell className={classes.tableCells}>
+                      <Button
                         variant='outlined'
                         size='small'
                         className={classes.buttonColor2}
                         onClick={() => EditActivity(response)}
+                        disabled={user_level == 11}
                       >
                         Edit
                       </Button>
@@ -817,7 +825,7 @@ const AdminViewBlog = () => {
                         size='small'
                         className={classes.buttonColor2}
                         onClick={() => assignIcon(response)}
-                        disabled={user_level==11}
+                        disabled={user_level == 11}
                       >
                         Assign
                       </Button>
@@ -836,7 +844,7 @@ const AdminViewBlog = () => {
                 </TableBody>
               ))}
             </Table>
-            <TablePagination
+            {/* <TablePagination
               component='div'
               // count={totalCount}
               // rowsPerPage={limit}
@@ -850,10 +858,11 @@ const AdminViewBlog = () => {
                 spacer: classes.tablePaginationSpacer,
                 toolbar: classes.tablePaginationToolbar,
               }}
-            />
+            /> */}
           </TableContainer>
+}
         </Paper>
-      )}
+      }
       <Dialog open={preview} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
         <div style={{ width: '642px' }}>
           <div
@@ -915,10 +924,7 @@ const AdminViewBlog = () => {
                 {previewData?.description}
               </div>
               <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                <img
-                  src={previewData?.template_path}
-                  width='50%'
-                />
+                <img src={previewData?.template?.template_path} width='50%' />
               </div>
             </div>
           </div>

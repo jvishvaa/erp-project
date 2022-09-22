@@ -84,7 +84,10 @@ const BlogReview = () => {
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [branchList, setBranchList] = useState([]);
+  let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  const user_level = dataes?.user_level;
 
 
 
@@ -186,7 +189,7 @@ const BlogReview = () => {
                 {ActivityId?.title}{' '}
               </div>
             </div>
-            <div
+            {/* <div
               style={{
                 display: 'flex',
                 color: '#1B689A',
@@ -200,7 +203,7 @@ const BlogReview = () => {
                 {' '}
                 Assigned On : {ActivityId?.submission_date?.slice(0, 10)}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -287,34 +290,39 @@ const BlogReview = () => {
                     }}
                     className={value === 0 ? classes.tabsFont : classes.tabsFont1}
                   />
-                  <Tab
-                    label='Reviewed'
+                    <Tab
+                    label='Not Submitted'
                     classes={{
                       selected: classes.selected1,
                     }}
                     className={value === 1 ? classes.tabsFont : classes.tabsFont1}
                   />
                   <Tab
-                    label='Published'
+                    label='Reviewed'
                     classes={{
                       selected: classes.selected1,
                     }}
                     className={value === 2 ? classes.tabsFont : classes.tabsFont1}
                   />
-                  <Tab
-                    label='Not Submitted'
-                    classes={{
-                      selected: classes.selected1,
-                    }}
-                    className={value === 3 ? classes.tabsFont : classes.tabsFont1}
-                  />
-                   <Tab
+                    <Tab
                     label='Shortlisted'
                     classes={{
                       selected: classes.selected1,
                     }}
-                    className={value === 4? classes.tabsFont : classes.tabsFont1}
+                    className={value === 3? classes.tabsFont : classes.tabsFont1}
                   />
+
+                  { user_level==11 ?"":
+                  <Tab
+                    label='Published'
+                    classes={{
+                      selected: classes.selected1,
+                    }}
+                    className={value === 4 ? classes.tabsFont : classes.tabsFont1}
+                  />
+                }
+                  
+                
                 </Tabs>
                
 
@@ -322,7 +330,7 @@ const BlogReview = () => {
             </Grid>
           </div>
           <div>
-            {value == 1 && (
+            {value == 2 && (
               <div style={{ marginRight: '49px' }}>
                 <StarsIcon style={{ color: '#F7B519' }} /> Published &nbsp;&nbsp;{' '}
                 <BookmarksIcon style={{ color: 'gray' }} /> Shortlisted
@@ -332,10 +340,12 @@ const BlogReview = () => {
         </div>
 
         {value == 0 && <PendingReview  selectedBranch={selectedBranch}/>}
-        {value == 1 && <Reviewed selectedBranch={selectedBranch}/>}
-        {value == 2 && <Published selectedBranch={selectedBranch}/>}
-        {value == 3 && <NotSubmitted selectedBranch={selectedBranch}/>}
-        {value == 4 && <Shortlisted selectedBranch={selectedBranch}/>}
+        {value == 1 && <NotSubmitted selectedBranch={selectedBranch}/>}
+
+        {value == 2 && <Reviewed selectedBranch={selectedBranch}/>}
+        {value == 3 && <Shortlisted selectedBranch={selectedBranch}/>}
+        {value == 4 && <Published selectedBranch={selectedBranch}/>}
+
 
       </Layout>
     </div>

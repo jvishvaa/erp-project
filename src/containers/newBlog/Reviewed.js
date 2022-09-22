@@ -104,6 +104,7 @@ const Reviewed = (props) => {
 
 
   const [values, setValues] = useState();
+  const [imageData, setImageData] = useState();
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [submit, setSubmit] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
@@ -178,12 +179,14 @@ const Reviewed = (props) => {
   };
 
   const assignPage = (data) => {
-    console.log(data, 'idd');
-    setView(true);
-    setData(data);
-    setDataId(data?.id);
-
-    getRatingView(data?.id);
+    if(data?.length !== 0){
+      setView(true);
+      setImageData(JSON?.parse(data?.template?.html_file))
+      setData(data);
+      setDataId(data?.id);
+  
+      getRatingView(data?.id);
+    }
   };
 
   useEffect(() => {
@@ -208,6 +211,8 @@ const Reviewed = (props) => {
                   S No.
                 </TableCell>
                 <TableCell className={classes.tableCell}>Student Name</TableCell>
+                <TableCell className={classes.tableCell}>Erp Id</TableCell>
+
                 {/* <TableCell className={classes.tableCell}></TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>
                 <TableCell className={classes.tableCell}>Overall Score</TableCell>
@@ -227,6 +232,10 @@ const Reviewed = (props) => {
                   // key={`user_table_index${i}`}
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
+                  <TableCell className={classes.tableCells}>
+                    {' '}
+                    {response?.booked_user?.name}
+                  </TableCell>
                   <TableCell className={classes.tableCells}>
                     {' '}
                     {response?.booked_user?.username}
@@ -280,7 +289,7 @@ const Reviewed = (props) => {
               </TableBody>
             ))}
           </Table>
-          <TablePagination
+          {/* <TablePagination
             component='div'
             // count={totalCount}
             // rowsPerPage={limit}
@@ -294,7 +303,7 @@ const Reviewed = (props) => {
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          />
+          /> */}
         </TableContainer>
       </Paper>
 
@@ -387,7 +396,7 @@ const Reviewed = (props) => {
                     /> */}
                     <div
         style={{
-          background: `url(${data?.activity_detail?.template_path})`,
+          background: `url(${data?.template?.template_path})`,
           backgroundSize: "contain",
           position: "relative",
           backgroundRepeat: "no-repeat",
@@ -396,9 +405,9 @@ const Reviewed = (props) => {
     height: "683px",
         }}
       >
-        <div className="certificate-text-center certificate-input-box">
-          <textarea className="certificate-box" style={{width: "338px",
-    height: "366px"}} value={data?.submitted_work?.html_text} placeholder="type text here..." />
+        <div className="certificate-text-center certificate-input-box" style={{top: imageData ? `calc(279px + ${imageData[0]?.x_cordinate.concat('px')})` : '', left: imageData ? `calc(232px + ${imageData[0]?.y_cordinate.concat('px')})` : ''}}>
+          <textarea className="certificate-box" style={{width: imageData ?  `${imageData[0]?.width.concat('px')}` : '',
+    height: imageData ? `${imageData[0]?.height.concat('px')}` : ''}} value={data?.submitted_work?.html_text} placeholder="type text here..." />
          
         </div>
       </div>

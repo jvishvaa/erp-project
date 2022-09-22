@@ -135,18 +135,14 @@ const PendingReview = (props) => {
     let body = ratingReview;
 
     axios
-      .post(
-        `${endpoints.newBlog.pendingReview}`,
-        body,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
+      .post(`${endpoints.newBlog.pendingReview}`, body, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((response) => {
         console.log(response);
-        setAlert('success','Successfully Created');
+        setAlert('success', 'Successfully Created');
       });
   };
 
@@ -161,15 +157,11 @@ const PendingReview = (props) => {
     };
 
     axios
-      .put(
-        `${endpoints.newBlog.activityReview}${dataId}/`,
-        body,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
+      .put(`${endpoints.newBlog.activityReview}${dataId}/`, body, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((response) => {
         setAlert('success', 'Activity Successfully Shortlisted');
 
@@ -184,11 +176,14 @@ const PendingReview = (props) => {
     arr[index].remarks = event.target.value;
     setRatingReview(arr);
   };
+  // const [starSet,setStarSet]
   const handleInputCreativityOne = (event, newValue, index) => {
     console.log(index, newValue, 'event');
     let arr = [...ratingReview];
+
     arr[index].given_rating = Number(event.target.value);
     setRatingReview(arr);
+    calculateOverallRating();
   };
 
   const expandMore = () => {
@@ -198,14 +193,16 @@ const PendingReview = (props) => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
   const getTotalSubmitted = () => {
-    
     const branchIds = props.selectedBranch.map((obj) => obj.id);
-    console.log(branchIds,"branchIds");
-
+    console.log(branchIds, 'branchIds');
 
     axios
       .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=null&&activity_detail_id=${ActivityId?.id}&branch_ids=${branchIds==""?null:branchIds}&is_reviewed=False`,
+        `${
+          endpoints.newBlog.studentSideApi
+        }?section_ids=null&&user_id=null&&activity_detail_id=${
+          ActivityId?.id
+        }&branch_ids=${branchIds == '' ? null : branchIds}&is_reviewed=False`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -219,23 +216,22 @@ const PendingReview = (props) => {
   };
 
   const [ratingReview, setRatingReview] = useState([]);
+  console.log(ratingReview, 'ratingReview')
   let array = [];
   const getRatingView = (data) => {
     axios
-      .get(
-        `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
+      .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((response) => {
         console.log(response, 'responses');
         response.data.map((obj, index) => {
           let temp = {};
           temp['id'] = obj.id;
           temp['name'] = obj.level.name;
+          temp['rating'] = Number(obj.level.rating);
           temp['remarks'] = obj.remarks;
           temp['given_rating'] = obj.given_rating;
           array.push(temp);
@@ -265,6 +261,19 @@ const PendingReview = (props) => {
   const ReviewPage = () => {
     history.push('/blog/addreview');
   };
+  const calculateOverallRating = () => {
+    // const { ratingParameters } = this.state
+    let average = 0
+    let ave=0
+    let aver;
+    ratingReview.map(parameter => {
+      average += parameter.given_rating
+      ave +=Number(parameter.rating)
+      aver=ave - Number("5");
+      console.log(average, "average", aver,"ave")
+    })
+    return (average / aver)*5 
+  }
 
   return (
     <>
@@ -279,6 +288,8 @@ const PendingReview = (props) => {
                   S No.
                 </TableCell>
                 <TableCell className={classes.tableCell}>Student Name</TableCell>
+                <TableCell className={classes.tableCell}>Erp Id</TableCell>
+
                 {/* <TableCell className={classes.tableCell}></TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>
                 <TableCell className={classes.tableCell}>Actions</TableCell>
@@ -293,6 +304,9 @@ const PendingReview = (props) => {
                   // key={`user_table_index${i}`}
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
+                  <TableCell className={classes.tableCells}>
+                    {response?.booked_user?.name}
+                  </TableCell>
                   <TableCell className={classes.tableCells}>
                     {response?.booked_user?.username}
                   </TableCell>
@@ -314,7 +328,7 @@ const PendingReview = (props) => {
               </TableBody>
             ))}
           </Table>
-          <TablePagination
+          {/* <TablePagination
             component='div'
             // count={totalCount}
             // rowsPerPage={limit}
@@ -328,7 +342,7 @@ const PendingReview = (props) => {
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          />
+          /> */}
         </TableContainer>
       </Paper>
 
@@ -364,12 +378,26 @@ const PendingReview = (props) => {
                     marginTop: '5px',
                   }}
                 >
-                  <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <img
                       src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                       width='130'
                       alt='image'
                     />
+                    <div>
+                      <div style={{ fontWeight: 'bold' }}>
+                        ERP Id :
+                        <span style={{ fontWeight: 'normal' }}>
+                          {data?.booked_user?.username}{' '}
+                        </span>
+                      </div>
+                      <div style={{ fontWeight: 'bold' }}>
+                        Name :
+                        <span style={{ fontWeight: 'normal' }}>
+                          {data?.booked_user?.name}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -382,19 +410,25 @@ const PendingReview = (props) => {
                     height: 'auto',
                   }}
                 >
-                  <div style={{ paddingLeft: '30px', paddingTop: '7px',fontWeight: 'bold'}}>
-                    Title: <span style={{ fontWeight: "normal" }}>{data?.activity_detail?.title}</span>
+                  <div
+                    style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
+                  >
+                    Title:{' '}
+                    <span style={{ fontWeight: 'normal' }}>
+                      {data?.activity_detail?.title}
+                    </span>
                   </div>
                   <div
                     style={{
                       paddingLeft: '30px',
                       paddingTop: '10px',
                       paddingBottom: '5px',
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
                     }}
                   >
-                    <span style={{ fontWeight: "normal" }}>
-                    Description: {data?.activity_detail?.description}
+                    Description:
+                    <span style={{ fontWeight: 'normal' }}>
+                      {data?.activity_detail?.description}
                     </span>
                   </div>
                 </div>
@@ -408,24 +442,27 @@ const PendingReview = (props) => {
                     marginBottom: '29px',
                   }}
                 >
-                  <div style={{ paddingLeft: '30px', paddingTop: '12px' }}>
-                  <div
-        style={{
-          background: `url(${data?.activity_detail?.template_path})`,
-          backgroundSize: "contain",
-          position: "relative",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundColor: "rgba(244 245 247 / 25%)",
-    height: "683px",
-        }}
-      >
-        <div className="certificate-text-center certificate-input-box">
-          <textarea className="certificate-box" style={{width: "338px",
-    height: "366px"}} value={data?.submitted_work?.html_text} placeholder="type text here..." />
-         
-        </div>
-      </div>
+                  <div style={{paddingTop: '12px' }}>
+                    <div
+                      style={{
+                        background: `url(${data?.template?.template_path})`,
+                        backgroundSize: 'contain',
+                        position: 'relative',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        backgroundColor: 'rgba(244 245 247 / 25%)',
+                        height: '683px',
+                      }}
+                    >
+                      <div className='certificate-text-center certificate-input-box'>
+                        <textarea
+                          className='certificate-box'
+                          style={{ width: '338px', height: '366px' }}
+                          value={data?.submitted_work?.html_text}
+                          placeholder='type text here...'
+                        />
+                      </div>
+                    </div>
                   </div>
                   {/* <div
                     style={{
@@ -505,6 +542,7 @@ const PendingReview = (props) => {
                             name={`rating${index}`}
                             size='small'
                             value={obj?.given_rating}
+                            max={obj?.rating}
                             // defaultValue={props.defaultValue}
                             onChange={(event, newValue) =>
                               handleInputCreativityOne(event, newValue, index)
@@ -512,49 +550,43 @@ const PendingReview = (props) => {
                           />
                         </div>
                         {/* {obj} */}
-                        {obj?.name=="Overall"?"":
-                        <div>
-                          <TextField
-                            id='outlined-basic'
-                            size='small'
-                            variant='outlined'
-                            value={obj?.remarks}
-                            style={{ width: '264px' }}
-                            onChange={(event) => handleInputCreativity(event, index)}
-                          />
-                        </div>
-                  }
-                        
-
+                        {obj?.name == 'Overall' ? (
+                          ''
+                        ) : (
+                          <div>
+                            <TextField
+                              id='outlined-basic'
+                              size='small'
+                              variant='outlined'
+                              value={obj?.remarks}
+                              style={{ width: '264px' }}
+                              onChange={(event) => handleInputCreativity(event, index)}
+                            />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
-                  {/* <div style={{ paddingLeft: '19px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <div>Overall</div>
-                      <div style={{ paddingLeft: '98px' }}>
-                        {' '}
-                        <StyledRating
-                          // name={`rating${index}`}
-                          size='small'
-                          // value={obj?.given_rating}
-                          // defaultValue={props.defaultValue}
-                          onChange={(event, newValue) =>
-                            handleInputCreativityOne(event, newValue)
-                          }
-                        />
-                      </div>
-                      <div></div>
-                    </div>
-                    <TextField
-                      id='outlined-basic'
-                      size='small'
-                      variant='outlined'
-                      // value={obj?.remarks}
-                      style={{ width: '264px' }}
-                      onChange={(event) => handleInputCreativity(event)}
-                    />
-                  </div> */}
+                  <div style={{display: "flex",
+    justifyContent: "space-between"}} >
+                    <div style={{paddingLeft:"13px"}}>
+                  overallRemark
+                  </div>
+                  <div style={{paddingRight:"13px"}}>
+                  <StyledRating
+                            name={`rating`}
+                            size='small'
+                            value={calculateOverallRating()}
+                            // max={obj?.rating}
+                            precision={0.1}
+                            readOnly
+                            // defaultValue={props.defaultValue}
+                            // onChange={(event, newValue) =>
+                            //   handleInputCreativityOne(event, newValue, index)
+                            // }
+                          />
+                          </div>
+                          </div>
 
                   <div
                     style={{

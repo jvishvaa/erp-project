@@ -414,9 +414,10 @@ const StudentSideBlog = () => {
   }, [value]);
   const [view, setView] = useState(false);
   const [previewData, setPreviewData] = useState();
+  const [imageData,setImageData] = useState('')
   const viewMore = (data) => {
     setView(true);
-    console.log(data, 'data');
+    setImageData(JSON.parse(data?.template?.html_file))
     setPreviewData(data);
     getRatingView(data?.id);
   };
@@ -440,6 +441,12 @@ const StudentSideBlog = () => {
 
   return (
     <Layout>
+       <div className='layout-container-div ebookscroll' style={{
+        // background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }}>
       <Grid
         container
         style={{
@@ -540,8 +547,6 @@ const StudentSideBlog = () => {
                   >
                   
 
-
-   
                       {response?.title}
                   </Typography>
                   <Typography
@@ -574,7 +579,7 @@ const StudentSideBlog = () => {
                   <CardMedia
                     className={classes.media}
                     style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                    image={response?.template_path}
+                    image={response?.template?.template_path}
                     title='Contemplative Reptile'
                   />
                 </CardActionArea>
@@ -682,12 +687,12 @@ const StudentSideBlog = () => {
                   <CardMedia
                     className={classes.media}
                     style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                    image={response?.activity_detail?.template_path}
+                    image={response?.template?.template_path}
                     title='Contemplative Reptile'
                   />
                 </CardActionArea>
                 <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div>
+                  {/* <div>
                     <img
                       src='https://d3ka3pry54wyko.cloudfront.net/dev/media/assessment/test_id-None/4255/1660653207_group_53678@2x.png'
                       style={{ width: '25px' }}
@@ -695,7 +700,7 @@ const StudentSideBlog = () => {
                     &nbsp;22&nbsp;&nbsp;
                     <img src='https://d3ka3pry54wyko.cloudfront.net/dev/media/assessment/test_id-None/4255/1660653256_group_53679.png' />
                     &nbsp;21
-                  </div>
+                  </div> */}
                   <div>
                     <RatingScale rating='3' />
                   </div>
@@ -805,12 +810,12 @@ const StudentSideBlog = () => {
                   <CardMedia
                     className={classes.media}
                     style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                    image={response?.activity_detail?.template_path}
+                    image={response?.template?.template_path}
                     title='Contemplative Reptile'
                   />
                 </CardActionArea>
                 <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div>
+                  {/* <div>
                     <img
                       src='https://d3ka3pry54wyko.cloudfront.net/dev/media/assessment/test_id-None/4255/1660653207_group_53678@2x.png'
                       style={{ width: '25px' }}
@@ -821,7 +826,7 @@ const StudentSideBlog = () => {
                   </div>
                   <div>
                     <RatingScale rating='3' />
-                  </div>
+                  </div> */}
                 </CardActions>
                 {/* <CardActions style={{ textAlign: 'center', justifyContent: 'center' }}>
                   <Button
@@ -910,6 +915,7 @@ const StudentSideBlog = () => {
                     </span>
                   </div>
                 </div>
+                {console.log(previewData,"DP")}
                 <div
                   style={{
                     background: 'white',
@@ -920,10 +926,10 @@ const StudentSideBlog = () => {
                     marginBottom: '29px',
                   }}
                 >
-                  <div style={{ paddingLeft: '30px', paddingTop: '12px' }}>
+                  <div style={{paddingTop: '12px'}}>
                   <div
         style={{
-          background: `url(${previewData?.activity_detail?.template_path})`,
+          background: `url(${previewData?.template?.template_path})`,
           backgroundSize: "contain",
           position: "relative",
           backgroundRepeat: "no-repeat",
@@ -931,10 +937,11 @@ const StudentSideBlog = () => {
           backgroundColor: "rgba(244 245 247 / 25%)",
     height: "683px",
         }}
+
       >
-        <div className="certificate-text-center certificate-input-box">
-          <textarea className="certificate-box" style={{width: "338px",
-    height: "366px"}} value={previewData?.submitted_work?.html_text} placeholder="type text here..." />
+        <div className="certificate-text-center certificate-input-box" style={{top:`calc(279px + ${imageData[0]?.x_cordinate.concat('px')})`, left:`calc(232px + ${imageData[0]?.y_cordinate.concat('px')})`}}>
+          <textarea className="certificate-box" style={{width:`${imageData[0]?.width}px`,
+    height:`${imageData[0]?.height}px`,top:`${imageData[0]?.x_cordinate}px`, left: `${imageData[0]?.y_cordinate}px`}} value={previewData?.submitted_work?.html_text} placeholder="type text here..." />
          
         </div>
       </div>
@@ -1072,6 +1079,7 @@ const StudentSideBlog = () => {
           </Grid>
         </div>
       </Drawer>
+      </div>
     </Layout>
   );
 };

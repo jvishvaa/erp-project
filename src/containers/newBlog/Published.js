@@ -86,57 +86,15 @@ const rows = [
 const Published = () => {
   const [value, setValue] = React.useState();
   const classes = useStyles();
+  let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
+
+  const user_level = dataes?.user_level;
 
   return (
-    // <TableContainer style={{ width: '100%' }} component={Paper}>
-    //   <Table className={classes.table} aria-label='simple table'>
-    //     <TableHead>
-    //       <TableRow>
-    //         <TableCell>Sl.No </TableCell>
-    //         <TableCell>Student Name</TableCell>
-    //         <TableCell></TableCell>
-    //         <TableCell>Submission Date</TableCell>
-    //         <TableCell>Overall Score</TableCell>
-    //         <TableCell>Actions</TableCell>
-    //       </TableRow>
-    //     </TableHead>
-    //     <TableBody>
-    //       {rows.map((row) => (
-    //         <TableRow key={row.slno}>
-    //           <TableCell component='th' scope='row'>
-    //             {row.slno}
-    //           </TableCell>
-    //           <TableCell align='right'>{row.name}</TableCell>
-    //           <TableCell align='right'>{row.grade}</TableCell>
-    //           <TableCell align='right'>{row.submissiondate}</TableCell>
-    //           <TableCell align='right'>
-    //             {row.overallscore == 2 ? (
-    //               <div>
-    //               <Rating
-    //                   name='simple-controlled'
-    //                   value={value}
-    //                   onChange={(event, newValue) => {
-    //                     setValue(newValue);
-    //                   }}
-    //                 />
-    //               </div>
-    //             ) : null}
-    //           </TableCell>
-    //           <TableCell align='right'>
-    //             {row.actions == 1 ? (
-    //               <div>
-    //                 <Button className={classes.buttonUnPub}>Un-Publish</Button>
-    //                 <Button className={classes.blogWall}>View in Blog Wall</Button>
-    //               </div>
-    //             ) : null}
-    //           </TableCell>
-    //         </TableRow>
-    //       ))}
-    //     </TableBody>
-    //   </Table>
-    // </TableContainer>
+    
 
     <Paper className={`${classes.root} common-table`} id='singleStudent'>
+      {user_level==11?"":
       <TableContainer
         className={`table table-shadow view_users_table ${classes.container}`}
       >
@@ -188,7 +146,7 @@ const Published = () => {
           </TableBody>
           {/* ) )}  */}
         </Table>
-        <TablePagination
+        {/* <TablePagination
           component='div'
           // count={totalCount}
           // rowsPerPage={limit}
@@ -202,8 +160,9 @@ const Published = () => {
             spacer: classes.tablePaginationSpacer,
             toolbar: classes.tablePaginationToolbar,
           }}
-        />
+        /> */}
       </TableContainer>
+}
     </Paper>
   );
 };

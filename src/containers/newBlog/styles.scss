@@ -1,11 +1,8 @@
 @import '../../assets/styles/variables';
-
-
 .common-table {
     width: 100%;
     .table-header-row {
-      background-color: '#ffffff';
-
+      background-color: '#FFFFFF';
       tr {
         th {
           position: sticky;
@@ -30,3 +27,27 @@
   .tox-tinymce{
     height:372px !important;
   }
+  .ebookscroll::-webkit-scrollbar {
+    width: 8px !important ;
+    height: 10px !important;
+    background-color: rgb(82, 50, 50) !important;
+  }
+  .A4-template-cover{
+    position: relative;
+    text-align: center;
+    width: auto;
+    min-height: 683px;
+  }
+  .A4-template{
+    width: 210mm;
+       min-height: 297mm;
+       margin: 52mm;
+       background: white;
+       border: 1px solid black;
+  }
+  // @media print {
+  //   body, page {
+  //     margin: 0;
+  //     box-shadow: 0;
+  //   }
+  // }

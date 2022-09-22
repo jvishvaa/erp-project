@@ -154,7 +154,7 @@ const DateAndCalander = (props) => {
       let subName = item?.subject_name
       let title = (item?.period_type === 3 || item?.period_type === 2) ? subName ? `${pType} : ${subName}` : `${pType}` : item?.period_type_name
       let tempObj = {
-        title: title,
+        title: title +" "+ "(" + item?.teacher_name + ")",
         start: setConvertDate + 'T' + item?.start_time,
         end: setConvertDate + 'T' + item?.end_time,
         extendedProps: item,

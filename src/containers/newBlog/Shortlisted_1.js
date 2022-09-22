@@ -451,6 +451,8 @@ const Shortlisted_1 = (props) => {
                   S No.
                 </TableCell>
                 <TableCell className={classes.tableCell}>Student Name</TableCell>
+                <TableCell className={classes.tableCell}>Erp Id</TableCell>
+
                 {/* <TableCell className={classes.tableCell}>Grade</TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>
                 <TableCell className={classes.tableCell}>Overall Score</TableCell>
@@ -468,6 +470,8 @@ const Shortlisted_1 = (props) => {
                 // key={`user_table_index${i}`}
               >
                 <TableCell className={classes.tableCells}>{index+1}</TableCell>
+                <TableCell className={classes.tableCells}>{response?.booked_user?.name}</TableCell>
+
                 <TableCell className={classes.tableCells}>{response?.booked_user?.username}</TableCell>
                 {/* <TableCell className={classes.tableCells}>Grade 1</TableCell> */}
                 <TableCell className={classes.tableCells}>{response?.submitted_on.slice(0,10)}</TableCell>
@@ -511,7 +515,7 @@ const Shortlisted_1 = (props) => {
             </TableBody>
             ))}
           </Table>
-          <TablePagination
+          {/* <TablePagination
             component='div'
             // count={totalCount}
             // rowsPerPage={limit}
@@ -525,7 +529,7 @@ const Shortlisted_1 = (props) => {
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          />
+          /> */}
         </TableContainer>
       </Paper>
   </>);

@@ -26,6 +26,7 @@ import {
   Select,
   Dialog,
   DialogTitle,
+  Checkbox,
 } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import Layout from 'containers/Layout';
@@ -41,6 +42,8 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
+import Carousel from "react-elastic-carousel";
+
 
 
 
@@ -126,6 +129,9 @@ const useStyles = makeStyles((theme) => ({
     borderLeft: `3px solid ${theme.palette.primary.main}`,
     height: '45px',
   },
+tickSize:{
+  transform: "scale(2.0)",
+},
 }));
 
 const AdminCreateBlog = () => {
@@ -237,7 +243,7 @@ const AdminCreateBlog = () => {
   const [activityName, setActivityName] = useState([]);
   const [changeText,setChangeText]=useState("");
   const handleChangeActivity = (e, value) => {
-    console.log(value);
+    console.log(e,"event",value);
     setActivityName(value);
   };
   const handleChangeText = (e, value) => {
@@ -256,7 +262,7 @@ const AdminCreateBlog = () => {
       .then((res) => {
         console.log('res', res);
         if (res?.data) {
-          const transformedData = res.data.result?.map((obj) => ({
+          const transformedData = res?.data?.result?.map((obj) => ({
             id: obj.id,
             name: obj.name,
           }));
@@ -348,6 +354,8 @@ const AdminCreateBlog = () => {
       setSelectedBranch(value);
       fetchGrades();
     }
+    getTemplate(activityName.id);
+
   };
 
   const handleGrade = (e, value) => {
@@ -448,6 +456,11 @@ const AdminCreateBlog = () => {
     formatdate.getSeconds();
   const dataPost = () => {
     setLoading(true);
+    if(!startDate){
+      setLoading(false);
+      setAlert('error', 'Please Select The Date')
+      return;
+    }
     const branchIds = selectedBranch.map((obj) => obj.id);
     const gradeIds = selectedGrade.map((obj) => obj.id);
     const sectionIds = selectedSection.map((obj) => obj.id);
@@ -466,10 +479,8 @@ const AdminCreateBlog = () => {
     formData.append('grade_ids', gradeIds);
     formData.append('section_ids', sectionIds);
     formData.append('is_draft', true);
-    formData.append('template_type',changeText.name);
-    
-
-
+    formData.append('template_type',"template");
+    formData.append('template_id',checked);
     axios
       .post(`${endpoints.newBlog.activityCreate}`, formData, {
         headers: {
@@ -556,6 +567,48 @@ const AdminCreateBlog = () => {
   const handleDescription = (event) => {
     setDescription(event.target.value);
   };
+  const [templates,setTemplates] =useState([]);
+
+  const getTemplate = (data) => {
+    axios
+      .get(`${endpoints.newBlog.getTemplates}${data}/`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        console.log(response?.data?.result, 'session');
+        setTemplates(response?.data?.result);
+     
+      });
+  };
+  const [checked, setChecked] = React.useState("");
+
+  const handleChange = (event,value) => {
+    // console.log(event.target.checked)
+    // console.log(event,"event",value);
+
+    setChecked(value);
+  };
+//   const clickHandler = (e, item) => {
+
+//     if (e.target.checked) {
+//         setList(prevState => [
+//             ...prevState,
+//             item
+//         ])
+//         const newInitialList = initialList.filter((list, index) => list.id !== item.id);
+//         setIinitialList(newInitialList)
+//     }
+// }
+
+  const breakPoints = [
+    { width: 1, itemsToShow: 1 },
+    { width: 550, itemsToShow: 2, itemsToScroll: 2 },
+    { width: 768, itemsToShow: 3 },
+    { width: 1200, itemsToShow: 4 }
+  ];
+  
 
   return (
     <Layout>
@@ -778,7 +831,7 @@ const AdminCreateBlog = () => {
           <br />
           <div
             style={{
-              marginLeft: '17%',
+              marginLeft: '13%',
               marginRight: '8%',
               marginBottom: '23px',
             }}
@@ -797,7 +850,7 @@ const AdminCreateBlog = () => {
               value={description}
               onChange={handleDescription}
               fullWidth
-              style={{ maxWidth: '100%' }}
+              style={{ maxWidth: '97%' }}
               rows='8'
               variant='outlined'
             />
@@ -807,11 +860,11 @@ const AdminCreateBlog = () => {
           style={{
             border: '1px solid lightgrey',
             borderRadius: '5px',
-            height: '100px',
+            height: 'auto',
             marginTop: '20px',
           }}
         >
-          <div
+          {/* <div
             style={{
               textAlign: 'center',
               display: 'flex',
@@ -859,7 +912,26 @@ const AdminCreateBlog = () => {
                 ) : null}{' '}
               </label>
             </div>
-          </div>
+          </div> */}
+          <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
+        {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
+        <div style={{ height: "200px", color: "#fff" }}>this is slide 2</div>
+        <div style={{ height: "200px", color: "#fff" }}>this is slide 3</div> */}
+        {templates?.map((obj,index)=>(
+        <div style={{display:'flex', alignItems:'center',flexDirection:'column'}}>
+        <img src={obj?.template_path} alt="images" style={{maxWidth:"34%"}}/> 
+        {/* <div> */}
+         <Checkbox
+         value={checked}
+         onChange={()=>handleChange(obj?.id,obj?.id)}
+         className={classes.tickSize}        
+        color="primary"
+        inputProps={{ 'aria-label': 'secondary checkbox' }}
+      />
+      <div>{obj?.title}</div>
+      {/* </div> */}
+      </div>))}
+      </Carousel>
         </div>
         <div
           style={{

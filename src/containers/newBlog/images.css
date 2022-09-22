@@ -11,15 +11,12 @@
     background-position: center !important;
     background-repeat: no-repeat !important;
   }
-
   .certificate-input-box{
-    
     position:absolute;
     top:50%;
     left:50%;
     transform: translate(-50%,-50%);
 }
-
 .certificate-box{
     height: 50vh;
     width: 50vh;
@@ -30,7 +27,6 @@
     outline:none;
     font-size: 16px;
 }
-
 .name{
     border-radius: 8px;
     padding: 2px 5px;
@@ -40,7 +36,6 @@
     width: 20vh;
     font-size: 13px;
 }
-
 .grade{
     border-radius: 8px;
     padding: 2px 5px;
@@ -51,15 +46,12 @@
     outline:none;
     font-size: 13px;
 }
-
-.detail{
-    
+/* .detail{
     position: absolute;
     left:86%;
     top:140%;
     transform: translate(-50%,-50%);
-}
-
+} */
 @media only screen and (max-width: 650px) {
     .certificate-input-box{
         background: none;
@@ -67,7 +59,6 @@
         top:50%;
         left:50%;
         transform: translate(-50%,-50%);
-    
     }
     .certificate-box{
         height: 70vw;
@@ -76,18 +67,17 @@
         padding: 16px;
         border: none;
         outline:none;
-        background:rgba(153, 172, 229, 0.25);    
+        background:rgba(153, 172, 229, 0.25);
         font-size: 16px;
     }
-    .detail{
+    /* .detail{
         position: absolute;
         left:86%;
         top:142%;
         transform: translate(-50%,-50%);
         font-size: 13px;
-    }
+    } */
     .name{
-       
         border-radius: 8px;
         padding: 2px 5px;
         border: none;
@@ -97,9 +87,7 @@
         outline:none;
         font-size: 8px;
     }
-    
     .grade{
-        
         border-radius: 8px;
         padding: 2px 5px;
         border: none;
@@ -110,7 +98,6 @@
         font-size: 8px;
     }
 }
-
 @media only screen and (max-height: 550px) {
     .certificate-input-box{
         background: none;
@@ -118,7 +105,6 @@
         top:50%;
         left:50%;
         transform: translate(-50%,-50%);
-    
     }
     .certificate-box{
         height: 55vh;
@@ -127,18 +113,18 @@
         padding: 16px;
         border: none;
         outline:none;
-        background:rgba(153, 172, 229, 0.25);    
+        background:rgba(153, 172, 229, 0.25);
         font-size: 16px;
+        /* position: absolute; */
     }
-    .detail{
+    /* .detail{
         position: absolute;
         left:86%;
         top:133%;
         transform: translate(-50%,-50%);
         font-size: 13px;
-    }
+    } */
     .name{
-       
         border-radius: 8px;
         padding: 2px 5px;
         border: none;
@@ -148,9 +134,7 @@
         outline:none;
         font-size: 8px;
     }
-    
     .grade{
-        
         border-radius: 8px;
         padding: 2px 5px;
         border: none;

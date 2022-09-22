@@ -412,6 +412,12 @@ const RatingCreate = () => {
     setViewing(true);
   };
 
+  const handleCreateTemplate = () =>{
+    history.push(
+      '/blog/templates'
+    );
+  }
+
   const handleRemoveItem = (index) => {
     const newList = [...inputList];
     newList.splice(index, 1);
@@ -456,7 +462,7 @@ const RatingCreate = () => {
           marginRight: '34px',
         }}
       >
-        <div style={{ width: '300%' }}>
+        <div style={{ width: '85%' }}>
           <TextField
             label='Activity Type'
             size='small'
@@ -473,6 +479,9 @@ const RatingCreate = () => {
               </MenuItem>
             ))}
           </TextField>
+        </div>
+        <div>
+          <Button onClick={handleCreateTemplate}> Add Template</Button>
         </div>
         <div>
           <Button onClick={viewDisplay}>Add</Button>

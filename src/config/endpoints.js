@@ -824,6 +824,10 @@ export default {
     statusList: '/assessment/get-pipeline-statuses/',
     deleteReportPipeline: '/assessment/<pipeline_id>/revert-pipeline/',
   },
+  gradingSystem : {
+    GradingData : 'assessment/grading-system/',
+    deleteGrading : `/assessment/grading-system/`
+  },
   dashboard: {
     teacher: {
       downloadAttendanceReport: '/api/reports/v1/attendance-download/',
@@ -901,7 +905,6 @@ export default {
     homeworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/homework/homework-submission-report/`,
     classworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/classwork-details/`,
   },
-
   newBlog: {
     activityCreate:`${newBlogURL}/api/activity_detail_create/`,
     activityWebLogin:`${newBlogURL}/api/web_login/`,
@@ -910,6 +913,7 @@ export default {
     activityGrade:`${newBlogURL}/api/grades/`,
     activitySection:`${newBlogURL}/api/sections/`,
     getActivityType:`${newBlogURL}/api/activity_types/`,
+    getTemplates:`${newBlogURL}/api/get_templates/`,
 
     previewDetails: `${newBlogURL}/api/get_activity_detail/`,
     unAssign:`${newBlogURL}/api/get_activities/`,
@@ -925,11 +929,14 @@ export default {
 
     studentSideApi:`${newBlogURL}/api/student_activity_get/`,
     studentSideWriteApi:`${newBlogURL}/api/student_activity_create/`,
+    createTemplates:`${newBlogURL}/api/template_create/`,
+    
+
+
+
 
 
 },
-
-
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

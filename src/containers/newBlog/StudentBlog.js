@@ -6,6 +6,7 @@ import axios from 'axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './images.css';
 // import cakeImg from './Images/newcakeimage.jpg';
+import ReactHtmlParser from 'react-html-parser';
 
 
 import {
@@ -28,6 +29,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import MessageIcon from '@material-ui/icons/Message';
 import { setDate } from 'date-fns/esm';
 import endpoints from '../../config/endpoints';
+
 
 import './styles.scss';
 import moment from 'moment';
@@ -76,6 +78,7 @@ const todayDate = moment();
   const [startDate, setStartDate] = useState('');
   const [activityId,setActivityId]=useState("");
   const [submission,setSubmission] = useState("");
+  const [imageData, setImageData] = useState("");
   
   const goBack=()=>{
     history.push('/blog/studentview');
@@ -104,8 +107,8 @@ const todayDate = moment();
       }
     )
     .then((response) => {
-      console.log(response?.data?.result);
       // setAssignPreview(response);
+      setImageData(JSON.parse(response?.data?.result?.template?.html_file))
       setPreviewData(response?.data?.result);
 
     });
@@ -115,6 +118,9 @@ const todayDate = moment();
   
 
   const handleSubmit=()=>{
+    const dummyData= JSON.parse(previewData?.template?.html_file)
+    dummyData[0].placeholder = desc
+
     // const formData = new FormData();
     // formData.append('activity_detail_id', activityId);
     // formData.append('user_id', User_id?.id);
@@ -132,9 +138,9 @@ const todayDate = moment();
 
 
       },
-
       "content": {
-        html_text:desc,
+        html_text:JSON.stringify(dummyData),
+        // image_data:previewData?.template?.html_file,
       }
     }
 
@@ -199,7 +205,7 @@ const todayDate = moment();
             })}
             &nbsp;{submission?.slice(0, 4)}
           </div>
-          <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+          {/* <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
                 Branch -&nbsp;
                 <span style={{ color: 'black' }}>
                   {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
@@ -216,7 +222,7 @@ const todayDate = moment();
                 <span style={{ color: 'black' }}>
                   {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
                 </span>
-              </div>
+              </div> */}
 
           
 
@@ -225,12 +231,13 @@ const todayDate = moment();
           
 
           <div style={{ marginTop: '20px', color: 'gray' }}>Write Your Blog</div>
+          <div style={{justifyContent:"center"}}>
           <div
                   style={{
                     background: 'white',
-                    // width: '502px',
+                    width: '502px',
                     marginLeft: '34px',
-                    height: 'auto',
+                    height: '683px',
                     marginTop: '12px',
                     marginBottom: '29px',
                   }}
@@ -238,14 +245,17 @@ const todayDate = moment();
                   <div >
           <div
         style={{
-          background: `url(${previewData?.template_path})`,
+          background: `url(${previewData?.template?.template_path})`,
           
         }}
         className="background-image-write"
       >
         <div className="certificate-text-center certificate-input-box">
-          <textarea className="certificate-box" style={{width: "337px",
-    height: "347px"}} onChange={changeHandle}placeholder="type text here..." />
+          <textarea 
+          className="certificate-box" 
+          style={{width: `${imageData[0]?.width}px`,
+    height: `${imageData[0]?.height}px`, top: `${imageData[0]?.x_cordinate}px`, left: `${imageData[0]?.y_cordinate}px`}} 
+    onChange={changeHandle} placeholder="type text here..." />
          
         </div>
       </div>
@@ -268,6 +278,9 @@ const todayDate = moment();
               // content='<img src="https://st.depositphotos.com/1015682/1248/i/600/depositphotos_12483210-stock-photo-elephant-with-large-tusks.jpg" />'
             /> */}
           </div>
+
+          </div>
+          {/* <div>{ReactHtmlParser(previewData?.template?.html_file)}</div> */}
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
             <Button
               variant='outlined'

@@ -542,7 +542,7 @@ const AdminEditCreateBlogs = () => {
         setSelectedGrade(response?.data?.result?.grades?.map((obj)=>(obj)))
         setSelectedSection(response?.data?.result?.sections?.map((obj)=>(obj)))
         setFileUrl(response?.data?.result?.template_path);
-        setStartDate(response?.data?.result?.submission_date.slice(0,10));
+        setStartDate(response?.data?.result?.submission_date?.slice(0,10));
 
 
       });
@@ -925,7 +925,7 @@ const AdminEditCreateBlogs = () => {
             Clear
           </Button>{' '}
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button variant='contained' disabled={user_level==11} color='primary' onClick={dataPost}>
+          <Button variant='contained' color='primary'disabled={user_level==11} onClick={dataPost}>
             Edit Activity
           </Button>
         </div>
