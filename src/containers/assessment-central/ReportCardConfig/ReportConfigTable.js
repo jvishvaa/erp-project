@@ -78,7 +78,7 @@ const columns = [
   },
   {
     id: 'actions',
-    label: 'DELETE',
+    label: 'Actions',
     minWidth: 170,
     align: 'center',
     labelAlign: 'center',
@@ -410,6 +410,16 @@ const ReportConfigTable = () => {
                         {data?.component_description}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
+                      <Button
+                          onClick={() => {
+                            // setOpenModal(true);
+                          }}
+                          color= 'primary'   
+                          variant='contained'                     
+                        >
+                          {/* {ispublished ? 'Publish' : 'Unpublish'} */}
+                          Publish
+                        </Button>
                         <IconButton
                           onClick={() => {
                             setOpenModal(true);
@@ -418,6 +428,7 @@ const ReportConfigTable = () => {
                         >
                           <DeleteOutlinedIcon />
                         </IconButton>
+                        
                         {openModal && (
                           <ConfirmModal
                             submit={() => DeleteData(data?.id)}

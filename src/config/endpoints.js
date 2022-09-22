@@ -823,6 +823,10 @@ export default {
     statusList: '/assessment/get-pipeline-statuses/',
     deleteReportPipeline: '/assessment/<pipeline_id>/revert-pipeline/',
   },
+  gradingSystem : {
+    GradingData : 'assessment/grading-system/',
+    deleteGrading : `/assessment/grading-system/`
+  },
   dashboard: {
     teacher: {
       downloadAttendanceReport: '/api/reports/v1/attendance-download/',

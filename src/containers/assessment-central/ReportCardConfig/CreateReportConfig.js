@@ -37,6 +37,8 @@ function CreateReportConfig() {
   const [moduleId, setModuleId] = useState('');
   const [selectedbranch, setSelectedbranch] = useState();
   const [selectedGrade, setSelectedGrade] = useState();
+  // const [gradingId , setGradingId] = useState()
+
 
   const history = useHistory();
 
@@ -58,9 +60,10 @@ function CreateReportConfig() {
         grade: selectedGrade?.grade_id,
         id: compnentUniqueId,
         ComponentID: -1,
-        subComponents: []
+        subComponents: [],
+        grading_system_id : ''
       },
-    ]);
+    ]); 
   }
 
 

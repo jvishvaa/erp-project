@@ -253,7 +253,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
             </Modal>
           </Grid>
         </Grid>
-        <Grid container spacing={2} style={{ margin: "0px", display: "flex", alignItems: "center" }}>
+        {components[index].ComponentID !== 34 && <Grid container spacing={2} style={{ margin: "0px", display: "flex", alignItems: "center" }}>
           <Grid item xs={12} sm={3} className={"filterPadding"}>
             <TextField
               style={{ width: "100%" }}
@@ -371,7 +371,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
             >
             </Button>
           </Grid>
-        </Grid>
+        </Grid>}
       </Grid>
     </>
   );

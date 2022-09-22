@@ -416,10 +416,25 @@ import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/c
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
-import UserProfile from 'containers/login/profiles';
-import EventsMark from 'containers/attendance/eventsmark';
 import CategoryTable from 'containers/question-bank/category/category-table';
 import CategoryMapping from 'containers/subjectGradeMapping/CategoryMapping';
+import UserProfile from 'containers/login/profiles';
+import EventsMark from 'containers/attendance/eventsmark';
+import Gradingview from 'containers/assessment-central/grading-system/gradingview';
+import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
+
+
+import AdminViewBlog from '../containers/newBlog/AdminViewBlog';
+import AdminCreateBlog from '../containers/newBlog/AdminCreateBlog';
+import AdminPublishBlogShort from '../containers/newBlog/Shortlisted';
+// import BlogWall from '../containers/blog/Admin/BlogWall';
+import StudentViewBlog from '../containers/newBlog/StudentSideBlog';
+import NewEditBlog from '../containers/newBlog/StudentBlog';
+import CreateActivityType from '../containers/newBlog/CreateActivityType';
+import ActivityReview from '../containers/newBlog/BlogReview';
+import AddReview from '../containers/newBlog/AddReview';
+import RatingType from '../containers/newBlog/RatingCreate';
+import AdminEditCreateBlogs from '../containers/newBlog/AdminEditCreateBlogs';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
@@ -492,6 +507,12 @@ const V1Router = [
   <Route exact path='/assessment/marks-upload'>
     {({ match }) => <ReportCard match={match} />}
   </Route>,
+  <Route exact path='/assessment/grading-system'>
+  {({ match }) => <Gradingview match={match} />}
+</Route>,
+<Route exact path='/assessment/grading-create'>
+  {({ match }) => <GradingCreate match={match} />}
+</Route>,
   <Route exact path='/assessment/category'>
     {({ match }) => <CategoryTable match={match} />}
   </Route>,
