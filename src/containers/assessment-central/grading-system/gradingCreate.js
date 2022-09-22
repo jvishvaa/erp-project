@@ -42,6 +42,7 @@ function GradingCreate() {
   const history = useHistory();
   const GradingData = history?.location?.state?.gradeData;
   const [Edit, setisEdit] = useState(history?.location?.state?.isEdit);
+  const [totalmarkcount, setTotalmarksCount] = useState(0);
   console.log(gradeCount, '@@');
 
   const subParameter = (index) => {
@@ -89,8 +90,8 @@ function GradingCreate() {
     ]);
   };
 
-  const backreportvalidate = (tovalidate) => {
-    if (isbackReport) {
+  const backreportvalidate = (tovalidate, ops) => {
+    if (isbackReport && ops !== 'create') {
       let verifyparameters = [];
       let check = tovalidate?.parameter_details?.forEach((data) => {
         if (data?.parameter_name?.length === 0)
@@ -101,137 +102,213 @@ function GradingCreate() {
       });
       if (verifyparameters.length === tovalidate?.parameter_details.length) return true;
       else return false;
+    } else {
+      let all_validation_array = [];
+      tovalidate.forEach((item) => {
+        if (isbackReport) {
+          let verifyparameters = [];
+          let check = item?.parameter_details?.forEach((data) => {
+            if (data?.parameter_name?.length === 0)
+              return setAlert('error', 'Parameter Name Required !');
+            if (data?.parameter_description?.length === 0)
+              return setAlert('error', 'Parameter Description Required !');
+            else verifyparameters.push(true);
+          });
+          if (verifyparameters?.length === item?.parameter_details?.length) {
+            all_validation_array.push(true);
+          }
+        } else all_validation_array.push(true);
+      });
+      if (all_validation_array?.length === gradeCount?.length) {
+        return true;
+      } else {
+        return false;
+      }
     }
   };
 
   const handleValidation = (grade, task) => {
-    let last_two_grade = grade.slice(-2);
-    let tovalidate = grade[grade.length - 1];
-    let totalCount =
-      tovalidate?.start_mark == 0
-        ? parseInt(tovalidate?.end_mark) -
-          parseInt(tovalidate?.start_mark) +
-          parseInt(tovalidate.total_count)
-        : parseInt(tovalidate?.end_mark) -
-          parseInt(tovalidate?.start_mark) +
-          1 +
-          parseInt(tovalidate.total_count);
+    let last_arr = grade[grade.length - 1];
+    let checking_arr = [];
+    let totalCount;
 
-    if (last_two_grade.length === 2) {
-      if (tovalidate.grade_name?.length === 0)
-        return setAlert('error', 'Please Enter Grade Name !');
-      else if (tovalidate?.start_mark?.length === 0)
-        return setAlert('error', 'Please Enter Start Mark !');
-      else if (tovalidate?.start_mark?.length > 2 && tovalidate?.start_mark > 0)
-        return setAlert('error', 'Start Mark cannot be above 100 !');
-      else if (tovalidate?.start_mark < 0 || tovalidate?.end_mark < 0)
-        return setAlert('error', 'Marks cannot be negetive !');
-      else if (tovalidate?.end_mark?.length === 0)
-        return setAlert('error', 'Please Enter End Mark  !');
-      else if (tovalidate?.end_mark > 100)
-        return setAlert('error', 'End Mark cannot be above 100 !');
-      else if (parseInt(tovalidate?.end_mark) <= parseInt(tovalidate?.start_mark))
-        return setAlert('error', 'Start Mark should be less than End Mark!');
-      else if (parseInt(tovalidate?.end_mark) >= parseInt(last_two_grade[0]?.start_mark))
-        return setAlert(
-          'error',
-          'End Mark should be lesser than start Mark of previous !'
-        );
-      else if ((tovalidate?.start_mark || tovalidate?.end_mark) < 0)
-        return setAlert('error', 'Marks cannot be less than 0');
-      else if (tovalidate?.description?.length === 0)
-        return setAlert('error', 'Description Required !');
-      if (tovalidate.start_mark > last_two_grade[0]?.start_mark)
-        return setAlert(
-          'error',
-          'Start Marks cannot be greater than previous start marks !'
-        );
-      if (parseInt(tovalidate.end_mark) !== parseInt(last_two_grade[0]?.start_mark) - 1)
-        return setAlert(
-          'error',
-          'End marks should be till the start mark - 1  of previous grade'
-        );
-      if (tovalidate.grade_name === last_two_grade[0]?.grade_name)
-        return setAlert('error', 'Grade name cannot be same !');
-      if (tovalidate.start_mark === last_two_grade[0]?.start_mark)
-        return setAlert('error', 'start_mark cannot be same !');
-      if (tovalidate.end_mark === last_two_grade[0]?.end_mark)
-        return setAlert('error', 'end_mark cannot be same !');
-      if (tovalidate.start_mark === last_two_grade[0]?.end_mark)
-        return setAlert('error', 'Marks are overlapping please change one of them !');
-      if (isbackReport) {
-        let check = backreportvalidate(tovalidate);
-        if (!check) return setAlert('error', 'Please fill all Parameter Details');
-        if (task === ('create' || 'update') && totalCount == 100 && check) return true;
-        else if (task === ('create' || 'update') && totalCount != 100)
-          return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
-        else if (task !== ('create' || 'update') && totalCount >= 100)
+    // if (grade.length > 1) {
+
+    grade.forEach((tovalidate, i, grade) => {
+      if (i != 0) {
+        totalCount =
+          tovalidate?.start_mark == 0
+            ? parseInt(tovalidate?.end_mark) -
+              parseInt(tovalidate?.start_mark) +
+              parseInt(totalCount)
+            : parseInt(tovalidate?.end_mark) -
+              parseInt(tovalidate?.start_mark) +
+              1 +
+              parseInt(totalCount);
+
+        if (tovalidate.grade_name?.length === 0)
+          return setAlert('error', 'Please Enter Grade Name !');
+        else if (tovalidate?.start_mark?.length === 0)
+          return setAlert('error', 'Please Enter Start Mark !');
+        else if (tovalidate?.start_mark?.length > 2 && tovalidate?.start_mark > 0)
+          return setAlert('error', 'Start Mark cannot be above 100 !');
+        else if (tovalidate?.start_mark < 0 || tovalidate?.end_mark < 0)
+          return setAlert('error', 'Marks cannot be negetive !');
+        else if (tovalidate?.end_mark?.length === 0)
+          return setAlert('error', 'Please Enter End Mark  !');
+        else if (tovalidate?.end_mark > 100)
+          return setAlert('error', 'End Mark cannot be above 100 !');
+        else if (parseInt(tovalidate?.end_mark) <= parseInt(tovalidate?.start_mark))
+          return setAlert('error', 'Start Mark should be less than End Mark!');
+        else if (parseInt(tovalidate?.end_mark) >= parseInt(grade[i - 1]?.start_mark))
           return setAlert(
             'error',
-            'You cannot add more grades as marks limit Exceed(1-100) !'
+            'End Mark should be lesser than start Mark of previous !'
           );
-        else return totalCount;
+        else if ((tovalidate?.start_mark || tovalidate?.end_mark) < 0)
+          return setAlert('error', 'Marks cannot be less than 0');
+        else if (tovalidate?.description?.length === 0)
+          return setAlert('error', 'Description Required !');
+        if (tovalidate.start_mark > grade[i - 1]?.start_mark)
+          return setAlert(
+            'error',
+            'Start Marks cannot be greater than previous start marks !'
+          );
+        if (parseInt(tovalidate.end_mark) !== parseInt(grade[i - 1]?.start_mark) - 1)
+          return setAlert(
+            'error',
+            'End marks should be till the start mark - 1  of previous grade'
+          );
+        if (tovalidate.grade_name === grade[i - 1]?.grade_name)
+          return setAlert('error', 'Grade name cannot be same !');
+        if (tovalidate.start_mark === grade[i - 1]?.start_mark)
+          return setAlert('error', 'start_mark cannot be same !');
+        if (tovalidate.end_mark === grade[i - 1]?.end_mark)
+          return setAlert('error', 'end_mark cannot be same !');
+        if (tovalidate.start_mark === grade[i - 1]?.end_mark)
+          return setAlert('error', 'Marks are overlapping please change one of them !');
+        if (isbackReport) {
+          let check;
+          if (task === 'create' || task == 'update') {
+            check = backreportvalidate(gradeCount, 'create');
+          } else {
+            check = backreportvalidate(tovalidate, 'add');
+          }
+          if (!check) return setAlert('error', 'Please fill all Parameter Details');
+          if ((task === 'create' || task == 'update') && totalCount == 100 && check) {
+            checking_arr.push(true);
+          } else if ((task === 'create' || task == 'update') && totalCount != 100)
+            return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
+          else if ((task === 'create' || task == 'update') && totalCount >= 100)
+            return setAlert(
+              'error',
+              'You cannot add more grades as marks limit Exceed(1-100) !'
+            );
+          else {
+            checking_arr.push(true);
+            setTotalmarksCount(totalCount);
+          }
+        } else {
+          if ((task === 'create' || task == 'update') && totalCount == 100) {
+            checking_arr.push(true);
+          } else if ((task === 'create' || task == 'update') && totalCount != 100 && i === grade?.length -1)
+            return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
+          else if (totalCount >= 100)
+            return setAlert(
+              'error',
+              'You cannot add more grades as marks limit Exceed(1-100) !'
+            );
+          else {
+            checking_arr.push(true);
+            setTotalmarksCount(totalCount);
+          }
+        }
       } else {
-        if (task === ('create' || 'update') && totalCount == 100) return true;
-        else if (task === ('create' || 'update') && totalCount != 100)
-          return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
-        else if (totalCount >= 100)
-          return setAlert(
-            'error',
-            'You cannot add more grades as marks limit Exceed(1-100) !'
-          );
-        else return totalCount;
+        totalCount =
+          grade[0]?.start_mark == 0
+            ? parseInt(grade[0]?.end_mark) -
+              parseInt(grade[0]?.start_mark) +
+              parseInt(grade[0].total_count)
+            : parseInt(grade[0]?.end_mark) -
+              parseInt(grade[0]?.start_mark) +
+              1 +
+              parseInt(grade[0].total_count);
+        if (grade[0].grade_name?.length === 0)
+          return setAlert('error', 'Please Enter Grade Name !');
+        else if (grade[0]?.start_mark?.length === 0)
+          return setAlert('error', 'Please Enter Start Mark !');
+        else if (grade[0]?.start_mark?.length > 2 && grade[0]?.start_mark > 0)
+          return setAlert('error', 'Start Mark cannot be above 100 !');
+        else if (grade[0]?.start_mark < 0 || grade[0]?.end_mark < 0)
+          return setAlert('error', 'Marks cannot be negetive !');
+        else if (grade[0]?.end_mark?.length === 0)
+          return setAlert('error', 'Please Enter End Mark  !');
+        else if (grade[0]?.end_mark > 100)
+          return setAlert('error', 'End Mark cannot be above 100 !');
+        else if (grade[0]?.end_mark < 100)
+          return setAlert('error', 'End Mark should be 100 !');
+        else if (parseInt(grade[0]?.end_mark) <= parseInt(grade[0]?.start_mark))
+          return setAlert('error', 'End Mark should be greater than start Mark !');
+        else if ((grade[0]?.start_mark || grade[0]?.end_mark) < 0)
+          return setAlert('error', 'Marks cannot be less than 0');
+        else if (grade[0]?.description?.length === 0)
+          return setAlert('error', 'Description Required !');
+        if (isbackReport) {
+          let check = backreportvalidate(grade[0]);
+          if (!check) return setAlert('error', 'Please fill all Parameter Details');
+          if ((task === 'create' || task == 'update') && totalCount == 100 && check) {
+            checking_arr.push(true);
+          } else if ((task === 'create' || task == 'update') && totalCount != 100)
+            return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
+          else if (totalCount >= 100)
+            return setAlert(
+              'error',
+              'You cannot add more grades as marks limit Exceed(1-100) !'
+            );
+          else {
+            checking_arr.push(true);
+            setTotalmarksCount(totalCount);
+          }
+        } else {
+          if ((task === 'create' || task == 'update') && totalCount == 100) {
+            checking_arr.push(true);
+            setTotalmarksCount(totalCount);
+          } else if (
+            (task === 'create' || task == 'update') &&
+            totalCount != 100 &&
+            grade.length === 1
+          )
+            return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
+          else if (totalCount >= 100)
+            return setAlert(
+              'error',
+              'You cannot add more grades as marks limit Exceed(1-100) !'
+            );
+          else {
+            checking_arr.push(true);
+            setTotalmarksCount(totalCount);
+          }
+        }
       }
-    } else {
-      if (tovalidate.grade_name?.length === 0)
-        return setAlert('error', 'Please Enter Grade Name !');
-      else if (tovalidate?.start_mark?.length === 0)
-        return setAlert('error', 'Please Enter Start Mark !');
-      else if (tovalidate?.start_mark?.length > 2 && tovalidate?.start_mark > 0)
-        return setAlert('error', 'Start Mark cannot be above 100 !');
-      else if (tovalidate?.start_mark < 0 || tovalidate?.end_mark < 0)
-        return setAlert('error', 'Marks cannot be negetive !');
-      else if (tovalidate?.end_mark?.length === 0)
-        return setAlert('error', 'Please Enter End Mark  !');
-      else if (tovalidate?.end_mark > 100)
-        return setAlert('error', 'End Mark cannot be above 100 !');
-      else if (tovalidate?.end_mark < 100)
-        return setAlert('error', 'End Mark should be 100 !');
-      else if (parseInt(tovalidate?.end_mark) <= parseInt(tovalidate?.start_mark))
-        return setAlert('error', 'End Mark should be greater than start Mark !');
-      else if ((tovalidate?.start_mark || tovalidate?.end_mark) < 0)
-        return setAlert('error', 'Marks cannot be less than 0');
-      else if (tovalidate?.description?.length === 0)
-        return setAlert('error', 'Description Required !');
-      if (isbackReport) {
-        let check = backreportvalidate(tovalidate);
-        if (!check) return setAlert('error', 'Please fill all Parameter Details');
-        if (task === ('create' || 'update') && totalCount == 100 && check) return true;
-        else if (task === ('create' || 'update') && totalCount != 100)
-          return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
-        else if (totalCount >= 100)
-          return setAlert(
-            'error',
-            'You cannot add more grades as marks limit Exceed(1-100) !'
-          );
-        else return totalCount;
-      } else {
-        if (task === ('create' || 'update') && totalCount == 100) return true;
-        else if (task === ('create' || 'update') && totalCount != 100)
-          return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
-        else if (totalCount >= 100)
-          return setAlert(
-            'error',
-            'You cannot add more grades as marks limit Exceed(1-100) !'
-          );
-        else return totalCount;
-      }
+    });
+
+    if
+      (task !== 'addCard' && (checking_arr.length === grade.length) &&
+      totalCount === 100
+    ) {
+      // setTotalmarksCount(totalCount);
+      setValidated(true);
+      return true;
+    }else if((checking_arr.length === grade.length) && totalCount !== 100){
+        setValidated(true);
+        return true
     }
   };
 
   const addGradeCard = async () => {
-    let totalCount = await handleValidation(gradeCount, 'addCard');
-    if (totalCount) {
+    let validated = await handleValidation(gradeCount, 'addCard');
+    if (validated || isValidated) {
+      setValidated(false);
       setGradeCount((prev) => [
         ...prev,
         {
@@ -245,37 +322,40 @@ function GradingCreate() {
               parameter_description: '',
             },
           ],
-          total_count: totalCount,
+          total_count: totalmarkcount,
         },
       ]);
     }
   };
 
-  const handleUpdate = () => {
-    setLoading(true);
-    let params = {
-      grading_system_name: gradingSystemName,
-      grade_data: gradeCount,
-      is_back_page_activated: isbackReport,
-    };
-    axiosInstance
-      .put(`${endpoints.gradingSystem.GradingData}${GradingData?.id}/`, params)
-      .then((res) => {
-        setLoading(false);
-        //   setGradingData(res.data.result);
-        setAlert('success', 'Updated Successfully');
-        history.push('./grading-system');
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert(
-          'error',
-          error.response.data.message ||
-            error.response.data.msg ||
-            'Issue occuring whilw creating'
-        );
-        console.log(error); // to give set Alert later
-      });
+  const handleUpdate = async () => {
+    let validated = await handlevalidate('update');
+    if (validated || isValidated) {
+      setLoading(true);
+      let params = {
+        grading_system_name: gradingSystemName,
+        grade_data: gradeCount,
+        is_back_page_activated: isbackReport,
+      };
+      axiosInstance
+        .put(`${endpoints.gradingSystem.GradingData}${GradingData?.id}/`, params)
+        .then((res) => {
+          setLoading(false);
+          //   setGradingData(res.data.result);
+          setAlert('success', 'Updated Successfully');
+          history.push('./grading-system');
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert(
+            'error',
+            error.response.data.message ||
+              error.response.data.msg ||
+              'Issue occuring whilw creating'
+          );
+          console.log(error); // to give set Alert later
+        });
+    }
   };
 
   // const handlevalidation = () => {
@@ -319,7 +399,7 @@ function GradingCreate() {
 
   const handleCreate = async () => {
     let validated = await handlevalidate('create');
-    if (validated === true) {
+    if (validated || isValidated) {
       setLoading(true);
       let params = {
         grading_system_name: gradingSystemName,

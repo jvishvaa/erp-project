@@ -202,7 +202,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Assessment Report', Path: '/assessment-reports' },
 
     { name: 'Student Report', Path: '/assessment-student-report' },
-
+    {name : 'Grading System Config' , path : '/assessment/grading-system'},
     {
       name: 'Weekly Quiz Performance',
       Path: '/assessment-weekly-quiz-performance-report',

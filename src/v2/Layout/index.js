@@ -512,6 +512,10 @@ const Layout = ({ children, history }) => {
         history.push('/assessment/report-config');
         break;
       }
+      case 'Grading System Config': {
+        history.push('/assessment/grading-system');
+        break;
+      }
       case 'ID Card View': {
         history.push('/student-id-card');
         break;
