@@ -10,6 +10,7 @@ import {
   Button,
   Radio,
   Spin,
+  Tooltip,
 } from 'antd';
 import {
   DownOutlined,
@@ -17,6 +18,7 @@ import {
   CloseOutlined,
   CaretRightOutlined,
   DownloadOutlined,
+  RightOutlined,
   EyeFilled,
 } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
@@ -109,12 +111,16 @@ const TableView = () => {
   const [loadingDrawer, setLoadingDrawer] = useState(false);
   const [completionCheck, setCompletionCheck] = useState(false);
   const [currentPeriodId, setCurrentPeriodId] = useState('');
+  const [currentPeriodPanel, setCurrentPeriodPanel] = useState(0);
+  let isStudent = window.location.pathname.includes('student-view');
+  const [YCPData, setYCPData] = useState([]);
 
   const showDrawer = () => {
     setDrawerVisible(true);
   };
 
   const closeDrawer = () => {
+    setCurrentPeriodPanel(0);
     setDrawerVisible(false);
   };
   const showSectionList = () => {
@@ -180,17 +186,22 @@ const TableView = () => {
       });
   };
   const fetchModuleListData = (params = {}) => {
+    setLoading(true);
     axios
-      .get(`/academic/get-module-list/`, {
+      .get(`academic/get-module-list/`, {
         params: { ...params },
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setModuleListData(result?.data?.result?.module_list);
+          setLoading(false);
+        } else {
+          setLoading(false);
         }
       })
       .catch((error) => {
         message.error(error.message);
+        setLoading(false);
       });
   };
   const fetchAnnualPlanData = (params = {}) => {
@@ -201,10 +212,12 @@ const TableView = () => {
       })
       .then((result) => {
         if (result?.data?.status === 200) {
-          setAnnualPlanData(result?.data?.data);
+          setAnnualPlanData(result?.data?.data?.chapter_wise_data);
+          setYCPData(result?.data?.data?.lp_ycp_data);
           setLoading(false);
         } else {
           setAnnualPlanData([]);
+          setYCPData([]);
           setLoading(false);
         }
       })
@@ -240,6 +253,7 @@ const TableView = () => {
       acad_session_id: selectedBranch?.id,
       topic_id: data?.key_concept_id,
       chapter_id: selectedChapter?.chapter_id,
+      is_kit_activity: data?.is_kit_activity,
     };
     axios
       .get(`academic/annual-plan/chapter-topic-wise-lp-data/`, {
@@ -297,7 +311,7 @@ const TableView = () => {
       const allModules = all.map((item) => item.id).join(',');
       setSelectedModuleId(allModules);
     } else if (each.some((item) => item.value === 'All') && each.length > 1) {
-      message.error('Either select all branch or other options');
+      message.error('Either select all modules or other options');
       return;
     } else {
       setSelectedModuleId(each.map((item) => item.value).join(','));
@@ -361,9 +375,8 @@ const TableView = () => {
   };
 
   const markPeriodComplete = (item) => {
-    if (completeSections.length > 0) {
+    if (completeSections?.length > 0) {
       setShowError(false);
-      closeSectionList();
       completeSections.map((section, index) => {
         let payLoad = {
           academic_year: selectedAcademicYear?.session_year,
@@ -382,9 +395,10 @@ const TableView = () => {
           .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
-              if (index == completeSections.length - 1) {
+              if (index == completeSections?.length - 1) {
                 setCompleteSections([]);
-                fetchLessonResourcesData();
+                closeSectionList();
+                fetchLessonResourcesData(selectedKeyConcept);
               }
             }
           })
@@ -435,34 +449,50 @@ const TableView = () => {
       setVolumeId(history?.location?.state?.volumeID);
       setVolumeName(history?.location?.state?.volumeName);
       setBoardId(history?.location?.state?.boardID);
-      if (user_level == 13) {
-        fetchSubjectData({
-          session_year: selectedAcademicYear?.id,
-          branch_id: selectedBranch?.branch?.id,
-          module_id: moduleId,
-          grade_id: history?.location?.state?.gradeID,
-        });
-      }
+
+      fetchSubjectData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
+        module_id: moduleId,
+        grade_id: history?.location?.state?.gradeID,
+      });
     }
-    fetchModuleListData({
-      subject_id: history?.location?.state?.subjectID,
-      volume: history?.location?.state?.volumeID,
-      academic_year: history?.location?.state?.centralAcademicYearID,
-      grade_id: history?.location?.state?.gradeID,
-      branch_id: selectedBranch?.branch?.id,
-      board: history?.location?.state?.boardID,
-    });
+    // fetchModuleListData({
+    //   subject_id: history?.location?.state?.subjectID,
+    //   volume: history?.location?.state?.volumeID,
+    //   academic_year: history?.location?.state?.centralAcademicYearID,
+    //   grade_id: history?.location?.state?.gradeID,
+    //   branch_id: selectedBranch?.branch?.id,
+    //   board: history?.location?.state?.boardID,
+    // });
   }, []);
+
   useEffect(() => {
-    if (selectedModuleId.length == 0) {
-      const all = moduleListData.slice();
-      const allModules = all.map((item) => item.id).join(',');
-      setSelectedModuleId(allModules);
+    if (gradeId && volumeId && subjectId) {
+      formRef.current.setFieldsValue({
+        module: ['All'],
+      });
+      fetchModuleListData({
+        subject_id: subjectId,
+        volume: volumeId,
+        academic_year: history?.location?.state?.centralAcademicYearID,
+        grade_id: gradeId,
+        branch_id: selectedBranch?.branch?.id,
+        board: history?.location?.state?.boardID,
+      });
     }
+  }, [subjectId, volumeId]);
+
+  useEffect(() => {
+    // if (selectedModuleId.length == 0) {
+    const all = moduleListData.slice();
+    const allModules = all.map((item) => item.id).join(',');
+    setSelectedModuleId(allModules);
+    // }
   }, [moduleListData]);
 
   useEffect(() => {
-    if (subjectId && volumeId && selectedModuleId.length > 0) {
+    if (subjectId && volumeId && selectedModuleId?.length > 0) {
       fetchAnnualPlanData({
         module_id: selectedModuleId,
         subject_id: subjectId,
@@ -473,9 +503,7 @@ const TableView = () => {
       });
     }
   }, [selectedModuleId, subjectId, volumeId]);
-
   const expandedRowRender = (record) => {
-    console.log('InnerTable', record);
     const innerColumn = [
       {
         title: '',
@@ -499,32 +527,45 @@ const TableView = () => {
         title: '',
         dataIndex: 'key_concept__topic_name',
         align: 'center',
-        width: tableWidthCalculator(25) + '%',
-        render: (text, row, index) => (
-          <span
-            className='th-black-2 th-pointer text-truncate'
-            onClick={() => {
-              setSelectedKeyConcept(row);
-              fetchLessonResourcesData(row);
-            }}
-          >
-            {index + 1}. {row.key_concept__topic_name}
-          </span>
-        ),
+        width: tableWidthCalculator(30) + '%',
+        render: (text, row, index) => {
+          return (
+            <div
+              className='th-black-1 th-pointer row'
+              style={{ maxWidth: window.innerWidth < 768 ? '140px' : '300px' }}
+            >
+              <div className='col-md-2 col-0'></div>
+              <div className='col-md-10 col-12 px-md-0'>
+                <Tooltip
+                  placement='bottom'
+                  title={<span>{row.key_concept__topic_name}</span>}
+                >
+                  <div className='text-truncate th-width-95'>
+                    {index + 1}. {row.key_concept__topic_name}
+                  </div>
+                </Tooltip>
+              </div>
+            </div>
+          );
+        },
       },
       {
         title: '',
         dataIndex: 'lp_count',
         align: 'center',
-        width: '15%',
-        render: (data) => <span className='th-black-2'>{data}</span>,
+        width: '10%',
+        render: (data) => <span className='th-black-1'>{data}</span>,
       },
       {
         title: '',
         dataIndex: '',
         align: 'center',
         width: '5%',
-        render: (data) => <span className='th-black-'>{''}</span>,
+        render: (data) => (
+          <span className='th-black-1'>
+            <RightOutlined />
+          </span>
+        ),
       },
     ];
 
@@ -537,6 +578,15 @@ const TableView = () => {
         showHeader={false}
         bordered={false}
         style={{ width: '100%' }}
+        rowClassName={(record, index) => 'th-pointer th-row'}
+        onRow={(row, rowIndex) => {
+          return {
+            onClick: (event) => {
+              setSelectedKeyConcept(row);
+              fetchLessonResourcesData(row);
+            },
+          };
+        }}
       />
     );
   };
@@ -545,7 +595,7 @@ const TableView = () => {
       title: <span className='th-white pl-md-4 th-fw-700 '>SL NO.</span>,
       align: 'center',
       width: '10%',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1}.</span>,
+      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
     },
 
     {
@@ -565,24 +615,29 @@ const TableView = () => {
     {
       title: <span className='th-white th-fw-700'>KEY CONCEPTS</span>,
       dataIndex: 'kc_count',
-      width: '25%',
+      width: '30%',
       align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>TOTAL PERIODS</span>,
+      title: <span className='th-white th-fw-700'>PERIODS</span>,
       dataIndex: 'lp_count',
-      width: '15%',
+      width: '10%',
       align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
   ];
+  console.log(
+    'LL',
+    YCPData?.ycp_files?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0],
+    YCPData?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0]
+  );
   return (
     <div className='row'>
       <div className='col-12 mb-2'>
         <Form id='filterForm' ref={formRef} layout={'horizontal'}>
           <div className='row align-items-center'>
-            {user_level !== 13 && (
+            {!isStudent && (
               <div className='col-md-3 col-6 px-0'>
                 <div className='mb-2 text-left'>Grade</div>
                 <Form.Item name='grade'>
@@ -600,7 +655,7 @@ const TableView = () => {
                       handleGrade(e);
                     }}
                     onClear={handleClearGrade}
-                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={false}
                   >
                     {gradeOptions}
@@ -624,7 +679,7 @@ const TableView = () => {
                     handleSubject(e);
                   }}
                   onClear={handleClearSubject}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                   bordered={false}
                 >
                   {subjectOptions}
@@ -648,7 +703,7 @@ const TableView = () => {
                     handlevolume(value);
                   }}
                   onClear={handleClearVolume}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                   bordered={false}
                 >
                   {volumeOptions}
@@ -657,38 +712,120 @@ const TableView = () => {
             </div>
             <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
               <div className='text-left pb-2'>Module</div>
-              <Select
-                placeholder='Select Module'
-                showSearch
-                mode='multiple'
-                maxTagCount={2}
-                defaultValue={'All'}
-                optionFilterProp='children'
-                filterOption={(input, options) => {
-                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
-                onChange={(e, value) => {
-                  handleModule(value);
-                }}
-                onClear={handleClearModule}
-                className='w-100 text-left th-black-1 th-bg-white th-br-4 mb-2'
-                bordered={false}
-              >
-                <Option key='0' value='All'>
-                  All
-                </Option>
-                {moduleOptions}
-              </Select>
+              <Form.Item name='module'>
+                <Select
+                  // placeholder={<span className='th-black-1'>All</span>}
+                  showSearch
+                  mode='multiple'
+                  maxTagCount={2}
+                  // defaultValue={'All'}
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => {
+                    handleModule(value);
+                  }}
+                  onClear={handleClearModule}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                  placement='bottomRight'
+                  showArrow={true}
+                  suffixIcon={<DownOutlined className='th-grey' />}
+                >
+                  <Option key='0' value='All'>
+                    All
+                  </Option>
+                  {moduleOptions}
+                </Select>
+              </Form.Item>
             </div>
           </div>
         </Form>
       </div>
+      {!loading && (
+        <div className='col-12 mb-3 px-3'>
+          <div className='row'>
+            {YCPData?.filter((item) => item?.lesson_type == '1')[0]?.media_file[0] && (
+              <div className='col-3'>
+                <a
+                  onClick={() => {
+                    const fileName = YCPData?.filter(
+                      (item) => item?.lesson_type == '1'
+                    )[0]?.media_file[0];
+                    const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: [
+                        {
+                          src: fileSrc,
+                          name: 'Portion Document',
+                          extension:
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                        },
+                      ],
+                    });
+                  }}
+                >
+                  <div className='row th-fw-600 th-pointer th-primary'>
+                    <div className=''>Portion Document</div>
+                    <div className='ml-3'>
+                      <EyeFilled
+                        className='th-primary'
+                        fontSize={20}
+                        style={{ verticalAlign: 'inherit' }}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </div>
+            )}
+            {YCPData?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0] && (
+              <div className='col-3'>
+                <a
+                  onClick={() => {
+                    const fileName = YCPData?.filter(
+                      (item) => item?.lesson_type == '2'
+                    )[0]?.media_file[0];
+                    const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: [
+                        {
+                          src: fileSrc,
+                          name: 'Portion Document',
+                          extension:
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                        },
+                      ],
+                    });
+                  }}
+                >
+                  <div className='row th-fw-600 th-pointer th-primary'>
+                    <div className=''>Yearly Curriculum Plan</div>
+                    <div className='ml-3'>
+                      <EyeFilled
+                        className='th-primary'
+                        fontSize={20}
+                        style={{ verticalAlign: 'inherit' }}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className='col-12'>
         <Table
-          className='th-table'
+          className='th-table '
           rowClassName={(record, index) =>
-            index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+            `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
           }
+          expandRowByClick={true}
           columns={columns}
           rowKey={(record) => record?.chapter_id}
           expandable={{ expandedRowRender }}
@@ -732,7 +869,7 @@ const TableView = () => {
           ) : resourcesData.length > 0 ? (
             resourcesData.map((item, i) => (
               <Collapse
-                defaultActiveKey={['0']}
+                defaultActiveKey={currentPeriodPanel}
                 accordion={true}
                 expandIconPosition='right'
                 bordered={true}
@@ -745,37 +882,40 @@ const TableView = () => {
                 <Panel
                   header={
                     <div className='row'>
-                      <div className='th-black-1 th-fw-600 col-5 pl-0'>
-                        {selectedKeyConcept.key_concept__topic_name}
+                      <div className='th-black-1 px-0 col-3 pl-0'>
+                        <div className='row justify-content-between'>
+                          <span className='th-fw-500'>{item.period_name} </span>
+                          <span>:&nbsp;</span>
+                        </div>
                       </div>
-                      <div className='th-black-1 px-0 col-6 pl-md-2'>
-                        : {item.period_name}
+                      <div className='th-black-1 th-fw-600 col-9 px-0'>
+                        {selectedKeyConcept.key_concept__topic_name}
                       </div>
                     </div>
                   }
                   key={i}
                 >
                   <div className='row mt-1 th-fw-600'>
-                    <div className='col-5 th-black-1 px-0'>
+                    <div className='col-2 th-black-1 px-0'>
                       <div className='row justify-content-between'>
                         <span>Module</span>
-                        <span>:</span>
+                        <span>:&nbsp;</span>
                       </div>
                     </div>
 
-                    <div className='col-7 th-primary pl-1'>
+                    <div className='col-10 th-primary px-0'>
                       {selectedChapter.chapter__lt_module__lt_module_name}
                     </div>
                   </div>
                   <div className='row mt-2 th-fw-600'>
-                    <div className='col-5 th-black-1 px-0'>
+                    <div className='col-2 th-black-1 px-0'>
                       <div className='row justify-content-between'>
-                        <span>Chapter Name</span>
-                        <span>:</span>
+                        <span>Chapter</span>
+                        <span>:&nbsp;</span>
                       </div>
                     </div>
 
-                    <div className='col-7 th-primary pl-1'>
+                    <div className='col-10 th-primary px-0'>
                       {selectedChapter.chapter__chapter_name}
                     </div>
                   </div>
@@ -788,49 +928,57 @@ const TableView = () => {
                     style={{ overflowY: 'scroll', overflowX: 'hidden', maxHeight: 160 }}
                     className='th-question'
                   >
-                    {item.lp_files.map((files, i) =>
-                      files.media_file?.map((each, index) => {
-                        let fullName = each.split(
-                          `${files.document_type.toLowerCase()}/`
-                        );
-                        let fileName = fullName[fullName.length - 1].split('.');
-                        let file = fileName[fileName.length - 2];
-                        let extension = fileName[fileName.length - 1];
-                        console.log('FileName', file, extension);
-                        return (
-                          <div
-                            className='row mt-2 py-2 align-items-center'
-                            style={{ border: '1px solid #d9d9d9' }}
-                          >
-                            <div className='col-3'>
-                              <img src={getFileIcon(extension)} />
-                            </div>
-                            <div className='col-7 px-0 th-pointer'>
-                              <div>{file}</div>
-                            </div>
-                            <div className='col-2 th-pointer'>
-                              <a
-                                onClick={() => {
-                                  openPreview({
-                                    currentAttachmentIndex: 0,
-                                    attachmentsArray: [
-                                      {
-                                        src: `${endpoints.homework.resourcesFiles}/${each}`,
+                    {item?.lp_files.map((files, i) =>
+                      files?.media_file?.map((each, index) => {
+                        if (
+                          (user_level == 13 && files?.document_type == 'Lesson_Plan') ||
+                          (user_level == 13 &&
+                            files?.document_type == 'Teacher_Reading_Material')
+                        ) {
+                        } else {
+                          let fullName = each?.split(
+                            `${files.document_type.toLowerCase()}/`
+                          );
+                          let fileName = fullName
+                            ? fullName[fullName?.length - 1]?.split('.')
+                            : null;
+                          let file = fileName ? fileName[fileName?.length - 2] : '';
+                          let extension = fileName ? fileName[fileName?.length - 1] : '';
+                          return (
+                            <div
+                              className='row mt-2 py-2 align-items-center'
+                              style={{ border: '1px solid #d9d9d9' }}
+                            >
+                              <div className='col-3'>
+                                <img src={getFileIcon(extension)} />
+                              </div>
+                              <div className='col-7 px-0 th-pointer'>
+                                <div>{file}</div>
+                              </div>
+                              <div className='col-2 th-pointer'>
+                                <a
+                                  onClick={() => {
+                                    openPreview({
+                                      currentAttachmentIndex: 0,
+                                      attachmentsArray: [
+                                        {
+                                          src: `${endpoints.homework.resourcesFiles}/${each}`,
 
-                                        name: fileName,
-                                        extension: '.' + extension,
-                                      },
-                                    ],
-                                  });
-                                }}
-                                rel='noopener noreferrer'
-                                target='_blank'
-                              >
-                                <EyeFilled />
-                              </a>
+                                          name: fileName,
+                                          extension: '.' + extension,
+                                        },
+                                      ],
+                                    });
+                                  }}
+                                  rel='noopener noreferrer'
+                                  target='_blank'
+                                >
+                                  <EyeFilled />
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                        );
+                          );
+                        }
                       })
                     )}
                   </div>
@@ -841,10 +989,10 @@ const TableView = () => {
                       Status :{' '}
                       {item?.section_wise_completion?.filter(
                         (item) => item?.is_completed === true
-                      ).length > 0 ? (
+                      )?.length > 0 ? (
                         <span>
-                          <span className='th-green'>Completed</span>
-                          {user_level !== 13 && (
+                          <span className='th-green th-fw-500'>Completed</span>
+                          {!isStudent && (
                             <>
                               {' '}
                               for Section{' '}
@@ -858,12 +1006,12 @@ const TableView = () => {
                           )}
                         </span>
                       ) : (
-                        <span> Not Completed</span>
+                        <span className='th-fw-500 th-red'> Not Completed</span>
                       )}
                     </div>
                   </div>
 
-                  {user_level !== 13 && (
+                  {!isStudent && (
                     <div className='row th-black-2 mt-2 '>
                       <div className='col-12' style={{ border: '1px solid #d9d9d9' }}>
                         <div
@@ -938,13 +1086,16 @@ const TableView = () => {
                           Clear
                         </div>
                         <div
-                          className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-poinrt'
-                          onClick={() => markPeriodComplete(item)}
+                          className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
+                          onClick={() => {
+                            setCurrentPeriodPanel(i);
+                            markPeriodComplete(item);
+                          }}
                         >
                           Update
                         </div>
                       </div>
-                      {showError && completeSections.length < 1 && (
+                      {showError && completeSections?.length < 1 && (
                         <div className='th-red'>
                           Please select atleast one section first!
                         </div>
@@ -953,7 +1104,7 @@ const TableView = () => {
                   )}
                   <div className='row th-black-2 mt-2 '>
                     <div className='col-12 th-grey pl-0 th-12'>
-                      Last Upadted {getTimeInterval(item.updated_at)}
+                      Last Updated {getTimeInterval(item.updated_at)}
                     </div>
                   </div>
                 </Panel>

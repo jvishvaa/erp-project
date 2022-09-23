@@ -498,7 +498,7 @@ const UserDetailsForm = ({
             </Button>
           </Box>
         </Grid>
-        { isEdit && (userLevel?.is_superuser === true || userLevel?.user_level === 8 || userLevel?.user_level === 1) && <Grid item md='2' >
+        { isEdit && (userLevel?.is_superuser === true || userLevel?.user_level === 8 || userLevel?.user_level === 1 || userLevel?.user_level === 26) && <Grid item md='2' >
           <Box display='flex'  justifyContent={isMobile ? 'center' : ''}>
           {isEdit === true ? (
           <Button

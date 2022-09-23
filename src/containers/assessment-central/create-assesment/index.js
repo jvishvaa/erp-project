@@ -327,6 +327,28 @@ const CreateAssesment = ({
       return;
     }
 
+   
+    if(sectionWiseTest == true ){
+      const checkDate = values.val.filter(x => x)
+      var todayDate = moment().format().slice(0,16)
+      for (let i = 0; i < checkDate?.length; i++)  {
+        console.log(moment(checkDate[i]?.test_date).isAfter(todayDate));
+        if(moment(checkDate[i]?.test_date).isAfter(todayDate) == false){
+          setAlert('error', 'Please Select Correct Date and Time');
+          return;
+        }
+      }
+    }
+    if(sectionWiseTest == false && formik.values.test_type?.exam_name != 'Quiz' ){
+      console.log(testDate);
+      var todayDate = moment().format().slice(0,16)
+      console.log(moment(testDate).isAfter(todayDate));
+      if(moment(testDate).isAfter(todayDate) == false){
+        setAlert('error', 'Please Select Correct Date and Time');
+        return;
+      }
+    }
+
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
       if (parentQuestionId) {
@@ -443,9 +465,15 @@ const CreateAssesment = ({
       is_central: selectedQuestionPaper['is_central'],
     };
 
-    if (formik.values.test_type?.exam_name != 'Quiz' && !sectionWiseTest) {
-      reqObj = { ...reqObj, test_date: testDate, test_id: testId };
+    if (formik.values.test_type?.exam_name != 'Quiz' && sectionWiseTest == false) {
+      reqObj = { ...reqObj, test_date: testDate };
     }
+
+    // if (formik.values.test_type?.exam_name != 'Quiz' ) {
+    //   if(sectionWiseTest != true){
+    //     reqObj = { ...reqObj, test_id: testId };
+    //   }
+    // }
 
     if (!paperchecked) {
       reqObj = { ...reqObj, test_mark: testMarksArr };
@@ -657,7 +685,8 @@ const CreateAssesment = ({
   };
 
   const sectionDate = (event, i, section) => {
-    console.log(section);
+    var comDate = moment().format().slice(0,16)
+    if(moment(event.target.value).isAfter(comDate)){
     let vals = [...values.val];
     // vals[i] = event.target.value;
     vals[i] = {
@@ -666,6 +695,9 @@ const CreateAssesment = ({
     }
     setValues({ val: vals });
     console.log(vals);
+  } else {
+    setAlert('error','Please Select Correct Date and Time ')
+  }
   }
 
   const handleChangeSection = (event) => {
@@ -765,6 +797,9 @@ const CreateAssesment = ({
                             onChange={(e, value) => {
                               console.log(value)
                               formik.setFieldValue('test_type', value);
+                              if(value?.exam_name == 'Quiz'){
+                                setSectionWiseTest(false)
+                              }
                             }}
                             value={formik.values.test_type}
                             options={assesmentTypes}
@@ -926,7 +961,9 @@ const CreateAssesment = ({
                               />
                             </Grid>
                           )}
-                          {formik?.values?.test_type?.exam_name == 'Quiz' && selectedSectionData?.length > 0  ? '' :
+                          {selectedSectionData?.length > 0 && formik?.values?.test_type != '' ? 
+                          <>
+                          {formik?.values?.test_type?.exam_name == 'Quiz'   ? '' :
                           <>
                           {sectionToggle ? '' : 
                             <Grid item xs={12} md={4} style={{display : 'flex' , justifyContent: 'center'}} >
@@ -940,6 +977,7 @@ const CreateAssesment = ({
                           }
                           </>
                           }
+                          </> : '' }
                         </Grid>
                       )}
 
@@ -990,8 +1028,13 @@ const CreateAssesment = ({
               // setInstructions(value);
             }}
             onTestDateChange={(value) => {
+              var comDate = moment().format().slice(0,16)
+              if(moment(value).isAfter(comDate)){
               setTestDate(value);
               initChangeTestFormFields('testDate', value);
+              } else {
+                setAlert('error','Please Select Correct Date and Time')
+              }
             }}
             onTestDurationChange={(value) => {
               setTestDuration(value);

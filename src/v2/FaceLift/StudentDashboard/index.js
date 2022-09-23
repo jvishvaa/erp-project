@@ -21,8 +21,10 @@ import ENVCONFIG from 'config/config';
 
 const StudentDashboardNew = () => {
   const [showDoodle, setShowDoodle] = useState(false);
+  const [isUserBlcoked, setIsUserBlcoked] = useState([]);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
-  const [isUserBlcoked,setIsUserBlcoked] = useState([])
+  // const [isUserBlcoked,setIsUserBlcoked] = useState([])
+  const [isDefaulter, setIsDefaulter] = useState(false);
   const time = new Date().getHours();
   const history = useHistory();
   const [checkOrigin, setCheckOrigin] = useState(false);
@@ -45,6 +47,21 @@ const StudentDashboardNew = () => {
     }
   }, []);
 
+  const fetchDefault = () => {
+    axios
+      .get(`${endpoints.doodle.fetchDoodle}`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          setIsDefaulter(response?.data?.data?.is_defaulter);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchDefault();
+  }, []);
+
   const fetchDoodle = () => {
     axios
       .get(`${endpoints.doodle.checkDoodle}?config_key=doodle_availability`)
@@ -63,18 +80,18 @@ const StudentDashboardNew = () => {
       )
       .then((res) => {
         setIsUserBlcoked(res.data?.result?.results);
+        fetchDoodle();
       });
   };
 
   useEffect(() => {
-    fetchDoodle();
     fetchUserStatus();
-  }, []);
+  }, [sessionYear]);
 
   const studentrefer = () => {
     history.push('/studentrefer');
   };
-  
+
   return (
     <Layout>
       <div className=''>
@@ -86,26 +103,29 @@ const StudentDashboardNew = () => {
           </div>
           {checkOrigin ? (
             <>
-            {user_level === 13 ? (
-              <div className='col-md-6 th-black-1 th-20 th-fw-400' style={{display:'flex', flexDirection:'row-reverse'}}>
-              <Button
-              onClick={studentrefer} 
-              >
-               <UsergroupAddOutlined />
-                Orchids Ambassador Program
-              </Button>
-            </div>
-
-            ) : (
-              ''
-            )}
-             </>
+              {user_level === 13 ? (
+                <div
+                  className='col-md-6 th-black-1 th-20 th-fw-400'
+                  style={{ display: 'flex', flexDirection: 'row-reverse' }}
+                >
+                  <Button onClick={studentrefer}>
+                    <UsergroupAddOutlined />
+                    Orchids Ambassador Program
+                  </Button>
+                </div>
+              ) : (
+                ''
+              )}
+            </>
           ) : (
             ''
           )}
         </div>
-        {showDoodle && (isUserBlcoked.length === 0) && <Doodle />}
-        {(isUserBlcoked.length > 0) && <FeeReminderBanner data={isUserBlcoked}/> }
+        {isUserBlcoked.length > 0 && isDefaulter ? (
+          <FeeReminderBanner data={isUserBlcoked} />
+        ) : (
+          showDoodle && <Doodle />
+        )}
         <div className='row pt-3'>
           <div className='col-md-4 th-custom-col-padding'>
             <TodaysClass />

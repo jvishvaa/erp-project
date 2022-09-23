@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { Select, Form, message, Spin } from 'antd';
 import axios from 'v2/config/axios';
+import axiosInstance from 'axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import 'slick-carousel/slick/slick.css';
@@ -9,13 +10,16 @@ import './index.css';
 import { useHistory } from 'react-router-dom';
 import { CaretDownOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-
+import { EyeFilled } from '@ant-design/icons';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import courseEnroleModeStyle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleMode.style';
 const { Option } = Select;
 
 const AnnualPlan = () => {
   const formRef = createRef();
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [moduleId, setModuleId] = useState();
 
   let boardFilterArr = [
@@ -32,6 +36,7 @@ const AnnualPlan = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [gradeData, setGradeData] = useState([]);
   const [gradeId, setGradeId] = useState();
   const [gradeName, setGradeName] = useState();
@@ -41,9 +46,12 @@ const AnnualPlan = () => {
   const [boardListData, setBoardListData] = useState([]);
   const [boardId, setBoardId] = useState();
   const [annualPlanData, setAnnualPlanData] = useState([]);
+  const [YCPPlanData, setYCPPlanData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filtered, setFiltered] = useState(false);
 
   const fetchAnnualPlanData = (params = {}) => {
+    setFiltered(true);
     setLoading(true);
     axios
       .get(`academic/annual-plan/volumes/`, {
@@ -55,6 +63,7 @@ const AnnualPlan = () => {
           setLoading(false);
         } else {
           setLoading(false);
+          setAnnualPlanData([]);
         }
       })
       .catch((error) => {
@@ -62,7 +71,7 @@ const AnnualPlan = () => {
         setLoading(false);
       });
   };
-  console.log('board', boardId);
+
   const fetchGradeData = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
@@ -72,8 +81,12 @@ const AnnualPlan = () => {
     axios
       .get(`${endpoints.academics.grades}`, { params })
       .then((res) => {
-        if (res.data.status_code === 200) {
-          setGradeData(res.data.data);
+        if (res?.data?.status_code === 200) {
+          setGradeData(res?.data?.data);
+          if (user_level == 13) {
+            setGradeId(res?.data?.data[0]?.grade_id);
+            setGradeName(res?.data?.data[0]?.grade__grade_name);
+          }
         }
       })
       .catch((error) => {
@@ -99,12 +112,12 @@ const AnnualPlan = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setBoardListData(result?.data?.result);
-          if (!boardFilterArr.includes(window.location.host)) {
-            let data = result?.data?.result?.filter(
-              (item) => item?.board_name === 'CBSE'
-            )[0];
-            setBoardId(data?.id);
-          }
+          // if (!boardFilterArr.includes(window.location.host)) {
+          let data = result?.data?.result?.filter(
+            (item) => item?.board_name === 'CBSE'
+          )[0];
+          setBoardId(data?.id);
+          // }
         }
       })
       .catch((error) => {
@@ -130,6 +143,16 @@ const AnnualPlan = () => {
       });
     }
   };
+  useEffect(() => {
+    if (user_level == 13) {
+      fetchSubjectData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
+        module_id: moduleId,
+        grade_id: gradeId,
+      });
+    }
+  }, [gradeId]);
   const handleClearGrade = () => {
     setGradeId('');
     setGradeName('');
@@ -182,6 +205,7 @@ const AnnualPlan = () => {
     if (moduleId) {
       fetchGradeData();
       fetchBoardListData();
+      // fetchResourceYear();
     }
   }, [moduleId]);
 
@@ -220,13 +244,46 @@ const AnnualPlan = () => {
         <div className='col-12'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row align-items-center'>
+              {boardFilterArr.includes(window.location.host) && (
+                <div className='col-md-2 col-6 pl-0'>
+                  <div className='mb-2 text-left'>Board</div>
+                  <Form.Item name='board'>
+                    <Select
+                      placeholder='Select Board'
+                      showSearch
+                      defaultValue={'CBSE'}
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e) => {
+                        handleBoard(e);
+                      }}
+                      onClear={handleClearBoard}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {boardOptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+              )}
               <div className='col-md-2 col-6 px-0'>
                 <div className='mb-2 text-left'>Grade</div>
                 <Form.Item name='grade'>
                   <Select
                     allowClear
-                    placeholder='Select Grade'
+                    placeholder={
+                      gradeName ? (
+                        <span className='th-black-1'>{gradeName}</span>
+                      ) : (
+                        'Select Grade'
+                      )
+                    }
                     showSearch
+                    disabled={user_level == 13}
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
@@ -237,7 +294,7 @@ const AnnualPlan = () => {
                       handleGrade(value);
                     }}
                     onClear={handleClearGrade}
-                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={false}
                   >
                     {gradeOptions}
@@ -260,122 +317,184 @@ const AnnualPlan = () => {
                       handleSubject(value);
                     }}
                     onClear={handleClearSubject}
-                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={false}
                   >
                     {subjectOptions}
                   </Select>
                 </Form.Item>
               </div>
-              {boardFilterArr.includes(window.location.host) && (
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                  <div className='mb-2 text-left'>Board</div>
-                  <Form.Item name='board'>
-                    <Select
-                      placeholder='Select Board'
-                      showSearch
-                      // mode='multiple'
-                      // maxTagCount={2}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e) => {
-                        handleBoard(e);
-                      }}
-                      onClear={handleClearBoard}
-                      className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                      bordered={false}
-                    >
-                      {boardOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-              )}
             </div>
           </Form>
         </div>
-        {loading ? (
-          <div className='row justify-content-center mt-5'>
-            <Spin title='Loading...' />
-          </div>
-        ) : annualPlanData.length > 0 ? (
-          <div className='row p-2'>
-            {annualPlanData?.map((item, i) => (
-              <div className='col-md-6 p-2'>
-                <div
-                  className='th-br-6 shadow-sm th-pointer volume-card'
-                  style={{ border: '1px solid #d9d9d9', height: 250 }}
-                  onClick={() =>
-                    history.push({
-                      pathname: '/lesson-plan-module-view',
-                      state: {
-                        gradeID: gradeId,
-                        gradeName,
-                        subjectID: subjectId,
-                        subjectName,
-                        boardID: boardId,
-                        volumeName: item.volume_name,
-                        volumeID: item.volume_id,
-                        centralAcademicYearID: item.central_academic_year_id,
-                      },
-                    })
-                  }
-                >
-                  <div
-                    className='row px-3 py-1 th-bg-primary th-white th-fw-700'
-                    style={{
-                      borderBottom: '1px solid #d9d9d9',
-                      borderRadius: '6px 6px 0 0',
-                    }}
-                  >
-                    {item?.volume_name}
-                  </div>
-                  <div className=' p-2 th-black-2'>
-                    <div className='row px-2 th-fw-600'>
-                      <div className='col-md-4 col-8 text-md-right pl-0'>
-                        Total Teaching Periods{' '}
-                      </div>
-                      <div className='col-md-6 col-4 th-18'>
-                        {item?.total_teaching_periods}
-                      </div>
-                    </div>
-                    <div className='row py-2 th-fw-600'>
-                      <div className='col-md-4 col-8 text-md-right'>Total Chapters</div>
-                      <div className='col-md-6 col-4 th-18 '>
-                        {item?.chapter_name?.length}
-                      </div>
-                    </div>
-                    <div className='th-grey th-14 col-12 px-0'>
-                      {item.chapter_name?.slice(0, 4).map((each, i) => {
-                        return (
-                          <div className='row pt-1'>
-                            <div className='col-5 text-right pl-4'> Chapter{i + 1}: </div>
-                            <div className='col-6 pl-1'>{each}</div>
-                          </div>
-                        );
-                      })}
-                      {item?.chapter_name?.length > 5 ? (
-                        <div className='row'>
-                          <div className='col-5'>{''}</div>
-                          <div className='col-6 th-primary pt-1 pl-1'>
-                            View {item?.chapter_name.length - 4} more{' '}
-                            <CaretDownOutlined className='th-grey ml-1' />
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+        {!filtered ? (
+          <div className='row justify-content-center my-3 th-24 th-black-2'>
+            Please select the filters to show data!
           </div>
         ) : (
-          <div className='row justify-content-center mt-5'>
-            <img src={NoDataIcon} />
-          </div>
+          <>
+            {loading ? (
+              <div className='row justify-content-center my-3'>
+                <Spin title='Loading...' />
+              </div>
+            ) : annualPlanData.length > 0 ? (
+              <div className='row p-2'>
+                {annualPlanData?.map((item, i) => (
+                  <div className='col-md-6 p-2'>
+                    <div
+                      className='th-br-6 shadow-sm volume-card'
+                      style={{ border: '1px solid #d9d9d9', minHeight: 260 }}
+                    >
+                      <div
+                        className='row px-3 py-1 th-bg-primary th-white th-fw-700'
+                        style={{
+                          borderBottom: '1px solid #d9d9d9',
+                          borderRadius: '6px 6px 0 0',
+                        }}
+                      >
+                        {item?.volume_name}
+                      </div>
+                      <div className=' p-2 th-black-2'>
+                        <div className='row px-2 th-fw-600'>
+                          <div className='col-md-4 col-8 text-md-right pl-0'>
+                            Total Teaching Periods{' '}
+                          </div>
+                          <div className='col-md-2 col-4 th-18'>
+                            {item?.total_teaching_periods}
+                          </div>
+                          {item?.ycp_files?.filter((item) => item?.lesson_type == '1')[0]
+                            ?.media_file[0] && (
+                            <div className='col-md-6 col-10 '>
+                              <a
+                                onClick={() => {
+                                  const fileName = item?.ycp_files?.filter(
+                                    (item) => item?.lesson_type == '1'
+                                  )[0]?.media_file[0];
+                                  const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                                  openPreview({
+                                    currentAttachmentIndex: 0,
+                                    attachmentsArray: [
+                                      {
+                                        src: fileSrc,
+                                        name: 'Portion Document',
+                                        extension:
+                                          '.' +
+                                          fileName?.split('.')[
+                                            fileName?.split('.').length - 1
+                                          ],
+                                      },
+                                    ],
+                                  });
+                                }}
+                              >
+                                <div className='row justify-content-between'>
+                                  <div className='col-10 px-0 th-14'>
+                                    Portion Document
+                                  </div>
+                                  <div className='col-1 pl-1 th-icon'>
+                                    <EyeFilled className='th-primary' fontSize={20} />
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                        <div className='row py-2 th-fw-600'>
+                          <div className='col-md-4 col-8 text-md-right'>
+                            Total Chapters
+                          </div>
+                          <div className='col-md-2 col-4 th-18 '>
+                            {item?.chapter_name?.length}
+                          </div>
+                          {item?.ycp_files?.filter((item) => item?.lesson_type == '2')[0]
+                            ?.media_file[0] && (
+                            <div className='col-md-6 col-10 th-pointer'>
+                              <a
+                                onClick={() => {
+                                  const fileName = item?.ycp_files?.filter(
+                                    (item) => item?.lesson_type == '2'
+                                  )[0]?.media_file[0];
+                                  const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                                  openPreview({
+                                    currentAttachmentIndex: 0,
+                                    attachmentsArray: [
+                                      {
+                                        src: fileSrc,
+                                        name: 'Yearly Curriculum Plan',
+                                        extension:
+                                          '.' +
+                                          fileName?.split('.')[
+                                            fileName?.split('.').length - 1
+                                          ],
+                                      },
+                                    ],
+                                  });
+                                }}
+                              >
+                                <div className='row justify-content-between'>
+                                  <div className='col-10 px-0 th-14'>
+                                    Yearly Curriculum Plan
+                                  </div>
+                                  <div className='col-1 pl-0 mr-1 th-icon'>
+                                    <EyeFilled className='th-primary ' fontSize={20} />
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                        <div
+                          className='th-grey th-14 col-12 px-0 th-pointer'
+                          onClick={() =>
+                            history.push({
+                              pathname: window.location.pathname.includes('teacher-view')
+                                ? '/lesson-plan/teacher-view/annual-plan'
+                                : '/lesson-plan/student-view/annual-plan',
+                              state: {
+                                gradeID: gradeId,
+                                gradeName,
+                                subjectID: subjectId,
+                                subjectName,
+                                boardID: boardId,
+                                volumeName: item.volume_name,
+                                volumeID: item.volume_id,
+                                centralAcademicYearID: item.central_academic_year_id,
+                              },
+                            })
+                          }
+                        >
+                          {item.chapter_name?.slice(0, 4).map((each, i) => {
+                            return (
+                              <div className='row pt-1'>
+                                <div className='col-5 text-right pl-4'>
+                                  {' '}
+                                  Chapter {i + 1}:{' '}
+                                </div>
+                                <div className='col-6 pl-1'>{each}</div>
+                              </div>
+                            );
+                          })}
+                          {item?.chapter_name?.length > 4 ? (
+                            <div className='row'>
+                              <div className='col-5'>{''}</div>
+                              <div className='col-6 th-primary pt-1 pl-1'>
+                                View {item?.chapter_name.length - 4} more{' '}
+                                <CaretDownOutlined className='th-grey ml-1' />
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className='row justify-content-center my-5'>
+                <img src={NoDataIcon} />
+              </div>
+            )}
+          </>
         )}
       </div>
     </>

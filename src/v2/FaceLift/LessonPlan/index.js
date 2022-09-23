@@ -27,13 +27,13 @@ const LessonPlan = () => {
       <Layout>
         <FeeReminder />{' '}
         <div className='row py-3 px-2'>
-          <div className='col-md-8' style={{ zIndex: 2 }}>
+          <div className='col-md-10 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-black-1 th-18'
                 onClick={() => {
                   // setVolume('');
-                  closeTable.current();
+                  // closeTable.current();
                 }}
               >
                 Lesson Plan
@@ -46,7 +46,7 @@ const LessonPlan = () => {
 
           <div className='row'>
             <div className='col-12'>
-              <div className='th-tabs'>
+              <div className='th-tabs th-bg-white'>
                 <Tabs type='card' onChange={onChange}>
                   {/* <TabPane tab='PERIOD VIEW' key='1'>
                     <PeriodView />

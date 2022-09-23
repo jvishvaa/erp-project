@@ -109,7 +109,7 @@ const Attachment = (props) => {
             src={`${urlPrefix}/${fileUrl}?${escape(new Date().getTime())}`}
             alt='File'
             onError={(e) => {
-              if (!fileUrl.includes('lesson_plan_file')) {
+              if (!fileUrl.includes('/lesson_plan_file/')) {
                 setImagePreviewAvailable(false);
                 e.target.src = placeholder;
               } else {

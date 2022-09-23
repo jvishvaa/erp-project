@@ -496,6 +496,16 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             }}
                           >
                             {question.question_files.map((url, i) => {
+                              let cindex = 0;
+                              question.question_files.forEach((item, index) => {
+                                if (index < i) {
+                                  if (typeof item == 'string') {
+                                    cindex = cindex + 1;
+                                  } else {
+                                    cindex = Object.keys(item).length + cindex;
+                                  }
+                                }
+                              });
                               if (typeof url == 'object') {
                                 return Object.values(url).map((item, i) => {
                                   return (
@@ -503,13 +513,13 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                                       <Attachment
                                         key={`homework_student_question_attachment_${i}`}
                                         fileUrl={item}
-                                        fileName={`Attachment-${i + 1}`}
+                                        fileName={`Attachment-${i + 1 + cindex}`}
                                         urlPrefix={
-                                          item.includes('lesson_plan_file')
+                                          item.includes('/lesson_plan_file/')
                                             ? `${endpoints.discussionForum.s3}`
                                             : `${endpoints.discussionForum.s3}/homework`
                                         }
-                                        index={i}
+                                        index={i + cindex}
                                         onOpenInPenTool={(item) =>
                                           openInPenTool(item, index)
                                         }
@@ -528,13 +538,13 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                                     <Attachment
                                       key={`homework_student_question_attachment_${i}`}
                                       fileUrl={url}
-                                      fileName={`Attachment-${i + 1}`}
+                                      fileName={`Attachment-${i + cindex}`}
                                       urlPrefix={
-                                        url.includes('lesson_plan_file')
+                                        url.includes('/lesson_plan_file/')
                                           ? `${endpoints.discussionForum.s3}`
                                           : `${endpoints.discussionForum.s3}/homework`
                                       }
-                                      index={i}
+                                      index={cindex}
                                       onOpenInPenTool={(url) => openInPenTool(url, index)}
                                       actions={[
                                         'preview',
@@ -653,9 +663,9 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             <Attachment
                               key={`homework_student_question_attachment_${i}`}
                               fileUrl={item}
-                              fileName={`${i + 1 + cindex}`}
+                              fileName={`Attachment-${i + 1 + cindex}`}
                               urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                              index={i}
+                              index={i + cindex}
                               actions={['preview', 'download', 'delete']}
                               onDelete={(index, deletePdf) =>
                                 removeAttachment(imageIndex, pdfindex, deletePdf, {
@@ -673,18 +683,18 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                           <Attachment
                             key={`homework_student_question_attachment_${pdfindex}`}
                             fileUrl={url}
-                            fileName={`${1 + cindex}`}
+                            fileName={`Attachment-${1 + cindex}`}
                             urlPrefix={
-                              url.includes('lesson_plan_file')
+                              url.includes('/lesson_plan_file/')
                                 ? `${endpoints.discussionForum.s3}`
                                 : `${endpoints.discussionForum.s3}/homework`
                             }
-                            index={pdfindex}
+                            index={cindex}
                             actions={['preview', 'download', 'delete']}
                             onDelete={(index, deletePdf) =>
                               removeAttachment(index, pdfindex, deletePdf)
                             }
-                            ispdf={false}
+                            ispdf={url.includes('/lesson_plan_file/') ? false : true}
                           />
                         </div>
                       );
@@ -778,7 +788,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                               fileUrl={item}
                               fileName={`${i + 1 + cindex}`}
                               urlPrefix={
-                                item.includes('lesson_plan_file')
+                                item.includes('/lesson_plan_file/')
                                   ? `${endpoints.discussionForum.s3}`
                                   : `${endpoints.discussionForum.s3}/homework`
                               }
@@ -802,7 +812,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             fileUrl={url}
                             fileName={`${1 + cindex}`}
                             urlPrefix={
-                              url.includes('lesson_plan_file')
+                              url.includes('/lesson_plan_file/')
                                 ? `${endpoints.discussionForum.s3}`
                                 : `${endpoints.discussionForum.s3}/homework`
                             }

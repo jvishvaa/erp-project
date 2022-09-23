@@ -444,7 +444,6 @@ import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/C
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 import AddTemplates from './containers/newBlog/addTemplates';
 
-
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();

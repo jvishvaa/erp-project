@@ -47,36 +47,12 @@
   <script type="text/javascript">
     const arr = window.location.host.split('.');
     const schools = [
-      'qa',
-      'localhost:3000',
-      'b2b',
-      'wisdomhigh',
-      'prestige',
-      'kinderville',
-      'novaschool',
-      'sbkids',
-      'cynosure',
-      'samvid',
-      'stmbbs',
-      'sedpmbutterfliesmont',
-      'stpaulsmalad',
-      'bhalgurukul',
-      'tsss',
-      'ssv',
-      'aksharadham',
-      'lnph',
-      'panchvati',
-      'abjems',
-      'nesjcm',
-      'rathinam',
-      'ggv',
-      'ggg',
-      'thebrilliantsschool',
-      'brigade',
+      'localhost:3001',
+      'orchids'
     ];
-    console.log(arr[0]);
+    console.log(schools.indexOf(arr[0]));
     // if (window.location.host == 'qa.olvorchidnaigaon.letseduvate.com' || window.location.host == 'b2b.letseduvate.com'){
-    if (schools.indexOf(arr[0]) >= 0) {
+    if (schools.indexOf(arr[0]) <= 0) {
       var $zoho = $zoho || {};
       $zoho.salesiq = $zoho.salesiq || {
         widgetcode:

@@ -36,7 +36,18 @@
 .th-resources-drawer .ant-collapse-header-text {
   width: 100% !important;
 }
-/* .volume-card:hover {
-  background-color: #868686 !important;
-  opacity: 0.5;
+.th-resources-drawer .ant-drawer-header {
+  background-color: #f8f8f8 !important;
+  border-bottom: 2px solid #d9d9d9 !important;
+}
+/* .th-row:hover {
+  background-color: rgba(240, 245, 243, 0.311) !important;
+  background-blend-mode: darken;
+  text-decoration: underline !important;
 } */
+.volume-card:hover {
+  border: 1px solid #1b4ccb !important;
+}
+.th-icon .anticon-eye > svg {
+  vertical-align: baseline !important;
+}

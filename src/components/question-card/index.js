@@ -698,13 +698,13 @@ const QuestionCard = ({
                                     fileUrl={item}
                                     fileName={`Attachment-${i + 1 + cindex}`}
                                     urlPrefix={
-                                      item.includes('lesson_plan_file')
+                                      item.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}`
                                         : `${endpoints.discussionForum.s3}/homework`
                                     }
-                                    index={i}
+                                    index={i + cindex}
                                     actions={
-                                      item.includes('pdf') || item.includes('ppt')
+                                      item.includes('/lesson_plan_file/')
                                         ? ['download', 'delete']
                                         : ['preview', 'download', 'delete']
                                     }
@@ -714,7 +714,7 @@ const QuestionCard = ({
                                       })
                                     }
                                     ispdf={
-                                      item.includes('lesson_plan_file') ? false : true
+                                      item.includes('/lesson_plan_file/') ? false : true
                                     }
                                   />
                                 </div>
@@ -728,20 +728,23 @@ const QuestionCard = ({
                                   fileUrl={url}
                                   fileName={`Attachment-${1 + cindex}`}
                                   urlPrefix={
-                                    url.includes('lesson_plan_file')
+                                    url.includes('/lesson_plan_file/')
                                       ? `${endpoints.homework.resourcesFiles}`
                                       : `${endpoints.discussionForum.s3}/homework`
                                   }
-                                  index={pdfindex}
+                                  index={cindex}
                                   actions={
-                                    url.includes('pdf') || url.includes('ppt')
+                                    url.includes('/lesson_plan_file/') &&
+                                    !url.includes('png')
                                       ? ['download', 'delete']
                                       : ['preview', 'download', 'delete']
                                   }
                                   onDelete={(index, deletePdf) =>
                                     removeAttachment(index, pdfindex, deletePdf)
                                   }
-                                  ispdf={false}
+                                  ispdf={
+                                    url.includes('/lesson_plan_file/') ? false : true
+                                  }
                                 />
                               </div>
                             );
@@ -754,7 +757,7 @@ const QuestionCard = ({
                                   return (
                                     <img
                                       src={
-                                        item.includes('lesson_plan_file')
+                                        item.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesFiles}/${item}`
                                           : `${endpoints.discussionForum.s3}/homework/${item}`
                                       }
@@ -769,7 +772,7 @@ const QuestionCard = ({
                                 return (
                                   <img
                                     src={
-                                      url.includes('lesson_plan_file')
+                                      url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}/${url}`
                                         : `${endpoints.discussionForum.s3}/homework/${url}`
                                     }

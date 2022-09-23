@@ -9,8 +9,8 @@ const INITIAL_STATE = {
     ? JSON.parse(sessionStorage?.getItem('selected_branch'))
     : '',
   branchList: '' || JSON.parse(sessionStorage.getItem('branch_list')),
-  selectedVersion: localStorage.getItem('selectedVersion')
-    ? JSON.parse(localStorage.getItem('selectedVersion'))
+  selectedVersion: localStorage.getItem('isV2')
+    ? JSON.parse(localStorage.getItem('isV2'))
     : true,
 };
 

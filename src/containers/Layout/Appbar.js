@@ -66,16 +66,17 @@ const Appbar = ({ children, history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [profileToShown, setProfileToShown] = useState([])
+  const [profileToShown, setProfileToShown] = useState([]);
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
-  const [isSwitch, setisSwitch] = useState(false)
+  const [isSwitch, setisSwitch] = useState(false);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   let userData = JSON.parse(localStorage.getItem('userDetails'));
   let apps = JSON.parse(localStorage.getItem('apps'));
   let branchList = useSelector((state) => state.commonFilterReducer.branchList);
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   // let profileList = JSON.parse(localStorage.getItem('profileData')) || {};
-  let selectedProfileDetails = JSON.parse(localStorage?.getItem('selectProfileDetails')) || {};
+  let selectedProfileDetails =
+    JSON.parse(localStorage?.getItem('selectProfileDetails')) || {};
   let { is_verified } = JSON.parse(localStorage.getItem('profileDetails')) || {};
   let mobileLoginDetails = JSON.parse(localStorage.getItem('mobileLoginDetails')) || {};
   const { role_details: roleDetails } =
@@ -122,10 +123,12 @@ const Appbar = ({ children, history, ...props }) => {
   };
   useEffect(() => {
     if (profileDetails) {
-      let unselectedprofiles = profileDetails?.data?.filter((item) => item.name !== selectedProfileDetails?.name)
-      setProfileToShown(unselectedprofiles)
+      let unselectedprofiles = profileDetails?.data?.filter(
+        (item) => item.name !== selectedProfileDetails?.name
+      );
+      setProfileToShown(unselectedprofiles);
     }
-  }, [])
+  }, []);
 
   const autocompleteSearch = (q, pageId, isDelete) => {
     if (q !== '') {
@@ -189,10 +192,16 @@ const Appbar = ({ children, history, ...props }) => {
   }, [isLogout]);
 
   const handleFinance = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`, '_blank');
+    window.open(
+      `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+      '_blank'
+    );
   };
   const handleTicket = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`, '_blank');
+    window.open(
+      `${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`,
+      '_blank'
+    );
   };
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -223,31 +232,27 @@ const Appbar = ({ children, history, ...props }) => {
           <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
-      {profileDetails?.is_verified &&
-        (
-          <>
-            <MenuItem
-              onClick={() => setisSwitch(!isSwitch)}
-            >
-              <IconButton aria-label='settings' color='inherit'>
-                <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
-              </IconButton>
-              <Typography color='secondary'>Switch Profile</Typography>
-              {!isSwitch && <KeyboardArrowDownIcon />}
-              {isSwitch && <KeyboardArrowUpIcon />}
-
-            </MenuItem>
-            {isSwitch && profileToShown?.map((item) => (
+      {profileDetails?.is_verified && (
+        <>
+          <MenuItem onClick={() => setisSwitch(!isSwitch)}>
+            <IconButton aria-label='settings' color='inherit'>
+              <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
+            </IconButton>
+            <Typography color='secondary'>Switch Profile</Typography>
+            {!isSwitch && <KeyboardArrowDownIcon />}
+            {isSwitch && <KeyboardArrowUpIcon />}
+          </MenuItem>
+          {isSwitch &&
+            profileToShown?.map((item) => (
               <MenuItem onClick={() => handleSwitchChange(item)}>
                 {/* <IconButton aria-label='settings' color='inherit'>
             <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
           </IconButton> */}
                 <Typography color='secondary'>{item?.name}</Typography>
               </MenuItem>
-
             ))}
-
-          </>)}
+        </>
+      )}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -353,7 +358,7 @@ const Appbar = ({ children, history, ...props }) => {
     });
     dispatch(currentSelectedBranch(selectedBranch));
     sessionStorage.setItem('selected_branch', JSON.stringify(selectedBranch));
-    localStorage.setItem('isV2', selectedBranch?.isV2);
+
     if (window.location.pathname.includes('academic-calendar')) {
       history.push('/');
     }
@@ -383,17 +388,18 @@ const Appbar = ({ children, history, ...props }) => {
     return result;
   };
   const handleSwitchChange = (item) => {
-    sessionStorage.removeItem("branch_list")
-    sessionStorage.removeItem('selected_branch')
-    sessionStorage.removeItem('acad_session_list')
-    sessionStorage.removeItem('acad_session')
+    sessionStorage.removeItem('branch_list');
+    sessionStorage.removeItem('selected_branch');
+    sessionStorage.removeItem('acad_session_list');
+    sessionStorage.removeItem('acad_session');
     // let filterItem = profileDetails?.data?.filter((item) => item.name === (event.target.value || item?.name))
-    let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(item)) || {}
-    setProfile(item?.name)
+    let savedProfile =
+      localStorage.setItem('selectProfileDetails', JSON.stringify(item)) || {};
+    setProfile(item?.name);
     // setProfileName(event?.target?.value.name)
     const phone_number = JSON.parse(localStorage?.getItem('profileNumber')) || {};
-    localStorage.removeItem("userDetails");
-    localStorage.removeItem("navigationData");
+    localStorage.removeItem('userDetails');
+    localStorage.removeItem('navigationData');
     if (phone_number && item) {
       let payload = {
         contact: phone_number,
@@ -401,16 +407,10 @@ const Appbar = ({ children, history, ...props }) => {
         hmac: item?.hmac,
       };
       axiosInstance
-        .post(
-          endpoints.auth.mobileLogin,
-          payload
-        )
+        .post(endpoints.auth.mobileLogin, payload)
         .then((result) => {
           if (result.status === 200) {
-            localStorage.setItem(
-              'mobileLoginDetails',
-              JSON.stringify(result)
-            );
+            localStorage.setItem('mobileLoginDetails', JSON.stringify(result));
             localStorage.setItem(
               'userDetails',
               JSON.stringify(result.data?.login_response?.result?.user_details)
@@ -437,7 +437,7 @@ const Appbar = ({ children, history, ...props }) => {
                 }
               } else if (res === false) {
                 erpConfig = res;
-                history.push('/dashboard')
+                history.push('/dashboard');
               } else {
                 erpConfig = res;
                 history.push('/dashboard');
@@ -445,7 +445,7 @@ const Appbar = ({ children, history, ...props }) => {
               userData['erp_config'] = erpConfig;
               localStorage.setItem('userDetails', JSON.stringify(userData));
               window.location.reload();
-            })
+            });
           } else {
             setAlert('error', result.data.message);
             // setDisableLogin(false)
@@ -455,8 +455,7 @@ const Appbar = ({ children, history, ...props }) => {
           setAlert('error', error.message);
         });
     }
-
-  }
+  };
   const handleChange = (event) => {
     setAcademicYear(event.target.value);
     let acdemicCurrentYear;
@@ -517,11 +516,6 @@ const Appbar = ({ children, history, ...props }) => {
       });
   }
 
-  const handleVersion = (status) => {
-    dispatch(selectedVersion(status));
-    localStorage.setItem('selectedVersion', status);
-    reseteTheme();
-  };
   const isV2 = IsV2Checker();
   const isBranchV2 = useSelector(
     (state) => state.commonFilterReducer.selectedBranch?.isV2
@@ -722,14 +716,6 @@ const Appbar = ({ children, history, ...props }) => {
           )}
           {isMobile ? null : <SearchBar />}
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {isBranchV2 ? (
-              <Switch
-                checked={isV2}
-                checkedChildren='Older Version'
-                unCheckedChildren='Newer Version'
-                onChange={handleVersion}
-              />
-            ) : null}
             {/* {profileDetails?.is_verified === true ? (
                 <FormControl variant='standard' sx={{ m : 1, minWidth: 100 }} style={{display:'contents'}}>
                    <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
@@ -815,9 +801,9 @@ const Appbar = ({ children, history, ...props }) => {
             )}
 
             {userData?.user_level == 1 ||
-              userData?.user_level == 25 ||
-              userData?.user_level == 13 ||
-              userData?.is_superuser == true ? (
+            userData?.user_level == 25 ||
+            userData?.user_level == 13 ||
+            userData?.is_superuser == true ? (
               <>
                 {apps?.finance == true ? (
                   <>
@@ -840,11 +826,11 @@ const Appbar = ({ children, history, ...props }) => {
             )}
 
             {userData?.user_level == 1 ||
-              userData?.user_level == 8 ||
-              userData?.user_level == 13 ||
-              userData?.user_level == 14 ||
-              userData?.user_level == 35 ||
-              userData?.is_superuser == true ? (
+            userData?.user_level == 8 ||
+            userData?.user_level == 13 ||
+            userData?.user_level == 14 ||
+            userData?.user_level == 35 ||
+            userData?.is_superuser == true ? (
               <>
                 {isMobile ? null : (
                   <IconButton
@@ -868,12 +854,14 @@ const Appbar = ({ children, history, ...props }) => {
                 onClick={handleMobileMenuOpen}
                 color='inherit'
               >
-                {profileDetails?.is_verified ?
-                  <Typography>{profile}
+                {profileDetails?.is_verified ? (
+                  <Typography>
+                    {profile}
                     <KeyboardArrowDownIcon />
                   </Typography>
-                  : <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
-                }
+                ) : (
+                  <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
+                )}
               </IconButton>
             </div>
           </div>
