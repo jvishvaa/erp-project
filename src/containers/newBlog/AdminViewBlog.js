@@ -382,7 +382,7 @@ const AdminViewBlog = () => {
   };
   const fetchBranches = async () => {
     const newBranches =
-      (await JSON.parse(localStorage.getItem('ActivityManagementSession'))) || {};
+      (await JSON?.parse(localStorage?.getItem('ActivityManagementSession'))) || {};
     if(newBranches.length !== undefined){
       const transformedData = newBranches?.branches?.map((obj) => ({
         id: obj?.id,
