@@ -133,7 +133,9 @@ const PendingReview = (props) => {
     // console.log(ratingReview, 'ratingReview');
     // setSubmit(true);
     let body = ratingReview;
-
+    let overAllIndex =body.findIndex((each) => each?.name === "Overall")
+    body[overAllIndex].given_rating = calculateOverallRating()
+    // let allRating = body.map((each) => each?.given_rating).slice(0,body?.length -1)
     axios
       .post(`${endpoints.newBlog.pendingReview}`, body, {
         headers: {
@@ -532,6 +534,9 @@ const PendingReview = (props) => {
                           paddingTop: '5px',
                         }}
                       >
+                        {obj?.name === 'Overall' ? (
+                          ''
+                        ) : (
                         <div
                           key={index}
                           style={{ display: 'flex', justifyContent: 'space-between' }}
@@ -549,6 +554,7 @@ const PendingReview = (props) => {
                             }
                           />
                         </div>
+                        )}
                         {/* {obj} */}
                         {obj?.name == 'Overall' ? (
                           ''
@@ -570,7 +576,7 @@ const PendingReview = (props) => {
                   <div style={{display: "flex",
     justifyContent: "space-between"}} >
                     <div style={{paddingLeft:"13px"}}>
-                  overallRemark
+                  Overall
                   </div>
                   <div style={{paddingRight:"13px"}}>
                   <StyledRating
