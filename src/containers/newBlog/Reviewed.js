@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: '70vh',
-    maxWidth: '90vw',
+    maxWidth: '95vw',
   },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
@@ -211,7 +211,7 @@ const Reviewed = (props) => {
                   S No.
                 </TableCell>
                 <TableCell className={classes.tableCell}>Student Name</TableCell>
-                <TableCell className={classes.tableCell}>Erp Id</TableCell>
+                <TableCell className={classes.tableCell}>ERP ID</TableCell>
 
                 {/* <TableCell className={classes.tableCell}></TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>
@@ -460,6 +460,7 @@ const Reviewed = (props) => {
                             name={`rating${index}`}
                             size='small'
                             value={obj?.given_rating}
+                            readOnly
                             // defaultValue={props.defaultValue}
                           />
                         </div>
@@ -473,6 +474,9 @@ const Reviewed = (props) => {
                               variant='outlined'
                               value={obj?.remarks}
                               style={{ width: '264px' }}
+                              inputProps={
+                                { readOnly: true, }
+                              }
                             />
                           </div>
                         )}

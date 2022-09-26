@@ -160,7 +160,7 @@ const AdminViewBlog = () => {
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const [moduleId, setModuleId] = React.useState();
+  const [moduleId, setModuleId] = React.useState('');
   const [month, setMonth] = React.useState('1');
   const [status, setStatus] = React.useState('');
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
@@ -179,6 +179,7 @@ const AdminViewBlog = () => {
   const [value, setValue] = useState(0);
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [preview, setPreview] = useState(false);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
   // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
 
@@ -189,8 +190,40 @@ const AdminViewBlog = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
 
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Blogs' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (
+              item.child_name === 'Blog Activity' 
+              &&
+              window.location.pathname === '/blog/blogview'
+            ) {
+              setModuleId(item.child_id);
+              localStorage.setItem('moduleId', item.child_id);
+            }
+            // if (
+            //   item.child_name === 'Create Rating' 
+            //     // &&
+            //     // window.location.pathname === '/erp-online-class-student-view'
+            // ) {
+            //   setModuleId(item.child_id);
+            //   localStorage.setItem('moduleId', item.child_id);
+            // }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+
   const handleBranch = (event, value) => {
-    if (value) {
+    setSelectedBranch([])
+    if (value?.length) {
       value =
         value.filter(({ id }) => id === 'all').length === 1
           ? [...branchList].filter(({ id }) => id !== 'all')
@@ -370,20 +403,48 @@ const AdminViewBlog = () => {
       });
   };
   const viewedAssign = (data) => {
-    localStorage.setItem('ActivityId', JSON.stringify(data));
-    console.log(data, 'dataId');
+    if(data){
+      localStorage.setItem('ActivityId', JSON.stringify(data));
+      console.log(data, 'dataId');
+  
+      history.push({
+        pathname: '/blog/activityreview',
+        state: {
+          data,
+        },
+      });
 
-    history.push({
-      pathname: '/blog/activityreview',
-      state: {
-        data,
-      },
-    });
+    }
   };
+
+  useEffect(() =>{
+    if(moduleId){
+      if(selectedAcademicYear?.id > 0)
+      callApi(
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
+
+    }
+
+  },[window.location.pathname, moduleId])
+
+
+  function callApi(api,key) {
+    axiosInstance
+    .get(api)
+    .then((result) => {
+      if(result.status === 200){
+        if(key === 'branchList'){
+          setBranchList(result?.data?.data?.results || [])
+        }
+      }
+    })
+  }
   const fetchBranches = async () => {
     const newBranches =
       (await JSON?.parse(localStorage?.getItem('ActivityManagementSession'))) || {};
-    if(newBranches.length !== undefined){
+    if(newBranches?.length !== undefined){
       const transformedData = newBranches?.branches?.map((obj) => ({
         id: obj?.id,
         name: obj?.name,
@@ -392,7 +453,7 @@ const AdminViewBlog = () => {
         name: 'Select All',
         id: 'all',
       });
-      setBranchList(transformedData);
+      // setBranchList(transformedData);
     }
   };
   useEffect(() => {
@@ -483,6 +544,15 @@ const AdminViewBlog = () => {
     });
   };
 
+  const handleSearch = (event,value) =>{
+    if(selectedBranch?.length >= 0){
+      setAlert('error','Please Select Branch')
+      return
+    }else{
+      setAlert('error', 'This features not Implemented')
+    }
+  }
+
   return (
     <Layout>
       <Grid
@@ -502,12 +572,12 @@ const AdminViewBlog = () => {
             <Typography color='textPrimary' variant='h6'>
               <strong>Activity Management</strong>
             </Typography>
-            <Typography color='Primary'>Activity</Typography>
+            <Typography color='Primary' style={{fontSize:'23px', color:'black', fontWeight:'bold'}}>Activity</Typography>
           </Breadcrumbs>
         </Grid>
         <Grid item md={2} xs={2} style={{ visibility: 'hidden' }} />
 
-        <Grid item xs={6} md={6} style={{ paddingLeft: '249px' }}>
+        <Grid item xs={6} md={6} style={{display:'flex', justifyContent:'end', paddingRight:'20px'}}>
           
             <Button
               variant='contained'
@@ -531,18 +601,18 @@ const AdminViewBlog = () => {
             Shortlisted Activity
           </Button>{' '} */}
           &nbsp;&nbsp;
-          <Button
+          {/* <Button
             variant='contained'
             style={{ backgroundColor: '#F7B519' }}
             color='primary'
             startIcon={<ForumIcon />}
           >
             Activity Wall
-          </Button>
+          </Button> */}
         </Grid>
       </Grid>
       <Grid container style={{ paddingTop: '25px', paddingLeft: '23px' }}>
-        <Grid item md={2}>
+        {/* <Grid item md={2}>
           <TextField
             select
             style={{ borderRadius: '1px', width: '160px' }}
@@ -560,8 +630,8 @@ const AdminViewBlog = () => {
               </option>
             ))}
           </TextField>
-        </Grid>
-        <Grid item md={3}>
+        </Grid> */}
+        {/* <Grid item md={3}>
           <TextField
             select
             style={{ borderRadius: '1px', width: '218px' }}
@@ -579,7 +649,7 @@ const AdminViewBlog = () => {
               </option>
             ))}
           </TextField>
-        </Grid>
+        </Grid> */}
         <Grid item md={2}>
           <Autocomplete
             multiple
@@ -589,7 +659,7 @@ const AdminViewBlog = () => {
             // style={{ width: '82%', marginLeft: '4px' }}
             options={branchList || []}
             value={selectedBranch || []}
-            getOptionLabel={(option) => option?.name}
+            getOptionLabel={(option) => option?.branch?.branch_name}
             filterSelectedOptions
             onChange={(event, value) => {
               handleBranch(event, value);
@@ -612,6 +682,7 @@ const AdminViewBlog = () => {
             color='primary'
             size='medium'
             className={classes.buttonColor}
+            onClick={handleSearch}
           >
             Search
           </Button>
@@ -686,7 +757,7 @@ const AdminViewBlog = () => {
                   </TableCell>
                   {/* <TableCell className={classes.tableCell}>Grade </TableCell> */}
                   <TableCell className={classes.tableCell}>Topic Name</TableCell>
-                  <TableCell className={classes.tableCell}>Assigned On</TableCell>
+                  <TableCell className={classes.tableCell}>Submission On</TableCell>
                   <TableCell className={classes.tableCell}>Created By</TableCell>
                   <TableCell style={{ width: '252px' }} className={classes.tableCell}>
                     Action
@@ -732,7 +803,7 @@ const AdminViewBlog = () => {
                         Preview
                       </Button>
                       &nbsp;&nbsp;
-                      <Button
+                      {/* <Button
                         variant='outlined'
                         size='small'
                         // style={{whiteSpace: 'nowrap'}}
@@ -741,7 +812,7 @@ const AdminViewBlog = () => {
                         onClick={viewed}
                       >
                         View{' '}
-                      </Button>{' '}
+                      </Button>{' '} */}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -838,7 +909,8 @@ const AdminViewBlog = () => {
                       >
                         Preview
                       </Button>
-                      &nbsp; <DeleteIcon style={{ cursor: 'pointer' }} />
+                      &nbsp;
+                       {/* <DeleteIcon style={{ cursor: 'pointer' }} /> */}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -893,7 +965,7 @@ const AdminViewBlog = () => {
               <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
               <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
               <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                Assigned on -{previewData?.submission_date?.substring(0, 10)}
+              Submission on -{previewData?.submission_date?.substring(0, 10)}
               </div>
               <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
                 Branch -&nbsp;

@@ -108,8 +108,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   tableCell: {
-    color: 'black !important',
-    backgroundColor: '#ADD8E6 !important',
+    color: 'white !important',
+    backgroundColor: '#1b4ccc !important',
   },
   tableCells: {
     color: 'black !important',
@@ -217,7 +217,7 @@ const CreateActivityType = () => {
       },
     ]);
   };
-
+  
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -325,29 +325,34 @@ const CreateActivityType = () => {
   const [ActivityType, setActivityType] = useState('');
 
   const submitActivity = () => {
-    let body = {
-      activity_type: ActivityType,
-
-    };
-    axios
-      .post(
-        `${endpoints.newBlog.activityTypeSubmit}`,
-        body,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-        // alert.success('activity successfully created');
-        setAlert('success', 'Activity Successfully Created');
-
-        setActivityType('');
-        setAccordianBulkFilter(false);
-        getActivityCategory();
-      });
+    if(!ActivityType){
+      setAlert('error','Please Add Activity Type')
+      return
+    }else{
+      let body = {
+        activity_type: ActivityType,
+  
+      };
+      axios
+        .post(
+          `${endpoints.newBlog.activityTypeSubmit}`,
+          body,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          // alert.success('activity successfully created');
+          setAlert('success', 'Activity Successfully Created');
+  
+          setActivityType('');
+          setAccordianBulkFilter(false);
+          getActivityCategory();
+        });
+    }
   };
 
   const [activityCategory, setActivityCategory] = useState([]);
@@ -406,7 +411,7 @@ const CreateActivityType = () => {
             <Typography color='textPrimary' variant='h6'>
               <strong>Activity</strong>
             </Typography>
-            <Typography color='Primary'>Create Activity Type</Typography>
+            <Typography color='textPrimary' style={{fontSize:'20px', fontWeight:'bold'}}>Create Activity Type</Typography>
           </Breadcrumbs>
         </Grid>
       </Grid>
@@ -434,9 +439,13 @@ const CreateActivityType = () => {
           <AccordionDetails>
             <Grid container spacing={1} style={{display: 'flex'}}>
               <Grid item>
-                <TextField label="Activity Type" variant='outlined' size='small'value={ActivityType} onChange={(e)=>setActivityType(e.target.value)} />
-
-
+                <TextField label="Activity Type" 
+                variant='outlined' 
+                size='small' 
+                value={ActivityType}
+                type={'text'}
+                inputProps={{ maxLength: 30 }}
+                onChange={(e)=>setActivityType(e.target.value)} />
               </Grid>
               &nbsp;&nbsp;
               <Grid item>

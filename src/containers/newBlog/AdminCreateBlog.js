@@ -173,7 +173,8 @@ const AdminCreateBlog = () => {
   const [desc, setDesc] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
-
+  const [activityName, setActivityName] = useState([]);
+  const [changeText,setChangeText]=useState("");
   const [selectedFile, setSelectedFile] = useState('');
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -240,11 +241,13 @@ const AdminCreateBlog = () => {
     },
   ];
   console.log(history.location.pathname == '/blog/create', 'history');
-  const [activityName, setActivityName] = useState([]);
-  const [changeText,setChangeText]=useState("");
   const handleChangeActivity = (e, value) => {
-    console.log(e,"event",value);
-    setActivityName(value);
+    setActivityName([])
+    if(value){
+      console.log(e,"event",value);
+      setActivityName(value);
+
+    }
   };
   const handleChangeText = (e, value) => {
     setChangeText(value);
@@ -455,57 +458,100 @@ const AdminCreateBlog = () => {
     ':' +
     formatdate.getSeconds();
   const dataPost = () => {
-    setLoading(true);
+    const branchIds = selectedBranch.map((obj) => obj?.id);
+    const gradeIds = selectedGrade.map((obj) => obj?.id);
+    const sectionIds = selectedSection.map((obj) => obj?.id);
+    // setLoading(true);
     if(!startDate){
       setLoading(false);
       setAlert('error', 'Please Select The Date')
       return;
     }
-    const branchIds = selectedBranch.map((obj) => obj.id);
-    const gradeIds = selectedGrade.map((obj) => obj.id);
-    const sectionIds = selectedSection.map((obj) => obj.id);
+    // if(activityName?.id){
+    //   setLoading(false);
+    //   setLoading('error', 'Please Add Activity Name')
+    //   return;
+    // }
+    // if(branchIds?.length == 0){
+    //   setLoading(false);
+    //   setLoading('error', 'Please Select Branch')
+    //   return;
+    // }
+    // if(gradeIds?.length == 0) {
+    //   console.log('hi 4')
+    //   setLoading(false);
+    //   setLoading('error', 'Please Select Grade')
+    //   return;
+    // }
+    // if(sectionId?.length == 0) {
+    //   console.log('hi 5')
+    //   setLoading(false);
+    //   setLoading('error', 'Please Select Section')
+    //   return;
+    // }
+    // if(title){
+    //   console.log('hi 6')
+    //   setLoading(false);
+    //   setLoading('error', 'Please Add Title')
+    //   return;
+    // }
+    // if(!description){
+    //   console.log('hi 7')
+    //   setLoading(false);
+    //   setLoading('error', 'Please Add Description')
+    //   return;
+    // }
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('issue_date', null);
-    formData.append('submission_date', startDate + hoursAndMinutes);
-    formData.append('image', selectedFile);
-    formData.append('activity_type_id', activityName.id);
-    formData.append('session_year', selectedAcademicYear.session_year);
-    formData.append('created_at', startDate + hoursAndMinutes);
-    formData.append('created_by', user_id.id);
-    formData.append('branch_ids', branchIds);
-    formData.append('grade_ids', gradeIds);
-    formData.append('section_ids', sectionIds);
-    formData.append('is_draft', true);
-    formData.append('template_type',"template");
-    formData.append('template_id',checked);
-    axios
-      .post(`${endpoints.newBlog.activityCreate}`, formData, {
-        headers: {
-          // Authorization: `${token}`,
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        setAlert('success', 'Activity Successfully Created');
-        setLoading(false);
+    // if(!checked) {
+    //   setLoading(false);
+    //   setLoading('error','Please Select Templates')
+    //   return;
+    // }
+    else{
+      setLoading(false);
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('issue_date', null);
+      formData.append('submission_date', startDate + hoursAndMinutes);
+      formData.append('image', selectedFile);
+      formData.append('activity_type_id', activityName.id);
+      formData.append('session_year', selectedAcademicYear.session_year);
+      formData.append('created_at', startDate + hoursAndMinutes);
+      formData.append('created_by', user_id.id);
+      formData.append('branch_ids', branchIds);
+      formData.append('grade_ids', gradeIds);
+      formData.append('section_ids', sectionIds);
+      formData.append('is_draft', true);
+      formData.append('template_type',"template");
+      formData.append('template_id',checked);
+      axios
+        .post(`${endpoints.newBlog.activityCreate}`, formData, {
+          headers: {
+            // Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          setAlert('success', 'Activity Successfully Created');
+          setLoading(false);
+          setSelectedGrade([]);
+          setSelectedBranch([]);
+          setSelectedSection([]);
+          setActivityName([]);
+          setDescription('');
+          setTitle('');
+          setStartDate('');
+          history.push('/blog/blogview');
+  
+          // localStorage.setItem(
+          //   'ActivityManagement',
+          //   JSON.stringify(response?.data?.result)
+          // );
+        });
 
-        setSelectedGrade([]);
-        setSelectedBranch([]);
-        setSelectedSection([]);
-        setActivityName([]);
-        setDescription('');
-        setTitle('');
-        setStartDate('');
-        history.push('/blog/blogview');
-
-        // localStorage.setItem(
-        //   'ActivityManagement',
-        //   JSON.stringify(response?.data?.result)
-        // );
-      });
+    }
+    
 
   };
   
@@ -627,12 +673,12 @@ const AdminCreateBlog = () => {
             <Typography color='textPrimary' variant='h6'>
               <strong>Activity Management</strong>
             </Typography>
-            <Typography color='textPrimary'>Activity</Typography>
-            <Typography color='Primary'>Create Activity</Typography>
+            <Typography color='textPrimary' style={{fontSize:'23px', fontWeight:'bolder'}}>Activity</Typography>
+            <Typography color='textPrimary' style={{fontSize:'23px', fontWeight:'bolder'}}>Create Activity</Typography>
           </Breadcrumbs>
         </Grid>
       </Grid>
-      <div style={{    marginLeft:"15px", marginBottom: "18px",
+      {/* <div style={{    marginLeft:"15px", marginBottom: "18px",
     marginTop: "-14px", cursor: 'pointer' }} onClick={goBack}>
           <div>
             {' '}
@@ -640,7 +686,8 @@ const AdminCreateBlog = () => {
             <span style={{ color: 'gray' }}>Back to</span> &nbsp;
             <span style={{ color: '#0000008c', fontWeight: 'bold' }}>View Blog</span>
           </div>
-        </div>      <div style={{ paddingLeft: '22px', paddingRight: '10px' }}>
+        </div>       */}
+        <div style={{ paddingLeft: '22px', paddingRight: '10px' }}>
         <Button
           variant='primary'
           style={{ borderRadius: '1px', color: 'white' }}
@@ -668,7 +715,7 @@ const AdminCreateBlog = () => {
           }}
         >
           <div style={{ display: 'flex' }}>
-            Activity Category:
+            Activity Category :
             <Autocomplete
               style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
               size='small'
@@ -913,6 +960,7 @@ const AdminCreateBlog = () => {
               </label>
             </div>
           </div> */}
+          {selectedBranch.length !== 0 ? (
           <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
         {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
         <div style={{ height: "200px", color: "#fff" }}>this is slide 2</div>
@@ -931,7 +979,8 @@ const AdminCreateBlog = () => {
       <div>{obj?.title}</div>
       {/* </div> */}
       </div>))}
-      </Carousel>
+          </Carousel>
+          ) : ''}
         </div>
         <div
           style={{
@@ -941,6 +990,15 @@ const AdminCreateBlog = () => {
             display: 'flex',
           }}
         >
+          <Button
+            variant='outlined'
+            className={classes.buttonColor}
+            size='medium'
+            onClick={goBack}
+          >
+            Back
+          </Button>{' '}
+          &nbsp;&nbsp;&nbsp;&nbsp;
           <Button
             variant='outlined'
             className={classes.buttonColor}
@@ -992,11 +1050,11 @@ const AdminCreateBlog = () => {
           >
             <div style={{ marginLeft: '23px', marginTop: '28px' }}>
               <div style={{ fontSize: '15px', color: '#7F92A3' }}>
-                {activityName.name}
+                Title -{activityName.name}
               </div>
               <div style={{ fontSize: '21px' }}>{title}</div>
               <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                Assigned on -{startDate}
+                Submission on -{startDate}
               </div>
               <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
                 Branch -&nbsp;<span style={{ color: 'black' }}>{branchname}</span>

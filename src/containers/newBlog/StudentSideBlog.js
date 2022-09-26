@@ -76,7 +76,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import ReactHtmlParser from 'react-html-parser';
-
+import moment from 'moment';
 
 const DEFAULT_RATING = 0;
 
@@ -226,6 +226,8 @@ const StudentSideBlog = () => {
   const [publish, setPublish] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
   const [readMore, setReadMore] = useState(true)
+  const [flag,setFlag] = useState(false)
+  const [currentDate,setCurrentDate] =useState('')
 
 
   const createPublish = () => {
@@ -360,8 +362,12 @@ const StudentSideBlog = () => {
         }
       )
       .then((response) => {
+        var today = new Date().toISOString();
+        const output = today?.slice(0,19);
+        setCurrentDate(output)
         console.log(response);
         setAssigned(response?.data.result);
+        
       });
   };
 
@@ -439,6 +445,11 @@ const StudentSideBlog = () => {
     setRatingReview(arr);
   };
 
+
+  const handleClose =() => {
+    setView(false);
+
+  }
   return (
     <Layout>
        <div className='layout-container-div ebookscroll' style={{
@@ -459,13 +470,13 @@ const StudentSideBlog = () => {
       >
         <Grid item xs={4} md={4}>
           <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' />}
+            separator={<NavigateNextIcon fontSize='small' style={{color:'black'}} />}
             aria-label='breadcrumb'
           >
             <Typography color='textPrimary' variant='h6'>
               <strong>Student Activity</strong>
             </Typography>
-            <Typography color='Primary'>My Activities</Typography>
+            <Typography color='textPrimary' style={{fontSize: '22px', fontWeight:'bolder'}}>My Activities</Typography>
           </Breadcrumbs>
         </Grid>
       </Grid>
@@ -560,7 +571,11 @@ const StudentSideBlog = () => {
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
                     <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
-                      assinged-02 nov 2022{' '}
+                      assinged - {response?.issue_date.substring(8,10)}&nbsp;
+                      {new Date(response?.issue_date).toLocaleString('en-us', {
+                        month: 'short',
+                      })}
+                      &nbsp;{response?.issue_date.substring(0, 4)}
                     </div>{' '}
                     &nbsp;&nbsp;&nbsp;
                     <div
@@ -583,6 +598,11 @@ const StudentSideBlog = () => {
                     title='Contemplative Reptile'
                   />
                 </CardActionArea>
+                { moment(currentDate).diff(moment(response?.submission_date),'hours') > 24 ? (
+                  <div style={{display:'flex', justifyContent:'center', padding:'10px'}}>
+                    <b style={{color:'red'}}>EXPIRED</b>
+                  </div>
+                ) : (
                 <CardActions style={{ textAlign: 'center', justifyContent: 'center' }}>
                   <Button
                     variant='contained'
@@ -593,6 +613,8 @@ const StudentSideBlog = () => {
                     Start Writting
                   </Button>{' '}
                 </CardActions>
+                  
+                )}
               </Card>
             </Grid>
           ))}
@@ -702,7 +724,7 @@ const StudentSideBlog = () => {
                     &nbsp;21
                   </div> */}
                   <div>
-                    <RatingScale rating='3' />
+                    <RatingScale rating= {response?.user_reviews?.given_rating} />
                   </div>
                 </CardActions>
                 {/* <CardActions style={{ textAlign: 'center', justifyContent: 'center' }}>
@@ -853,8 +875,14 @@ const StudentSideBlog = () => {
         aria-describedby='alert-dialog-description'
       >
         <div style={{ width: '100%', marginTop: '72px' }}>
+          <div style={{display:'flex', justifyContent:'space-between',}}>
           <div style={{ fontSize: '24px' }}>
             <strong>Preview</strong>
+          </div>
+          <div style={{ fontSize: '24px', cursor:'pointer' }}>
+            <strong onClick={handleClose}>X</strong>
+          </div>
+
           </div>
           <Divider />
 
@@ -926,7 +954,7 @@ const StudentSideBlog = () => {
                     marginBottom: '29px',
                   }}
                 >
-                  <div style={{paddingTop: '12px'}}>
+                  <div style={{padding: '5px'}}>
                   <div
         style={{
           background: `url(${previewData?.template?.template_path})`,

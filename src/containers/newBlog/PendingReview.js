@@ -66,8 +66,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'white',
   },
   root: {
-    maxWidth: '90vw',
-    width: '95%',
+    maxWidth: '95vw',
+    width: '100%',
     // margin: '20px auto',
     // marginTop: theme.spacing(4),
     paddingLeft: '20px',
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: '70vh',
-    maxWidth: '90vw',
+    maxWidth: '94vw',
   },
   buttonColor2: {
     color: '#2A7D4B !important',
@@ -130,6 +130,8 @@ const PendingReview = (props) => {
   // }, []);
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
+    setView(false);
+    props.setValue(1)
     // console.log(ratingReview, 'ratingReview');
     // setSubmit(true);
     let body = ratingReview;
@@ -290,7 +292,7 @@ const PendingReview = (props) => {
                   S No.
                 </TableCell>
                 <TableCell className={classes.tableCell}>Student Name</TableCell>
-                <TableCell className={classes.tableCell}>Erp Id</TableCell>
+                <TableCell className={classes.tableCell}>ERP ID</TableCell>
 
                 {/* <TableCell className={classes.tableCell}></TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>
@@ -496,7 +498,7 @@ const PendingReview = (props) => {
                   Shortlist
                 </Button>{' '}
                 &nbsp;
-                <Button
+                {/* <Button
                   variant='contained'
                   color='primary'
                   disabled
@@ -505,7 +507,7 @@ const PendingReview = (props) => {
                   onClick={createPublish}
                 >
                   Published Blog{' '}
-                </Button>
+                </Button> */}
               </div>
             </Grid>
             <Grid item>
