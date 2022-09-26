@@ -49,6 +49,7 @@ const dev = {
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
     baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
+    newBlogURL:'https://activities-ms.dev-k8.letseduvate.com',
   },
 };
 
@@ -74,6 +75,7 @@ const qa = {
     msReportsUrl: 'https://qa.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://qafinance.school.letseduvate.com',
+    newBlogURL:'https://activities-ms.qa.letseduvate.com',
   },
 };
 
@@ -120,6 +122,7 @@ const prod = {
     msReportsUrl: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
+    newBlogURL:'https://activities.letseduvate.com',
   },
 };
 
