@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Layout from 'containers/Layout';
 import {
   Grid,
@@ -9,6 +10,7 @@ import {
   Box,
   Divider,
   Drawer,
+  Breadcrumbs,
 } from '@material-ui/core';
 // import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarsIcon from '@material-ui/icons/Stars';
@@ -28,6 +30,9 @@ import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useHistory } from 'react-router-dom';
 import Shortlisted from './Shortlisted_1';
+import axiosInstance from 'config/axios';
+import endpoints from 'config/endpoints';
+import { NavigateNext as NavigateNextIcon } from '@material-ui/icons'
 
 const DEFAULT_RATING = 0;
 
@@ -84,15 +89,17 @@ const BlogReview = () => {
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [branchList, setBranchList] = useState([]);
-  let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
-
-  const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
+  const newBranches = JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
   const user_level = dataes?.user_level;
-
-
-
-
+  const [moduleId, setModuleId] = useState();
   const [view, setView] = useState(false);
+  const [gradeList, setGradeList] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const [academicYear, setAcademicYear] = useState([]);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   console.log(ActivityId, 'ActivityId');
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -108,6 +115,86 @@ const BlogReview = () => {
 
   //   }
   // }, [history]);
+  useEffect(() =>{
+    if(moduleId){
+      if(selectedAcademicYear?.id > 0)
+      callApi(
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
+
+    }
+
+
+  },[window.location.pathname, moduleId])
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Blogs' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (
+              item.child_name === 'Blog Activity' 
+              &&
+              window.location.pathname === '/blog/activityreview'
+            ) {
+              setModuleId(item.child_id);
+              localStorage.setItem('moduleId', item.child_id);
+            }
+            // if (
+            //   item.child_name === 'Create Rating' 
+            //     // &&
+            //     // window.location.pathname === '/erp-online-class-student-view'
+            // ) {
+            //   setModuleId(item.child_id);
+            //   localStorage.setItem('moduleId', item.child_id);
+            // }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+
+function callApi(api,key){
+  // setLoading(true)
+  axiosInstance
+    .get(api)
+    .then((result) => {
+      if(result.status === 200){
+        if (key === 'academicYearList') {
+          setAcademicYear(result?.data?.data || []);
+          const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
+          if (
+            window.location.pathname !== '/erp-online-class-student-view' &&
+            !viewMoreData?.academic
+          )
+            callApi(
+              `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+              'branchList'
+            );
+        }
+        if(key === 'branchList') {
+          // debugger;  
+          setBranchList(result?.data?.data?.results || [])
+        }
+        if(key === 'gradeList'){
+          const gradeData = result?.data?.data || [];
+          gradeData.unshift({
+            grade_grade_name: 'Select All',
+            grade_id:'all',
+            id:'all',
+          });
+          setGradeList(gradeData);
+        }
+
+      }
+    })
+}
+
   const fetchBranches = () => {
     
     const transformedData = newBranches?.branches?.map((obj) => ({
@@ -119,7 +206,7 @@ const BlogReview = () => {
       id: 'all',
     });
     console.log(transformedData, 'branchdata');
-    setBranchList(transformedData);
+    // setBranchList(transformedData);
   }
   useEffect(() => {
 
@@ -127,13 +214,22 @@ const BlogReview = () => {
   },[])
 
   const handleBranch = (event, value) => {
-    if (value) {
+    setSelectedBranch([])
+    if (value?.length) {
       value =
         value.filter(({ id }) => id === 'all').length === 1
           ? [...branchList].filter(({ id }) => id !== 'all')
           : value;
           console.log(value.id,"value");
+          // const selectedId = value.map((el) => el?.branch?.id);
+          const selectedId = value.map((item) => item?.id)
       setSelectedBranch(value);
+      callApi(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
+        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+        'gradeList'
+      );
+
     }
   
    
@@ -142,27 +238,36 @@ const BlogReview = () => {
   return (
     <div>
       <Layout>
-        <div style={{ marginLeft: '20px' }}>
-          <div style={{ color: 'gray' }}>
-            {' '}
-            Activity Name-
-            <span style={{ color: '#0000008c', fontWeight: 'bold' }}>
-              {ActivityId?.activity_type_name}
-            </span>
-          </div>
-        </div>
-        <div style={{ marginLeft: '20px', cursor: 'pointer' }} onClick={goBack}>
+      <Grid
+        container
+        direction='row'
+        style={{ paddingLeft: '22px', paddingRight: '10px' }}
+      >
+        <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
+          <Breadcrumbs
+            separator={<NavigateNextIcon fontSize='small' />}
+            aria-label='breadcrumb'
+          >
+            <Typography color='textPrimary' variant='h6'>
+              <strong>Activity Management</strong>
+            </Typography>
+            <Typography color='textPrimary' style={{fontSize:'23px', fontWeight:'bolder'}}>Activity</Typography>
+            <Typography color='textPrimary' style={{fontSize:'23px', fontWeight:'bolder'}}>{ActivityId?.title}</Typography>
+          </Breadcrumbs>
+        </Grid>
+      </Grid>
+        {/* <div style={{ marginLeft: '20px', cursor: 'pointer' }} onClick={goBack}>
           <div>
             {' '}
             <ArrowBackIcon style={{ color: '#0000008c' }} />{' '}
             <span style={{ color: 'gray' }}>Back to</span> &nbsp;
             <span style={{ color: '#0000008c', fontWeight: 'bold' }}>Blog Home</span>
           </div>
-        </div>
+        </div> */}
 
         <div
           style={{
-            background: '#F1F4F6',
+            // background: '#F1F4F6',
             width: '96%',
             height: 'auto',
             marginLeft: '19px',
@@ -172,13 +277,13 @@ const BlogReview = () => {
         >
           <div style={{ marginLeft: '29px', marginTop: '9px' }}>
             <div style={{ display: 'flex' }}>
-              <div style={{ fontSize: '16px', color: '#173260', fontWeight: '400' }}>
-                topic Name:{' '}
+              <div style={{ fontSize: '16px', fontWeight: '400' }}>
+                Topic Name:{' '}
               </div>
               <div
                 style={{
                   fontSize: '16px',
-                  background: 'white',
+                  // background: 'white',
                   fontWeight: 'bold',
                   width: '91%',
                   paddingLeft: '12px',
@@ -219,7 +324,7 @@ const BlogReview = () => {
               // style={{ width: '82%', marginLeft: '4px' }}
               options={branchList || []}
               value={selectedBranch || []}
-              getOptionLabel={(option) => option?.branch_name}
+              getOptionLabel={(option) => option?.branch?.branch_name}
               filterSelectedOptions
               onChange={(event, value) => {
                 handleBranch(event, value);
@@ -267,6 +372,13 @@ const BlogReview = () => {
             {/* <Grid item md={2} xs={12}> */}
             <Button style={{ width: '112px', backgroundColor: 'primary' }}>Search</Button>
           </div>
+          <div style={{ paddingLeft: '39px' }}>
+            <Button 
+            variant="contained"
+            color='primary'
+            onClick={goBack}
+            style={{ width: '112px',}}>Back</Button>
+          </div>
         </div>
 
         {/* </Grid>
@@ -290,26 +402,26 @@ const BlogReview = () => {
                     }}
                     className={value === 0 ? classes.tabsFont : classes.tabsFont1}
                   />
-                    <Tab
+                    {/* <Tab
                     label='Not Submitted'
                     classes={{
                       selected: classes.selected1,
                     }}
                     className={value === 1 ? classes.tabsFont : classes.tabsFont1}
-                  />
+                  /> */}
                   <Tab
                     label='Reviewed'
                     classes={{
                       selected: classes.selected1,
                     }}
-                    className={value === 2 ? classes.tabsFont : classes.tabsFont1}
+                    className={value === 1 ? classes.tabsFont : classes.tabsFont1}
                   />
                     <Tab
                     label='Shortlisted'
                     classes={{
                       selected: classes.selected1,
                     }}
-                    className={value === 3? classes.tabsFont : classes.tabsFont1}
+                    className={value === 2? classes.tabsFont : classes.tabsFont1}
                   />
 
                   { user_level==11 ?"":
@@ -318,14 +430,12 @@ const BlogReview = () => {
                     classes={{
                       selected: classes.selected1,
                     }}
-                    className={value === 4 ? classes.tabsFont : classes.tabsFont1}
+                    className={value === 3 ? classes.tabsFont : classes.tabsFont1}
                   />
                 }
                   
                 
                 </Tabs>
-               
-
               </Grid>
             </Grid>
           </div>
@@ -338,13 +448,13 @@ const BlogReview = () => {
             )}
           </div>
         </div>
+        {console.log(value,'kl 33')}
+        {value == 0 && <PendingReview  selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} />}
+        {/* {value == 1 && <NotSubmitted selectedBranch={selectedBranch}/>} */}
 
-        {value == 0 && <PendingReview  selectedBranch={selectedBranch}/>}
-        {value == 1 && <NotSubmitted selectedBranch={selectedBranch}/>}
-
-        {value == 2 && <Reviewed selectedBranch={selectedBranch}/>}
-        {value == 3 && <Shortlisted selectedBranch={selectedBranch}/>}
-        {value == 4 && <Published selectedBranch={selectedBranch}/>}
+        {value == 1 && <Reviewed selectedBranch={selectedBranch}/>}
+        {value == 2 && <Shortlisted selectedBranch={selectedBranch}/>}
+        {value == 3 && <Published selectedBranch={selectedBranch}/>}
 
 
       </Layout>

@@ -51,7 +51,7 @@ const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: '90vw',
+    maxWidth: '93vw',
     width: '95%',
     marginLeft: '25px',
     // marginTop: theme.spacing(4),
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: '70vh',
-    maxWidth: '90vw',
+    maxWidth: '95vw',
   },
   dividerColor: {
     backgroundColor: `${theme.palette.primary.main} !important`,
@@ -433,7 +433,7 @@ const Shortlisted_1 = (props) => {
             size='medium'
             className={classes.buttonColor}
           >
-            Shortlisted(25)
+            Shortlisted({totalSubmitted?.length})
           </Button>
         </Grid>
         <Grid item style={{fontSize:"16px"}}>
@@ -451,7 +451,7 @@ const Shortlisted_1 = (props) => {
                   S No.
                 </TableCell>
                 <TableCell className={classes.tableCell}>Student Name</TableCell>
-                <TableCell className={classes.tableCell}>Erp Id</TableCell>
+                <TableCell className={classes.tableCell}>ERP ID</TableCell>
 
                 {/* <TableCell className={classes.tableCell}>Grade</TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>

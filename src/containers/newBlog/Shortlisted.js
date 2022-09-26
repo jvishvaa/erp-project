@@ -500,7 +500,7 @@ const Shortlisted = () => {
             size='medium'
             className={classes.buttonColor}
           >
-            Shortlisted(25)
+            Shortlisted({totalSubmitted?.length})
           </Button>
         </Grid>
         <Grid item style={{fontSize:"16px"}}>

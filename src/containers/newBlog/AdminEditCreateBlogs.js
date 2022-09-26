@@ -489,7 +489,7 @@ const AdminEditCreateBlogs = () => {
         },
       })
       .then((response) => {
-        setAlert('success', 'Activity Successfully Created');
+        setAlert('success', 'Activity Updated');
         setSelectedGrade([]);
         setSelectedBranch([]);
         setSelectedSection([]);
@@ -603,6 +603,10 @@ const AdminEditCreateBlogs = () => {
   const handleDescription = (event) => {
     setDescription(event.target.value);
   };
+
+  const handleGoBack =() => {
+    history.goBack()
+  }
 
   return (
     <Layout>
@@ -911,11 +915,20 @@ const AdminEditCreateBlogs = () => {
             variant='outlined'
             className={classes.buttonColor}
             size='medium'
+            onClick={handleGoBack}
+          >
+            Back
+          </Button>{' '}
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          {/* <Button
+            variant='outlined'
+            className={classes.buttonColor}
+            size='medium'
             onClick={PreviewBlog}
           >
             Preview
           </Button>{' '}
-          &nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp; */}
           <Button
             variant='outlined'
             onClick={handleClear}
@@ -926,7 +939,7 @@ const AdminEditCreateBlogs = () => {
           </Button>{' '}
           &nbsp;&nbsp;&nbsp;&nbsp;
           <Button variant='contained' color='primary'disabled={user_level==11} onClick={dataPost}>
-            Edit Activity
+          Update Activity
           </Button>
         </div>
       </div>
