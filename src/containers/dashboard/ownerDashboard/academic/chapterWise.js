@@ -163,7 +163,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const CurriculumCompletionSubject = (props) => {
+const CurriculumCompletionChapter = (props) => {
   const classes = useStyles();
   const [volume, setVolume] = React.useState('');
   const history = useHistory();
@@ -207,7 +207,7 @@ const CurriculumCompletionSubject = (props) => {
   const dateFormat = 'YYYY/MM/DD';
   const handleCurrSubject = (gradeId, gradeName) => {
     history.push({
-      pathname: `/curriculum-completion-chapter/`,
+      pathname: `/curriculum-completion-subject/${branchId}/${gradeId}`,
       state: {
         grade: gradeId,
         gradeName: gradeName,
@@ -406,4 +406,4 @@ const CurriculumCompletionSubject = (props) => {
   );
 };
 
-export default withRouter(CurriculumCompletionSubject);
+export default withRouter(CurriculumCompletionChapter);

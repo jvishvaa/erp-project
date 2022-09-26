@@ -368,6 +368,7 @@ import CoursesView from 'containers/sure-learning/PrincipalDashboard/PrincipalCo
 import CourseEnroleModle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleModle';
 import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/academic/curriculamSubject';
 import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
+import CurriculumCompletionChapter from 'containers/dashboard/ownerDashboard/academic/chapterWise';
 
 import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade';
 import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report';
@@ -1909,6 +1910,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                                 <CurriculumCompletionSubject match={match} />
                               )}
                             </Route>
+                            <Route path='/curriculum-completion-chapter/'>
+                              {({ match }) => (
+                                <CurriculumCompletionChapter match={match} />
+                              )}
+                            </Route>
+                            
                             <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
                               {({ match }) => (
                                 <CurriculumCompletionSection match={match} />

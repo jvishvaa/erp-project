@@ -638,6 +638,10 @@ export default {
   ownerDashboard: {
     // gradeWiseStudentAttendanceState : `${`https://tiny-newt-42.loca.lt`}/api/acad_performance/v1/attendance/grade-wise-stats/`,
     // gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    gradeWise : `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-wise-data/`,
+    subjectWise : `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-wise-subject-data/`,
+    teacherWise : `${msReportsUrl}/api/acad_performance/v2/curriculam-teacher-wise-data/`,
+    teacherSubjectWise : `${msReportsUrl}/api/acad_performance/v2/curriculam-teacher-wise-subject-data/`,
     gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v2/attendance-section-wise-stats/`,
     subjectWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/subject-wise-stats/`,
     // studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
