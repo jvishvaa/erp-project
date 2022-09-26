@@ -40,12 +40,6 @@ const AssesmentCard = ({
   filterbasedonsub
 }) => {
   const themeContext = useTheme();
-  console.log("treecheckassessmentcardvalue", value);
-  console.log('added', addedId)
-  console.log("treecheckassessmentcardonclick", onClick);
-  console.log("treecheckassessmentcardiselected", isSelected);
-  console.log("treecheckassessmentcardfilteredresults", filterResults);
-  console.log('filterbasedonsubeeeisdisable', isdisable);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -203,10 +197,10 @@ const AssesmentCard = ({
           ""
         )}
       </div>
-      <div className="name">
+      <div className="assessment-name">
         <p style={{ marginLeft: "10px" }}>{value.test_name}</p>
       </div>
-      <div className="name">
+      <div className="assessment-name">
           <p className="idPara" style={{ marginLeft: "10px" , fontSize: '14px' }} >{`Test Id: ${value?.test_id}`}</p>
         </div>
       <div className="grade-details">
