@@ -434,8 +434,6 @@ import ActivityReview from '../containers/newBlog/BlogReview';
 import AddReview from '../containers/newBlog/AddReview';
 import RatingType from '../containers/newBlog/RatingCreate';
 import AdminEditCreateBlogs from '../containers/newBlog/AdminEditCreateBlogs';
-import UserProfile from 'containers/login/profiles';
-import EventsMark from 'containers/attendance/eventsmark';
 import Gradingview from 'containers/assessment-central/grading-system/gradingview';
 import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
