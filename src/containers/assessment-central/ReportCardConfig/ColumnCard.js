@@ -125,7 +125,29 @@ function ColumnCard({ subComponentId, componentId, columnId,
   return (
     <>
       <Grid container spacing={2} style={{ marginLeft: "50px", marginBottom: 10 }}>
-        <Grid item xs={12} sm={6} className={"filterPadding"}>
+        <Grid item xs={12} sm={3} className={"filterPadding"}>
+          <TextField style={{ width: "100%" }}
+            id="subname"
+            label="PRIORITY"
+            variant="outlined"
+            size="small"
+            type="number"
+            onChange={e => {
+              const newComponent = components[index];
+              setComponentDetails(
+                components.map(componentDetail => {
+                  if (componentDetail.id === componentId) {
+                    const newSubComponent = componentDetail.subComponents[subComponentIndex]
+                    newSubComponent.columns[columnIndex].priority = e.target.value
+                    newComponent.subComponents[subComponentIndex] = newSubComponent
+                    return newComponent;
+                  }
+                  return componentDetail;
+                }))
+            }}
+            />
+            </Grid>
+        <Grid item xs={12} sm={3} className={"filterPadding"}>
           <TextField
             style={{ width: "100%" }}
             id="subname"
@@ -151,7 +173,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
               );
             }}
           />
-        </Grid>
+          </Grid>
         <Grid container spacing={2} style={{ margin: "0px" }}>
           <Grid item xs={12} sm={3} className={"filterPadding"}>
             <Button

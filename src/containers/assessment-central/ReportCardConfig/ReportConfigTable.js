@@ -2,7 +2,20 @@ import React, { useEffect, useState, useContext } from 'react';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 import Loading from '../../../components/loader/loader';
 import Layout from '../../Layout';
-import { Grid, TextField, Button, makeStyles, Paper, Table, TableContainer, TableCell, TableHead, TableRow, TableBody, IconButton } from '@material-ui/core';
+import {
+  Grid,
+  TextField,
+  Button,
+  makeStyles,
+  Paper,
+  Table,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+  IconButton,
+} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -13,7 +26,6 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import ConfirmModal from '../../../../src/containers/assessment-central/assesment-card/confirm-modal';
-
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -63,7 +75,7 @@ const columns = [
     labelAlign: 'center',
   },
   {
-    id: 'optional',
+    id: 'optional', 
     label: 'Marks/Metrics',
     minWidth: 100,
     align: 'center',
@@ -86,9 +98,7 @@ const columns = [
 ];
 
 const ReportConfigTable = () => {
-
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -103,12 +113,13 @@ const ReportConfigTable = () => {
   const [gradeList, setGradeList] = useState([]);
   const [moduleId, setModuleId] = useState('');
   const [selectedbranch, setSelectedbranch] = useState();
-  console.log('new', selectedbranch)
+  console.log('new', selectedbranch);
   const [selectedGrade, setSelectedGrade] = useState();
   const [openModal, setOpenModal] = useState(false);
+  const [deleteId , setDeleteId ] = useState()
 
   useEffect(() => {
-    if (moduleId) getBranch()
+    if (moduleId) getBranch();
   }, [moduleId]);
 
   useEffect(() => {
@@ -148,12 +159,16 @@ const ReportConfigTable = () => {
     axiosInstance
       .get(
         // `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
-        `${endpoints.reportCardConfig.branchAPI}?session_year=${selectedAcademicYear?.id}&branch_id=${value.map(branch => branch?.branch?.id).join(',')}&module_id=${moduleId}`
+        `${endpoints.reportCardConfig.branchAPI}?session_year=${
+          selectedAcademicYear?.id
+        }&branch_id=${value
+          .map((branch) => branch?.branch?.id)
+          .join(',')}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
           // setGradeList(res?.data?.data);
-          console.log('new', res?.data?.data)
+          console.log('new', res?.data?.data);
           setGradeList(res?.data?.data);
         } else {
           // setBranchList([]);
@@ -163,42 +178,45 @@ const ReportConfigTable = () => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const handleBranch = (e, value = {}) => {
-    setSelectedbranch()
-    setSelectedGrade()
-    setGradeList([])
+    setSelectedbranch();
+    setSelectedGrade();
+    setGradeList([]);
     // const Ids = value.map((i)=>i.id)
     if (value) {
-      setSelectedbranch(value)
-      getGrade(value)
-      // setSelectBranchId(Ids)	
+      setSelectedbranch(value);
+      getGrade(value);
+      // setSelectBranchId(Ids)
     } else {
-      // setSelectBranchId([])	
-      setSelectedbranch()
-      setSelectedGrade()
+      // setSelectBranchId([])
+      setSelectedbranch();
+      setSelectedGrade();
     }
-  }
+  };
 
   const handleGrade = (e, value) => {
     if (value) {
-      setSelectedGrade(value)
+      setSelectedGrade(value);
       // getGroupTypes()
       // getSection(value)
     } else {
-      setSelectedGrade()
+      setSelectedGrade();
     }
-  }
-
+  };
 
   const FilterData = () => {
     {
       if (selectedGrade?.grade_id) {
         setLoading(true);
-        let url = `${endpoints.questionBank.reportConfig}?acad_session=${selectedbranch.map(branch => branch?.id)}&grade=${selectedGrade?.grade_id}`
+        let url = `${
+          endpoints.questionBank.reportConfig
+        }?acad_session=${selectedbranch.map((branch) => branch?.id)}&grade=${
+          selectedGrade?.grade_id
+        }`;
         let params = {
           acad_session: selectedbranch?.session_year?.id,
           grade: selectedGrade?.grade_id,
-        }
-        console.log('run', params)
+        };
+        console.log('run', params);
         axiosInstance
           .get(url)
           .then((res) => {
@@ -213,16 +231,16 @@ const ReportConfigTable = () => {
           });
       }
     }
-  }
+  };
 
-  const DeleteData = (id) => {
+  const DeleteData = () => {
     setLoading(true);
-    let url = `${endpoints.questionBank.reportConfig}${id}/`
+    let url = `${endpoints.questionBank.reportConfig}${deleteId}/`;
 
     axiosInstance
       .delete(url)
       .then((res) => {
-        TotalData()
+        TotalData();
 
         setLoading(false);
       })
@@ -230,11 +248,30 @@ const ReportConfigTable = () => {
         console.log(err);
         setLoading(false);
       });
-  }
+  };
+
+  const handlePublish = (id,ispublish) => {
+    setLoading(true);
+    let url = `${endpoints.questionBank.reportConfig}${id}/`;
+
+    axiosInstance
+      .put(url,{
+        is_publish : !ispublish
+      })
+      .then((res) => {
+        TotalData();
+
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
 
   const TotalData = () => {
     setLoading(true);
-    let url = `${endpoints.questionBank.reportConfig}`
+    let url = `${endpoints.questionBank.reportConfig}`;
     axiosInstance
       .get(url)
       .then((res) => {
@@ -247,14 +284,14 @@ const ReportConfigTable = () => {
         console.log(err);
         setLoading(false);
       });
-  }
+  };
   useEffect(() => {
-    TotalData()
+    TotalData();
   }, []);
 
   const handleCreate = () => {
     history.push('/report-config/create');
-  }
+  };
 
   return (
     <>
@@ -265,13 +302,13 @@ const ReportConfigTable = () => {
             <CommonBreadcrumbs
               componentName='Assessment'
               childComponentName='Report Card Config'
-            //   childComponentNameNext={
-            // addFlag && !tableFlag
-            //   ? 'Add Category'
-            //   : editFlag && !tableFlag
-            //   ? 'Edit Category'
-            //   : null
-            //   }
+              //   childComponentNameNext={
+              // addFlag && !tableFlag
+              //   ? 'Add Category'
+              //   : editFlag && !tableFlag
+              //   ? 'Edit Category'
+              //   : null
+              //   }
             />
           </div>
         </div>
@@ -404,38 +441,34 @@ const ReportConfigTable = () => {
                         {data?.column_text}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {data?.weightage}
+                        {data?.weightage === 0 ? 'NA' : data?.weightage}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {data?.component_description}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                      <Button
+                        <Button
                           onClick={() => {
                             // setOpenModal(true);
+                            // setDeleteId(data?.id)
+                            handlePublish(data?.id,data?.is_publish)
                           }}
-                          color= 'primary'   
-                          variant='contained'                     
+                          color='primary'
+                          variant='contained'
                         >
                           {/* {ispublished ? 'Publish' : 'Unpublish'} */}
-                          Publish
+                          {data?.is_publish? "Unpublish" : "Publish"}
                         </Button>
                         <IconButton
                           onClick={() => {
                             setOpenModal(true);
+                            setDeleteId(data?.id)
                           }}
                           title='Delete'
                         >
                           <DeleteOutlinedIcon />
                         </IconButton>
-                        
-                        {openModal && (
-                          <ConfirmModal
-                            submit={() => DeleteData(data?.id)}
-                            openModal={openModal}
-                            setOpenModal={setOpenModal}
-                          />
-                        )}
+
                         {/* <IconButton
                           //   onClick={(e) => handleEditSubject(configData)}
                           title='Edit'
@@ -461,9 +494,16 @@ const ReportConfigTable = () => {
                   />
                 </div> */}
         </Paper>
+        {openModal && (
+          <ConfirmModal
+            submit={() => DeleteData()}
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+          />
+        )}
       </Layout>
     </>
   );
-}
+};
 
 export default ReportConfigTable;

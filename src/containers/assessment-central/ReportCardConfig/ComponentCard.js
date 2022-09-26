@@ -115,6 +115,15 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 onChange={(event, data) => {
                   console.log('orchids', data)
                   if (data) {
+                  const newComponent = components[index];
+                  newComponent.componentName = data?.component_name;
+                  setComponentDetails( components.map(columnDetail => {
+                    if (columnDetail.id === componentId) {
+                      return newComponent;
+                    }
+                    return columnDetail;
+                  }))
+
                     for (let val of response) {
                       if (data?.component_name === val?.component_name) {
                         setRult((pre) => [...pre, val])

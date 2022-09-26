@@ -27,7 +27,7 @@ function GradingCreate() {
     {
       grade_name: '',
       start_mark: '',
-      end_mark: '',
+      end_mark: 100,
       description: '',
       parameter_details: [
         {
@@ -160,7 +160,7 @@ function GradingCreate() {
           return setAlert('error', 'End Mark cannot be above 100 !');
         else if (parseInt(tovalidate?.end_mark) <= parseInt(tovalidate?.start_mark))
           return setAlert('error', 'Start Mark should be less than End Mark!');
-        else if (parseInt(tovalidate?.end_mark) >= parseInt(grade[i - 1]?.start_mark))
+        if (parseInt(tovalidate?.end_mark) >= parseInt(grade[i - 1]?.start_mark))
           return setAlert(
             'error',
             'End Mark should be lesser than start Mark of previous !'
@@ -197,9 +197,11 @@ function GradingCreate() {
           if (!check) return setAlert('error', 'Please fill all Parameter Details');
           if ((task === 'create' || task == 'update') && totalCount == 100 && check) {
             checking_arr.push(true);
-          } else if ((task === 'create' || task == 'update') && totalCount != 100)
+          } else if ((task === 'create' || task == 'update') && totalCount > 100 && i === grade?.length -1)
+          return setAlert('error', 'Please check marks limit should be 1 - 100 ');
+        else if ((task === 'create' || task == 'update') && totalCount != 100 && i === grade?.length -1)
             return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
-          else if ((task === 'create' || task == 'update') && totalCount >= 100)
+          else if (totalCount >= 100)
             return setAlert(
               'error',
               'You cannot add more grades as marks limit Exceed(1-100) !'
@@ -258,7 +260,8 @@ function GradingCreate() {
           if (!check) return setAlert('error', 'Please fill all Parameter Details');
           if ((task === 'create' || task == 'update') && totalCount == 100 && check) {
             checking_arr.push(true);
-          } else if ((task === 'create' || task == 'update') && totalCount != 100)
+          } else if ((task === 'create' || task == 'update') && totalCount != 100 && grade.length === 1
+          )
             return setAlert('error', 'Please fill all marks Percentage ( 0 - 100 )');
           else if (totalCount >= 100)
             return setAlert(
@@ -314,7 +317,7 @@ function GradingCreate() {
         {
           grade_name: '',
           start_mark: '',
-          end_mark: '',
+          end_mark: gradeCount[gradeCount.length-1].start_mark - 1,
           description: '',
           parameter_details: [
             {

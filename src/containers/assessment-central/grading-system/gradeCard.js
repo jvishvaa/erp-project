@@ -196,6 +196,7 @@ const GradeCard = ({
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  disabled = {!isEdit}   
                   onChange={(e) => {
                     setGradeData((prev) => ({ ...prev, end_mark: e?.target?.value }));
                   }}
