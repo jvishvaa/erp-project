@@ -630,7 +630,7 @@ const AdminCreateBlog = () => {
         })
         .then((response) => {
   
-          console.log(response?.data?.result, 'session');
+          // console.log(response?.data?.result, 'session');
           setTemplates(response?.data?.result);
        
         });
@@ -1084,7 +1084,7 @@ const AdminCreateBlog = () => {
               </div>
 
               <div style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}>
-                word limit -300
+                {/* word limit -300 */}
               </div>
               <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
                 Instructions

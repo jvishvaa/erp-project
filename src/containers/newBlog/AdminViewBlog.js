@@ -189,6 +189,7 @@ const AdminViewBlog = () => {
   const [totalPagesAssigned,setTotalPagesAssigned] = useState(0);
   const [limitAssigned,setLimitAssigned] = useState(10);
   const [isClickedAssigned, setIsClickedAssigned] = useState(false);
+  const [searchFlag,setSearchFlag] = useState(false)
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -302,7 +303,6 @@ const AdminViewBlog = () => {
   ];
 
   function handleTab(event, newValue) {
-    console.log(newValue);
     setValue(newValue);
   }
   const [view, setViewed] = useState(false);
@@ -342,7 +342,6 @@ const AdminViewBlog = () => {
   };
   const [data, setData] = useState('');
   const handleDate = (data) => {
-    console.log(data, 'data');
     setBranchView(true);
     setBranchSearch(false);
     setData(data);
@@ -397,6 +396,7 @@ const AdminViewBlog = () => {
         setTotalPagesUnassign(response?.data?.page_size)
         setCurrentPageUnassign(response?.data?.page + 1)
         setLimitUnassign(Number(limitUnassign))
+        setSearchFlag(false)
         setUnAssigneds(response?.data?.result);
       });
   };
@@ -418,13 +418,13 @@ const AdminViewBlog = () => {
         setTotalPagesAssigned(response?.data?.page_size)
         setCurrentPageAssigned(response?.data?.page + 1)
         setLimitAssigned(Number(limitAssigned))
+        setSearchFlag(false)
         setAssigneds(response?.data?.result);
       });
   };
   const viewedAssign = (data) => {
     if(data){
       localStorage.setItem('ActivityId', JSON.stringify(data));
-      console.log(data, 'dataId');
   
       history.push({
         pathname: '/blog/activityreview',
@@ -451,7 +451,6 @@ const AdminViewBlog = () => {
     )
     .then((response) => {
       if(response?.data?.status_code === 200){
-        // console.log(response?.data?.result,'pk 2')
         setBranchList(response?.data?.result|| [])
 
       }
@@ -493,15 +492,13 @@ const AdminViewBlog = () => {
     fetchBranches();
   }, []);
 
-  console.log(selectedBranch, 'selectedBranch');
 
   useEffect(() => {
-    if(selectedBranch?.length !== 0){
+    if(selectedBranch?.length !== 0 && searchFlag){
       getUnAssinged();
       getAssinged();
-
     }
-  }, [value, selectedBranch, currentPageAssigned,currentPageUnassign]);
+  }, [value, selectedBranch, searchFlag,currentPageAssigned,currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
   const handlePreview = (data) => {
     setPreview(true);
@@ -512,12 +509,10 @@ const AdminViewBlog = () => {
         },
       })
       .then((response) => {
-        console.log(response?.data?.result);
         // setAssignPreview(response);
         setPreviewData(response?.data?.result);
       });
   };
-  // console.log(previewData, 'previewData');
   const closePreview = () => {
     setPreview(false);
   };
@@ -557,7 +552,6 @@ const AdminViewBlog = () => {
         }
       )
       .then((response) => {
-        console.log(response, 'session');
 
         setActivityStorage(response.data.result);
 
@@ -578,19 +572,22 @@ const AdminViewBlog = () => {
   };
 
   const handleSearch = (event,value) =>{
-    if(selectedBranch?.length >= 0){
+    if(selectedBranch?.length === 0){
       setAlert('error','Please Select Branch')
       return
     }else{
-      setAlert('error', 'This features not Implemented')
+      setSearchFlag(true)
+
     }
   }
 
   const handlePaginationAssign = (event, page) =>{
+    setSearchFlag(true)
     setIsClickedAssigned(true);
     setCurrentPageAssigned(page);
   }
   const handlePaginationUnassign = (event, page) =>{
+    setSearchFlag(true)
     setIsClickedUnassign(true);
     setCurrentPageUnassign(page);
   }
@@ -719,7 +716,7 @@ const AdminViewBlog = () => {
           />
         </Grid>
         &nbsp;&nbsp;
-        {/* <Grid item md={2}>
+        <Grid item md={2}>
           <Button
             variant='contained'
             color='primary'
@@ -727,9 +724,9 @@ const AdminViewBlog = () => {
             className={classes.buttonColor}
             onClick={handleSearch}
           >
-            Search hi
+            Search
           </Button>
-        </Grid> */}
+        </Grid>
       </Grid>
 
       <Grid container>
@@ -1030,7 +1027,7 @@ const AdminViewBlog = () => {
               </div>
 
               <div style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}>
-                word limit -300
+                {/* word limit -300 */}
               </div>
               <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
                 Instructions
