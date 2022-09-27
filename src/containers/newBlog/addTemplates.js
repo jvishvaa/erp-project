@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 function AddTemplates() {
   const history = useHistory();
   const [image, setImage] = useState('');
-  const [maxWidth, setMaxWidth] = useState('lg');
+  // const [maxWidth, setMaxWidth] = useState('lg');
   const [text,setText] = useState('');
   const [trued, setTrued] = useState(false);
   const [label, setLabel] = useState('');
@@ -87,6 +87,22 @@ function AddTemplates() {
     showDrawer(false);
   };
   const handleTextArea = () => {
+    if(!height){
+      setAlert('error', 'Please Add Height')
+      return
+    } else if(!width){
+      setAlert('error', 'Please Add Width')
+      return
+    } else if(!placeholder){
+      setAlert('error','Please Add Placeholder')
+      return
+    } else if(!x) {
+      setAlert('error','Please Add X-Cordinate')
+      return
+    }else if(!y){
+      setAlert('error', "Please Add Y-Cordinate")
+      return
+    }
     showDrawer(false);
     setFun(true);
   };
@@ -284,12 +300,11 @@ function AddTemplates() {
       <Dialog
         open={drawer}
         onClose={handleClose}
-        maxWidth={maxWidth}
         style={{ borderRadius: '10px' }}
       >
         <Typography style={{ marginLeft: '10px' }}>Select Your Position</Typography>
-        <Grid style={{ marginLeft: '10px' }} spacing={2} container>
-          <Grid item>
+        <Grid style={{width:'100%', padding:'15px'}} spacing={1} container>
+          {/* <Grid item>
             <TextField
               variant='outlined'
               label='label'
@@ -297,7 +312,7 @@ function AddTemplates() {
               value={label}
               onChange={(e) => setLabel(e.target.value)}
             />
-          </Grid>
+          </Grid> */}
           <Grid item>
             <TextField
               variant='outlined'
@@ -322,14 +337,14 @@ function AddTemplates() {
               onChange={(e) => setPlaceholder(e.target.value)}
             />
           </Grid>
-          <Grid item>
+          {/* <Grid item>
             <TextField
               variant='outlined'
               label='value'
               value={valued}
               onChange={(e) => setValued(e.target.value)}
             />
-          </Grid>
+          </Grid> */}
           <Grid item>
             <TextField
               variant='outlined'

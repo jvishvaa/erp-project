@@ -449,7 +449,7 @@ const RatingCreate = () => {
             <Typography color='textPrimary' variant='h6'>
               <strong>Activity</strong>
             </Typography>
-            <Typography color='Primary'>Create Rating Type</Typography>
+            <Typography color='textPrimary' style={{fontWeight:'bold', fontSize:'22px'}}>Create Rating</Typography>
           </Breadcrumbs>
         </Grid>
       </Grid>

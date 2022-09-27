@@ -547,11 +547,17 @@ const Layout = ({ children, history }) => {
       }
 
       case 'Grievance Teacher': {
-        history.push('/griviences/admin-view');
+        window.open(
+          `${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`,
+          '_blank'
+        );
         break;
       }
       case 'Grievance Student': {
-        history.push('/griviences/student-view');
+        window.open(
+          `${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`,
+          '_blank'
+        );
         break;
       }
 
