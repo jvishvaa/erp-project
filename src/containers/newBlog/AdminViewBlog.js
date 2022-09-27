@@ -1001,7 +1001,7 @@ const AdminViewBlog = () => {
               marginBottom: '9px',
             }}
           >
-            <div style={{ marginLeft: '23px', marginTop: '28px', overflow:'scroll' }}>
+            <div style={{ marginLeft: '23px', marginTop: '28px'}}>
               <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
               <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
               <div style={{ fontSize: '10px', color: '#7F92A3' }}>
