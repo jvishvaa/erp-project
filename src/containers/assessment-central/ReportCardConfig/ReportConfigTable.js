@@ -74,6 +74,14 @@ const columns = [
     align: 'center',
     labelAlign: 'center',
   },
+  
+  {
+    id: 'priority',
+    label: 'Priority',
+    minWidth: 100,
+    align: 'center',
+    labelAlign: 'center',
+  },
   {
     id: 'optional', 
     label: 'Marks/Metrics',
@@ -439,6 +447,9 @@ const ReportConfigTable = () => {
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {data?.column_text}
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {data?.priority}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {data?.weightage === 0 ? 'NA' : data?.weightage}
