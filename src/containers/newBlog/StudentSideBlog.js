@@ -892,7 +892,7 @@ const StudentSideBlog = () => {
                 style={{
                   border: '1px solid #813032',
                   width: '583px',
-                  background: '#47B8CF',
+                  background: 'white',
                   height: 'auto',
                 }}
               >

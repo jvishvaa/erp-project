@@ -179,6 +179,17 @@ const AdminViewBlog = () => {
   const [value, setValue] = useState(0);
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [preview, setPreview] = useState(false);
+  const [totalCountUnassign,setTotalCountUnassign] = useState(0);
+  const [currentPageUnassign,setCurrentPageUnassign] = useState(1)
+  const [totalPagesUnassign,setTotalPagesUnassign] = useState(0);
+  const [limitUnassign,setLimitUnassign] = useState(10);
+  const [isClickedUnassign, setIsClickedUnassign] = useState(false);
+  const [totalCountAssigned,setTotalCountAssigned] = useState(0);
+  const [currentPageAssigned,setCurrentPageAssigned] = useState(1)
+  const [totalPagesAssigned,setTotalPagesAssigned] = useState(0);
+  const [limitAssigned,setLimitAssigned] = useState(10);
+  const [isClickedAssigned, setIsClickedAssigned] = useState(false);
+
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
   // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
@@ -223,12 +234,14 @@ const AdminViewBlog = () => {
 
   const handleBranch = (event, value) => {
     setSelectedBranch([])
+    setAssigneds([])
+    setUnAssigneds([])
     if (value?.length) {
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...branchList].filter(({ id }) => id !== 'all')
-          : value;
-      console.log(value.id, 'value');
+      // value =
+      //   value.filter(({ id }) => id === 'all').length === 1
+      //     ? [...branchList].filter(({ id }) => id !== 'all')
+      //     : value;
+      // console.log(value.id, 'value');
       setSelectedBranch(value);
     }
   };
@@ -372,7 +385,7 @@ const AdminViewBlog = () => {
 
     axios
       .get(
-        `${endpoints.newBlog.unAssign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=true`,
+        `${endpoints.newBlog.unAssign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -380,7 +393,10 @@ const AdminViewBlog = () => {
         }
       )
       .then((response) => {
-        console.log(response);
+        setTotalCountUnassign(response?.data?.total)
+        setTotalPagesUnassign(response?.data?.page_size)
+        setCurrentPageUnassign(response?.data?.page + 1)
+        setLimitUnassign(Number(limitUnassign))
         setUnAssigneds(response?.data?.result);
       });
   };
@@ -390,7 +406,7 @@ const AdminViewBlog = () => {
 
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=false`,
+        `${endpoints.newBlog.Assign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -398,7 +414,10 @@ const AdminViewBlog = () => {
         }
       )
       .then((response) => {
-        console.log(response);
+        setTotalCountAssigned(response?.data?.total)
+        setTotalPagesAssigned(response?.data?.page_size)
+        setCurrentPageAssigned(response?.data?.page + 1)
+        setLimitAssigned(Number(limitAssigned))
         setAssigneds(response?.data?.result);
       });
   };
@@ -420,11 +439,23 @@ const AdminViewBlog = () => {
   useEffect(() =>{
     if(moduleId){
       if(selectedAcademicYear?.id > 0)
-      callApi(
-        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
-        'branchList'
-      );
 
+    axios
+    .get(
+      `${endpoints.newBlog.activityBranch}`,
+      {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      }
+    )
+    .then((response) => {
+      if(response?.data?.status_code === 200){
+        // console.log(response?.data?.result,'pk 2')
+        setBranchList(response?.data?.result|| [])
+
+      }
+    });
     }
 
   },[window.location.pathname, moduleId])
@@ -465,10 +496,12 @@ const AdminViewBlog = () => {
   console.log(selectedBranch, 'selectedBranch');
 
   useEffect(() => {
-    getUnAssinged();
+    if(selectedBranch?.length !== 0){
+      getUnAssinged();
+      getAssinged();
 
-    getAssinged();
-  }, [value]);
+    }
+  }, [value, selectedBranch, currentPageAssigned,currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
   const handlePreview = (data) => {
     setPreview(true);
@@ -552,6 +585,16 @@ const AdminViewBlog = () => {
       setAlert('error', 'This features not Implemented')
     }
   }
+
+  const handlePaginationAssign = (event, page) =>{
+    setIsClickedAssigned(true);
+    setCurrentPageAssigned(page);
+  }
+  const handlePaginationUnassign = (event, page) =>{
+    setIsClickedUnassign(true);
+    setCurrentPageUnassign(page);
+  }
+
 
   return (
     <Layout>
@@ -659,7 +702,7 @@ const AdminViewBlog = () => {
             // style={{ width: '82%', marginLeft: '4px' }}
             options={branchList || []}
             value={selectedBranch || []}
-            getOptionLabel={(option) => option?.branch?.branch_name}
+            getOptionLabel={(option) => option?.name}
             filterSelectedOptions
             onChange={(event, value) => {
               handleBranch(event, value);
@@ -676,7 +719,7 @@ const AdminViewBlog = () => {
           />
         </Grid>
         &nbsp;&nbsp;
-        <Grid item md={2}>
+        {/* <Grid item md={2}>
           <Button
             variant='contained'
             color='primary'
@@ -684,9 +727,9 @@ const AdminViewBlog = () => {
             className={classes.buttonColor}
             onClick={handleSearch}
           >
-            Search
+            Search hi
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <Grid container>
@@ -757,7 +800,7 @@ const AdminViewBlog = () => {
                   </TableCell>
                   {/* <TableCell className={classes.tableCell}>Grade </TableCell> */}
                   <TableCell className={classes.tableCell}>Topic Name</TableCell>
-                  <TableCell className={classes.tableCell}>Submission On</TableCell>
+                  <TableCell className={classes.tableCell}>Assigned On</TableCell>
                   <TableCell className={classes.tableCell}>Created By</TableCell>
                   <TableCell style={{ width: '252px' }} className={classes.tableCell}>
                     Action
@@ -772,7 +815,7 @@ const AdminViewBlog = () => {
                     tabIndex={-1}
                     // key={`user_table_index${i}`}
                   >
-                    <TableCell className={classes.tableCells}>{index + 1}</TableCell>
+                    <TableCell className={classes.tableCells}>{index + 1 + (Number(currentPageAssigned) -1) * limitAssigned}</TableCell>
                     {/* <TableCell className={classes.tableCells}>
                       {response?.grades.map((obj) => obj?.name).join(', ')}
                     </TableCell> */}
@@ -818,21 +861,21 @@ const AdminViewBlog = () => {
                 </TableBody>
               ))}
             </Table>
-            {/* <TablePagination
+            <TablePagination
               component='div'
-              // count={totalCount}
-              // rowsPerPage={limit}
-              // page={Number(currentPage) - 1}
-              // onChangePage={(e, page) => {
-              // handlePagination(e, page + 1);
-              // }}
+              count={totalCountAssigned}
+              rowsPerPage={limitAssigned}
+              page={Number(currentPageAssigned) - 1}
+              onChangePage={(e, page) => {
+              handlePaginationAssign(e, page + 1);
+              }}
               rowsPerPageOptions={false}
               className='table-pagination'
               classes={{
                 spacer: classes.tablePaginationSpacer,
                 toolbar: classes.tablePaginationToolbar,
               }}
-            /> */}
+            />
           </TableContainer>
         </Paper>
       )}
@@ -854,7 +897,7 @@ const AdminViewBlog = () => {
                   </TableCell>
                   {/* <TableCell className={classes.tableCell}>Grade </TableCell> */}
                   <TableCell className={classes.tableCell}>Topic Name</TableCell>
-                  <TableCell className={classes.tableCell}>Assigned On</TableCell>
+                  <TableCell className={classes.tableCell}>Submission On</TableCell>
                   <TableCell className={classes.tableCell}>Created By</TableCell>
                   <TableCell style={{ width: '287px' }} className={classes.tableCell}>
                     Action
@@ -869,7 +912,7 @@ const AdminViewBlog = () => {
                     tabIndex={-1}
                     // key={`user_table_index${i}`}
                   >
-                    <TableCell className={classes.tableCells}>{index + 1}</TableCell>
+                    <TableCell className={classes.tableCells}>{index + 1 +(Number(currentPageUnassign) -1) * limitUnassign}</TableCell>
                     {/* <TableCell className={classes.tableCells}>
                       {response?.grades.map((obj) => obj?.name).join(', ')}
                     </TableCell> */}
@@ -916,21 +959,21 @@ const AdminViewBlog = () => {
                 </TableBody>
               ))}
             </Table>
-            {/* <TablePagination
+            <TablePagination
               component='div'
-              // count={totalCount}
-              // rowsPerPage={limit}
-              // page={Number(currentPage) - 1}
-              // onChangePage={(e, page) => {
-              // handlePagination(e, page + 1);
-              // }}
+              count={totalCountUnassign}
+              rowsPerPage={limitUnassign}
+              page={Number(currentPageUnassign) - 1}
+              onChangePage={(e, page) => {
+              handlePaginationUnassign(e, page + 1);
+              }}
               rowsPerPageOptions={false}
               className='table-pagination'
               classes={{
                 spacer: classes.tablePaginationSpacer,
                 toolbar: classes.tablePaginationToolbar,
               }}
-            /> */}
+            />
           </TableContainer>
 }
         </Paper>

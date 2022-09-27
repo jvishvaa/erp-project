@@ -111,6 +111,11 @@ const PendingReview = (props) => {
 
   console.log(inputList, 'input');
   const [totalSubmitted, setTotalSubmitted] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [limit, setLimit] = useState(9);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isClicked, setIsClicked] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
 
   const handleCloseViewMore = () => {
     setView(false);
@@ -197,26 +202,33 @@ const PendingReview = (props) => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
   const getTotalSubmitted = () => {
-    const branchIds = props.selectedBranch.map((obj) => obj.id);
-    console.log(branchIds, 'branchIds');
+      if(props){
+        const branchIds = props.selectedBranch?.map((obj) => obj?.id);
+        const gradeIds = props.selectedGrade?.id;
+        axios
+          .get(
+            `${
+              endpoints.newBlog.studentSideApi
+            }?section_ids=null&&user_id=null&&activity_detail_id=${
+              ActivityId?.id
+            }&branch_ids=${branchIds == '' ? null : branchIds}&grade_id=${gradeIds}&is_reviewed=False`,
+            {
+              headers: {
+                'X-DTS-HOST': X_DTS_HOST,
+              },
+            }
+          )
+          .then((response) => {
+            props.setFlag(false);
+            setTotalCount(response?.data?.count);
+            setTotalPages(response?.data?.page_size);
+            setCurrentPage(response?.data?.page + 1);
+            setLimit(Number(limit));
+            setAlert('success', response?.data?.message)
+            setTotalSubmitted(response?.data?.result);
+          });
 
-    axios
-      .get(
-        `${
-          endpoints.newBlog.studentSideApi
-        }?section_ids=null&&user_id=null&&activity_detail_id=${
-          ActivityId?.id
-        }&branch_ids=${branchIds == '' ? null : branchIds}&is_reviewed=False`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalSubmitted(response?.data?.result);
-      });
+      }    
   };
 
   const [ratingReview, setRatingReview] = useState([]);
@@ -257,9 +269,18 @@ const PendingReview = (props) => {
 
   // let counting = '5';
 
+
+  useEffect(()=>{
+    if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
+      setTotalSubmitted([])
+    }
+  },[props.selectedBranch, props.selectedGrade, props.flag])
+
   useEffect(() => {
-    getTotalSubmitted();
-  }, [props.selectedBranch]);
+    if(props.flag){
+      getTotalSubmitted();
+    }
+  }, [props.selectedBranch, props.selectedGrade,props.flag, currentPage]);
 
   const classes = useStyles();
   const ReviewPage = () => {
@@ -278,6 +299,12 @@ const PendingReview = (props) => {
     })
     return (average / aver)*5 
   }
+
+  const handlePagination = (event, page) =>{
+    setIsClicked(true);
+    setCurrentPage(page);
+  }
+
 
   return (
     <>
@@ -332,21 +359,21 @@ const PendingReview = (props) => {
               </TableBody>
             ))}
           </Table>
-          {/* <TablePagination
+          <TablePagination
             component='div'
-            // count={totalCount}
-            // rowsPerPage={limit}
-            // page={Number(currentPage) - 1}
-            // onChangePage={(e, page) => {
-            // handlePagination(e, page + 1);
-            // }}
+            count={totalCount}
+            rowsPerPage={limit}
+            page={Number(currentPage) - 1}
+            onChangePage={(e, page) => {
+            handlePagination(e, page + 1);
+            }}
             rowsPerPageOptions={false}
             className='table-pagination'
             classes={{
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          /> */}
+          />
         </TableContainer>
       </Paper>
 
@@ -370,7 +397,7 @@ const PendingReview = (props) => {
                 style={{
                   border: '1px solid #813032',
                   width: '583px',
-                  background: '#47B8CF',
+                  background: 'white',
                   height: 'auto',
                 }}
               >
@@ -487,7 +514,7 @@ const PendingReview = (props) => {
                 }}
               >
                 {' '}
-                <Button
+                {/* <Button
                   variant='outlined'
                   size='medium'
                   onClick={confirmassign}
@@ -496,7 +523,7 @@ const PendingReview = (props) => {
                   startIcon={<BookmarksIcon style={{ color: 'grey' }} />}
                 >
                   Shortlist
-                </Button>{' '}
+                </Button>{' '} */}
                 &nbsp;
                 {/* <Button
                   variant='contained'

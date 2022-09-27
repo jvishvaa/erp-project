@@ -344,13 +344,15 @@ const CreateActivityType = () => {
           }
         )
         .then((response) => {
-          console.log(response);
-          // alert.success('activity successfully created');
-          setAlert('success', 'Activity Successfully Created');
-  
-          setActivityType('');
-          setAccordianBulkFilter(false);
-          getActivityCategory();
+          if(response?.data?.status_code === 400){
+            setAlert('error',response?.data?.message)
+            return
+          }else{
+            setAlert('success', 'Activity Successfully Created');
+            setActivityType('');
+            setAccordianBulkFilter(false);
+            getActivityCategory();
+          }
         });
     }
   };

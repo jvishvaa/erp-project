@@ -96,6 +96,7 @@ const todayDate = moment();
     }
     showdata();
   }, [history]);
+
   const showdata=()=>{
     axios
     .get(
@@ -118,9 +119,12 @@ const todayDate = moment();
   
 
   const handleSubmit=()=>{
+    if(desc.length === 0) {
+      setAlert('error', 'Please Enter Text in Template')
+      return
+    }
     const dummyData= JSON.parse(previewData?.template?.html_file)
     dummyData[0].placeholder = desc
-
     // const formData = new FormData();
     // formData.append('activity_detail_id', activityId);
     // formData.append('user_id', User_id?.id);
@@ -139,27 +143,27 @@ const todayDate = moment();
 
       },
       "content": {
-        html_text:JSON.stringify(dummyData),
+        html_text:desc,
         // image_data:previewData?.template?.html_file,
       }
     }
 
-    axios
-      .post(
-        `${endpoints.newBlog.studentSideWriteApi}`,
-        body,
-        {
-          headers: {
-            // Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        setAlert('success', 'Activity Successfully Created');
-        history.push('/blog/studentview');
+      axios
+        .post(
+          `${endpoints.newBlog.studentSideWriteApi}`,
+          body,
+          {
+            headers: {
+              // Authorization: `${token}`,
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          setAlert('success', 'Activity Successfully Created');
+          history.push('/blog/studentview');
 
-      })
+        })
 
   }
   return (
