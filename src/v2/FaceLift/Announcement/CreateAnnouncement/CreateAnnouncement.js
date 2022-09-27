@@ -162,7 +162,7 @@ const CreateAnnouncement = () => {
   });
   const sectionOptions = sectionData?.map((each) => {
     return (
-      <Option key={each?.id} value={each?.section_id} mappingId={each?.id}>
+      <Option key={each?.id} value={each?.id} sectionId={each?.section_id}>
         {each?.section__section_name}
       </Option>
     );
@@ -207,7 +207,7 @@ const CreateAnnouncement = () => {
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
         branch_id: branchId,
-        module_id: 2,
+        module_id: moduleId,
         grade_id: grades,
       });
     }
@@ -218,8 +218,8 @@ const CreateAnnouncement = () => {
     setSectionMappingIds([]);
   };
   const handleSection = (e) => {
-    const sections = e.map((item) => item?.value).join(',');
-    const sectionMappingIds = e.map((item) => item?.mappingId).join(',');
+    const sections = e.map((item) => item?.sectionId).join(',');
+    const sectionMappingIds = e.map((item) => item?.value).join(',');
     setSectionIds(sections);
     setSectionMappingIds(sectionMappingIds);
   };

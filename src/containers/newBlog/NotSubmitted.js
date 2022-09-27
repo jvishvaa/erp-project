@@ -13,6 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 
 
 const useStyles = makeStyles({
@@ -90,8 +91,14 @@ const rows = [
 ];
 
 const NotSubmitted = (props) => {
+  const { setAlert } = useContext(AlertNotificationContext);
   const [checked, setChecked] = React.useState();
   const [totalSubmitted, setTotalSubmitted] = useState([]);
+  const [totalCount,setTotalCount] = useState(0);
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPages] = useState(0);
+  const [limit,setLimit] = useState(10);
+  const [isClicked, setIsClicked] = useState(false);
 
   const classes = useStyles();
 
@@ -100,27 +107,50 @@ const NotSubmitted = (props) => {
   };
 
   const getTotalSubmitted = () => {
-    const branchIds = props.selectedBranch.map((obj) => obj.id);
+    if(props){
+      const branchIds = props.selectedBranch.map((obj) => obj.id);
+      const gradeIds = props.selectedGrade?.id;
+      axios
+        .get(
+          `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=null&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&is_submitted=False&page=${currentPage}&page_size=${limit}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          props.setFlag(false)
+          setTotalCount(response?.data?.count)
+          setTotalPages(response?.data?.page_size)
+          setCurrentPage(response?.data?.page)
+          setLimit(Number(limit))
+          setAlert('success', response?.data?.message)
+          setTotalSubmitted(response?.data?.result);
+        });
 
-
-    axios
-      .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=null&branch_ids=${branchIds==""?null:branchIds}&is_submitted=False`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalSubmitted(response?.data?.result);
-      });
+    }
   };
 
+
+  useEffect(()=>{
+    if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
+      setTotalSubmitted([])
+    }
+
+  },[props.selectedBranch, props.selectedGrade, props.flag])
+
   useEffect(() => {
-    getTotalSubmitted();
-  }, []);
+    if(props.flag){
+      getTotalSubmitted();
+
+    }
+  }, [props.selectedBranch, props.selectedGrade,props.flag, currentPage]);
+
+  const handlePagination = (event, page) =>{
+    setIsClicked(true);
+    setCurrentPage(page);
+  }
 
   return (
     // <TableContainer style={{ width: '100%' }} component={Paper}>
@@ -190,21 +220,21 @@ const NotSubmitted = (props) => {
           </TableBody>
          ) )}  
         </Table>
-        {/* <TablePagination
+        <TablePagination
           component='div'
-          // count={totalCount}
-          // rowsPerPage={limit}
-          // page={Number(currentPage) - 1}
-          // onChangePage={(e, page) => {
-          // handlePagination(e, page + 1);
-          // }}
+          count={totalCount}
+          rowsPerPage={limit}
+          page={Number(currentPage) - 1}
+          onChangePage={(e, page) => {
+          handlePagination(e, page + 1);
+          }}
           rowsPerPageOptions={false}
           className='table-pagination'
           classes={{
             spacer: classes.tablePaginationSpacer,
             toolbar: classes.tablePaginationToolbar,
           }}
-        /> */}
+        />
       </TableContainer>
     </Paper>
   );

@@ -96,6 +96,7 @@ const stage = {
     baseURLCentral: 'https://stage.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     baseEvent: 'http://events.letseduvate.com/',
+    newBlogURL:'https://activities.letseduvate.com/',
   },
 };
 
@@ -122,7 +123,7 @@ const prod = {
     msReportsUrl: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
-    newBlogURL:'https://activities.letseduvate.com',
+    newBlogURL:'https://activities.letseduvate.com/',
   },
 };
 

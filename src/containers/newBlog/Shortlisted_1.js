@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -45,6 +45,7 @@ import StarsIcon from '@material-ui/icons/Stars';
 import Rating from '@material-ui/lab/Rating';
 import axios from 'axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 
 
 const drawerWidth = 350;
@@ -105,7 +106,7 @@ const Shortlisted_1 = (props) => {
   const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
-
+  const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = React.useState();
   const [month, setMonth] = React.useState('1');
   const [status, setStatus] = React.useState('');
@@ -124,6 +125,11 @@ const Shortlisted_1 = (props) => {
   const [selectedSectionIds, setSelectedSectionIds] = useState('');
   const [value, setValue] = useState(0);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
+  const [totalCount,setTotalCount] = useState(0);
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPages] = useState(0);
+  const [limit,setLimit] = useState(10);
+  const [isClicked, setIsClicked] = useState(false);
 
 
   const [desc, setDesc] = useState('');
@@ -393,26 +399,50 @@ const Shortlisted_1 = (props) => {
     history.push('/blog/blogview');
   };
   const getTotalSubmitted = () => {
-    const branchIds = props.selectedBranch.map((obj) => obj.id);
+    if(props){
+      const branchIds = props.selectedBranch.map((obj) => obj.id);
+      const gradeIds = props.selectedGrade?.id
+  
+      axios
+        .get(
+          `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&is_bookmarked=True`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response, 'response');
+          props.setFlag(false);
+          setTotalCount(response?.data?.count)
+          setTotalPages(response?.data?.page_size)
+          setCurrentPage(response?.data?.page + 1)
+          setLimit(Number(limit))
+          setAlert('success', response?.data?.message)
+          setTotalSubmitted(response?.data?.result);
+        });
 
-    axios
-      .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&branch_ids=${branchIds==""?null:branchIds}&is_bookmarked=True`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalSubmitted(response?.data?.result);
-      });
+    }
   };
 
+  useEffect(()=>{
+    if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
+      setTotalSubmitted([])
+    }
+
+  },[props.selectedBranch, props.selectedGrade, props.flag])
+
   useEffect(() => {
-    getTotalSubmitted();
-  }, []);
+    if(props.flag){
+      getTotalSubmitted();
+    }
+  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
+
+  const handlePagination = (event, page) =>{
+    setIsClicked(true);
+    setCurrentPage(page);
+  }
 
   return (<>
     <Grid
@@ -503,33 +533,34 @@ const Shortlisted_1 = (props) => {
                     Publish
                   </Button>{' '}
                   &nbsp;
-                  <Button
+                  {/* <Button
                     variant='outlined'
                     size='small'
                     className={classes.buttonColor1}
+                    
                   >
                     Check Review{' '}
-                  </Button>{' '}
+                  </Button>{' '} */}
                 </TableCell>
               </TableRow>
             </TableBody>
             ))}
           </Table>
-          {/* <TablePagination
+          <TablePagination
             component='div'
-            // count={totalCount}
-            // rowsPerPage={limit}
-            // page={Number(currentPage) - 1}
-            // onChangePage={(e, page) => {
-            // handlePagination(e, page + 1);
-            // }}
+            count={totalCount}
+            rowsPerPage={limit}
+            page={Number(currentPage) - 1}
+            onChangePage={(e, page) => {
+            handlePagination(e, page + 1);
+            }}
             rowsPerPageOptions={false}
             className='table-pagination'
             classes={{
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          /> */}
+          />
         </TableContainer>
       </Paper>
   </>);

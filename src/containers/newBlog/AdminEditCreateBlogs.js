@@ -26,6 +26,7 @@ import {
   Select,
   Dialog,
   DialogTitle,
+  Checkbox,
 } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import Layout from 'containers/Layout';
@@ -49,6 +50,7 @@ import Tab from '@material-ui/core/Tab';
 import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
 import BackupIcon from '@material-ui/icons/Backup';
+import Carousel from "react-elastic-carousel";
 
 import {
   fetchBranchesForCreateUser as getBranches,
@@ -162,6 +164,11 @@ const AdminEditCreateBlogs = () => {
   const [desc, setDesc] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
+  const [templates,setTemplates] =useState([]);
+  const [checked, setChecked] = React.useState("");
+  const [activityName, setActivityName] = useState([]);
+  const [templateId,setTemplatesId] = useState(null);
+  const [showTemplate,setShowTemplate] = useState(false);
 
   const [selectedFile, setSelectedFile] = useState('');
   const [filterData, setFilterData] = useState({
@@ -229,7 +236,6 @@ const AdminEditCreateBlogs = () => {
     },
   ];
   console.log(history, 'history');
-  const [activityName, setActivityName] = useState([]);
   const [changeText,setChangeText]=useState("");
   console.log(changeText.name,"changetex")
   const handleChangeActivity = (e, value) => {
@@ -305,6 +311,11 @@ const AdminEditCreateBlogs = () => {
         //   setGradeList(transformedData);
         // }
       });
+  };
+  
+
+  const handleChange = (event,value) => {
+    setChecked(value);
   };
 
   const fetchSections = () => {
@@ -536,6 +547,8 @@ const AdminEditCreateBlogs = () => {
       .then((response) => {
         // console.log(response?.data?.result?.sections?.map((obj)=>(obj)),"handlebranch");
         // setAssignPreview(response);
+        setTemplatesId(response?.data?.result?.template?.id)
+        setActivityName(response?.data?.result?.activity_type)
         setPreviewData(response?.data?.result);
         setActivityName(response?.data?.result?.activity_type);
         setSelectedBranch(response?.data?.result?.branches.map((obj)=>obj))
@@ -607,6 +620,50 @@ const AdminEditCreateBlogs = () => {
   const handleGoBack =() => {
     history.goBack()
   }
+
+  const breakPoints = [
+    { width: 1, itemsToShow: 1 },
+    { width: 550, itemsToShow: 2, itemsToScroll: 2 },
+    { width: 768, itemsToShow: 3 },
+    { width: 1200, itemsToShow: 4 }
+  ];
+
+  const getTemplate = (data) => {
+    if(data){
+      axios
+        .get(`${endpoints.newBlog.getTemplates}${data}/`, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+  
+          console.log(response?.data?.result, 'session');
+          setTemplates(response?.data?.result);
+       
+        });
+
+    }
+  };
+
+  useEffect(() =>{
+    if(activityName){
+      getTemplate(activityName.id)
+    }
+  },[selectedBranch,selectedGrade,activityName]);
+
+  // console.log()
+
+  const isSelected = (id) => {
+    if(templateId === id){
+     return true;
+    }else{
+      return false;
+    }
+
+  }
+  
+  console.log(isSelected,'selected')
 
   return (
     <Layout>
@@ -903,6 +960,43 @@ const AdminEditCreateBlogs = () => {
             </div>
           </div>
         </div> */}
+        <div 
+        style={{
+          border: '1px solid lightgrey',
+            borderRadius: '5px',
+            height: 'auto',
+            marginTop: '20px',
+        }}>
+        {selectedBranch?.length !== 0 && activityName?.length !== 0  ? (
+          <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
+        {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
+        <div style={{ height: "200px", color: "#fff" }}>this is slide 2</div>
+        <div style={{ height: "200px", color: "#fff" }}>this is slide 3</div> */}
+        {console.log(templates,'FP')}
+        {templates?.map((obj,index)=>{
+          const isItemSelected = isSelected(obj?.id);
+          console.log(isItemSelected,"KP")
+            return(
+            <div style={{display:'flex', alignItems:'center',flexDirection:'column'}}>
+            <img src={obj?.template_path} alt="images" style={{maxWidth:"34%"}}/> 
+            {/* <div> */}
+            <Checkbox
+            onChange={()=>handleChange(obj?.id,obj?.id)}
+            className={classes.tickSize}     
+            checked={isItemSelected}
+            color="primary"
+            inputProps={{ 'aria-label': 'secondary checkbox' }}
+      />
+      <div>{obj?.title}</div>
+      {/* </div> */}
+      </div>
+
+        )         
+    })}
+
+          </Carousel>
+          ) : ''}
+        </div>
         <div
           style={{
             marginTop: '60px',

@@ -563,20 +563,27 @@ const StudentSideBlog = () => {
                   <Typography
                     style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
                   >
-                    word limit-300{' '}
+                    {/* word limit-300{' '} */}
                   </Typography>
                   <div
                     color='textSecondary'
                     component='p'
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
+                    {response && response?.issue_date == null ? (
+                      ''
+
+                    ) : (
                     <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
-                      assinged - {response?.issue_date.substring(8,10)}&nbsp;
-                      {new Date(response?.issue_date).toLocaleString('en-us', {
+                      
+                      assinged - {response?.issue_date?.substring(8,10)}&nbsp;
+                      {new Date(response?.issue_date)?.toLocaleString('en-us', {
                         month: 'short',
                       })}
                       &nbsp;{response?.issue_date.substring(0, 4)}
-                    </div>{' '}
+                    </div>
+
+                    )}
                     &nbsp;&nbsp;&nbsp;
                     <div
                       style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
@@ -673,7 +680,7 @@ const StudentSideBlog = () => {
                   <Typography
                     style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
                   >
-                    word limit-300{' '}
+                    {/* word limit-300{' '} */}
                   </Typography>
                   <div
                     color='textSecondary'
@@ -796,7 +803,7 @@ const StudentSideBlog = () => {
                   <Typography
                     style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
                   >
-                    word limit-300{' '}
+                    {/* word limit-300{' '} */}
                   </Typography>
                   <div
                     color='textSecondary'
@@ -892,7 +899,7 @@ const StudentSideBlog = () => {
                 style={{
                   border: '1px solid #813032',
                   width: '583px',
-                  background: '#47B8CF',
+                  background: 'white',
                   height: 'auto',
                 }}
               >

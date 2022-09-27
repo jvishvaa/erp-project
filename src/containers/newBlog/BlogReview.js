@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import Layout from 'containers/Layout';
 import {
@@ -15,6 +15,7 @@ import {
 // import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarsIcon from '@material-ui/icons/Stars';
 import RatingScale from './RatingScale';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -33,6 +34,8 @@ import Shortlisted from './Shortlisted_1';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import { NavigateNext as NavigateNextIcon } from '@material-ui/icons'
+import axios from 'axios';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 
 const DEFAULT_RATING = 0;
 
@@ -88,19 +91,21 @@ const BlogReview = () => {
   const [value, setValue] = React.useState(0);
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
   const [branchList, setBranchList] = useState([]);
   let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
   const newBranches = JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
   const user_level = dataes?.user_level;
   const [moduleId, setModuleId] = useState();
   const [view, setView] = useState(false);
+  const [flag,setFlag] = useState(false);
   const [gradeList, setGradeList] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  console.log(ActivityId, 'ActivityId');
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -117,15 +122,22 @@ const BlogReview = () => {
   // }, [history]);
   useEffect(() =>{
     if(moduleId){
-      if(selectedAcademicYear?.id > 0)
-      callApi(
-        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
-        'branchList'
-      );
+      axios
+      .get(`${endpoints.newBlog.activityBranch}`,
+      {
+        headers:{
+          'X-DTS-HOST' : X_DTS_HOST,
+        },
+      })
+      .then((response) =>{
+        if(response?.data?.status_code === 200){
+          console.log(response?.data?.result,'pk 2')
+          setBranchList(response?.data?.result|| [])
+  
+        }
 
+      })
     }
-
-
   },[window.location.pathname, moduleId])
 
   useEffect(() => {
@@ -145,14 +157,6 @@ const BlogReview = () => {
               setModuleId(item.child_id);
               localStorage.setItem('moduleId', item.child_id);
             }
-            // if (
-            //   item.child_name === 'Create Rating' 
-            //     // &&
-            //     // window.location.pathname === '/erp-online-class-student-view'
-            // ) {
-            //   setModuleId(item.child_id);
-            //   localStorage.setItem('moduleId', item.child_id);
-            // }
           });
         }
       });
@@ -215,25 +219,63 @@ function callApi(api,key){
 
   const handleBranch = (event, value) => {
     setSelectedBranch([])
+    setSelectedGrade([])
     if (value?.length) {
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...branchList].filter(({ id }) => id !== 'all')
-          : value;
-          console.log(value.id,"value");
-          // const selectedId = value.map((el) => el?.branch?.id);
-          const selectedId = value.map((item) => item?.id)
+      const branchIds = value.map((obj) => obj?.id)
+      // value =
+      //   value.filter(({ id }) => id === 'all').length === 1
+      //     ? [...branchList].filter(({ id }) => id !== 'all')
+      //     : value;
+      //     console.log(value.id,"value");
+      //     // const selectedId = value.map((el) => el?.branch?.id);
+      //     const selectedId = value.map((item) => item?.id)
       setSelectedBranch(value);
-      callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
-        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-        'gradeList'
-      );
+      // callApi(
+      //   `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
+      //   }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+      //   'gradeList'
+      // );
+      if(branchIds){
+        axios
+        .get(`${endpoints.newBlog.activityGrade}?branch_ids=${branchIds}`,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) =>{
+          // debugger;
+          console.log(response?.data?.result);
+          setGradeList(response?.data?.result)
+        })
+  
+      }
 
-    }
+      }
   
    
   };
+
+  const handleGrade =(event, value) =>{
+    setSelectedGrade([])
+    if(value){
+      console.log(value,'hk 33')
+      setSelectedGrade(value)
+    }
+  }
+
+  const goSearch =() =>{
+    if(selectedBranch?.length === 0){
+      setAlert('error','Please Select Branch');
+      return
+    }else if(selectedGrade?.length == 0){
+      setAlert('error', 'Please Select Grade');
+      return
+    }else{
+      setFlag(true);
+    }
+
+  }
 
   return (
     <div>
@@ -324,7 +366,7 @@ function callApi(api,key){
               // style={{ width: '82%', marginLeft: '4px' }}
               options={branchList || []}
               value={selectedBranch || []}
-              getOptionLabel={(option) => option?.branch?.branch_name}
+              getOptionLabel={(option) => option?.name}
               filterSelectedOptions
               onChange={(event, value) => {
                 handleBranch(event, value);
@@ -349,13 +391,13 @@ function callApi(api,key){
               limitTags={1}
               size='small'
               className='filter-student meeting-form-input'
-              // options={gradeList || []}
-              // getOptionLabel={(option) => option?.name || ''}
+              options={gradeList || []}
+              getOptionLabel={(option) => option?.name || ''}
               filterSelectedOptions
-              // value={selectedGrade || []}
-              // onChange={(event, value) => {
-              //   handleGrade(event, value);
-              // }}
+              value={selectedGrade || []}
+              onChange={(event, value) => {
+                handleGrade(event, value);
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -370,7 +412,7 @@ function callApi(api,key){
           <div style={{ paddingLeft: '39px' }}>
             {/* </Grid> */}
             {/* <Grid item md={2} xs={12}> */}
-            <Button style={{ width: '112px', backgroundColor: 'primary' }}>Search</Button>
+            <Button variant='contained' color='primary' style={{ width: '112px', backgroundColor: 'primary'}} onClick={goSearch}>Search</Button>
           </div>
           <div style={{ paddingLeft: '39px' }}>
             <Button 
@@ -402,26 +444,26 @@ function callApi(api,key){
                     }}
                     className={value === 0 ? classes.tabsFont : classes.tabsFont1}
                   />
-                    {/* <Tab
+                    <Tab
                     label='Not Submitted'
                     classes={{
                       selected: classes.selected1,
                     }}
                     className={value === 1 ? classes.tabsFont : classes.tabsFont1}
-                  /> */}
+                  />
                   <Tab
                     label='Reviewed'
                     classes={{
                       selected: classes.selected1,
                     }}
-                    className={value === 1 ? classes.tabsFont : classes.tabsFont1}
+                    className={value === 2 ? classes.tabsFont : classes.tabsFont1}
                   />
                     <Tab
                     label='Shortlisted'
                     classes={{
                       selected: classes.selected1,
                     }}
-                    className={value === 2? classes.tabsFont : classes.tabsFont1}
+                    className={value === 3 ? classes.tabsFont : classes.tabsFont1}
                   />
 
                   { user_level==11 ?"":
@@ -430,7 +472,7 @@ function callApi(api,key){
                     classes={{
                       selected: classes.selected1,
                     }}
-                    className={value === 3 ? classes.tabsFont : classes.tabsFont1}
+                    className={value === 4 ? classes.tabsFont : classes.tabsFont1}
                   />
                 }
                   
@@ -449,12 +491,12 @@ function callApi(api,key){
           </div>
         </div>
         {console.log(value,'kl 33')}
-        {value == 0 && <PendingReview  selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} />}
-        {/* {value == 1 && <NotSubmitted selectedBranch={selectedBranch}/>} */}
+        {value == 0 && <PendingReview  selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag} />}
+        {value == 1 && <NotSubmitted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>}
 
-        {value == 1 && <Reviewed selectedBranch={selectedBranch}/>}
-        {value == 2 && <Shortlisted selectedBranch={selectedBranch}/>}
-        {value == 3 && <Published selectedBranch={selectedBranch}/>}
+        {value == 2 && <Reviewed selectedBranch={selectedBranch}  setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag} />}
+        {value == 3 && <Shortlisted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>}
+        {value == 4 && <Published selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>}
 
 
       </Layout>
