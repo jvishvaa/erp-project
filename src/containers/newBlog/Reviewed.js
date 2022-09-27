@@ -108,6 +108,11 @@ const Reviewed = (props) => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [submit, setSubmit] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
+  const [totalCount,setTotalCount] = useState(0);
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPages] = useState(0);
+  const [limit,setLimit] = useState(10);
+  const [isClicked, setIsClicked] = useState(false);
 
   let array = [];
   const getRatingView = (data) => {
@@ -161,21 +166,30 @@ const Reviewed = (props) => {
   };
 
   const getTotalSubmitted = () => {
-    const branchIds = props.selectedBranch.map((obj) => obj.id);
-
-    axios
-      .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=null&branch_ids=${branchIds==""?null:branchIds}&activity_detail_id=${ActivityId?.id}&is_reviewed=True`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalSubmitted(response?.data?.result);
-      });
+    if(props){
+      const branchIds = props.selectedBranch.map((obj) => obj.id);
+      const gradeIds = props?.selectedGrade?.id
+  
+      axios
+        .get(
+          `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=null&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&activity_detail_id=${ActivityId?.id}&is_reviewed=True`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          setTotalCount(response?.data?.count)
+          setTotalPages(response?.data?.page_size)
+          setCurrentPage(response?.data?.page + 1)
+          setLimit(Number(limit))
+          props.setFlag(false)
+          setAlert('success', response?.data?.message)
+          setTotalSubmitted(response?.data?.result);
+        });
+      
+    }
   };
 
   const assignPage = (data) => {
@@ -189,14 +203,29 @@ const Reviewed = (props) => {
     }
   };
 
+
+  useEffect(()=>{
+    if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
+      setTotalSubmitted([])
+    }
+
+  },[props.selectedBranch, props.selectedGrade, props.flag])
+
   useEffect(() => {
-    getTotalSubmitted();
-  }, [props.selectedBranch]);
+    if(props?.flag){
+      getTotalSubmitted();
+    }
+  }, [props.selectedBranch, props.selectedGrade,props.flag, currentPage]);
   const [view, setView] = useState(false);
   const [data, setData] = useState();
   const handleCloseViewMore = () => {
     setView(false);
   };
+
+  const handlePagination = (event, page) =>{
+    setIsClicked(true);
+    setCurrentPage(page);
+  }
 
   return (
     <>
@@ -289,21 +318,21 @@ const Reviewed = (props) => {
               </TableBody>
             ))}
           </Table>
-          {/* <TablePagination
+          <TablePagination
             component='div'
-            // count={totalCount}
-            // rowsPerPage={limit}
-            // page={Number(currentPage) - 1}
-            // onChangePage={(e, page) => {
-            // handlePagination(e, page + 1);
-            // }}
+            count={totalCount}
+            rowsPerPage={limit}
+            page={Number(currentPage) - 1}
+            onChangePage={(e, page) => {
+            handlePagination(e, page + 1);
+            }}
             rowsPerPageOptions={false}
             className='table-pagination'
             classes={{
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          /> */}
+          />
         </TableContainer>
       </Paper>
 

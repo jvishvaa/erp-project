@@ -481,10 +481,16 @@ const RatingCreate = () => {
           </TextField>
         </div>
         <div>
-          <Button onClick={handleCreateTemplate}> Add Template</Button>
+          <Button 
+          variant='contained'
+          color='primary'
+          onClick={handleCreateTemplate}> Add Template</Button>
         </div>
         <div>
-          <Button onClick={viewDisplay}>Add</Button>
+          <Button 
+          variant='contained'
+          color='primary'
+          onClick={viewDisplay}>Add</Button>
         </div>
       </div>
 
@@ -537,7 +543,7 @@ const RatingCreate = () => {
                 </TableBody>
               ))}
           </Table>
-          <TablePagination
+          {/* <TablePagination
             component='div'
             // count={totalCount}
             // rowsPerPage={limit}
@@ -551,7 +557,7 @@ const RatingCreate = () => {
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          />
+          /> */}
         </TableContainer>
       </Paper>
 

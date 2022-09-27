@@ -175,6 +175,7 @@ const AdminCreateBlog = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const [activityName, setActivityName] = useState([]);
   const [changeText,setChangeText]=useState("");
+  const [visible,setVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -243,10 +244,14 @@ const AdminCreateBlog = () => {
   console.log(history.location.pathname == '/blog/create', 'history');
   const handleChangeActivity = (e, value) => {
     setActivityName([])
+    setSelectedBranch([])
+    setSelectedGrade([])
+    setSelectedSection([])
+    setVisible(false)
     if(value){
+      setVisible(true)
       console.log(e,"event",value);
       setActivityName(value);
-
     }
   };
   const handleChangeText = (e, value) => {
@@ -616,18 +621,27 @@ const AdminCreateBlog = () => {
   const [templates,setTemplates] =useState([]);
 
   const getTemplate = (data) => {
-    axios
-      .get(`${endpoints.newBlog.getTemplates}${data}/`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        console.log(response?.data?.result, 'session');
-        setTemplates(response?.data?.result);
-     
-      });
+    if(data){
+      axios
+        .get(`${endpoints.newBlog.getTemplates}${data}/`, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+  
+          // console.log(response?.data?.result, 'session');
+          setTemplates(response?.data?.result);
+       
+        });
+
+    }
   };
+
+  useEffect(() =>{
+    getTemplate()
+  },[selectedBranch,activityName]);
+
   const [checked, setChecked] = React.useState("");
 
   const handleChange = (event,value) => {
@@ -760,6 +774,7 @@ const AdminCreateBlog = () => {
             />
           </div>
         </div>
+        {visible ? (
         <Grid container spacing={2} style={{ marginTop: '23px' }}>
           <Grid item md={6} xs={12}>
             <Autocomplete
@@ -852,6 +867,8 @@ const AdminCreateBlog = () => {
                     </Grid> */}
 
         </Grid>
+
+        ): ''}
        
       
         <div
@@ -960,7 +977,7 @@ const AdminCreateBlog = () => {
               </label>
             </div>
           </div> */}
-          {selectedBranch.length !== 0 ? (
+          {selectedBranch?.length !== 0 && activityName?.length !== 0  ? (
           <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
         {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
         <div style={{ height: "200px", color: "#fff" }}>this is slide 2</div>
@@ -1067,7 +1084,7 @@ const AdminCreateBlog = () => {
               </div>
 
               <div style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}>
-                word limit -300
+                {/* word limit -300 */}
               </div>
               <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
                 Instructions
