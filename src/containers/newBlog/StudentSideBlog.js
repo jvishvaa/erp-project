@@ -588,7 +588,7 @@ const StudentSideBlog = () => {
                     <div
                       style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
                     >
-                      submitted-{response?.created_at.substring(8, 10)}&nbsp;
+                      submission Date-{response?.created_at.substring(8, 10)}&nbsp;
                       {new Date(response?.created_at).toLocaleString('en-us', {
                         month: 'short',
                       })}
