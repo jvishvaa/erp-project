@@ -516,13 +516,13 @@ const StudentSideBlog = () => {
               onClick={getTotalReview}
             />
 
-            <Tab
+            {/* <Tab
               label='Published'
               classes={{
                 selected: classes.selected2,
               }}
               className={value === 3 ? classes.tabsFont : classes.tabsFont1}
-            />
+            /> */}
           </Tabs>
           <Divider className={classes.dividerColor} />
         </Grid>
@@ -588,7 +588,7 @@ const StudentSideBlog = () => {
                     <div
                       style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
                     >
-                      submitted-{response?.created_at.substring(8, 10)}&nbsp;
+                      submission Date-{response?.created_at.substring(8, 10)}&nbsp;
                       {new Date(response?.created_at).toLocaleString('en-us', {
                         month: 'short',
                       })}
@@ -688,26 +688,26 @@ const StudentSideBlog = () => {
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
                     <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
-                      assinged-{response?.activity_detail?.submission_date?.slice(8, 10)}&nbsp;
+                      assinged-{response?.activity_detail?.issue_date?.slice(8, 10)}&nbsp;
                       {new Date(
-                        response?.activity_detail?.submission_date
+                        response?.activity_detail?.issue_date
                       ).toLocaleString('en-us', {
                         month: 'short',
                       })}
-                      &nbsp;{response?.activity_detail?.submission_date?.slice(0, 4)}
+                      &nbsp;{response?.activity_detail?.issue_date?.slice(0, 4)}
                     </div>{' '}
                     &nbsp;&nbsp;&nbsp;
                     <div
                       style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
                     >
                       submitted-
-                      {response?.activity_detail?.submission_date?.slice(8, 10)}&nbsp;
+                      {response?.submitted_on?.slice(8, 10)}&nbsp;
                       {new Date(
-                        response?.activity_detail?.submission_date
+                        response?.submitted_on
                       ).toLocaleString('en-us', {
                         month: 'short',
                       })}
-                      &nbsp;{response?.activity_detail?.submission_date?.slice(0, 4)}
+                      &nbsp;{response?.submitted_on?.slice(0, 4)}
                     </div>
                     &nbsp;&nbsp;
                   </div>
@@ -811,26 +811,26 @@ const StudentSideBlog = () => {
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
                     <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
-                      assinged-{response?.activity_detail?.submission_date?.slice(8, 10)}&nbsp;
+                      assinged-{response?.activity_detail?.issue_date?.slice(8, 10)}&nbsp;
                       {new Date(
-                        response?.activity_detail?.submission_date
+                        response?.activity_detail?.issue_date
                       ).toLocaleString('en-us', {
                         month: 'short',
                       })}
-                      &nbsp;{response?.activity_detail?.submission_date?.slice(0, 4)}
+                      &nbsp;{response?.activity_detail?.issue_date?.slice(0, 4)}
                     </div>{' '}
                     &nbsp;&nbsp;&nbsp;
                     <div
                       style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
                     >
                       submitted-
-                      {response?.activity_detail?.submission_date?.slice(8, 10)}&nbsp;
+                      {response?.submitted_on?.slice(8, 10)}&nbsp;
                       {new Date(
-                        response?.activity_detail?.submission_date
+                        response?.submitted_on
                       ).toLocaleString('en-us', {
                         month: 'short',
                       })}
-                      &nbsp;{response?.activity_detail?.submission_date?.slice(0, 4)}
+                      &nbsp;{response?.submitted_on?.slice(0, 4)}
                     </div>
                     &nbsp;&nbsp;
                   </div>

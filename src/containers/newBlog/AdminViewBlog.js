@@ -247,6 +247,7 @@ const AdminViewBlog = () => {
     }
   };
 
+
   const months = [
     {
       label: 'January',
@@ -459,6 +460,7 @@ const AdminViewBlog = () => {
 
   },[window.location.pathname, moduleId])
 
+  console.log(unassingeds,'@@')
 
   function callApi(api,key) {
     axiosInstance
@@ -619,17 +621,16 @@ const AdminViewBlog = () => {
 
         <Grid item xs={6} md={6} style={{display:'flex', justifyContent:'end', paddingRight:'20px'}}>
           
-            <Button
+            { user_level !== 11 && <Button
               variant='contained'
               color='primary'
               size='medium'
               className={classes.buttonColor}
               startIcon={<AddCircleIcon />}
-              disabled={user_level == 11}
               onClick={createPush}
             >
               Create Activity
-            </Button>
+            </Button> } 
           {/* &nbsp;&nbsp;
           <Button
             variant='outlined'
@@ -731,28 +732,8 @@ const AdminViewBlog = () => {
 
       <Grid container>
         <Grid item md={12} xs={12} className={classes.tabStatic}>
-          {user_level == 11?
-          <Tabs
-          onChange={handleTab}
-          textColor='primary'
-          indicatorColor='primary'
-          // className={ classes.tabsFont}
-          value={value}
-        >
-         
-          <Tab
-          label='Unassigned'
-        
-          disabled={user_level==11}
-        />
-      <Tab
-        label='Assigned'
-        classes={{
-          selected: classes.selected1,
-        }}
-        className={value === 1 ? classes.tabsFont : classes.tabsFont1}
-      />
-        </Tabs>:<Tabs
+          
+         <Tabs
             onChange={handleTab}
             textColor='primary'
             indicatorColor='primary'
@@ -760,14 +741,13 @@ const AdminViewBlog = () => {
             value={value}
           >
            
-            <Tab
+            { user_level !== 11 && <Tab
             label='Unassigned'
             classes={{
               selected: classes.selected2,
             }}
-            disabled={user_level==11}
             className={value === 0 ? classes.tabsFont : classes.tabsFont1}
-          />
+          />}
         <Tab
           label='Assigned'
           classes={{
@@ -775,13 +755,13 @@ const AdminViewBlog = () => {
           }}
           className={value === 1 ? classes.tabsFont : classes.tabsFont1}
         />
-          </Tabs>}
+          </Tabs>
          
           <Divider className={classes.dividerColor} />
         </Grid>
       </Grid>
 
-      {value === 1 && (
+      {(value === 1 || (value === 0 && user_level ===11)) && (
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
@@ -818,7 +798,7 @@ const AdminViewBlog = () => {
                     </TableCell> */}
                     <TableCell className={classes.tableCells}>{response.title}</TableCell>
                     <TableCell className={classes.tableCells}>
-                      {moment(response.submission_date).format('DD-MM-YYYY')}
+                      {moment(response.issue_date).format('DD-MM-YYYY')}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
                       {response?.creator?.name}

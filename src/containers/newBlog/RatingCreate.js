@@ -328,11 +328,11 @@ const RatingCreate = () => {
   useEffect(() => {
     getAssinged();
   }, []);
-  const [ActivityType, setActivityType] = useState('');
+  const [ActivityType, setActivityType] = useState();
 
   const handleActivityTypeSubmit = () => {
     let body = {
-      activity_type: ActivityType,
+      activity_type: ActivityType?.name,
       grading_scheme:
         // name: scoreType,
         inputList,
@@ -423,12 +423,14 @@ const RatingCreate = () => {
     newList.splice(index, 1);
     setInputList(newList);
   };
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState();
   // const handleSearch = (event) => {
   //   setSearch(event.target.value);
   // }
-  console.log(search);
 
+  const handleActivity = (e,value) => {
+     setSearch(value)
+  } 
   return (
     <Layout>
       <Grid
@@ -449,50 +451,57 @@ const RatingCreate = () => {
             <Typography color='textPrimary' variant='h6'>
               <strong>Activity</strong>
             </Typography>
-            <Typography color='textPrimary' style={{fontWeight:'bold', fontSize:'22px'}}>Create Rating</Typography>
+            <Typography
+              color='textPrimary'
+              style={{ fontWeight: 'bold', fontSize: '22px' }}
+            >
+              Create Rating
+            </Typography>
           </Breadcrumbs>
         </Grid>
       </Grid>
 
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginLeft: '32px',
-          marginRight: '34px',
-        }}
-      >
-        <div style={{ width: '85%' }}>
-          <TextField
-            label='Activity Type'
-            size='small'
-            type='text'
-            value={search}
-            select
-            style={{ width: '18%' }}
-            onChange={(e) => setSearch(e.target.value)}
-            variant='outlined'
-          >
-            {activityCategory.map((option) => (
-              <MenuItem key={option.name} value={option.name}>
-                {option.name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </div>
-        <div>
-          <Button 
-          variant='contained'
-          color='primary'
-          onClick={handleCreateTemplate}> Add Template</Button>
-        </div>
-        <div>
-          <Button 
-          variant='contained'
-          color='primary'
-          onClick={viewDisplay}>Add</Button>
-        </div>
-      </div>
+      {/* <div style={{ width: '85%' }}> */}
+      <Grid container item md={12} sm={12} xs={12}>
+        <Grid item spacing={3} md={6}>
+          <Grid item md={6} style={{margin:'0 6%'}}>
+            <Autocomplete
+              size='small'
+              fullWidth
+              onChange={handleActivity}
+              // id='branch_id'
+              className='dropdownIcon'
+              value={search}
+              options={activityCategory || []}
+              getOptionLabel={(option) => option?.name || ''}
+              // getOptionSelected={(option, value) => option?.branch?.id == value?.branch?.id}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Activity Type'
+                  placeholder='Activity Type'
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+
+        {/* </div> */}
+        <Grid item md={6} container justifyContent='flex-end'>
+          <Grid item md={3} container justifyContent='flex-end'>
+            <Button variant='contained' color='primary' onClick={handleCreateTemplate}>
+              {' '}
+              Add Template
+            </Button>
+          </Grid>
+          <Grid item md={3} container justifyContent='center'>
+            <Button variant='contained' color='primary' onClick={viewDisplay}>
+              Add
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
 
       <Paper className={`${classes.root} common-table`} id='singleStudent'>
         <TableContainer
@@ -514,7 +523,7 @@ const RatingCreate = () => {
             </TableHead>
             {activityCategory
               ?.filter((response) =>
-                response?.name?.toLowerCase()?.includes(search?.toLowerCase())
+                response?.name?.toLowerCase()?.includes(search?.name?.toLowerCase())
               )
               .map((response, index) => (
                 <TableBody>
@@ -527,16 +536,22 @@ const RatingCreate = () => {
                     <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                     <TableCell className={classes.tableCells}>{response.name}</TableCell>
                     <TableCell className={classes.tableCells}>
-                      {response?.grading_scheme.map((obj) => (<div>{obj.name}</div>))}
+                      {response?.grading_scheme.map((obj) => (
+                        <div>{obj.name}</div>
+                      ))}
                     </TableCell>{' '}
                     <TableCell className={classes.tableCells}>
                       <Typography>
-                        {response?.grading_scheme.map((obj) => (<div>{obj.rating}</div>))}
+                        {response?.grading_scheme.map((obj) => (
+                          <div>{obj.rating}</div>
+                        ))}
                       </Typography>
                     </TableCell>
                     <TableCell className={classes.tableCells}>
                       <Typography>
-                        {response?.grading_scheme.map((obj) => (<div>{obj.score}</div>))}
+                        {response?.grading_scheme.map((obj) => (
+                          <div>{obj.score}</div>
+                        ))}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -580,7 +595,7 @@ const RatingCreate = () => {
           <div style={{ fontSize: '28px', fontWeight: 'bold' }}>Create Rating</div>
           <Divider />
           <div style={{ marginTop: '8px' }}>
-            <TextField
+            {/* <TextField
               label='Activity Type'
               size='small'
               type='text'
@@ -595,7 +610,26 @@ const RatingCreate = () => {
                   {option.name}
                 </MenuItem>
               ))}
-            </TextField>
+            </TextField> */}
+            <Autocomplete
+              size='small'
+              style={{width:'45%'}}
+              onChange={(e,value) => setActivityType(value)}
+              // id='branch_id'
+              className='dropdownIcon'
+              value={ActivityType}
+              options={activityCategory || []}
+              getOptionLabel={(option) => option?.name || ''}
+              // getOptionSelected={(option, value) => option?.branch?.id == value?.branch?.id}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Activity Type'
+                  placeholder='Activity Type'
+                />
+              )}
+            />
           </div>
           {inputList
             ? inputList.map((input, index) => (

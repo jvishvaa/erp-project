@@ -485,10 +485,10 @@ const Reviewed = (props) => {
                         >
                           {' '}
                           {obj?.name}
-                          <StyledRating
+                          <RatingScale
                             name={`rating${index}`}
                             size='small'
-                            value={obj?.given_rating}
+                            rating={obj?.given_rating}
                             readOnly
                             // defaultValue={props.defaultValue}
                           />
