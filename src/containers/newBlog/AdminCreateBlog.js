@@ -287,12 +287,11 @@ const AdminCreateBlog = () => {
 
   let allGradeIds = [];
 
-  const fetchGrades = () => {
-    // const ids = value.map((el) => el.id) || [];
+  const fetchGrades = (value) => {
+    const ids = value.map((el) => el.id) || [];
     // setGradeIds(ids);
-
     axiosInstance
-      .get(`${endpoints.newBlog.activityGrade}?branch_ids=null`, {
+      .get(`${endpoints.newBlog.activityGrade}?branch_ids=${ids}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -325,11 +324,10 @@ const AdminCreateBlog = () => {
       });
   };
 
-  const fetchSections = () => {
-    // const ids = value.map((el) => el.id) || [];
-
+  const fetchSections = (value) => {
+    const ids = value.map((el) => el.id) || [];
     axiosInstance
-      .get(`${endpoints.newBlog.activitySection}?grade_ids=null`, {
+      .get(`${endpoints.newBlog.activitySection}?grade_ids=${ids}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -360,7 +358,7 @@ const AdminCreateBlog = () => {
           ? [...branchList].filter(({ id }) => id !== 'all')
           : value;
       setSelectedBranch(value);
-      fetchGrades();
+      fetchGrades(value);
     }
     getTemplate(activityName.id);
 
@@ -374,7 +372,7 @@ const AdminCreateBlog = () => {
           ? [...gradeList].filter(({ name }) => name !== 'Select All')
           : value;
       setSelectedGrade(value);
-      fetchSections();
+      fetchSections(value);
     }
   };
   const handleSection = (e, value) => {
@@ -463,6 +461,7 @@ const AdminCreateBlog = () => {
     ':' +
     formatdate.getSeconds();
   const dataPost = () => {
+    debugger
     const branchIds = selectedBranch.map((obj) => obj?.id);
     const gradeIds = selectedGrade.map((obj) => obj?.id);
     const sectionIds = selectedSection.map((obj) => obj?.id);
@@ -472,46 +471,40 @@ const AdminCreateBlog = () => {
       setAlert('error', 'Please Select The Date')
       return;
     }
-    // if(activityName?.id){
-    //   setLoading(false);
-    //   setLoading('error', 'Please Add Activity Name')
-    //   return;
-    // }
-    // if(branchIds?.length == 0){
-    //   setLoading(false);
-    //   setLoading('error', 'Please Select Branch')
-    //   return;
-    // }
-    // if(gradeIds?.length == 0) {
-    //   console.log('hi 4')
-    //   setLoading(false);
-    //   setLoading('error', 'Please Select Grade')
-    //   return;
-    // }
-    // if(sectionId?.length == 0) {
-    //   console.log('hi 5')
-    //   setLoading(false);
-    //   setLoading('error', 'Please Select Section')
-    //   return;
-    // }
-    // if(title){
-    //   console.log('hi 6')
-    //   setLoading(false);
-    //   setLoading('error', 'Please Add Title')
-    //   return;
-    // }
-    // if(!description){
-    //   console.log('hi 7')
-    //   setLoading(false);
-    //   setLoading('error', 'Please Add Description')
-    //   return;
-    // }
+    if(activityName.length === 0){
+      setAlert('error', 'Please Add Activity Name')
+      return;
+    }
+    if(branchIds?.length === 0){
+      setAlert('error', 'Please Select Branch')
+      return
+    }
+    if(gradeIds?.length === 0) {
+      setLoading(false);
+      setAlert('error', 'Please Select Grade')
+      return;
+    }
+    if(sectionIds?.length === 0) {
+      setLoading(false);
+      setAlert('error', 'Please Select Section')
+      return;
+    }
+    if(title.length === 0){
+      setLoading(false);
+      setAlert('error', 'Please Add Title')
+      return;
+    }
+    if(!description){
+      setLoading(false);
+      setAlert('error', 'Please Add Description')
+      return;
+    }
 
-    // if(!checked) {
-    //   setLoading(false);
-    //   setLoading('error','Please Select Templates')
-    //   return;
-    // }
+    if(!checked) {
+      setLoading(false);
+      setAlert('error','Please Select Templates')
+      return;
+    }
     else{
       setLoading(false);
       const formData = new FormData();
