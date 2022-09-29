@@ -16,6 +16,7 @@ import {
   Box,
   useTheme,
   useMediaQuery,
+  IconButton,
 } from '@material-ui/core';
 import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -41,6 +42,7 @@ import moment from 'moment';
 import AssesmentReportNew from '../assesment-report-card/newReportPrint';
 import { returnAdmin } from 'containers/Finance/src/components/Finance/store/actions';
 import StudentWiseReport from './assessment-report-filters/student-wise-report';
+import LeftArrow from 'components/icon/LeftArrow';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
   const limit = 10;
@@ -397,9 +399,15 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
 
         {selectedReportType?.id === 14 && isPreview && (
           <>
-           <Button variant='contained' color='primary' onClick={handlebackStudentList}>
-            Back
-           </Button>
+            <div
+              onClick={handlebackStudentList}
+              className={classes.arrowbtn}
+            >
+              <IconButton>
+                <LeftArrow style={{width:'20px',height:'20px'}} />
+              </IconButton>
+              Back
+            </div>
             <Box style={{ margin: '20px auto', width: '95%' }}>
               <TabPanel
                 tabValue={tabValue}
@@ -598,6 +606,9 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             setIsPreview={setIsPreview}
             filterData={filterData}
             setReportCardDataNew={setReportCardDataNew}
+            isFilter={isFilter}
+            setIsFilter={setIsFilter}
+            isstudentList={isstudentList}
           />
         )}
       </Layout>

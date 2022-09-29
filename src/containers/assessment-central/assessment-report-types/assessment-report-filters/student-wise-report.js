@@ -9,6 +9,11 @@ import {
   TableHead,
   TableRow,
   makeStyles,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogTitle,
+  TextareaAutosize
 } from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 
@@ -19,8 +24,11 @@ import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import { generateQueryParamSting } from 'utility-functions';
-import APIREQUEST from 'config/apiRequest';
 import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest';
+import Modal from "@material-ui/core/Modal";
+import NoFilterData from 'components/noFilteredData/noFilterData';
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -70,21 +78,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StudentWiseReport = ({ setisstudentList, setIsPreview, filterData, setReportCardDataNew }) => {
+const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filterData, setReportCardDataNew , setIsFilter, isFilter}) => {
   const [studentList, setStudentList] = useState([]);
   const classes = useStyles();
-  const [loading, setIsLoading] = useState();
+  const [loading, setIsLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [openModal, setOpenModal] = useState(false);
+  const [studentId , setStudentId] = useState()
+  const [teacherRemark , setTeacherRemark] = useState('')
+  const {user_id : teacher_id} = JSON.parse(localStorage.getItem('userDetails'))
+  const [ isEditRemark , setIsEditRemark] = useState(false)
+  const [editId , setEditId] = useState()
 
   useEffect(() => {
+    if(isFilter || isstudentList)
     getERP();
-  }, []);
+  }, [isFilter,isstudentList]);
 
   const getERP = () => {
     setIsLoading(true);
+    setIsFilter(false)
     // const {
     //   personal_info: { role = '' },
     // } = userDetails || {};
@@ -93,7 +109,6 @@ const StudentWiseReport = ({ setisstudentList, setIsPreview, filterData, setRepo
     axiosInstance
       .get(`${endpoints.communication.studentUserList}${params}`)
       .then((result) => {
-        debugger;
         if (result.data.status_code === 200) {
           setStudentList(result.data?.data?.results);
         }
@@ -111,7 +126,6 @@ const StudentWiseReport = ({ setisstudentList, setIsPreview, filterData, setRepo
       grade_id: filterData.grade?.grade_id,
       section_id: filterData.section?.section_id,
     };
-    setisstudentList(false)
     const isPreview = Object.values(paramObj).every(Boolean);
     if (!isPreview) {
       for (const [key, value] of Object.entries(paramObj).reverse()) {
@@ -139,6 +153,7 @@ const StudentWiseReport = ({ setisstudentList, setIsPreview, filterData, setRepo
     )
       .then((result) => {
         if (result) {
+        setisstudentList(false)
           console.log(result);
           setReportCardDataNew(result?.data?.result);
           setIsPreview(true);
@@ -146,17 +161,93 @@ const StudentWiseReport = ({ setisstudentList, setIsPreview, filterData, setRepo
           setIsLoading(false);
         }
         setIsLoading(false);
+        setisstudentList(false)
       })
 
       .catch((error) => {
         setAlert('error', 'Error While Fetching Report Card');
         setIsLoading(false);
+        setisstudentList(false)
       });
   };
 
+  const handleClose = () => {
+    setOpenModal(false)
+  }
+
+  const handleRemark =  (id) => {
+    setOpenModal(true)
+    setStudentId(id)
+    setIsLoading(true)
+    let remarks = ''
+    axiosInstance.get(`assessment/teacher-remarks/?teacher=${teacher_id}&student=${id}`)
+    .then((res) => {
+        setIsLoading(false)
+        if(res?.data?.status_code === 200){
+          if(res?.data?.result?.length > 0){
+            setTeacherRemark(res?.data?.result[0].remarks)
+            setIsEditRemark(true)
+            setEditId(res?.data?.result[0].id)
+          }else{
+            setTeacherRemark('')
+            setIsEditRemark(false)
+          }
+        }else{
+           return setAlert('error' , 'Something went wrong , fetching Remark Failed !')
+        }
+    }).catch((error) => {
+        setIsLoading(false)
+        setAlert('error' , error?.response?.data?.message || error?.response?.data?.msg || 'fetching Remark Failed !')
+    })
+  }
+
+  const handleRemarkSubmit = () => {
+    setIsLoading(true)
+    let params = {
+        "student":studentId,
+        "teacher":teacher_id,
+        "remarks": teacherRemark
+      }
+      if(isEditRemark) {
+        axiosInstance.put(`assessment/teacher-remarks/${editId}/`, params)
+        .then((res) => {
+            setIsLoading(false)
+            if(res?.data?.status_code !== 200){
+              setAlert('error', res?.data?.message || 'Remarks Submittion Failed !')
+            }else{
+              handleClose()
+              setAlert('success', res?.data?.message || 'Remarks Submitted Successfully !')
+              setIsEditRemark(false)
+            }
+        }).catch((error) => {
+            setIsLoading(false)
+            setAlert('error' , error?.response?.data?.message || error?.response?.data?.msg || 'Submiting Remarks Failed !')
+        })
+      }else{
+        axiosInstance.post(`assessment/teacher-remarks/`, params)
+        .then((res) => {
+          setIsLoading(false)
+          if(res?.data?.status_code !== 200){
+            setAlert('error', res?.data?.message || 'Remarks Submittion Failed !')
+          }else{
+            handleClose()
+            setAlert('success', res?.data?.message || 'Remarks Submitted Successfully !')
+            setIsEditRemark(false)
+          }
+        }).catch((error) => {
+            setIsLoading(false)
+            setAlert('error' , error.response.data.message || error.response.data.msg || 'Submiting Remarks Failed !')
+        })
+      }
+    
+  }
+
   return (
     <Paper className={`${classes.root} common-table`}>
-      {loading && <Loader />}
+      {/* {loading && <Loader />} */}
+      {loading ? (
+        <Loader />
+      ) : null}
       <TableContainer
         className={`table table-shadow view_users_table ${classes.container}`}
       >
@@ -176,10 +267,14 @@ const StudentWiseReport = ({ setisstudentList, setIsPreview, filterData, setRepo
                 </TableCell>
                 <TableCell className={classes.tableCell}>{items.erp_id}</TableCell>
                 <TableCell className={classes.tableCell}>
-                  <Button variant='contained' color='primary' style={{margin:'0 10%'}}>
+                  <Button variant='contained' color='primary' onClick={() => handleRemark(items?.user?.id)} style={{ margin: '0 10%' }}>
                     Remark
                   </Button>
-                  <Button variant='contained' color='primary' onClick={() => handleNewPreview(items.erp_id)}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => handleNewPreview(items.erp_id)}
+                  >
                     View
                   </Button>
                 </TableCell>
@@ -188,6 +283,39 @@ const StudentWiseReport = ({ setisstudentList, setIsPreview, filterData, setRepo
           </TableBody>
         </Table>
       </TableContainer>
+      {openModal &&  <Dialog open={openModal} fullWidth onClose={handleClose}>
+        <DialogTitle style = {{display:'flex' , justifyContent:'center'}}>Remarks</DialogTitle>
+        <DialogContent>
+          {/* <DialogContentText>
+            To subscribe to this website, please enter your email address here. We
+            will send updates occasionally.
+          </DialogContentText> */}
+          {/* <TextField
+            autoFocus
+            margin="dense"
+            id="remark"
+            label="Remarks"
+            type="text"
+            fullWidth
+            variant="outlined"
+          /> */}
+          <TextareaAutosize
+              id='standard-multiline-flexible'
+              rowsMax={4}
+              aria-label="minimum height"
+              type='text'
+              placeholder= 'Teacher Remarks'
+              style={{ width: '100%' , height:'100px'}}
+              value={teacherRemark}
+              onChange={(e) => setTeacherRemark(e?.target?.value)}
+            />
+        </DialogContent>
+        <DialogActions>
+          <Button variant='contained' color='primary' onClick={handleClose}>Cancel</Button>
+          <Button variant='contained' color='primary' onClick={handleRemarkSubmit}>Submit</Button>
+        </DialogActions>
+      </Dialog>}
+      {studentList.length===0 && <NoFilterData data='No Data Found'/>}
 
       {/* <TablePagination
               component='div'

@@ -15,6 +15,9 @@ import {
   TableRow,
   TableBody,
   IconButton,
+  DialogContent,
+  DialogTitle,
+  Dialog,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Modal from "@material-ui/core/Modal";
@@ -548,36 +551,34 @@ const ReportConfigTable = () => {
             setOpenModal={setOpenModal}
           />
         )}
-         <Modal
+        {openDetails && <Dialog
               open={openDetails}
+              fullWidth
               onClose={handleClose}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-              className={classes.modal}
+              // aria-labelledby="simple-modal-title"
+              // aria-describedby="simple-modal-description"
+              // className={classes.modal}
             >
-              <div
-                className={classes.paper}
-                style={{ width: "60%", height: "60%" }}
-              >
-                {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <div>Summary</div>
-                  <div onClick={handleSumClose} style={{ position: 'relative', top: 0, left: 0, cursor: 'pointer' }}>X</div>
-                </div> */}
-                <div>
+              <DialogTitle style = {{display:'flex' , justifyContent:'center'}}>Selected Test Details</DialogTitle>
+
+                <DialogContent>
                   <TableContainer component={Paper}>
                     <Table className={classes.table} aria-label="simple table">
                       <TableHead>
                         <TableRow>
+                        <TableCell component="th" scope="row">
+                                S.NO
+                              </TableCell>
                           <TableCell component="th" scope="row">
-                                Summary
+                                Test Name
                               </TableCell>
                           {/* {detailsData?.map((data) =>
                           (
                             <>
 
-                              {data.data.map((row) =>
+                              {data?.test_details.map((row) =>
                                 <TableCell component="th" scope="row">
-                                  {row.subject.subjects__subject_name}
+                                  {row.test_name}
                                 </TableCell>
                               )}
                             </>
@@ -586,24 +587,25 @@ const ReportConfigTable = () => {
                         </TableRow>
                       </TableHead>
 
-                      {/* <TableBody>
-                        {detailsData?.map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="right">{row.branch.branch_name}&nbsp;(g)
-                            </TableCell>
-                            {row.data.map((row) =>
-                              <TableCell align="right">{row.tests}</TableCell>
-                              // <TableCell align="right">bethsa</TableCell>
-                            )}
-                          </TableRow>
-                        ))}
-                      </TableBody> */}
+                      <TableBody>
+                          
+                            {detailsData?.test_details.map((row,index) =>
+                            <TableRow>
+                               <TableCell component="th" scope="row">
+                                  {index + 1}
+                                </TableCell>
+                                <TableCell component="th" scope="row">
+                                  {row?.test_name}
+                                </TableCell>
+                            </TableRow>
+                              )}
+                      </TableBody>
                     </Table>
                   </TableContainer>
-                </div>
-              </div>
+                </DialogContent>
 
-            </Modal>
+            </Dialog>}
+         
       </Layout>
     </>
   );
