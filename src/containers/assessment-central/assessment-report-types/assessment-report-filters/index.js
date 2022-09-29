@@ -45,6 +45,7 @@ const AssessmentReportFilters = ({
   setReportCardDataNew,
   filterData,
   setFilterData,
+  setisstudentList,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
@@ -229,6 +230,14 @@ const AssessmentReportFilters = ({
     let params = `?${generateQueryParamSting({ ...paramObj, is_student: false })}`;
     fetchReportCardData(params);
   };
+
+
+  const handleReportfilter = () => {
+    if(!filterData.branch?.id) return setAlert('error', `Please select Branch`);
+    if(!filterData.grade?.grade_id) return setAlert('error', `Please select Grade`);
+    if(!filterData.section?.section_id) return setAlert('error', `Please select Section`)
+    else setisstudentList(true)
+  }
 
   const handleNewPreview = () => {
     let paramObj = {
@@ -1417,7 +1426,7 @@ const AssessmentReportFilters = ({
                 selectedReportType?.id === 5
                   ? handlePreview
                   : selectedReportType?.id === 14
-                  ? handleNewPreview
+                  ? handleReportfilter
                   : () => {
                       setSelectedERP([]);
                       handleFilter();

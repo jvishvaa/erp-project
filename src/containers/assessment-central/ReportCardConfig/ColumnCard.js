@@ -236,13 +236,13 @@ function ColumnCard({ subComponentId, componentId, columnId,
                     <Table className={classes.table} aria-label="simple table">
                       <TableHead>
                         <TableRow>
+                          <TableCell component="th" scope="row">
+                                Summary
+                              </TableCell>
                           {/* <TableCell>Summary</TableCell> */}
                           {table.map((data) =>
                           (
                             <>
-                              <TableCell component="th" scope="row">
-                                Summary
-                              </TableCell>
 
                               {data.data.map((row) =>
                                 <TableCell component="th" scope="row">

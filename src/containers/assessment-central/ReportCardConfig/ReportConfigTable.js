@@ -17,6 +17,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Modal from "@material-ui/core/Modal";
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
@@ -50,6 +51,13 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
   },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width : '50%',
+    height : '50%'
+  },
 }));
 
 const columns = [
@@ -78,14 +86,14 @@ const columns = [
   {
     id: 'priority',
     label: 'Priority',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
     labelAlign: 'center',
   },
   {
     id: 'optional', 
     label: 'Marks/Metrics',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
     labelAlign: 'center',
   },
@@ -99,7 +107,16 @@ const columns = [
   {
     id: 'actions',
     label: 'Actions',
-    minWidth: 170,
+    minWidth: 250,
+    align: 'center',
+    labelAlign: 'center',
+  },
+];
+const moreDetailscolumns = [
+  {
+    id: 'test-name',
+    label: 'Selected Test Name',
+    minWidth: 100,
     align: 'center',
     labelAlign: 'center',
   },
@@ -125,6 +142,8 @@ const ReportConfigTable = () => {
   const [selectedGrade, setSelectedGrade] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [deleteId , setDeleteId ] = useState()
+  const [openDetails, setopenDetails] = useState(false)
+  const [detailsData , setDetailsData] = useState()
 
   useEffect(() => {
     if (moduleId) getBranch();
@@ -300,6 +319,15 @@ const ReportConfigTable = () => {
   const handleCreate = () => {
     history.push('/report-config/create');
   };
+  const handleClose = () => {
+    setopenDetails(false)
+  }
+
+  const handleOpenDetails = (data) => {
+    debugger
+    setopenDetails(true)
+    setDetailsData(data)
+  }
 
   return (
     <>
@@ -458,12 +486,20 @@ const ReportConfigTable = () => {
                         {data?.component_description}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
+                      <Button
+                          onClick={() => handleOpenDetails(data)}
+                          color='primary'
+                          variant='contained'
+                        >
+                          Details
+                          </Button>
                         <Button
                           onClick={() => {
                             // setOpenModal(true);
                             // setDeleteId(data?.id)
                             handlePublish(data?.id,data?.is_publish)
                           }}
+                          style={{marginLeft:'5%'}}
                           color='primary'
                           variant='contained'
                         >
@@ -512,6 +548,62 @@ const ReportConfigTable = () => {
             setOpenModal={setOpenModal}
           />
         )}
+         <Modal
+              open={openDetails}
+              onClose={handleClose}
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
+              className={classes.modal}
+            >
+              <div
+                className={classes.paper}
+                style={{ width: "60%", height: "60%" }}
+              >
+                {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>Summary</div>
+                  <div onClick={handleSumClose} style={{ position: 'relative', top: 0, left: 0, cursor: 'pointer' }}>X</div>
+                </div> */}
+                <div>
+                  <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell component="th" scope="row">
+                                Summary
+                              </TableCell>
+                          {/* {detailsData?.map((data) =>
+                          (
+                            <>
+
+                              {data.data.map((row) =>
+                                <TableCell component="th" scope="row">
+                                  {row.subject.subjects__subject_name}
+                                </TableCell>
+                              )}
+                            </>
+                          ))} */}
+
+                        </TableRow>
+                      </TableHead>
+
+                      {/* <TableBody>
+                        {detailsData?.map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell align="right">{row.branch.branch_name}&nbsp;(g)
+                            </TableCell>
+                            {row.data.map((row) =>
+                              <TableCell align="right">{row.tests}</TableCell>
+                              // <TableCell align="right">bethsa</TableCell>
+                            )}
+                          </TableRow>
+                        ))}
+                      </TableBody> */}
+                    </Table>
+                  </TableContainer>
+                </div>
+              </div>
+
+            </Modal>
       </Layout>
     </>
   );
