@@ -116,6 +116,7 @@ const PendingReview = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const {user_id} = JSON.parse(localStorage.getItem('userDetails'))
 
   const handleCloseViewMore = () => {
     setView(false);
@@ -250,6 +251,7 @@ const PendingReview = (props) => {
           temp['rating'] = Number(obj.level.rating);
           temp['remarks'] = obj.remarks;
           temp['given_rating'] = obj.given_rating;
+          temp['reviewer_id'] = user_id
           array.push(temp);
         });
         setRatingReview(array);

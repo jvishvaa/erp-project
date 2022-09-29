@@ -275,12 +275,12 @@ const AdminEditCreateBlogs = () => {
 
   let allGradeIds = [];
 
-  const fetchGrades = () => {
-    // const ids = value.map((el) => el.id) || [];
+  const fetchGrades = (value) => {
+    const ids = value.map((el) => el.id) || [];
     // setGradeIds(ids);
 
     axiosInstance
-      .get(`${endpoints.newBlog.activityGrade}?branch_ids=null`, {
+      .get(`${endpoints.newBlog.activityGrade}?branch_ids=${ids}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -316,13 +316,14 @@ const AdminEditCreateBlogs = () => {
 
   const handleChange = (event,value) => {
     setChecked(value);
+    setTemplatesId(value)
   };
 
-  const fetchSections = () => {
-    // const ids = value.map((el) => el.id) || [];
+  const fetchSections = (value) => {
+    const ids = value.map((el) => el.id) || [];
 
     axiosInstance
-      .get(`${endpoints.newBlog.activitySection}?grade_ids=null`, {
+      .get(`${endpoints.newBlog.activitySection}?grade_ids=${ids}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -353,7 +354,7 @@ const AdminEditCreateBlogs = () => {
           ? [...branchList].filter(({ id }) => id !== 'all')
           : value;
       setSelectedBranch(value);
-      fetchGrades();
+      fetchGrades(value);
     }
   };
 
@@ -365,7 +366,7 @@ const AdminEditCreateBlogs = () => {
           ? [...gradeList].filter(({ name }) => name !== 'Select All')
           : value;
       setSelectedGrade(value);
-      fetchSections();
+      fetchSections(value);
     }
   };
   const handleSection = (e, value) => {
@@ -458,63 +459,101 @@ const AdminEditCreateBlogs = () => {
     const branchIds = selectedBranch.map((obj) => obj.id);
     const gradeIds = selectedGrade.map((obj) => obj.id);
     const sectionIds = selectedSection.map((obj) => obj.id);
-    let body={
-      'title':title,
-    'description':description,
-    'issue_date':null,
-    'submission_date':startDate + hoursAndMinutes,
-    // 'image': selectedFile,
-    'activity_type_id':activityName.id,
-    'session_year': selectedAcademicYear.session_year,
-    'created_at':startDate + hoursAndMinutes,
-    'created_by': user_id.id,
-    'branch_ids': branchIds,
-    'grade_ids': gradeIds,
-    'section_ids': sectionIds,
-    'is_draft': true,
-    'template_type':changeText.name
-  }
-    // const formData = new FormData();
-    // formData.append('title', title.toString());
-    // formData.append('description', description);
-    // formData.append('issue_date', null);
-    // formData.append('submission_date', startDate + hoursAndMinutes);
-    // formData.append('image', selectedFile);
-    // formData.append('activity_type_id', activityName.id);
-    // formData.append('session_year', selectedAcademicYear.session_year);
-    // formData.append('created_at', startDate + hoursAndMinutes);
-    // formData.append('created_by', user_id.id);
-    // formData.append('branch_ids', branchIds);
-    // formData.append('grade_ids', gradeIds);
-    // formData.append('section_ids', sectionIds);
-    // formData.append('is_draft', true);
-    // formData.append('template_type',changeText.name);
-    
 
+    if(!startDate){
+      setAlert('error', 'Please Select The Date')
+      return;
+    }
+    if(activityName.length === 0){
+      setAlert('error', 'Please Add Activity Name')
+      return;
+    }
+    if(branchIds?.length === 0){
+      setAlert('error', 'Please Select Branch')
+      return
+    }
+    if(gradeIds?.length === 0) {
+      setAlert('error', 'Please Select Grade')
+      return;
+    }
+    if(sectionIds?.length === 0) {
+      setAlert('error', 'Please Select Section')
+      return;
+    }
+    if(title.length === 0){
+      setAlert('error', 'Please Add Title')
+      return;
+    }
+    if(!description){
+      setAlert('error', 'Please Add Description')
+      return;
+    }
 
-    axios
-      .put(`${endpoints.newBlog.confirmAssign}${id}/`, body, {
-        headers: {
-          // Authorization: `${token}`,
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        setAlert('success', 'Activity Updated');
-        setSelectedGrade([]);
-        setSelectedBranch([]);
-        setSelectedSection([]);
-        setActivityName([]);
-        setDescription('');
-        setTitle('');
-        setStartDate('');
-        history.push('/blog/blogview');
-
-        // localStorage.setItem(
-        //   'ActivityManagement',
-        //   JSON.stringify(response?.data?.result)
-        // );
-      });
+    // if(!checked) {
+    //   setAlert('error','Please Select Templates')
+    //   return;
+    // }
+    else{
+      let body={
+        'title':title,
+      'description':description,
+      'issue_date':null,
+      'submission_date':startDate + hoursAndMinutes,
+      // 'image': selectedFile,
+      'activity_type_id':activityName.id,
+      'session_year': selectedAcademicYear.session_year,
+      'created_at':startDate + hoursAndMinutes,
+      'created_by': user_id.id,
+      'branch_ids': branchIds,
+      'grade_ids': gradeIds,
+      'section_ids': sectionIds,
+      'is_draft': true,
+      'template_type':changeText.name,
+      'template_id' : templateId
+    }
+      // const formData = new FormData();
+      // formData.append('title', title.toString());
+      // formData.append('description', description);
+      // formData.append('issue_date', null);
+      // formData.append('submission_date', startDate + hoursAndMinutes);
+      // formData.append('image', selectedFile);
+      // formData.append('activity_type_id', activityName.id);
+      // formData.append('session_year', selectedAcademicYear.session_year);
+      // formData.append('created_at', startDate + hoursAndMinutes);
+      // formData.append('created_by', user_id.id);
+      // formData.append('branch_ids', branchIds);
+      // formData.append('grade_ids', gradeIds);
+      // formData.append('section_ids', sectionIds);
+      // formData.append('is_draft', true);
+      // formData.append('template_type',changeText.name);
+      
+  
+  
+      axios
+        .put(`${endpoints.newBlog.confirmAssign}${id}/`, body, {
+          headers: {
+            // Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          setAlert('success', 'Activity Updated');
+          setSelectedGrade([]);
+          setSelectedBranch([]);
+          setSelectedSection([]);
+          setActivityName([]);
+          setDescription('');
+          setTitle('');
+          setStartDate('');
+          history.push('/blog/blogview');
+  
+          // localStorage.setItem(
+          //   'ActivityManagement',
+          //   JSON.stringify(response?.data?.result)
+          // );
+        });
+    }
+ 
 
   };
   const [id,setId]=useState("");
