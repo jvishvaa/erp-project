@@ -3,30 +3,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import {
   Grid,
   TextField,
-  Divider,
-  Typography,
-  InputAdornment,
-  Card,
-  CardHeader,
-  CardContent,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TableContainer,
-  TableFooter,
-  Paper,
-  Table,
-  TableHead,
-  TableBody,
-  TableCell,
-  TableRow,
-  Box,
-  Collapse,
+
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
@@ -44,27 +21,24 @@ import MediaQuery from 'react-responsive';
 import { DatePicker, Space } from 'antd';
 import { makeStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
-// import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-// import Loader from '../../components/loader/loader';
-// import axiosInstance from '../../config/axios';
-// import endpoints from '../../config/endpoints';
-// import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+// import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../../Layout';
-// import { getModuleInfo } from '../../utility-functions';
 import { Button } from 'antd';
 import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import axiosInstance from 'config/axios';
 import moment from 'moment';
 import endpoints from 'config/endpoints';
-import { fetchAllSectionsPerGrade } from 'containers/Finance/src/components/Finance/store/actions';
 import Loader from 'components/loader/loader';
 import { connect, useSelector } from 'react-redux';
-import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
 import '../academic/style.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { Table, Breadcrumb } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
+import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
+
+
 // import { TableCell, TableRow } from 'semantic-ui-react';
 
 const useStyles = makeStyles((theme) => ({
@@ -235,14 +209,14 @@ const CurriculumCompletionSubject = (props) => {
 
   useEffect(() => {
     console.log(dateToday);
-    if(dateToday){
-        gradeListTable({
-          grade_id: history?.location?.state?.grade,
-          session_year: selectedAcademicYear?.id,
-          date: moment(dateToday).format('YYYY-MM-DD')
-        });
-  }
-  }, [  dateToday]);
+    if (dateToday) {
+      gradeListTable({
+        grade_id: history?.location?.state?.grade,
+        session_year: selectedAcademicYear?.id,
+        date: moment(dateToday).format('YYYY-MM-DD')
+      });
+    }
+  }, [dateToday]);
 
   const gradeListTable = (params = {}) => {
     setLoading(true);
@@ -269,13 +243,80 @@ const CurriculumCompletionSubject = (props) => {
 
 
 
-  const onChangeDate = (date, string) => {
-    console.log(date, string);
-    setDateToday(string)
+
+  const onChangeDate = (value) => {
+    if (value) {
+      setDateToday(moment(value).format('YYYY-MM-DD'));
+    }
   }
   const handleBack = () => {
     history.goBack();
   }
+
+  const columns = [
+    {
+      title: <span className='th-white pl-4 th-fw-700 '>Subject</span>,
+      dataIndex: 'subject_name',
+      width: '20%',
+      align: 'left',
+      render: (data) => <span className='pl-md-4 th-black-1 th-16'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>TOTAL PERIODS</span>,
+      width: '15%',
+      align: 'center',
+      dataIndex: 'total_periods_sum',
+      render: (data) => <span className='th-black-1 th-16'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>TOTAL PERIODS CONDUCTED</span>,
+      dataIndex: 'completed_periods_sum',
+      width: '15%',
+      align: 'center',
+      render: (data) => <span className='th-green th-16'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>TOTAL PERIODS PENDING</span>,
+      dataIndex: 'pending_periods',
+      width: '15%',
+      align: 'center',
+      render: (data) => <span className='th-green th-16'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
+      dataIndex: 'avg',
+      width: '15%',
+      align: 'center',
+      render: (data) => <span className='th-green th-16'>{data} %</span>,
+    },
+    {
+      title: '',
+      align: 'center',
+      width: '5%',
+      key: 'icon',
+      render: (text, row) => (
+        <span
+          onClick={(e) =>
+            history.push({
+              pathname: `/curriculum-completion-subject/${branchId}/${row?.grade_id}`,
+              state: {
+                grade: row?.grade_id,
+                gradeName: row?.grade_name,
+                acad_session_id: acad_session_id,
+                acad_sess_id: acad_sess_id,
+                module_id: moduleId,
+                branchName: branchName,
+                selectedDate: dateToday,
+                teacherView: teacherView
+              },
+            })
+          }
+        >
+          <RightOutlined className='th-grey th-pointer' />
+        </span>
+      ),
+    },
+  ];
 
 
   return (
@@ -283,19 +324,49 @@ const CurriculumCompletionSubject = (props) => {
       <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            < CommonBreadcrumbs
+            {/* < CommonBreadcrumbs
               componentName='Dashboard'
               // childComponentName='Academic Performance' 
               childComponentNameNext='Curriculum Completion'
-            />
+            /> */}
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
+                Dashboard
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                onClick={() => history.goBack()}
+                className='th-grey th-pointer'
+              >
+                Curriculum Completion
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1'>Subject Wise</Breadcrumb.Item>
+            </Breadcrumb>
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
             <Button onClick={handleBack} icon={<LeftOutlined />} className={clsx(classes.backButton)} >Back</Button>
-            <Space direction="vertical">
-              <DatePicker  onChange={onChangeDate} />
-            </Space>
+            {/* <Space direction="vertical">
+              <DatePicker onChange={onChangeDate} />
+            </Space> */}
+            <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
+              <span className='th-br-4 p-1 th-bg-white'>
+                <img src={calendarIcon} className='pl-2' />
+                <DatePicker
+                  disabledDate={(current) => current.isAfter(moment())}
+                  allowClear={false}
+                  bordered={false}
+                  placement='bottomRight'
+                  // defaultValue={dateToday}
+                  value={moment(dateToday)}
+                  onChange={(value) => onChangeDate(value)}
+                  showToday={false}
+                  suffixIcon={<DownOutlined className='th-black-1' />}
+                  className='th-black-2 pl-0 th-date-picker'
+                  format={'YYYY/MM/DD'}
+                />
+              </span>
+            </div>
           </Grid>
-            <Grid item container xs={12} spacing={3}>
+          {/* <Grid item container xs={12} spacing={3}>
               <Grid item xs={3}>
 
               </Grid>
@@ -397,7 +468,46 @@ const CurriculumCompletionSubject = (props) => {
                   </Table>
                 </TableContainer>
               </Grid>
-            </Grid>
+            </Grid> */}
+          <div className='row mt-3'>
+            <div className='col-12'>
+              <Table
+                className='th-table'
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                loading={loading}
+                columns={columns}
+                rowKey={(record) => record?.grade_id}
+                dataSource={tableData?.data}
+                pagination={false}
+                expandIconColumnIndex={6}
+
+                scroll={{ x: 'max-content' }}
+              />
+            </div>
+            <div className='row mt-3'>
+              <div className='col-12'>
+                <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
+                  <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
+                    Total Periods:{' '}
+                    <span className='th-primary'>{tableData?.total_periods ? tableData?.total_periods : ''}</span>
+                  </div>
+                  <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                    Total Periods Conducted:{' '}
+                    <span className='th-green'>{tableData?.completed_periods ? tableData?.completed_periods : ''}</span>
+                  </div>
+                  <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                    Total Periods Pending:{' '}
+                    <span className='th-fw-500 th-red'>
+                      {tableData?.pending_periods ? tableData?.pending_periods : ''}
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
         </Grid>
 
         {loading && <Loader />}
