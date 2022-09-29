@@ -206,7 +206,7 @@ const AdminViewBlog = () => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Blogs' &&
+          item.parent_modules === 'Activity Management' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
