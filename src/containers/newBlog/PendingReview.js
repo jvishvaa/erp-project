@@ -116,7 +116,7 @@ const PendingReview = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
-  const {user_id} = JSON.parse(localStorage.getItem('userDetails'))
+  const {user_id} = JSON.parse(localStorage.getItem('ActivityManagementSession'))
 
   const handleCloseViewMore = () => {
     setView(false);
