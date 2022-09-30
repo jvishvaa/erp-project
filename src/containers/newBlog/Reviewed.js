@@ -244,6 +244,7 @@ const Reviewed = (props) => {
 
                 {/* <TableCell className={classes.tableCell}></TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>
+                <TableCell className={classes.tableCell}>Reviewed By</TableCell>
                 <TableCell className={classes.tableCell}>Overall Score</TableCell>
                 <TableCell className={classes.tableCell}></TableCell>
 
@@ -274,6 +275,7 @@ const Reviewed = (props) => {
                     {' '}
                     {response?.submitted_on?.substring(0, 10)}
                   </TableCell>
+                  <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell>
                   <TableCell className={classes.tableCells}>
                     <RatingScale
                       name={`rating${index}`}
