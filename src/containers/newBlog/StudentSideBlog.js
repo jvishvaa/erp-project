@@ -228,6 +228,7 @@ const StudentSideBlog = () => {
   const [readMore, setReadMore] = useState(true)
   const [flag,setFlag] = useState(false)
   const [currentDate,setCurrentDate] =useState('')
+  const [userData , setUserData] = useState()
 
 
   const createPublish = () => {
@@ -345,16 +346,17 @@ const StudentSideBlog = () => {
           'ActivityManagement',
           JSON.stringify(response?.data?.result)
         );
+        setUserData(response?.data?.result)
         getActivitySession();
       });
   };
   const [assinged, setAssigned] = useState([]);
   const getAssinged = async () => {
-    const User_id = (await JSON.parse(localStorage.getItem('ActivityManagement'))) || {};
 
+    const UserData =  JSON.parse(localStorage.getItem('ActivityManagement')) || {};
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&user_id=${User_id.id}&is_draft=false`,
+        `${endpoints.newBlog.Assign}?section_ids=null&user_id=${UserData.id}&is_draft=false`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -413,11 +415,9 @@ const StudentSideBlog = () => {
   };
 
   useEffect(() => {
-    getAssinged();
-    // getTotalSubmitted();
-
-    // getTotalReview();
-  }, [value]);
+    if(userData)
+  getAssinged();
+  }, [value,userData]);
   const [view, setView] = useState(false);
   const [previewData, setPreviewData] = useState();
   const [imageData,setImageData] = useState('')
