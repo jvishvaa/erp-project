@@ -19,6 +19,7 @@ import Paper from '@material-ui/core/Paper';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { indexOf } from "lodash";
 
 
 const useStyles = makeStyles(theme => ({
@@ -46,6 +47,8 @@ function ColumnCard({ subComponentId, componentId, columnId,
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [openSum, setOpenSum] = React.useState(false);
+  const [totalsub, settotalSub] = React.useState()
+  const [totalTests , setTotalTests] = React.useState()
 
   const handleOpen = () => {
     setOpen(true);
@@ -75,6 +78,40 @@ function ColumnCard({ subComponentId, componentId, columnId,
 
   const getreportcardsubcomponent = () => {
     axiosInstance.get(`${endpoints.reportCardConfig.reportcardconfigsummary}`).then((res) => {
+      let subjects = [];
+      let branches = res?.data?.result?.map((data) => {
+       let subject = data?.data?.map((subject) => subject?.subject?.subjects__subject_name)
+       subjects.push(subject)
+     return data?.branch?.branch_name
+      })
+      let totalSubjects = ["Branch/Subject"]
+      subjects.forEach((item)=> {
+        totalSubjects =  totalSubjects.concat(item)
+      }
+        )
+        let subset = [...new Set(totalSubjects)]
+     settotalSub(subset)
+
+     let finalres = []
+     let subjectList = [...subset]
+     subjectList.shift()
+    // let data =  subset.forEach((subject,i) => {
+      let rr = res?.data?.result?.forEach((data) => {
+        let emptyarr = new Array(subjectList.length).fill(0)
+       let r = data?.data?.forEach((item) => {
+            // if(item?.subject?.subjects__subject_name in subjectList){
+              let index = subjectList.indexOf(item?.subject?.subjects__subject_name)
+              if(index != -1){
+                emptyarr[index] = item?.tests
+              }
+            // }
+        })
+        finalres.push(emptyarr)
+      })
+    // })
+
+    setTotalTests(finalres)
+
       setTable(res.data.result)
     }).catch(err => {
       console.log(err)
@@ -125,7 +162,29 @@ function ColumnCard({ subComponentId, componentId, columnId,
   return (
     <>
       <Grid container spacing={2} style={{ marginLeft: "50px", marginBottom: 10 }}>
-        <Grid item xs={12} sm={6} className={"filterPadding"}>
+        <Grid item xs={12} sm={3} className={"filterPadding"}>
+          <TextField style={{ width: "100%" }}
+            id="subname"
+            label="PRIORITY"
+            variant="outlined"
+            size="small"
+            type="number"
+            onChange={e => {
+              const newComponent = components[index];
+              setComponentDetails(
+                components.map(componentDetail => {
+                  if (componentDetail.id === componentId) {
+                    const newSubComponent = componentDetail.subComponents[subComponentIndex]
+                    newSubComponent.columns[columnIndex].priority = e.target.value
+                    newComponent.subComponents[subComponentIndex] = newSubComponent
+                    return newComponent;
+                  }
+                  return componentDetail;
+                }))
+            }}
+            />
+            </Grid>
+        <Grid item xs={12} sm={3} className={"filterPadding"}>
           <TextField
             style={{ width: "100%" }}
             id="subname"
@@ -151,7 +210,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
               );
             }}
           />
-        </Grid>
+          </Grid>
         <Grid container spacing={2} style={{ margin: "0px" }}>
           <Grid item xs={12} sm={3} className={"filterPadding"}>
             <Button
@@ -205,30 +264,28 @@ function ColumnCard({ subComponentId, componentId, columnId,
                 className={classes.paper}
                 style={{ width: "60%", height: "60%" }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <div>Summary</div>
                   <div onClick={handleSumClose} style={{ position: 'relative', top: 0, left: 0, cursor: 'pointer' }}>X</div>
-                </div>
+                </div> */}
                 <div>
                   <TableContainer component={Paper}>
                     <Table className={classes.table} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          {/* <TableCell>Summary</TableCell> */}
-                          {table.map((data) =>
-                          (
-                            <>
-                              <TableCell component="th" scope="row">
+                          {/* <TableCell component="th" scope="row">
                                 Summary
-                              </TableCell>
+                              </TableCell> */}
+                          {/* <TableCell>Summary</TableCell> */}
+                          {/* {table.map((data) =>
+                          ( */}
+                            <>
 
-                              {data.data.map((row) =>
-                                <TableCell component="th" scope="row">
-                                  {row.subject.subjects__subject_name}
-                                </TableCell>
-                              )}
+                          {totalsub?.map((sub) => (
+                            <TableCell align="right">{sub}</TableCell>
+                            ) )}
                             </>
-                          ))}
+                          {/* ))} */}
 
                         </TableRow>
                       </TableHead>
@@ -238,12 +295,14 @@ function ColumnCard({ subComponentId, componentId, columnId,
                           <TableRow key={index}>
                             <TableCell align="right">{row.branch.branch_name}&nbsp;(g)
                             </TableCell>
-                            {row.data.map((row) =>
-                              <TableCell align="right">{row.tests}</TableCell>
-                              // <TableCell align="right">bethsa</TableCell>
-                            )}
+                              {totalTests[index].map((tests) => 
+                               <TableCell align="right">
+                                {tests}
+                               </TableCell>)}
                           </TableRow>
-                        ))}
+                          ))
+
+                        }
                       </TableBody>
                     </Table>
                   </TableContainer>
@@ -253,7 +312,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
             </Modal>
           </Grid>
         </Grid>
-        <Grid container spacing={2} style={{ margin: "0px", display: "flex", alignItems: "center" }}>
+        {components[index].ComponentID !== 34 && <Grid container spacing={2} style={{ margin: "0px", display: "flex", alignItems: "center" }}>
           <Grid item xs={12} sm={3} className={"filterPadding"}>
             <TextField
               style={{ width: "100%" }}
@@ -371,7 +430,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
             >
             </Button>
           </Grid>
-        </Grid>
+        </Grid>}
       </Grid>
     </>
   );
