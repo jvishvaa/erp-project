@@ -41,6 +41,7 @@ import endpoints from 'config/endpoints';
 import moment from 'moment';
 import AssesmentReportNew from '../assesment-report-card/newReportPrint';
 import { returnAdmin } from 'containers/Finance/src/components/Finance/store/actions';
+import ReportCardNewBack from '../assesment-report-card/reportCardNewBack';
 import StudentWiseReport from './assessment-report-filters/student-wise-report';
 import LeftArrow from 'components/icon/LeftArrow';
 
@@ -318,12 +319,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
       case 0:
         return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
       case 1:
-        return (
-          <AssessmentReportBack
-            schoolInfo={reportCardDataNew['school_info']}
-            observationFeedback={reportCardDataNew['observation_feedback']}
-          />
-        );
+        return <ReportCardNewBack reportCardDataNew={reportCardDataNew} />;
     }
   };
 
@@ -340,9 +336,9 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   };
 
   const handlebackStudentList = () => {
-    setIsPreview(false)
-    setisstudentList(true)
-  }
+    setIsPreview(false);
+    setisstudentList(true);
+  };
 
   return (
     <>
@@ -399,12 +395,9 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
 
         {selectedReportType?.id === 14 && isPreview && (
           <>
-            <div
-              onClick={handlebackStudentList}
-              className={classes.arrowbtn}
-            >
+            <div onClick={handlebackStudentList} className={classes.arrowbtn}>
               <IconButton>
-                <LeftArrow style={{width:'20px',height:'20px'}} />
+                <LeftArrow style={{ width: '20px', height: '20px' }} />
               </IconButton>
               Back
             </div>
@@ -412,7 +405,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
               <TabPanel
                 tabValue={tabValue}
                 setTabValue={setTabValue}
-                tabValues={['Front']}
+                tabValues={['Front', 'Back']}
               />
             </Box>
             <Box style={{ margin: '20px auto', width: '95%' }}>

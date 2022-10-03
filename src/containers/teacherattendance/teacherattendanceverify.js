@@ -34,6 +34,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 import { Select } from '@material-ui/core';
+import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import './teacherattendance.css';
 
@@ -52,12 +53,6 @@ const headCells = [
   { id: 'Grade', numeric: false, disablePadding: false, label: 'Grade' },
   { id: 'Section', numeric: false, disablePadding: false, label: 'Section' },
   { id: 'Role', numeric: false, disablePadding: false, label: 'Role' },
-  {
-    id: 'Contact Number',
-    numeric: false,
-    disablePadding: false,
-    label: 'Contact Number',
-  },
 ];
 
 function EnhancedTableHead(props) {
@@ -224,7 +219,7 @@ export default function TeacherAttendanceVerify() {
     studentAttendanceData.push({
       'ERP ID': item.erp_id,
       Name: item.name,
-      'Contact Number': item.contact,
+      // 'Contact Number': item.contact,
       Branch: item.section_mapping__acad_session__branch__branch_name,
       Grade: item.section_mapping__grade__grade_name,
       Section: item.section_mapping__section__section_name,
@@ -247,8 +242,14 @@ export default function TeacherAttendanceVerify() {
   const [rolesId, setRolesId] = React.useState();
 
   const [moduleId, setModuleId] = React.useState();
-  const [month, setMonth] = React.useState('1');
-  const [year, setYear] = React.useState('2021');
+  const [month, setMonth] = React.useState({
+    value: moment().format('M'),
+    label: moment().format('MMMM'),
+  });
+  const [year, setYear] = React.useState({
+    value: '2022',
+    label: '06',
+  });
 
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
@@ -345,12 +346,12 @@ export default function TeacherAttendanceVerify() {
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   const fileExtension = '.xlsx';
 
-  const handleChanges = (event) => {
+  const handleChanges = (event, value) => {
     console.log(event, 'event');
-    setMonth(event.target.value);
+    setMonth(value);
   };
-  const handleYear = (event) => {
-    setYear(event.target.value);
+  const handleYear = (event, value) => {
+    setYear(value);
   };
   const getRoleApi = async () => {
     try {
@@ -413,7 +414,7 @@ export default function TeacherAttendanceVerify() {
     setDisableDownload(true);
     const result = axiosInstance
       .get(
-        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&month=${month}&year=${year}&user_level=${rolesId}`
+        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&month=${month?.value}&year=${year?.value}&user_level=${rolesId}`
       )
       .then((result) => {
         if (result.status === 200) {
@@ -679,36 +680,34 @@ export default function TeacherAttendanceVerify() {
             </Breadcrumbs>
           </Grid>
           <Grid container spacing={1}>
-            <Grid item xs={12} md={1}>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
-                <Select
-                  native
-                  value={month}
-                  onChange={handleChanges}
-                  inputProps={{
-                    name: 'month',
-                    id: 'filled-month-native-simple',
-                  }}
-                >
-                  {months.map((option) => (
-                    <option key={option.label} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                id='combo-box-demo'
+                size='small'
+                options={months}
+                onChange={handleChanges}
+                value={month}
+                getOptionLabel={(option) => option?.label}
+                renderInput={(params) => (
+                  <TextField {...params} label='Month' variant='outlined' />
+                )}
+              />
             </Grid>
-            <Grid item xs={12} md={1} className='mobileYear'>
-              <InputLabel htmlFor='month-native-simple'>Year</InputLabel>
-              <Select native value={year} onChange={handleYear}>
-                {years.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.value}
-                  </option>
-                ))}
-              </Select>
+
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                id='combo-box-demo'
+                size='small'
+                options={years}
+                onChange={handleYear}
+                value={year}
+                getOptionLabel={(option) => option?.value}
+                renderInput={(params) => (
+                  <TextField {...params} label='Year' variant='outlined' />
+                )}
+              />
             </Grid>
+
             <Grid item xs={12} md={2}>
               <Autocomplete
                 // multiple
@@ -901,7 +900,7 @@ export default function TeacherAttendanceVerify() {
                                 : '-'}
                             </TableCell>
                             <TableCell align='right'>{value?.roles__role_name}</TableCell>
-                            <TableCell align='right'>{value?.contact}</TableCell>
+                            {/* <TableCell align='right'>{value?.contact}</TableCell> */}
                             {value?.attendance?.map((item, index) => {
                               return (
                                 <TableCell

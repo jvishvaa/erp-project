@@ -102,7 +102,9 @@ const MenuItem = withRouter(({ history, ...props }) => {
     // { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
     // { name: 'Role Management', Path: '/role-management' },
     { name: 'View Role', Path: '/role-management' },
-    { name: 'Teacher Attendance', Path: '/teacher-attendance' },
+    { name: 'Mark Staff Attendance', Path: '/mark-staff-attendance' },
+    { name: 'Mark Student Attendance', Path: '/mark-student-attendance' },
+
     { name: 'Teacher Attendance Verify', Path: '/teacher-attendance-verify' },
 
     { name: 'Deposit', Path: '/finance/DepositTab' },
@@ -587,8 +589,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     //   Path: '/assignedCoursesByCordinator',
     // },
     {
-      name: 'Mark Attendance',
-      Path: '/teacher-attendance',
+      name: 'Mark Staff Attendance',
+      Path: '/mark-staff-attendance',
     },
     {
       name: 'View Attendance',
@@ -737,8 +739,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
             menuOpen && childValue && drawerOpen === false
               ? classes.menuItemIconWhite
               : item.child_module?.some((childItem) => childItem['child_name'] === child)
-                ? classes.menuItemIconWhite
-                : classes.menuItemIcon
+              ? classes.menuItemIconWhite
+              : classes.menuItemIcon
           }
           onClick={() => {
             onClick(true);
@@ -792,7 +794,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
                 style={{ background: 'none' }}
                 className={
                   selectedIndex &&
-                    child.child_name === menuSelectionArray[selectedIndex].name
+                  child.child_name === menuSelectionArray[selectedIndex].name
                     ? classes.menuSelectionText
                     : classes.menuItemhover
                 }

@@ -39,7 +39,7 @@ import MomentUtils from '@date-io/moment';
 import NotifyConfirmPopUp from './notifyConfirmPopUp';
 
 function EnhancedTableHead(props) {
-  const { onRequestSort } = props;
+  const { onRequestSort, isStudent } = props;
 
   return (
     <TableHead align='left' stickyHeader>
@@ -53,9 +53,21 @@ function EnhancedTableHead(props) {
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeaderalign='left'>
           Name
         </TableCell>
-        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
-          Role
-        </TableCell>
+        {!isStudent && (
+          <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
+            Role
+          </TableCell>
+        )}
+        {isStudent && (
+          <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
+            Grade
+          </TableCell>
+        )}
+        {isStudent && (
+          <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
+            Section
+          </TableCell>
+        )}
 
         <TableCell
           style={{ backgroundColor: 'LightGray' }}
@@ -190,6 +202,7 @@ export default function TeacherAttendance(props) {
   const [data, setData] = React.useState([]);
   const [recordsData, setRecordsData] = React.useState([]);
   const [rolesId, setRolesId] = React.useState();
+  const [isStudent, setIsStudent] = React.useState(false);
 
   const [moduleId, setModuleId] = React.useState();
   const selectedAcademicYear = useSelector(
@@ -240,7 +253,7 @@ export default function TeacherAttendance(props) {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Mark Attendance') {
+            if (item.child_name === 'Mark Student Attendance') {
               setModuleId(item.child_id);
             }
           });
@@ -377,6 +390,7 @@ export default function TeacherAttendance(props) {
   const getRoleApi = async () => {
     try {
       const result = await axiosInstance.get(endpoints.userManagement.centralUserLevel, {
+        params: { exclude_student: true },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -393,8 +407,21 @@ export default function TeacherAttendance(props) {
     }
   };
   useEffect(() => {
-    getRoleApi();
-  }, []);
+    setData([]);
+    setRecordsData([]);
+    setshowdata(false);
+
+    if (window.location.pathname.includes('mark-student-attendance')) {
+      setIsStudent(true);
+      setRolesId(13);
+      setIsStudentInRole(true);
+    } else {
+      setIsStudent(false);
+      setIsStudentInRole(false);
+      getRoleApi();
+      setRolesId();
+    }
+  }, [window.location.pathname]);
 
   const getTeacherData = () => {
     setData([]);
@@ -518,11 +545,13 @@ export default function TeacherAttendance(props) {
     }
   };
   const local = 'localhost:3000';
-  const dev = 'dev.olvorchidnaigaon.letseduvate.com';
+  // const dev = 'dev.olvorchidnaigaon.letseduvate.com';
+  const ui_revamp1 = 'ui-revamp1.letseduvate.com';
   const qa = 'qa.olvorchidnaigaon.letseduvate.com';
   const prod = 'orchids.letseduvate.com';
 
   const isDateEditable = [1, 2, 8, 9].includes(user_level);
+
   return (
     <Layout>
       <div
@@ -550,7 +579,9 @@ export default function TeacherAttendance(props) {
               <Typography color='textPrimary' variant='h6'>
                 Attendance
               </Typography>
-              <Typography color='textPrimary'>Mark Attendance</Typography>
+              <Typography color='textPrimary'>
+                {isStudent ? 'Mark Student Attendance' : 'Mark Staff Attendance'}
+              </Typography>
             </Breadcrumbs>
           </Grid>
 
@@ -592,30 +623,32 @@ export default function TeacherAttendance(props) {
                 </MuiPickersUtilsProvider>
               </Grid>
             )}
-            <Grid item xs={12} md={2}>
-              <Autocomplete
-                // multiple
-                size='small'
-                onChange={handleMultipleRoles}
-                value={rolesId}
-                // disableClearable
-                className='dropdownIcon'
-                id='message_log-smsType'
-                options={roles}
-                getOptionLabel={(option) => option?.level_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='User Level'
-                    placeholder='User Level'
-                    required
-                  />
-                )}
-              />
-            </Grid>
+            {!isStudent && (
+              <Grid item xs={12} md={2}>
+                <Autocomplete
+                  // multiple
+                  size='small'
+                  onChange={handleMultipleRoles}
+                  value={rolesId}
+                  // disableClearable
+                  className='dropdownIcon'
+                  id='message_log-smsType'
+                  options={roles}
+                  getOptionLabel={(option) => option?.level_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='User Level'
+                      placeholder='User Level'
+                      required
+                    />
+                  )}
+                />
+              </Grid>
+            )}
             <Grid item xs={12} md={2}>
               <Autocomplete
                 id='combo-box-demo'
@@ -660,27 +693,45 @@ export default function TeacherAttendance(props) {
             </Grid>
 
             <Grid item md={1} xs={12}>
-              <Button onClick={getTeacherData} variant='contained' color='primary'>
+              <Button
+                onClick={getTeacherData}
+                variant='contained'
+                color='primary'
+                className='mx-1'
+              >
                 Search
               </Button>
             </Grid>
-
-            {data?.length > 0 ? (
-              <Grid xs={9} container spacing={1} justifyContent='flex-end'>
-                <div
-                  style={{ display: 'flex', alignItems: 'center', marginRight: '-22px' }}
-                >
-                  <Checkbox
-                    checked={checkedSelect}
-                    onChange={handleChangeSelect}
-                    inputProps={{ 'aria-label': 'primary checkbox' }}
-                  />
-                  <p>Mark All</p>
-                </div>
-              </Grid>
-            ) : (
-              ''
-            )}
+            <Grid>
+              {data?.length > 0 ? (
+                <Grid xs={12} container spacing={1} justifyContent='flex-end'>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginRight: '-22px',
+                    }}
+                  >
+                    <Checkbox
+                      checked={checkedSelect}
+                      onChange={handleChangeSelect}
+                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                      className='ml-1'
+                    />
+                    <p
+                      style={{
+                        whiteSpace: 'nowrap',
+                        marginTop: '1rem',
+                      }}
+                    >
+                      Mark All
+                    </p>
+                  </div>
+                </Grid>
+              ) : (
+                ''
+              )}
+            </Grid>
           </Grid>
           <div className='th-sticky-header' style={{ width: '100%' }}>
             <TableContainer className='tableContainer'>
@@ -696,6 +747,7 @@ export default function TeacherAttendance(props) {
                   order={order}
                   onRequestSort={handleRequestSort}
                   rowCount={data?.length}
+                  isStudent={isStudent}
                 />
                 {loading ? (
                   <Loader />
@@ -722,9 +774,21 @@ export default function TeacherAttendance(props) {
                             <TableCell align='left' style={{ width: '1px' }}>
                               {value?.name}
                             </TableCell>
-                            <TableCell align='left' style={{ width: '1px' }}>
-                              {value?.roles__role_name}
-                            </TableCell>
+                            {!isStudent && (
+                              <TableCell align='left' style={{ width: '1px' }}>
+                                {value?.roles__role_name}
+                              </TableCell>
+                            )}
+                            {isStudent && (
+                              <TableCell align='left' style={{ width: '1px' }}>
+                                {value?.section_mapping__grade__grade_name}
+                              </TableCell>
+                            )}
+                            {isStudent && (
+                              <TableCell align='left' style={{ width: '1px' }}>
+                                {value?.section_mapping__section__section_name}
+                              </TableCell>
+                            )}
 
                             <TableCell align='right'>
                               <TeacherAttendanceStatus
@@ -772,19 +836,20 @@ export default function TeacherAttendance(props) {
             }}
           >
             {recordsData?.total ? (
-              <h3>
+              <h5>
                 Total Present : {presentvalue || 0} &nbsp; Total Absent :{' '}
                 {absentvalue || 0} &nbsp; Total Marked : {absentvalue + presentvalue}{' '}
                 &nbsp; Total Unmarked :{' '}
                 {recordsData?.total - (absentvalue + presentvalue)} &nbsp; Total:{' '}
                 {recordsData?.total}
-              </h3>
+              </h5>
             ) : null}
             {isStudentInRole &&
               (recordsData?.total ? true : false) &&
               (window.location.host == local ||
-                window.location.host == dev ||
+                // window.location.host == dev ||
                 window.location.host == qa ||
+                window.location.host == ui_revamp1 ||
                 window.location.host == prod) && (
                 <Grid item md={2} xs={12} style={{ marginLeft: 15 }}>
                   <Button

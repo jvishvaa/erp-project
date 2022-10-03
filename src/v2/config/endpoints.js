@@ -82,6 +82,9 @@ export default {
     pendingHomework: `${msReportsUrlNew}/api/acad_performance/v1/student-hw-report-dash/`,
     pendingClasswork: `${msReportsUrlNew}/api/acad_performance/v1/student-cw-report-dash/`,
     assessment: `${msReportsUrlNew}/api/acad_performance/v1/student-assesment-report-dash/`,
+    studentAnnualAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-annual-attreport/`,
+    studentMonthlyAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-monthly-attreport/`,
+    studentUpcomingHolidays: `${msReportsUrl}/api/reports/v1/stu-upcoming-holydays/`,
   },
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
@@ -118,9 +121,11 @@ export default {
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
   },
   lessonPlan: {
-    subjects: 'academic/lesson-plan-subjects/',
+    subjects: 'academic/v2/lesson-plan-subjects/',
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
+    chapterList: 'academic/central-chapters-list-v3/',
+    keyConceptList: 'academic/get-key-concept-list/',
     bucket: `${CENTRAL_BUCKET}`,
   },
   homework: {
@@ -128,6 +133,8 @@ export default {
   },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
+  principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
+
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing

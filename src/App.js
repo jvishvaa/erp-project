@@ -1561,7 +1561,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                                 <DailyBillingDetails match={match} alert={alert} />
                               )}
                             </Route>
-                            <Route exact path='/teacher-attendance'>
+                            <Route exact path='/mark-staff-attendance'>
+                              {({ match }) => <TeacherAttendance match={match} />}
+                            </Route>
+                            <Route exact path='/mark-student-attendance'>
                               {({ match }) => <TeacherAttendance match={match} />}
                             </Route>
                             <Route exact path='/teacher-attendance-verify'>
@@ -2139,10 +2142,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/student-mark'>
                               {({ match }) => <StudentMark match={match} />}
                             </Route>
-                            <Route path='/lesson-plan/teacher-view/annual-plan'>
+                            <Route path='/lesson-plan/teacher-view/list-view'>
                               {({ match }) => <LessonPlan match={match} />}
                             </Route>
-                            <Route path='/lesson-plan/student-view/annual-plan'>
+                            <Route path='/lesson-plan/student-view/list-view'>
                               {({ match }) => <LessonPlan match={match} />}
                             </Route>
                             <Route path='*'>
