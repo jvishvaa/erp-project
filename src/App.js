@@ -443,6 +443,8 @@ import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/Re
 import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 import AddTemplates from './containers/newBlog/addTemplates';
+import Gradingview from 'containers/assessment-central/grading-system/gradingview';
+import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -566,6 +568,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/assessment/marks-upload'>
                               {({ match }) => <ReportCard match={match} />}
+                            </Route>
+                            <Route exact path='/assessment/grading-system'>
+                              {({ match }) => <Gradingview match={match} />}
+                            </Route>
+                            <Route exact path='/assessment/grading-create'>
+                              {({ match }) => <GradingCreate match={match} />}
                             </Route>
                             <Route exact path='/assessment/category'>
                               {({ match }) => <Category match={match} />}

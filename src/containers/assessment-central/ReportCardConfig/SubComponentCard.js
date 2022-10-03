@@ -40,7 +40,6 @@ function SubComponentCard({ subComponentId, componentId,
     getreportcardsubcomponent()
   }, [])
 
-
   return (
     <>
       <Grid container spacing={2} style={{ marginLeft: '30px' }}>
@@ -106,7 +105,7 @@ function SubComponentCard({ subComponentId, componentId,
             }}
           /> */}
         </Grid>
-        <Grid item xs={12} sm={3} className={'filterPadding'} style={{ paddingLeft: '0px !important' }}>
+        {((components[index]?.componentName !== 'PTSD') || (components[index]?.componentName === 'PTSD' && components[index]?.subComponents[subComponentIndex]?.columns?.length === 0)) && <Grid item xs={12} sm={3} className={'filterPadding'} style={{ paddingLeft: '0px !important' }}>
           <Button
             startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
             variant='contained'
@@ -118,29 +117,35 @@ function SubComponentCard({ subComponentId, componentId,
               //add column to the subcomponent
               const columnUniqueId = cuid();
               const newComponent = components[index];
-              setComponentDetails(
-                components.map(componentDetail => {
-                  if (componentDetail.id === componentId) {
-                    const newSubComponent = componentDetail.subComponents[subComponentIndex]
-                    const newColumns = [...componentDetail.subComponents[subComponentIndex].columns, {
-                      id: columnUniqueId,
-                      name: '',
-                      selectedTest: [],
-                      weightage: "",
-                      logic: 0,
-                    }]
-                    newSubComponent.columns = newColumns;
-                    newComponent.subComponents[subComponentIndex] = newSubComponent
-                    return newComponent;
-                  }
-                  return componentDetail;
-                })
-              );
+              // if(components[index]?.ComponentID === 34 && components[index]?.subComponents?.length === 1){
+              //   setAlert('Cannot add more assessment for PTSD !')
+              // }else{
+                setComponentDetails(
+                  components.map(componentDetail => {
+                    if (componentDetail.id === componentId) {
+                      const newSubComponent = componentDetail.subComponents[subComponentIndex]
+                      const newColumns = [...componentDetail.subComponents[subComponentIndex].columns, {
+                        id: columnUniqueId,
+                        name: '',
+                        selectedTest: [],
+                        weightage: '',
+                        logic: 0,
+                        priority : 0,
+                      }]
+                      newSubComponent.columns = newColumns;
+                      newComponent.subComponents[subComponentIndex] = newSubComponent
+                      return newComponent;
+                    }
+                    return componentDetail;
+                  })
+                );
+              // }
+             
             }}
           >
             Add Assessment
           </Button>
-        </Grid>
+        </Grid>}
         {/* <Grid
           item
           xs={12}

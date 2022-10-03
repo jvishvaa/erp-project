@@ -12,6 +12,11 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  arrowbtn:{
+    margin: '0 2%',
+    color: 'blue',
+    cursor: 'pointer',   
+  },
   container: {
     maxHeight: '70vh',
   },

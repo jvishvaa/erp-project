@@ -434,6 +434,8 @@ import ActivityReview from '../containers/newBlog/BlogReview';
 import AddReview from '../containers/newBlog/AddReview';
 import RatingType from '../containers/newBlog/RatingCreate';
 import AdminEditCreateBlogs from '../containers/newBlog/AdminEditCreateBlogs';
+import Gradingview from 'containers/assessment-central/grading-system/gradingview';
+import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 import AddTemplates from 'containers/newBlog/addTemplates';
 
@@ -510,6 +512,12 @@ const V1Router = [
   <Route exact path='/assessment/marks-upload'>
     {({ match }) => <ReportCard match={match} />}
   </Route>,
+  <Route exact path='/assessment/grading-system'>
+  {({ match }) => <Gradingview match={match} />}
+</Route>,
+<Route exact path='/assessment/grading-create'>
+  {({ match }) => <GradingCreate match={match} />}
+</Route>,
   <Route exact path='/assessment/category'>
     {({ match }) => <CategoryTable match={match} />}
   </Route>,
