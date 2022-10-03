@@ -78,7 +78,7 @@ const ReportTypeFilter = ({
   let isAolOrchids =
     domain[2].includes('aolschool') ||
     domain[2].includes('orchids') ||
-    domain[2].includes('localhost:3001') ||
+    domain[2].includes('localhost') ||
     domain[2].includes('dev') ||
     domain[2].includes('qa');
   return (

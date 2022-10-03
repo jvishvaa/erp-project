@@ -1561,7 +1561,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                                 <DailyBillingDetails match={match} alert={alert} />
                               )}
                             </Route>
-                            <Route exact path='/teacher-attendance'>
+                            <Route exact path='/mark-staff-attendance'>
+                              {({ match }) => <TeacherAttendance match={match} />}
+                            </Route>
+                            <Route exact path='/mark-student-attendance'>
                               {({ match }) => <TeacherAttendance match={match} />}
                             </Route>
                             <Route exact path='/teacher-attendance-verify'>

@@ -421,8 +421,6 @@ import CategoryMapping from 'containers/subjectGradeMapping/CategoryMapping';
 import UserProfile from 'containers/login/profiles';
 import EventsMark from 'containers/attendance/eventsmark';
 
-
-
 import AdminViewBlog from '../containers/newBlog/AdminViewBlog';
 import AdminCreateBlog from '../containers/newBlog/AdminCreateBlog';
 import AdminPublishBlogShort from '../containers/newBlog/Shortlisted';
@@ -449,14 +447,12 @@ const V1Router = [
   <Route exact path='/blog/templates'>
     {({ match }) => <AddTemplates match={match} />}
   </Route>,
-  <Route path='/userprofile'>
-    {({ match }) => <UserProfile match={match} />}
-  </Route>,
+  <Route path='/userprofile'>{({ match }) => <UserProfile match={match} />}</Route>,
   <Route path='/user-management'>
     {({ match }) => <UserManagement match={match} />}
   </Route>,
   <Route path='/onboarding-report'>
-  {({ match }) => <OnboardingReport match={match} />}
+    {({ match }) => <OnboardingReport match={match} />}
   </Route>,
   <Route path='/timetable/studentview'>
     {({ match }) => <TimeTableCheck match={match} />}
@@ -513,11 +509,11 @@ const V1Router = [
     {({ match }) => <ReportCard match={match} />}
   </Route>,
   <Route exact path='/assessment/grading-system'>
-  {({ match }) => <Gradingview match={match} />}
-</Route>,
-<Route exact path='/assessment/grading-create'>
-  {({ match }) => <GradingCreate match={match} />}
-</Route>,
+    {({ match }) => <Gradingview match={match} />}
+  </Route>,
+  <Route exact path='/assessment/grading-create'>
+    {({ match }) => <GradingCreate match={match} />}
+  </Route>,
   <Route exact path='/assessment/category'>
     {({ match }) => <CategoryTable match={match} />}
   </Route>,
@@ -1209,6 +1205,12 @@ const V1Router = [
   <Route exact path='/finance/E-Mandate/TotalBillingDetails'>
     {({ match }) => <DailyBillingDetails match={match} alert={alert} />}
   </Route>,
+  <Route exact path='/mark-staff-attendance'>
+    {({ match }) => <TeacherAttendance match={match} />}
+  </Route>,
+  <Route exact path='/mark-student-attendance'>
+    {({ match }) => <TeacherAttendance match={match} />}
+  </Route>,
   <Route exact path='/teacher-attendance'>
     {({ match }) => <TeacherAttendance match={match} />}
   </Route>,
@@ -1464,8 +1466,8 @@ const V1Router = [
     {({ match }) => <EnrollForSelfCourses match={match} />}
   </Route>,
   <Route exact path='/blog/admineditcreateblogs'>
-  {({ match }) => <AdminEditCreateBlogs match={match} />}
-</Route>,
+    {({ match }) => <AdminEditCreateBlogs match={match} />}
+  </Route>,
   <Route exact path='/enrolledSelfCourses'>
     {({ match }) => <EnrolledSelfCourses match={match} />}
   </Route>,
@@ -1542,9 +1544,7 @@ const V1Router = [
   <Route path='/studentrefer'>{({ match }) => <StudentRefer match={match} />}</Route>,
   <Route path='/successrefer'>{({ match }) => <ReferSuccess match={match} />}</Route>,
   <Route path='/holidaymarking'>{({ match }) => <HolidayMark match={match} />}</Route>,
-  <Route path='/eventmarking'>
-    {({ match }) => <EventsMark match={match} />}
-  </Route>,
+  <Route path='/eventmarking'>{({ match }) => <EventsMark match={match} />}</Route>,
   <Route path='/student_count_report'>
     {({ match }) => <StudentCountReport match={match} />}
   </Route>,
