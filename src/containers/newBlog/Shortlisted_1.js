@@ -485,6 +485,7 @@ const Shortlisted_1 = (props) => {
 
                 {/* <TableCell className={classes.tableCell}>Grade</TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>
+                <TableCell className={classes.tableCell}>Reviewed By</TableCell>
                 <TableCell className={classes.tableCell}>Overall Score</TableCell>
                 <TableCell className={classes.tableCell}></TableCell>
                 <TableCell style={{width:"237px"}}className={classes.tableCell}>Action</TableCell>
@@ -505,6 +506,7 @@ const Shortlisted_1 = (props) => {
                 <TableCell className={classes.tableCells}>{response?.booked_user?.username}</TableCell>
                 {/* <TableCell className={classes.tableCells}>Grade 1</TableCell> */}
                 <TableCell className={classes.tableCells}>{response?.submitted_on.slice(0,10)}</TableCell>
+                <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell>
                 <TableCell className={classes.tableCells}>
                   {' '}
                   <Box component='fieldset' mb={3} borderColor='transparent'>
