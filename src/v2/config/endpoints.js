@@ -82,6 +82,9 @@ export default {
     pendingHomework: `${msReportsUrlNew}/api/acad_performance/v1/student-hw-report-dash/`,
     pendingClasswork: `${msReportsUrlNew}/api/acad_performance/v1/student-cw-report-dash/`,
     assessment: `${msReportsUrlNew}/api/acad_performance/v1/student-assesment-report-dash/`,
+    studentAnnualAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-annual-attreport/`,
+    studentMonthlyAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-monthly-attreport/`,
+    studentUpcomingHolidays: `${msReportsUrl}/api/reports/v1/stu-upcoming-holydays/`,
   },
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,

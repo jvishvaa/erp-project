@@ -392,85 +392,50 @@ const CreateAnnouncement = () => {
           <div className='col-md-12 mt-3'>
             <div className='row th-bg-white p-2'>
               <div className='row py-2'>
-                <div className='col-md-2'>
-                  <span className='th-grey th-14'>Type</span>
-                  <Select
-                    value={selectedCategory}
-                    className='th-grey th-bg-grey th-br-4 w-100 mt-1'
-                    placement='bottomRight'
-                    suffixIcon={<DownOutlined className='th-black-1' />}
-                    dropdownMatchSelectWidth={false}
-                    onChange={handleChange}
-                    menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                  >
-                    {categoryOptions}
-                  </Select>
-                </div>
-                <div className='col-md-5 py-3 py-md-0'>
-                  <span className='th-grey th-14'>Title</span>
-                  <Input
-                    className='th-br-4 mt-1 th-16'
-                    showCount
-                    maxLength='30'
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                  <div className='text-right'>
-                    <span className='th-red th-12 text-right'>Max. 30 Characters</span>
-                  </div>
-                </div>
-              </div>
-              <div className='row py-2'>
-                <div className='col-12'>
-                  <span className='th-grey th-14'>Description</span>
-                  <div className='th-editor py-2'>
-                    <TextArea rows={4} onChange={(e) => setDescription(e.target.value)} />
-                  </div>
-                </div>
                 <Form
                   id='filterForm'
-                  className='row text-left'
+                  className='text-left col-md-6 row w-100'
                   ref={formRef}
-                  layout={'horizontal'}
                 >
-                  <div className='row mt-3 py-2'>
-                    <div className='col-md-4'>
-                      <span className='th-grey th-14'>Branch</span>
-                      <Form.Item name='branch'>
-                        <Select
-                          showSearch
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                          placement='bottomRight'
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          dropdownMatchSelectWidth={false}
-                          onChange={(e) => handleBranchChange(e)}
-                          allowClear={true}
-                          onClear={handleClearBranch}
-                          optionFilterProp='children'
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                        >
-                          {branchOptions}
-                        </Select>
-                      </Form.Item>
+                  <div className='col-md-6'>
+                    <span className='th-grey th-14'>Type</span>
+                    <Select
+                      value={selectedCategory}
+                      className='th-grey th-bg-grey th-br-4 w-100 mt-1'
+                      placement='bottomRight'
+                      suffixIcon={<DownOutlined className='th-black-1' />}
+                      dropdownMatchSelectWidth={false}
+                      onChange={handleChange}
+                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
+                    >
+                      {categoryOptions}
+                    </Select>
+                  </div>
+                  <div className='col-md-6 py-3 py-md-0'>
+                    <span className='th-grey th-14'>Title</span>
+                    <Input
+                      className='th-br-4 mt-1 th-16'
+                      showCount
+                      maxLength='30'
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <div className='text-right'>
+                      <span className='th-red th-12 text-right'>Max. 30 Characters</span>
                     </div>
-                    <div className='col-md-8 py-3 py-md-0'>
-                      <span className='th-grey th-14'>Choose User Level</span>
+                  </div>
+                  <div className='col-md-6'>
+                    <span className='th-grey th-14'>Branch</span>
+                    <Form.Item name='branch'>
                       <Select
-                        mode='multiple'
-                        maxTagCount={5}
-                        allowClear={true}
-                        suffixIcon={<DownOutlined className='th-grey' />}
+                        showSearch
                         className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                         placement='bottomRight'
-                        showArrow={true}
-                        onChange={(e, value) => handleUserLevel(e, value)}
-                        onClear={handleClearUserLevel}
+                        suffixIcon={<DownOutlined className='th-grey' />}
                         dropdownMatchSelectWidth={false}
+                        onChange={(e) => handleBranchChange(e)}
+                        allowClear={true}
+                        onClear={handleClearBranch}
+                        optionFilterProp='children'
                         filterOption={(input, options) => {
                           return (
                             options.children.toLowerCase().indexOf(input.toLowerCase()) >=
@@ -478,9 +443,31 @@ const CreateAnnouncement = () => {
                           );
                         }}
                       >
-                        {userLevelListOptions}
+                        {branchOptions}
                       </Select>
-                    </div>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-6 py-3 py-md-0'>
+                    <span className='th-grey th-14'>Choose User Level</span>
+                    <Select
+                      mode='multiple'
+                      maxTagCount={5}
+                      allowClear={true}
+                      suffixIcon={<DownOutlined className='th-grey' />}
+                      className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                      placement='bottomRight'
+                      showArrow={true}
+                      onChange={(e, value) => handleUserLevel(e, value)}
+                      onClear={handleClearUserLevel}
+                      dropdownMatchSelectWidth={false}
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                    >
+                      {userLevelListOptions}
+                    </Select>
                   </div>
                   {isStudentIncluded && (
                     <div className='row mt-3 py-2'>
@@ -539,8 +526,23 @@ const CreateAnnouncement = () => {
                     </div>
                   )}
                 </Form>
+                <div className='col-md-6'>
+                  <span className='th-grey th-14'>Description</span>
+                  <div className='th-editor py-2'>
+                    <TextArea rows={5} onChange={(e) => setDescription(e.target.value)} />
+                  </div>
+                </div>
+              </div>
 
-                <div className='row mt-3 py-2'>
+              <div className='row'>
+                {/* <div className='col-4'>
+                  <span className='th-grey th-14'>Description</span>
+                  <div className='th-editor py-2'>
+                    <TextArea rows={4} onChange={(e) => setDescription(e.target.value)} />
+                  </div>
+                </div> */}
+
+                <div className='row mt-2'>
                   <div className='col-md-6 py-3 py-md-0'>
                     <span className='th-grey th-14'>Members</span>
                     <Input
@@ -560,9 +562,7 @@ const CreateAnnouncement = () => {
                       // }
                     />
                   </div>
-                </div>
-                <div className='row py-2 mt-3'>
-                  <div className='col-12'>
+                  <div className='col-md-6 py-3 py-md-0'>
                     <span className='th-grey th-14'>Upload Attachments</span>
                     <div
                       className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
@@ -571,16 +571,13 @@ const CreateAnnouncement = () => {
                       <div className='col-md-10 col-9'>
                         <div className='row'>
                           {uploadedFiles?.map((item, index) => {
-                            const fullName = item[0]?.split('/')[
-                              item[0]?.split('/').length - 1
-                            ];
+                            const fullName =
+                              item[0]?.split('/')[item[0]?.split('/').length - 1];
 
-                            const fileName = fullName.split('.')[
-                              fullName?.split('.').length - 2
-                            ];
-                            const extension = fullName.split('.')[
-                              fullName?.split('.').length - 1
-                            ];
+                            const fileName =
+                              fullName.split('.')[fullName?.split('.').length - 2];
+                            const extension =
+                              fullName.split('.')[fullName?.split('.').length - 1];
                             return (
                               <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
                                 <span className='th-12 th-black-1 text-truncate'>
@@ -613,6 +610,56 @@ const CreateAnnouncement = () => {
                       </div>
                     </div>
                   </div>
+                </div>
+                <div className='row py-2 mt-3'>
+                  {/* <div className='col-12'>
+                    <span className='th-grey th-14'>Upload Attachments</span>
+                    <div
+                      className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
+                      style={{ border: '1px solid #D9D9D9' }}
+                    >
+                      <div className='col-md-10 col-9'>
+                        <div className='row'>
+                          {uploadedFiles?.map((item, index) => {
+                            const fullName =
+                              item[0]?.split('/')[item[0]?.split('/').length - 1];
+
+                            const fileName =
+                              fullName.split('.')[fullName?.split('.').length - 2];
+                            const extension =
+                              fullName.split('.')[fullName?.split('.').length - 1];
+                            return (
+                              <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                                <span className='th-12 th-black-1 text-truncate'>
+                                  {fileName}
+                                </span>
+                                <span className='th-12 th-black-1 '>.{extension}</span>
+
+                                <span className='ml-md-3 ml-1 th-pointer '>
+                                  <img
+                                    src={smallCloseIcon}
+                                    onClick={() => handleRemoveUploadedFile(index)}
+                                  />
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <div
+                        className='col-md-2 col-3 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'
+                        onClick={handleShowModal}
+                      >
+                        <span className='th-12'>
+                          {' '}
+                          <u>Upload</u>
+                        </span>
+                        <span className='ml-3 pb-2'>
+                          <img src={uploadIcon} />
+                        </span>
+                      </div>
+                    </div>
+                  </div> */}
                 </div>
 
                 <div className='row mt-4 py-2'>

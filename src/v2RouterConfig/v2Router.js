@@ -34,6 +34,7 @@ import BranchWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attend
 import StaffAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/staffAttendance';
 import LessonPlan from 'v2/FaceLift/LessonPlan';
 import LessonPlanView from 'v2/FaceLift/LessonPlan/LessonPlanView';
+import StudentAttendanceDashboard from 'v2/FaceLift/StudentDashboard/StudentAttendanceDashboard';
 
 const V2Router = () => {
   useEffect(() => {
@@ -92,6 +93,9 @@ const V2Router = () => {
                                 return <AcadCalendar match={match} />;
                             }
                           }}
+                        </Route>
+                        <Route path='/student-attendance-dashboard'>
+                          {({ match }) => <StudentAttendanceDashboard match={match} />}
                         </Route>
                         <Route path='/announcement-list'>
                           {({ match }) => <AnnouncementList match={match} />}
