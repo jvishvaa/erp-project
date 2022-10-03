@@ -62,6 +62,7 @@ const QuestionBankFilters = ({
   const [moduleDropdown, setModuleDropdown] = useState([]);
   const [selectedKeyConceptId, setSelectedKeyConceptId] = useState([]);
   const [keyConceptDropdown, setKeyConceptDropdown] = useState([]);
+  const [flag,setFlag] = useState(false);
   const location = useLocation();
 
   const question_level_options = [
@@ -336,7 +337,9 @@ const QuestionBankFilters = ({
   const handleerpCategory = (event, value) => {
     setFilterData({ ...filterData, erp_category: '',  });
     setLoading(true);
+    setFlag(false)
     if (value) {
+      setFlag(true)
       setFilterData({ ...filterData, erp_category: value });
       setLoading(false);
     } else {
@@ -650,10 +653,10 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select Grade!');
       return;
     }
-    if (!filterData?.subject) {
-      setAlert('error', 'Select Subject!');
-      return;
-    }
+    // if (!filterData?.subject) {
+    //   setAlert('error', 'Select Subject!');
+    //   return;
+    // }
     if (!filterData?.is_erp_central) {
       setAlert('error', 'Select Question From!');
       return;
@@ -709,6 +712,27 @@ const QuestionBankFilters = ({
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
+            onChange={handleerpCategory}
+            id='Category'
+            className='dropdownIcon'
+            value={filterData?.erp_category || {}}
+            options={erpCategoryDropdown || []}
+            getOptionLabel={(option) => option?.erp_category_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='ERP Category'
+                placeholder='ERP Category'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
             onChange={handleGrade}
             id='grade'
             className='dropdownIcon'
@@ -749,6 +773,7 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
+        {!flag ? (
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -766,11 +791,13 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Subject'
                 placeholder='Subject'
-                required
+                // required
               />
             )}
           />
         </Grid>
+
+        ): ''}
 
         {filterData?.is_erp_central?.name == 'CENTRAL' ?
           <>
@@ -832,6 +859,9 @@ const QuestionBankFilters = ({
               />
             </Grid>
           </> : null}
+
+        {!flag ? (
+          <>
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -853,6 +883,7 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
+
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -874,6 +905,8 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
+          </>
+        ): ''}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -937,7 +970,7 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -957,7 +990,7 @@ const QuestionBankFilters = ({
               />
             )}
           />
-        </Grid>
+        </Grid> */}
 
 
         {!isMobile && (

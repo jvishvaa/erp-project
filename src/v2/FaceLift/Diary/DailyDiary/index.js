@@ -248,6 +248,12 @@ const DailyDiary = () => {
       dairy_type: 2,
       is_central: false,
     };
+    if(payload?.teacher_report?.previous_class?.length === 0 || payload?.teacher_report?.summary?.length === 0 || payload?.teacher_report?.class_work?.length === 0 || payload?.teacher_report?.tools_used?.length === 0 || payload?.teacher_report?.homework?.length === 0 ){
+      message.error('Please Enter Details')
+      setLoading(false);
+      return;
+
+    }
 
     if (hwMappingID) {
       payload['hw_dairy_mapping_id'] = hwMappingID;
