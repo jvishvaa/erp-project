@@ -34,7 +34,7 @@ import axiosInstance from 'axios';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import './index.css';
+import '../index.css';
 import { useHistory } from 'react-router-dom';
 import fileDownload from 'js-file-download';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
@@ -73,7 +73,7 @@ const getFileIcon = (type) => {
   }
 };
 
-const TableView = () => {
+const TableView = ({ showTab }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const formRef = createRef();
@@ -284,7 +284,7 @@ const TableView = () => {
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
-        grade_id: e,
+        grade: e,
       });
     }
   };
@@ -325,7 +325,7 @@ const TableView = () => {
   const gradeOptions = gradeData?.map((each) => {
     return (
       <Option key={each?.id} value={each.grade_id}>
-        {each?.grade__grade_name}
+        {each?.grade_name}
       </Option>
     );
   });
@@ -362,16 +362,6 @@ const TableView = () => {
     }
 
     setExpandedRowKeys(keys);
-  };
-
-  const handleDownload = (file) => {
-    axios
-      .get(`${endpoints.homework.resourcesFiles}/${file}`, {
-        responseType: 'blob',
-      })
-      .then((res) => {
-        fileDownload(res.data, file);
-      });
   };
 
   const markPeriodComplete = (item) => {
@@ -454,18 +444,10 @@ const TableView = () => {
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
-        grade_id: history?.location?.state?.gradeID,
+        grade: history?.location?.state?.gradeID,
       });
     }
-    // fetchModuleListData({
-    //   subject_id: history?.location?.state?.subjectID,
-    //   volume: history?.location?.state?.volumeID,
-    //   academic_year: history?.location?.state?.centralAcademicYearID,
-    //   grade_id: history?.location?.state?.gradeID,
-    //   branch_id: selectedBranch?.branch?.id,
-    //   board: history?.location?.state?.boardID,
-    // });
-  }, []);
+  }, [showTab]);
 
   useEffect(() => {
     if (gradeId && volumeId && subjectId) {
@@ -540,7 +522,7 @@ const TableView = () => {
                   placement='bottom'
                   title={<span>{row.key_concept__topic_name}</span>}
                 >
-                  <div className='text-truncate th-width-95'>
+                  <div className='text-truncate th-width-95 text-center'>
                     {index + 1}. {row.key_concept__topic_name}
                   </div>
                 </Tooltip>
@@ -627,11 +609,6 @@ const TableView = () => {
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
   ];
-  console.log(
-    'LL',
-    YCPData?.ycp_files?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0],
-    YCPData?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0]
-  );
   return (
     <div className='row'>
       <div className='col-12 mb-2'>
@@ -749,7 +726,7 @@ const TableView = () => {
         <div className='col-12 mb-3 px-3'>
           <div className='row'>
             {YCPData?.filter((item) => item?.lesson_type == '1')[0]?.media_file[0] && (
-              <div className='col-3'>
+              <div className='col-md-3'>
                 <a
                   onClick={() => {
                     const fileName = YCPData?.filter(
@@ -783,7 +760,7 @@ const TableView = () => {
               </div>
             )}
             {YCPData?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0] && (
-              <div className='col-3'>
+              <div className='col-md-3'>
                 <a
                   onClick={() => {
                     const fileName = YCPData?.filter(
@@ -833,7 +810,7 @@ const TableView = () => {
           pagination={false}
           loading={loading}
           onExpand={onTableRowExpand}
-          expandedRowKeys={expandedRowKeys}
+          // expandedRowKeys={expandedRowKeys}
           expandIconColumnIndex={5}
           expandIcon={({ expanded, onExpand, record }) =>
             expanded ? (
