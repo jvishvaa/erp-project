@@ -96,7 +96,9 @@ const AnnualPlan = () => {
 
   const fetchSubjectData = (params = {}) => {
     axios
-      .get(`${endpoints.lessonPlan.subjects}`, { params: { ...params } })
+      .get(`${endpoints.lessonPlan.subjects}`, {
+        params: { ...params },
+      })
       .then((res) => {
         if (res.data.status_code === 200) {
           setSubjectData(res.data.result);
@@ -139,7 +141,7 @@ const AnnualPlan = () => {
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
-        grade_id: item.value,
+        grade: item.value,
       });
     }
   };
@@ -182,7 +184,7 @@ const AnnualPlan = () => {
   const gradeOptions = gradeData?.map((each) => {
     return (
       <Option key={each?.id} value={each.grade_id}>
-        {each?.grade__grade_name}
+        {each?.grade_name}
       </Option>
     );
   });
@@ -448,8 +450,8 @@ const AnnualPlan = () => {
                           onClick={() =>
                             history.push({
                               pathname: window.location.pathname.includes('teacher-view')
-                                ? '/lesson-plan/teacher-view/annual-plan'
-                                : '/lesson-plan/student-view/annual-plan',
+                                ? '/lesson-plan/teacher-view/list-view'
+                                : '/lesson-plan/student-view/list-view',
                               state: {
                                 gradeID: gradeId,
                                 gradeName,
@@ -459,6 +461,7 @@ const AnnualPlan = () => {
                                 volumeName: item.volume_name,
                                 volumeID: item.volume_id,
                                 centralAcademicYearID: item.central_academic_year_id,
+                                showTab: '2',
                               },
                             })
                           }

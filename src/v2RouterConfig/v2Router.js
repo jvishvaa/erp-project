@@ -129,10 +129,10 @@ const V2Router = () => {
                         <Route exact path='/report-config/create'>
                           {({ match }) => <CreateReportConfig match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/teacher-view/annual-plan'>
+                        <Route path='/lesson-plan/teacher-view/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/student-view/annual-plan'>
+                        <Route path='/lesson-plan/student-view/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
                         </Route>
                         <Route path='/lesson-plan/teacher-view'>
