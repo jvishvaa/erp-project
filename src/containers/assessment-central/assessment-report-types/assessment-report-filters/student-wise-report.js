@@ -92,6 +92,7 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
   const {user_id : teacher_id} = JSON.parse(localStorage.getItem('userDetails'))
   const [ isEditRemark , setIsEditRemark] = useState(false)
   const [editId , setEditId] = useState()
+  console.log(filterData,'filterData')
 
   useEffect(() => {
     if(isFilter || isstudentList)
@@ -180,7 +181,7 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
     setStudentId(id)
     setIsLoading(true)
     let remarks = ''
-    axiosInstance.get(`assessment/teacher-remarks/?teacher=${teacher_id}&student=${id}`)
+    axiosInstance.get(`assessment/teacher-remarks/?teacher=${teacher_id}&student=${id}&acad_session=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}`)
     .then((res) => {
         setIsLoading(false)
         if(res?.data?.status_code === 200){
@@ -206,7 +207,9 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
     let params = {
         "student":studentId,
         "teacher":teacher_id,
-        "remarks": teacherRemark
+        "remarks": teacherRemark,
+        "acad_session" : filterData?.branch?.id,
+        "grade" : filterData?.grade?.grade_id,
       }
       if(isEditRemark) {
         axiosInstance.put(`assessment/teacher-remarks/${editId}/`, params)

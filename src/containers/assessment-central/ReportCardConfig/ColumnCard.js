@@ -96,7 +96,6 @@ function ColumnCard({ subComponentId, componentId, columnId,
      let subjectList = [...subset]
      subjectList.shift()
     // let data =  subset.forEach((subject,i) => {
-      debugger
       let rr = res?.data?.result?.forEach((data) => {
         let emptyarr = new Array(subjectList.length).fill(0)
        let r = data?.data?.forEach((item) => {

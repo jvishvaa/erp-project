@@ -18,7 +18,12 @@ import {
   DialogContent,
   DialogTitle,
   Dialog,
+  Tabs,
+  Tab,
+  Typography,
+  Box,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Modal from "@material-ui/core/Modal";
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
@@ -125,6 +130,40 @@ const moreDetailscolumns = [
   },
 ];
 
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role='tabpanel'
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
 const ReportConfigTable = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
@@ -147,7 +186,14 @@ const ReportConfigTable = () => {
   const [deleteId , setDeleteId ] = useState()
   const [openDetails, setopenDetails] = useState(false)
   const [detailsData , setDetailsData] = useState()
+  const [tabValue , setTabValue] = useState(0)
+  const [totalsub, settotalSub] = useState()
+  const [totalTests , setTotalTests] = useState()
+  const [table, setTable] = useState([])
 
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
   useEffect(() => {
     if (moduleId) getBranch();
   }, [moduleId]);
@@ -324,10 +370,53 @@ const ReportConfigTable = () => {
   };
   const handleClose = () => {
     setopenDetails(false)
+    setTabValue(0)
+  }
+
+  const getTestsummary = () => {
+    axiosInstance.get(`${endpoints.reportCardConfig.reportcardconfigsummary}`).then((res) => {
+      let subjects = [];
+      let branches = res?.data?.result?.map((data) => {
+       let subject = data?.data?.map((subject) => subject?.subject?.subjects__subject_name)
+       subjects.push(subject)
+     return data?.branch?.branch_name
+      })
+      let totalSubjects = ["Branch/Subject"]
+      subjects.forEach((item)=> {
+        totalSubjects =  totalSubjects.concat(item)
+      }
+        )
+        let subset = [...new Set(totalSubjects)]
+     settotalSub(subset)
+
+     let finalres = []
+     let subjectList = [...subset]
+     subjectList.shift()
+    // let data =  subset.forEach((subject,i) => {
+      let rr = res?.data?.result?.forEach((data) => {
+        let emptyarr = new Array(subjectList.length).fill(0)
+       let r = data?.data?.forEach((item) => {
+            // if(item?.subject?.subjects__subject_name in subjectList){
+              let index = subjectList.indexOf(item?.subject?.subjects__subject_name)
+              if(index != -1){
+                emptyarr[index] = item?.tests
+              }
+            // }
+        })
+        finalres.push(emptyarr)
+      })
+    // })
+
+    setTotalTests(finalres)
+
+      setTable(res.data.result)
+    }).catch(err => {
+      console.log(err)
+    })
   }
 
   const handleOpenDetails = (data) => {
-    debugger
+    getTestsummary()
     setopenDetails(true)
     setDetailsData(data)
   }
@@ -489,30 +578,30 @@ const ReportConfigTable = () => {
                         {data?.component_description}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                      <Button
+                        <Button
                           onClick={() => handleOpenDetails(data)}
                           color='primary'
                           variant='contained'
                         >
                           Details
-                          </Button>
+                        </Button>
                         <Button
                           onClick={() => {
                             // setOpenModal(true);
                             // setDeleteId(data?.id)
-                            handlePublish(data?.id,data?.is_publish)
+                            handlePublish(data?.id, data?.is_publish);
                           }}
-                          style={{marginLeft:'5%'}}
+                          style={{ marginLeft: '5%' }}
                           color='primary'
                           variant='contained'
                         >
                           {/* {ispublished ? 'Publish' : 'Unpublish'} */}
-                          {data?.is_publish? "Unpublish" : "Publish"}
+                          {data?.is_publish ? 'Unpublish' : 'Publish'}
                         </Button>
                         <IconButton
                           onClick={() => {
                             setOpenModal(true);
-                            setDeleteId(data?.id)
+                            setDeleteId(data?.id);
                           }}
                           title='Delete'
                         >
@@ -551,28 +640,43 @@ const ReportConfigTable = () => {
             setOpenModal={setOpenModal}
           />
         )}
-        {openDetails && <Dialog
-              open={openDetails}
-              fullWidth
-              onClose={handleClose}
-              // aria-labelledby="simple-modal-title"
-              // aria-describedby="simple-modal-description"
-              // className={classes.modal}
-            >
-              <DialogTitle style = {{display:'flex' , justifyContent:'center'}}>Selected Test Details</DialogTitle>
+        {openDetails && (
+          <Dialog
+            open={openDetails}
+            fullWidth
+            onClose={handleClose}
+            // aria-labelledby="simple-modal-title"
+            // aria-describedby="simple-modal-description"
+            // className={classes.modal}
+          >
+            <Grid>
+              <Tabs
+                indicatorColor='primary'
+                textColor='primary'
+                value={tabValue}
+                onChange={handleTabChange}
+                aria-label='simple tabs example'
+              >
+                <Tab label='TestWise' {...a11yProps(0)} />
+                <Tab label='Branchwise' {...a11yProps(1)} />
+              </Tabs>
 
-                <DialogContent>
-                  <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                        <TableCell component="th" scope="row">
-                                S.NO
-                              </TableCell>
-                          <TableCell component="th" scope="row">
-                                Test Name
-                              </TableCell>
-                          {/* {detailsData?.map((data) =>
+            <TabPanel value={tabValue} index={0}>
+              {/* <DialogContent> */}
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label='simple table'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell component='th' scope='row'>
+                        S.NO
+                      </TableCell>
+                      <TableCell component='th' scope='row'>
+                        Test Name
+                      </TableCell>
+                      <TableCell component='th' scope='row'>
+                        Subject Name
+                      </TableCell>
+                      {/* {detailsData?.map((data) =>
                           (
                             <>
 
@@ -583,29 +687,69 @@ const ReportConfigTable = () => {
                               )}
                             </>
                           ))} */}
+                    </TableRow>
+                  </TableHead>
 
+                  <TableBody>
+                    {detailsData?.test_details.map((row, index) => (
+                      <TableRow>
+                        <TableCell component='th' scope='row'>
+                          {index + 1}
+                        </TableCell>
+                        <TableCell component='th' scope='row'>
+                          {row?.test_name}
+                        </TableCell>
+                        <TableCell component='th' scope='row'>
+                          {row?.subjects__subject_name}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            {/* </DialogContent>  */}
+              </TabPanel>
+              <TabPanel value={tabValue} index={1}>
+              <div
+                className={classes.paper}
+                // style={{ width: "60%", height: "60%" }}
+              >
+                <div>
+                  <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                            <>
+
+                          {totalsub?.map((sub) => (
+                            <TableCell align="right">{sub}</TableCell>
+                            ) )}
+                            </>
                         </TableRow>
                       </TableHead>
 
                       <TableBody>
-                          
-                            {detailsData?.test_details.map((row,index) =>
-                            <TableRow>
-                               <TableCell component="th" scope="row">
-                                  {index + 1}
-                                </TableCell>
-                                <TableCell component="th" scope="row">
-                                  {row?.test_name}
-                                </TableCell>
-                            </TableRow>
-                              )}
+                        {table.map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell align="right">{row.branch.branch_name}&nbsp;(g)
+                            </TableCell>
+                              {totalTests[index].map((tests) => 
+                               <TableCell align="right">
+                                {tests}
+                               </TableCell>)}
+                          </TableRow>
+                          ))
+
+                        }
                       </TableBody>
                     </Table>
                   </TableContainer>
-                </DialogContent>
-
-            </Dialog>}
-         
+                </div>
+              </div>
+              </TabPanel>
+            </Grid>            
+          </Dialog>
+        )}
       </Layout>
     </>
   );
