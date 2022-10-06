@@ -292,14 +292,14 @@ const ReportConfigTable = () => {
 
   const FilterData = () => {
     {
-      if(selectedbranch.length === 0 || !selectedGrade){
+      if(selectedbranch?.length === 0 || !selectedGrade){
         setAlert('error', 'Please Select Filters !')
       }else
       {
         setLoading(true);
         let url = `${
           endpoints.questionBank.reportConfig
-        }?acad_session=${selectedbranch.map((branch) => branch?.id)}&grade=${
+        }?acad_session=${selectedbranch?.map((branch) => branch?.id)}&grade=${
           selectedGrade?.grade_id
         }`;
         let params = {
@@ -332,8 +332,11 @@ const ReportConfigTable = () => {
       .then((res) => {
         if(res?.data?.status_code == 200 || res?.status == 200){
           setAlert('success', res?.data?.message || 'Deleted Successfully')
-          FilterData();
-          setLoading(false);
+          if(selectedbranch?.length && selectedGrade){
+            FilterData();
+          }else{
+            TotalData()
+          }          setLoading(false);
         }else{
           setAlert('error', res?.data?.message || 'Deletion Failed')
           setLoading(false);
@@ -360,7 +363,11 @@ const ReportConfigTable = () => {
       .then((res) => {
         if(res?.data?.status_code == 200 || res?.status == 200){
         setAlert('success', res?.data?.message || 'Updated Successfully')
-        FilterData();
+        if(selectedbranch?.length && selectedGrade){
+          FilterData();
+        }else{
+          TotalData()
+        }
         setLoading(false);
         }else{
           setAlert('error', res?.data?.message || 'Updation Failed')
