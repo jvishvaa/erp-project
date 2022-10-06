@@ -412,6 +412,7 @@ function GradingCreate() {
       axiosInstance
         .post(`${endpoints.gradingSystem.GradingData}`, params)
         .then((res) => {
+
           setLoading(false);
           //   setGradingData(res.data.result);
           setAlert('success', 'Created Successfully');
@@ -502,6 +503,9 @@ function GradingCreate() {
           style={{ margin: '2%' }}
         >
           {/* <Grid item md={3} xs = {12}> */}
+          <Button color='primary' variant='contained' onClick={handleback}>
+            Back
+          </Button>
           {history?.location?.state?.isEdit ? (
             <Button color='primary' variant='contained' onClick={handleUpdate}>
               Update
@@ -511,9 +515,6 @@ function GradingCreate() {
               Create
             </Button>
           )}
-          <Button color='primary' variant='contained' onClick={handleback}>
-            Back
-          </Button>
         </Grid>
         {/* <Grid item md={3} xs = {12}>
             <Button 

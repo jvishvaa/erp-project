@@ -36,7 +36,7 @@ const ConfirmModal = ({ openModal, setOpenModal, submit }) => {
             handleCloseModal();
           }}
         >
-          Submit
+          Delete
         </Button>
       </DialogActions>
     </Dialog>

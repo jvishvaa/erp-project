@@ -22,6 +22,7 @@ import {
   Tab,
   Typography,
   Box,
+  DialogActions,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -35,6 +36,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import ConfirmModal from '../../../../src/containers/assessment-central/assesment-card/confirm-modal';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -78,7 +80,7 @@ const columns = [
   },
   {
     id: 'created_by',
-    label: 'TERM',
+    label: 'Term',
     minWidth: 50,
     align: 'center',
     labelAlign: 'center',
@@ -170,6 +172,9 @@ const ReportConfigTable = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedDefaultBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const classes = useStyles();
   const history = useHistory();
@@ -180,7 +185,6 @@ const ReportConfigTable = () => {
   const [gradeList, setGradeList] = useState([]);
   const [moduleId, setModuleId] = useState('');
   const [selectedbranch, setSelectedbranch] = useState();
-  console.log('new', selectedbranch);
   const [selectedGrade, setSelectedGrade] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [deleteId , setDeleteId ] = useState()
@@ -190,6 +194,13 @@ const ReportConfigTable = () => {
   const [totalsub, settotalSub] = useState()
   const [totalTests , setTotalTests] = useState()
   const [table, setTable] = useState([])
+  const [openPublishModal, setopenPublishModal] = useState(false)
+  const [ispublished, setIsPublished] = useState(false)
+  const [publishId, setPublishId] = useState()
+
+
+
+  
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -222,7 +233,7 @@ const ReportConfigTable = () => {
         `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
       )
       .then((res) => {
-        if (res?.data?.status_code === 200) {
+        if (res?.data?.status_code == 200) {
           // const allBranchData = res?.data?.data?.results.map((item) => item.branch);
           setBranchList(res?.data?.data?.results);
         } else {
@@ -242,7 +253,7 @@ const ReportConfigTable = () => {
           .join(',')}&module_id=${moduleId}`
       )
       .then((res) => {
-        if (res?.data?.status_code === 200) {
+        if (res?.data?.status_code == 200) {
           // setGradeList(res?.data?.data);
           console.log('new', res?.data?.data);
           setGradeList(res?.data?.data);
@@ -281,7 +292,10 @@ const ReportConfigTable = () => {
 
   const FilterData = () => {
     {
-      if (selectedGrade?.grade_id) {
+      if(selectedbranch.length === 0 || !selectedGrade){
+        setAlert('error', 'Please Select Filters !')
+      }else
+      {
         setLoading(true);
         let url = `${
           endpoints.questionBank.reportConfig
@@ -316,38 +330,58 @@ const ReportConfigTable = () => {
     axiosInstance
       .delete(url)
       .then((res) => {
-        TotalData();
-
-        setLoading(false);
+        if(res?.data?.status_code == 200 || res?.status == 200){
+          setAlert('success', res?.data?.message || 'Deleted Successfully')
+          FilterData();
+          setLoading(false);
+        }else{
+          setAlert('error', res?.data?.message || 'Deletion Failed')
+          setLoading(false);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        setAlert('error', err?.response?.data?.message || 'Deletion Failed')
         setLoading(false);
       });
   };
 
-  const handlePublish = (id,ispublish) => {
-    setLoading(true);
-    let url = `${endpoints.questionBank.reportConfig}${id}/`;
+  const ClosePublishModal = () => [
+    setopenPublishModal(false)
+  ]
+
+  const submitPublish = () => {
+    setLoading(true)
+    let url = `${endpoints.questionBank.reportConfig}${publishId}/`;
 
     axiosInstance
       .put(url,{
-        is_publish : !ispublish
+        is_publish : !ispublished
       })
       .then((res) => {
-        TotalData();
-
+        if(res?.data?.status_code == 200 || res?.status == 200){
+        setAlert('success', res?.data?.message || 'Updated Successfully')
+        FilterData();
         setLoading(false);
+        }else{
+          setAlert('error', res?.data?.message || 'Updation Failed')
+        setLoading(false);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        setAlert('error', err?.response?.data?.message || 'Updation Failed')
         setLoading(false);
       });
+    }
+  const handlePublish = (id,ispublish) => {
+    setopenPublishModal(true)
+    setPublishId(id)
+    setIsPublished(ispublish)
+    
   };
 
   const TotalData = () => {
     setLoading(true);
-    let url = `${endpoints.questionBank.reportConfig}`;
+    let url = `${endpoints.questionBank.reportConfig}?acad_session=${selectedDefaultBranch?.id}`;
     axiosInstance
       .get(url)
       .then((res) => {
@@ -425,7 +459,7 @@ const ReportConfigTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
+        <div style={{overflowX:'hidden'}}>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Assessment'
@@ -439,7 +473,7 @@ const ReportConfigTable = () => {
               //   }
             />
           </div>
-        </div>
+        
 
         <Grid container spacing={5} style={{ margin: '0px' }}>
           {/* <Grid item xs={12} sm={3} className={'addButtonPadding'}>
@@ -657,8 +691,8 @@ const ReportConfigTable = () => {
                 onChange={handleTabChange}
                 aria-label='simple tabs example'
               >
-                <Tab label='TestWise' {...a11yProps(0)} />
-                <Tab label='Branchwise' {...a11yProps(1)} />
+                <Tab label='Test Wise' {...a11yProps(0)} style={{fontWeight : '900'}} />
+                <Tab label='Branch wise' {...a11yProps(1)} style={{fontWeight : '900'}}/>
               </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -750,6 +784,38 @@ const ReportConfigTable = () => {
             </Grid>            
           </Dialog>
         )}
+        {openPublishModal && 
+           <Dialog
+           className='reminderDialog'
+           open={openPublishModal}
+           onClose={ClosePublishModal}
+           aria-labelledby='draggable-dialog-title'
+         >
+           <DialogTitle
+             style={{ cursor: 'move', color: '#014b7e' }}
+             id='draggable-dialog-title'
+           >
+             <div>{`Are you sure you want to ${ispublished ? 'unpublish' : 'publish'}`}</div>
+           </DialogTitle>
+           <DialogActions>
+             <Button onClick={ClosePublishModal} style={{ fontWeight: 600 }} className='labelColor cancelButton'>
+               Cancel
+             </Button>
+             <Button
+               color='primary'
+               variant='contained'
+               onClick={() => {
+                 submitPublish();
+                 ClosePublishModal();
+               }}
+             >
+               Submit
+             </Button>
+           </DialogActions>
+         </Dialog>
+        }
+        {configData.length === 0 && <NoFilterData data="No Data Found"/>}
+        </div>
       </Layout>
     </>
   );
