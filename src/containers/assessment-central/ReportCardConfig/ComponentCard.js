@@ -322,12 +322,13 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
               // style={{ paddingLeft: '0px !important' }}
             >
               <Grid item xs={12} md={6}>
+                <Grid xs={12} md={11}>
                 <Button
-                  startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                  startIcon={<AddOutlinedIcon />}
                   variant='contained'
                   color='primary'
                   size='small'
-                  style={{ color: 'white' }}
+                  style={{ color: 'white', fontSize:'inherit' }}
                   title='Create Sub-Component'
                   onClick={() => {
                     const subCompnentUniqueId = cuid();
@@ -353,6 +354,8 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 >
                   Add Term
                 </Button>
+                </Grid>
+                
               </Grid>
               <Grid item xs={12} md={6}>
                 {subComponents.length !== 0 ? (
@@ -367,11 +370,11 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
 
                   // >
                   <Button
-                    startIcon={<RemoveIcon style={{ fontSize: '30px' }} />}
+                    startIcon={<RemoveIcon />}
                     variant='contained'
                     color='primary'
                     size='small'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', fontSize:'inherit'  }}
                     title='Remove Sub-Component'
                     onClick={() => {
                       const newColumn = components[index];
