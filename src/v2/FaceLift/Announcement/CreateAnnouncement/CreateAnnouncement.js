@@ -156,7 +156,7 @@ const CreateAnnouncement = () => {
   const gradeOptions = gradeData?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each?.grade_id}>
-        {each?.grade__grade_name}
+        {each?.grade_name}
       </Option>
     );
   });

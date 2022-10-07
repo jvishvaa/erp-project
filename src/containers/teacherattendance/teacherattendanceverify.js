@@ -783,7 +783,7 @@ export default function TeacherAttendanceVerify() {
                 options={sectionList}
                 onChange={handleSection}
                 value={selectedSection}
-                getOptionLabel={(option) => option?.section_name}
+                getOptionLabel={(option) => option?.section__section_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField {...params} label='Section' variant='outlined' />
