@@ -94,6 +94,7 @@ const PeriodListView = () => {
   const closeDrawer = () => {
     setDrawerVisible(false);
     setDrawerData([]);
+    setCompleteSections([]);
     setShowError(false);
   };
   const showModal = () => {
@@ -521,7 +522,7 @@ const PeriodListView = () => {
         <Form id='filterForm' ref={formRef} layout={'horizontal'}>
           <div className='row align-items-center'>
             <div className='col-md-3 col-6 pl-md-1'>
-              <div className='text-left'>Volume</div>
+              <div className='text-left pl-md-1'>Volume</div>
               <Form.Item name='volume'>
                 <Select
                   placeholder='Select Volume'
@@ -552,6 +553,7 @@ const PeriodListView = () => {
                   maxTagCount={2}
                   optionFilterProp='children'
                   defaultValue={'All'}
+                  value={selectedModuleId}
                   filterOption={(input, options) => {
                     return (
                       options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -731,7 +733,7 @@ const PeriodListView = () => {
                       <span className='th-fw-600 th-18'>{period?.concept}</span>
                     </Divider>
                   </div>
-                  {period?.data?.map((each) => (
+                  {period?.data?.map((each, index) => (
                     <div className='col-md-4 pl-0'>
                       <div className='row mb-3 pb-1'>
                         <div className='col-12 th-br-20 th-bg-pink py-2 period-card'>
@@ -770,19 +772,31 @@ const PeriodListView = () => {
                           </div>
                           <div className='row align-items-center'>
                             <div className='col-6 px-0 text-left th-12'>
-                              {each?.is_complete ? (
+                              {each?.completion_status?.some(
+                                (item) => item.is_complete == true
+                              ) ? (
                                 isStudent ? (
                                   <Tooltip
-                                    placement='top'
+                                    placement={index % 3 === 0 ? 'bottomLeft' : 'bottom'}
                                     title={each?.completion_status?.map((item) => (
                                       <div className='row'>
-                                        Completed in Sec{' '}
-                                        {item?.section_name.slice(-1).toUpperCase()} by{' '}
-                                        {item?.completed_by_user_id == user_id
-                                          ? 'You'
-                                          : item?.completed_by_user_name}{' '}
-                                        on{' '}
-                                        {moment(item?.completed_at).format('YYYY/MM/DD')}
+                                        <span>
+                                          Completed{' '}
+                                          {user_level !== 13 && (
+                                            <span>
+                                              in Sec{' '}
+                                              {item?.section_name.slice(-1).toUpperCase()}
+                                            </span>
+                                          )}{' '}
+                                          by{' '}
+                                          {item?.completed_by_user_id == user_id
+                                            ? 'You'
+                                            : item?.completed_by_user_name}{' '}
+                                          on{' '}
+                                          {moment(item?.completed_at).format(
+                                            'YYYY/MM/DD'
+                                          )}
+                                        </span>
                                       </div>
                                     ))}
                                     trigger='click'
@@ -895,10 +909,10 @@ const PeriodListView = () => {
                               <div className='col-3'>
                                 <img src={getFileIcon(extension)} />
                               </div>
-                              <div className='col-7 px-0 th-pointer'>
-                                <div>{file}</div>
+                              <div className='col-9 px-0 th-pointer'>
+                                {/* <div>{file}</div>
                               </div>
-                              <div className='col-2 th-pointer'>
+                              <div className='col-2 th-pointer'> */}
                                 <a
                                   onClick={() => {
                                     openPreview({
@@ -916,7 +930,12 @@ const PeriodListView = () => {
                                   rel='noopener noreferrer'
                                   target='_blank'
                                 >
-                                  <EyeFilled />
+                                  <div className='row align-items-center'>
+                                    <div className='col-10'>{file}</div>
+                                    <div className='col-2'>
+                                      <EyeFilled />
+                                    </div>
+                                  </div>
                                 </a>
                               </div>
                             </div>
@@ -1013,14 +1032,16 @@ const PeriodListView = () => {
                       className='row justify-content-end py-2 mt-2 text-center'
                       style={{ borderTop: '1px solid #d9d9d9' }}
                     >
-                      <div
-                        className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
-                        style={{ border: '1px solid #d9d9d9' }}
-                        onClick={() => setCompleteSections([])}
-                        // onClick={() => closeSectionList()}
-                      >
-                        Clear
-                      </div>
+                      {completeSections.length > 0 && (
+                        <div
+                          className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
+                          style={{ border: '1px solid #d9d9d9' }}
+                          onClick={() => setCompleteSections([])}
+                          // onClick={() => closeSectionList()}
+                        >
+                          Clear
+                        </div>
+                      )}
                       <div
                         className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
                         onClick={() => {
@@ -1037,7 +1058,7 @@ const PeriodListView = () => {
                       </div>
                     )}
                     <div className='row th-black-2 mt-2 '>
-                      <div className='col-12 th-grey pl-0 th-12 ml-2'>
+                      <div className='col-12 th-grey pl-2 th-12'>
                         Last Updated {getTimeInterval(resourcesData?.updated_at)}
                       </div>
                     </div>
@@ -1065,25 +1086,27 @@ const PeriodListView = () => {
           footer={[]}
         >
           <ol style={{ listStyle: 'none' }}>
-            {modalData?.completion_status?.map((item) => (
-              <li>
-                <div className='row px-md-5 py-2 align-items-center'>
-                  <div
-                    style={{
-                      borderRadius: '50%',
-                      height: 8,
-                      width: 8,
-                    }}
-                    className='mr-2 th-bg-primary'
-                  ></div>
-                  Completed in Sec {item?.section_name?.slice(-1).toUpperCase()} by{' '}
-                  {item?.completed_by_user_id == user_id
-                    ? 'You'
-                    : item?.completed_by_user_name}{' '}
-                  on {moment(item?.completed_at).format('DD/MM/YYYY')}
-                </div>
-              </li>
-            ))}
+            {modalData?.completion_status
+              ?.filter((item) => item.is_complete == true)
+              .map((item) => (
+                <li>
+                  <div className='row px-md-5 py-2 align-items-center'>
+                    <div
+                      style={{
+                        borderRadius: '50%',
+                        height: 8,
+                        width: 8,
+                      }}
+                      className='mr-2 th-bg-primary'
+                    ></div>
+                    Completed in Sec {item?.section_name?.slice(-1).toUpperCase()} by{' '}
+                    {item?.completed_by_user_id == user_id
+                      ? 'You'
+                      : item?.completed_by_user_name}{' '}
+                    on {moment(item?.completed_at).format('DD/MM/YYYY')}
+                  </div>
+                </li>
+              ))}
           </ol>
         </Modal>
       </div>
