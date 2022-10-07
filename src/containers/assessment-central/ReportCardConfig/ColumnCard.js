@@ -77,7 +77,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
   const columnIndex = columns.findIndex(column => column.id === columnId)
 
   const getreportcardsubcomponent = () => {
-    axiosInstance.get(`${endpoints.reportCardConfig.reportcardconfigsummary}`).then((res) => {
+    axiosInstance.get(`${endpoints.reportCardConfig.reportcardconfigsummary}?acad_session=${components[index]?.acad_session}`).then((res) => {
       let subjects = [];
       let branches = res?.data?.result?.map((data) => {
        let subject = data?.data?.map((subject) => subject?.subject?.subjects__subject_name)
@@ -120,7 +120,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
 
   useEffect(() => {
     getreportcardsubcomponent()
-  }, [])
+  }, [index])
 
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };

@@ -30,7 +30,6 @@ function CreateReportConfig() {
   );
 
   const [components, setComponentDetails] = useState([])
-  console.log('debugmain', components)
 
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -202,11 +201,13 @@ function CreateReportConfig() {
         .then(result => {
           if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          setTtrue(false)
           history.goBack()
           handleClose()
           // }
         }}).catch((error) => {
           setAlert('error', error?.response?.data?.message || error?.response?.data?.message || 'Creation Failed')
+          setTtrue(false)
           handleClose()
         })
     }
