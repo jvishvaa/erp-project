@@ -41,7 +41,7 @@ const StudentAttendance = (props) => {
       {
         showInLegend: false,
         data: monthlyAttendanceData?.slice(-3)?.map((item) => {
-          return item?.attendance_details?.present;
+          return item?.attendance_details?.present_percentage;
         }),
         name: 'Attendance %',
       },

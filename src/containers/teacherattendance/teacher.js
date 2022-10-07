@@ -329,12 +329,12 @@ export default function TeacherAttendance(props) {
       const selectedId = value?.grade_id;
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
-      callApi(
-        `${endpoints.academics.sections}?session_year=${
-          selectedAcademicYear?.id
-        }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
-        'section'
-      );
+      // callApi(
+      //   `${endpoints.academics.sections}?session_year=${
+      //     selectedAcademicYear?.id
+      //   }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
+      //   'section'
+      // );
     } else {
       setSelectedGrade([]);
       setSectionList([]);
@@ -436,14 +436,14 @@ export default function TeacherAttendance(props) {
 
   const getTeacherData = () => {
     setData([]);
-    if (!selectedBranchIds || !selectedGradeIds || !rolesId || sectionId.length == 0) {
+    if (!selectedBranchIds || !selectedGradeIds || !rolesId) {
       setAlert('warning', 'Please select all required fields');
       return false;
     } else {
       setLoading(true);
       const result = axiosInstance
         .get(
-          `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&user_level=${rolesId}&date=${startDate}`
+          `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&session_year=${selectedAcademicYear?.id}&user_level=${rolesId}&date=${startDate}`
         )
         .then((result) => {
           if (result.status === 200) {
@@ -688,7 +688,7 @@ export default function TeacherAttendance(props) {
                 )}
               />
             </Grid>
-            <Grid item xs={12} md={2}>
+            {/* <Grid item xs={12} md={2}>
               <Autocomplete
                 id='combo-box-demo'
                 size='small'
@@ -703,7 +703,7 @@ export default function TeacherAttendance(props) {
                   <TextField {...params} label='Section' variant='outlined' required />
                 )}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item md={2} xs={12}>
               <Button
