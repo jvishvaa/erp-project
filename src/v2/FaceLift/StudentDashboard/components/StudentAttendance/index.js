@@ -63,6 +63,9 @@ const StudentAttendance = (props) => {
         format: '{value} %',
       },
     },
+    credits: {
+      enabled: false,
+    },
   };
 
   return (
@@ -104,7 +107,7 @@ const StudentAttendance = (props) => {
         </div>
         <div className='my-2 '>
           <div className='col-md-12 th-16 mt-2 th-fw-500 th-black-1'>
-            Total Collections
+            Total Attendance
           </div>
           <div className='col-md-12'>
             <div

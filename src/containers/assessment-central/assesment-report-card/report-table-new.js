@@ -136,7 +136,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
 
   return (
     <React.Fragment>
-      <div className='row bg-white py-2'>
+      <div className='row bg-white py-2 px-2'>
         <table className='w-100 th-report-table '>
           <tbody>
             <tr>
@@ -821,14 +821,14 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         <>
                           {' '}
                           <td
-                            className={`th-fw-600`}
+                            className={`th-fw-600 text-uppercase`}
                             // colSpan={eachSem?.marks_with_subject?.length}
                             style={{
                               backgroundColor: '#fdbf8e',
                               width: `${72 / eachPtsd?.data?.length}%`,
                             }} //calculating column width
                           >
-                            {eachSem?.term}
+                            PERSONALITY TRAIT AND SELF DISCIPLINE ({eachSem?.term})
                           </td>
                           <td
                             className={`th-fw-600`}
@@ -850,6 +850,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                   </tr>
 
                   {finalPtsdData?.map((eachSem, i) => {
+                    console.log(eachSem, i, 'kffefeje');
                     return (
                       <tr>
                         {eachSem?.map((eachQues, j) => {
@@ -857,10 +858,13 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             <>
                               {' '}
                               <td
-                                className='th-width-8 th-fw-600 text-center'
+                                className='th-width-8 text-left td-p-mb-0'
                                 style={{ backgroundColor: '#ffffff' }}
+                                dangerouslySetInnerHTML={{
+                                  __html: eachQues?.question_name,
+                                }}
                               >
-                                {eachQues?.question_name}
+                                {/* {eachQues?.question_name} */}
                               </td>
                               <td
                                 className='th-width-8 th-fw-600 text-center'
@@ -875,21 +879,22 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           className='th-width-8 th-fw-600 text-center'
                           style={{ backgroundColor: '#ffffff' }}
                         >
-                          {/* {eachSem?.annual_data?.grade[j]} */}
+                          {eachPtsd?.annual_data?.grade[i]}
                         </td>
                       </tr>
                     );
                   })}
                   {/* Grading point descriptions Start */}
-                  <tr>
-                    <td
-                      style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                      colSpan={2 * eachPtsd?.data?.length + 1}
-                    >
-                      5 Point Grading Scale: A - 91%-100%, B - 81%-90%, C - 61%-80%, D -
-                      33%-60%, E - Less Than 33%
-                    </td>
-                  </tr>
+                  {eachPtsd?.grade_description ? (
+                    <tr>
+                      <td
+                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                        colSpan={2 * eachPtsd?.data?.length + 1}
+                      >
+                        {eachPtsd?.grade_description}
+                      </td>
+                    </tr>
+                  ) : null}
                   {/* Grading point descriptions End */}
                 </>
               );

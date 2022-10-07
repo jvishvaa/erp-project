@@ -10,6 +10,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const settings = {
   dots: false,
@@ -17,7 +18,7 @@ const settings = {
   speed: 500,
   slidesToShow: 5.2,
   slidesToScroll: 1,
-  arrows: false,
+  arrows: true,
   responsive: [
     {
       breakpoint: 1024,
@@ -50,13 +51,42 @@ const StudentAttendanceDashboard = () => {
   const [monthlyAttendanceData, setMonthlyAttendanceData] = useState([]);
   const [dailyAttendanceData, setDailyAttendanceData] = useState([]);
   const [upcomingHoliday, setUpcomingHoliday] = useState([]);
+  const [userDetails, setUserDetails] = useState([]);
 
   const { role_details, erp } = JSON.parse(localStorage.getItem('userDetails'));
+
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   useEffect(() => {
     fetchStudentAttendance();
     fetchStudentHoliday();
+    fetchUserDetails({
+      branch: selectedBranch?.branch?.id,
+      session_year: selectedAcademicYear?.session_year,
+      erp_id: erp,
+    });
   }, []);
+
+  const fetchUserDetails = (params = {}) => {
+    axios
+      .get(`${endpoints.profile.getUserStatus}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setUserDetails(response?.data.result.results);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
 
   const fetchStudentAttendance = (params = {}) => {
     axios
@@ -132,7 +162,7 @@ const StudentAttendanceDashboard = () => {
       {
         showInLegend: false,
         data: monthlyAttendanceData?.map((item) => {
-          return item?.attendance_details?.present;
+          return item?.attendance_details?.present_percentage;
         }),
         name: 'Attendance %',
       },
@@ -155,6 +185,9 @@ const StudentAttendanceDashboard = () => {
         format: '{value} %',
       },
     },
+    credits: {
+      enabled: false,
+    },
   };
   const optionsPie = {
     chart: {
@@ -168,6 +201,9 @@ const StudentAttendanceDashboard = () => {
       y: 18,
     },
     colors: ['#09a23a', '#f8222f', '#c6c6c6', '#7cb5ec'],
+    credits: {
+      enabled: false,
+    },
 
     plotOptions: {
       pie: {
@@ -215,11 +251,26 @@ const StudentAttendanceDashboard = () => {
       dataIndex: 'att_status',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-black-1'>{data}</span>,
+      render: (data) => (
+        <span
+          className='text-capitalize'
+          style={{
+            color:
+              data === 'Holiday'
+                ? '#278ced'
+                : data === 'present'
+                ? '#09a23a'
+                : data === 'absent'
+                ? '#f8222f'
+                : '#404040',
+          }}
+        >
+          {data}
+        </span>
+      ),
     },
   ];
 
-  console.log(upcomingHoliday, 'upcomingHoliday');
   return (
     <Layout>
       <div className=''>
@@ -245,7 +296,8 @@ const StudentAttendanceDashboard = () => {
                   <div className='py-2'>Name: {role_details?.name} </div>
                   <div className='py-2'>ERP: {erp}</div>
                   <div className='py-2'>
-                    Grade: {role_details?.grades[0]?.grade__grade_name}{' '}
+                    Grade: {userDetails[0]?.mapping_bgs?.grade?.grade_name}{' '}
+                    {userDetails[0]?.mapping_bgs?.section?.grade_name}
                   </div>
 
                   <div
@@ -253,7 +305,7 @@ const StudentAttendanceDashboard = () => {
                     style={{
                       backgroundColor:
                         attendanceData?.today_attendance === 'Holiday'
-                          ? '#7cb5ec'
+                          ? '#278ced'
                           : attendanceData?.today_attendance === 'present'
                           ? '#09a23a'
                           : attendanceData?.today_attendance === 'absent'
@@ -274,11 +326,11 @@ const StudentAttendanceDashboard = () => {
                       Upcoming Holidays
                     </div>
                     <div>
-                      {upcomingHoliday?.slice(0, 5)?.map((eachHoliday) => {
+                      {upcomingHoliday?.slice(0, 3)?.map((eachHoliday) => {
                         return (
-                          <div className='row text-capitalize justify-content-between py-1'>
+                          <div className='text-capitalize justify-content-between py-1'>
                             <div> {eachHoliday?.title} </div>
-                            <div className='th-14'>
+                            <div className='th-12 th-grey'>
                               {moment(eachHoliday?.start_date).format('Do MMM YY')} to{' '}
                               {moment(eachHoliday?.end_date).format('Do MMM YY')}
                             </div>
@@ -334,7 +386,7 @@ const StudentAttendanceDashboard = () => {
                           </div>
                           <div className='col-6 text-center'>
                             <div className='th-14'>Overall</div>
-                            <div className='py-1 th-20 th-fw-600'>
+                            <div className='py-1 th-20 th-fw-600 '>
                               {eachMonth?.attendance_details?.present_percentage}%
                             </div>
                           </div>

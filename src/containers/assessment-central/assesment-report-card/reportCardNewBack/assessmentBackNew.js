@@ -34,7 +34,7 @@ export default function AssesmentReportBackNew({ reportCardDataNew }) {
   let schoolData = reportCardDataNew?.school_info;
   return (
     <React.Fragment>
-      <div className='row bg-white py-2'>
+      <div className='row bg-white py-2 px-2'>
         {/* Teachers Remarks */}
         <table className='w-100 mt-1 th-12 th-report-table '>
           <tbody className='th-table-border'>

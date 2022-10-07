@@ -48,14 +48,14 @@ function EnhancedTableHead(props) {
           S.No.
         </TableCell>
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
-          ERP Id
+          ERP ID
         </TableCell>
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeaderalign='left'>
           Name
         </TableCell>
         {!isStudent && (
           <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
-            Role
+            User Level
           </TableCell>
         )}
         {isStudent && (
@@ -255,6 +255,17 @@ export default function TeacherAttendance(props) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Mark Student Attendance') {
               setModuleId(item.child_id);
+
+              if (user_level === 11 && item.child_id) {
+                let selectedId = userData?.role_details?.branch[0]?.id;
+                setSelectedBranch(userData?.role_details?.branch[0]);
+                setSelectedBranchIds(selectedId);
+
+                callApi(
+                  `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId}&module_id=${item.child_id}`,
+                  'gradeList'
+                );
+              }
             }
           });
         }
@@ -576,10 +587,10 @@ export default function TeacherAttendance(props) {
               separator={<NavigateNextIcon fontSize='small' />}
               aria-label='breadcrumb'
             >
-              <Typography color='textPrimary' variant='h6'>
+              <Typography color='textPrimary' variant='h6' className='th-18'>
                 Attendance
               </Typography>
-              <Typography color='textPrimary'>
+              <Typography color='textPrimary' className='th-18'>
                 {isStudent ? 'Mark Student Attendance' : 'Mark Staff Attendance'}
               </Typography>
             </Breadcrumbs>
@@ -649,19 +660,21 @@ export default function TeacherAttendance(props) {
                 />
               </Grid>
             )}
-            <Grid item xs={12} md={2}>
-              <Autocomplete
-                id='combo-box-demo'
-                size='small'
-                options={branchList}
-                onChange={handleBranch}
-                value={selectedBranch}
-                getOptionLabel={(option) => option.branch_name}
-                renderInput={(params) => (
-                  <TextField {...params} label='Branch' variant='outlined' required />
-                )}
-              />
-            </Grid>
+            {user_level !== 11 ? (
+              <Grid item xs={12} md={2}>
+                <Autocomplete
+                  id='combo-box-demo'
+                  size='small'
+                  options={branchList}
+                  onChange={handleBranch}
+                  value={selectedBranch}
+                  getOptionLabel={(option) => option.branch_name}
+                  renderInput={(params) => (
+                    <TextField {...params} label='Branch' variant='outlined' required />
+                  )}
+                />
+              </Grid>
+            ) : null}
             <Grid item xs={12} md={2}>
               <Autocomplete
                 id='combo-box-demo'
@@ -692,12 +705,12 @@ export default function TeacherAttendance(props) {
               />
             </Grid>
 
-            <Grid item md={1} xs={12}>
+            <Grid item md={2} xs={12}>
               <Button
                 onClick={getTeacherData}
                 variant='contained'
                 color='primary'
-                className='mx-1'
+                className='mx-1 w-100'
               >
                 Search
               </Button>
@@ -836,7 +849,7 @@ export default function TeacherAttendance(props) {
             }}
           >
             {recordsData?.total ? (
-              <h5>
+              <h5 className='mb-0'>
                 Total Present : {presentvalue || 0} &nbsp; Total Absent :{' '}
                 {absentvalue || 0} &nbsp; Total Marked : {absentvalue + presentvalue}{' '}
                 &nbsp; Total Unmarked :{' '}

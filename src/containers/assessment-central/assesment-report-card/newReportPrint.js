@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSvgIcon-root': {
       color: '#fff',
     },
+    '&:hover': {
+      background: '#1b4ccb',
+    },
   },
 }));
 
@@ -49,6 +52,7 @@ const AssesmentReportNew = (props) => {
               </IconButton>
             )}
             content={() => componentRef.current}
+            documentTitle={`Eduvate front - ${props?.reportCardDataNew?.user_info?.name}`}
           />
         </Box>
       ) : (

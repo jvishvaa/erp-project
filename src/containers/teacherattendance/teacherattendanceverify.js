@@ -52,7 +52,7 @@ const headCells = [
   { id: 'Branch', numeric: false, disablePadding: false, label: 'Branch' },
   { id: 'Grade', numeric: false, disablePadding: false, label: 'Grade' },
   { id: 'Section', numeric: false, disablePadding: false, label: 'Section' },
-  { id: 'Role', numeric: false, disablePadding: false, label: 'Role' },
+  { id: 'Role', numeric: false, disablePadding: false, label: 'User Level' },
 ];
 
 function EnhancedTableHead(props) {
@@ -65,7 +65,7 @@ function EnhancedTableHead(props) {
           className='sticky-col first-col'
           style={{ backgroundColor: 'LightGray' }}
         >
-          Sno
+          S.No.
         </TableCell>
         <TableCell
           className='sticky-col second-col'
@@ -410,6 +410,11 @@ export default function TeacherAttendanceVerify() {
       setAlert('error', 'Please Select Branch');
       return false;
     }
+    if (!selectedGradeIds) {
+      setAlert('error', 'Please Select Grade');
+      return false;
+    }
+
     setLoading(true);
     setDisableDownload(true);
     const result = axiosInstance
@@ -673,10 +678,12 @@ export default function TeacherAttendanceVerify() {
               separator={<NavigateNextIcon fontSize='small' />}
               aria-label='breadcrumb'
             >
-              <Typography color='textPrimary' variant='h6'>
+              <Typography color='textPrimary' variant='h6' className='th-18'>
                 Attendance
               </Typography>
-              <Typography color='textPrimary'>View Attendence</Typography>
+              <Typography color='textPrimary' className='th-18'>
+                View Attendence
+              </Typography>
             </Breadcrumbs>
           </Grid>
           <Grid container spacing={1}>
@@ -763,7 +770,7 @@ export default function TeacherAttendanceVerify() {
                 value={selectedGrade}
                 getOptionLabel={(option) => option?.grade_name}
                 renderInput={(params) => (
-                  <TextField {...params} label='Grade' variant='outlined' />
+                  <TextField {...params} label='Grade' variant='outlined' required />
                 )}
               />
             </Grid>
@@ -776,7 +783,7 @@ export default function TeacherAttendanceVerify() {
                 options={sectionList}
                 onChange={handleSection}
                 value={selectedSection}
-                getOptionLabel={(option) => option?.section__section_name}
+                getOptionLabel={(option) => option?.section_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField {...params} label='Section' variant='outlined' />
