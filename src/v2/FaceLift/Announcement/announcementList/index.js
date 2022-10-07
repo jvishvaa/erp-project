@@ -304,7 +304,7 @@ const AnnouncementList = () => {
                       <TabPane
                         tab={
                           <div>
-                            DRAFTS{' '}
+                            SENT{' '}
                             {showTab == 3 && !loading && (
                               <span className='th-fw-400'>
                                 {listCount > 0 ? `(${listCount})` : ''}
