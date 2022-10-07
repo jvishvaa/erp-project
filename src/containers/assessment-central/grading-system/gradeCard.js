@@ -146,6 +146,7 @@ const GradeCard = ({
               onChange={(e) => {
                 setGradeData((prev) => ({ ...prev, grade_name: e?.target?.value }));
               }}
+              InputProps={{ inputProps: { min: 0, maxLength: 30 } }}
             />
           </Grid>
           <Grid
@@ -180,6 +181,7 @@ const GradeCard = ({
                   onChange={(e) => {
                     setGradeData((prev) => ({ ...prev, start_mark: e?.target?.value }));
                   }}
+                  InputProps={{ inputProps: { min: 0, maxLength: 2 } }}
                 />
               </div>
               <p style={{width: '20%', display: 'flex',justifyContent: 'center'}}>To</p>
@@ -219,6 +221,7 @@ const GradeCard = ({
                 setGradeData((prev) => ({ ...prev, description: e?.target?.value }));
               }}
               required
+              InputProps={{ inputProps: { min: 0, maxLength: 50 } }}
             />
           </Grid>
         </Grid>
