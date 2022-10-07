@@ -810,7 +810,7 @@ const TableView = ({ showTab }) => {
           pagination={false}
           loading={loading}
           onExpand={onTableRowExpand}
-          // expandedRowKeys={expandedRowKeys}
+          expandedRowKeys={expandedRowKeys}
           expandIconColumnIndex={5}
           expandIcon={({ expanded, onExpand, record }) =>
             expanded ? (
@@ -929,10 +929,7 @@ const TableView = ({ showTab }) => {
                               <div className='col-3'>
                                 <img src={getFileIcon(extension)} />
                               </div>
-                              <div className='col-7 px-0 th-pointer'>
-                                <div>{file}</div>
-                              </div>
-                              <div className='col-2 th-pointer'>
+                              <div className='col-9 px-0 th-pointer'>
                                 <a
                                   onClick={() => {
                                     openPreview({
@@ -950,7 +947,12 @@ const TableView = ({ showTab }) => {
                                   rel='noopener noreferrer'
                                   target='_blank'
                                 >
-                                  <EyeFilled />
+                                  <div className='row align-items-center'>
+                                    <div className='col-10'>{file}</div>
+                                    <div className='col-2'>
+                                      <EyeFilled />
+                                    </div>
+                                  </div>
                                 </a>
                               </div>
                             </div>

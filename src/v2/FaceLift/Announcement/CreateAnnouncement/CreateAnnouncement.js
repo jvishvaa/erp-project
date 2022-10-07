@@ -275,6 +275,17 @@ const CreateAnnouncement = () => {
       message.error('No members for announcement');
       return;
     }
+    if (isStudentIncluded) {
+      if (!gradeIds) {
+        message.error('Please select atleast one grade');
+        return;
+      }
+      if (!sectionIds) {
+        message.error('Please select atleast one section');
+        return;
+      }
+    }
+
 
     let payLoad = {
       branch_id: branchId.toString() || '',
@@ -398,9 +409,10 @@ const CreateAnnouncement = () => {
                   ref={formRef}
                 >
                   <div className='col-md-6'>
-                    <span className='th-grey th-14'>Type</span>
+                    <span className='th-grey th-14'>Type *</span>
                     <Select
                       value={selectedCategory}
+                       getPopupContainer={(trigger) => trigger.parentNode}
                       className='th-grey th-bg-grey th-br-4 w-100 mt-1'
                       placement='bottomRight'
                       suffixIcon={<DownOutlined className='th-black-1' />}
@@ -424,10 +436,11 @@ const CreateAnnouncement = () => {
                     </div>
                   </div>
                   <div className='col-md-6'>
-                    <span className='th-grey th-14'>Branch</span>
+                    <span className='th-grey th-14'>Branch*</span>
                     <Form.Item name='branch'>
                       <Select
                         showSearch
+                         getPopupContainer={(trigger) => trigger.parentNode}
                         className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                         placement='bottomRight'
                         suffixIcon={<DownOutlined className='th-grey' />}
@@ -448,8 +461,9 @@ const CreateAnnouncement = () => {
                     </Form.Item>
                   </div>
                   <div className='col-md-6 py-3 py-md-0'>
-                    <span className='th-grey th-14'>Choose User Level</span>
+                    <span className='th-grey th-14'>Choose User Level *</span>
                     <Select
+                     getPopupContainer={(trigger) => trigger.parentNode}
                       mode='multiple'
                       maxTagCount={5}
                       allowClear={true}
@@ -472,9 +486,10 @@ const CreateAnnouncement = () => {
                   {isStudentIncluded && (
                     <div className='row mt-3 py-2'>
                       <div className='col-md-6'>
-                        <span className='th-grey th-14'>Grades</span>
+                        <span className='th-grey th-14'>Grades*</span>
                         <Form.Item name='grade'>
                           <Select
+                           getPopupContainer={(trigger) => trigger.parentNode}
                             mode='multiple'
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                             placement='bottomRight'
@@ -498,9 +513,10 @@ const CreateAnnouncement = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-6'>
-                        <span className='th-grey th-14'>Sections</span>
+                        <span className='th-grey th-14'>Sections *</span>
                         <Form.Item name='section'>
                           <Select
+                           getPopupContainer={(trigger) => trigger.parentNode}
                             mode='multiple'
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                             placement='bottomRight'

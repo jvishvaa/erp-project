@@ -65,10 +65,10 @@ const ListCard = (props) => {
                     <img src={publishIcon} className='mr-3 ' />
                     <span className='th-green th-16'>Publish</span>
                   </div>
-                  <div className='row justify-content-center th-pointer pt-2'>
+                  {/* <div className='row justify-content-center th-pointer pt-2'>
                     <img src={deleteIcon} className='mr-3' />
                     <span className='th-red th-16 '>Delete</span>
-                  </div>
+                  </div> */}
                 </>
               }
               trigger='click'

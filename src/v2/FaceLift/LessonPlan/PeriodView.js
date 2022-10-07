@@ -18,6 +18,8 @@ import scienceIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcon
 import sportIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/Sport.png';
 import evsIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/evs.png';
 import sstIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/sst.png';
+import artIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/art.png';
+import computerIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/computer.png';
 import otherSubjectIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/othersubjects.png';
 import moment from 'moment';
 const { Option } = Select;
@@ -50,15 +52,84 @@ const PeriodView = () => {
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
   ];
-  const getSubjectIcon = (subject) => {
+  const getSubject = (value) => {
+    if (['maths', 'mathematics', 'numeracy', 'math'].includes(value)) {
+      return 'maths';
+    } else if (
+      [
+        'english',
+        'hindi',
+        'french',
+        'literacy',
+        'marathi',
+        'kannada',
+        'sanskrit',
+        'bengali',
+        'tamil',
+        'telugu',
+        'english reading',
+        'rhymes',
+        'story telling',
+      ].includes(value)
+    ) {
+      return 'language';
+    } else if (
+      [
+        'sst',
+        'social science',
+        'geography',
+        'history',
+        'social studies',
+        'economic',
+        'business studies',
+      ].includes(value)
+    ) {
+      return 'sst';
+    } else if (['evs', 'environmental studies'].includes(value)) {
+      return 'evs';
+    } else if (['music', 'music & rhymes'].includes(value)) {
+      return 'music';
+    } else if (['dance'].includes(value)) {
+      return 'dance';
+    } else if (
+      [
+        'pe',
+        'physical education',
+        'skating',
+        'team sport',
+        'taekwondo',
+        'swimming',
+        'karate',
+        'chess',
+      ].includes(value)
+    ) {
+      return 'sports';
+    } else if (
+      [
+        'science',
+        'natural science',
+        'physics',
+        'chemistry',
+        'biology',
+        'robotics',
+      ].includes(value)
+    ) {
+      return 'science';
+    } else if (['visual arts', 'arts education'].includes(value)) {
+      return 'art';
+    } else if (['computer', 'computer science', 'robotics'].includes(value)) {
+      return 'computer';
+    } else {
+      return;
+    }
+  };
+  const getSubjectIcon = (value) => {
+    const subject = getSubject(value);
+
     switch (subject) {
       case 'maths':
         return mathsIcon;
-      case 'science':
-        return scienceIcon;
-      case 'english':
-        return languageIcon;
-      case 'hindi':
+      case 'language':
         return languageIcon;
       case 'sports':
         return sportIcon;
@@ -68,10 +139,14 @@ const PeriodView = () => {
         return evsIcon;
       case 'sst':
         return sstIcon;
-      case 'French':
-        return languageIcon;
       case 'dance':
         return danceIcon;
+      case 'science':
+        return scienceIcon;
+      case 'art':
+        return artIcon;
+      case 'computer':
+        return computerIcon;
       default:
         return otherSubjectIcon;
     }
@@ -285,7 +360,7 @@ const PeriodView = () => {
                                       className='row p-3 th-bg-pink align-items-center th-black-1'
                                       style={{ borderRadius: '20px 20px 0 0' }}
                                     >
-                                      <div className='col-6 px-0'>
+                                      <div className='col-6 pl-0'>
                                         <img
                                           src={getSubjectIcon(
                                             (each?.subject_name).toLowerCase()
@@ -309,20 +384,18 @@ const PeriodView = () => {
                                       {item?.total_teaching_periods}
                                     </div>
                                     <div className='row pl-3'>
-                                      <div className='th-fw-600 col-md-2 col-3 px-0'>
-                                        Sections
-                                      </div>
-                                      <div className='col-md-10 col-9 text-truncate px-0'>
+                                      <div className='th-fw-600 col-2 px-0'>Sections</div>
+                                      <div className='col-10 text-truncate px-2'>
                                         {item?.sections
                                           ?.map((item) => item?.slice(-1).toUpperCase())
                                           .join(', ')}
                                       </div>
                                     </div>
                                     <div className='row pl-3'>
-                                      <div className='th-fw-600 col-3 px-0'>
+                                      <div className='th-fw-600 col-4 px-0'>
                                         Current Chapter
                                       </div>
-                                      <div className='col-9 pl-2'>
+                                      <div className='col-8 pl-2'>
                                         {item?.last_completed_chapter_name} in{' '}
                                         {item?.last_completed_volume_name}
                                       </div>
@@ -390,7 +463,7 @@ const PeriodView = () => {
         ) : (
           <>
             {periodData.length > 0 ? (
-              <div className='row pt-3' style={{ maxHeight: 400, overflowY: 'scroll' }}>
+              <div className='row p-3' style={{ maxHeight: 400, overflowY: 'scroll' }}>
                 {
                   periodData.map((each) =>
                     each?.data?.map((item) => (
@@ -400,16 +473,20 @@ const PeriodView = () => {
                           style={{ border: '1px solid #d9d9d9' }}
                         >
                           <div
-                            className='row p-2 th-bg-pink align-items-center th-black-1'
+                            className='row p-3 th-bg-pink align-items-center th-black-1'
                             style={{ borderRadius: '20px 20px 0 0' }}
                           >
-                            <div className='col-6 px-0'>
-                              <img src={getSubjectIcon(each?.subject_name)} height='30' />
-                              <span className='th-20 th-fw-700 ml-2 text-capitalize'>
+                            <div className='col-6 pl-0'>
+                              <img
+                                src={getSubjectIcon((each?.subject_name).toLowerCase())}
+                                height='30'
+                                className='mb-1'
+                              />
+                              <span className='th-18 th-fw-700 ml-2 text-capitalize'>
                                 {item?.grade_name}
                               </span>
                             </div>
-                            <div className='col-6 px-0 th-16 text-left'>
+                            <div className='col-6 px-0 th-16 text-right th-fw-700'>
                               {each?.subject_name}
                             </div>
                           </div>
@@ -423,7 +500,7 @@ const PeriodView = () => {
                             {item?.total_teaching_periods}
                           </div>
                           <div className='row pl-3'>
-                            <div className='th-fw-600 col-3 px-0'>Current Chapter</div>
+                            <div className='th-fw-600 col-9 px-0'>Current Chapter</div>
                             <div className='col-9 pl-2'>
                               {item?.last_completed_chapter_name} in{' '}
                               {item?.last_completed_volume_name}

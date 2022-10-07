@@ -151,6 +151,7 @@ const AnnouncementList = () => {
           <div className='col-md-4 px-0 py-2 py-md-0'>
             {showBranchFilter.includes(userLevel) && (
               <Select
+                getPopupContainer={(trigger) => trigger.parentNode}
                 className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
                 placement='bottomRight'
                 mode='multiple'
@@ -176,6 +177,7 @@ const AnnouncementList = () => {
           </div>
           <div className='col-md-2 col-5 px-0 px-md-2'>
             <Select
+              getPopupContainer={(trigger) => trigger.parentNode}
               className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
               bordered={false}
               value={selectedCategoryName}
@@ -284,10 +286,34 @@ const AnnouncementList = () => {
                   </TabPane>
                   {userLevel !== 12 && userLevel !== 13 && (
                     <>
-                      <TabPane tab='DRAFTS' key='2'>
+                      <TabPane
+                        tab={
+                          <div>
+                            DRAFTS{' '}
+                            {showTab == 2 && !loading && (
+                              <span className='th-fw-400'>
+                                {listCount > 0 ? `(${listCount})` : ''}
+                              </span>
+                            )}
+                          </div>
+                        }
+                        key='2'
+                      >
                         {TabContent()}
                       </TabPane>
-                      <TabPane tab='SENT' key='3'>
+                      <TabPane
+                        tab={
+                          <div>
+                            DRAFTS{' '}
+                            {showTab == 3 && !loading && (
+                              <span className='th-fw-400'>
+                                {listCount > 0 ? `(${listCount})` : ''}
+                              </span>
+                            )}
+                          </div>
+                        }
+                        key='3'
+                      >
                         {TabContent()}
                       </TabPane>
                     </>
