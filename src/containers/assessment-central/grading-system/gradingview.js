@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   FormControl,
@@ -29,6 +29,7 @@ import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import Loader from 'components/loader/loader';
 import { useHistory } from 'react-router-dom';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,6 +83,8 @@ const Gradingview = () => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [gradingDataCopy, setGradingDataCopy] = useState();
+  const { setAlert } = useContext(AlertNotificationContext);
+
 
   useEffect(() => {
     fetchgradingData();
@@ -117,9 +120,9 @@ const Gradingview = () => {
       const status = await axiosInstance.delete(
         `${endpoints.gradingSystem.deleteGrading}${gradingId}/`
       );
-      if (status.status === 200) {
+      if (status?.data?.status_code === 200) {
         setLoading(false);
-        // setAlert('success', statusChange.data.message);
+        setAlert('success', status?.data?.message);
         const tempGroupData = gradingData.slice();
         tempGroupData.splice(deleteIndex, 1);
         setGradingData(tempGroupData || []);
@@ -127,11 +130,11 @@ const Gradingview = () => {
         setDeleteIndex(null);
         setDeleteAlert(false);
       } else {
-        // setAlert('error', status.data.message);
+        setAlert('error', status?.data?.message || 'Operation Failed');
         setLoading(false);
       }
     } catch (error) {
-      //   setAlert('error', error);
+        setAlert('error', error?.response?.data?.message);
       setLoading(false);
     }
   };

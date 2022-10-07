@@ -150,6 +150,8 @@ function GradingCreate() {
           return setAlert('error', 'Please Enter Grade Name !');
         else if (tovalidate?.start_mark?.length === 0)
           return setAlert('error', 'Please Enter Start Mark !');
+          else if (tovalidate?.start_mark?.toString().includes('.') || (tovalidate?.end_mark?.toString().includes('.') ))
+          return setAlert('error', 'Decimal not allowed !')
         else if (tovalidate?.start_mark?.length > 2 && tovalidate?.start_mark > 0)
           return setAlert('error', 'Start Mark cannot be above 100 !');
         else if (tovalidate?.start_mark < 0 || tovalidate?.end_mark < 0)
@@ -239,6 +241,8 @@ function GradingCreate() {
           return setAlert('error', 'Please Enter Grade Name !');
         else if (grade[0]?.start_mark?.length === 0)
           return setAlert('error', 'Please Enter Start Mark !');
+          else if ((grade[0]?.start_mark?.toString().includes('.')) || (grade[0]?.end_mark?.toString().includes('.') ))
+          return setAlert('error', 'Decimal not allowed  !')
         else if (grade[0]?.start_mark?.length > 2 && grade[0]?.start_mark > 0)
           return setAlert('error', 'Start Mark cannot be above 100 !');
         else if (grade[0]?.start_mark < 0 || grade[0]?.end_mark < 0)
@@ -412,6 +416,7 @@ function GradingCreate() {
       axiosInstance
         .post(`${endpoints.gradingSystem.GradingData}`, params)
         .then((res) => {
+
           setLoading(false);
           //   setGradingData(res.data.result);
           setAlert('success', 'Created Successfully');
@@ -443,6 +448,8 @@ function GradingCreate() {
               autoComplete='off'
               name='meetingNameFilter'
               value={gradingSystemName}
+              type='text'
+              InputProps={{ inputProps: { min: 0, maxLength: 50 } }}
               required
               onChange={(e) => {
                 setGradingSystemName(e?.target?.value);
@@ -502,6 +509,9 @@ function GradingCreate() {
           style={{ margin: '2%' }}
         >
           {/* <Grid item md={3} xs = {12}> */}
+          <Button color='primary' variant='contained' onClick={handleback}>
+            Back
+          </Button>
           {history?.location?.state?.isEdit ? (
             <Button color='primary' variant='contained' onClick={handleUpdate}>
               Update
@@ -511,9 +521,6 @@ function GradingCreate() {
               Create
             </Button>
           )}
-          <Button color='primary' variant='contained' onClick={handleback}>
-            Back
-          </Button>
         </Grid>
         {/* <Grid item md={3} xs = {12}>
             <Button 

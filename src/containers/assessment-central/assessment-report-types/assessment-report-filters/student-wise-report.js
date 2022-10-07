@@ -92,7 +92,6 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
   const {user_id : teacher_id} = JSON.parse(localStorage.getItem('userDetails'))
   const [ isEditRemark , setIsEditRemark] = useState(false)
   const [editId , setEditId] = useState()
-  console.log(filterData,'filterData')
 
   useEffect(() => {
     if(isFilter || isstudentList)
@@ -302,7 +301,7 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
             fullWidth
             variant="outlined"
           /> */}
-          <TextareaAutosize
+          <textarea
               id='standard-multiline-flexible'
               rowsMax={4}
               aria-label="minimum height"
@@ -311,6 +310,9 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
               style={{ width: '100%' , height:'100px'}}
               value={teacherRemark}
               onChange={(e) => setTeacherRemark(e?.target?.value)}
+              maxLength= '250'
+              InputProps={{ inputProps: { min: 0, maxLength: 250 } }}
+
             />
         </DialogContent>
         <DialogActions>
