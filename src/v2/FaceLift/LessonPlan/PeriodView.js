@@ -500,8 +500,8 @@ const PeriodView = () => {
                             {item?.total_teaching_periods}
                           </div>
                           <div className='row pl-3'>
-                            <div className='th-fw-600 col-9 px-0'>Current Chapter</div>
-                            <div className='col-9 pl-2'>
+                            <div className='th-fw-600 col-4 px-0'>Current Chapter</div>
+                            <div className='col-8 pl-2'>
                               {item?.last_completed_chapter_name} in{' '}
                               {item?.last_completed_volume_name}
                             </div>
