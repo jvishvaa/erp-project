@@ -73,10 +73,14 @@ const ReportStatusTable = ({ setLoading }) => {
               height: '100%',
               width: '100%',
             }}
-            color='primary'
             variant='contained'
             disabled={status === '1'}
-            onClick={() => history.push('/assessment-reports/?report-card=true')}
+            onClick={() => history.push({
+              pathname : '/assessment-reports/',
+              state : {
+                reportcardpipeline : true
+              }
+            })}
             title='View'
           >
             View

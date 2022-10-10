@@ -222,6 +222,7 @@ function CreateReportConfig() {
     <>
       {/* {loading ? <Loading message='Loading...' /> : null} */}
       <Layout>
+        <div style={{overflowX:'hidden'}}>
         <div>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
@@ -394,6 +395,7 @@ function CreateReportConfig() {
           >
             Submit Report Card
           </Button>}
+        </div>
       </Layout>
     </>
   );
