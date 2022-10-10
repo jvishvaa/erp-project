@@ -156,7 +156,7 @@ const CreateAnnouncement = () => {
   const gradeOptions = gradeData?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each?.grade_id}>
-        {each?.grade__grade_name}
+        {each?.grade_name}
       </Option>
     );
   });
@@ -286,7 +286,6 @@ const CreateAnnouncement = () => {
       }
     }
 
-
     let payLoad = {
       branch_id: branchId.toString() || '',
       session_year: selectedAcademicYear?.id,
@@ -409,10 +408,10 @@ const CreateAnnouncement = () => {
                   ref={formRef}
                 >
                   <div className='col-md-6'>
-                    <span className='th-grey th-14'>Type *</span>
+                    <span className='th-grey th-14'>Type*</span>
                     <Select
                       value={selectedCategory}
-                       getPopupContainer={(trigger) => trigger.parentNode}
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       className='th-grey th-bg-grey th-br-4 w-100 mt-1'
                       placement='bottomRight'
                       suffixIcon={<DownOutlined className='th-black-1' />}
@@ -424,7 +423,7 @@ const CreateAnnouncement = () => {
                     </Select>
                   </div>
                   <div className='col-md-6 py-3 py-md-0'>
-                    <span className='th-grey th-14'>Title</span>
+                    <span className='th-grey th-14'>Title*</span>
                     <Input
                       className='th-br-4 mt-1 th-16'
                       showCount
@@ -440,7 +439,7 @@ const CreateAnnouncement = () => {
                     <Form.Item name='branch'>
                       <Select
                         showSearch
-                         getPopupContainer={(trigger) => trigger.parentNode}
+                        getPopupContainer={(trigger) => trigger.parentNode}
                         className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                         placement='bottomRight'
                         suffixIcon={<DownOutlined className='th-grey' />}
@@ -461,9 +460,9 @@ const CreateAnnouncement = () => {
                     </Form.Item>
                   </div>
                   <div className='col-md-6 py-3 py-md-0'>
-                    <span className='th-grey th-14'>Choose User Level *</span>
+                    <span className='th-grey th-14'>Choose User Level*</span>
                     <Select
-                     getPopupContainer={(trigger) => trigger.parentNode}
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       mode='multiple'
                       maxTagCount={5}
                       allowClear={true}
@@ -489,7 +488,7 @@ const CreateAnnouncement = () => {
                         <span className='th-grey th-14'>Grades*</span>
                         <Form.Item name='grade'>
                           <Select
-                           getPopupContainer={(trigger) => trigger.parentNode}
+                            getPopupContainer={(trigger) => trigger.parentNode}
                             mode='multiple'
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                             placement='bottomRight'
@@ -513,10 +512,10 @@ const CreateAnnouncement = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-6'>
-                        <span className='th-grey th-14'>Sections *</span>
+                        <span className='th-grey th-14'>Sections*</span>
                         <Form.Item name='section'>
                           <Select
-                           getPopupContainer={(trigger) => trigger.parentNode}
+                            getPopupContainer={(trigger) => trigger.parentNode}
                             mode='multiple'
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                             placement='bottomRight'
@@ -543,7 +542,7 @@ const CreateAnnouncement = () => {
                   )}
                 </Form>
                 <div className='col-md-6'>
-                  <span className='th-grey th-14'>Description</span>
+                  <span className='th-grey th-14'>Description*</span>
                   <div className='th-editor py-2'>
                     <TextArea rows={5} onChange={(e) => setDescription(e.target.value)} />
                   </div>
