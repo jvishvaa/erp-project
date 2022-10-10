@@ -28,7 +28,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
           setPricipalSignData(response?.data);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const selectedAcademicYear = useSelector(
@@ -467,8 +467,8 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
+                          <td className='th-width-12 th-fw-600 text-center'>{ }</td>
+                          <td className='th-width-12 th-fw-600 text-center'>{ }</td>
                         </>
                       );
                     })}
@@ -649,7 +649,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                   {/* Weightage Header End */}
                   {/* Subject With Marks Start */}
 
-                  {subjectList[coI]?.map((x, subjectIndex) => {
+                  {coschSubjectList[coI]?.map((x, subjectIndex) => {
                     return (
                       <tr>
                         <td className='th-fw-600' style={{ backgroundColor: '#ffffff' }}>
@@ -761,8 +761,8 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
+                          <td className='th-width-12 th-fw-600 text-center'>{ }</td>
+                          <td className='th-width-12 th-fw-600 text-center'>{ }</td>
                         </>
                       );
                     })}
