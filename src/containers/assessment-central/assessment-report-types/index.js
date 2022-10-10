@@ -44,6 +44,7 @@ import { returnAdmin } from 'containers/Finance/src/components/Finance/store/act
 import ReportCardNewBack from '../assesment-report-card/reportCardNewBack';
 import StudentWiseReport from './assessment-report-filters/student-wise-report';
 import LeftArrow from 'components/icon/LeftArrow';
+import { useHistory } from 'react-router';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
   const limit = 10;
@@ -51,6 +52,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const widerWidth = isMobile ? '98%' : '95%';
   const classes = useStyles();
+  const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -354,6 +356,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
           selectedReportType={selectedReportType}
           widerWidth={widerWidth}
           isMobile={isMobile}
+          reportcardpipelineview = {history?.location?.state?.reportcardpipeline}
         />
         {selectedReportType?.id && (
           <AssessmentReportFilters

@@ -58,6 +58,7 @@ const ReportTypeFilter = ({
   setReportType,
   selectedReportType,
   setIsFilter,
+  reportcardpipelineview
 }) => {
   const handleReportType = (event, value) => {
     setIsFilter(false);
@@ -73,6 +74,12 @@ const ReportTypeFilter = ({
       handleReportType({}, { ...reportTypes[4] });
     }
   }, [isReportView]);
+
+  useEffect(() => {
+if(reportcardpipelineview){
+  handleReportType({}, { ...orchidsReportTypes[6] });
+}
+  },[reportcardpipelineview])
 
   let domain = window.location.href.split('/');
   let isAolOrchids =
