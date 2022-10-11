@@ -10,7 +10,9 @@ const { TabPane } = Tabs;
 const LessonPlan = () => {
   const history = useHistory();
   const [volume, setVolume] = useState('');
-  const [showTab, setShowTab] = useState(history?.location?.state?.showTab || '1');
+  const [showTab, setShowTab] = useState(
+    window.location.pathname.includes('period-view') ? '1' : '2'
+  );
   const getVolume = (value) => {
     setVolume(value);
   };
@@ -18,6 +20,19 @@ const LessonPlan = () => {
   const closeTable = useRef(null);
   const onChange = (key) => {
     setShowTab(key);
+    if (key === '2') {
+      history.push({
+        pathname: window.location.pathname.includes('teacher-view')
+          ? '/lesson-plan/teacher-view/annual-plan'
+          : '/lesson-plan/student-view/annual-plan',
+      });
+    } else {
+      history.push({
+        pathname: window.location.pathname.includes('teacher-view')
+          ? '/lesson-plan/teacher-view/period-view'
+          : '/lesson-plan/student-view/period-view',
+      });
+    }
   };
 
   return (

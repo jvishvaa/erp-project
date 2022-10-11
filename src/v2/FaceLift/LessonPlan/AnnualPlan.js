@@ -12,7 +12,6 @@ import { CaretDownOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { EyeFilled } from '@ant-design/icons';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
-import courseEnroleModeStyle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleMode.style';
 const { Option } = Select;
 
 const AnnualPlan = () => {
@@ -450,8 +449,8 @@ const AnnualPlan = () => {
                           onClick={() =>
                             history.push({
                               pathname: window.location.pathname.includes('teacher-view')
-                                ? '/lesson-plan/teacher-view/list-view'
-                                : '/lesson-plan/student-view/list-view',
+                                ? '/lesson-plan/teacher-view/annual-plan/list-view'
+                                : '/lesson-plan/student-view/annual-plan/list-view',
                               state: {
                                 gradeID: gradeId,
                                 gradeName,
