@@ -383,11 +383,15 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher View': {
-        history.push('/lesson-plan/teacher-view');
+        history.push(
+          isV2 ? '/lesson-plan/teacher-view/period-view' : '/lesson-plan/teacher-view'
+        );
         break;
       }
       case 'Student View': {
-        history.push('/lesson-plan/student-view');
+        history.push(
+          isV2 ? '/lesson-plan/student-view/period-view' : '/lesson-plan/student-view'
+        );
         break;
       }
       case 'Assign Transport Fees': {

@@ -133,20 +133,29 @@ const V2Router = () => {
                         <Route exact path='/report-config/create'>
                           {({ match }) => <CreateReportConfig match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/teacher-view/list-view'>
+                        <Route path='/lesson-plan/teacher-view/period-view/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/student-view/list-view'>
+                        <Route path='/lesson-plan/teacher-view/annual-plan/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/teacher-view'>
+                        <Route path='/lesson-plan/student-view/period-view/list-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view/annual-plan/list-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/teacher-view/period-view'>
                           {({ match }) => <LessonPlan match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/student-view'>
+                        <Route path='/lesson-plan/teacher-view/annual-plan'>
                           {({ match }) => <LessonPlan match={match} />}
                         </Route>
-                        <Route path='/lesson-plan-module-view'>
-                          {({ match }) => <LessonPlanView match={match} />}
+                        <Route path='/lesson-plan/student-view/period-view'>
+                          {({ match }) => <LessonPlan match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view/annual-plan'>
+                          {({ match }) => <LessonPlan match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

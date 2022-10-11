@@ -424,8 +424,9 @@ const PeriodView = () => {
                                               pathname: window.location.pathname.includes(
                                                 'teacher-view'
                                               )
-                                                ? '/lesson-plan/teacher-view/list-view'
-                                                : '/lesson-plan/student-view/list-view',
+                                                ? '/lesson-plan/teacher-view/period-view/list-view'
+                                                : '/lesson-plan/student-view/period-view/list-view',
+
                                               state: {
                                                 gradeID: item?.grade_id,
                                                 gradeName: item?.grade_name,
@@ -489,11 +490,11 @@ const PeriodView = () => {
                                 className='mb-1'
                               />
                               <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                                {item?.grade_name}
+                                {each?.subject_name}
                               </span>
                             </div>
-                            <div className='col-6 px-0 th-16 text-right th-fw-700'>
-                              {each?.subject_name}
+                            <div className='col-6 px-0 th-16 text-right th-fw-700 text-capitalize'>
+                              {item?.grade_name}
                             </div>
                           </div>
                           <div className='row pl-3 pt-4'>
@@ -539,8 +540,8 @@ const PeriodView = () => {
                                     pathname: window.location.pathname.includes(
                                       'teacher-view'
                                     )
-                                      ? '/lesson-plan/teacher-view/list-view'
-                                      : '/lesson-plan/student-view/list-view',
+                                      ? '/lesson-plan/teacher-view/period-view/list-view'
+                                      : '/lesson-plan/student-view/period-view/list-view',
                                     state: {
                                       gradeID: item?.grade_id,
                                       gradeName: item?.grade_name,
