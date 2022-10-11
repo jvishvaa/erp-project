@@ -19,7 +19,6 @@ import {
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import 'slick-carousel/slick/slick.css';
@@ -75,7 +74,6 @@ const PeriodListView = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingDrawer, setLoadingDrawer] = useState(false);
-  const [filtered, setFiltered] = useState(false);
   const [drawerData, setDrawerData] = useState([]);
   const [periodWiseData, setPeriodWiseData] = useState([]);
   const [YCPData, setYCPData] = useState([]);
@@ -87,6 +85,14 @@ const PeriodListView = () => {
   const [showCompletionStatusModal, setShowCompletionStatusModal] = useState(false);
   const [modalData, setModalData] = useState([]);
   let isStudent = window.location.pathname.includes('student-view');
+  let boardFilterArr = [
+    'orchids.letseduvate.com',
+    'localhost:3000',
+    'dev.olvorchidnaigaon.letseduvate.com',
+    'ui-revamp1.letseduvate.com',
+    'qa.olvorchidnaigaon.letseduvate.com',
+  ];
+
   const showDrawer = () => {
     setDrawerVisible(true);
   };
@@ -169,9 +175,6 @@ const PeriodListView = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setModuleListData(result?.data?.result?.module_list);
-          // formRef.current.setFieldsValue({
-          //   module: ['All'],
-          // });
           setLoading(false);
         }
       })
@@ -218,14 +221,24 @@ const PeriodListView = () => {
     setChapterListData([]);
     setKeyConceptId();
     setKeyConceptListData([]);
-    fetchModuleListData({
-      subject_id: subjectId,
-      volume: e.value,
-      academic_year: history?.location?.state?.centralAcademicYearID,
-      grade_id: gradeId,
-      branch_id: selectedBranch?.branch?.id,
-      board: boardId,
-    });
+    if (boardFilterArr.includes(window.location.host)) {
+      fetchModuleListData({
+        subject_id: subjectId,
+        volume: e.value,
+        academic_year: history?.location?.state?.centralAcademicYearID,
+        grade_id: gradeId,
+        branch_id: selectedBranch?.branch?.id,
+        board: boardId,
+      });
+    } else {
+      fetchChapterListData({
+        subject_id: subjectId,
+        volume: e.value,
+        grade_id: gradeId,
+        branch_id: selectedBranch?.branch?.id,
+        board: boardId,
+      });
+    }
   };
   const handleClearVolume = () => {
     setVolumeId('');
@@ -267,8 +280,8 @@ const PeriodListView = () => {
       keyConcept: null,
     });
     setChapterId('');
-    setChapterListData([]);
-    setKeyConceptListData([]);
+    // setChapterListData([]);
+    // setKeyConceptListData([]);
     setKeyConceptId('');
     if (each.length === 1 && each.some((item) => item.value === 'All')) {
       const all = moduleListData.slice();
@@ -306,7 +319,6 @@ const PeriodListView = () => {
   };
   const fetchPeriodWiseData = (params = {}) => {
     setLoading(true);
-    setFiltered(true);
     axios
       .get(`/academic/period-view/grade-subject-wise-lp-overview/`, {
         params: { ...params, ...(keyConceptId ? { key_concepts: keyConceptId } : {}) },
@@ -349,7 +361,6 @@ const PeriodListView = () => {
               if (index == completeSections?.length - 1) {
                 setCompleteSections([]);
                 closeSectionList();
-                // closeDrawer();
                 fetchPeriodWiseData({
                   acad_session_id: selectedBranch?.id,
                   board_id: boardId,
@@ -361,7 +372,6 @@ const PeriodListView = () => {
                   volume: volumeId,
                   central_gs_id: centralGSID,
                 });
-                // setLoadingDrawer(true);
                 fetchLessonResourcesData(drawerData);
               }
             }
@@ -421,7 +431,7 @@ const PeriodListView = () => {
       });
   };
   useEffect(() => {
-    if (chapterId && selectedModuleId.length > 0) {
+    if (chapterId) {
       fetchPeriodWiseData({
         acad_session_id: selectedBranch?.id,
         board_id: boardId,
@@ -476,14 +486,25 @@ const PeriodListView = () => {
       setBoardId(history?.location?.state?.boardID);
       setCentralGSID(history?.location?.state?.centralGSID);
 
-      fetchModuleListData({
-        subject_id: history?.location?.state?.subjectID,
-        volume: history?.location?.state?.volumeID,
-        academic_year: history?.location?.state?.centralAcademicYearID,
-        grade_id: history?.location?.state?.gradeID,
-        branch_id: selectedBranch?.branch?.id,
-        board: history?.location?.state?.boardID,
-      });
+      if (boardFilterArr.includes(window.location.host)) {
+        fetchModuleListData({
+          subject_id: history?.location?.state?.subjectID,
+          volume: history?.location?.state?.volumeID,
+          academic_year: history?.location?.state?.centralAcademicYearID,
+          grade_id: history?.location?.state?.gradeID,
+          branch_id: selectedBranch?.branch?.id,
+          board: history?.location?.state?.boardID,
+        });
+      } else {
+        fetchChapterListData({
+          subject_id: history?.location?.state?.subjectID,
+          volume: history?.location?.state?.volumeID,
+          grade_id: history?.location?.state?.gradeID,
+          branch_id: selectedBranch?.branch?.id,
+          board: history?.location?.state?.boardID,
+          // module_id: selectedModuleId,
+        });
+      }
       fetchKeyConceptListData({ chapter: history?.location?.state?.chapterID });
     }
   }, []);
@@ -501,7 +522,6 @@ const PeriodListView = () => {
   }, [selectedModuleId]);
 
   useEffect(() => {
-    // setPeriodSortedData(
     if (periodWiseData.length > 0) {
       setPeriodSortedData(getSortedPeriodData(periodWiseData));
     }
@@ -525,6 +545,7 @@ const PeriodListView = () => {
               <div className='text-left pl-md-1'>Volume</div>
               <Form.Item name='volume'>
                 <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Volume'
                   showSearch
                   optionFilterProp='children'
@@ -544,43 +565,48 @@ const PeriodListView = () => {
                 </Select>
               </Form.Item>
             </div>
-            <div className='col-md-3 col-6 pl-md-1'>
-              <div className='text-left'>Module</div>
-              <Form.Item name='module'>
-                <Select
-                  showSearch
-                  mode='multiple'
-                  maxTagCount={2}
-                  optionFilterProp='children'
-                  defaultValue={'All'}
-                  value={selectedModuleId}
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  onChange={(e, value) => {
-                    handleModule(value);
-                  }}
-                  onClear={handleClearModule}
-                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                  bordered={false}
-                  placement='bottomRight'
-                  showArrow={true}
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                  placeholder='Select Module'
-                >
-                  <Option key='0' value='All'>
-                    All
-                  </Option>
-                  {moduleOptions}
-                </Select>
-              </Form.Item>
-            </div>
+            {boardFilterArr.includes(window.location.host) && (
+              <div className='col-md-3 col-6 pl-md-1'>
+                <div className='text-left'>Module</div>
+                <Form.Item name='module'>
+                  <Select
+                    showSearch
+                    mode='multiple'
+                    maxTagCount={2}
+                    optionFilterProp='children'
+                    defaultValue={'All'}
+                    value={selectedModuleId}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    onChange={(e, value) => {
+                      handleModule(value);
+                    }}
+                    onClear={handleClearModule}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={false}
+                    placement='bottomRight'
+                    showArrow={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    placeholder='Select Module'
+                  >
+                    {moduleListData.length > 0 && (
+                      <Option key='0' value='All'>
+                        All
+                      </Option>
+                    )}
+                    {moduleOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+            )}
             <div className='col-md-3 col-6 pl-md-1'>
               <div className='text-left'>Chapters</div>
               <Form.Item name='chapter'>
                 <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Chapter'
                   showSearch
                   optionFilterProp='children'
@@ -604,6 +630,7 @@ const PeriodListView = () => {
               <div className='text-left'>Key Concepts</div>
               <Form.Item name='keyConcept'>
                 <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Key Concepts'
                   showSearch
                   optionFilterProp='children'
@@ -710,10 +737,7 @@ const PeriodListView = () => {
           <Spin title='Loading...' />
         </div>
       ) : periodWiseData.length > 0 ? (
-        <div
-          className='row th-br-10 pt-2 pb-3'
-          // style={{ border: '2px solid #d9d9d9' }}
-        >
+        <div className='row th-br-10 pt-2 pb-3'>
           <div className='col-6 py-1 th-fw-600 th-20'>
             {' '}
             <img src={periodIcon} height='30' className='mr-3 pb-1 ml-1' />
@@ -761,14 +785,22 @@ const PeriodListView = () => {
                             </div>
                           </div>
                           <div className='row pt-3 pb-2 px-1 th-12'>
-                            <div className='col-12 px-0'>
-                              <span className='th-fw-600'>Chapter : </span>
-                              {each?.chapter__chapter_name}
+                            <div className='row'>
+                              <div className='col-md-2 col-3 px-0 th-fw-600'>Chapter</div>
+                              <div className='col-md-10 col-9 pl-1'>
+                                {each?.chapter__chapter_name}
+                              </div>
                             </div>
-                            <div className='col-12 px-0'>
-                              <span className='th-fw-600'>Module : </span>
-                              {each?.chapter__lt_module__lt_module_name}
-                            </div>
+                            {boardFilterArr.includes(window.location.host) && (
+                              <div className='row'>
+                                <div className='col-md-2 col-3 px-0 th-fw-600'>
+                                  Module
+                                </div>
+                                <div className='col-md-10 col-3 pl-1'>
+                                  {each?.chapter__lt_module__lt_module_name}
+                                </div>
+                              </div>
+                            )}
                           </div>
                           <div className='row align-items-center'>
                             <div className='col-6 px-0 text-left th-12'>
@@ -833,8 +865,6 @@ const PeriodListView = () => {
                                 style={{ border: '2px solid #d9d9d9' }}
                                 onClick={() => {
                                   setDrawerData(each);
-                                  // setCurrentPeriodId(each?.id);
-                                  // showDrawer();
                                   fetchLessonResourcesData(each);
                                 }}
                               >
@@ -910,9 +940,6 @@ const PeriodListView = () => {
                                 <img src={getFileIcon(extension)} />
                               </div>
                               <div className='col-9 px-0 th-pointer'>
-                                {/* <div>{file}</div>
-                              </div>
-                              <div className='col-2 th-pointer'> */}
                                 <a
                                   onClick={() => {
                                     openPreview({
@@ -985,7 +1012,6 @@ const PeriodListView = () => {
                         className='row justify-content-between py-2 th-pointer'
                         onClick={() => {
                           showSectionList();
-                          // setCurrentPeriodId(drawerData?.id);
                         }}
                       >
                         <div>Add / Update Status</div>
@@ -1037,7 +1063,6 @@ const PeriodListView = () => {
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}
                           onClick={() => setCompleteSections([])}
-                          // onClick={() => closeSectionList()}
                         >
                           Clear
                         </div>
@@ -1045,7 +1070,6 @@ const PeriodListView = () => {
                       <div
                         className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
                         onClick={() => {
-                          // setCurrentPeriodPanel(i);
                           markPeriodComplete(drawerData);
                         }}
                       >
@@ -1054,7 +1078,7 @@ const PeriodListView = () => {
                     </div>
                     {showError && completeSections?.length < 1 && (
                       <div className='th-red'>
-                        Please select atleast one section first!
+                        Please select at least one section first!
                       </div>
                     )}
                     <div className='row th-black-2 mt-2 '>
@@ -1080,7 +1104,6 @@ const PeriodListView = () => {
           }
           visible={showCompletionStatusModal}
           onCancel={closeModal}
-          // zIndex={2400}
           className='th-upload-modal'
           centered
           footer={[]}

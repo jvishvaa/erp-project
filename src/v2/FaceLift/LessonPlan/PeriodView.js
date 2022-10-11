@@ -378,20 +378,22 @@ const PeriodView = () => {
                                     </div>
 
                                     <div className='row pl-3 pt-4'>
-                                      <span className='th-fw-600'>
-                                        Total Periods &nbsp;
-                                      </span>{' '}
-                                      {item?.total_teaching_periods}
+                                      <div className='th-fw-600 col-4 px-0'>
+                                        Total Periods
+                                      </div>
+                                      <div className='col-8 text-truncate px-2'>
+                                        {item?.total_teaching_periods}
+                                      </div>
                                     </div>
                                     <div className='row pl-3'>
-                                      <div className='th-fw-600 col-2 px-0'>Sections</div>
-                                      <div className='col-10 text-truncate px-2'>
+                                      <div className='th-fw-600 col-4 px-0'>Sections</div>
+                                      <div className='col-8 text-truncate px-2'>
                                         {item?.sections
                                           ?.map((item) => item?.slice(-1).toUpperCase())
                                           .join(', ')}
                                       </div>
                                     </div>
-                                    <div className='row pl-3'>
+                                    <div className='row pl-3' style={{ height: 40 }}>
                                       <div className='th-fw-600 col-4 px-0'>
                                         Current Chapter
                                       </div>
@@ -405,9 +407,13 @@ const PeriodView = () => {
                                       style={{ borderTop: '1px solid #d9d9d9' }}
                                     >
                                       <div className='col-7 text-left th-12 pt-2 pb-1 pl-3 pr-0'>
-                                        Updated On :{' '}
-                                        {moment(item?.last_completed_at).format(
+                                        {item?.last_completed_at ? (
+                                          `Updated On :
+                                        ${moment(item?.last_completed_at).format(
                                           'DD/MM/YYYY'
+                                        )}`
+                                        ) : (
+                                          <span className='th-red'>Yet to start</span>
                                         )}
                                       </div>
                                       <div className='col-5 text-right th-fw-600 pt-2 pb-1'>
@@ -491,15 +497,19 @@ const PeriodView = () => {
                             </div>
                           </div>
                           <div className='row pl-3 pt-4'>
-                            <span className='th-fw-600'>Teacher &nbsp;</span>{' '}
-                            <span className='text-capitalize'>{item?.teacher_name}</span>
+                            <div className='th-fw-600 col-4 px-0'>Teacher &nbsp;</div>{' '}
+                            <div className='text-capitalize col-8 pl-2'>
+                              {item?.teacher_name}
+                            </div>
                           </div>
 
                           <div className='row pl-3'>
-                            <span className='th-fw-600'>Total Periods &nbsp; </span>{' '}
-                            {item?.total_teaching_periods}
+                            <div className='th-fw-600 col-4 px-0'>Total Periods </div>
+                            <div className='col-8 pl-2'>
+                              {item?.total_teaching_periods}{' '}
+                            </div>
                           </div>
-                          <div className='row pl-3'>
+                          <div className='row pl-3' style={{ height: 40 }}>
                             <div className='th-fw-600 col-4 px-0'>Current Chapter</div>
                             <div className='col-8 pl-2'>
                               {item?.last_completed_chapter_name} in{' '}
@@ -512,8 +522,14 @@ const PeriodView = () => {
                             style={{ borderTop: '1px solid #d9d9d9' }}
                           >
                             <div className='col-7 text-left th-12 pt-2 pb-1 pl-3 pr-0'>
-                              Updated on :{' '}
-                              {moment(item?.last_completed_at).format('DD/MM/YYYY')}
+                              {item?.last_completed_at ? (
+                                `Updated On :
+                                        ${moment(item?.last_completed_at).format(
+                                          'DD/MM/YYYY'
+                                        )}`
+                              ) : (
+                                <span className='th-red'>Yet to start</span>
+                              )}
                             </div>
                             <div className='col-5 text-right th-fw-600 pt-2 pb-1'>
                               <div
