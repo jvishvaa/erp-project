@@ -114,6 +114,7 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 size='small'
                 onChange={(event, data) => {
                   console.log('orchids', data);
+                  setRult([]);
                   if (data) {
                     const newComponent = components[index];
                     newComponent.componentName = data?.component_name;
@@ -159,6 +160,7 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 // onChange={handleQuestionLevel}
                 onChange={() => {
                   const newComponent = components[index];
+                  debugger
                   newComponent.ComponentID = ComponentCardsendingid[0];
                   setComponentDetails(
                     components.map((columnDetail) => {
