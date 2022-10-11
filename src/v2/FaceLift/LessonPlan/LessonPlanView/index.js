@@ -14,7 +14,15 @@ const LessonPlanView = () => {
   const [volumeId, setVolumeId] = useState(history?.location?.state?.volumeID);
   const [volumeName, setVolumeName] = useState(history?.location?.state?.volumeName);
   const onChange = (key) => {
-    setShowTab(key);
+    if (key === '2') {
+      setShowTab(key);
+    } else {
+      history.push({
+        pathname: window.location.pathname.includes('teacher-view')
+          ? '/lesson-plan/teacher-view'
+          : '/lesson-plan/student-view',
+      });
+    }
   };
   let isStudent = window.location.pathname.includes('student-view');
   return (
@@ -27,9 +35,6 @@ const LessonPlanView = () => {
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-grey th-18 th-pointer'
-                // href={
-                //   isStudent ? '/lesson-plan/student-view' : '/lesson-plan/teacher-view'
-                // }
                 onClick={() => {
                   history.push({
                     pathname: isStudent

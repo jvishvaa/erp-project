@@ -28,6 +28,9 @@
 .th-collapse .ant-collapse-icon-position-end > .ant-collapse-item > .ant-collapse-header {
   padding-right: 0px !important;
 }
+.th-collapse .ant-collapse-item {
+  border-bottom: 0px solid transparent !important;
+}
 
 .th-resources-drawer .ant-drawer-body {
   padding: 12px !important;
@@ -42,7 +45,7 @@
 }
 
 .volume-card:hover {
-  border: 1px solid #1b4ccb !important;
+  border: 1px outset #1b4ccb !important;
 }
 .th-icon .anticon-eye > svg {
   vertical-align: baseline !important;
