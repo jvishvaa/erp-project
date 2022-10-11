@@ -96,6 +96,17 @@ function CreateReportConfig() {
       .then((res) => {
         if (res?.data?.status_code === 200) {
           // const allBranchData = res?.data?.data?.results.map((item) => item.branch);
+          let branches = res?.data?.data?.results
+          if (branches?.length > 1) {
+            branches.unshift({
+              branch : {
+                id: 'all',
+                branch_name: 'Select All',
+                branch_code: 'all',
+              },
+              id : 'all'
+            });
+          }
           setBranchList(res?.data?.data?.results);
         } else {
           // setBranchList([]);
@@ -119,14 +130,17 @@ function CreateReportConfig() {
   };
 
   const { setAlert } = useContext(AlertNotificationContext);
-  const handleBranch = (e, value = {}) => {
+  const handleBranch = (e, value = []) => {
     setSelectedbranch()
     setSelectedGrade()
     setGradeList([])
     // const Ids = value.map((i)=>i.id)
     if (value) {
-      setSelectedbranch(value)
-      getGrade(value)
+      value = value.filter(({ id }) => id === 'all').length === 1
+        ? [...branchList].filter(({ id }) => id !== 'all')
+        : value;
+        setSelectedbranch(value)
+        getGrade(value)
       // setSelectBranchId(Ids)	
     } else {
       // setSelectBranchId([])	
@@ -240,6 +254,7 @@ function CreateReportConfig() {
               size='small'
               onChange={handleBranch}
               id='branch_id'
+              limitTags={1}
               className='dropdownIcon'
               value={selectedbranch || []}
               options={branchList || []}
