@@ -61,12 +61,12 @@ const AssesmentCard = ({
     setAnchorEl(null);
   };
   const handleDelete = async testId => {
-    const { results } = await deleteAssessmentTest(testId);
-    if (results.status_code === 200) {
+    const  results  = await deleteAssessmentTest(testId);
+    if (results?.status_code === 200) {
       setAlert("success", results?.message);
       filterResults(1); // 1 is the current page no.
     } else {
-      setAlert("error", results.error || results.message);
+      setAlert("error", results?.response?.data?.message);
     }
     handleMenuClose();
   };
