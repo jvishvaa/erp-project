@@ -36,7 +36,6 @@ import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import '../index.css';
 import { useHistory } from 'react-router-dom';
-import fileDownload from 'js-file-download';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
@@ -99,8 +98,6 @@ const TableView = ({ showTab }) => {
   const [volumeId, setVolumeId] = useState([]);
   const [boardId, setBoardId] = useState('');
   const [volumeName, setVolumeName] = useState([]);
-  const [moduleListData, setModuleListData] = useState([]);
-  const [selectedModuleId, setSelectedModuleId] = useState([]);
   const [annualPlanData, setAnnualPlanData] = useState([]);
   const [keyConceptsData, setKeyConceptsData] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState([]);
@@ -109,12 +106,18 @@ const TableView = ({ showTab }) => {
   const [completeSections, setCompleteSections] = useState([]);
   const [showError, setShowError] = useState(false);
   const [loadingDrawer, setLoadingDrawer] = useState(false);
-  const [completionCheck, setCompletionCheck] = useState(false);
   const [currentPeriodId, setCurrentPeriodId] = useState('');
   const [currentPeriodPanel, setCurrentPeriodPanel] = useState(0);
   let isStudent = window.location.pathname.includes('student-view');
   const [YCPData, setYCPData] = useState([]);
 
+  let boardFilterArr = [
+    'orchids.letseduvate.com',
+    'localhost:3000',
+    'dev.olvorchidnaigaon.letseduvate.com',
+    'ui-revamp1.letseduvate.com',
+    'qa.olvorchidnaigaon.letseduvate.com',
+  ];
   const showDrawer = () => {
     setDrawerVisible(true);
   };
@@ -129,14 +132,6 @@ const TableView = ({ showTab }) => {
 
   const closeSectionList = () => {
     setShowSection(false);
-  };
-
-  const handleCompletionCheck = () => {
-    if (completionCheck) {
-      setCompletionCheck(false);
-    } else {
-      setCompletionCheck(true);
-    }
   };
 
   const fetchGradeData = () => {
@@ -183,25 +178,6 @@ const TableView = ({ showTab }) => {
       })
       .catch((error) => {
         message.error(error.message);
-      });
-  };
-  const fetchModuleListData = (params = {}) => {
-    setLoading(true);
-    axios
-      .get(`academic/get-module-list/`, {
-        params: { ...params },
-      })
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setModuleListData(result?.data?.result?.module_list);
-          setLoading(false);
-        } else {
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
       });
   };
   const fetchAnnualPlanData = (params = {}) => {
@@ -252,7 +228,7 @@ const TableView = ({ showTab }) => {
       grade_id: gradeId,
       acad_session_id: selectedBranch?.id,
       topic_id: data?.key_concept_id,
-      chapter_id: selectedChapter?.chapter_id,
+      chapter_id: data?.chapter_id,
       is_kit_activity: data?.is_kit_activity,
     };
     axios
@@ -298,28 +274,11 @@ const TableView = ({ showTab }) => {
   const handleClearSubject = () => {
     setSubjectId('');
   };
-  const handlevolume = (e) => {
+  const handleVolume = (e) => {
     setVolumeId(e.value);
   };
   const handleClearVolume = () => {
     setVolumeId('');
-  };
-
-  const handleModule = (each) => {
-    if (each.length === 1 && each.some((item) => item.value === 'All')) {
-      const all = moduleListData.slice();
-      const allModules = all.map((item) => item.id).join(',');
-      setSelectedModuleId(allModules);
-    } else if (each.some((item) => item.value === 'All') && each.length > 1) {
-      message.error('Either select all modules or other options');
-      return;
-    } else {
-      setSelectedModuleId(each.map((item) => item.value).join(','));
-    }
-  };
-
-  const handleClearModule = () => {
-    setSelectedModuleId('');
   };
 
   const gradeOptions = gradeData?.map((each) => {
@@ -340,13 +299,6 @@ const TableView = ({ showTab }) => {
     return (
       <Option key={each?.id} value={each.id}>
         {each?.volume_name}
-      </Option>
-    );
-  });
-  const moduleOptions = moduleListData?.map((each) => {
-    return (
-      <Option key={each?.id} value={each.id}>
-        {each?.lt_module_name}
       </Option>
     );
   });
@@ -374,7 +326,7 @@ const TableView = ({ showTab }) => {
           volume_id: volumeId,
           volume_name: volumeName,
           subject_id: subjectId,
-          chapter_id: selectedChapter.chapter_id,
+          chapter_id: selectedKeyConcept.chapter_id,
           chapter_name: selectedChapter.chapter__chapter_name,
           // grade_subject: item.central_grade_subject_map_id,
           central_gs_mapping_id: item.central_grade_subject_map_id,
@@ -450,33 +402,8 @@ const TableView = ({ showTab }) => {
   }, [showTab]);
 
   useEffect(() => {
-    if (gradeId && volumeId && subjectId) {
-      formRef.current.setFieldsValue({
-        module: ['All'],
-      });
-      fetchModuleListData({
-        subject_id: subjectId,
-        volume: volumeId,
-        academic_year: history?.location?.state?.centralAcademicYearID,
-        grade_id: gradeId,
-        branch_id: selectedBranch?.branch?.id,
-        board: history?.location?.state?.boardID,
-      });
-    }
-  }, [subjectId, volumeId]);
-
-  useEffect(() => {
-    // if (selectedModuleId.length == 0) {
-    const all = moduleListData.slice();
-    const allModules = all.map((item) => item.id).join(',');
-    setSelectedModuleId(allModules);
-    // }
-  }, [moduleListData]);
-
-  useEffect(() => {
-    if (subjectId && volumeId && selectedModuleId?.length > 0) {
+    if (subjectId && volumeId) {
       fetchAnnualPlanData({
-        module_id: selectedModuleId,
         subject_id: subjectId,
         volume_id: volumeId,
         acad_session_id: selectedBranch?.id,
@@ -484,7 +411,7 @@ const TableView = ({ showTab }) => {
         board_id: boardId,
       });
     }
-  }, [selectedModuleId, subjectId, volumeId]);
+  }, [subjectId, volumeId]);
   const expandedRowRender = (record) => {
     const innerColumn = [
       {
@@ -504,29 +431,22 @@ const TableView = ({ showTab }) => {
         dataIndex: '',
         align: 'center',
         width: '25%',
+        visible: 'false',
       },
       {
         title: '',
         dataIndex: 'key_concept__topic_name',
         align: 'center',
-        width: tableWidthCalculator(30) + '%',
+        width: tableWidthCalculator(50) + '%',
         render: (text, row, index) => {
           return (
-            <div
-              className='th-black-1 th-pointer row'
-              style={{ maxWidth: window.innerWidth < 768 ? '140px' : '300px' }}
-            >
-              <div className='col-md-2 col-0'></div>
-              <div className='col-md-10 col-12 px-md-0'>
-                <Tooltip
-                  placement='bottom'
-                  title={<span>{row.key_concept__topic_name}</span>}
-                >
-                  <div className='text-truncate th-width-95 text-center'>
-                    {index + 1}. {row.key_concept__topic_name}
-                  </div>
-                </Tooltip>
-              </div>
+            <div className='th-black-1 th-pointer'>
+              <Tooltip
+                placement='bottom'
+                title={<span>{row.key_concept__topic_name}</span>}
+              >
+                {index + 1}. {row.key_concept__topic_name}
+              </Tooltip>
             </div>
           );
         },
@@ -549,7 +469,7 @@ const TableView = ({ showTab }) => {
           </span>
         ),
       },
-    ];
+    ].filter((item) => item.visible !== 'false');
 
     return (
       <Table
@@ -592,12 +512,13 @@ const TableView = ({ showTab }) => {
       dataIndex: 'chapter__lt_module__lt_module_name',
       width: '25%',
       align: 'left',
+      visible: 'false',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>KEY CONCEPTS</span>,
       dataIndex: 'kc_count',
-      width: '30%',
+      width: '55%',
       align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
@@ -608,7 +529,7 @@ const TableView = ({ showTab }) => {
       align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
-  ];
+  ].filter((item) => item.visible !== 'false');
   return (
     <div className='row'>
       <div className='col-12 mb-2'>
@@ -619,6 +540,7 @@ const TableView = ({ showTab }) => {
                 <div className='mb-2 text-left'>Grade</div>
                 <Form.Item name='grade'>
                   <Select
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     allowClear
                     placeholder='Select Grade'
                     showSearch
@@ -644,6 +566,7 @@ const TableView = ({ showTab }) => {
               <div className='mb-2 text-left'>Subject</div>
               <Form.Item name='subject'>
                 <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Subject'
                   showSearch
                   optionFilterProp='children'
@@ -668,6 +591,7 @@ const TableView = ({ showTab }) => {
               <div className='mb-2 text-left'>Volume</div>
               <Form.Item name='volume'>
                 <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Volume'
                   showSearch
                   optionFilterProp='children'
@@ -677,45 +601,13 @@ const TableView = ({ showTab }) => {
                     );
                   }}
                   onChange={(e, value) => {
-                    handlevolume(value);
+                    handleVolume(value);
                   }}
                   onClear={handleClearVolume}
                   className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                   bordered={false}
                 >
                   {volumeOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
-              <div className='text-left pb-2'>Module</div>
-              <Form.Item name='module'>
-                <Select
-                  // placeholder={<span className='th-black-1'>All</span>}
-                  showSearch
-                  mode='multiple'
-                  maxTagCount={2}
-                  // defaultValue={'All'}
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  onChange={(e, value) => {
-                    handleModule(value);
-                  }}
-                  onClear={handleClearModule}
-                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                  bordered={false}
-                  placement='bottomRight'
-                  showArrow={true}
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                >
-                  <Option key='0' value='All'>
-                    All
-                  </Option>
-                  {moduleOptions}
                 </Select>
               </Form.Item>
             </div>
@@ -862,28 +754,30 @@ const TableView = ({ showTab }) => {
                       <div className='th-black-1 px-0 col-3 pl-0'>
                         <div className='row justify-content-between'>
                           <span className='th-fw-500'>{item.period_name} </span>
-                          <span>:&nbsp;</span>
+                          {/* <span>:&nbsp;</span> */}
                         </div>
                       </div>
                       <div className='th-black-1 th-fw-600 col-9 px-0'>
-                        {selectedKeyConcept.key_concept__topic_name}
+                        {/* {selectedKeyConcept.key_concept__topic_name} */}
                       </div>
                     </div>
                   }
                   key={i}
                 >
-                  <div className='row mt-1 th-fw-600'>
-                    <div className='col-2 th-black-1 px-0'>
-                      <div className='row justify-content-between'>
-                        <span>Module</span>
-                        <span>:&nbsp;</span>
+                  {boardFilterArr.includes(window.location.host) && (
+                    <div className='row mt-1 th-fw-600'>
+                      <div className='col-2 th-black-1 px-0'>
+                        <div className='row justify-content-between'>
+                          <span>Module</span>
+                          <span>:&nbsp;</span>
+                        </div>
+                      </div>
+
+                      <div className='col-10 th-primary px-0'>
+                        {selectedChapter.chapter__lt_module__lt_module_name}
                       </div>
                     </div>
-
-                    <div className='col-10 th-primary px-0'>
-                      {selectedChapter.chapter__lt_module__lt_module_name}
-                    </div>
-                  </div>
+                  )}
                   <div className='row mt-2 th-fw-600'>
                     <div className='col-2 th-black-1 px-0'>
                       <div className='row justify-content-between'>
@@ -894,6 +788,18 @@ const TableView = ({ showTab }) => {
 
                     <div className='col-10 th-primary px-0'>
                       {selectedChapter.chapter__chapter_name}
+                    </div>
+                  </div>
+                  <div className='row mt-2 th-fw-600'>
+                    <div className='col-3 th-black-1 px-0'>
+                      <div className='row justify-content-between'>
+                        <span>Key Concept</span>
+                        <span>:&nbsp;</span>
+                      </div>
+                    </div>
+
+                    <div className='col-9 th-primary px-0'>
+                      {selectedKeyConcept.key_concept__topic_name}
                     </div>
                   </div>
                   <div className='row mt-2'>
@@ -1039,19 +945,6 @@ const TableView = ({ showTab }) => {
                           )}
                         </div>
                       ))}
-                      {/* <div className='row mt-2 justify-content-end'>
-                        <div
-                          className='col-4 px-2 py-1 th-br-4 mr-2'
-                          style={{ border: '1px solid #d9d9d9' }}
-                        >
-                          <Radio
-                            onChange={handleCompletionCheck}
-                            checked={completionCheck}
-                          >
-                            Completed
-                          </Radio>
-                        </div>
-                      </div> */}
                       <div
                         className='row justify-content-end py-2 mt-2 text-center'
                         style={{ borderTop: '1px solid #d9d9d9' }}
@@ -1060,7 +953,6 @@ const TableView = ({ showTab }) => {
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}
                           onClick={() => setCompleteSections([])}
-                          // onClick={() => closeSectionList()}
                         >
                           Clear
                         </div>
@@ -1076,7 +968,7 @@ const TableView = ({ showTab }) => {
                       </div>
                       {showError && completeSections?.length < 1 && (
                         <div className='th-red'>
-                          Please select atleast one section first!
+                          Please select at least one section first!
                         </div>
                       )}
                     </div>

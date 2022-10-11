@@ -229,7 +229,7 @@ const Filters = (props) => {
           <Grid item xs={12} sm={3}>
             <Button
               onClick={handleFilter}
-              style={{ marginRight: '17px', width: '120px' }}
+              style={{ marginRight: '17px'}}
               color = 'primary'
               variant = 'contained'
             >
@@ -237,7 +237,7 @@ const Filters = (props) => {
             </Button>
             {/* </Grid>
           <Grid item xs={12} sm={1}> */}
-            <Button style={{ width: '120px' }} onClick={() => handleClearData('clear')} color = 'primary'
+            <Button onClick={() => handleClearData('clear')} color = 'primary'
               variant = 'contained'>
               Clear
             </Button>

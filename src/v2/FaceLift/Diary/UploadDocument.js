@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Upload, message, Button } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
@@ -70,8 +70,7 @@ const UploadDocument = (props) => {
   };
 
   const uniqueFiles = [];
-
-  const uniqueFilesList = fileList.filter((element) => {
+  let uniqueFilesList = fileList.filter((element) => {
     const isDuplicate = uniqueFiles.includes(element.name);
 
     if (!isDuplicate) {
@@ -80,6 +79,16 @@ const UploadDocument = (props) => {
       return true;
     }
   });
+
+
+  useEffect(() => {
+    if (uniqueFilesList.length !== 0) {
+      setUploading(false);
+    } else {
+      setUploading(true);
+
+    }
+  }, [uniqueFilesList])
   return (
     <>
       <Modal
@@ -88,12 +97,19 @@ const UploadDocument = (props) => {
         width={500}
         className='th-upload-modal'
         title='Upload Files'
-        onCancel={props?.handleClose}
+        onCancel={() => {
+          setFileList([])
+          props.handleClose()
+        }}
         footer={
           <div className='d-flex justify-content-center'>
             <Button
               className='th-br-4 th-black-2'
-              onClick={props?.handleClose}
+              onClick={() => {
+                setFileList([])
+                props.handleClose()
+              }
+              }
               style={{ border: '1px solid #868686' }}
             >
               Cancel
