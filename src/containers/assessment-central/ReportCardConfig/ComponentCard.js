@@ -160,7 +160,6 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 // onChange={handleQuestionLevel}
                 onChange={() => {
                   const newComponent = components[index];
-                  debugger
                   newComponent.ComponentID = ComponentCardsendingid[0];
                   setComponentDetails(
                     components.map((columnDetail) => {
