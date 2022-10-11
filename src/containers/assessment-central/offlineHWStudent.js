@@ -33,6 +33,7 @@ import { connect, useSelector } from 'react-redux';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import Loader from './../../components/loader/loader';
 //import exportFromJSON from 'export-from-json';
@@ -220,8 +221,8 @@ const OfflineStudentAssessment = () => {
   const [branchOMR, setBranchOMR] = useState([]);
   const [displayOMR, setDisplayOMR] = useState(false);
   const [uploadBranchOMR, setUploadBranchOMR] = useState('');
-  const [filterClicked,setFilterClicked] = useState(false)
-  const [checkBoxFlag,setCheckBoxFlag] = useState(false)
+  const [filterClicked, setFilterClicked] = useState(false)
+  const [checkBoxFlag, setCheckBoxFlag] = useState(false)
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -377,20 +378,30 @@ const OfflineStudentAssessment = () => {
       });
   };
 
-  useEffect(()=>{
-    if(filterClicked){
+  useEffect(() => {
+    if (filterClicked) {
       offlineMarks()
     }
-  },[checkBoxFlag])
+  }, [checkBoxFlag])
 
   const uploadMarks = (data) => {
     console.log(data);
+    let student = [];
+    let studentCheck = studentList.map((i) => {
+      if(i?.atdnce_status == true){
+        student.push(i)
+      }
+    }
+    )
+    console.log(student);
+    console.log(studentList);
+    
     history.push({
       pathname: 'student-mark',
       state: {
         test_id: history?.location?.state?.test?.id,
         user: data?.user_id,
-        student: studentList,
+        student: student,
         studentData: data,
         selectedSection: selectedSection,
         branch: history?.location?.state?.data?.branch,
@@ -402,23 +413,23 @@ const OfflineStudentAssessment = () => {
     });
   };
 
-  const updateReUpload = (val) =>{
+  const updateReUpload = (val) => {
     setLoading(true)
     let testId = history?.location?.state?.test?.id
     let param = {
-      user_id:val?.user_id,
-      test_id : testId,
+      user_id: val?.user_id,
+      test_id: testId,
       can_reupload: !val?.can_reupload
     }
     axiosInstance
       .post(
-        `${endpoints.assessment.reUpload}?`,param
+        `${endpoints.assessment.reUpload}?`, param
       )
       .then((result) => {
         setLoading(false)
         console.log(result);
         setCheckBoxFlag(!checkBoxFlag)
-        if(result?.data?.status_code === 200){
+        if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
         }
       })
@@ -447,10 +458,27 @@ const OfflineStudentAssessment = () => {
     }
   }, [checkBoxFlag]);
 
+  const deleteMarks = (item) => {
+    console.log(item);
+    axiosInstance
+    .delete(
+      `assessment/${item?.test_details?.usresponse_id}/ru-offline-asmnt/`
+    )
+    .then((result) => {
+      console.log(result);
+      setLoading(false);
+      setAlert('success','Response Deleted Successfully')
+      offlineMarks()
+    })
+    .catch((error) => {
+      console.log('');
+    });
+  }
+
   const handleBack = () => {
     sessionStorage.removeItem('filterData');
     // history.goBack();
-    history.push({pathname : '/assesment',state :{ dataRestore : true}})
+    history.push({ pathname: '/assesment', state: { dataRestore: true } })
   };
 
   const uploadOMR = () => {
@@ -630,18 +658,27 @@ const OfflineStudentAssessment = () => {
                           {items?.name}
                         </TableCell>
                         <TableCell className={classes.tableCell} id='blockArea'>
-                          {items?.test_details?.total_marks != null ? (
-                            items?.test_details?.total_marks.toFixed(2)
-                          ) : (
-                            <StyledButton
-                              onClick={() => uploadMarks(items)}
-                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
-                            >
-                              Upload Marks
-                            </StyledButton>
-                          )}
+                          {console.log(items)}
+                          {items?.atdnce_status == true ?
+                            <>
+                              {items?.test_details?.total_marks != null ? (
+                                items?.test_details?.total_marks.toFixed(2)
+                              ) : (
+                                <StyledButton
+                                  onClick={() => uploadMarks(items)}
+                                  startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                                >
+                                  Upload Marks
+                                </StyledButton>
+                              )}
+                            </>
+                            :
+                            items?.test_details?.atdnce_status == null ? <><p>Please Mark Attendace First</p></> : <><p>Absent</p></>
+                          }
                         </TableCell>
                         <TableCell className={classes.tableCell}>
+                          {items?.atdnce_status == true && items?.test_details?.total_marks != null ? 
+                          <>
                           {items?.test_details?.total_marks != null ? (
                             <StyledButton
                               onClick={() => uploadMarks(items)}
@@ -652,6 +689,25 @@ const OfflineStudentAssessment = () => {
                           ) : (
                             ''
                           )}
+                          </> : 
+                          items?.atdnce_status == null && items?.test_details?.total_marks != null ?
+                          <>
+                           <StyledButton
+                              onClick={() => deleteMarks(items)}
+                              startIcon={<DeleteOutlineIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Delete Marks
+                            </StyledButton>
+                          </>
+                          : items?.atdnce_status == false && items?.test_details?.total_marks != null ?
+                          <>
+                           <StyledButton
+                              onClick={() => deleteMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Delete Marks
+                            </StyledButton>
+                          </> : ''}
                         </TableCell>
                         <TableCell className={classes.tableCell} id='blockArea'>
                           {items?.can_reupload && <Checkbox
@@ -663,7 +719,7 @@ const OfflineStudentAssessment = () => {
                             }
                             inputProps={{ 'aria-label': 'controlled' }}
                           />}
-                           {!items?.can_reupload && <Checkbox
+                          {!items?.can_reupload && <Checkbox
                             iconStyle={{ fill: 'red' }}
                             onChange={(e) => {
                               updateReUpload(items)
