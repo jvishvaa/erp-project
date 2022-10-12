@@ -484,7 +484,7 @@ const Layout = ({ children, history }) => {
       }
       case 'View Attendance': {
         history.push(
-          userLevel == 13 ? 'student-attendance-dashboard' : '/teacher-attendance-verify'
+          userLevel == 13 ? '/student-attendance-dashboard' : '/teacher-attendance-verify'
         );
 
         break;

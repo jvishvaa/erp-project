@@ -476,7 +476,7 @@ const PeriodView = () => {
                     each?.data?.map((item) => (
                       <div className='col-md-4 pl-0 mt-2'>
                         <div
-                          className='th-br-20 th-bg-grey'
+                          className='th-br-20 th-bg-grey period-card'
                           style={{ border: '1px solid #d9d9d9' }}
                         >
                           <div
