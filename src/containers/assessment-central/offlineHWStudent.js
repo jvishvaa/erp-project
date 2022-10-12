@@ -673,7 +673,7 @@ const OfflineStudentAssessment = () => {
                               )}
                             </>
                             :
-                            items?.test_details?.atdnce_status == null ? <><p>Please Mark Attendace First</p></> : <><p>Absent</p></>
+                            items?.atdnce_status == null ? <><p>Please Mark Attendace First</p></> : <><p>Absent</p></>
                           }
                         </TableCell>
                         <TableCell className={classes.tableCell}>

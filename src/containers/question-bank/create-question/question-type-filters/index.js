@@ -75,10 +75,13 @@ const levels = [
 ];
 
 const categories = [
-  { id: '1', category: 'Knowledge' },
-  { id: '2', category: 'Understanding' },
-  { id: '3', category: 'Application' },
-  { id: '4', category: 'Analyse' },
+  { value: 1, q_cat: 'Knowledge' },
+  { value: 2, q_cat: 'Understanding' },
+  { value: 3, q_cat: 'Application' },
+  { value: 4, q_cat: 'Analysis' },
+  { value: 5, q_cat: 'Remembering' },
+  { value: 6, q_cat: 'Evaluation' },
+  { value: 7, q_cat: 'Creating' },
 ];
 
 const questionType = [

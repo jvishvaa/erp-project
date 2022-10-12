@@ -52,7 +52,7 @@ const headCells = [
   { id: 'Branch', numeric: false, disablePadding: false, label: 'Branch' },
   { id: 'Grade', numeric: false, disablePadding: false, label: 'Grade' },
   { id: 'Section', numeric: false, disablePadding: false, label: 'Section' },
-  { id: 'Role', numeric: false, disablePadding: false, label: 'User Level' },
+  { id: 'Role', numeric: false, disablePadding: false, label: 'User Role' },
 ];
 
 function EnhancedTableHead(props) {
