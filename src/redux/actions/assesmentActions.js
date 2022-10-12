@@ -138,8 +138,9 @@ export const deleteAssessmentTest = async (id) => {
     if (response.data.status_code === 200) {
       return { results: response.data };
     }
-    throw new Error();
-  } catch (e) {
-    throw new Error();
+    // throw new Error();
+  } 
+  catch (e) {
+     return e
   }
 };

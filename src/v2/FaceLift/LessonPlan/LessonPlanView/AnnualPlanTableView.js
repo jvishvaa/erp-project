@@ -36,6 +36,7 @@ import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import '../index.css';
 import { useHistory } from 'react-router-dom';
+import fileDownload from 'js-file-download';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
@@ -72,7 +73,7 @@ const getFileIcon = (type) => {
   }
 };
 
-const TableView = ({ showTab }) => {
+const TableView = (props) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const formRef = createRef();
@@ -98,6 +99,8 @@ const TableView = ({ showTab }) => {
   const [volumeId, setVolumeId] = useState([]);
   const [boardId, setBoardId] = useState('');
   const [volumeName, setVolumeName] = useState([]);
+  const [moduleListData, setModuleListData] = useState([]);
+  const [selectedModuleId, setSelectedModuleId] = useState([]);
   const [annualPlanData, setAnnualPlanData] = useState([]);
   const [keyConceptsData, setKeyConceptsData] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState([]);
@@ -106,6 +109,7 @@ const TableView = ({ showTab }) => {
   const [completeSections, setCompleteSections] = useState([]);
   const [showError, setShowError] = useState(false);
   const [loadingDrawer, setLoadingDrawer] = useState(false);
+  const [completionCheck, setCompletionCheck] = useState(false);
   const [currentPeriodId, setCurrentPeriodId] = useState('');
   const [currentPeriodPanel, setCurrentPeriodPanel] = useState(0);
   let isStudent = window.location.pathname.includes('student-view');
@@ -178,6 +182,25 @@ const TableView = ({ showTab }) => {
       })
       .catch((error) => {
         message.error(error.message);
+      });
+  };
+  const fetchModuleListData = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`academic/get-module-list/`, {
+        params: { ...params },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setModuleListData(result?.data?.result?.module_list);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false);
       });
   };
   const fetchAnnualPlanData = (params = {}) => {
@@ -281,6 +304,23 @@ const TableView = ({ showTab }) => {
     setVolumeId('');
   };
 
+  const handleModule = (each) => {
+    if (each.length === 1 && each.some((item) => item.value === 'All')) {
+      const all = moduleListData.slice();
+      const allModules = all.map((item) => item.id).join(',');
+      setSelectedModuleId(allModules);
+    } else if (each.some((item) => item.value === 'All') && each.length > 1) {
+      message.error('Either select all modules or other options');
+      return;
+    } else {
+      setSelectedModuleId(each.map((item) => item.value).join(','));
+    }
+  };
+
+  const handleClearModule = () => {
+    setSelectedModuleId('');
+  };
+
   const gradeOptions = gradeData?.map((each) => {
     return (
       <Option key={each?.id} value={each.grade_id}>
@@ -299,6 +339,13 @@ const TableView = ({ showTab }) => {
     return (
       <Option key={each?.id} value={each.id}>
         {each?.volume_name}
+      </Option>
+    );
+  });
+  const moduleOptions = moduleListData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.lt_module_name}
       </Option>
     );
   });
@@ -399,7 +446,31 @@ const TableView = ({ showTab }) => {
         grade: history?.location?.state?.gradeID,
       });
     }
-  }, [showTab]);
+  }, [props.showTab]);
+
+  // useEffect(() => {
+  //   if (gradeId && volumeId && subjectId) {
+  //     formRef.current.setFieldsValue({
+  //       module: ['All'],
+  //     });
+  //     fetchModuleListData({
+  //       subject_id: subjectId,
+  //       volume: volumeId,
+  //       academic_year: history?.location?.state?.centralAcademicYearID,
+  //       grade_id: gradeId,
+  //       branch_id: selectedBranch?.branch?.id,
+  //       board: history?.location?.state?.boardID,
+  //     });
+  //   }
+  // }, [subjectId, volumeId]);
+
+  // useEffect(() => {
+  //   // if (selectedModuleId.length == 0) {
+  //   const all = moduleListData.slice();
+  //   const allModules = all.map((item) => item.id).join(',');
+  //   setSelectedModuleId(allModules);
+  //   // }
+  // }, [moduleListData]);
 
   useEffect(() => {
     if (subjectId && volumeId) {
@@ -418,13 +489,13 @@ const TableView = ({ showTab }) => {
         title: '',
         dataIndex: '',
         align: 'center',
-        width: '10%',
+        width: '15%',
       },
       {
         title: '',
         dataIndex: '',
         align: 'center',
-        width: '20%',
+        width: '30%',
       },
       {
         title: '',
@@ -437,16 +508,24 @@ const TableView = ({ showTab }) => {
         title: '',
         dataIndex: 'key_concept__topic_name',
         align: 'center',
-        width: tableWidthCalculator(50) + '%',
+        width: tableWidthCalculator(40) + '%',
         render: (text, row, index) => {
           return (
-            <div className='th-black-1 th-pointer'>
+            <div
+              className='th-black-1 th-pointer'
+              // style={{ maxWidth: window.innerWidth < 768 ? '140px' : '300px' }}
+            >
+              {/* <div className='col-md-2 col-0'></div>
+              <div className='col-md-10 col-12 px-md-0'> */}
               <Tooltip
                 placement='bottom'
                 title={<span>{row.key_concept__topic_name}</span>}
               >
+                {/* <div className='text-truncate th-width-95 text-center'> */}
                 {index + 1}. {row.key_concept__topic_name}
+                {/* </div> */}
               </Tooltip>
+              {/* </div> */}
             </div>
           );
         },
@@ -455,7 +534,7 @@ const TableView = ({ showTab }) => {
         title: '',
         dataIndex: 'lp_count',
         align: 'center',
-        width: '10%',
+        width: '15%',
         render: (data) => <span className='th-black-1'>{data}</span>,
       },
       {
@@ -479,7 +558,6 @@ const TableView = ({ showTab }) => {
         pagination={false}
         showHeader={false}
         bordered={false}
-        style={{ width: '100%' }}
         rowClassName={(record, index) => 'th-pointer th-row'}
         onRow={(row, rowIndex) => {
           return {
@@ -496,15 +574,15 @@ const TableView = ({ showTab }) => {
     {
       title: <span className='th-white pl-md-4 th-fw-700 '>SL NO.</span>,
       align: 'center',
-      width: '10%',
+      width: '15%',
       render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
     },
 
     {
       title: <span className='th-white th-fw-700 '>CHAPTER</span>,
       dataIndex: 'chapter__chapter_name',
-      width: '20%',
-      align: 'left',
+      width: '30%',
+      align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
     {
@@ -518,14 +596,14 @@ const TableView = ({ showTab }) => {
     {
       title: <span className='th-white th-fw-700'>KEY CONCEPTS</span>,
       dataIndex: 'kc_count',
-      width: '55%',
+      width: '40%',
       align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>PERIODS</span>,
       dataIndex: 'lp_count',
-      width: '10%',
+      width: '15%',
       align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
@@ -611,6 +689,40 @@ const TableView = ({ showTab }) => {
                 </Select>
               </Form.Item>
             </div>
+
+            {/* <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
+                <div className='text-left pb-2'>Module</div>
+                <Form.Item name='module'>
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    // placeholder={<span className='th-black-1'>All</span>}
+                    showSearch
+                    mode='multiple'
+                    maxTagCount={2}
+                    // defaultValue={'All'}
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    onChange={(e, value) => {
+                      handleModule(value);
+                    }}
+                    onClear={handleClearModule}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={false}
+                    placement='bottomRight'
+                    showArrow={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                  >
+                    <Option key='0' value='All'>
+                      All
+                    </Option>
+                    {moduleOptions}
+                  </Select>
+                </Form.Item>
+              </div> */}
           </div>
         </Form>
       </div>
@@ -721,7 +833,6 @@ const TableView = ({ showTab }) => {
           placement='right'
           onClose={closeDrawer}
           visible={drawerVisible}
-          // visible={true}
           closable={false}
           width={window.innerWidth < 768 ? '90vw' : '450px'}
           className='th-resources-drawer'
@@ -945,6 +1056,19 @@ const TableView = ({ showTab }) => {
                           )}
                         </div>
                       ))}
+                      {/* <div className='row mt-2 justify-content-end'>
+                        <div
+                          className='col-4 px-2 py-1 th-br-4 mr-2'
+                          style={{ border: '1px solid #d9d9d9' }}
+                        >
+                          <Radio
+                            onChange={handleCompletionCheck}
+                            checked={completionCheck}
+                          >
+                            Completed
+                          </Radio>
+                        </div>
+                      </div> */}
                       <div
                         className='row justify-content-end py-2 mt-2 text-center'
                         style={{ borderTop: '1px solid #d9d9d9' }}
@@ -953,6 +1077,7 @@ const TableView = ({ showTab }) => {
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}
                           onClick={() => setCompleteSections([])}
+                          // onClick={() => closeSectionList()}
                         >
                           Clear
                         </div>
