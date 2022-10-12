@@ -443,6 +443,8 @@ import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/Re
 import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 import AddTemplates from './containers/newBlog/addTemplates';
+import Gradingview from 'containers/assessment-central/grading-system/gradingview';
+import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -566,6 +568,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/assessment/marks-upload'>
                               {({ match }) => <ReportCard match={match} />}
+                            </Route>
+                            <Route exact path='/assessment/grading-system'>
+                              {({ match }) => <Gradingview match={match} />}
+                            </Route>
+                            <Route exact path='/assessment/grading-create'>
+                              {({ match }) => <GradingCreate match={match} />}
                             </Route>
                             <Route exact path='/assessment/category'>
                               {({ match }) => <Category match={match} />}
@@ -1553,7 +1561,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                                 <DailyBillingDetails match={match} alert={alert} />
                               )}
                             </Route>
-                            <Route exact path='/teacher-attendance'>
+                            <Route exact path='/mark-staff-attendance'>
+                              {({ match }) => <TeacherAttendance match={match} />}
+                            </Route>
+                            <Route exact path='/mark-student-attendance'>
                               {({ match }) => <TeacherAttendance match={match} />}
                             </Route>
                             <Route exact path='/teacher-attendance-verify'>
@@ -2131,10 +2142,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/student-mark'>
                               {({ match }) => <StudentMark match={match} />}
                             </Route>
-                            <Route path='/lesson-plan/teacher-view/annual-plan'>
+                            <Route path='/lesson-plan/teacher-view/list-view'>
                               {({ match }) => <LessonPlan match={match} />}
                             </Route>
-                            <Route path='/lesson-plan/student-view/annual-plan'>
+                            <Route path='/lesson-plan/student-view/list-view'>
                               {({ match }) => <LessonPlan match={match} />}
                             </Route>
                             <Route path='*'>

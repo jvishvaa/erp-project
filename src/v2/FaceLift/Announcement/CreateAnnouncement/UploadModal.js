@@ -129,10 +129,12 @@ const UploadModal = (props) => {
             <Button
               className='th-fw-500 th-br-4 th-bg-primary th-white'
               onClick={() => {
-                setUploading(true);
-                handleUpload();
+                if (uniqueFilesList.length > 0) {
+                  setUploading(true);
+                  handleUpload();
+                }
               }}
-              disabled={uploading}
+              disabled={uploading || uniqueFilesList.length < 1}
             >
               Upload
             </Button>
@@ -157,7 +159,7 @@ const UploadModal = (props) => {
 
             <p className='pt-2'>
               {' '}
-              Drap And Drop Files Here <br /> or
+              Drag And Drop Files Here <br /> or
             </p>
 
             <Button

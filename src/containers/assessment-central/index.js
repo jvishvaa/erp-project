@@ -127,6 +127,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {}
   let isRestoreFields = history?.location?.state?.dataRestore || false
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+  const [ checkDel , setCheckDel ] = useState(false);
 
 
   useEffect(() => {
@@ -365,8 +366,22 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   } else {
     results = assesmentTests;
   }
+  let checkDelete = '';
+  const checkDelPermission = () => {
+    axiosInstance
+    .get(`assessment/assessment-deletion-access-config/`)
+    .then((res) => {
+      console.log(res);
+      checkDelete = res.data.result.find(each=>parseInt(each)===userLevel)
+      setCheckDel(checkDelete != undefined ? true : false)
+    })
+    .catch((error) => {
+      setAlert('error', 'Something Wrong!');
+    });
+  }
 
   const handleFilterAssessment = () => {
+    checkDelPermission()
     if (!formik?.values?.status) {
       setAlert('error', 'Select Status');
       return;
@@ -1192,6 +1207,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                                   // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
                                   filterbasedonsub={filterbasedonsub}
                                   isdisable={filterbasedonsub(test?.subjects[0])}
+                                  checkDel={checkDel}
                                 />
                               </Grid>
                             ))}
@@ -1266,6 +1282,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                                   // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
                                   filterbasedonsub={filterbasedonsub}
                                   isdisable={filterbasedonsub(test.subjects[0])}
+                                  checkDel={checkDel}
                                 />
                               </Grid>
                             ))}
@@ -1340,6 +1357,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                                   // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
                                   filterbasedonsub={filterbasedonsub}
                                   isdisable={filterbasedonsub(test.subjects[0])}
+                                  checkDel={checkDel}
                                 />
                               </Grid>
                             ))}

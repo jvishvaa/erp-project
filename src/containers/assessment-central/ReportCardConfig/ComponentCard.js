@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
 
 function ComponentCard({ componentId, components, setComponentDetails }) {
   const classes = useStyles();
+  const [gradingList, setGradingList] = useState([]);
+  // const [gradingId , setGradingId] = useState()
+
 
   const index = components.findIndex(
     columnDetail => columnDetail.id === componentId
@@ -52,9 +55,25 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
     })
   }
 
+  useEffect(() => {
+    fetchgradingData()
+  },[])
+
+  const fetchgradingData = () => {
+    // setLoading(true);
+    axiosInstance
+      .get(`${endpoints.gradingSystem.GradingData}`)
+      .then((res) => {
+        // setLoading(false);
+        setGradingList(res.data.result);
+      })
+      .catch((error) => {
+        // setLoading(false);
+        console.log(error); // to give set Alert later
+      });
+  };
+
   const [rhul, setRult] = useState([])
-  console.log('debugtest', rhul)
-  console.log('debugtest', rhul.map((val) => val.component_type))
 
   const ComponentCardsendingid = rhul.map((val) => val.id)
 
@@ -62,32 +81,59 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
     getCurriculumData()
   }, [])
 
+  const handleGrading = (e,item) => {
+    // setGradingId(item?.id)
+    const newComponent = components[index];
+    newComponent.grading_system_id = item?.id;
+    setComponentDetails(
+      components.map(columnDetail => {
+        if (columnDetail.id === componentId) {
+          return newComponent;
+        }
+        return columnDetail;
+      })
+    );
+  }
+
   return (
     <>
       <Paper elevation={2} className={classes.paper}>
         <Grid container spacing={1}>
           <Grid
             item
+            container
             xs={12}
             sm={6}
+            md={12}
+            spacing={2}
             className={'filterPadding'}
-            style={{ display: 'flex' }}
           >
-            <Grid item xs={12} sm={6} >
+            <Grid item xs={12} sm={6} md={3}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
                 onChange={(event, data) => {
-                  console.log('orchids', data)
+                  console.log('orchids', data);
+                  setRult([]);
                   if (data) {
+                    const newComponent = components[index];
+                    newComponent.componentName = data?.component_name;
+                    setComponentDetails(
+                      components.map((columnDetail) => {
+                        if (columnDetail.id === componentId) {
+                          return newComponent;
+                        }
+                        return columnDetail;
+                      })
+                    );
+
                     for (let val of response) {
                       if (data?.component_name === val?.component_name) {
-                        setRult((pre) => [...pre, val])
+                        setRult((pre) => [...pre, val]);
                       }
                     }
-                  }
-                  else {
-                    setRult([])
+                  } else {
+                    setRult([]);
                   }
                 }}
                 id='Question Level'
@@ -107,7 +153,7 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6} >
+            <Grid item xs={12} sm={6} md={3}>
               <Autocomplete
                 style={{ width: '100%', marginLeft: '5px' }}
                 size='small'
@@ -116,7 +162,7 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                   const newComponent = components[index];
                   newComponent.ComponentID = ComponentCardsendingid[0];
                   setComponentDetails(
-                    components.map(columnDetail => {
+                    components.map((columnDetail) => {
                       if (columnDetail.id === componentId) {
                         return newComponent;
                       }
@@ -137,6 +183,28 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                     variant='outlined'
                     label='CURRICULUM NAME'
                     placeholder='CURRICULUM NAME'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Autocomplete
+                style={{ width: '100%', marginLeft: '5px' }}
+                size='small'
+                onChange={(e, item) => handleGrading(e, item)}
+                id='Grading System'
+                className='dropdownIcon'
+                // value={ || {}}
+                // options={question_level_options || []}
+                options={gradingList || []}
+                getOptionLabel={(option) => option?.grading_system_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Grading System'
+                    placeholder='Grading System'
                   />
                 )}
               />
@@ -164,10 +232,9 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 );
               }}
             /> */}
-          </Grid>
-          {/* <Grid xs={12} sm={5}></Grid> */}
-          {/* <div></div> */}
-          {/* <Grid item xs={12} sm={4} className={"filterPadding"}>
+            {/* <Grid xs={12} sm={5}></Grid> */}
+            {/* <div></div> */}
+            {/* <Grid item xs={12} sm={4} className={"filterPadding"}>
             <TextField
               style={{ width: "100%" }}
               id="subname"
@@ -206,7 +273,7 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
             // }}
             />
           </Grid> */}
-          {/* <Grid item xs={12} sm={4} className={"filterPadding"}>
+            {/* <Grid item xs={12} sm={4} className={"filterPadding"}>
             <TextField
               style={{ width: "100%" }}
               id="subname"
@@ -245,79 +312,106 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
             // }}
             />
           </Grid> */}
-          <Grid
-            item
-            xs={12}
-            sm={2}
-            className={'filterPadding'}
-            style={{ paddingLeft: '0px !important' }}
-          >
-            <Button
-              startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-              variant='contained'
-              color='primary'
-              size='small'
-              style={{ color: 'white' }}
-              title='Create Sub-Component'
-              onClick={() => {
-                const subCompnentUniqueId = cuid();
-                const newComponent = [...subComponents, {
-                  id: subCompnentUniqueId,
-                  subComponentsID: '',
-                  columns: [],
-                }]
-                const newColumn = components[index];
-                newColumn.subComponents = newComponent;
-                setComponentDetails(
-                  components.map(columnDetail => {
-                    if (columnDetail.id === componentId) {
-                      return newColumn;
-                    }
-                    return columnDetail;
-                  })
-                );
-              }}
-            >
-              Add Term
-            </Button>
-          </Grid>
-          {subComponents.length !== 0 ? (
             <Grid
               item
               xs={12}
               sm={2}
+              md={3}
+              container
               className={'filterPadding'}
-              style={{ paddingLeft: '0px !important' }}
+              style={{ marginTop: '-10px' }}
+              // style={{ paddingLeft: '0px !important' }}
             >
-              <Button
-                startIcon={<RemoveIcon style={{ fontSize: '30px' }} />}
-                variant='contained'
-                color='primary'
-                size='small'
-                style={{ color: 'white' }}
-                title='Remove Sub-Component'
-                onClick={() => {
-                  const newColumn = components[index];
-                  const resultantSubComponents = [...subComponents];
-                  resultantSubComponents.pop()
-                  newColumn.subComponents = resultantSubComponents;
-                  setComponentDetails(
-                    components.map(columnDetail => {
-                      if (columnDetail.id === componentId) {
-                        return newColumn;
-                      }
-                      return columnDetail;
-                    })
-                  );
-                }}
-              > Delete Term
-              </Button>
-            </Grid>) : <></>}
+              <Grid item xs={12} md={6}>
+                <Grid xs={12} md={11}>
+                <Button
+                  startIcon={<AddOutlinedIcon />}
+                  variant='contained'
+                  color='primary'
+                  size='small'
+                  style={{ color: 'white', fontSize:'inherit' }}
+                  title='Create Sub-Component'
+                  onClick={() => {
+                    const subCompnentUniqueId = cuid();
+                    const newComponent = [
+                      ...subComponents,
+                      {
+                        id: subCompnentUniqueId,
+                        subComponentsID: '',
+                        columns: [],
+                      },
+                    ];
+                    const newColumn = components[index];
+                    newColumn.subComponents = newComponent;
+                    setComponentDetails(
+                      components.map((columnDetail) => {
+                        if (columnDetail.id === componentId) {
+                          return newColumn;
+                        }
+                        return columnDetail;
+                      })
+                    );
+                  }}
+                >
+                  Add Term
+                </Button>
+                </Grid>
+                
+              </Grid>
+              <Grid item xs={12} md={6}>
+                {subComponents.length !== 0 ? (
+                  // <Grid
+                  //   item
+                  //   xs={12}
+                  //   sm={2}
+                  //   md = {1.3}
+                  //   className={'filterPadding'}
+                  //   // style={{ paddingLeft: '0px !important' }}
+                  //   style={{marginTop:'-10px'}}
+
+                  // >
+                  <Button
+                    startIcon={<RemoveIcon />}
+                    variant='contained'
+                    color='primary'
+                    size='small'
+                    style={{ color: 'white', fontSize:'inherit'  }}
+                    title='Remove Sub-Component'
+                    onClick={() => {
+                      const newColumn = components[index];
+                      const resultantSubComponents = [...subComponents];
+                      resultantSubComponents.pop();
+                      newColumn.subComponents = resultantSubComponents;
+                      setComponentDetails(
+                        components.map((columnDetail) => {
+                          if (columnDetail.id === componentId) {
+                            return newColumn;
+                          }
+                          return columnDetail;
+                        })
+                      );
+                    }}
+                  >
+                    {' '}
+                    Delete Term
+                  </Button>
+                ) : (
+                  //  </Grid>
+                  <></>
+                )}
+              </Grid>
+            </Grid>
+          </Grid>
 
           {subComponents.map((subComponent) => (
-            <SubComponentCard key={subComponent.id} subComponentId={subComponent.id} componentId={componentId}
+            <SubComponentCard
+              key={subComponent.id}
+              subComponentId={subComponent.id}
+              componentId={componentId}
               components={components}
-              setComponentDetails={setComponentDetails} />
+              setComponentDetails={setComponentDetails}
+              // gradingId = {gradingId}
+            />
           ))}
         </Grid>
       </Paper>

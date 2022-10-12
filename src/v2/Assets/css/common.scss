@@ -4,7 +4,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 0px;
+  width: 5px;
   height: 6px;
 }
 
@@ -103,6 +103,9 @@ body {
 }
 .th-bg-yellow {
   background-color: #fffde8 !important;
+}
+.th-bg-pink {
+  background-color: #edecf8 !important;
 }
 
 #th-select {
@@ -313,4 +316,17 @@ body {
 }
 .th-upload-modal .ant-modal-close-x {
   color: #ffffff !important;
+}
+.slick-next:before,
+.slick-prev:before {
+  color: #1b4ccb !important;
+}
+.slick-prev.slick-disabled:before {
+  padding-left: 4px;
+}
+.slick-next {
+  right: -22px !important;
+}
+.slick-prev:before {
+  padding-left: 4px;
 }

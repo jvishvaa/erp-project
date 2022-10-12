@@ -34,6 +34,7 @@ import BranchWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attend
 import StaffAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/staffAttendance';
 import LessonPlan from 'v2/FaceLift/LessonPlan';
 import LessonPlanView from 'v2/FaceLift/LessonPlan/LessonPlanView';
+import StudentAttendanceDashboard from 'v2/FaceLift/StudentDashboard/StudentAttendanceDashboard';
 
 const V2Router = () => {
   useEffect(() => {
@@ -93,6 +94,9 @@ const V2Router = () => {
                             }
                           }}
                         </Route>
+                        <Route path='/student-attendance-dashboard'>
+                          {({ match }) => <StudentAttendanceDashboard match={match} />}
+                        </Route>
                         <Route path='/announcement-list'>
                           {({ match }) => <AnnouncementList match={match} />}
                         </Route>
@@ -129,20 +133,29 @@ const V2Router = () => {
                         <Route exact path='/report-config/create'>
                           {({ match }) => <CreateReportConfig match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/teacher-view/annual-plan'>
+                        <Route path='/lesson-plan/teacher-view/period-view/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/teacher-view/annual-plan/list-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view/period-view/list-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view/annual-plan/list-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/teacher-view/period-view'>
+                          {({ match }) => <LessonPlan match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/teacher-view/annual-plan'>
+                          {({ match }) => <LessonPlan match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view/period-view'>
+                          {({ match }) => <LessonPlan match={match} />}
                         </Route>
                         <Route path='/lesson-plan/student-view/annual-plan'>
-                          {({ match }) => <LessonPlanView match={match} />}
-                        </Route>
-                        <Route path='/lesson-plan/teacher-view'>
                           {({ match }) => <LessonPlan match={match} />}
-                        </Route>
-                        <Route path='/lesson-plan/student-view'>
-                          {({ match }) => <LessonPlan match={match} />}
-                        </Route>
-                        <Route path='/lesson-plan-module-view'>
-                          {({ match }) => <LessonPlanView match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

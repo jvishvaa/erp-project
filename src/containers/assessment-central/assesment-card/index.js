@@ -37,7 +37,8 @@ const AssesmentCard = ({
   handleClose,
   filteredAssesmentTests,
   isdisable,
-  filterbasedonsub
+  filterbasedonsub,
+  checkDel
 }) => {
   const themeContext = useTheme();
 
@@ -48,7 +49,7 @@ const AssesmentCard = ({
   const [open, setOpen] = useState(false);
   const isSuper =
     JSON.parse(localStorage.getItem("userDetails"))?.is_superuser || {};
-
+    console.log(checkDel);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -60,12 +61,12 @@ const AssesmentCard = ({
     setAnchorEl(null);
   };
   const handleDelete = async testId => {
-    const { results } = await deleteAssessmentTest(testId);
-    if (results.status_code === 200) {
+    const  results  = await deleteAssessmentTest(testId);
+    if (results?.status_code === 200) {
       setAlert("success", results?.message);
       filterResults(1); // 1 is the current page no.
     } else {
-      setAlert("error", results.error || results.message);
+      setAlert("error", results?.response?.data?.message);
     }
     handleMenuClose();
   };
@@ -85,7 +86,6 @@ const AssesmentCard = ({
     let getsectionname = value?.section_name.map((sec , i ) => {
       // var check = sec.split('')
       // console.log(check[ check?.length - 1 ]);
-      console.log(value?.section_name?.length , i);
       if(value?.section_name?.length - 1 == i )
       {
         sectionName +=  `${sec}`
@@ -119,7 +119,7 @@ const AssesmentCard = ({
           />
           // </Tooltip>
         }
-        {isSuper == true ? (
+        {checkDel == true ? (
           <div className="menu">
 
             <IconButton
