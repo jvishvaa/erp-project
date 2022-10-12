@@ -829,7 +829,7 @@ const PeriodListView = () => {
                                             : item?.completed_by_user_name}{' '}
                                           on{' '}
                                           {moment(item?.completed_at).format(
-                                            'YYYY/MM/DD'
+                                            'DD/MM/YYYY'
                                           )}
                                         </span>
                                       </div>

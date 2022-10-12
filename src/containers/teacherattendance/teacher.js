@@ -55,7 +55,7 @@ function EnhancedTableHead(props) {
         </TableCell>
         {!isStudent && (
           <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
-            User Level
+            User Role
           </TableCell>
         )}
         {isStudent && (
