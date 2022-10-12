@@ -470,14 +470,15 @@ const PeriodListView = () => {
         }
       });
     }
-    fetchVolumeListData();
   }, []);
   useEffect(() => {
-    if (history?.location?.state) {
+    if (history?.location?.state.showTab == '1') {
       formRef.current.setFieldsValue({
         volume: history?.location?.state?.volumeName,
         chapter: history?.location?.state?.chapterName,
       });
+      fetchVolumeListData();
+
       setGradeId(history?.location?.state?.gradeID);
       setGradeName(history?.location?.state?.gradeName);
       setSubjectId(history?.location?.state?.subjectID);
