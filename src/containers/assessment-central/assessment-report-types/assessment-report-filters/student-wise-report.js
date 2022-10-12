@@ -310,8 +310,8 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
               style={{ width: '100%' , height:'100px'}}
               value={teacherRemark}
               onChange={(e) => setTeacherRemark(e?.target?.value)}
-              maxLength= '250'
-              InputProps={{ inputProps: { min: 0, maxLength: 250 } }}
+              maxLength= '400'
+              InputProps={{ inputProps: { min: 0, maxLength: 400 } }}
 
             />
         </DialogContent>
