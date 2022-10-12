@@ -11,7 +11,6 @@ const LessonPlanView = (props) => {
   const history = useHistory();
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showTab, setShowTab] = useState();
-  console.log('showTab', showTab, history.location.state);
   const [volumeId, setVolumeId] = useState(history?.location?.state?.volumeID);
   const [volumeName, setVolumeName] = useState(history?.location?.state?.volumeName);
   let isStudent = window.location.pathname.includes('student-view');

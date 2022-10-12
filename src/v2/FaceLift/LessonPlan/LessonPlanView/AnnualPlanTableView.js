@@ -862,15 +862,15 @@ const TableView = (props) => {
                 <Panel
                   header={
                     <div className='row'>
-                      <div className='th-black-1 px-0 col-3 pl-0'>
+                      <div className='th-black-1 px-0 col-12 pl-0'>
                         <div className='row justify-content-between'>
                           <span className='th-fw-500'>{item.period_name} </span>
                           {/* <span>:&nbsp;</span> */}
                         </div>
                       </div>
-                      <div className='th-black-1 th-fw-600 col-9 px-0'>
-                        {/* {selectedKeyConcept.key_concept__topic_name} */}
-                      </div>
+                      {/* <div className='th-black-1 th-fw-600 col-9 px-0'>
+                        {selectedKeyConcept.key_concept__topic_name}
+                      </div> */}
                     </div>
                   }
                   key={i}
