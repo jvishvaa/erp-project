@@ -244,7 +244,7 @@ const StudentAttendanceDashboard = () => {
       title: <span className='th-white th-fw-700'>Date</span>,
       width: '80%',
       align: 'center',
-      render: (data) => <span className='th-black-1 th-16'>{data?.date}</span>,
+      render: (data) => <span className='th-black-1 th-16'>{moment(data?.date).format('DD-MM-YYYY')}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Status</span>,
@@ -259,10 +259,10 @@ const StudentAttendanceDashboard = () => {
               data === 'Holiday'
                 ? '#278ced'
                 : data === 'present'
-                ? '#09a23a'
-                : data === 'absent'
-                ? '#f8222f'
-                : '#404040',
+                  ? '#09a23a'
+                  : data === 'absent'
+                    ? '#f8222f'
+                    : '#404040',
           }}
         >
           {data}
@@ -307,10 +307,10 @@ const StudentAttendanceDashboard = () => {
                         attendanceData?.today_attendance === 'Holiday'
                           ? '#278ced'
                           : attendanceData?.today_attendance === 'present'
-                          ? '#09a23a'
-                          : attendanceData?.today_attendance === 'absent'
-                          ? '#f8222f'
-                          : '#c6c6c6',
+                            ? '#09a23a'
+                            : attendanceData?.today_attendance === 'absent'
+                              ? '#f8222f'
+                              : '#c6c6c6',
                     }}
                   >
                     <div className='row justify-content-between align-items-center'>

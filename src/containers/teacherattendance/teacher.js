@@ -96,13 +96,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
   title: {
     flex: '1 1 100%',
     fontWeight: 'bold',
@@ -287,7 +287,7 @@ export default function TeacherAttendance(props) {
           setBranchList(branches);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   const handleBranch = (event, value) => {
@@ -329,12 +329,15 @@ export default function TeacherAttendance(props) {
       const selectedId = value?.grade_id;
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
-      // callApi(
-      //   `${endpoints.academics.sections}?session_year=${
-      //     selectedAcademicYear?.id
-      //   }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
-      //   'section'
-      // );
+
+      if (window.location.pathname.includes('mark-student-attendance')) {
+        callApi(
+          `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+          }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
+          'section'
+        );
+      }
+
     } else {
       setSelectedGrade([]);
       setSectionList([]);
@@ -421,11 +424,26 @@ export default function TeacherAttendance(props) {
     setData([]);
     setRecordsData([]);
     setshowdata(false);
+    setGradeList([]);
+    setSelectedGrade([]);
+    setSelectedGradeIds('');
+    setSectionId([]);
+    setSectionList([]);
+    setSelectedSection([]);
+    setSelectedSectionIds('');
 
     if (window.location.pathname.includes('mark-student-attendance')) {
       setIsStudent(true);
       setRolesId(13);
       setIsStudentInRole(true);
+      if (selectedGradeIds) {
+        callApi(
+          `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+          }&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds?.toString()}&module_id=${moduleId}`,
+          'section'
+        )
+      }
+
     } else {
       setIsStudent(false);
       setIsStudentInRole(false);
@@ -436,6 +454,11 @@ export default function TeacherAttendance(props) {
 
   const getTeacherData = () => {
     setData([]);
+    if (window.location.pathname.includes('mark-student-attendance') && sectionId.length == 0) {
+      setAlert('warning', 'Please select all required fields');
+      return false;
+    }
+
     if (!selectedBranchIds || !selectedGradeIds || !rolesId) {
       setAlert('warning', 'Please select all required fields');
       return false;
@@ -443,7 +466,7 @@ export default function TeacherAttendance(props) {
       setLoading(true);
       const result = axiosInstance
         .get(
-          `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&session_year=${selectedAcademicYear?.id}&user_level=${rolesId}&date=${startDate}`
+          `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&session_year=${selectedAcademicYear?.id}&user_level=${rolesId}&date=${startDate}&section_id=${selectedSectionIds}`
         )
         .then((result) => {
           if (result.status === 200) {
@@ -516,7 +539,7 @@ export default function TeacherAttendance(props) {
         handleCloseSelect();
         setAttendanceDialog('');
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const handleRequestSort = (event, property) => {
@@ -688,22 +711,24 @@ export default function TeacherAttendance(props) {
                 )}
               />
             </Grid>
-            {/* <Grid item xs={12} md={2}>
-              <Autocomplete
-                id='combo-box-demo'
-                size='small'
-                multiple
-                limitTags={1}
-                options={sectionList || []}
-                onChange={handleSection}
-                value={selectedSection || []}
-                getOptionLabel={(option) => option?.section__section_name || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField {...params} label='Section' variant='outlined' required />
-                )}
-              />
-            </Grid> */}
+
+            {window.location.pathname.includes('mark-student-attendance') ?
+              <Grid item xs={12} md={2}>
+                <Autocomplete
+                  id='combo-box-demo'
+                  size='small'
+                  multiple
+                  limitTags={1}
+                  options={sectionList || []}
+                  onChange={handleSection}
+                  value={selectedSection || []}
+                  getOptionLabel={(option) => option?.section__section_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField {...params} label='Section' variant='outlined' required />
+                  )}
+                />
+              </Grid> : null}
 
             <Grid item md={2} xs={12}>
               <Button
@@ -729,7 +754,7 @@ export default function TeacherAttendance(props) {
                       checked={checkedSelect}
                       onChange={handleChangeSelect}
                       inputProps={{ 'aria-label': 'primary checkbox' }}
-                      className='ml-1'
+                      className='ml-3'
                     />
                     <p
                       style={{
@@ -776,7 +801,7 @@ export default function TeacherAttendance(props) {
                             // aria-checked={isItemSelected}
                             tabIndex={-1}
                             key={value?.name}
-                            // selected={isItemSelected}
+                          // selected={isItemSelected}
                           >
                             <TableCell align='left' style={{ width: '1px' }}>
                               {i + 1}
