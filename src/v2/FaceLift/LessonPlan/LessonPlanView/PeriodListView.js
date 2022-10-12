@@ -386,14 +386,16 @@ const PeriodListView = () => {
     }
   };
   const getSortedPeriodData = (data) => {
-    const conceptWisedata = data.reduce((initialValue, data) => {
-      let key = data?.key_concept__topic_name;
-      if (!initialValue[key]) {
-        initialValue[key] = [];
-      }
-      initialValue[key].push(data);
-      return initialValue;
-    }, {});
+    const conceptWisedata = data
+      .sort((a, b) => Number(a.key_concept__sequence) - Number(b.key_concept__sequence))
+      .reduce((initialValue, data) => {
+        let key = data?.key_concept__topic_name;
+        if (!initialValue[key]) {
+          initialValue[key] = [];
+        }
+        initialValue[key].push(data);
+        return initialValue;
+      }, {});
     const sortedConceptData = Object.keys(conceptWisedata).map((concept) => {
       return {
         concept,
