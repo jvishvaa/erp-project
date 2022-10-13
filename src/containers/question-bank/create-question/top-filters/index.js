@@ -351,25 +351,36 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   };
 
   const handleFilter = () => {
-    let filterObject = {
-      // Chapter: filterData?.chapter,
-      // Subject: filterData?.subject,
+    let filterObject = {};
+
+    if(filterData?.erp_category){
+     filterObject =  {
       Grade: filterData?.grade,
       Branch: filterData?.branch,
       Academic: filterData?.academic,
     };
-    if(filterData?.subject){
-      filterObject ={
-        ...filterObject,
-        Subject : filterData?.subject,
-      }
+    }else{
+      filterObject =  {
+        Chapter: filterData?.chapter,
+        Subject: filterData?.subject,
+        Grade: filterData?.grade,
+        Branch: filterData?.branch,
+        Academic: filterData?.academic,
+        
+      };
     }
-    if(filterData?.chapter){
-      filterObject ={
-        ...filterObject,
-        Chapter : filterData?.chapter,
-      }
-    }
+    // if(filterData?.subject){
+    //   filterObject ={
+    //     ...filterObject,
+    //     Subject : filterData?.subject,
+    //   }
+    // }
+    // if(filterData?.chapter){
+    //   filterObject ={
+    //     ...filterObject,
+    //     Chapter : filterData?.chapter,
+    //   }
+    // }
 
     if (filterData?.topic) {
       filterObject = {

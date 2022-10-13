@@ -552,6 +552,7 @@ const MultipleChoice = ({
       subject: filterDataTop?.subject?.subject_id,
       chapter: filterDataTop?.chapter?.id,
       topic: filterDataTop?.topic?.id,
+      category: filterDataTop?.erp_category?.erp_category_id
     };
   };
 
