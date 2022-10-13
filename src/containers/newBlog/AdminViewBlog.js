@@ -156,6 +156,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AdminViewBlog = () => {
+  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
@@ -389,7 +390,7 @@ const AdminViewBlog = () => {
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.unAssign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
+        `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -400,7 +401,7 @@ const AdminViewBlog = () => {
         if(response.status === 200){
           setTotalCountUnassign(response?.data?.total)
           setTotalPagesUnassign(response?.data?.page_size)
-          setCurrentPageUnassign(response?.data?.page + 1)
+          setCurrentPageUnassign(response?.data?.page)
           setLimitUnassign(Number(limitUnassign))
           setSearchFlag(false)
           setUnAssigneds(response?.data?.result);
@@ -416,7 +417,7 @@ const AdminViewBlog = () => {
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
+        `${endpoints.newBlog.Assign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -427,7 +428,7 @@ const AdminViewBlog = () => {
         if(response?.status == 200){
           setTotalCountAssigned(response?.data?.total)
           setTotalPagesAssigned(response?.data?.page_size)
-          setCurrentPageAssigned(response?.data?.page + 1)
+          setCurrentPageAssigned(response?.data?.page)
           setLimitAssigned(Number(limitAssigned))
           setSearchFlag(false)
           setAssigneds(response?.data?.result);
@@ -454,12 +455,13 @@ const AdminViewBlog = () => {
   };
 
   useEffect(() =>{
-    if(moduleId){
+    if(moduleId && branch_update_user){
       if(selectedAcademicYear?.id > 0)
+    var branchIds = branch_update_user?.branches?.map((item) => item?.id)
     setLoading(true)
     axios
     .get(
-      `${endpoints.newBlog.activityBranch}`,
+      `${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
       {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
@@ -617,6 +619,10 @@ const AdminViewBlog = () => {
     setCurrentPageUnassign(page);
   }
 
+  const createPushBlogWall = () => {
+    history.push('/blog/wall');
+  };
+
 
   return (
     <div>
@@ -646,7 +652,7 @@ const AdminViewBlog = () => {
 
         <Grid item xs={6} md={6} style={{display:'flex', justifyContent:'end', paddingRight:'20px'}}>
           
-            { user_level !== 11 && <Button
+            {(user_level !== 11 || user_level !== 10 || user_level !== 8 ) && <Button
               variant='contained'
               color='primary'
               size='medium'
@@ -655,7 +661,8 @@ const AdminViewBlog = () => {
               onClick={createPush}
             >
               Create Activity
-            </Button> } 
+            </Button> 
+            } 
           {/* &nbsp;&nbsp;
           <Button
             variant='outlined'
@@ -667,14 +674,15 @@ const AdminViewBlog = () => {
             Shortlisted Activity
           </Button>{' '} */}
           &nbsp;&nbsp;
-          {/* <Button
+          <Button
             variant='contained'
             style={{ backgroundColor: '#F7B519' }}
             color='primary'
             startIcon={<ForumIcon />}
+            onClick={createPushBlogWall}
           >
-            Activity Wall
-          </Button> */}
+            School Wall
+          </Button>
         </Grid>
       </Grid>
       <Grid container style={{ paddingTop: '25px', paddingLeft: '23px' }}>
@@ -766,7 +774,8 @@ const AdminViewBlog = () => {
             value={value}
           >
            
-            { user_level !== 11 && <Tab
+            {(user_level !== 11 || user_level !== 10 || user_level !== 8) && 
+            <Tab
             label='Unassigned'
             classes={{
               selected: classes.selected2,
@@ -786,7 +795,7 @@ const AdminViewBlog = () => {
         </Grid>
       </Grid>
 
-      {(value === 1 || (value === 0 && user_level ===11)) && (
+      {(value === 1 || (value === 0  && user_level === 11 || user_level === 10 || user_level=== 8)) && (
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
@@ -884,7 +893,7 @@ const AdminViewBlog = () => {
 
       {value === 0 &&
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
-          {user_level==11 ? "":
+          {(user_level==11 || user_level == 10 || user_level == 8) ? "":
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
           >
@@ -931,7 +940,7 @@ const AdminViewBlog = () => {
                         size='small'
                         className={classes.buttonColor2}
                         onClick={() => EditActivity(response)}
-                        disabled={user_level == 11}
+                        disabled={user_level == 11 || user_level == 10 || user_level == 8}
                       >
                         Edit
                       </Button>
@@ -941,7 +950,7 @@ const AdminViewBlog = () => {
                         size='small'
                         className={classes.buttonColor2}
                         onClick={() => assignIcon(response)}
-                        disabled={user_level == 11}
+                        disabled={user_level == 11 || user_level == 10 || user_level == 8}
                       >
                         Assign
                       </Button>
@@ -967,7 +976,7 @@ const AdminViewBlog = () => {
               rowsPerPage={limitUnassign}
               page={Number(currentPageUnassign) - 1}
               onChangePage={(e, page) => {
-              handlePaginationUnassign(e, page + 1);
+              handlePaginationUnassign(e, page);
               }}
               rowsPerPageOptions={false}
               className='table-pagination'

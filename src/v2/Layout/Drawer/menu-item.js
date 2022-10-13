@@ -617,6 +617,30 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/sure-learning-trainee-courses',
     },
     {
+      name: 'Create Activity',
+      Path: '/blog/create',
+    },
+    {
+      name: 'Blog Wall',
+      Path:'/blog/wall',
+    },
+    {
+      name: 'My Blogs',
+      Path: '/blog/wall/redirect',
+    },
+    {
+      name: 'Create Activity Type',
+      Path: '/blog/createactivitytype',
+    },
+    {
+      name: 'Blog',
+      Path: '/blog/activityreview',
+    },
+    {
+      name: 'Create Rating',
+      Path: '/blog/createratingtype',
+    },
+    {
       name: 'Assign Trainee',
       Path: '/sure-learning-assign-teacher',
     },

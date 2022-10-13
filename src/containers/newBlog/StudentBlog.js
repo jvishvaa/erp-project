@@ -186,7 +186,7 @@ const todayDate = moment();
             <Typography color='textPrimary' variant='h6'>
               <strong>Student Blog</strong>
             </Typography>
-            <Typography color='Primary'>Write Blog</Typography>
+            <Typography  style={{fontSize:'22px', fontWeight:'bold', color:'black'}}>Write Blog</Typography>
           </Breadcrumbs>
         </Grid>
       </Grid>

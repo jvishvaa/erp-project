@@ -364,8 +364,9 @@ const Reviewed = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <div style={{ width: '100%', marginTop: '72px' }}>
-          <div style={{ fontSize: '24px' }}>
+          <div style={{ fontSize: '24px', display:'flex', justifyContent:'space-between' }}>
             <strong>Preview</strong>
+            <strong  onClick={handleCloseViewMore} style={{marginRight:'10px', cursor:'pointer'}}>x</strong>
           </div>
           <Divider />
 
@@ -375,7 +376,7 @@ const Reviewed = (props) => {
                 style={{
                   border: '1px solid #813032',
                   width: '583px',
-                  background: '#47B8CF',
+                  // background: '#47B8CF',
                   height: 'auto',
                 }}
               >
