@@ -136,7 +136,7 @@ export const deleteAssessmentTest = async (id) => {
       `${endpoints.assessmentErp.deleteAssessmentTest}${id}/test/`
     );
     if (response.data.status_code === 200) {
-      return { results: response.data };
+      return response.data ;
     }
     // throw new Error();
   } 

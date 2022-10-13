@@ -80,6 +80,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [redFlag,setRedflag] = useState(false);
   const [isVisible,setIsVisible] = useState([])
   const [checkbox,setCheckbox] = useState(false);
+  const [erpCategory , setErpCategory] = useState()
 
   const addQuestionToPaper = (question, questionId, section) => {
     initAddQuestionToSection(question, questionId, section);
@@ -144,8 +145,9 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabChapterId(chapterObj);
     setTabIsErpCentral(isErpCentral);
     setTabValue(newValue);
+    setErpCategory(erp_category)
     let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
-    requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;
+    requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;  
     if (subjMapId) {
       requestUrl += `&subject=${subjMapId}`;
     }
@@ -202,7 +204,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
 
   useEffect(() => {
     if (
-      tabMapId &&
+      // tabMapId &&
       tabYearId &&
       tabGradeId &&
       tabIsErpCentral&& page
@@ -220,7 +222,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
         tabGradeId,
         tabChapterId,
         tabIsErpCentral,
-        tabValue
+        tabValue,
+        erpCategory
       );
     }
   }, [page, tabValue, callFlag]);

@@ -182,6 +182,8 @@ export const aolLogin = (token) => (dispatch) => {
           'navigationData',
           JSON.stringify(response.data.result.navigation_data)
         );
+        dispatch(selectedVersion(response.data?.result?.is_v2_enabled));
+        localStorage.setItem('isV2', response.data?.result?.is_v2_enabled);
         const result = { isLogin: true, message: response.data.message };
         return result;
       }
