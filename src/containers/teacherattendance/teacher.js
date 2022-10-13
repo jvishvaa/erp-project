@@ -96,13 +96,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
   title: {
     flex: '1 1 100%',
     fontWeight: 'bold',
@@ -209,7 +209,7 @@ export default function TeacherAttendance(props) {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [branchList, setBranchList] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
@@ -245,6 +245,7 @@ export default function TeacherAttendance(props) {
   };
 
   useEffect(() => {
+    setSelectedBranch('');
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -256,7 +257,7 @@ export default function TeacherAttendance(props) {
             if (item.child_name === 'Mark Student Attendance') {
               setModuleId(item.child_id);
 
-              if (user_level === 11 && item.child_id) {
+              if (user_level == 11 && item.child_id) {
                 let selectedId = userData?.role_details?.branch[0]?.id;
                 setSelectedBranch(userData?.role_details?.branch[0]);
                 setSelectedBranchIds(selectedId);
@@ -287,7 +288,7 @@ export default function TeacherAttendance(props) {
           setBranchList(branches);
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   const handleBranch = (event, value) => {
@@ -332,12 +333,12 @@ export default function TeacherAttendance(props) {
 
       if (window.location.pathname.includes('mark-student-attendance')) {
         callApi(
-          `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+          `${endpoints.academics.sections}?session_year=${
+            selectedAcademicYear?.id
           }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
           'section'
         );
       }
-
     } else {
       setSelectedGrade([]);
       setSectionList([]);
@@ -438,12 +439,12 @@ export default function TeacherAttendance(props) {
       setIsStudentInRole(true);
       if (selectedGradeIds) {
         callApi(
-          `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+          `${endpoints.academics.sections}?session_year=${
+            selectedAcademicYear?.id
           }&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds?.toString()}&module_id=${moduleId}`,
           'section'
-        )
+        );
       }
-
     } else {
       setIsStudent(false);
       setIsStudentInRole(false);
@@ -454,7 +455,10 @@ export default function TeacherAttendance(props) {
 
   const getTeacherData = () => {
     setData([]);
-    if (window.location.pathname.includes('mark-student-attendance') && sectionId.length == 0) {
+    if (
+      window.location.pathname.includes('mark-student-attendance') &&
+      sectionId.length == 0
+    ) {
       setAlert('warning', 'Please select all required fields');
       return false;
     }
@@ -484,31 +488,28 @@ export default function TeacherAttendance(props) {
   };
 
   const getReportData = () => {
+    let url = '';
+    if (sectionId.length > 0) {
+      url = `${endpoints.academics.dataupdate}?date=${startDate}&user_level=${rolesId}&section_mapping_id=${selectedallsecctionmappingId}`;
+    } else {
+      url = `${endpoints.academics.dataupdate}?date=${startDate}&user_level=${rolesId}&grade_id=${selectedGradeIds}&branch_id=${selectedBranchIds}&session_year_id=${selectedAcademicYear?.id}`;
+    }
     const result = axiosInstance
-      .get(
-        `${endpoints.academics.dataupdate}?date=${startDate}&user_level=${rolesId}&section_mapping_id=${selectedallsecctionmappingId}`
-      )
+      .get(url)
       .then((result) => {
         if (result.status === 200) {
           let present;
           let absent;
-          let flag1 = 0;
-          let flag2 = 0;
-
-          let a = result?.data?.result?.map((item) => {
-            if (item.attendence_status === 'present') {
-              present = item.count;
-              flag1 = 1;
-            } else {
-              absent = item.count;
-              flag2 = 1;
-            }
-          });
-          if (!flag1) {
-            present = 0;
-          } else if (!flag2) {
-            absent = 0;
-          }
+          present = result?.data?.result
+            ?.filter((item) => item.attendence_status !== 'absent')
+            .reduce((accumulator, item) => {
+              return accumulator + item.count;
+            }, 0);
+          absent = result?.data?.result
+            ?.filter((item) => item.attendence_status == 'absent')
+            .reduce((accumulator, item) => {
+              return accumulator + item.count;
+            }, 0);
           setAbsent(absent);
           setPresent(present);
         }
@@ -527,11 +528,18 @@ export default function TeacherAttendance(props) {
     let arrSec = [];
     arrSec.push(sectionId.map((ele) => ele));
     const payload = {
-      section_mapping_id: arrSec[0].toString(),
+      // section_mapping_id: arrSec[0].toString(),
       user_level: rolesId,
       date: startDate,
       attendance_status: attendanceDialog,
     };
+    if (sectionId.length > 0) {
+      payload['section_mapping_id'] = arrSec[0].toString();
+    } else {
+      payload['grade_id'] = selectedGradeIds;
+      payload['branch_id'] = selectedBranchIds;
+      payload['session_year_id'] = selectedAcademicYear?.id;
+    }
     axiosInstance
       .post(`${endpoints.academics.markAllAttendance}`, payload)
       .then((result) => {
@@ -539,7 +547,7 @@ export default function TeacherAttendance(props) {
         handleCloseSelect();
         setAttendanceDialog('');
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
 
   const handleRequestSort = (event, property) => {
@@ -712,7 +720,7 @@ export default function TeacherAttendance(props) {
               />
             </Grid>
 
-            {window.location.pathname.includes('mark-student-attendance') ?
+            {window.location.pathname.includes('mark-student-attendance') ? (
               <Grid item xs={12} md={2}>
                 <Autocomplete
                   id='combo-box-demo'
@@ -728,7 +736,8 @@ export default function TeacherAttendance(props) {
                     <TextField {...params} label='Section' variant='outlined' required />
                   )}
                 />
-              </Grid> : null}
+              </Grid>
+            ) : null}
 
             <Grid item md={2} xs={12}>
               <Button
@@ -801,7 +810,7 @@ export default function TeacherAttendance(props) {
                             // aria-checked={isItemSelected}
                             tabIndex={-1}
                             key={value?.name}
-                          // selected={isItemSelected}
+                            // selected={isItemSelected}
                           >
                             <TableCell align='left' style={{ width: '1px' }}>
                               {i + 1}
