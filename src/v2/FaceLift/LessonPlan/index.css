@@ -28,6 +28,9 @@
 .th-collapse .ant-collapse-icon-position-end > .ant-collapse-item > .ant-collapse-header {
   padding-right: 0px !important;
 }
+.th-collapse .ant-collapse-item {
+  border-bottom: 0px solid transparent !important;
+}
 
 .th-resources-drawer .ant-drawer-body {
   padding: 12px !important;
@@ -40,14 +43,33 @@
   background-color: #f8f8f8 !important;
   border-bottom: 2px solid #d9d9d9 !important;
 }
-/* .th-row:hover {
-  background-color: rgba(240, 245, 243, 0.311) !important;
-  background-blend-mode: darken;
-  text-decoration: underline !important;
-} */
+
 .volume-card:hover {
-  border: 1px solid #1b4ccb !important;
+  border: 1px outset #1b4ccb !important;
 }
 .th-icon .anticon-eye > svg {
   vertical-align: baseline !important;
+}
+.th-button {
+  border: 1px solid #1b4ccb !important;
+  color: #1b4ccb !important;
+}
+.th-button:hover {
+  background: rgba(235, 223, 223, 0.4) !important;
+}
+.th-button-active {
+  background: #1b4ccb !important;
+  color: #ffffff !important;
+}
+.th-divider .ant-divider-horizontal.ant-divider-with-text::after {
+  transform: translateY(0%);
+}
+.period-card {
+  border: 1px solid transparent !important;
+}
+.period-card:hover {
+  border: 1px solid #1b4ccb !important;
+}
+.th-divider .ant-divider-horizontal.ant-divider-with-text {
+  margin: 5px 0px !important;
 }

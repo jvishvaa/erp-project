@@ -461,7 +461,6 @@ const AdminCreateBlog = () => {
     ':' +
     formatdate.getSeconds();
   const dataPost = () => {
-    debugger
     const branchIds = selectedBranch.map((obj) => obj?.id);
     const gradeIds = selectedGrade.map((obj) => obj?.id);
     const sectionIds = selectedSection.map((obj) => obj?.id);

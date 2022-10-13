@@ -227,16 +227,28 @@ const CreateQuestion = () => {
         {isFilter ? (
           <Paper className={classes.root}>
             <div className={classes.filterDataHeader}>
+              {filterDataDisplay?.grade?.grade_name ? (
               <div className='divfilterData'>
                 {filterDataDisplay?.grade?.grade__grade_name}
               </div>
+
+              ) : ''}
+              {filterDataDisplay?.subject?.subject_name ? (
               <div className='divfilterData'>
                 {filterDataDisplay?.subject?.subject_name}
               </div>
+
+              ) : ''}
+              {filterDataDisplay?.chapter?.chapter_name ? (
+
               <div className='divfilterData'>
                 {filterDataDisplay?.chapter?.chapter_name}
               </div>
-              <div className='divfilterData'>{filterDataDisplay?.topic?.topic_name}</div>
+              ) : ''}
+              {filterDataDisplay?.topic?.topic_name ? (
+                <div className='divfilterData'>{filterDataDisplay?.topic?.topic_name}</div>
+
+              ): ''}
             </div>
             <QuestionTypeFilters
               editData={editData}

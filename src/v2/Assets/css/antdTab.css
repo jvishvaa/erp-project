@@ -71,6 +71,12 @@
   /* border-top-left-radius: 4px; */
   /* border-top-right-radius: 4px; */
 }
+.th-tabs .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab {
+  border-top: 4px solid transparent !important;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom: 0px !important;
+}
 
 .th-tabs .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab-active {
   border-color: #eeeeee;
@@ -79,6 +85,7 @@
   border-top: 4px solid #1b4ccb !important;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+  border-bottom: 0px !important;
 }
 
 .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab {
@@ -132,3 +139,6 @@
   background-color: yellow !important;
 
 } */
+.th-tabs .ant-tabs-nav-wrap {
+  background: #f8f8f8 !important;
+}
