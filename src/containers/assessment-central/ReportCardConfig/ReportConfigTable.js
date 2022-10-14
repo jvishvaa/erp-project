@@ -335,8 +335,8 @@ const ReportConfigTable = () => {
           if(selectedbranch?.length && selectedGrade){
             FilterData();
           }else{
-            TotalData()
-          }          setLoading(false);
+            // TotalData()
+          }setLoading(false);
         }else{
           setAlert('error', res?.data?.message || 'Deletion Failed')
           setLoading(false);
@@ -363,11 +363,12 @@ const ReportConfigTable = () => {
       .then((res) => {
         if(res?.data?.status_code == 200 || res?.status == 200){
         setAlert('success', res?.data?.message || 'Updated Successfully')
-        if(selectedbranch?.length && selectedGrade){
-          FilterData();
-        }else{
-          TotalData()
-        }
+        // if(selectedbranch?.length && selectedGrade){
+        //   FilterData();
+        // }else{
+        //   TotalData()
+        // }
+        FilterData()
         setLoading(false);
         }else{
           setAlert('error', res?.data?.message || 'Updation Failed')
@@ -386,25 +387,25 @@ const ReportConfigTable = () => {
     
   };
 
-  const TotalData = () => {
-    setLoading(true);
-    let url = `${endpoints.questionBank.reportConfig}?acad_session=${selectedDefaultBranch?.id}`;
-    axiosInstance
-      .get(url)
-      .then((res) => {
-        if (res?.data) {
-          setConfigData(res?.data?.result);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  };
-  useEffect(() => {
-    TotalData();
-  }, []);
+  // const TotalData = () => {
+  //   setLoading(true);
+  //   let url = `${endpoints.questionBank.reportConfig}?acad_session=${selectedDefaultBranch?.id}`;
+  //   axiosInstance
+  //     .get(url)
+  //     .then((res) => {
+  //       if (res?.data) {
+  //         setConfigData(res?.data?.result);
+  //         setLoading(false);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setLoading(false);
+  //     });
+  // };
+  // useEffect(() => {
+  //   TotalData();
+  // }, []);
 
   const handleCreate = () => {
     history.push('/report-config/create');
