@@ -5,6 +5,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import Loader from '../../components/loader/loader';
 
 import axios from 'axios';
 
@@ -190,6 +191,7 @@ const RatingCreate = () => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [accordianBulkFilter, setAccordianBulkFilter] = useState(false);
   const [creativityType, setCreativityType] = useState('');
+  const [loading,setLoading] = useState(false)
 
   const [score1, setScore1] = useState('');
   const [creativity, setCreativity] = useState('');
@@ -331,12 +333,22 @@ const RatingCreate = () => {
   const [ActivityType, setActivityType] = useState();
 
   const handleActivityTypeSubmit = () => {
+    if(!ActivityType?.name){
+      setAlert('error', 'Please Enter Activity Type')
+      return;
+    }
+    const uniqueValues = new Set(inputList.map((e) => e.name));
+    if (uniqueValues.size < inputList.length) {
+      setAlert('error', 'Duplicate Name Found');
+      return
+    }
     let body = {
       activity_type: ActivityType?.name,
       grading_scheme:
         // name: scoreType,
         inputList,
     };
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activityTypeSubmit}`,
@@ -350,24 +362,29 @@ const RatingCreate = () => {
       .then((response) => {
         console.log(response);
         // alert.success('activity successfully created');
+        setLoading(false)
         setAlert('success', 'Rating and Score Successfully Created');
-
         setActivityType('');
         handleClose();
         getActivityCategory();
+      })
+      .catch((error) => {
+        setLoading(false)
       });
   };
 
   const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
+    setLoading(true)
     axios
       .get(`${endpoints.newBlog.getActivityType}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
-      .then((response) => {
+      .then((response) => { 
         setActivityCategory(response.data.result);
+        setLoading(false)
       });
   };
   useEffect(() => {
@@ -432,6 +449,9 @@ const RatingCreate = () => {
      setSearch(value)
   } 
   return (
+    <div>
+      {loading && <Loader/>}
+
     <Layout>
       <Grid
         container
@@ -481,6 +501,7 @@ const RatingCreate = () => {
                   variant='outlined'
                   label='Activity Type'
                   placeholder='Activity Type'
+                  required
                 />
               )}
             />
@@ -627,6 +648,7 @@ const RatingCreate = () => {
                   variant='outlined'
                   label='Activity Type'
                   placeholder='Activity Type'
+                  required
                 />
               )}
             />
@@ -704,6 +726,7 @@ const RatingCreate = () => {
         </div>
       </Dialog>
     </Layout>
+    </div>
   );
 };
 export default RatingCreate;

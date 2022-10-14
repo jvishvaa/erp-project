@@ -46,9 +46,24 @@ import Rating from '@material-ui/lab/Rating';
 import axios from 'axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
+import Loader from 'components/loader/loader';
 
 
 const drawerWidth = 350;
+
+const StyledRating = withStyles((theme) => ({
+  iconFilled: {
+    color: 'yellow',
+  },
+  root: {
+    '& .MuiSvgIcon-root': {
+      color: 'currentColor',
+    },
+  },
+  iconHover: {
+    color: 'yellow',
+  },
+}))(Rating);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -130,7 +145,7 @@ const Shortlisted_1 = (props) => {
   const [totalPages,setTotalPages] = useState(0);
   const [limit,setLimit] = useState(10);
   const [isClicked, setIsClicked] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   const [desc, setDesc] = useState('');
 
@@ -157,6 +172,7 @@ const Shortlisted_1 = (props) => {
   }, [moduleId]);
 
   function getBranch(acadId) {
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`)
       .then((result) => {
@@ -168,6 +184,7 @@ const Shortlisted_1 = (props) => {
             };
           });
         }
+        setLoading(false);
       })
       .catch((error) => {});
   }
@@ -200,6 +217,7 @@ const Shortlisted_1 = (props) => {
   };
 
   function getGrade(acadId, branchId) {
+    setLoading(true)
     axiosInstance
       .get(
         `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
@@ -213,6 +231,7 @@ const Shortlisted_1 = (props) => {
             };
           });
         }
+        setLoading(false)
       })
       .catch((error) => {});
   }
@@ -285,12 +304,14 @@ const Shortlisted_1 = (props) => {
   };
 
   function callApi(api, key) {
+    setLoading(true)
     axiosInstance
       .get(api)
       .then((result) => {
         if (result.status === 200) {
           if (key === 'gradeList') {
             setGradeList(result.data.data || []);
+            setLoading(false)
           }
           if (key === 'section') {
             const selectAllObject = {
@@ -302,12 +323,15 @@ const Shortlisted_1 = (props) => {
             };
             const data = [selectAllObject, ...result?.data?.data];
             setSectionList(data);
+            setLoading(false)
           }
         } else {
+          setLoading(false)
           console.log('error', result.data.message);
         }
       })
       .catch((error) => {
+        setLoading(false)
         console.log(error);
       });
   }
@@ -400,6 +424,7 @@ const Shortlisted_1 = (props) => {
   };
   const getTotalSubmitted = () => {
     if(props){
+      setLoading(true)
       const branchIds = props.selectedBranch.map((obj) => obj.id);
       const gradeIds = props.selectedGrade?.id
   
@@ -421,6 +446,7 @@ const Shortlisted_1 = (props) => {
           setLimit(Number(limit))
           setAlert('success', response?.data?.message)
           setTotalSubmitted(response?.data?.result);
+          setLoading(false)
         });
 
     }
@@ -444,7 +470,9 @@ const Shortlisted_1 = (props) => {
     setCurrentPage(page);
   }
 
-  return (<>
+  return (
+  <>
+  {loading && <Loader/>}
     <Grid
         container
         style={{
@@ -511,11 +539,14 @@ const Shortlisted_1 = (props) => {
                   {' '}
                   <Box component='fieldset' mb={3} borderColor='transparent'>
                   
-                    <RatingScale
+                    <StyledRating
                             name={`rating${index}`}
                             size='small'
                             readOnly
-                            rating={response?.user_reviews?.given_rating}
+                            precision={0.5}
+                            // rating={response?.user_reviews?.given_rating}
+                            defaultValue={response?.user_reviews?.given_rating}
+                            max={parseInt(response?.user_reviews?.level?.rating)}
                             // defaultValue={props.defaultValue}
                            
                             
