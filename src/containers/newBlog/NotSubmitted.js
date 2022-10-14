@@ -14,6 +14,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
+import Loader from 'components/loader/loader';
 
 
 const useStyles = makeStyles({
@@ -99,6 +100,7 @@ const NotSubmitted = (props) => {
   const [totalPages,setTotalPages] = useState(0);
   const [limit,setLimit] = useState(10);
   const [isClicked, setIsClicked] = useState(false);
+  const [loading,setLoading] = useState(false);
 
   const classes = useStyles();
 
@@ -108,6 +110,7 @@ const NotSubmitted = (props) => {
 
   const getTotalSubmitted = () => {
     if(props){
+      setLoading(true)
       const branchIds = props.selectedBranch.map((obj) => obj.id);
       const gradeIds = props.selectedGrade?.id;
       axios
@@ -127,6 +130,7 @@ const NotSubmitted = (props) => {
           setLimit(Number(limit))
           setAlert('success', response?.data?.message)
           setTotalSubmitted(response?.data?.result);
+          setLoading(false)
         });
 
     }
@@ -181,7 +185,8 @@ const NotSubmitted = (props) => {
     //     </TableBody>
     //   </Table>
     // </TableContainer>
-
+    <div>
+      {loading && <Loader/>}
     <Paper className={`${classes.root} common-table`} id='singleStudent'>
       <TableContainer
         className={`table table-shadow view_users_table ${classes.container}`}
@@ -237,6 +242,9 @@ const NotSubmitted = (props) => {
         />
       </TableContainer>
     </Paper>
+
+    </div>
+
   );
 };
 

@@ -43,10 +43,6 @@ import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
 import Carousel from "react-elastic-carousel";
-
-
-
-
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -187,7 +183,6 @@ const AdminCreateBlog = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-
   const handleEditorChange = (content, editor) => {
     setDesc(content);
   };
@@ -261,6 +256,7 @@ const AdminCreateBlog = () => {
   // `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
 
   const fetchBranches = () => {
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.newBlog.activityBranch}`, {
         headers: {
@@ -269,6 +265,7 @@ const AdminCreateBlog = () => {
       })
       .then((res) => {
         console.log('res', res);
+        setLoading(false)
         if (res?.data) {
           const transformedData = res?.data?.result?.map((obj) => ({
             id: obj.id,
@@ -280,6 +277,7 @@ const AdminCreateBlog = () => {
           });
           console.log(transformedData, 'branchdata');
           setBranchList(transformedData);
+          setLoading(false)
         }
       });
     // })
@@ -290,6 +288,7 @@ const AdminCreateBlog = () => {
   const fetchGrades = (value) => {
     const ids = value.map((el) => el.id) || [];
     // setGradeIds(ids);
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.newBlog.activityGrade}?branch_ids=${ids}`, {
         headers: {
@@ -297,8 +296,10 @@ const AdminCreateBlog = () => {
         },
       })
       .then((res) => {
+        setLoading(false)
         console.log(res, 'result');
         if (res) {
+          setLoading(false)
           const gradeData = res?.data?.result || [];
           for (let i = 0; i < gradeData?.length; i++) {
             allGradeIds.push(gradeData[i].id);
@@ -326,6 +327,7 @@ const AdminCreateBlog = () => {
 
   const fetchSections = (value) => {
     const ids = value.map((el) => el.id) || [];
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.newBlog.activitySection}?grade_ids=${ids}`, {
         headers: {
@@ -333,6 +335,7 @@ const AdminCreateBlog = () => {
         },
       })
       .then((result) => {
+        setLoading(false)
         console.log(result, 'section');
         if (result.data) {
           const gradeData = result?.data?.result || [];
@@ -423,6 +426,7 @@ const AdminCreateBlog = () => {
     setSelectedFile(null);
   };
   const ActvityLocalStorage = () => {
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activityWebLogin}`,
@@ -441,6 +445,7 @@ const AdminCreateBlog = () => {
           'ActivityManagement',
           JSON.stringify(response?.data?.result)
         );
+        setLoading(false);
       });
   };
   const handleClear = () => {
@@ -461,40 +466,43 @@ const AdminCreateBlog = () => {
     ':' +
     formatdate.getSeconds();
   const dataPost = () => {
+    setLoading(true)
     const branchIds = selectedBranch.map((obj) => obj?.id);
     const gradeIds = selectedGrade.map((obj) => obj?.id);
     const sectionIds = selectedSection.map((obj) => obj?.id);
     // setLoading(true);
     if(!startDate){
-      setLoading(false);
+      setLoading(false)
       setAlert('error', 'Please Select The Date')
       return;
     }
     if(activityName.length === 0){
+      setLoading(false)
       setAlert('error', 'Please Add Activity Name')
       return;
     }
     if(branchIds?.length === 0){
+      setLoading(false)
       setAlert('error', 'Please Select Branch')
       return
     }
     if(gradeIds?.length === 0) {
-      setLoading(false);
+      setLoading(false)
       setAlert('error', 'Please Select Grade')
       return;
     }
     if(sectionIds?.length === 0) {
-      setLoading(false);
+      setLoading(false)
       setAlert('error', 'Please Select Section')
       return;
     }
     if(title.length === 0){
-      setLoading(false);
+      setLoading(false)
       setAlert('error', 'Please Add Title')
       return;
     }
     if(!description){
-      setLoading(false);
+      setLoading(false)
       setAlert('error', 'Please Add Description')
       return;
     }
@@ -505,7 +513,6 @@ const AdminCreateBlog = () => {
       return;
     }
     else{
-      setLoading(false);
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
@@ -530,6 +537,7 @@ const AdminCreateBlog = () => {
           },
         })
         .then((response) => {
+          setLoading(false);
           setAlert('success', 'Activity Successfully Created');
           setLoading(false);
           setSelectedGrade([]);
@@ -556,6 +564,7 @@ const AdminCreateBlog = () => {
 
   const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
+    setLoading(true)
     axios
       .get(`${endpoints.newBlog.getActivityType}`, {
         headers: {
@@ -563,6 +572,7 @@ const AdminCreateBlog = () => {
         },
       })
       .then((response) => {
+        setLoading(false)
         setActivityCategory(response.data.result);
         ActvityLocalStorage();
       });
@@ -573,6 +583,7 @@ const AdminCreateBlog = () => {
 
   const [activityStorage, setActivityStorage] = useState([]);
   const getActivitySession = () => {
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activitySessionLogin}`,
@@ -593,6 +604,7 @@ const AdminCreateBlog = () => {
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
+        setLoading(false)
       });
   };
   const goBack = () => {
@@ -614,6 +626,7 @@ const AdminCreateBlog = () => {
 
   const getTemplate = (data) => {
     if(data){
+      setLoading(true)
       axios
         .get(`${endpoints.newBlog.getTemplates}${data}/`, {
           headers: {
@@ -621,9 +634,9 @@ const AdminCreateBlog = () => {
           },
         })
         .then((response) => {
-  
           // console.log(response?.data?.result, 'session');
           setTemplates(response?.data?.result);
+          setLoading(false)
        
         });
 
@@ -663,6 +676,9 @@ const AdminCreateBlog = () => {
   
 
   return (
+    <div>
+
+      {loading && <Loader/>}
     <Layout>
             {loading && <Loader />}
 
@@ -721,7 +737,7 @@ const AdminCreateBlog = () => {
           }}
         >
           <div style={{ display: 'flex' }}>
-            Activity Category :
+            Activity Category * :
             <Autocomplete
               style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
               size='small'
@@ -754,7 +770,7 @@ const AdminCreateBlog = () => {
           </div>
           <div>
             {' '}
-            Submission End Date: &nbsp;&nbsp;&nbsp;
+            Submission End Date *: &nbsp;&nbsp;&nbsp;
             <TextField
               required
               size='small'
@@ -872,7 +888,7 @@ const AdminCreateBlog = () => {
           }}
         >
           <div style={{ marginTop: '23px', marginLeft: '73px', display: 'flex' }}>
-            Activity Details: &nbsp;&nbsp;&nbsp;&nbsp;
+            Activity Details *: &nbsp;&nbsp;&nbsp;&nbsp;
             <TextField
               id='outlined-basic'
               size='small'
@@ -880,7 +896,7 @@ const AdminCreateBlog = () => {
               value={title}
               onChange={handleTitle}
               style={{ maxWidth: '80%' }}
-              label='Title'
+              label='Title *'
               variant='outlined'
             />
           </div>
@@ -900,8 +916,8 @@ const AdminCreateBlog = () => {
             /> */}
 
             <TextField
-              label='Description/Instructions'
-              placeholder='Description/Instructions'
+              label='Description/Instructions *'
+              placeholder='Description/Instructions *'
               multiline
               value={description}
               onChange={handleDescription}
@@ -1090,6 +1106,8 @@ const AdminCreateBlog = () => {
         </div>
       </Dialog>
     </Layout>
+
+    </div>
   );
 };
 export default AdminCreateBlog;

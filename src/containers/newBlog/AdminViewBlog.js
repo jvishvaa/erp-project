@@ -5,6 +5,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
+import Loader from '../../components/loader/loader';
 
 import {
   IconButton,
@@ -190,6 +191,7 @@ const AdminViewBlog = () => {
   const [limitAssigned,setLimitAssigned] = useState(10);
   const [isClickedAssigned, setIsClickedAssigned] = useState(false);
   const [searchFlag,setSearchFlag] = useState(false)
+  const [loading,setLoading] = useState(false);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -203,6 +205,7 @@ const AdminViewBlog = () => {
   );
 
   useEffect(() => {
+    setLoading(true)
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -218,6 +221,7 @@ const AdminViewBlog = () => {
             ) {
               setModuleId(item.child_id);
               localStorage.setItem('moduleId', item.child_id);
+              setLoading(false)
             }
             // if (
             //   item.child_name === 'Create Rating' 
@@ -363,7 +367,7 @@ const AdminViewBlog = () => {
       is_draft: false,
       issue_date: todayDate.format().slice(0, 19),
     };
-
+    setLoading(true)
     axios
       .put(`${endpoints.newBlog.confirmAssign}${userId}/`, body, {
         headers: {
@@ -373,16 +377,16 @@ const AdminViewBlog = () => {
       .then((response) => {
         setAssigned(false);
         setAlert('success', 'Activity Successfully Assign');
-
         getUnAssinged();
         getAssinged();
+        setLoading(false)
       });
   };
 
   const [unassingeds, setUnAssigneds] = useState([]);
   const getUnAssinged = () => {
     const branchIds = selectedBranch.map((obj) => obj.id);
-
+    setLoading(true)
     axios
       .get(
         `${endpoints.newBlog.unAssign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
@@ -393,18 +397,23 @@ const AdminViewBlog = () => {
         }
       )
       .then((response) => {
-        setTotalCountUnassign(response?.data?.total)
-        setTotalPagesUnassign(response?.data?.page_size)
-        setCurrentPageUnassign(response?.data?.page + 1)
-        setLimitUnassign(Number(limitUnassign))
-        setSearchFlag(false)
-        setUnAssigneds(response?.data?.result);
+        if(response.status === 200){
+          setTotalCountUnassign(response?.data?.total)
+          setTotalPagesUnassign(response?.data?.page_size)
+          setCurrentPageUnassign(response?.data?.page + 1)
+          setLimitUnassign(Number(limitUnassign))
+          setSearchFlag(false)
+          setUnAssigneds(response?.data?.result);
+          setLoading(false)
+        } else{
+          setLoading(false)
+        }
       });
   };
   const [assingeds, setAssigneds] = useState([]);
   const getAssinged = () => {
     const branchIds = selectedBranch.map((obj) => obj.id);
-
+    setLoading(true)
     axios
       .get(
         `${endpoints.newBlog.Assign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
@@ -415,12 +424,19 @@ const AdminViewBlog = () => {
         }
       )
       .then((response) => {
-        setTotalCountAssigned(response?.data?.total)
-        setTotalPagesAssigned(response?.data?.page_size)
-        setCurrentPageAssigned(response?.data?.page + 1)
-        setLimitAssigned(Number(limitAssigned))
-        setSearchFlag(false)
-        setAssigneds(response?.data?.result);
+        if(response?.status == 200){
+          setTotalCountAssigned(response?.data?.total)
+          setTotalPagesAssigned(response?.data?.page_size)
+          setCurrentPageAssigned(response?.data?.page + 1)
+          setLimitAssigned(Number(limitAssigned))
+          setSearchFlag(false)
+          setAssigneds(response?.data?.result);
+          setLoading(false)
+
+        }else{
+          setAlert('error', 'Server Issue ')
+          setLoading(false)
+        }
       });
   };
   const viewedAssign = (data) => {
@@ -440,7 +456,7 @@ const AdminViewBlog = () => {
   useEffect(() =>{
     if(moduleId){
       if(selectedAcademicYear?.id > 0)
-
+    setLoading(true)
     axios
     .get(
       `${endpoints.newBlog.activityBranch}`,
@@ -453,7 +469,10 @@ const AdminViewBlog = () => {
     .then((response) => {
       if(response?.data?.status_code === 200){
         setBranchList(response?.data?.result|| [])
+        setLoading(false)
 
+      }else{
+        setLoading(false)
       }
     });
     }
@@ -503,6 +522,7 @@ const AdminViewBlog = () => {
   }, [value, selectedBranch, searchFlag,currentPageAssigned,currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
   const handlePreview = (data) => {
+    setLoading(true)
     setPreview(true);
     axios
       .get(`${endpoints.newBlog.previewDetails}${data?.id}/`, {
@@ -513,12 +533,14 @@ const AdminViewBlog = () => {
       .then((response) => {
         // setAssignPreview(response);
         setPreviewData(response?.data?.result);
+        setLoading(false)
       });
   };
   const closePreview = () => {
     setPreview(false);
   };
   const ActvityLocalStorage = () => {
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activityWebLogin}`,
@@ -537,11 +559,13 @@ const AdminViewBlog = () => {
           'ActivityManagement',
           JSON.stringify(response?.data?.result)
         );
+        setLoading(false)
       });
   };
 
   const [activityStorage, setActivityStorage] = useState([]);
   const getActivitySession = () => {
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activitySessionLogin}`,
@@ -554,13 +578,12 @@ const AdminViewBlog = () => {
         }
       )
       .then((response) => {
-
         setActivityStorage(response.data.result);
-
         localStorage.setItem(
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
+        setLoading(false)
       });
   };
 
@@ -596,6 +619,8 @@ const AdminViewBlog = () => {
 
 
   return (
+    <div>
+      {loading && <Loader/>}
     <Layout>
       <Grid
         container
@@ -1223,6 +1248,7 @@ const AdminViewBlog = () => {
         </div>
       </Dialog>
     </Layout>
+    </div>
   );
 };
 export default AdminViewBlog;

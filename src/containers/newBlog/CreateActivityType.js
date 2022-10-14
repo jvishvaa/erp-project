@@ -487,7 +487,7 @@ const CreateActivityType = () => {
               </TableBody>
             ))}
           </Table>
-          <TablePagination
+          {/* <TablePagination
             component='div'
             // count={totalCount}
             // rowsPerPage={limit}
@@ -501,7 +501,7 @@ const CreateActivityType = () => {
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          />
+          /> */}
         </TableContainer>
       </Paper>
 

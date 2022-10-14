@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext ,useRef} from 'react';
 import Layout from 'containers/Layout';
 import { useHistory } from 'react-router';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -7,6 +7,8 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import './images.css';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import ConfirmModal from 'containers/assessment-central/assesment-card/confirm-modal';
+import Loader from '../../components/loader/loader';
 // import cakeImg from './Images/newcakeimage.jpg';
 import {
   Grid,
@@ -69,11 +71,15 @@ function AddTemplates() {
   const [fun, setFun] = useState(false);
   const [drawer, showDrawer] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
-  const [selectedFile, setSelectedFile] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const { setAlert } = useContext(AlertNotificationContext);
   const [search, setSearch] = useState('');
   const [searchId,setSeacrhId] = useState(null);
   const [activityCategory, setActivityCategory] = useState([]);
+  const [openModal,setOpenModal] = useState(false);
+  const fileRef = useRef()
+  const [loading,setLoading] = useState(false);
+
   const handleImage = () => {
     setTrued(true);
     setImage(
@@ -119,6 +125,7 @@ function AddTemplates() {
     formData.append('image', selectedFile);
     formData.append('html_file', JSON.stringify([{"width":width, "height":height,"x_cordinate":x,"y_cordinate":y,"placeholder":placeholder}]));
     if(formData){
+      setLoading(true)
         axios
         .post(`${endpoints.newBlog.createTemplates}`, formData, {
           headers: {
@@ -127,9 +134,9 @@ function AddTemplates() {
           },
         })
         .then((response) => {
-          // console.log(response,"PL")
           setAlert('success', response?.data?.message);
           history.push('/blog/blogview');
+          setLoading(false)
         });
 
     }
@@ -139,6 +146,7 @@ function AddTemplates() {
     setFileUrl(URL.createObjectURL(event.target.files[0]));
   };
   const getActivityCategory = () => {
+    setLoading(true)
     axios
       .get(`${endpoints.newBlog.getActivityType}`, {
         headers: {
@@ -147,6 +155,7 @@ function AddTemplates() {
       })
       .then((response) => {
         setActivityCategory(response.data.result);
+        setLoading(false);
       });
   };
 
@@ -162,11 +171,20 @@ function AddTemplates() {
     }
   }
 
-  const deleteSelectedImage = () => {
+  const submitTheResult = () => {
     setFileUrl(null);
     setSelectedFile(null);
+    fileRef.current.value = null
+    setAlert('success','Successfull Template Deleted')
   };
+
+
+  const handleGoBack = () =>{
+    history.goBack()
+  }
   return (
+    <div>
+      {loading && <Loader/>}
     <Layout>
         <div className='layout-container-div ebookscroll'  style={{
         padding:"10px"
@@ -192,6 +210,7 @@ function AddTemplates() {
                     variant='outlined'
                     label='Activity Type'
                     placeholder='Activity Type'
+                    required
                   />
                 )}
               />
@@ -215,6 +234,7 @@ function AddTemplates() {
               accept='image/*,.pdf,video/*,.docx,audio/*,.csv,.xlsx'
               className='video-file-upload'
               style={{ fontSize: '20px' }}
+              ref={fileRef}
             />
             <div
               className='video-file-upload'
@@ -236,7 +256,9 @@ function AddTemplates() {
                     color='primary'
                     variant='contained'
                     size='small'
-                    onClick={deleteSelectedImage}
+                    onClick={() => {
+                      setOpenModal(true);
+                    }}
                   >
                     Delete
                   </Button>
@@ -245,10 +267,24 @@ function AddTemplates() {
             </div>
           </div>
         &nbsp;&nbsp;
-        <Button variant='outlined' onClick={handleOpen}>
+        {openModal && (
+        <ConfirmModal
+          submit={() => submitTheResult()}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+        />
+      )}
+      <div>
+        <Button variant='contained' color='primary' onClick={handleOpen}>
           Add Text
         </Button>
         &nbsp;&nbsp;
+        <Button variant='contained' color='primary' onClick={handleGoBack}>
+          Back
+        </Button>
+        &nbsp;&nbsp;
+
+      </div>
       </div>
       <div style={{justifyContent:'center', display:'flex '}}>
       <div className='A4-template-cover'>
@@ -292,8 +328,8 @@ function AddTemplates() {
       </div>
 
       </div>
-      <div>
-        <Button size='large' onClick={submitProcess}>
+      <div style={{display:'flex', justifyContent:'center', margin:'15px'}}>
+        <Button size='large' onClick={submitProcess} >
               Submit
             </Button>
       </div>
@@ -369,6 +405,7 @@ function AddTemplates() {
         </Grid>
       </Dialog>
     </Layout>
+    </div>
   );
 };
 export default AddTemplates;

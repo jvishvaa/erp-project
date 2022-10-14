@@ -160,7 +160,7 @@ const todayDate = moment();
           }
         )
         .then((response) => {
-          setAlert('success', 'Activity Successfully Created');
+          setAlert('success', 'Activity Submitted Successfully');
           history.push('/blog/studentview');
 
         })
