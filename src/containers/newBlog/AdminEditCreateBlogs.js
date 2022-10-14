@@ -51,6 +51,7 @@ import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
 import BackupIcon from '@material-ui/icons/Backup';
 import Carousel from "react-elastic-carousel";
+import Loader from "../../components/loader/loader";
 
 import {
   fetchBranchesForCreateUser as getBranches,
@@ -169,6 +170,8 @@ const AdminEditCreateBlogs = () => {
   const [activityName, setActivityName] = useState([]);
   const [templateId,setTemplatesId] = useState(null);
   const [showTemplate,setShowTemplate] = useState(false);
+  const [editFlag,setEditFlag] = useState(false);
+  const [loading,setLoading] = useState(false);
 
   const [selectedFile, setSelectedFile] = useState('');
   const [filterData, setFilterData] = useState({
@@ -249,6 +252,7 @@ const AdminEditCreateBlogs = () => {
   // `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
 
   const fetchBranches = () => {
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.newBlog.activityBranch}`, {
         headers: {
@@ -268,17 +272,30 @@ const AdminEditCreateBlogs = () => {
           });
           console.log(transformedData, 'branchdata');
           setBranchList(transformedData);
+          if(selectedBranch && selectedBranch.length > 0) {
+            const selectedSectionArray = transformedData.filter((obj) => selectedBranch.findIndex((sec) => obj.id == sec.id) > -1);
+            setSelectedBranch(selectedSectionArray)
+  
+            
+          }
         }
+        setLoading(false)
+
       });
     // })
   };
+
+  useEffect(() => {
+    fetchBranches()
+
+  },[])
 
   let allGradeIds = [];
 
   const fetchGrades = (value) => {
     const ids = value.map((el) => el.id) || [];
     // setGradeIds(ids);
-
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.newBlog.activityGrade}?branch_ids=${ids}`, {
         headers: {
@@ -310,6 +327,7 @@ const AdminEditCreateBlogs = () => {
         //   console.log(transformedData,"data")
         //   setGradeList(transformedData);
         // }
+        setLoading(false);
       });
   };
   
@@ -321,7 +339,7 @@ const AdminEditCreateBlogs = () => {
 
   const fetchSections = (value) => {
     const ids = value.map((el) => el.id) || [];
-
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.newBlog.activitySection}?grade_ids=${ids}`, {
         headers: {
@@ -338,17 +356,19 @@ const AdminEditCreateBlogs = () => {
           });
           setSectionDropdown(gradeData);
         }
+        setLoading(false)
       });
   };
 
   useEffect(() => {
     fetchBranches();
-  }, []);
-  console.log(selectedBranch, 'selectedBranch');
+  }, [editFlag]);
 
   const handleBranch = (e, value) => {
+    setSelectedBranch([])
     setSelectedGrade([]);
-    if (value) {
+    setSelectedSection([])
+    if (value?.length > 0) {
       value =
         value.filter(({ id }) => id === 'all').length === 1
           ? [...branchList].filter(({ id }) => id !== 'all')
@@ -360,6 +380,7 @@ const AdminEditCreateBlogs = () => {
 
   const handleGrade = (e, value) => {
     console.log(value);
+    setSelectedSection([])
     if (value) {
       value =
         value.filter(({ name }) => name === 'Select All').length === 1
@@ -418,6 +439,7 @@ const AdminEditCreateBlogs = () => {
     setSelectedFile(null);
   };
   const ActvityLocalStorage = () => {
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activityWebLogin}`,
@@ -436,6 +458,7 @@ const AdminEditCreateBlogs = () => {
           'ActivityManagement',
           JSON.stringify(response?.data?.result)
         );
+        setLoading(false);
       });
   };
   const handleClear = () => {
@@ -528,7 +551,7 @@ const AdminEditCreateBlogs = () => {
       // formData.append('template_type',changeText.name);
       
   
-  
+    setLoading(true)
       axios
         .put(`${endpoints.newBlog.confirmAssign}${id}/`, body, {
           headers: {
@@ -545,7 +568,9 @@ const AdminEditCreateBlogs = () => {
           setDescription('');
           setTitle('');
           setStartDate('');
+          setEditFlag(false);
           history.push('/blog/blogview');
+          setLoading(false)
   
           // localStorage.setItem(
           //   'ActivityManagement',
@@ -574,6 +599,7 @@ const AdminEditCreateBlogs = () => {
 //   console.log(previewData?.branches.map((obj)=>(obj)),"previewdata");
 
   const handlePreview = (data) => {
+    setLoading(true)
     axios
       .get(
         `${endpoints.newBlog.previewDetails}${data}/`,
@@ -586,16 +612,22 @@ const AdminEditCreateBlogs = () => {
       .then((response) => {
         // console.log(response?.data?.result?.sections?.map((obj)=>(obj)),"handlebranch");
         // setAssignPreview(response);
-        setTemplatesId(response?.data?.result?.template?.id)
-        setActivityName(response?.data?.result?.activity_type)
-        setPreviewData(response?.data?.result);
-        setActivityName(response?.data?.result?.activity_type);
-        setSelectedBranch(response?.data?.result?.branches.map((obj)=>obj))
-        setSelectedGrade(response?.data?.result?.grades?.map((obj)=>(obj)))
-        setSelectedSection(response?.data?.result?.sections?.map((obj)=>(obj)))
-        setFileUrl(response?.data?.result?.template_path);
-        setStartDate(response?.data?.result?.submission_date?.slice(0,10));
+        if(response?.status === 200){
+          setTemplatesId(response?.data?.result?.template?.id)
+          setActivityName(response?.data?.result?.activity_type)
+          setPreviewData(response?.data?.result);
+          setActivityName(response?.data?.result?.activity_type);
+          setSelectedBranch(response?.data?.result?.branches.map((obj)=>obj))
+          setSelectedGrade(response?.data?.result?.grades?.map((obj)=>(obj)))
+          setSelectedSection(response?.data?.result?.sections?.map((obj)=>(obj)))
+          setFileUrl(response?.data?.result?.template_path);
+          setStartDate(response?.data?.result?.submission_date?.slice(0,10));
+          setEditFlag(true)
+          setLoading(false)
 
+        }else {
+          setLoading(false)
+        }
 
       });
   };
@@ -604,6 +636,7 @@ const AdminEditCreateBlogs = () => {
 
   const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
+    setLoading(true)
     axios
       .get(`${endpoints.newBlog.getActivityType}`, {
         headers: {
@@ -613,6 +646,7 @@ const AdminEditCreateBlogs = () => {
       .then((response) => {
         setActivityCategory(response.data.result);
         ActvityLocalStorage();
+        setLoading(false)
       });
   };
   useEffect(() => {
@@ -621,6 +655,7 @@ const AdminEditCreateBlogs = () => {
 
   const [activityStorage, setActivityStorage] = useState([]);
   const getActivitySession = () => {
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activitySessionLogin}`,
@@ -641,6 +676,7 @@ const AdminEditCreateBlogs = () => {
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
+        setLoading(false);
       });
   };
 
@@ -669,6 +705,7 @@ const AdminEditCreateBlogs = () => {
 
   const getTemplate = (data) => {
     if(data){
+      setLoading(true)
       axios
         .get(`${endpoints.newBlog.getTemplates}${data}/`, {
           headers: {
@@ -676,9 +713,9 @@ const AdminEditCreateBlogs = () => {
           },
         })
         .then((response) => {
-  
           console.log(response?.data?.result, 'session');
           setTemplates(response?.data?.result);
+          setLoading(false);
        
         });
 
@@ -705,6 +742,9 @@ const AdminEditCreateBlogs = () => {
   console.log(isSelected,'selected')
 
   return (
+
+    <div>
+      {loading && <Loader/>}
     <Layout>
       <Grid
         container
@@ -752,7 +792,7 @@ const AdminEditCreateBlogs = () => {
           }}
         >
           <div style={{ display: 'flex' }}>
-            Activity Category:
+            Activity Category *:
             <Autocomplete
               style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
               size='small'
@@ -785,7 +825,7 @@ const AdminEditCreateBlogs = () => {
           </div>
           <div>
             {' '}
-            Submission End Date: &nbsp;&nbsp;&nbsp;
+            Submission End Date *: &nbsp;&nbsp;&nbsp;
             <TextField
               required
               size='small'
@@ -806,10 +846,12 @@ const AdminEditCreateBlogs = () => {
               limitTags={1}
               // style={{ width: '82%', marginLeft: '4px' }}
               options={branchList || []}
+              select
               value={selectedBranch || []}
-              getOptionLabel={(option) => option?.name}
+              className='dropdownIcon'
+              SelectProps ={{multiple: true}}
+              getOptionLabel={(option) => option?.name || ''}
               filterSelectedOptions
-
               onChange={(event, value) => {
                 handleBranch(event, value);
               }}
@@ -901,7 +943,7 @@ const AdminEditCreateBlogs = () => {
           }}
         >
           <div style={{ marginTop: '23px', marginLeft: '73px', display: 'flex' }}>
-            Activity Details: &nbsp;&nbsp;&nbsp;&nbsp;
+            Activity Details *: &nbsp;&nbsp;&nbsp;&nbsp;
             <TextField
               id='outlined-basic'
               size='small'
@@ -929,8 +971,8 @@ const AdminEditCreateBlogs = () => {
             /> */}
 
             <TextField
-              label='Description/Instructions'
-              placeholder='Description/Instructions'
+              label='Description/Instructions *'
+              placeholder='Description/Instructions *'
               multiline
               value={description}
               onChange={handleDescription}
@@ -1135,6 +1177,8 @@ const AdminEditCreateBlogs = () => {
         </div>
       </Dialog> */}
     </Layout>
+
+    </div>
   );
 };
 export default AdminEditCreateBlogs;

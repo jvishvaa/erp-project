@@ -9,6 +9,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import RatingScale from './RatingScale';
+import Loader from 'components/loader/loader';
 
 // import Rating from '@material-ui/lab/Rating';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -77,8 +78,23 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import ReactHtmlParser from 'react-html-parser';
 import moment from 'moment';
+import { Rating } from '@material-ui/lab';
 
 const DEFAULT_RATING = 0;
+
+const StyledRating = withStyles((theme) => ({
+  iconFilled: {
+    color: '#E1C71D',
+  },
+  root: {
+    '& .MuiSvgIcon-root': {
+      color: 'currentColor',
+    },
+  },
+  iconHover: {
+    color: 'yellow',
+  },
+}))(Rating);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -229,6 +245,7 @@ const StudentSideBlog = () => {
   const [flag,setFlag] = useState(false)
   const [currentDate,setCurrentDate] =useState('')
   const [userData , setUserData] = useState()
+  const [loading,setLoading] = useState(false);
 
 
   const createPublish = () => {
@@ -249,6 +266,7 @@ const StudentSideBlog = () => {
   const [submit, setSubmit] = useState(false);
 
   const submitReview = () => {
+    setLoading(true)
     setSubmit(true);
     console.log(ratingReview, 'ratingReview');
     setSubmit(true);
@@ -268,11 +286,16 @@ const StudentSideBlog = () => {
       )
       .then((response) => {
         console.log(response);
-      });
+        setLoading(false)
+      })
+      .catch((err) =>{
+        setLoading(false)
+      })
   };
 
   let array = [];
   const getRatingView = (data) => {
+    setLoading(true)
     axios
       .get(
         `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`,
@@ -290,10 +313,15 @@ const StudentSideBlog = () => {
           temp['name'] = obj?.level.name;
           temp['remarks'] = obj?.remarks;
           temp['given_rating'] = obj?.given_rating;
+          temp['level'] = obj?.level?.rating;
           array.push(temp);
         });
         setRatingReview(array);
-      });
+        setLoading(false)
+      })
+      .catch((err) => {
+        setLoading(false)
+      })
   };
   const expandMore = () => {
     setSubmit(false);
@@ -308,6 +336,7 @@ const StudentSideBlog = () => {
     });
   };
   const getActivitySession = () => {
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activitySessionLogin}`,
@@ -326,10 +355,12 @@ const StudentSideBlog = () => {
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
+        setLoading(false)
       });
   };
 
   const ActvityLocalStorage = () => {
+    setLoading(true)
     axios
       .post(
         `${endpoints.newBlog.activityWebLogin}`,
@@ -348,10 +379,12 @@ const StudentSideBlog = () => {
         );
         setUserData(response?.data?.result)
         getActivitySession();
+        setLoading(false);
       });
   };
   const [assinged, setAssigned] = useState([]);
   const getAssinged = async () => {
+    setLoading(true)
 
     const UserData =  JSON.parse(localStorage.getItem('ActivityManagement')) || {};
     axios
@@ -369,6 +402,7 @@ const StudentSideBlog = () => {
         setCurrentDate(output)
         console.log(response);
         setAssigned(response?.data.result);
+        setLoading(false)
         
       });
   };
@@ -379,6 +413,7 @@ const StudentSideBlog = () => {
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalReview, setTotalReview] = useState([]);
   const getTotalReview = async () => {
+    setLoading(true)
     const User_id = (await JSON.parse(localStorage.getItem('ActivityManagement'))) || {};
 
     axios
@@ -393,10 +428,12 @@ const StudentSideBlog = () => {
       .then((response) => {
         console.log(response, 'response');
         setTotalReview(response?.data?.result);
+        setLoading(false);
       });
   };
 
   const getTotalSubmitted = async () => {
+    setLoading(true)
     const User_id = (await JSON.parse(localStorage.getItem('ActivityManagement'))) || {};
 
     axios
@@ -411,6 +448,7 @@ const StudentSideBlog = () => {
       .then((response) => {
         console.log(response, 'response');
         setTotalSubmitted(response?.data?.result);
+        setLoading(false)
       });
   };
 
@@ -451,6 +489,9 @@ const StudentSideBlog = () => {
 
   }
   return (
+
+    <div>
+      {loading && <Loader/>}
     <Layout>
        <div className='layout-container-div ebookscroll' style={{
         // background: 'white',
@@ -731,7 +772,13 @@ const StudentSideBlog = () => {
                     &nbsp;21
                   </div> */}
                   <div>
-                    <RatingScale rating= {response?.user_reviews?.given_rating} />
+                    <StyledRating 
+                    // rating= {response?.user_reviews?.given_rating}
+                    precision={0.1}
+                    defaultValue={response?.user_reviews?.given_rating}
+                    max={parseInt(response?.user_reviews?.level?.rating)}
+                    readOnly
+                    />
                   </div>
                 </CardActions>
                 {/* <CardActions style={{ textAlign: 'center', justifyContent: 'center' }}>
@@ -1025,19 +1072,20 @@ const StudentSideBlog = () => {
                         >
                           {' '}
                           {obj?.name}
-                          <RatingScale
+                          <StyledRating
                             name={`rating${index}`}
                             size='small'
                             readOnly
-                            rating={obj?.given_rating}
-                            // defaultValue={props.defaultValue}
+                            // rating={obj?.given_rating}
+                            defaultValue={obj?.given_rating}
+                            precision={0.1}
+                            max={parseInt(obj?.level)}
                             onChange={(event, newValue) =>
                               handleInputCreativityOne(event, newValue, index)
                             }
                           />
                         </div>
                         {/* {obj} */}
-                        {obj?.name=="Overall"?"":
                         <div>
                           <TextField
                             id='outlined-basic'
@@ -1049,7 +1097,6 @@ const StudentSideBlog = () => {
                             onChange={(event) => handleInputCreativity(event, index)}
                           />
                         </div>
-                  }
                       </div>
                     );
                   })}
@@ -1116,6 +1163,8 @@ const StudentSideBlog = () => {
       </Drawer>
       </div>
     </Layout>
+
+    </div>
   );
 };
 export default StudentSideBlog;

@@ -20,13 +20,14 @@ import RatingScale from './RatingScale';
 import ReactHtmlParser from 'react-html-parser';
 import { TablePagination } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
+import Loader from 'components/loader/loader';
 
 import axios from 'axios';
 import './images.css';
 const DEFAULT_RATING = 0;
 const StyledRating = withStyles((theme) => ({
   iconFilled: {
-    color: 'yellow',
+    color: '#E1C71D',
   },
   root: {
     '& .MuiSvgIcon-root': {
@@ -52,6 +53,10 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonColor1: {
     color: '#FF6161 !important',
+    backgroundColor: 'white',
+  },
+  buttonColor9: {
+    color: '#bdbdbd !important',
     backgroundColor: 'white',
   },
   buttonColor2: {
@@ -113,9 +118,12 @@ const Reviewed = (props) => {
   const [totalPages,setTotalPages] = useState(0);
   const [limit,setLimit] = useState(10);
   const [isClicked, setIsClicked] = useState(false);
+  const [buttonFlag,setButtonFlag] = useState(false);
+  const [loading,setLoading] = useState(false);
 
   let array = [];
   const getRatingView = (data) => {
+    setLoading(true)
     axios
       .get(
         `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`,
@@ -133,13 +141,16 @@ const Reviewed = (props) => {
           temp['name'] = obj.level.name;
           temp['remarks'] = obj.remarks;
           temp['given_rating'] = obj.given_rating;
+          temp['level'] = obj?.level?.rating;
           array.push(temp);
         });
         setRatingReview(array);
+        setLoading(false)
       });
   };
 
   const confirmassign = (response) => {
+    setLoading(true)
     let body = {
       booking_detail: {
         is_bookmarked: true,
@@ -159,14 +170,17 @@ const Reviewed = (props) => {
       )
       .then((response) => {
         setAlert('success', 'Activity Successfully Shortlisted');
+        setButtonFlag(true)
         getTotalSubmitted();
 
         console.log(response);
+        setLoading(false)
       });
   };
 
   const getTotalSubmitted = () => {
     if(props){
+      setLoading(true)
       const branchIds = props.selectedBranch.map((obj) => obj.id);
       const gradeIds = props?.selectedGrade?.id
   
@@ -187,6 +201,7 @@ const Reviewed = (props) => {
           props.setFlag(false)
           setAlert('success', response?.data?.message)
           setTotalSubmitted(response?.data?.result);
+          setLoading(false)
         });
       
     }
@@ -229,6 +244,7 @@ const Reviewed = (props) => {
 
   return (
     <>
+    {loading && <Loader/>}
       <Paper className={`${classes.root} common-table`} id='singleStudent'>
         <TableContainer
           className={`table table-shadow view_users_table ${classes.container}`}
@@ -277,12 +293,13 @@ const Reviewed = (props) => {
                   </TableCell>
                   <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell>
                   <TableCell className={classes.tableCells}>
-                    <RatingScale
+                    <StyledRating
                       name={`rating${index}`}
                       size='small'
                       readOnly
-                      rating={response?.user_reviews?.given_rating}
-                      // defaultValue={props.defaultValue}
+                      // rating={response?.user_reviews?.given_rating}
+                      defaultValue={response?.user_reviews?.given_rating}
+                      max={parseInt(response?.user_reviews?.level?.rating)}
                     />
                   </TableCell>
                   <TableCell className={classes.tableCells}>
@@ -298,9 +315,9 @@ const Reviewed = (props) => {
                     <Button
                       variant='outlined'
                       size='small'
-                      className={classes.buttonColor1}
+                      className={response?.is_bookmarked ? classes.buttonColor9 : classes.buttonColor1}
                       onClick={() => confirmassign(response)}
-                      disabled={user_level==11}
+                      disabled={user_level==11 || response?.is_bookmarked }
 
 
                     >
@@ -486,18 +503,21 @@ const Reviewed = (props) => {
                           style={{ display: 'flex', justifyContent: 'space-between' }}
                         >
                           {' '}
-                          {obj?.name}
-                          <RatingScale
+                          {obj?.name}      
+                          <StyledRating
                             name={`rating${index}`}
                             size='small'
-                            rating={obj?.given_rating}
+                            // rating={obj?.given_rating}
+                            defaultValue={obj?.given_rating}
+                            precision={0.1}
+                            max={parseInt(obj?.level)}
                             readOnly
                             // defaultValue={props.defaultValue}
                           />
                         </div>
-                        {obj?.name == 'Overall' ? (
+                        {/* {obj?.name == 'Overall' ? (
                           ''
-                        ) : (
+                        ) : ( */}
                           <div>
                             <TextField
                               id='outlined-basic'
@@ -510,7 +530,7 @@ const Reviewed = (props) => {
                               }
                             />
                           </div>
-                        )}
+                        {/* // )} */}
                       </div>
                     );
                   })}
