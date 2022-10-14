@@ -591,6 +591,7 @@ export default function TeacherAttendance(props) {
   const ui_revamp1 = 'ui-revamp1.letseduvate.com';
   const qa = 'qa.olvorchidnaigaon.letseduvate.com';
   const prod = 'orchids.letseduvate.com';
+  const mclg = 'mcollege.letseduvate.com'
 
   const isDateEditable = [1, 2, 8, 9].includes(user_level);
 
@@ -897,7 +898,7 @@ export default function TeacherAttendance(props) {
                 // window.location.host == dev ||
                 window.location.host == qa ||
                 window.location.host == ui_revamp1 ||
-                window.location.host == prod) && (
+                window.location.host == prod || window.location.host == mclg) && (
                 <Grid item md={2} xs={12} style={{ marginLeft: 15 }}>
                   <Button
                     onClick={() => {

@@ -36,6 +36,7 @@ import endpoints from 'config/endpoints';
 import { NavigateNext as NavigateNextIcon } from '@material-ui/icons'
 import axios from 'axios';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
+import Loader from 'components/loader/loader';
 
 const DEFAULT_RATING = 0;
 
@@ -113,6 +114,7 @@ const BlogReview = () => {
     history.push('/blog/blogview');
   };
   const [title, setTitle] = useState('');
+  const [loading,setLoading] = useState(false)
   // console.log(history,"history")
   // useEffect(() => {
   //   if (history?.location?.pathname === '/blog/addreview') {
@@ -122,6 +124,7 @@ const BlogReview = () => {
   // }, [history]);
   useEffect(() =>{
     if(moduleId){
+      setLoading(true)
       axios
       .get(`${endpoints.newBlog.activityBranch}`,
       {
@@ -131,8 +134,8 @@ const BlogReview = () => {
       })
       .then((response) =>{
         if(response?.data?.status_code === 200){
-          console.log(response?.data?.result,'pk 2')
           setBranchList(response?.data?.result|| [])
+          setLoading(false)
   
         }
 
@@ -164,7 +167,7 @@ const BlogReview = () => {
   }, [window.location.pathname]);
 
 function callApi(api,key){
-  // setLoading(true)
+  setLoading(true)
   axiosInstance
     .get(api)
     .then((result) => {
@@ -182,7 +185,6 @@ function callApi(api,key){
             );
         }
         if(key === 'branchList') {
-          // debugger;  
           setBranchList(result?.data?.data?.results || [])
         }
         if(key === 'gradeList'){
@@ -196,6 +198,7 @@ function callApi(api,key){
         }
 
       }
+      setLoading(false)
     })
 }
 
@@ -236,6 +239,7 @@ function callApi(api,key){
       //   'gradeList'
       // );
       if(branchIds){
+        setLoading(true)
         axios
         .get(`${endpoints.newBlog.activityGrade}?branch_ids=${branchIds}`,
         {
@@ -247,6 +251,7 @@ function callApi(api,key){
           // debugger;
           console.log(response?.data?.result);
           setGradeList(response?.data?.result)
+          setLoading(false)
         })
   
       }
@@ -265,20 +270,25 @@ function callApi(api,key){
   }
 
   const goSearch =() =>{
+    setLoading(true)
     if(selectedBranch?.length === 0){
       setAlert('error','Please Select Branch');
+      setLoading(false)
       return
     }else if(selectedGrade?.length == 0){
       setAlert('error', 'Please Select Grade');
+      setLoading(false)
       return
     }else{
       setFlag(true);
+      setLoading(false)
     }
 
   }
 
   return (
     <div>
+      {loading && <Loader/>}
       <Layout>
       <Grid
         container
@@ -287,14 +297,15 @@ function callApi(api,key){
       >
         <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
           <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' />}
+            style={{width:'70vw'}}
+            separator={<NavigateNextIcon fontSize='small' style={{color:'black'}} />}
             aria-label='breadcrumb'
           >
-            <Typography color='textPrimary' variant='h6'>
+            <Typography color='textPrimary' style={{fontSize:'18px'}}>
               <strong>Activity Management</strong>
             </Typography>
-            <Typography color='textPrimary' style={{fontSize:'23px', fontWeight:'bolder'}}>Activity</Typography>
-            <Typography color='textPrimary' style={{fontSize:'23px', fontWeight:'bolder'}}>{ActivityId?.title}</Typography>
+            <Typography color='textPrimary' style={{fontSize:'18px', fontWeight:'bold'}}>Activity</Typography>
+            <Typography color='textPrimary' style={{fontSize:'18px', fontWeight:'bold'}}>{ActivityId?.title}</Typography>
           </Breadcrumbs>
         </Grid>
       </Grid>
@@ -484,7 +495,7 @@ function callApi(api,key){
           <div>
             {value == 2 && (
               <div style={{ marginRight: '49px' }}>
-                <StarsIcon style={{ color: '#F7B519' }} /> Published &nbsp;&nbsp;{' '}
+                {/* <StarsIcon style={{ color: '#F7B519' }} /> Published &nbsp;&nbsp;{' '} */}
                 <BookmarksIcon style={{ color: 'gray' }} /> Shortlisted
               </div>
             )}

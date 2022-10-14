@@ -17,7 +17,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
-
+import Loader from 'components/loader/loader';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
@@ -123,7 +123,7 @@ const PendingReview = (props) => {
   };
 
   const [values, setValues] = useState();
-
+  const [loading,setLoading] = useState(false);
   console.log(values, 'values');
   const [publish, setPublish] = useState(false);
   const createPublish = () => {
@@ -138,12 +138,17 @@ const PendingReview = (props) => {
   const submitReview = () => {
     setView(false);
     props.setValue(1)
-    // console.log(ratingReview, 'ratingReview');
     // setSubmit(true);
+    let mandatory = ratingReview.filter((e) => e?.name === "Overall")
+    if(!mandatory[0].remarks){
+      setAlert('error','Overall Remarks Is Compulsory')
+      return
+    }
     let body = ratingReview;
     let overAllIndex =body.findIndex((each) => each?.name === "Overall")
     body[overAllIndex].given_rating = calculateOverallRating()
     // let allRating = body.map((each) => each?.given_rating).slice(0,body?.length -1)
+    setLoading(true)
     axios
       .post(`${endpoints.newBlog.pendingReview}`, body, {
         headers: {
@@ -152,7 +157,8 @@ const PendingReview = (props) => {
       })
       .then((response) => {
         console.log(response);
-        setAlert('success', 'Successfully Created');
+        setLoading(false)
+        setAlert('success', ' Review Submitted Successfully');
       });
   };
 
@@ -165,7 +171,7 @@ const PendingReview = (props) => {
         is_reassigned: false,
       },
     };
-
+    setLoading(true)
     axios
       .put(`${endpoints.newBlog.activityReview}${dataId}/`, body, {
         headers: {
@@ -173,9 +179,8 @@ const PendingReview = (props) => {
         },
       })
       .then((response) => {
+        setLoading(false)
         setAlert('success', 'Activity Successfully Shortlisted');
-
-        console.log(response);
       });
   };
 
@@ -206,6 +211,7 @@ const PendingReview = (props) => {
       if(props){
         const branchIds = props.selectedBranch?.map((obj) => obj?.id);
         const gradeIds = props.selectedGrade?.id;
+        setLoading(true)
         axios
           .get(
             `${
@@ -227,6 +233,7 @@ const PendingReview = (props) => {
             setLimit(Number(limit));
             setAlert('success', response?.data?.message)
             setTotalSubmitted(response?.data?.result);
+            setLoading(false);
           });
 
       }    
@@ -236,6 +243,7 @@ const PendingReview = (props) => {
   console.log(ratingReview, 'ratingReview')
   let array = [];
   const getRatingView = (data) => {
+    setLoading(true);
     axios
       .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
         headers: {
@@ -255,13 +263,13 @@ const PendingReview = (props) => {
           array.push(temp);
         });
         setRatingReview(array);
+        setLoading(false)
       });
   };
   const [view, setView] = useState(false);
   const [data, setData] = useState();
 
   const assignPage = (data) => {
-    console.log(data, 'idd');
     setView(true);
     setData(data);
     // setBookingId(data?.id);
@@ -310,6 +318,7 @@ const PendingReview = (props) => {
 
   return (
     <>
+    {loading && <Loader/>}
       <Paper className={`${classes.root} common-table`} id='singleStudent'>
         <TableContainer
           className={`table table-shadow view_users_table ${classes.container}`}
@@ -566,7 +575,21 @@ const PendingReview = (props) => {
                         }}
                       >
                         {obj?.name === 'Overall' ? (
-                          ''
+                            <div
+                          key={index}
+                          style={{ display: 'flex', justifyContent: 'space-between' }}
+                        >
+                           {obj.name}*
+                           {/* <div style={{paddingRight:"13px"}}> */}
+                           <StyledRating
+                            name={`rating`}
+                            size='small'
+                            value={calculateOverallRating()}
+                            max={obj?.rating}
+                            precision={0.1}
+                            readOnly
+                          />
+                        </div>
                         ) : (
                         <div
                           key={index}
@@ -588,7 +611,17 @@ const PendingReview = (props) => {
                         )}
                         {/* {obj} */}
                         {obj?.name == 'Overall' ? (
-                          ''
+                                                    <div>
+                                                    <TextField
+                                                      id='outlined-basic'
+                                                      size='small'
+                                                      variant='outlined'
+                                                      value={obj?.remarks}
+                                                      style={{ width: '264px' }}
+                                                      onChange={(event) => handleInputCreativity(event, index)}
+                                                      label ="Mandatory"
+                                                    />
+                                                  </div>
                         ) : (
                           <div>
                             <TextField
@@ -598,16 +631,17 @@ const PendingReview = (props) => {
                               value={obj?.remarks}
                               style={{ width: '264px' }}
                               onChange={(event) => handleInputCreativity(event, index)}
+                              label="Optional"
                             />
                           </div>
                         )}
                       </div>
                     );
                   })}
-                  <div style={{display: "flex",
+                  {/* <div style={{display: "flex",
     justifyContent: "space-between"}} >
                     <div style={{paddingLeft:"13px"}}>
-                  Overall
+                  Overall hi
                   </div>
                   <div style={{paddingRight:"13px"}}>
                   <StyledRating
@@ -623,7 +657,7 @@ const PendingReview = (props) => {
                             // }
                           />
                           </div>
-                          </div>
+                          </div> */}
 
                   <div
                     style={{
