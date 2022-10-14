@@ -138,10 +138,6 @@ const PendingReview = (props) => {
   const submitReview = () => {
     setView(false);
     props.setValue(1)
-<<<<<<< HEAD
-    // console.log(ratingReview, 'ratingReview');
-=======
->>>>>>> cb70e93f3 (Bug fixes 1 for blog)
     // setSubmit(true);
     let mandatory = ratingReview.filter((e) => e?.name === "Overall")
     if(!mandatory[0].remarks){
