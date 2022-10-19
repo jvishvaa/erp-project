@@ -45,9 +45,6 @@ const Dashboard = () => {
           item.child_module &&
           item.child_module.length > 0
         ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Induction Training') {
-              if (userLevel === 11 || userLevel === 23 || userLevel === 10|| userLevel === 8) {
                 axios
                   .post(endpoints.sureLearning.login, {
                     username: erp ? erp : username,
@@ -56,9 +53,6 @@ const Dashboard = () => {
                     localStorage.setItem('udaanDetails', JSON.stringify(result.data));
                   })
                   .catch((error) => {});
-              }
-            }
-          });
         }
       });
     }
