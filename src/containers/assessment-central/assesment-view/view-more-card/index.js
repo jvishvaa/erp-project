@@ -63,7 +63,13 @@ const ViewMoreCard = ({
   };
 
   const handleOpenEdit = () => {
-    history.push(`/create-question-paper/${periodDataForView?.id}`);
+    history.push({ 
+      pathname : `/create-question-paper/${periodDataForView?.id}`,
+      state:{
+        isEdit : true
+      }
+  }
+    );
   };
 
   const handlePublish = (isPublish = true) => {

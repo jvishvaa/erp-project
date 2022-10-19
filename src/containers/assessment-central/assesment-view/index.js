@@ -129,20 +129,28 @@ const AssessmentView = () => {
     let filterdata = {
       branch : branch,
       academic: academic,
-      subject: subject,
+      // category : erpCategory,
+      // subject: subject,
       grade: grade,
       qpValue: qpValue,
       page: page,
       limit: limit,
       type: isErpCentral
     }
+    if(erpCategory && !subject){
+      filterdata['category'] = erpCategory
+    }
+    if(!erpCategory && subject){
+      filterdata['subject'] = subject
+
+    }
     sessionStorage.setItem('filter',JSON.stringify(filterdata));
   };
 
   useEffect(() => {
     if (publishFlag)
-      handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue);
-    if (tabAcademic && tabBranch && tabGradeId && tabSubjectId && tabQpValue && tabIsErpCentral)
+      handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue , erpCategory);
+    if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory) && tabQpValue && tabIsErpCentral)
       handlePeriodList(
         tabIsErpCentral,
         tabAcademic,
@@ -150,7 +158,9 @@ const AssessmentView = () => {
         tabGradeId,
         tabSubjectId,
         tabQpValue,
+        erpCategory,
         tabValue,
+        
       );
   }, [publishFlag, page]);
 

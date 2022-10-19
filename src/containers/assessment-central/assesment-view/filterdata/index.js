@@ -112,9 +112,13 @@ const getErpCategory = () => {
         branch : filterDataQP?.branch,
         grade: filterDataQP?.grade,
         subject: filterDataQP?.subject,
+        erp_category : filterDataQP?.category,
         is_erp_central: filterDataQP?.type,
         academic : selectedAcademicYear,
       })
+      if(filterDataQP?.category){
+        setIsErpCategory(true)
+      }
       if(filterDataQP?.subject){
         setSub()
       }
@@ -128,6 +132,7 @@ const getErpCategory = () => {
         filterDataQP?.grade,
         filterDataQP?.subject,
         filterDataQP?.qpValue,
+        filterDataQP?.category,
       );
       }
     }
@@ -168,6 +173,8 @@ const getErpCategory = () => {
     setFilterDataDown({});
     setSelectedIndex(-1);
     setQpValue('');
+    sessionStorage.removeItem('filter')
+    // history.replace({ state: { isSet: false } })
   };
 
   const handleAcademicYear = (event, value) => {
@@ -210,12 +217,14 @@ const getErpCategory = () => {
     // }
   };
   const handleerpCategory = (event, value) => {
-    setFilterData({ ...filterData, erp_category: '',  });
+    setFilterData({ ...filterData, erp_category: '', grade:'',subject:'' });
     // setLoading(true);
+    setSubjectDropdown([]);
     setIsErpCategory(false)
     if (value) {
       setIsErpCategory(true)
-      setFilterData({ ...filterData, erp_category: value });
+      setFilterData({ ...filterData, erp_category: value, grade:'',subject:'' });
+      setSubjectDropdown([]);
       // setLoading(false);
     } else {
       // setLoading(false);
@@ -323,7 +332,7 @@ const getErpCategory = () => {
       return;
     }
     if (!filterData?.is_erp_central) {
-      setAlert('error', `Select Question Paper From! ${filterData?.is_erp_central.name}`);
+      setAlert('error', `Select Question Paper From! ${filterData?.is_erp_central?.name}`);
       return;
     }
     setSelectedIndex(-1);
