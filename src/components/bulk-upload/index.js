@@ -218,7 +218,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
     formData.append('branch', branch);
     formData.append('branch_code', branchCode);
     formData.append('academic_year_value', selectedAcademicYear?.session_year);
-    formData.append('academic_year', selectedAcademicYear?.id);
+    formData.append('academic_year', branch);
     formData.append('file', file);
     if (branch && selectedAcademicYear && file) {
       setUploadFlag(true);

@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   questions: [],
   selectedAcademic: '',
   selectedBranch: '',
+  erpCategory : '',
   selectedGrade: '',
   selectedSubject: [],
   selectedLevel: '',

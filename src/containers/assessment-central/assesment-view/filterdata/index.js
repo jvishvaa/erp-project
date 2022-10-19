@@ -39,6 +39,8 @@ const AssessmentFilters = ({
     { id: 1, flag: false, name: 'ERP' },
     { id: 2, flag: true, name: 'CENTRAL' },
   ];
+  const [isErpCategory , setIsErpCategory] = useState(false)
+  const [erpCategoryDropdown, setErpGradeDropdown] = useState([]);
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
 
   const filterDataQP = JSON.parse(sessionStorage.getItem('filter')) || [];
@@ -48,6 +50,7 @@ const AssessmentFilters = ({
     grade: '',
     subject: '',
     is_erp_central: is_ERP_CENTRAL[0],
+    erp_category : ''
   });
   // question level input
   const qpLevel = [
@@ -85,11 +88,22 @@ const AssessmentFilters = ({
   //   }
   // },[selectedBranch,branchDropdown])
 
+const getErpCategory = () => {
+  axiosInstance
+      .get(`${endpoints.questionBank.erpCategory}`)
+      .then((result) => {
+        setErpGradeDropdown(result?.data?.result)
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+}
  
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
       handleAcademicYear();
+      getErpCategory()
       if(history?.location?.state?.isSet == 'true'){
       if(filterDataQP?.branch){
         handleBranch(filterDataQP , filterDataQP?.branch)
@@ -144,6 +158,7 @@ const AssessmentFilters = ({
       branch: [],
       grade: '',
       subject: '',
+      erp_category: '',
     });
     setPeriodData([]);
     setGradeDropdown([]);
@@ -193,6 +208,18 @@ const AssessmentFilters = ({
         setAlert('error', error?.message);
       });
     // }
+  };
+  const handleerpCategory = (event, value) => {
+    setFilterData({ ...filterData, erp_category: '',  });
+    // setLoading(true);
+    setIsErpCategory(false)
+    if (value) {
+      setIsErpCategory(true)
+      setFilterData({ ...filterData, erp_category: value });
+      // setLoading(false);
+    } else {
+      // setLoading(false);
+    }
   };
 
   const handleBranch = (event, value) => {
@@ -287,7 +314,7 @@ const AssessmentFilters = ({
       setAlert('error', 'Select Grade!');
       return;
     }
-    if (!filterData?.subject) {
+    if (isErpCategory === false && !filterData?.subject) {
       setAlert('error', 'Select Subject!');
       return;
     }
@@ -307,6 +334,7 @@ const AssessmentFilters = ({
       filterData.grade,
       filterData.subject,
       qpValue,
+      filterData?.erp_category,
     );
   };
 
@@ -362,6 +390,28 @@ const AssessmentFilters = ({
         />
       </Grid>
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleerpCategory}
+            id='Category'
+            className='dropdownIcon'
+            value={filterData?.erp_category || {}}
+            options={erpCategoryDropdown || []}
+            getOptionLabel={(option) => option?.erp_category_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='ERP Category'
+                placeholder='ERP Category'
+              />
+            )}
+          />
+        </Grid>
+
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -377,7 +427,7 @@ const AssessmentFilters = ({
           )}
         />
       </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      {!isErpCategory && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -398,7 +448,7 @@ const AssessmentFilters = ({
             />
           )}
         />
-      </Grid>
+      </Grid>}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}

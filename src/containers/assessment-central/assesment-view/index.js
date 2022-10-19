@@ -59,6 +59,7 @@ const AssessmentView = () => {
   const [tabIsErpCentral, setTabIsErpCentral] = useState(false);
   const [clearFlag, setClearFlag] = useState(false);
   const [callFlag, setCallFlag] = useState(false);
+  const [erpCategory , setErpCategory] = useState('')
   const handlePagination = (event, page) => {
     setPage(page);
   };
@@ -100,9 +101,10 @@ const AssessmentView = () => {
     grade = '',
     subject = '',
     qpValue,
+    erpCategory = '',
     newValue = 0,
   ) => {
-    if (!academic || branch?.length === 0 || !grade || !subject || !qpValue) {
+    if (!academic || branch?.length === 0 || !grade || (!erpCategory && !subject) || !qpValue) {
       setAlert('error', 'Select all the fields!');
       return;
     }
@@ -114,8 +116,15 @@ const AssessmentView = () => {
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
     setTabIsErpCentral(isErpCentral);
+    setErpCategory(erpCategory)
     const branchIds = branch.map((element) => element?.branch?.id) || [];
-    const requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&page=${page}&page_size=${limit}&request_type=${isErpCentral.id} `;
+    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&page=${page}&page_size=${limit}&request_type=${isErpCentral.id} `;
+    if(!erpCategory && subject) {
+      requestURL += `&subjects=${subject?.subject_id}`
+    }
+    if (!subject && erpCategory) {
+      requestURL += `&category=${isErpCentral?.flag ? erpCategory?.central_category_id : erpCategory?.erp_category_id}`;
+    }
     handleGetQuestionPapers(newValue, requestURL);
     let filterdata = {
       branch : branch,
@@ -183,6 +192,7 @@ const AssessmentView = () => {
             tabSubjectId={tabSubjectId}
             tabQpValue={tabQpValue}
             setTabValue={setTabValue}
+            erpCategory={erpCategory}
             page={page}
             setPage={setPage}
             setSelectedIndex={setSelectedIndex}
