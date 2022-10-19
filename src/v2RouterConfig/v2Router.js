@@ -35,7 +35,8 @@ import StaffAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/
 import LessonPlan from 'v2/FaceLift/LessonPlan';
 import LessonPlanView from 'v2/FaceLift/LessonPlan/LessonPlanView';
 import StudentAttendanceDashboard from 'v2/FaceLift/StudentDashboard/StudentAttendanceDashboard';
-
+import endpoints from 'config/endpoints';
+import axios from 'axios';
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -43,11 +44,34 @@ const V2Router = () => {
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
+  const { erp, username, erp_config } =
+    JSON.parse(localStorage.getItem('userDetails')) || [];
   const { is_superuser: superuser } =
     JSON.parse(localStorage.getItem('userDetails')) || '';
   if (superuser == true) {
     userLevel = 1;
   }
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Sure Learning' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+                axios
+                  .post(endpoints.sureLearning.login, {
+                    username: erp ? erp : username,
+                  })
+                  .then((result) => {
+                    localStorage.setItem('udaanDetails', JSON.stringify(result.data));
+                  })
+                  .catch((error) => {});
+        }
+      });
+    }
+  }, []);
 
   return (
     <Router>

@@ -492,8 +492,8 @@ const Appbar = ({ children, history, ...props }) => {
                   <IconButton className={classes.logoMobileContainer}>
                     <img
                       className={classes.logoMObile}
-                      src={logoMobile}
-                      alt='logo-small'
+                      src={centralSchoolLogo}
+                      // alt='logo-small'
                     />
                     {/* <Divider
                       variant='middle'
@@ -640,8 +640,8 @@ const Appbar = ({ children, history, ...props }) => {
                       size='small'
                     >
                       <img
-                        //   src={centralSchoolLogo}
-                        src={orchidsLogo}
+                        src={centralSchoolLogo}
+                        // src={orchidsLogo}
                         alt='logo'
                         className={clsx(
                           classes.schoolLogoBtn,
@@ -670,8 +670,8 @@ const Appbar = ({ children, history, ...props }) => {
                       size='small'
                     >
                       <img
-                        //   src={centralSchoolLogo}
-                        src={orchidsLogo}
+                        src={centralSchoolLogo}
+                        // src={orchidsLogo}
                         alt='logo'
                         className={clsx(
                           classes.schoolLogoBtn,
