@@ -823,10 +823,10 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       colSpan={
                         eachScholastic?.sub_component?.length > 1
                           ? coschSxamTypeHeader[coI]?.flat().length +
-                            scholasticHeader[coI].length +
+                            coschScholasticHeader[coI].length +
                             (3 * eachScholastic?.sub_component?.length + 5)
                           : coschSxamTypeHeader[coI]?.flat().length +
-                            scholasticHeader[coI].length +
+                            coschScholasticHeader[coI].length +
                             3
                       } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
                     >
@@ -839,10 +839,10 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       colSpan={
                         eachScholastic?.sub_component?.length > 1
                           ? coschSxamTypeHeader[coI]?.flat().length +
-                            scholasticHeader[coI].length +
+                            coschScholasticHeader[coI].length +
                             (3 * eachScholastic?.sub_component?.length + 5)
                           : coschSxamTypeHeader[coI]?.flat().length +
-                            scholasticHeader[coI].length +
+                            coschScholasticHeader[coI].length +
                             3
                       } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
                     >
