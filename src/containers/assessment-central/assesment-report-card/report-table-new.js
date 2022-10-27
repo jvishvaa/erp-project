@@ -508,7 +508,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         eachScholastic?.sub_component?.length > 1
                           ? examTypeHeader[i]?.flat().length +
                             scholasticHeader[i].length +
-                            (3 * eachScholastic?.sub_component?.length + 4)
+                            (3 * eachScholastic?.sub_component?.length + 5)
                           : examTypeHeader[i]?.flat().length +
                             scholasticHeader[i].length +
                             3
@@ -524,7 +524,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         eachScholastic?.sub_component?.length > 1
                           ? examTypeHeader[i]?.flat().length +
                             scholasticHeader[i].length +
-                            (3 * eachScholastic?.sub_component?.length + 4)
+                            (3 * eachScholastic?.sub_component?.length + 5)
                           : examTypeHeader[i]?.flat().length +
                             scholasticHeader[i].length +
                             3
@@ -798,16 +798,21 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         </>
                       );
                     })}
-                    <td className='th-width-12 th-fw-600 text-center'>
-                      {_.sum(
-                        eachScholastic?.sub_component.map((item) => {
-                          return item.total_secured_marks;
-                        })
-                      ) / eachScholastic?.sub_component?.length}
-                    </td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                    {eachScholastic?.sub_component?.length > 1 ? (
+                      <>
+                        {' '}
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {_.sum(
+                            eachScholastic?.sub_component.map((item) => {
+                              return item.total_secured_marks;
+                            })
+                          ) / eachScholastic?.sub_component?.length}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                      </>
+                    ) : null}
                   </tr>
                   {/* Total End */}
 
@@ -819,7 +824,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         eachScholastic?.sub_component?.length > 1
                           ? coschSxamTypeHeader[coI]?.flat().length +
                             scholasticHeader[coI].length +
-                            (3 * eachScholastic?.sub_component?.length + 4)
+                            (3 * eachScholastic?.sub_component?.length + 5)
                           : coschSxamTypeHeader[coI]?.flat().length +
                             scholasticHeader[coI].length +
                             3
@@ -835,7 +840,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         eachScholastic?.sub_component?.length > 1
                           ? coschSxamTypeHeader[coI]?.flat().length +
                             scholasticHeader[coI].length +
-                            (3 * eachScholastic?.sub_component?.length + 4)
+                            (3 * eachScholastic?.sub_component?.length + 5)
                           : coschSxamTypeHeader[coI]?.flat().length +
                             scholasticHeader[coI].length +
                             3
