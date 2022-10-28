@@ -43,7 +43,7 @@ export default function AssesmentReportBackNew({ reportCardDataNew }) {
                 className=' py-2 text-center th-fw-600'
                 style={{ background: '#FDBF8E' }}
               >
-                OBSERVATION FEEDBACK AND ADVISE
+                OBSERVATION AND FEEDBACK
               </td>
             </tr>
           </tbody>

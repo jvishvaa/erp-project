@@ -28,19 +28,13 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
           setPricipalSignData(response?.data);
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
 
-  console.log(
-    reportCardDataNew,
-    selectedAcademicYear,
-    pricipalSignData,
-    'reportCardDataNew'
-  );
   let data = reportCardDataNew;
 
   let reportData = data?.report;
@@ -137,7 +131,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
   return (
     <React.Fragment>
       <div className='row bg-white py-2 px-2'>
-        <table className='w-100 th-report-table '>
+        <table className='w-100 th-report-table mb-2'>
           <tbody>
             <tr>
               <td width='15%' className='text-center'>
@@ -150,9 +144,11 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                 />
               </td>
               <td width='70%' className='text-center'>
-                <div className='th-24'>
-                  CBSE AFFILIATION NO: {schoolData?.cbse_affiliation_code}
-                </div>
+                {schoolData?.cbse_affiliation_code ? (
+                  <div className='th-24'>
+                    CBSE AFFILIATION NO: {schoolData?.cbse_affiliation_code}
+                  </div>
+                ) : null}
                 <div className='th-14 th-fw-600'>{schoolData?.address}</div>
                 <div className='th-30 th-fw-600 pt-4'>ANNUAL REPORT CARD</div>
                 <div className='th-20 pb-3'>
@@ -251,13 +247,15 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         </td>
                       );
                     })}
-                    <td
-                      className='th-width-16 th-fw-600'
-                      colSpan={4}
-                      style={{ backgroundColor: '#fdbf8e' }}
-                    >
-                      ANNUAL SCORE / GRADE
-                    </td>
+                    {eachScholastic?.sub_component?.length > 1 ? (
+                      <td
+                        className='th-width-16 th-fw-600'
+                        colSpan={4}
+                        style={{ backgroundColor: '#fdbf8e' }}
+                      >
+                        ANNUAL SCORE / GRADE
+                      </td>
+                    ) : null}
                   </tr>
                   {/* Scholastic Semester Header End */}
                   {/* Subject/Exam type Header Start */}
@@ -314,19 +312,23 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       );
                     })}
                     {/* Inserting Anuual column for each semester */}
-                    <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                      {'(T1 +T2)/2'}
-                    </td>
-                    <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                      {'Grade'}
-                    </td>
-                    <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                      {'OSR'}
-                    </td>
-
-                    <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                      {'AIR'}
-                    </td>
+                    {eachScholastic?.sub_component?.length > 1 ? (
+                      <>
+                        {' '}
+                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {'(T1 +T2)/2'}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {'Grade'}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {'OSR'}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {'AIR'}
+                        </td>
+                      </>
+                    ) : null}
                   </tr>
                   {/* Subject/Exam type Header End */}
                   {/* Weightage Header Start */}
@@ -418,33 +420,38 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           });
                         })}
                         {/* avg */}
-                        <td
-                          className='th-width-10  text-center'
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          {eachScholastic?.annual_score?.marks[subjectIndex]}
-                        </td>
-                        {/* Avg Grade */}
-                        <td
-                          className='th-width-10  text-center'
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          {eachScholastic?.annual_score?.grade[subjectIndex]}
-                        </td>
-                        {/* Avg OSR */}
-                        <td
-                          className='th-width-10  text-center'
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          {eachScholastic?.annual_score?.OSR[subjectIndex]}
-                        </td>
-                        {/* Avg AIR */}
-                        <td
-                          className='th-width-10  text-center'
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          {eachScholastic?.annual_score?.AIR[subjectIndex]}
-                        </td>
+                        {eachScholastic?.sub_component?.length > 1 ? (
+                          <>
+                            {' '}
+                            <td
+                              className='th-width-10  text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachScholastic?.annual_score?.marks[subjectIndex]}
+                            </td>
+                            {/* Avg Grade */}
+                            <td
+                              className='th-width-10  text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachScholastic?.annual_score?.grade[subjectIndex]}
+                            </td>
+                            {/* Avg OSR */}
+                            <td
+                              className='th-width-10  text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachScholastic?.annual_score?.OSR[subjectIndex]}
+                            </td>
+                            {/* Avg AIR */}
+                            <td
+                              className='th-width-10  text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachScholastic?.annual_score?.AIR[subjectIndex]}
+                            </td>
+                          </>
+                        ) : null}
                       </tr>
                     );
                   })}
@@ -457,42 +464,48 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         <>
                           <td
                             className='th-width-10 th-fw-600 text-center'
-                            colSpan={examTypeHeader[i][x]?.length}
+                            colSpan={examTypeHeader[i][x].length + 1}
                           >
-                            Out Of {eachSem.total_marks}
-                          </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
-                            {eachSem.total_secured_marks}
+                            {eachSem.total_secured_marks} out of {eachSem.total_marks} (
+                            {eachSem?.total_marks_percentage?.toFixed(2)}%)
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>{ }</td>
-                          <td className='th-width-12 th-fw-600 text-center'>{ }</td>
+                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
+                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
                         </>
                       );
                     })}
-                    <td className='th-width-12 th-fw-600 text-center'>
-                      {_.sum(
-                        eachScholastic?.sub_component.map((item) => {
-                          return item.total_secured_marks;
-                        })
-                      ) / eachScholastic?.sub_component?.length}
-                    </td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                    {eachScholastic?.sub_component?.length > 1 ? (
+                      <>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {_.sum(
+                            eachScholastic?.sub_component.map((item) => {
+                              return item.total_secured_marks;
+                            })
+                          ) / eachScholastic?.sub_component?.length}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                      </>
+                    ) : null}
                   </tr>
                   {/* Total End */}
 
                   {/* Grading point descriptions Start */}
-                  <tr>
+                  <tr index={eachScholastic?.sub_component?.length}>
                     <td
                       style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
                       colSpan={
-                        examTypeHeader[i]?.flat()?.length +
-                        scholasticHeader[i]?.length +
-                        10
+                        eachScholastic?.sub_component?.length > 1
+                          ? examTypeHeader[i]?.flat().length +
+                            scholasticHeader[i].length +
+                            (3 * eachScholastic?.sub_component?.length + 5)
+                          : examTypeHeader[i]?.flat().length +
+                            scholasticHeader[i].length +
+                            3
                       } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
                     >
                       {eachScholastic?.grade_description}
@@ -502,9 +515,13 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     <td
                       style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
                       colSpan={
-                        examTypeHeader[i]?.flat()?.length +
-                        scholasticHeader[i]?.length +
-                        10
+                        eachScholastic?.sub_component?.length > 1
+                          ? examTypeHeader[i]?.flat().length +
+                            scholasticHeader[i].length +
+                            (3 * eachScholastic?.sub_component?.length + 5)
+                          : examTypeHeader[i]?.flat().length +
+                            scholasticHeader[i].length +
+                            3
                       } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
                     >
                       {eachScholastic?.component_description}
@@ -546,13 +563,15 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         </td>
                       );
                     })}
-                    <td
-                      className='th-width-16 th-fw-600'
-                      colSpan={4}
-                      style={{ backgroundColor: '#fdbf8e' }}
-                    >
-                      ANNUAL SCORE / GRADE
-                    </td>
+                    {eachScholastic?.sub_component?.length > 1 ? (
+                      <td
+                        className='th-width-16 th-fw-600'
+                        colSpan={4}
+                        style={{ backgroundColor: '#fdbf8e' }}
+                      >
+                        ANNUAL SCORE / GRADE
+                      </td>
+                    ) : null}
                   </tr>
                   {/* Scholastic Semester Header End */}
                   {/* Subject/Exam type Header Start */}
@@ -608,19 +627,23 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       );
                     })}
                     {/* Inserting Anuual column for each semester */}
-                    <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                      {'(T1 +T2)/2'}
-                    </td>
-                    <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                      {'Grade'}
-                    </td>
-                    <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                      {'OSR'}
-                    </td>
-
-                    <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                      {'AIR'}
-                    </td>
+                    {eachScholastic?.sub_component?.length > 1 ? (
+                      <>
+                        {' '}
+                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {'(T1 +T2)/2'}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {'Grade'}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {'OSR'}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {'AIR'}
+                        </td>
+                      </>
+                    ) : null}
                   </tr>
                   {/* Subject/Exam type Header End */}
                   {/* Weightage Header Start */}
@@ -669,7 +692,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   className='th-width-10  text-center'
                                   style={{ backgroundColor: '#ffffff' }}
                                 >
-                                  {subMarks}
+                                  {subMarks ? subMarks : 'NA'}
                                 </td>
                                 {/* Inserting Total marks column for each semester */}
                                 {j == eachSem?.marks_with_subject?.length - 1 ? (
@@ -712,33 +735,38 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           });
                         })}
                         {/* avg */}
-                        <td
-                          className='th-width-10  text-center'
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          {eachScholastic?.annual_score?.marks[subjectIndex]}
-                        </td>
-                        {/* Avg Grade */}
-                        <td
-                          className='th-width-10  text-center'
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          {eachScholastic?.annual_score?.grade[subjectIndex]}
-                        </td>
-                        {/* Avg OSR */}
-                        <td
-                          className='th-width-10  text-center'
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          {eachScholastic?.annual_score?.OSR[subjectIndex]}
-                        </td>
-                        {/* Avg AIR */}
-                        <td
-                          className='th-width-10  text-center'
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          {eachScholastic?.annual_score?.AIR[subjectIndex]}
-                        </td>
+                        {eachScholastic?.sub_component?.length > 1 ? (
+                          <>
+                            {' '}
+                            <td
+                              className='th-width-10  text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachScholastic?.annual_score?.marks[subjectIndex]}
+                            </td>
+                            {/* Avg Grade */}
+                            <td
+                              className='th-width-10  text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachScholastic?.annual_score?.grade[subjectIndex]}
+                            </td>
+                            {/* Avg OSR */}
+                            <td
+                              className='th-width-10  text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachScholastic?.annual_score?.OSR[subjectIndex]}
+                            </td>
+                            {/* Avg AIR */}
+                            <td
+                              className='th-width-10  text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachScholastic?.annual_score?.AIR[subjectIndex]}
+                            </td>
+                          </>
+                        ) : null}
                       </tr>
                     );
                   })}
@@ -751,31 +779,34 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         <>
                           <td
                             className='th-width-10 th-fw-600 text-center'
-                            colSpan={coschSxamTypeHeader[coI][x]?.length}
+                            colSpan={coschSxamTypeHeader[coI][x].length + 1}
                           >
-                            Out Of {eachSem.total_marks}
-                          </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
-                            {eachSem.total_secured_marks}
+                            {eachSem.total_secured_marks} out of {eachSem.total_marks} (
+                            {eachSem?.total_marks_percentage?.toFixed(2)}%)
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>{ }</td>
-                          <td className='th-width-12 th-fw-600 text-center'>{ }</td>
+                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
+                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
                         </>
                       );
                     })}
-                    <td className='th-width-12 th-fw-600 text-center'>
-                      {_.sum(
-                        eachScholastic?.sub_component.map((item) => {
-                          return item.total_secured_marks;
-                        })
-                      ) / eachScholastic?.sub_component?.length}
-                    </td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                    <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                    {eachScholastic?.sub_component?.length > 1 ? (
+                      <>
+                        {' '}
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {_.sum(
+                            eachScholastic?.sub_component.map((item) => {
+                              return item.total_secured_marks;
+                            })
+                          ) / eachScholastic?.sub_component?.length}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                      </>
+                    ) : null}
                   </tr>
                   {/* Total End */}
 
@@ -784,9 +815,13 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     <td
                       style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
                       colSpan={
-                        coschSxamTypeHeader[coI]?.flat()?.length +
-                        scholasticHeader[coI]?.length +
-                        10
+                        eachScholastic?.sub_component?.length > 1
+                          ? coschSxamTypeHeader[coI]?.flat().length +
+                            coschScholasticHeader[coI].length +
+                            (3 * eachScholastic?.sub_component?.length + 5)
+                          : coschSxamTypeHeader[coI]?.flat().length +
+                            coschScholasticHeader[coI].length +
+                            3
                       } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
                     >
                       {eachScholastic?.grade_description}
@@ -796,9 +831,13 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     <td
                       style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
                       colSpan={
-                        coschSxamTypeHeader[coI]?.flat()?.length +
-                        scholasticHeader[coI]?.length +
-                        10
+                        eachScholastic?.sub_component?.length > 1
+                          ? coschSxamTypeHeader[coI]?.flat().length +
+                            coschScholasticHeader[coI].length +
+                            (3 * eachScholastic?.sub_component?.length + 5)
+                          : coschSxamTypeHeader[coI]?.flat().length +
+                            coschScholasticHeader[coI].length +
+                            3
                       } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
                     >
                       {eachScholastic?.component_description}
@@ -813,98 +852,107 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
 
         {/* PTSD */}
 
-        <table className='w-100 mt-1 th-12 th-report-table '>
-          <tbody className='th-table-border'>
-            {ptsd_data?.map((eachPtsd, i) => {
-              return (
-                <>
-                  {/* Scholastic Semester Header Start */}
-                  <tr className='text-center'>
-                    {eachPtsd?.data?.map((eachSem) => {
+        {data?.ptsd_data?.data?.length > 0 ? (
+          <table className='w-100 mt-1 th-12 th-report-table '>
+            <tbody className='th-table-border'>
+              {ptsd_data?.map((eachPtsd, i) => {
+                return (
+                  <>
+                    {/* Scholastic Semester Header Start */}
+                    <tr className='text-center'>
+                      {eachPtsd?.data?.map((eachSem) => {
+                        return (
+                          <>
+                            {' '}
+                            <td
+                              className={`th-fw-600 text-uppercase`}
+                              // colSpan={eachSem?.marks_with_subject?.length}
+                              style={{
+                                backgroundColor: '#fdbf8e',
+                                width: `${72 / eachPtsd?.data?.length}%`,
+                              }} //calculating column width
+                            >
+                              PERSONALITY TRAIT AND SELF DISCIPLINE ({eachSem?.term})
+                            </td>
+                            <td
+                              className={`th-fw-600`}
+                              style={{
+                                backgroundColor: '#fdbf8e',
+                              }}
+                            >
+                              Grade
+                            </td>
+                          </>
+                        );
+                      })}
+                      {eachPtsd?.data?.length > 1 ? (
+                        <td
+                          className='th-width-16 th-fw-600'
+                          style={{ backgroundColor: '#fdbf8e' }}
+                        >
+                          ANNUAL SCORE / GRADE
+                        </td>
+                      ) : null}
+                    </tr>
+
+                    {finalPtsdData?.map((eachSem, i) => {
                       return (
-                        <>
-                          {' '}
-                          <td
-                            className={`th-fw-600 text-uppercase`}
-                            // colSpan={eachSem?.marks_with_subject?.length}
-                            style={{
-                              backgroundColor: '#fdbf8e',
-                              width: `${72 / eachPtsd?.data?.length}%`,
-                            }} //calculating column width
-                          >
-                            PERSONALITY TRAIT AND SELF DISCIPLINE ({eachSem?.term})
-                          </td>
-                          <td
-                            className={`th-fw-600`}
-                            style={{
-                              backgroundColor: '#fdbf8e',
-                            }}
-                          >
-                            Grade
-                          </td>
-                        </>
+                        <tr>
+                          {eachSem?.map((eachQues, j) => {
+                            return (
+                              <>
+                                {' '}
+                                <td
+                                  className='th-width-8 text-left td-p-mb-0'
+                                  style={{ backgroundColor: '#ffffff' }}
+                                  dangerouslySetInnerHTML={{
+                                    __html: eachQues?.question_name,
+                                  }}
+                                >
+                                  {/* {eachQues?.question_name} */}
+                                </td>
+                                <td
+                                  className='th-width-8 th-fw-600 text-center'
+                                  style={{ backgroundColor: '#ffffff' }}
+                                >
+                                  {eachQues?.grade}
+                                </td>
+                              </>
+                            );
+                          })}
+                          {eachPtsd?.data?.length > 1 ? (
+                            <td
+                              className='th-width-8 th-fw-600 text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachPtsd?.annual_data?.grade[i]}
+                            </td>
+                          ) : null}
+                        </tr>
                       );
                     })}
-                    <td
-                      className='th-width-16 th-fw-600'
-                      style={{ backgroundColor: '#fdbf8e' }}
-                    >
-                      ANNUAL SCORE / GRADE
-                    </td>
-                  </tr>
-
-                  {finalPtsdData?.map((eachSem, i) => {
-                    console.log(eachSem, i, 'kffefeje');
-                    return (
+                    {/* Grading point descriptions Start */}
+                    {eachPtsd?.grade_description ? (
                       <tr>
-                        {eachSem?.map((eachQues, j) => {
-                          return (
-                            <>
-                              {' '}
-                              <td
-                                className='th-width-8 text-left td-p-mb-0'
-                                style={{ backgroundColor: '#ffffff' }}
-                                dangerouslySetInnerHTML={{
-                                  __html: eachQues?.question_name,
-                                }}
-                              >
-                                {/* {eachQues?.question_name} */}
-                              </td>
-                              <td
-                                className='th-width-8 th-fw-600 text-center'
-                                style={{ backgroundColor: '#ffffff' }}
-                              >
-                                {eachQues?.grade}
-                              </td>
-                            </>
-                          );
-                        })}
                         <td
-                          className='th-width-8 th-fw-600 text-center'
-                          style={{ backgroundColor: '#ffffff' }}
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachPtsd?.data?.length > 1
+                              ? 2 * eachPtsd?.data?.length + 1
+                              : 2 * eachPtsd?.data?.length
+                          }
                         >
-                          {eachPtsd?.annual_data?.grade[i]}
+                          {eachPtsd?.grade_description}
                         </td>
                       </tr>
-                    );
-                  })}
-                  {/* Grading point descriptions Start */}
-                  {eachPtsd?.grade_description ? (
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={2 * eachPtsd?.data?.length + 1}
-                      >
-                        {eachPtsd?.grade_description}
-                      </td>
-                    </tr>
-                  ) : null}
-                  {/* Grading point descriptions End */}
-                </>
-              );
-            })}
-          </tbody>
-        </table>
+                    ) : null}
+                    {/* Grading point descriptions End */}
+                  </>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : null}
 
         {/* Teachers Remarks */}
         <table className='w-100 mt-1 th-12 th-report-table '>
