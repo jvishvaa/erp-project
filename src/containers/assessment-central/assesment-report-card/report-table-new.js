@@ -852,7 +852,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
 
         {/* PTSD */}
 
-        {ptsd_data?.data?.length > 0 ? (
+        {data?.ptsd_data?.data?.length > 0 ? (
           <table className='w-100 mt-1 th-12 th-report-table '>
             <tbody className='th-table-border'>
               {ptsd_data?.map((eachPtsd, i) => {
