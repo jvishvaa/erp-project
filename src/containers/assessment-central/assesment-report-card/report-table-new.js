@@ -35,12 +35,6 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
     (state) => state.commonFilterReducer?.selectedYear
   );
 
-  console.log(
-    reportCardDataNew,
-    selectedAcademicYear,
-    pricipalSignData,
-    'reportCardDataNew'
-  );
   let data = reportCardDataNew;
 
   let reportData = data?.report;
@@ -858,105 +852,107 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
 
         {/* PTSD */}
 
-        <table className='w-100 mt-1 th-12 th-report-table '>
-          <tbody className='th-table-border'>
-            {ptsd_data?.map((eachPtsd, i) => {
-              return (
-                <>
-                  {/* Scholastic Semester Header Start */}
-                  <tr className='text-center'>
-                    {eachPtsd?.data?.map((eachSem) => {
+        {ptsd_data?.data?.length > 0 ? (
+          <table className='w-100 mt-1 th-12 th-report-table '>
+            <tbody className='th-table-border'>
+              {ptsd_data?.map((eachPtsd, i) => {
+                return (
+                  <>
+                    {/* Scholastic Semester Header Start */}
+                    <tr className='text-center'>
+                      {eachPtsd?.data?.map((eachSem) => {
+                        return (
+                          <>
+                            {' '}
+                            <td
+                              className={`th-fw-600 text-uppercase`}
+                              // colSpan={eachSem?.marks_with_subject?.length}
+                              style={{
+                                backgroundColor: '#fdbf8e',
+                                width: `${72 / eachPtsd?.data?.length}%`,
+                              }} //calculating column width
+                            >
+                              PERSONALITY TRAIT AND SELF DISCIPLINE ({eachSem?.term})
+                            </td>
+                            <td
+                              className={`th-fw-600`}
+                              style={{
+                                backgroundColor: '#fdbf8e',
+                              }}
+                            >
+                              Grade
+                            </td>
+                          </>
+                        );
+                      })}
+                      {eachPtsd?.data?.length > 1 ? (
+                        <td
+                          className='th-width-16 th-fw-600'
+                          style={{ backgroundColor: '#fdbf8e' }}
+                        >
+                          ANNUAL SCORE / GRADE
+                        </td>
+                      ) : null}
+                    </tr>
+
+                    {finalPtsdData?.map((eachSem, i) => {
                       return (
-                        <>
-                          {' '}
-                          <td
-                            className={`th-fw-600 text-uppercase`}
-                            // colSpan={eachSem?.marks_with_subject?.length}
-                            style={{
-                              backgroundColor: '#fdbf8e',
-                              width: `${72 / eachPtsd?.data?.length}%`,
-                            }} //calculating column width
-                          >
-                            PERSONALITY TRAIT AND SELF DISCIPLINE ({eachSem?.term})
-                          </td>
-                          <td
-                            className={`th-fw-600`}
-                            style={{
-                              backgroundColor: '#fdbf8e',
-                            }}
-                          >
-                            Grade
-                          </td>
-                        </>
+                        <tr>
+                          {eachSem?.map((eachQues, j) => {
+                            return (
+                              <>
+                                {' '}
+                                <td
+                                  className='th-width-8 text-left td-p-mb-0'
+                                  style={{ backgroundColor: '#ffffff' }}
+                                  dangerouslySetInnerHTML={{
+                                    __html: eachQues?.question_name,
+                                  }}
+                                >
+                                  {/* {eachQues?.question_name} */}
+                                </td>
+                                <td
+                                  className='th-width-8 th-fw-600 text-center'
+                                  style={{ backgroundColor: '#ffffff' }}
+                                >
+                                  {eachQues?.grade}
+                                </td>
+                              </>
+                            );
+                          })}
+                          {eachPtsd?.data?.length > 1 ? (
+                            <td
+                              className='th-width-8 th-fw-600 text-center'
+                              style={{ backgroundColor: '#ffffff' }}
+                            >
+                              {eachPtsd?.annual_data?.grade[i]}
+                            </td>
+                          ) : null}
+                        </tr>
                       );
                     })}
-                    {eachPtsd?.data?.length > 1 ? (
-                      <td
-                        className='th-width-16 th-fw-600'
-                        style={{ backgroundColor: '#fdbf8e' }}
-                      >
-                        ANNUAL SCORE / GRADE
-                      </td>
-                    ) : null}
-                  </tr>
-
-                  {finalPtsdData?.map((eachSem, i) => {
-                    return (
+                    {/* Grading point descriptions Start */}
+                    {eachPtsd?.grade_description ? (
                       <tr>
-                        {eachSem?.map((eachQues, j) => {
-                          return (
-                            <>
-                              {' '}
-                              <td
-                                className='th-width-8 text-left td-p-mb-0'
-                                style={{ backgroundColor: '#ffffff' }}
-                                dangerouslySetInnerHTML={{
-                                  __html: eachQues?.question_name,
-                                }}
-                              >
-                                {/* {eachQues?.question_name} */}
-                              </td>
-                              <td
-                                className='th-width-8 th-fw-600 text-center'
-                                style={{ backgroundColor: '#ffffff' }}
-                              >
-                                {eachQues?.grade}
-                              </td>
-                            </>
-                          );
-                        })}
-                        {eachPtsd?.data?.length > 1 ? (
-                          <td
-                            className='th-width-8 th-fw-600 text-center'
-                            style={{ backgroundColor: '#ffffff' }}
-                          >
-                            {eachPtsd?.annual_data?.grade[i]}
-                          </td>
-                        ) : null}
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachPtsd?.data?.length > 1
+                              ? 2 * eachPtsd?.data?.length + 1
+                              : 2 * eachPtsd?.data?.length
+                          }
+                        >
+                          {eachPtsd?.grade_description}
+                        </td>
                       </tr>
-                    );
-                  })}
-                  {/* Grading point descriptions Start */}
-                  {eachPtsd?.grade_description ? (
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachPtsd?.data?.length > 1
-                            ? 2 * eachPtsd?.data?.length + 1
-                            : 2 * eachPtsd?.data?.length
-                        }
-                      >
-                        {eachPtsd?.grade_description}
-                      </td>
-                    </tr>
-                  ) : null}
-                  {/* Grading point descriptions End */}
-                </>
-              );
-            })}
-          </tbody>
-        </table>
+                    ) : null}
+                    {/* Grading point descriptions End */}
+                  </>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : null}
 
         {/* Teachers Remarks */}
         <table className='w-100 mt-1 th-12 th-report-table '>
