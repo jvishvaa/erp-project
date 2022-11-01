@@ -16,9 +16,13 @@ import {
   DownOutlined,
   EyeFilled,
   CaretRightOutlined,
+  LeftOutlined,
+  RightOutlined,
+  RightCircleOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import 'slick-carousel/slick/slick.css';
@@ -27,6 +31,7 @@ import '../index.css';
 import axiosInstance from 'axios';
 import { useHistory } from 'react-router-dom';
 import periodIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/periodicon.png';
+import tickIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/greenTick.svg';
 import analysisIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/analysisIcon.png';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
@@ -45,6 +50,7 @@ const { Option } = Select;
 const PeriodListView = () => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const formRef = createRef();
+  const myRef = useRef(null);
   const history = useHistory();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -69,25 +75,33 @@ const PeriodListView = () => {
   const [chapterId, setChapterId] = useState();
   const [resourcesData, setResourcesData] = useState();
   const [keyConceptListData, setKeyConceptListData] = useState([]);
-  const [keyConceptId, setKeyConceptId] = useState([]);
-  const [centralGSID, setCentralGSID] = useState([]);
+  const [keyConceptId, setKeyConceptId] = useState();
+  const [centralGSID, setCentralGSID] = useState();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingDrawer, setLoadingDrawer] = useState(false);
+  const [filtered, setFiltered] = useState(false);
   const [drawerData, setDrawerData] = useState([]);
   const [periodWiseData, setPeriodWiseData] = useState([]);
   const [YCPData, setYCPData] = useState([]);
   const [periodSortedData, setPeriodSortedData] = useState([]);
-  const [currentPeriodId, setCurrentPeriodId] = useState('');
+  const [currentIndex, setCurrentIndex] = useState();
   const [showSection, setShowSection] = useState(false);
   const [completeSections, setCompleteSections] = useState([]);
   const [showError, setShowError] = useState(false);
   const [showCompletionStatusModal, setShowCompletionStatusModal] = useState(false);
   const [modalData, setModalData] = useState([]);
+  const [incompletePeriod, setIncompletePeriod] = useState();
+  const [highlightedPeriodPresent, setHighlightedPeriodPresent] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [allComplete, setAllComplete] = useState(false);
+  const [nextPeriodDetails, setNextPeriodDetails] = useState();
+
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
     'orchids.letseduvate.com',
     'localhost:3000',
+    'localhost:3001',
     'dev.olvorchidnaigaon.letseduvate.com',
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
@@ -99,8 +113,6 @@ const PeriodListView = () => {
 
   const closeDrawer = () => {
     setDrawerVisible(false);
-    setDrawerData([]);
-    setCompleteSections([]);
     setShowError(false);
   };
   const showModal = () => {
@@ -111,8 +123,26 @@ const PeriodListView = () => {
     setShowCompletionStatusModal(false);
     setModalData([]);
   };
-  const handleOk = () => {
-    setShowCompletionStatusModal(false);
+  const closeshowInfoModal = () => {
+    setShowInfoModal(false);
+  };
+  const handleNextPeriodResource = () => {
+    setCompleteSections([]);
+    closeshowInfoModal();
+    if (nextPeriodDetails) {
+      fetchLessonResourcesData(nextPeriodDetails);
+      if (nextPeriodDetails.volume_id !== volumeId) {
+        formRef.current.setFieldsValue({
+          volume: nextPeriodDetails.volume_name,
+        });
+        setVolumeId(nextPeriodDetails.volume_id);
+      } else if (nextPeriodDetails.chapter_id !== chapterId) {
+        formRef.current.setFieldsValue({
+          chapter: nextPeriodDetails.chapter__chapter_name,
+        });
+        setChapterId(nextPeriodDetails.chapter_id);
+      }
+    }
   };
   const showSectionList = () => {
     setShowSection((prevState) => !prevState);
@@ -175,6 +205,9 @@ const PeriodListView = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setModuleListData(result?.data?.result?.module_list);
+          // formRef.current.setFieldsValue({
+          //   module: ['All'],
+          // });
           setLoading(false);
         }
       })
@@ -221,24 +254,24 @@ const PeriodListView = () => {
     setChapterListData([]);
     setKeyConceptId();
     setKeyConceptListData([]);
-    if (boardFilterArr.includes(window.location.host)) {
-      fetchModuleListData({
-        subject_id: subjectId,
-        volume: e.value,
-        academic_year: history?.location?.state?.centralAcademicYearID,
-        grade_id: gradeId,
-        branch_id: selectedBranch?.branch?.id,
-        board: boardId,
-      });
-    } else {
-      fetchChapterListData({
-        subject_id: subjectId,
-        volume: e.value,
-        grade_id: gradeId,
-        branch_id: selectedBranch?.branch?.id,
-        board: boardId,
-      });
-    }
+    // if (boardFilterArr.includes(window.location.host)) {
+    //   fetchModuleListData({
+    //     subject_id: subjectId,
+    //     volume: e.value,
+    //     academic_year: history?.location?.state?.centralAcademicYearID,
+    //     grade_id: gradeId,
+    //     branch_id: selectedBranch?.branch?.id,
+    //     board: boardId,
+    //   });
+    // } else {
+    //   fetchChapterListData({
+    //     subject_id: subjectId,
+    //     volume: e.value,
+    //     grade_id: gradeId,
+    //     branch_id: selectedBranch?.branch?.id,
+    //     board: boardId,
+    //   });
+    // }
   };
   const handleClearVolume = () => {
     setVolumeId('');
@@ -282,7 +315,7 @@ const PeriodListView = () => {
     setChapterId('');
     // setChapterListData([]);
     // setKeyConceptListData([]);
-    setKeyConceptId('');
+    setKeyConceptId();
     if (each.length === 1 && each.some((item) => item.value === 'All')) {
       const all = moduleListData.slice();
       const allModules = all.map((item) => item.id).join(',');
@@ -302,23 +335,23 @@ const PeriodListView = () => {
       keyConcept: null,
     });
     setChapterId(e);
-    setKeyConceptId('');
-    fetchKeyConceptListData({
-      chapter: e,
-    });
+    setKeyConceptId();
   };
   const handleClearChapter = (e) => {
     setChapterId('');
-    setKeyConceptId('');
+    setKeyConceptId();
   };
   const handleKeyConcept = (e) => {
     setKeyConceptId(e);
   };
   const handleClearKeyConcept = (e) => {
-    setKeyConceptId('');
+    setKeyConceptId();
   };
+
   const fetchPeriodWiseData = (params = {}) => {
     setLoading(true);
+    setFiltered(true);
+    setAllComplete(false);
     axios
       .get(`/academic/period-view/grade-subject-wise-lp-overview/`, {
         params: { ...params, ...(keyConceptId ? { key_concepts: keyConceptId } : {}) },
@@ -327,6 +360,15 @@ const PeriodListView = () => {
         if (res?.data?.status === 200) {
           setPeriodWiseData(res?.data?.data);
           setYCPData(res?.data?.ycp_data);
+          let highlightedPeriod = res?.data?.data?.filter(
+            (element) => element.is_complete == false
+          );
+          if (res?.data?.data?.every((item) => item.is_complete == true)) {
+            setAllComplete(true);
+          }
+          if (highlightedPeriod.length > 0) {
+            setHighlightedPeriodPresent(true);
+          }
           setLoading(false);
         } else {
           setLoading(false);
@@ -339,6 +381,7 @@ const PeriodListView = () => {
   };
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
+
     if (completeSections?.length > 0) {
       setShowError(false);
       completeSections.map((section, index) => {
@@ -352,15 +395,16 @@ const PeriodListView = () => {
           chapter_name: item.chapter__chapter_name,
           central_gs_mapping_id: Number(centralGSID),
           period_id: item?.id,
-          section_mapping_id: [section],
+          section_mapping_id: [section?.id],
+          fetch_upcoming_period: true,
         };
         axios
           .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
               if (index == completeSections?.length - 1) {
-                setCompleteSections([]);
                 closeSectionList();
+                closeDrawer();
                 fetchPeriodWiseData({
                   acad_session_id: selectedBranch?.id,
                   board_id: boardId,
@@ -372,7 +416,10 @@ const PeriodListView = () => {
                   volume: volumeId,
                   central_gs_id: centralGSID,
                 });
-                fetchLessonResourcesData(drawerData);
+                setShowInfoModal(true);
+                if (res.data.result) {
+                  setNextPeriodDetails(res.data.result);
+                }
               }
             }
           })
@@ -406,6 +453,7 @@ const PeriodListView = () => {
     return sortedConceptData;
   };
   const fetchLessonResourcesData = (data) => {
+    setResourcesData([]);
     showDrawer();
     setLoadingDrawer(true);
     const params = {
@@ -432,22 +480,53 @@ const PeriodListView = () => {
         setLoadingDrawer(false);
       });
   };
-  useEffect(() => {
-    if (chapterId) {
-      fetchPeriodWiseData({
-        acad_session_id: selectedBranch?.id,
-        board_id: boardId,
-        grade: gradeId,
-        subject: subjectId,
-        chapters: chapterId,
-        modules: selectedModuleId,
-        board: boardId,
-        volume: volumeId,
-        central_gs_id: centralGSID,
+
+  const handleNext = () => {
+    // setAllComplete(false);
+    console.log('Current Index Next:', currentIndex);
+
+    if (keyConceptId) {
+      setKeyConceptId(keyConceptListData[currentIndex + 1]?.id);
+      formRef.current.setFieldsValue({
+        keyConcept: keyConceptListData[currentIndex + 1]?.topic_name,
+      });
+    } else {
+      setChapterId(chapterListData[currentIndex + 1]?.id);
+      formRef.current.setFieldsValue({
+        chapter: chapterListData[currentIndex + 1]?.chapter_name,
       });
     }
-  }, [chapterId, keyConceptId, selectedModuleId]);
+  };
 
+  const handlePrevious = () => {
+    // setAllComplete(false);
+    console.log('Current Index Prev:', currentIndex);
+
+    if (keyConceptId) {
+      setKeyConceptId(keyConceptListData[currentIndex - 1]?.id);
+      formRef.current.setFieldsValue({
+        keyConcept: keyConceptListData[currentIndex - 1]?.topic_name,
+      });
+    } else {
+      formRef.current.setFieldsValue({
+        chapter: chapterListData[currentIndex - 1]?.chapter_name,
+      });
+      setChapterId(chapterListData[currentIndex - 1]?.id);
+    }
+  };
+
+  // const executeScroll = () => myRef.current.scrollIntoView();
+  const executeScroll = () => {
+    // if (myRef && myRef.current /* + other conditions */) {
+    const scrollIntoView = document.getElementById('highlightedPeriod');
+
+    // scrollIntoView.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.scrollTo({
+      top: scrollIntoView.offsetTop,
+      behavior: 'smooth',
+    });
+    // }
+  };
   useEffect(() => {
     const all = moduleListData.slice();
     const allModules = all.map((item) => item.id).join(',');
@@ -470,22 +549,22 @@ const PeriodListView = () => {
         }
       });
     }
+    fetchVolumeListData();
   }, []);
+
   useEffect(() => {
-    if (history?.location?.state.showTab == '1') {
+    if (history?.location?.state) {
       formRef.current.setFieldsValue({
         volume: history?.location?.state?.volumeName,
         chapter: history?.location?.state?.chapterName,
       });
-      fetchVolumeListData();
-
       setGradeId(history?.location?.state?.gradeID);
       setGradeName(history?.location?.state?.gradeName);
       setSubjectId(history?.location?.state?.subjectID);
       setSubjectName(history?.location?.state?.subjectName);
       setVolumeId(history?.location?.state?.volumeID);
       setVolumeName(history?.location?.state?.volumeName);
-      setChapterId(history?.location?.state?.chapterID);
+      setChapterId(Number(history?.location?.state?.chapterID));
       setBoardId(history?.location?.state?.boardID);
       setCentralGSID(history?.location?.state?.centralGSID);
 
@@ -508,9 +587,9 @@ const PeriodListView = () => {
           // module_id: selectedModuleId,
         });
       }
-      fetchKeyConceptListData({ chapter: history?.location?.state?.chapterID });
+      // fetchKeyConceptListData({ chapter: history?.location?.state?.chapterID });
     }
-  }, []);
+  }, [window.location.pathname]);
   useEffect(() => {
     if (selectedModuleId.length > 0) {
       fetchChapterListData({
@@ -529,6 +608,70 @@ const PeriodListView = () => {
       setPeriodSortedData(getSortedPeriodData(periodWiseData));
     }
   }, [periodWiseData]);
+
+  useEffect(() => {
+    if (chapterId && chapterListData.length > 0) {
+      if (keyConceptId) {
+        setCurrentIndex(keyConceptListData?.map((e) => e.id).indexOf(keyConceptId));
+      } else {
+        setCurrentIndex(chapterListData?.map((e) => e.id).indexOf(chapterId));
+      }
+    }
+  }, [periodWiseData, chapterListData]);
+
+  useEffect(() => {
+    setKeyConceptId();
+    setKeyConceptListData([]);
+    formRef.current.setFieldsValue({
+      keyConcept: null,
+    });
+    if (chapterId) {
+      fetchKeyConceptListData({
+        chapter: chapterId,
+      });
+    }
+  }, [chapterId]);
+
+  useEffect(() => {
+    if (volumeId) {
+      if (boardFilterArr.includes(window.location.host)) {
+        fetchModuleListData({
+          subject_id: subjectId,
+          volume: volumeId,
+          academic_year: history?.location?.state?.centralAcademicYearID,
+          grade_id: gradeId,
+          branch_id: selectedBranch?.branch?.id,
+          board: boardId,
+        });
+      } else {
+        fetchChapterListData({
+          subject_id: subjectId,
+          volume: volumeId,
+          grade_id: gradeId,
+          branch_id: selectedBranch?.branch?.id,
+          board: boardId,
+        });
+      }
+    }
+  }, [volumeId]);
+
+  useEffect(() => {
+    if (chapterId) {
+      fetchPeriodWiseData({
+        acad_session_id: selectedBranch?.id,
+        board_id: boardId,
+        grade: gradeId,
+        subject: subjectId,
+        chapters: chapterId,
+        modules: selectedModuleId,
+        board: boardId,
+        volume: volumeId,
+        central_gs_id: centralGSID,
+      });
+    }
+  }, [chapterId, keyConceptId]);
+  // }, [chapterId, keyConceptId, chapterListData]);
+
   return (
     <div className='row '>
       <div className='row align-items-center mb-2'>
@@ -740,13 +883,16 @@ const PeriodListView = () => {
           <Spin title='Loading...' />
         </div>
       ) : periodWiseData.length > 0 ? (
-        <div className='row th-br-10 pt-2 pb-3'>
+        <div
+          className='row th-br-10 pt-2 pb-3'
+          // style={{ border: '2px solid #d9d9d9' }}
+        >
           <div className='col-6 py-1 th-fw-600 th-20'>
             {' '}
             <img src={periodIcon} height='30' className='mr-3 pb-1 ml-1' />
             Periods
           </div>
-          {periodWiseData?.every((item) => item.is_complete == true) ? (
+          {allComplete ? (
             <div className='col-md-6 col-12 py-3 text-md-right pr-4 th-fw-600 th-20 th-primary'>
               All the periods are complete!
             </div>
@@ -761,9 +907,22 @@ const PeriodListView = () => {
                     </Divider>
                   </div>
                   {period?.data?.map((each, index) => (
-                    <div className='col-md-4 pl-0'>
+                    <div className='col-md-4 pl-0' id={'ravi'}>
                       <div className='row mb-3 pb-1'>
-                        <div className='col-12 th-br-20 th-bg-pink py-2 period-card'>
+                        <div
+                          className={`col-12 th-br-20 th-bg-pink py-2 ${
+                            isStudent
+                              ? each.last_taught == true
+                                ? 'highlighted-period'
+                                : 'period-card'
+                              : each.next_to_be_taught == true
+                              ? 'highlighted-period'
+                              : 'period-card'
+                          }`}
+                          // ref={myRef}
+                          // ref={each.next_to_be_taught == true ? myRef : ''}
+                          id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
+                        >
                           <div className='row px-1 pt-2'>
                             <div className='col-md-7 col-6 px-0 th-18 th-fw-600'>
                               {each?.period_name}
@@ -868,6 +1027,8 @@ const PeriodListView = () => {
                                 style={{ border: '2px solid #d9d9d9' }}
                                 onClick={() => {
                                   setDrawerData(each);
+                                  // setCurrentPeriodId(each?.id);
+                                  // showDrawer();
                                   fetchLessonResourcesData(each);
                                 }}
                               >
@@ -883,16 +1044,50 @@ const PeriodListView = () => {
               ))}
             </div>
           </div>
+          {/* {allComplete && ( */}
+
+          {/* )} */}
         </div>
       ) : (
         <div className='row justify-content-center my-5'>
           <img src={NoDataIcon} />
         </div>
       )}
+      {!loading && (
+        <div className='col-12 py-2'>
+          <div className='row justify-content-between'>
+            <div className='col-2'>
+              <Button
+                disabled={currentIndex == 0}
+                type='primary'
+                onClick={handlePrevious}
+                className='th-br-6'
+              >
+                <LeftOutlined /> Previous {keyConceptId ? 'Key Concept' : 'Chapter'}
+              </Button>
+            </div>
+            <div className='col-2 text-right'>
+              <Button
+                disabled={
+                  keyConceptId
+                    ? currentIndex == keyConceptListData?.length - 1
+                    : currentIndex == chapterListData?.length - 1
+                }
+                type='primary'
+                onClick={handleNext}
+                className='th-br-6'
+              >
+                Next {keyConceptId ? 'Key Concept' : 'Chapter'}
+                <RightOutlined />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div>
         <Drawer
-          title='Resources'
+          title={<span className='th-fw-500'>{resourcesData?.period_name}</span>}
           placement='right'
           onClose={closeDrawer}
           zIndex={1300}
@@ -911,11 +1106,19 @@ const PeriodListView = () => {
             </div>
           ) : resourcesData ? (
             <div>
+              <div className='row'>
+                <div className='col-12 text-through pl-0'>
+                  <span className='th-grey'>Resources</span>
+                </div>
+              </div>
               {resourcesData?.lp_files.map((each) => each.media_file).flat().length >
               0 ? (
                 <div
-                  style={{ overflowY: 'scroll', overflowX: 'hidden', maxHeight: '50vh' }}
-                  className='th-question'
+                  style={{
+                    overflowY: 'scroll',
+                    overflowX: 'hidden',
+                    maxHeight: '50vh',
+                  }}
                 >
                   {resourcesData?.lp_files?.map((files, i) => (
                     <>
@@ -927,11 +1130,16 @@ const PeriodListView = () => {
                         ) {
                         } else {
                           let fullName = each?.split(
-                            `${files.document_type.toLowerCase()}/`
-                          );
-                          let fileName = fullName
-                            ? fullName[fullName?.length - 1]?.split('.')
-                            : null;
+                            `${files?.document_type.toLowerCase()}/`
+                          )[1];
+                          let textIndex = fullName
+                            ?.split('_')
+                            .indexOf(fullName.split('_').find((item) => isNaN(item)));
+                          let displayName = fullName
+                            .split('_')
+                            .slice(textIndex)
+                            .join('_');
+                          let fileName = displayName ? displayName.split('.') : null;
                           let file = fileName ? fileName[fileName?.length - 2] : '';
                           let extension = fileName ? fileName[fileName?.length - 1] : '';
                           return (
@@ -939,10 +1147,13 @@ const PeriodListView = () => {
                               className='row mt-2 py-2 align-items-center'
                               style={{ border: '1px solid #d9d9d9' }}
                             >
-                              <div className='col-3'>
+                              <div className='col-2'>
                                 <img src={getFileIcon(extension)} />
                               </div>
-                              <div className='col-9 px-0 th-pointer'>
+                              <div className='col-10 px-0 th-pointer'>
+                                {/* <div>{file}</div>
+                              </div>
+                              <div className='col-2 th-pointer'> */}
                                 <a
                                   onClick={() => {
                                     openPreview({
@@ -961,7 +1172,9 @@ const PeriodListView = () => {
                                   target='_blank'
                                 >
                                   <div className='row align-items-center'>
-                                    <div className='col-10'>{file}</div>
+                                    <div className='col-10 px-0'>
+                                      {files.document_type}_{file}
+                                    </div>
                                     <div className='col-2'>
                                       <EyeFilled />
                                     </div>
@@ -1015,6 +1228,7 @@ const PeriodListView = () => {
                         className='row justify-content-between py-2 th-pointer'
                         onClick={() => {
                           showSectionList();
+                          // setCurrentPeriodId(drawerData?.id);
                         }}
                       >
                         <div>Add / Update Status</div>
@@ -1037,17 +1251,15 @@ const PeriodListView = () => {
                           </Button>
                         ) : (
                           <Button
-                            type={
-                              completeSections.includes(each.id) ? 'primary' : 'default'
-                            }
+                            type={completeSections.includes(each) ? 'primary' : 'default'}
                             onClick={() => {
-                              if (completeSections.includes(each.id)) {
-                                const index = completeSections.indexOf(each.id);
+                              if (completeSections.includes(each)) {
+                                const index = completeSections.indexOf(each);
                                 const newFileList = completeSections.slice();
                                 newFileList.splice(index, 1);
                                 setCompleteSections(newFileList);
                               } else {
-                                setCompleteSections([...completeSections, each.id]);
+                                setCompleteSections([...completeSections, each]);
                               }
                             }}
                           >
@@ -1066,6 +1278,7 @@ const PeriodListView = () => {
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}
                           onClick={() => setCompleteSections([])}
+                          // onClick={() => closeSectionList()}
                         >
                           Clear
                         </div>
@@ -1073,7 +1286,8 @@ const PeriodListView = () => {
                       <div
                         className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
                         onClick={() => {
-                          markPeriodComplete(drawerData);
+                          // setCurrentPeriodPanel(i);
+                          markPeriodComplete(resourcesData);
                         }}
                       >
                         Update
@@ -1107,33 +1321,79 @@ const PeriodListView = () => {
           }
           visible={showCompletionStatusModal}
           onCancel={closeModal}
+          // zIndex={2400}
           className='th-upload-modal'
           centered
           footer={[]}
         >
-          <ol style={{ listStyle: 'none' }}>
-            {modalData?.completion_status
-              ?.filter((item) => item.is_complete == true)
-              .map((item) => (
-                <li>
-                  <div className='row px-md-5 py-2 align-items-center'>
-                    <div
-                      style={{
-                        borderRadius: '50%',
-                        height: 8,
-                        width: 8,
-                      }}
-                      className='mr-2 th-bg-primary'
-                    ></div>
-                    Completed in Sec {item?.section_name?.slice(-1).toUpperCase()} by{' '}
-                    {item?.completed_by_user_id == user_id
-                      ? 'You'
-                      : item?.completed_by_user_name}{' '}
-                    on {moment(item?.completed_at).format('DD/MM/YYYY')}
-                  </div>
-                </li>
-              ))}
-          </ol>
+          {modalData?.completion_status
+            ?.filter((item) => item.is_complete == true)
+            .map((item) => (
+              <div className='row px-md-5 py-2 align-items-center justify-content-start'>
+                <span
+                  style={{
+                    borderRadius: '50%',
+                    height: 8,
+                    width: 8,
+                  }}
+                  className='mr-2 th-bg-primary'
+                ></span>
+                <span>
+                  Completed in Sec {item?.section_name?.slice(-1).toUpperCase()} by{' '}
+                  {item?.completed_by_user_id == user_id
+                    ? 'You'
+                    : item?.completed_by_user_name}{' '}
+                  on {moment(item?.completed_at).format('DD/MM/YYYY')}
+                </span>
+              </div>
+            ))}
+        </Modal>
+      </div>
+      <div>
+        <Modal
+          visible={showInfoModal}
+          // visible={true}
+          onCancel={closeshowInfoModal}
+          className='th-upload-modal'
+          centered
+          footer={[]}
+        >
+          <div className='row py-2'>
+            <div className='col-12 px-md-4 pt-3 th-fw-500 th-18 th-grey'>
+              <div className='row pl-md-5'>
+                <div
+                  style={{
+                    border: '2px solid #25A53F',
+                    borderRadius: '50%',
+                    width: 50,
+                    height: 50,
+                  }}
+                  className='row mr-3'
+                >
+                  <img src={tickIcon} height={50} className='mr-5' />
+                </div>
+                <div>
+                  Lesson is completed for <br />
+                  {completeSections.length > 1 ? 'Sections' : 'Section'}&nbsp;
+                  <span className='th-black-1 th-fw-600 '>
+                    {completeSections
+                      ?.map((item) => item.section__section_name.slice(-1).toUpperCase())
+                      .join(', ')}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className='col-12 pt-2 pl-md-5 th-16'>
+              View Resources for Upcoming Class
+              <Button
+                type='default'
+                onClick={handleNextPeriodResource}
+                className='ml-3 th-primary th-bg-grey'
+              >
+                Resources <RightCircleOutlined />
+              </Button>
+            </div>
+          </div>
         </Modal>
       </div>
     </div>
