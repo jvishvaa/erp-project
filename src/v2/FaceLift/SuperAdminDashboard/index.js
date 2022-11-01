@@ -13,6 +13,7 @@ import { getRole } from 'v2/generalAnnouncementFunctions';
 import Doodle from 'v2/FaceLift/Doodle/Doodle';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
+import DiaryReport from '../myComponents/DiaryReport';
 
 const { Option } = Select;
 
@@ -112,7 +113,8 @@ const SuperAdmindashboardNew = () => {
 
         <div className='row pt-3'>
           <div className='col-md-4 th-custom-col-padding'>
-            <Shortcut selectedBranchList={selectedBranchList} feesBranch={feesBranch} />
+            {/* <Shortcut selectedBranchList={selectedBranchList} feesBranch={feesBranch} /> */}
+            <DiaryReport />
             <Announcement />
           </div>
           <div className='col-md-4 th-custom-col-padding'>

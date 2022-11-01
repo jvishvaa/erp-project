@@ -41,7 +41,7 @@ const PeriodView = () => {
   const [boardId, setBoardId] = useState('');
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [centralAcademicYearID, setCentralAcademicYearID] = useState(false);
+  const [centralAcademicYearID, setCentralAcademicYearID] = useState();
   const [selectedSubject, setSelectedSubject] = useState('');
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
@@ -360,7 +360,7 @@ const PeriodView = () => {
                                       className='row p-3 th-bg-pink align-items-center th-black-1'
                                       style={{ borderRadius: '20px 20px 0 0' }}
                                     >
-                                      <div className='col-6 pl-0'>
+                                      <div className='col-8 pl-0'>
                                         <img
                                           src={getSubjectIcon(
                                             (each?.subject_name).toLowerCase()
@@ -372,7 +372,7 @@ const PeriodView = () => {
                                           {item?.grade_name}
                                         </span>
                                       </div>
-                                      <div className='col-6 px-0 th-16 text-right th-fw-700'>
+                                      <div className='col-4 px-0 th-16 text-right th-fw-700'>
                                         {each?.subject_name}
                                       </div>
                                     </div>
@@ -393,13 +393,29 @@ const PeriodView = () => {
                                           .join(', ')}
                                       </div>
                                     </div>
-                                    <div className='row pl-3' style={{ height: 40 }}>
+                                    {/* <div
+                                      className='row pl-3 align-items-center'
+                                      style={{ maxHeight: 40 }}
+                                    >
                                       <div className='th-fw-600 col-4 px-0'>
                                         Current Chapter
                                       </div>
-                                      <div className='col-8 pl-2'>
+                                      <div className='col-8 pl-2 th-truncate'>
                                         {item?.last_completed_chapter_name} in{' '}
                                         {item?.last_completed_volume_name}
+                                      </div>
+                                    </div> */}
+                                    <div
+                                      className='row pl-3 pt-1 align-items-center'
+                                      style={{ height: 60 }}
+                                    >
+                                      <div className='th-fw-600 col-4 px-0'>
+                                        Next Period
+                                      </div>
+                                      <div className='col-8 pl-2 th-truncate'>
+                                        {item?.next_period_name} in{' '}
+                                        {item?.next_topic_name} in{' '}
+                                        {item?.next_chapter_name}
                                       </div>
                                     </div>
                                     <div
@@ -483,7 +499,7 @@ const PeriodView = () => {
                             className='row p-3 th-bg-pink align-items-center th-black-1'
                             style={{ borderRadius: '20px 20px 0 0' }}
                           >
-                            <div className='col-6 pl-0'>
+                            <div className='col-8 pl-0'>
                               <img
                                 src={getSubjectIcon((each?.subject_name).toLowerCase())}
                                 height='30'
@@ -493,7 +509,7 @@ const PeriodView = () => {
                                 {each?.subject_name}
                               </span>
                             </div>
-                            <div className='col-6 px-0 th-16 text-right th-fw-700 text-capitalize'>
+                            <div className='col-4 px-0 th-16 text-right th-fw-700 text-capitalize'>
                               {item?.grade_name}
                             </div>
                           </div>
@@ -510,11 +526,21 @@ const PeriodView = () => {
                               {item?.total_teaching_periods}{' '}
                             </div>
                           </div>
-                          <div className='row pl-3' style={{ height: 40 }}>
+                          {/* <div className='row pl-3' style={{ maxHeight: 40 }}>
                             <div className='th-fw-600 col-4 px-0'>Current Chapter</div>
-                            <div className='col-8 pl-2'>
+                            <div className='col-8 pl-2 th-truncate'>
                               {item?.last_completed_chapter_name} in{' '}
                               {item?.last_completed_volume_name}
+                            </div>
+                          </div> */}
+                          <div
+                            className='row pl-3 align-items-center'
+                            style={{ height: 60 }}
+                          >
+                            <div className='th-fw-600 col-4 px-0'>Next Period</div>
+                            <div className='col-8 pl-2 th-truncate'>
+                              {item?.next_period_name} in {item?.next_topic_name} in{' '}
+                              {item?.next_chapter_name}
                             </div>
                           </div>
 
