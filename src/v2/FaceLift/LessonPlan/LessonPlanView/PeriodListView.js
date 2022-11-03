@@ -22,7 +22,6 @@ import {
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import 'slick-carousel/slick/slick.css';
@@ -44,13 +43,13 @@ import imageFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/imagefile.sv
 import defaultFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/defaultfile.svg';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import moment from 'moment';
-
+import _ from 'lodash';
 const { Option } = Select;
 
 const PeriodListView = () => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const formRef = createRef();
-  const myRef = useRef(null);
+  const myRef = useRef();
   const history = useHistory();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -58,15 +57,13 @@ const PeriodListView = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const { user_level, user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const [moduleId, setModuleId] = useState();
   const [gradeName, setGradeName] = useState('');
   const [gradeId, setGradeId] = useState();
   const [subjectName, setSubjectName] = useState('');
   const [subjectId, setSubjectId] = useState();
   const [volumeListData, setVolumeListData] = useState([]);
-  const [volumeId, setVolumeId] = useState([]);
+  const [volumeId, setVolumeId] = useState();
   const [volumeName, setVolumeName] = useState('');
   const [boardId, setBoardId] = useState([]);
   const [moduleListData, setModuleListData] = useState([]);
@@ -80,7 +77,6 @@ const PeriodListView = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingDrawer, setLoadingDrawer] = useState(false);
-  const [filtered, setFiltered] = useState(false);
   const [drawerData, setDrawerData] = useState([]);
   const [periodWiseData, setPeriodWiseData] = useState([]);
   const [YCPData, setYCPData] = useState([]);
@@ -91,8 +87,6 @@ const PeriodListView = () => {
   const [showError, setShowError] = useState(false);
   const [showCompletionStatusModal, setShowCompletionStatusModal] = useState(false);
   const [modalData, setModalData] = useState([]);
-  const [incompletePeriod, setIncompletePeriod] = useState();
-  const [highlightedPeriodPresent, setHighlightedPeriodPresent] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [allComplete, setAllComplete] = useState(false);
   const [nextPeriodDetails, setNextPeriodDetails] = useState();
@@ -137,8 +131,15 @@ const PeriodListView = () => {
         });
         setVolumeId(nextPeriodDetails.volume_id);
       } else if (nextPeriodDetails.chapter_id !== chapterId) {
+        let chapterName = `${nextPeriodDetails?.chapter__chapter_name}
+                    ${
+                      nextPeriodDetails?.chapter__lt_module__lt_module_name?.toLowerCase() ==
+                      'kit activity'
+                        ? ` (Kit Activity)`
+                        : ''
+                    }`;
         formRef.current.setFieldsValue({
-          chapter: nextPeriodDetails.chapter__chapter_name,
+          chapter: chapterName,
         });
         setChapterId(nextPeriodDetails.chapter_id);
       }
@@ -197,7 +198,6 @@ const PeriodListView = () => {
       });
   };
   const fetchModuleListData = (params = {}) => {
-    setLoading(true);
     axios
       .get(`academic/get-module-list/`, {
         params: { ...params },
@@ -205,14 +205,9 @@ const PeriodListView = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setModuleListData(result?.data?.result?.module_list);
-          // formRef.current.setFieldsValue({
-          //   module: ['All'],
-          // });
-          setLoading(false);
         }
       })
       .catch((error) => {
-        setLoading(false);
         message.error(error.message);
       });
   };
@@ -254,24 +249,6 @@ const PeriodListView = () => {
     setChapterListData([]);
     setKeyConceptId();
     setKeyConceptListData([]);
-    // if (boardFilterArr.includes(window.location.host)) {
-    //   fetchModuleListData({
-    //     subject_id: subjectId,
-    //     volume: e.value,
-    //     academic_year: history?.location?.state?.centralAcademicYearID,
-    //     grade_id: gradeId,
-    //     branch_id: selectedBranch?.branch?.id,
-    //     board: boardId,
-    //   });
-    // } else {
-    //   fetchChapterListData({
-    //     subject_id: subjectId,
-    //     volume: e.value,
-    //     grade_id: gradeId,
-    //     branch_id: selectedBranch?.branch?.id,
-    //     board: boardId,
-    //   });
-    // }
   };
   const handleClearVolume = () => {
     setVolumeId('');
@@ -296,6 +273,9 @@ const PeriodListView = () => {
     return (
       <Option key={each?.id} value={each.id}>
         {each?.chapter_name}
+        {each?.lt_module?.lt_module_name.toLowerCase() === 'kit activity'
+          ? ` (Kit Activity)`
+          : null}
       </Option>
     );
   });
@@ -313,8 +293,6 @@ const PeriodListView = () => {
       keyConcept: null,
     });
     setChapterId('');
-    // setChapterListData([]);
-    // setKeyConceptListData([]);
     setKeyConceptId();
     if (each.length === 1 && each.some((item) => item.value === 'All')) {
       const all = moduleListData.slice();
@@ -331,9 +309,6 @@ const PeriodListView = () => {
     setSelectedModuleId('');
   };
   const handleChapter = (e) => {
-    formRef.current.setFieldsValue({
-      keyConcept: null,
-    });
     setChapterId(e);
     setKeyConceptId();
   };
@@ -350,7 +325,6 @@ const PeriodListView = () => {
 
   const fetchPeriodWiseData = (params = {}) => {
     setLoading(true);
-    setFiltered(true);
     setAllComplete(false);
     axios
       .get(`/academic/period-view/grade-subject-wise-lp-overview/`, {
@@ -358,16 +332,11 @@ const PeriodListView = () => {
       })
       .then((res) => {
         if (res?.data?.status === 200) {
+          myRef.current = null;
           setPeriodWiseData(res?.data?.data);
           setYCPData(res?.data?.ycp_data);
-          let highlightedPeriod = res?.data?.data?.filter(
-            (element) => element.is_complete == false
-          );
           if (res?.data?.data?.every((item) => item.is_complete == true)) {
             setAllComplete(true);
-          }
-          if (highlightedPeriod.length > 0) {
-            setHighlightedPeriodPresent(true);
           }
           setLoading(false);
         } else {
@@ -417,14 +386,13 @@ const PeriodListView = () => {
                   central_gs_id: centralGSID,
                 });
                 setShowInfoModal(true);
-                if (res.data.result) {
+                if (!_.isEmpty(res.data.result)) {
                   setNextPeriodDetails(res.data.result);
                 }
               }
             }
           })
           .catch((error) => {
-            // setLoading(false);
             message.error(error.message);
           });
       });
@@ -482,9 +450,6 @@ const PeriodListView = () => {
   };
 
   const handleNext = () => {
-    // setAllComplete(false);
-    console.log('Current Index Next:', currentIndex);
-
     if (keyConceptId) {
       setKeyConceptId(keyConceptListData[currentIndex + 1]?.id);
       formRef.current.setFieldsValue({
@@ -499,9 +464,6 @@ const PeriodListView = () => {
   };
 
   const handlePrevious = () => {
-    // setAllComplete(false);
-    console.log('Current Index Prev:', currentIndex);
-
     if (keyConceptId) {
       setKeyConceptId(keyConceptListData[currentIndex - 1]?.id);
       formRef.current.setFieldsValue({
@@ -514,19 +476,12 @@ const PeriodListView = () => {
       setChapterId(chapterListData[currentIndex - 1]?.id);
     }
   };
-
-  // const executeScroll = () => myRef.current.scrollIntoView();
   const executeScroll = () => {
-    // if (myRef && myRef.current /* + other conditions */) {
-    const scrollIntoView = document.getElementById('highlightedPeriod');
+    console.log('Executing scroll', myRef);
 
-    // scrollIntoView.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    window.scrollTo({
-      top: scrollIntoView.offsetTop,
-      behavior: 'smooth',
-    });
-    // }
+    myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
+
   useEffect(() => {
     const all = moduleListData.slice();
     const allModules = all.map((item) => item.id).join(',');
@@ -534,23 +489,12 @@ const PeriodListView = () => {
   }, [moduleListData]);
 
   useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Ebook' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
     fetchVolumeListData();
-  }, []);
+  }, [window.location.pathname]);
+
+  useEffect(() => {
+    if (myRef.current) executeScroll();
+  }, [myRef.current]);
 
   useEffect(() => {
     if (history?.location?.state) {
@@ -568,28 +512,41 @@ const PeriodListView = () => {
       setBoardId(history?.location?.state?.boardID);
       setCentralGSID(history?.location?.state?.centralGSID);
 
-      if (boardFilterArr.includes(window.location.host)) {
-        fetchModuleListData({
-          subject_id: history?.location?.state?.subjectID,
-          volume: history?.location?.state?.volumeID,
-          academic_year: history?.location?.state?.centralAcademicYearID,
-          grade_id: history?.location?.state?.gradeID,
-          branch_id: selectedBranch?.branch?.id,
-          board: history?.location?.state?.boardID,
-        });
-      } else {
-        fetchChapterListData({
-          subject_id: history?.location?.state?.subjectID,
-          volume: history?.location?.state?.volumeID,
-          grade_id: history?.location?.state?.gradeID,
-          branch_id: selectedBranch?.branch?.id,
-          board: history?.location?.state?.boardID,
-          // module_id: selectedModuleId,
-        });
-      }
-      // fetchKeyConceptListData({ chapter: history?.location?.state?.chapterID });
+      // if (boardFilterArr.includes(window.location.host)) {
+      //   fetchModuleListData({
+      //     subject_id: history?.location?.state?.subjectID,
+      //     volume: history?.location?.state?.volumeID,
+      //     academic_year: history?.location?.state?.centralAcademicYearID,
+      //     grade_id: history?.location?.state?.gradeID,
+      //     branch_id: selectedBranch?.branch?.id,
+      //     board: history?.location?.state?.boardID,
+      //   });
+      // } else {
+      //   fetchChapterListData({
+      //     subject_id: history?.location?.state?.subjectID,
+      //     volume: history?.location?.state?.volumeID,
+      //     grade_id: history?.location?.state?.gradeID,
+      //     branch_id: selectedBranch?.branch?.id,
+      //     board: history?.location?.state?.boardID,
+      //   });
+      // }
     }
   }, [window.location.pathname]);
+  useEffect(() => {
+    if (chapterId) {
+      fetchPeriodWiseData({
+        acad_session_id: selectedBranch?.id,
+        board_id: boardId,
+        grade: gradeId,
+        subject: subjectId,
+        chapters: chapterId,
+        modules: selectedModuleId,
+        board: boardId,
+        volume: volumeId,
+        central_gs_id: centralGSID,
+      });
+    }
+  }, [chapterId, keyConceptId]);
   useEffect(() => {
     if (selectedModuleId.length > 0) {
       fetchChapterListData({
@@ -629,12 +586,16 @@ const PeriodListView = () => {
       fetchKeyConceptListData({
         chapter: chapterId,
       });
+      formRef.current.setFieldsValue({
+        keyConcept: 'All',
+      });
     }
   }, [chapterId]);
 
   useEffect(() => {
     if (volumeId) {
       if (boardFilterArr.includes(window.location.host)) {
+        setSelectedModuleId([]);
         fetchModuleListData({
           subject_id: subjectId,
           volume: volumeId,
@@ -654,23 +615,6 @@ const PeriodListView = () => {
       }
     }
   }, [volumeId]);
-
-  useEffect(() => {
-    if (chapterId) {
-      fetchPeriodWiseData({
-        acad_session_id: selectedBranch?.id,
-        board_id: boardId,
-        grade: gradeId,
-        subject: subjectId,
-        chapters: chapterId,
-        modules: selectedModuleId,
-        board: boardId,
-        volume: volumeId,
-        central_gs_id: centralGSID,
-      });
-    }
-  }, [chapterId, keyConceptId]);
-  // }, [chapterId, keyConceptId, chapterListData]);
 
   return (
     <div className='row '>
@@ -778,6 +722,7 @@ const PeriodListView = () => {
                 <Select
                   getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Key Concepts'
+                  // placeholder={<span className='th-black-1'>All</span>}
                   showSearch
                   optionFilterProp='children'
                   filterOption={(input, options) => {
@@ -882,11 +827,8 @@ const PeriodListView = () => {
         <div className='row justify-content-center my-5'>
           <Spin title='Loading...' />
         </div>
-      ) : periodWiseData.length > 0 ? (
-        <div
-          className='row th-br-10 pt-2 pb-3'
-          // style={{ border: '2px solid #d9d9d9' }}
-        >
+      ) : periodSortedData.length > 0 ? (
+        <div className='row th-br-10 pt-2 pb-3'>
           <div className='col-6 py-1 th-fw-600 th-20'>
             {' '}
             <img src={periodIcon} height='30' className='mr-3 pb-1 ml-1' />
@@ -907,7 +849,18 @@ const PeriodListView = () => {
                     </Divider>
                   </div>
                   {period?.data?.map((each, index) => (
-                    <div className='col-md-4 pl-0' id={'ravi'}>
+                    <div
+                      className='col-md-4 pl-0'
+                      ref={
+                        !isStudent
+                          ? each?.next_to_be_taught == true
+                            ? myRef
+                            : null
+                          : each?.last_taught == true
+                          ? myRef
+                          : null
+                      }
+                    >
                       <div className='row mb-3 pb-1'>
                         <div
                           className={`col-12 th-br-20 th-bg-pink py-2 ${
@@ -919,9 +872,7 @@ const PeriodListView = () => {
                               ? 'highlighted-period'
                               : 'period-card'
                           }`}
-                          // ref={myRef}
-                          // ref={each.next_to_be_taught == true ? myRef : ''}
-                          id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
+                          // id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
                         >
                           <div className='row px-1 pt-2'>
                             <div className='col-md-7 col-6 px-0 th-18 th-fw-600'>
@@ -1044,9 +995,6 @@ const PeriodListView = () => {
               ))}
             </div>
           </div>
-          {/* {allComplete && ( */}
-
-          {/* )} */}
         </div>
       ) : (
         <div className='row justify-content-center my-5'>
@@ -1117,7 +1065,7 @@ const PeriodListView = () => {
                   style={{
                     overflowY: 'scroll',
                     overflowX: 'hidden',
-                    maxHeight: '50vh',
+                    maxHeight: '40vh',
                   }}
                 >
                   {resourcesData?.lp_files?.map((files, i) => (
@@ -1151,9 +1099,6 @@ const PeriodListView = () => {
                                 <img src={getFileIcon(extension)} />
                               </div>
                               <div className='col-10 px-0 th-pointer'>
-                                {/* <div>{file}</div>
-                              </div>
-                              <div className='col-2 th-pointer'> */}
                                 <a
                                   onClick={() => {
                                     openPreview({
@@ -1228,7 +1173,6 @@ const PeriodListView = () => {
                         className='row justify-content-between py-2 th-pointer'
                         onClick={() => {
                           showSectionList();
-                          // setCurrentPeriodId(drawerData?.id);
                         }}
                       >
                         <div>Add / Update Status</div>
@@ -1278,7 +1222,6 @@ const PeriodListView = () => {
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}
                           onClick={() => setCompleteSections([])}
-                          // onClick={() => closeSectionList()}
                         >
                           Clear
                         </div>
@@ -1286,7 +1229,6 @@ const PeriodListView = () => {
                       <div
                         className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
                         onClick={() => {
-                          // setCurrentPeriodPanel(i);
                           markPeriodComplete(resourcesData);
                         }}
                       >
@@ -1321,7 +1263,6 @@ const PeriodListView = () => {
           }
           visible={showCompletionStatusModal}
           onCancel={closeModal}
-          // zIndex={2400}
           className='th-upload-modal'
           centered
           footer={[]}
@@ -1352,7 +1293,6 @@ const PeriodListView = () => {
       <div>
         <Modal
           visible={showInfoModal}
-          // visible={true}
           onCancel={closeshowInfoModal}
           className='th-upload-modal'
           centered
@@ -1384,14 +1324,30 @@ const PeriodListView = () => {
               </div>
             </div>
             <div className='col-12 pt-2 pl-md-5 th-16'>
-              View Resources for Upcoming Class
-              <Button
-                type='default'
-                onClick={handleNextPeriodResource}
-                className='ml-3 th-primary th-bg-grey'
-              >
-                Resources <RightCircleOutlined />
-              </Button>
+              <div>
+                View Resources for Upcoming Class{' '}
+                {nextPeriodDetails ? (
+                  <span>
+                    : {nextPeriodDetails?.period_name} in{' '}
+                    {nextPeriodDetails?.key_concept__topic_name} in{' '}
+                    {nextPeriodDetails?.chapter__chapter_name} in
+                    {nextPeriodDetails?.chapter__lt_module__lt_module_name?.toLowerCase() ==
+                    'kit activity'
+                      ? ` (Kit Activity)`
+                      : null}{' '}
+                    in {nextPeriodDetails?.volume_name}
+                  </span>
+                ) : null}
+              </div>
+              <div>
+                <Button
+                  type='default'
+                  onClick={handleNextPeriodResource}
+                  className='my-1 th-primary th-bg-grey'
+                >
+                  Resources <RightCircleOutlined />
+                </Button>
+              </div>
             </div>
           </div>
         </Modal>

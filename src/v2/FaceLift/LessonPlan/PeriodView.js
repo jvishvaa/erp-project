@@ -1,6 +1,5 @@
 import React, { useState, useEffect, createRef, Fragment } from 'react';
 import { Select, Form, message, Drawer, Spin, Divider, Button } from 'antd';
-import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
@@ -34,12 +33,8 @@ const PeriodView = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const [periodData, setPeriodData] = useState([]);
-  const [volumeListData, setVolumeListData] = useState([]);
-  const [volumeId, setVolumeId] = useState('');
-  const [volumeName, setVolumeName] = useState('');
   const [boardListData, setBoardListData] = useState([]);
   const [boardId, setBoardId] = useState('');
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [centralAcademicYearID, setCentralAcademicYearID] = useState();
   const [selectedSubject, setSelectedSubject] = useState('');
@@ -158,12 +153,10 @@ const PeriodView = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setBoardListData(result?.data?.result);
-          // if (!boardFilterArr.includes(window.location.host)) {
           let data = result?.data?.result?.filter(
             (item) => item?.board_name === 'CBSE'
           )[0];
           setBoardId(data?.id);
-          // }
           setLoading(false);
         }
       })
@@ -194,7 +187,6 @@ const PeriodView = () => {
   };
   const fetchPeriodData = (params = {}) => {
     setLoading(true);
-    // setFiltered(true);
     setSelectedSubject('');
     axios
       .get(`/academic/period-view/lp-overview/`, {
@@ -227,17 +219,8 @@ const PeriodView = () => {
   const handleClearBoard = () => {
     setBoardId('');
   };
-  const handlevolume = (e) => {
-    setVolumeId(e.value);
-    setVolumeName(e.children);
-  };
-  const handleClearVolume = () => {
-    setVolumeId('');
-    setVolumeName('');
-  };
 
   useEffect(() => {
-    // fetchVolumeListData();
     fetchBoardListData();
     fetchResourceYear();
   }, []);
@@ -393,29 +376,15 @@ const PeriodView = () => {
                                           .join(', ')}
                                       </div>
                                     </div>
-                                    {/* <div
-                                      className='row pl-3 align-items-center'
-                                      style={{ maxHeight: 40 }}
-                                    >
-                                      <div className='th-fw-600 col-4 px-0'>
-                                        Current Chapter
-                                      </div>
-                                      <div className='col-8 pl-2 th-truncate'>
-                                        {item?.last_completed_chapter_name} in{' '}
-                                        {item?.last_completed_volume_name}
-                                      </div>
-                                    </div> */}
-                                    <div
-                                      className='row pl-3 pt-1 align-items-center'
-                                      style={{ height: 60 }}
-                                    >
+                                    <div className='row pl-3 pt-1' style={{ height: 60 }}>
                                       <div className='th-fw-600 col-4 px-0'>
                                         Next Period
                                       </div>
                                       <div className='col-8 pl-2 th-truncate'>
                                         {item?.next_period_name} in{' '}
                                         {item?.next_topic_name} in{' '}
-                                        {item?.next_chapter_name}
+                                        {item?.next_chapter_name} in{' '}
+                                        {item?.next_volume_name}
                                       </div>
                                     </div>
                                     <div
@@ -449,14 +418,11 @@ const PeriodView = () => {
                                                 subjectID: each?.subject_id,
                                                 subjectName: each?.subject_name,
                                                 boardID: boardId,
-                                                volumeName:
-                                                  item?.last_completed_volume_name,
-                                                volumeID: item?.last_completed_volume_id,
+                                                volumeName: item?.next_volume_name,
+                                                volumeID: item?.next_volume_id,
                                                 centralAcademicYearID,
-                                                chapterID:
-                                                  item?.last_completed_chapter_id,
-                                                chapterName:
-                                                  item?.last_completed_chapter_name,
+                                                chapterID: item?.next_chapter_id,
+                                                chapterName: item?.next_chapter_name,
                                                 showTab: '1',
                                                 centralGSID: item?.central_gs_id,
                                               },
@@ -487,115 +453,101 @@ const PeriodView = () => {
           <>
             {periodData.length > 0 ? (
               <div className='row p-3' style={{ maxHeight: 400, overflowY: 'scroll' }}>
-                {
-                  periodData.map((each) =>
-                    each?.data?.map((item) => (
-                      <div className='col-md-4 pl-0 mt-2'>
+                {periodData.map((each) =>
+                  each?.data?.map((item) => (
+                    <div className='col-md-4 pl-0 mt-2'>
+                      <div
+                        className='th-br-20 th-bg-grey period-card'
+                        style={{ border: '1px solid #d9d9d9' }}
+                      >
                         <div
-                          className='th-br-20 th-bg-grey period-card'
-                          style={{ border: '1px solid #d9d9d9' }}
+                          className='row p-3 th-bg-pink align-items-center th-black-1'
+                          style={{ borderRadius: '20px 20px 0 0' }}
                         >
-                          <div
-                            className='row p-3 th-bg-pink align-items-center th-black-1'
-                            style={{ borderRadius: '20px 20px 0 0' }}
-                          >
-                            <div className='col-8 pl-0'>
-                              <img
-                                src={getSubjectIcon((each?.subject_name).toLowerCase())}
-                                height='30'
-                                className='mb-1'
-                              />
-                              <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                                {each?.subject_name}
-                              </span>
-                            </div>
-                            <div className='col-4 px-0 th-16 text-right th-fw-700 text-capitalize'>
-                              {item?.grade_name}
-                            </div>
+                          <div className='col-8 pl-0'>
+                            <img
+                              src={getSubjectIcon((each?.subject_name).toLowerCase())}
+                              height='30'
+                              className='mb-1'
+                            />
+                            <span className='th-18 th-fw-700 ml-2 text-capitalize'>
+                              {each?.subject_name}
+                            </span>
                           </div>
-                          <div className='row pl-3 pt-4'>
-                            <div className='th-fw-600 col-4 px-0'>Teacher &nbsp;</div>{' '}
-                            <div className='text-capitalize col-8 pl-2'>
-                              {item?.teacher_name}
-                            </div>
+                          <div className='col-4 px-0 th-16 text-right th-fw-700 text-capitalize'>
+                            {item?.grade_name}
                           </div>
+                        </div>
+                        <div className='row pl-3 pt-4'>
+                          <div className='th-fw-600 col-4 px-0'>Teacher &nbsp;</div>{' '}
+                          <div className='text-capitalize col-8 pl-2'>
+                            {item?.teacher_name}
+                          </div>
+                        </div>
 
-                          <div className='row pl-3'>
-                            <div className='th-fw-600 col-4 px-0'>Total Periods </div>
-                            <div className='col-8 pl-2'>
-                              {item?.total_teaching_periods}{' '}
-                            </div>
+                        <div className='row pl-3'>
+                          <div className='th-fw-600 col-4 px-0'>Total Periods </div>
+                          <div className='col-8 pl-2'>
+                            {item?.total_teaching_periods}{' '}
                           </div>
-                          {/* <div className='row pl-3' style={{ maxHeight: 40 }}>
-                            <div className='th-fw-600 col-4 px-0'>Current Chapter</div>
-                            <div className='col-8 pl-2 th-truncate'>
-                              {item?.last_completed_chapter_name} in{' '}
-                              {item?.last_completed_volume_name}
-                            </div>
-                          </div> */}
-                          <div
-                            className='row pl-3 align-items-center'
-                            style={{ height: 60 }}
-                          >
-                            <div className='th-fw-600 col-4 px-0'>Next Period</div>
-                            <div className='col-8 pl-2 th-truncate'>
-                              {item?.next_period_name} in {item?.next_topic_name} in{' '}
-                              {item?.next_chapter_name}
-                            </div>
+                        </div>
+                        <div className='row pl-3' style={{ height: 60 }}>
+                          <div className='th-fw-600 col-4 px-0'>Next Period</div>
+                          <div className='col-8 pl-2 th-truncate'>
+                            {item?.next_period_name} in {item?.next_topic_name} in{' '}
+                            {item?.next_chapter_name} in {item?.next_volume_name}
                           </div>
+                        </div>
 
-                          <div
-                            className='row my-2 align-items-center'
-                            style={{ borderTop: '1px solid #d9d9d9' }}
-                          >
-                            <div className='col-7 text-left th-12 pt-2 pb-1 pl-3 pr-0'>
-                              {item?.last_completed_at ? (
-                                `Updated On :
+                        <div
+                          className='row my-2 align-items-center'
+                          style={{ borderTop: '1px solid #d9d9d9' }}
+                        >
+                          <div className='col-7 text-left th-12 pt-2 pb-1 pl-3 pr-0'>
+                            {item?.last_completed_at ? (
+                              `Updated On :
                                         ${moment(item?.last_completed_at).format(
                                           'DD/MM/YYYY'
                                         )}`
-                              ) : (
-                                <span className='th-red'>Yet to start</span>
-                              )}
-                            </div>
-                            <div className='col-5 text-right th-fw-600 pt-2 pb-1'>
-                              <div
-                                className='badge p-2 th-br-10 th-bg-pink th-pointer '
-                                onClick={() =>
-                                  history.push({
-                                    pathname: window.location.pathname.includes(
-                                      'teacher-view'
-                                    )
-                                      ? '/lesson-plan/teacher-view/period-view/list-view'
-                                      : '/lesson-plan/student-view/period-view/list-view',
-                                    state: {
-                                      gradeID: item?.grade_id,
-                                      gradeName: item?.grade_name,
-                                      subjectID: each?.subject_id,
-                                      subjectName: each?.subject_name,
-                                      boardID: boardId,
-                                      volumeName: item?.last_completed_volume_name,
-                                      volumeID: item?.last_completed_volume_id,
-                                      centralAcademicYearID,
-                                      chapterID: item?.last_completed_chapter_id,
-                                      chapterName: item?.last_completed_chapter_name,
-                                      showTab: '1',
-                                      centralGSID: item?.central_gs_id,
-                                    },
-                                  })
-                                }
-                              >
-                                View Periods &gt;
-                              </div>
+                            ) : (
+                              <span className='th-red'>Yet to start</span>
+                            )}
+                          </div>
+                          <div className='col-5 text-right th-fw-600 pt-2 pb-1'>
+                            <div
+                              className='badge p-2 th-br-10 th-bg-pink th-pointer '
+                              onClick={() =>
+                                history.push({
+                                  pathname: window.location.pathname.includes(
+                                    'teacher-view'
+                                  )
+                                    ? '/lesson-plan/teacher-view/period-view/list-view'
+                                    : '/lesson-plan/student-view/period-view/list-view',
+                                  state: {
+                                    gradeID: item?.grade_id,
+                                    gradeName: item?.grade_name,
+                                    subjectID: each?.subject_id,
+                                    subjectName: each?.subject_name,
+                                    boardID: boardId,
+                                    volumeName: item?.next_volume_name,
+                                    volumeID: item?.next_volume_id,
+                                    centralAcademicYearID,
+                                    chapterID: item?.next_chapter_id,
+                                    chapterName: item?.next_chapter_name,
+                                    showTab: '1',
+                                    centralGSID: item?.central_gs_id,
+                                  },
+                                })
+                              }
+                            >
+                              View Periods &gt;
                             </div>
                           </div>
                         </div>
                       </div>
-                    ))
-                  )
-
-                  // );
-                }
+                    </div>
+                  ))
+                )}
               </div>
             ) : (
               <div className='row justify-content-center my-4'>

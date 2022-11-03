@@ -82,8 +82,6 @@ const TeacherDiaryReport = () => {
     },
   ];
 
-  console.log('history', history.location.state);
-
   useEffect(() => {
     if (history.location.state) {
       setSelectedSection(history.location.state.selectedSection);
@@ -105,7 +103,6 @@ const TeacherDiaryReport = () => {
         teacher_erp: selectedTeacher?.erp_id,
         start_date: startDate,
         end_date: endDate,
-        // till_date: 1,
       });
     }
   }, [diaryType, startDate, endDate]);

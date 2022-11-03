@@ -57,7 +57,6 @@ const SubjectwiseDiaryReport = () => {
         subject_id: record.subject_id,
         start_date: startDate,
         end_date: endDate,
-        // till_date: 1,
       });
     }
 
@@ -179,7 +178,6 @@ const SubjectwiseDiaryReport = () => {
         section_id: selectedSection?.section_id,
         start_date: startDate,
         end_date: endDate,
-        // till_date: 1,
       });
     }
   }, [startDate, endDate, diaryType]);
