@@ -467,7 +467,10 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             colSpan={examTypeHeader[i][x].length + 1}
                           >
                             {eachSem.total_secured_marks} out of {eachSem.total_marks} (
-                            {eachSem?.total_marks_percentage?.toFixed(2)}%)
+                            {isNaN(eachSem?.total_marks_percentage)
+                              ? eachSem?.total_marks_percentage
+                              : eachSem?.total_marks_percentage?.toFixed(2)}
+                            %)
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
@@ -782,7 +785,10 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             colSpan={coschSxamTypeHeader[coI][x].length + 1}
                           >
                             {eachSem.total_secured_marks} out of {eachSem.total_marks} (
-                            {eachSem?.total_marks_percentage?.toFixed(2)}%)
+                            {isNaN(eachSem?.total_marks_percentage)
+                              ? eachSem?.total_marks_percentage
+                              : eachSem?.total_marks_percentage?.toFixed(2)}
+                            %)
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
