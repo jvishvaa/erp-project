@@ -695,7 +695,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   className='th-width-10  text-center'
                                   style={{ backgroundColor: '#ffffff' }}
                                 >
-                                  {subMarks ? subMarks : 'NA'}
+                                  {isNaN(subMarks) ? 'NA' : subMarks}
                                 </td>
                                 {/* Inserting Total marks column for each semester */}
                                 {j == eachSem?.marks_with_subject?.length - 1 ? (
