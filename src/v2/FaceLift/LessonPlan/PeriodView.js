@@ -334,7 +334,7 @@ const PeriodView = () => {
                             </Divider>
                             {each?.data?.map((item) => {
                               return (
-                                <div className='col-md-4 pl-0 mt-2'>
+                                <div className='col-lg-4 col-md-6 pl-0 mt-2'>
                                   <div
                                     className='th-br-20 th-bg-grey period-card'
                                     style={{ border: '1px solid #d9d9d9' }}
@@ -455,7 +455,7 @@ const PeriodView = () => {
               <div className='row p-3' style={{ maxHeight: 400, overflowY: 'scroll' }}>
                 {periodData.map((each) =>
                   each?.data?.map((item) => (
-                    <div className='col-md-4 pl-0 mt-2'>
+                    <div className='col-lg-4 col-md-6 pl-0 mt-2'>
                       <div
                         className='th-br-20 th-bg-grey period-card'
                         style={{ border: '1px solid #d9d9d9' }}

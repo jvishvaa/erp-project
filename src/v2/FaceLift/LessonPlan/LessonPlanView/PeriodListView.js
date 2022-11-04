@@ -84,6 +84,7 @@ const PeriodListView = () => {
   const [currentIndex, setCurrentIndex] = useState();
   const [showSection, setShowSection] = useState(false);
   const [completeSections, setCompleteSections] = useState([]);
+  const [sectionsCompleted, setSectionsCompleted] = useState([]);
   const [showError, setShowError] = useState(false);
   const [showCompletionStatusModal, setShowCompletionStatusModal] = useState(false);
   const [modalData, setModalData] = useState([]);
@@ -118,6 +119,7 @@ const PeriodListView = () => {
     setModalData([]);
   };
   const closeshowInfoModal = () => {
+    setSectionsCompleted([]);
     setShowInfoModal(false);
   };
   const handleNextPeriodResource = () => {
@@ -374,17 +376,18 @@ const PeriodListView = () => {
               if (index == completeSections?.length - 1) {
                 closeSectionList();
                 closeDrawer();
-                fetchPeriodWiseData({
-                  acad_session_id: selectedBranch?.id,
-                  board_id: boardId,
-                  grade: gradeId,
-                  subject: subjectId,
-                  chapters: chapterId,
-                  modules: selectedModuleId,
-                  board: boardId,
-                  volume: volumeId,
-                  central_gs_id: centralGSID,
-                });
+                setSectionsCompleted([...sectionsCompleted, section]);
+                // fetchPeriodWiseData({
+                //   acad_session_id: selectedBranch?.id,
+                //   board_id: boardId,
+                //   grade: gradeId,
+                //   subject: subjectId,
+                //   chapters: chapterId,
+                //   modules: selectedModuleId,
+                //   board: boardId,
+                //   volume: volumeId,
+                //   central_gs_id: centralGSID,
+                // });
                 setShowInfoModal(true);
                 if (!_.isEmpty(res.data.result)) {
                   setNextPeriodDetails(res.data.result);
@@ -393,7 +396,10 @@ const PeriodListView = () => {
             }
           })
           .catch((error) => {
-            message.error(error.message);
+            message.error(error.response.data.message);
+          })
+          .finally(() => {
+            setLoadingDrawer(false);
           });
       });
     } else {
@@ -750,7 +756,7 @@ const PeriodListView = () => {
           <div className='col-12 mb-3 px-3'>
             <div className='row'>
               {YCPData?.filter((item) => item?.lesson_type == '1')[0]?.media_file[0] && (
-                <div className='col-md-3 pl-md-0 col-12'>
+                <div className='col-md-3 pl-0 col-12'>
                   <a
                     onClick={() => {
                       const fileName = YCPData?.filter(
@@ -785,7 +791,7 @@ const PeriodListView = () => {
                 </div>
               )}
               {YCPData?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0] && (
-                <div className='col-md-3 pl-md-0 col-12e4l'>
+                <div className='col-md-3 pl-0 col-12e4l'>
                   <a
                     onClick={() => {
                       const fileName = YCPData?.filter(
@@ -844,13 +850,17 @@ const PeriodListView = () => {
               {periodSortedData?.map((period) => (
                 <>
                   <div className='row py-2 px-0 th-black-1 th-divider'>
-                    <Divider className='' orientation='left' orientationMargin='0'>
+                    {window.innerWidth < 768 ? (
                       <span className='th-fw-600 th-18'>{period?.concept}</span>
-                    </Divider>
+                    ) : (
+                      <Divider className='' orientation='left' orientationMargin='0'>
+                        <span className='th-fw-600 th-18'>{period?.concept}</span>
+                      </Divider>
+                    )}
                   </div>
                   {period?.data?.map((each, index) => (
                     <div
-                      className='col-md-4 pl-0'
+                      className='col-lg-4 col-md-6 pl-0'
                       ref={
                         !isStudent
                           ? each?.next_to_be_taught == true
@@ -1002,33 +1012,31 @@ const PeriodListView = () => {
         </div>
       )}
       {!loading && (
-        <div className='col-12 py-2'>
-          <div className='row justify-content-between'>
-            <div className='col-2'>
-              <Button
-                disabled={currentIndex == 0}
-                type='primary'
-                onClick={handlePrevious}
-                className='th-br-6'
-              >
-                <LeftOutlined /> Previous {keyConceptId ? 'Key Concept' : 'Chapter'}
-              </Button>
-            </div>
-            <div className='col-2 text-right'>
-              <Button
-                disabled={
-                  keyConceptId
-                    ? currentIndex == keyConceptListData?.length - 1
-                    : currentIndex == chapterListData?.length - 1
-                }
-                type='primary'
-                onClick={handleNext}
-                className='th-br-6'
-              >
-                Next {keyConceptId ? 'Key Concept' : 'Chapter'}
-                <RightOutlined />
-              </Button>
-            </div>
+        <div className='row justify-content-between p-1'>
+          <div className='col-lg-2 col-6'>
+            <Button
+              disabled={currentIndex == 0}
+              type='primary'
+              onClick={handlePrevious}
+              className='th-br-6'
+            >
+              <LeftOutlined /> Previous {keyConceptId ? 'Key Concept' : 'Chapter'}
+            </Button>
+          </div>
+          <div className='col-lg-2 col-6 text-right'>
+            <Button
+              disabled={
+                keyConceptId
+                  ? currentIndex == keyConceptListData?.length - 1
+                  : currentIndex == chapterListData?.length - 1
+              }
+              type='primary'
+              onClick={handleNext}
+              className='th-br-6'
+            >
+              Next {keyConceptId ? 'Key Concept' : 'Chapter'}
+              <RightOutlined />
+            </Button>
           </div>
         </div>
       )}
@@ -1040,6 +1048,7 @@ const PeriodListView = () => {
           onClose={closeDrawer}
           zIndex={1300}
           visible={drawerVisible}
+          width={window.innerWidth < 768 ? '90vw' : '450px'}
           closable={false}
           className='th-resources-drawer'
           extra={
@@ -1054,12 +1063,46 @@ const PeriodListView = () => {
             </div>
           ) : resourcesData ? (
             <div>
+              {boardFilterArr.includes(window.location.host) && (
+                <div className='row mt-1 th-fw-600'>
+                  <div className='col-2 th-black-1 px-0'>
+                    <div className='d-flex justify-content-between'>
+                      <span>Module </span>
+                      <span>:&nbsp;</span>
+                    </div>
+                  </div>
+
+                  <div className='col-10 th-primary px-0'>
+                    {resourcesData.module_name}
+                  </div>
+                </div>
+              )}
+              <div className='row mt-2 th-fw-600'>
+                <div className='col-2 th-black-1 px-0'>
+                  <div className='d-flex justify-content-between'>
+                    <span>Chapter </span>
+                    <span>:&nbsp;</span>
+                  </div>
+                </div>
+
+                <div className='col-10 th-primary px-0'>{resourcesData.chapter_name}</div>
+              </div>
+              <div className='row mt-2 th-fw-600'>
+                <div className='col-3 th-black-1 px-0'>
+                  <div className='d-flex justify-content-between'>
+                    <span>Key Concept </span>
+                    <span>:&nbsp;</span>
+                  </div>
+                </div>
+
+                <div className='col-9 th-primary px-0'>{resourcesData.topic_name}</div>
+              </div>
               <div className='row'>
                 <div className='col-12 text-through pl-0'>
                   <span className='th-grey'>Resources</span>
                 </div>
               </div>
-              {resourcesData?.lp_files.map((each) => each.media_file).flat().length >
+              {resourcesData?.lp_files?.map((each) => each?.media_file).flat().length >
               0 ? (
                 <div
                   style={{
@@ -1314,9 +1357,9 @@ const PeriodListView = () => {
                 </div>
                 <div>
                   Lesson is completed for <br />
-                  {completeSections.length > 1 ? 'Sections' : 'Section'}&nbsp;
+                  {sectionsCompleted.length > 1 ? 'Sections' : 'Section'}&nbsp;
                   <span className='th-black-1 th-fw-600 '>
-                    {completeSections
+                    {sectionsCompleted
                       ?.map((item) => item.section__section_name.slice(-1).toUpperCase())
                       .join(', ')}
                   </span>
