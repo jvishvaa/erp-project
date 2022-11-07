@@ -8,13 +8,9 @@ import './index.css';
 export default function AssesmentReportNew({ reportCardDataNew }) {
   const [pricipalSignData, setPricipalSignData] = useState([]);
 
-  const selectedBranch = useSelector(
-    (state) => state.commonFilterReducer?.selectedBranch
-  );
-
   useEffect(() => {
     fetchPrincipalSignature({
-      branch_id: selectedBranch?.branch?.id,
+      branch_id: reportCardDataNew?.school_info?.branch_id,
     });
   }, [reportCardDataNew]);
 
@@ -377,7 +373,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   className='th-width-10  text-center'
                                   style={{ backgroundColor: '#ffffff' }}
                                 >
-                                  {subMarks}
+                                  {isNaN(subMarks) ? 'NA' : subMarks}
                                 </td>
                                 {/* Inserting Total marks column for each semester */}
                                 {j == eachSem?.marks_with_subject?.length - 1 ? (
