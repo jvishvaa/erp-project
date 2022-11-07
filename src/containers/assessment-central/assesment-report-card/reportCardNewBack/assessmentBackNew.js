@@ -1,19 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import _ from 'lodash';
 import endpoints from 'v2/config/endpoints';
-import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
 
 export default function AssesmentReportBackNew({ reportCardDataNew }) {
   const [pricipalSignData, setPricipalSignData] = useState([]);
 
-  const selectedBranch = useSelector(
-    (state) => state.commonFilterReducer?.selectedBranch
-  );
-
   useEffect(() => {
     fetchPrincipalSignature({
-      branch_id: selectedBranch?.branch?.id,
+      branch_id: reportCardDataNew?.school_info?.branch_id,
     });
   }, [reportCardDataNew]);
 
