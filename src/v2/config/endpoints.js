@@ -120,6 +120,14 @@ export default {
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
   },
+  diaryReport: {
+    dashboardDiaryreport: `${msReportsUrl}/api/reports/v2/dashboard/diary/`,
+    gradewiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/view/`,
+    sectionwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/view/`,
+    subjectwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/view/`,
+    subjectTeacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/view/`,
+    teacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/data/view/`,
+  },
   lessonPlan: {
     subjects: 'academic/v2/lesson-plan-subjects/',
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,

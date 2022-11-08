@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <g id="tick" transform="translate(-771 -544)">
+    <g id="Ellipse_18" data-name="Ellipse 18" transform="translate(771 544)" fill="none" stroke="#eee" stroke-width="3" stroke-dasharray="0 237">
+      <circle cx="25" cy="25" r="25" stroke="none"/>
+      <circle cx="25" cy="25" r="23.5" fill="none"/>
+    </g>
+    <path id="Path_29" data-name="Path 29" d="M13015.644,10094.758l8.181,8.845,16.85-18.217-16.85,11.136Z" transform="translate(-12232.158 -9525.494)" fill="#25a53f" stroke="#25a53f" stroke-linejoin="bevel" stroke-width="1"/>
+  </g>
+</svg>

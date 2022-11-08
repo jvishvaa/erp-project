@@ -35,8 +35,13 @@ import StaffAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/
 import LessonPlan from 'v2/FaceLift/LessonPlan';
 import LessonPlanView from 'v2/FaceLift/LessonPlan/LessonPlanView';
 import StudentAttendanceDashboard from 'v2/FaceLift/StudentDashboard/StudentAttendanceDashboard';
+import GradewiseDiaryReport from 'v2/FaceLift/DiaryReport/GradewiseDiaryReport';
+import SubjectwiseDiaryReport from 'v2/FaceLift/DiaryReport/SubjectwiseDiaryReport';
+import TeacherDiaryReport from 'v2/FaceLift/DiaryReport/TeacherDiaryReport';
+import TeacherwiseDiaryReport from 'v2/FaceLift/DiaryReport/TeacherwiseDiaryReport';
 import endpoints from 'config/endpoints';
 import axios from 'axios';
+
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -60,14 +65,14 @@ const V2Router = () => {
           item.child_module &&
           item.child_module.length > 0
         ) {
-                axios
-                  .post(endpoints.sureLearning.login, {
-                    username: erp ? erp : username,
-                  })
-                  .then((result) => {
-                    localStorage.setItem('udaanDetails', JSON.stringify(result.data));
-                  })
-                  .catch((error) => {});
+          axios
+            .post(endpoints.sureLearning.login, {
+              username: erp ? erp : username,
+            })
+            .then((result) => {
+              localStorage.setItem('udaanDetails', JSON.stringify(result.data));
+            })
+            .catch((error) => {});
         }
       });
     }
@@ -180,6 +185,18 @@ const V2Router = () => {
                         </Route>
                         <Route path='/lesson-plan/student-view/annual-plan'>
                           {({ match }) => <LessonPlan match={match} />}
+                        </Route>
+                        <Route exact path='/gradewise-diary-report'>
+                          {({ match }) => <GradewiseDiaryReport match={match} />}
+                        </Route>
+                        <Route exact path='/subjectwise-diary-report'>
+                          {({ match }) => <SubjectwiseDiaryReport match={match} />}
+                        </Route>
+                        <Route exact path='/teacher-diary-report'>
+                          {({ match }) => <TeacherDiaryReport match={match} />}
+                        </Route>
+                        <Route exact path='/teacherwise-diary-report'>
+                          {({ match }) => <TeacherwiseDiaryReport match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {
