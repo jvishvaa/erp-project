@@ -35,6 +35,7 @@ const Layout = ({ children, history }) => {
   const searchParams = new URLSearchParams(window.location.search);
   const isLayoutHidden = searchParams.get('wb_view');
   let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
+  let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
 
   const {
     apiGateway: { baseURLCentral, baseUdaan, baseEvent },
@@ -243,7 +244,7 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
-      case 'OnBoarding Report' : {
+      case 'OnBoarding Report': {
         history.push('/onboarding-report');
         break;
       }
@@ -469,13 +470,20 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Attendance': {
-        history.push('/teacher-attendance-verify');
+        history.push(
+          userLevel == 13 ? 'student-attendance-dashboard' : '/teacher-attendance-verify'
+        );
         break;
       }
-      case 'Mark Attendance': {
-        history.push('/teacher-attendance');
+      case 'Mark Student Attendance': {
+        history.push('/mark-student-attendance');
         break;
       }
+      case 'Mark Staff Attendance': {
+        history.push('/mark-staff-attendance');
+        break;
+      }
+
       case 'Take Test': {
         history.push('/assessment');
         break;
@@ -510,6 +518,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Report Card Config': {
         history.push('/assessment/report-config');
+        break;
+      }
+      case 'Grading System Config': {
+        history.push('/assessment/grading-system');
         break;
       }
       case 'ID Card View': {
@@ -1029,6 +1041,56 @@ const Layout = ({ children, history }) => {
       }
       case 'Observation Report': {
         history.push('/pdf-table');
+        break;
+      }
+      // case 'Create Activity':{
+      //   history.push('/blog/create');
+      //   break;
+      // }
+      // case 'My Activities':{
+      //   history.push('/blog/studentview')
+      //   break;
+      // }
+      // case  'View Activity':{
+      //   history.push('/blog/blogview')
+      //   break;
+      // }
+      // case 'Create Activity Type': {
+      //   history.push('/blog/createactivitytype')
+      //   break;
+
+      // }
+      // case  'Blog':{
+      //   history.push('/blog/activityreview')
+      //   break;
+      // }
+      // case 'Create Parameter': {
+      //   history.push('/blog/createratingtype')
+      //   break;
+
+      // }
+      case 'Create Activity': {
+        history.push('/blog/create');
+        break;
+      }
+      case 'My Blogs': {
+        history.push('/blog/studentview');
+        break;
+      }
+      case 'Blog Activity': {
+        history.push('/blog/blogview');
+        break;
+      }
+      case 'Create Activity Type': {
+        history.push('/blog/createactivitytype');
+        break;
+      }
+      case 'Blog': {
+        history.push('/blog/activityreview');
+        break;
+      }
+      case 'Create Rating': {
+        history.push('/blog/createratingtype');
         break;
       }
 

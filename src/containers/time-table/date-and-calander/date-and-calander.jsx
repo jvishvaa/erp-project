@@ -154,7 +154,7 @@ const DateAndCalander = (props) => {
       let subName = item?.subject_name
       let title = (item?.period_type === 3 || item?.period_type === 2) ? subName ? `${pType} : ${subName}` : `${pType}` : item?.period_type_name
       let tempObj = {
-        title: title,
+        title: title == "Break" ? title  : title +" "+ "(" + item?.teacher_name + ")",
         start: setConvertDate + 'T' + item?.start_time,
         end: setConvertDate + 'T' + item?.end_time,
         extendedProps: item,
@@ -281,7 +281,6 @@ const DateAndCalander = (props) => {
     let end_date = `${moment(selectedEndDate).format('YYYY-MM-DD')}`
     let start_time = `${moment(selectedStartTime).format('HH:mm:00')}`
     let end_time = `${moment(selectedEndTime).format('HH:mm:00')}`
-
     if (!TimeTableName) {
       setAlert('error', 'Please Add Time Table Name');
       return false;
@@ -296,6 +295,9 @@ const DateAndCalander = (props) => {
       return false;
     } else if (!selectedEndTime) {
       setAlert('error', 'Please Select School Ending Time');
+      return false;
+    } else if(!props?.grade_Name){
+      setAlert('error','Please Select Grade');
       return false;
     } else if (start_date === end_date) {
       setAlert('error', 'Please Change School Ending Date or Starting Date');
@@ -538,17 +540,26 @@ let data = await collidingPeriod(payload);
         <Dialog
           open={newTable}
           fullWidth={true}
-          maxWidth={'md'}
+          maxWidth={'sm'}
           aria-labelledby='form-dialog-title'
         >
           <DialogTitle id='form-dialog-title'>
+            <div style={{display:'flex', justifyContent:'space-between'}}>
+              <div>
             Create Time Table 
+
+              </div>
+              <div style={{marginRight:'15px'}}>
             <IconButton onClick={handleCancel} aria-label='close' size='large' style={{marginLeft:"72%"}}>
                 <HighlightOffIcon
                   // style={{ color: 'white', backgroundColor: 'black' }}
                   fontSize='inherit'
                 />
               </IconButton>
+
+              </div>
+
+            </div>
             </DialogTitle>
             <hr/>
           <div className='dialog-data-container'>

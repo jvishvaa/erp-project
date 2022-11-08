@@ -30,7 +30,6 @@ function CreateReportConfig() {
   );
 
   const [components, setComponentDetails] = useState([])
-  console.log('debugmain', components)
 
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -58,9 +57,12 @@ function CreateReportConfig() {
         grade: selectedGrade?.grade_id,
         id: compnentUniqueId,
         ComponentID: -1,
-        subComponents: []
+        componentName : '',
+        subComponents: [],
+        grading_system_id : '',
+        is_publish: false,
       },
-    ]);
+    ]); 
   }
 
 
@@ -94,6 +96,17 @@ function CreateReportConfig() {
       .then((res) => {
         if (res?.data?.status_code === 200) {
           // const allBranchData = res?.data?.data?.results.map((item) => item.branch);
+          let branches = res?.data?.data?.results
+          if (branches?.length > 1) {
+            branches.unshift({
+              branch : {
+                id: 'all',
+                branch_name: 'Select All',
+                branch_code: 'all',
+              },
+              id : 'all'
+            });
+          }
           setBranchList(res?.data?.data?.results);
         } else {
           // setBranchList([]);
@@ -117,14 +130,17 @@ function CreateReportConfig() {
   };
 
   const { setAlert } = useContext(AlertNotificationContext);
-  const handleBranch = (e, value = {}) => {
+  const handleBranch = (e, value = []) => {
     setSelectedbranch()
     setSelectedGrade()
     setGradeList([])
     // const Ids = value.map((i)=>i.id)
     if (value) {
-      setSelectedbranch(value)
-      getGrade(value)
+      value = value.filter(({ id }) => id === 'all').length === 1
+        ? [...branchList].filter(({ id }) => id !== 'all')
+        : value;
+        setSelectedbranch(value)
+        getGrade(value)
       // setSelectBranchId(Ids)	
     } else {
       // setSelectBranchId([])	
@@ -144,7 +160,6 @@ function CreateReportConfig() {
   }
 
   const [ttrue, setTtrue] = useState(false)
-  console.log(ttrue, 'setTtrue')
   const assessmentError = () => {
     setAlert('error', 'Please enter Assessment Type')
     handleClose()
@@ -170,16 +185,23 @@ function CreateReportConfig() {
     handleClose()
     setTtrue(false)
   }
-  const checkfunc = () => {
 
+  const priorityError = () => {
+    setAlert('error', 'Please enter Priority !')
+    handleClose()
+    setTtrue(false)
+  }
+
+  const checkfunc = () => {
     // const checkdata = 
-    components.map((item) => {
-      item.subComponents.map((item) => item.columns.map((item) => {
+    components.map((data) => {
+      data.subComponents.map((item) => item.columns.map((item) => {
         if (!item?.name) return assessmentError()
         // if (!item?.name.find(['_'])) return assessmentunderError()
+        if (item?.priority === 0) return priorityError()
         if (item?.selectedTest?.length === 0) return selectedTestError()
-        if (!item?.weightage) return weightageError()
-        if (item?.logic === 0) return logicError()
+        if (data.componentName !== 'PTSD' && item?.weightage == '') return weightageError()
+        if (data.componentName !== 'PTSD' && item?.logic === 0) return logicError()
         else (setTtrue(true))
       }))
     })
@@ -191,14 +213,16 @@ function CreateReportConfig() {
     if (ttrue) {
       axiosInstance.post(`${endpoints.reportCardConfig.submitAPI}`, components)
         .then(result => {
-          // if (result.data.status_code === 200) {
+          if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          setTtrue(false)
           history.goBack()
           handleClose()
           // }
-        }).catch((error) => {
-
-          // setAlert('error', error?.response?.data?.description)
+        }}).catch((error) => {
+          setAlert('error', error?.response?.data?.message || error?.response?.data?.message || 'Creation Failed')
+          setTtrue(false)
+          handleClose()
         })
     }
 
@@ -212,6 +236,7 @@ function CreateReportConfig() {
     <>
       {/* {loading ? <Loading message='Loading...' /> : null} */}
       <Layout>
+        <div style={{overflowX:'hidden'}}>
         <div>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
@@ -229,6 +254,7 @@ function CreateReportConfig() {
               size='small'
               onChange={handleBranch}
               id='branch_id'
+              limitTags={1}
               className='dropdownIcon'
               value={selectedbranch || []}
               options={branchList || []}
@@ -384,6 +410,7 @@ function CreateReportConfig() {
           >
             Submit Report Card
           </Button>}
+        </div>
       </Layout>
     </>
   );

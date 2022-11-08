@@ -34,6 +34,13 @@ import BranchWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attend
 import StaffAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/staffAttendance';
 import LessonPlan from 'v2/FaceLift/LessonPlan';
 import LessonPlanView from 'v2/FaceLift/LessonPlan/LessonPlanView';
+import StudentAttendanceDashboard from 'v2/FaceLift/StudentDashboard/StudentAttendanceDashboard';
+import GradewiseDiaryReport from 'v2/FaceLift/DiaryReport/GradewiseDiaryReport';
+import SubjectwiseDiaryReport from 'v2/FaceLift/DiaryReport/SubjectwiseDiaryReport';
+import TeacherDiaryReport from 'v2/FaceLift/DiaryReport/TeacherDiaryReport';
+import TeacherwiseDiaryReport from 'v2/FaceLift/DiaryReport/TeacherwiseDiaryReport';
+import endpoints from 'config/endpoints';
+import axios from 'axios';
 
 const V2Router = () => {
   useEffect(() => {
@@ -42,11 +49,34 @@ const V2Router = () => {
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
+  const { erp, username, erp_config } =
+    JSON.parse(localStorage.getItem('userDetails')) || [];
   const { is_superuser: superuser } =
     JSON.parse(localStorage.getItem('userDetails')) || '';
   if (superuser == true) {
     userLevel = 1;
   }
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Sure Learning' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          axios
+            .post(endpoints.sureLearning.login, {
+              username: erp ? erp : username,
+            })
+            .then((result) => {
+              localStorage.setItem('udaanDetails', JSON.stringify(result.data));
+            })
+            .catch((error) => {});
+        }
+      });
+    }
+  }, []);
 
   return (
     <Router>
@@ -93,6 +123,9 @@ const V2Router = () => {
                             }
                           }}
                         </Route>
+                        <Route path='/student-attendance-dashboard'>
+                          {({ match }) => <StudentAttendanceDashboard match={match} />}
+                        </Route>
                         <Route path='/announcement-list'>
                           {({ match }) => <AnnouncementList match={match} />}
                         </Route>
@@ -129,20 +162,41 @@ const V2Router = () => {
                         <Route exact path='/report-config/create'>
                           {({ match }) => <CreateReportConfig match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/teacher-view/annual-plan'>
+                        <Route path='/lesson-plan/teacher-view/period-view/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/teacher-view/annual-plan/list-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view/period-view/list-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view/annual-plan/list-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/teacher-view/period-view'>
+                          {({ match }) => <LessonPlan match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/teacher-view/annual-plan'>
+                          {({ match }) => <LessonPlan match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view/period-view'>
+                          {({ match }) => <LessonPlan match={match} />}
                         </Route>
                         <Route path='/lesson-plan/student-view/annual-plan'>
-                          {({ match }) => <LessonPlanView match={match} />}
-                        </Route>
-                        <Route path='/lesson-plan/teacher-view'>
                           {({ match }) => <LessonPlan match={match} />}
                         </Route>
-                        <Route path='/lesson-plan/student-view'>
-                          {({ match }) => <LessonPlan match={match} />}
+                        <Route exact path='/gradewise-diary-report'>
+                          {({ match }) => <GradewiseDiaryReport match={match} />}
                         </Route>
-                        <Route path='/lesson-plan-module-view'>
-                          {({ match }) => <LessonPlanView match={match} />}
+                        <Route exact path='/subjectwise-diary-report'>
+                          {({ match }) => <SubjectwiseDiaryReport match={match} />}
+                        </Route>
+                        <Route exact path='/teacher-diary-report'>
+                          {({ match }) => <TeacherDiaryReport match={match} />}
+                        </Route>
+                        <Route exact path='/teacherwise-diary-report'>
+                          {({ match }) => <TeacherwiseDiaryReport match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

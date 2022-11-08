@@ -16,6 +16,7 @@ import {
   Box,
   useTheme,
   useMediaQuery,
+  IconButton,
 } from '@material-ui/core';
 import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -40,6 +41,10 @@ import endpoints from 'config/endpoints';
 import moment from 'moment';
 import AssesmentReportNew from '../assesment-report-card/newReportPrint';
 import { returnAdmin } from 'containers/Finance/src/components/Finance/store/actions';
+import ReportCardNewBack from '../assesment-report-card/reportCardNewBack';
+import StudentWiseReport from './assessment-report-filters/student-wise-report';
+import LeftArrow from 'components/icon/LeftArrow';
+import { useHistory } from 'react-router';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
   const limit = 10;
@@ -47,6 +52,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const widerWidth = isMobile ? '98%' : '95%';
   const classes = useStyles();
+  const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -70,6 +76,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const [reportCardDataNew, setReportCardDataNew] = useState([]);
   const [isPreview, setIsPreview] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const [isstudentList, setisstudentList] = useState(false);
 
   const [selectedERP, setSelectedERP] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -314,12 +321,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
       case 0:
         return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
       case 1:
-        return (
-          <AssessmentReportBack
-            schoolInfo={reportCardDataNew['school_info']}
-            observationFeedback={reportCardDataNew['observation_feedback']}
-          />
-        );
+        return <ReportCardNewBack reportCardDataNew={reportCardDataNew} />;
     }
   };
 
@@ -333,6 +335,11 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
       });
       return transformedResponse || [];
     }
+  };
+
+  const handlebackStudentList = () => {
+    setIsPreview(false);
+    setisstudentList(true);
   };
 
   return (
@@ -349,6 +356,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
           selectedReportType={selectedReportType}
           widerWidth={widerWidth}
           isMobile={isMobile}
+          reportcardpipelineview = {history?.location?.state?.reportcardpipeline}
         />
         {selectedReportType?.id && (
           <AssessmentReportFilters
@@ -372,6 +380,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             isMobile={isMobile}
             filterData={filterData}
             setFilterData={setFilterData}
+            setisstudentList={setisstudentList}
           />
         )}
         {selectedReportType?.id === 5 && isPreview && (
@@ -389,11 +398,17 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
 
         {selectedReportType?.id === 14 && isPreview && (
           <>
+            <div onClick={handlebackStudentList} className={classes.arrowbtn}>
+              <IconButton>
+                <LeftArrow style={{ width: '20px', height: '20px' }} />
+              </IconButton>
+              Back
+            </div>
             <Box style={{ margin: '20px auto', width: '95%' }}>
               <TabPanel
                 tabValue={tabValue}
                 setTabValue={setTabValue}
-                tabValues={['Front']}
+                tabValues={['Front', 'Back']}
               />
             </Box>
             <Box style={{ margin: '20px auto', width: '95%' }}>
@@ -553,7 +568,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             </div>
           </Paper>
         )}
-        {!isFilter && !isPreview && (
+        {!isFilter && !isPreview && !isstudentList && (
           <div className='periodDataUnavailable'>
             <SvgIcon
               component={() => (
@@ -580,6 +595,17 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
               )}
             />
           </div>
+        )}
+        {isstudentList && selectedReportType?.id === 14 && !isPreview && (
+          <StudentWiseReport
+            setisstudentList={setisstudentList}
+            setIsPreview={setIsPreview}
+            filterData={filterData}
+            setReportCardDataNew={setReportCardDataNew}
+            isFilter={isFilter}
+            setIsFilter={setIsFilter}
+            isstudentList={isstudentList}
+          />
         )}
       </Layout>
     </>

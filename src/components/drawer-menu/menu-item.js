@@ -109,7 +109,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     // { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
     // { name: 'Role Management', Path: '/role-management' },
     { name: 'View Role', Path: '/role-management' },
-    { name: 'Teacher Attendance', Path: '/teacher-attendance' },
+    { name: 'Mark Staff Attendance', Path: '/mark-staff-attendance' },
+    { name: 'Mark Student Attendance', Path: '/mark-student-attendance' },
     { name: 'Teacher Attendance Verify', Path: '/teacher-attendance-verify' },
 
     { name: 'Deposit', Path: '/finance/DepositTab' },
@@ -202,7 +203,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Assessment Report', Path: '/assessment-reports' },
 
     { name: 'Student Report', Path: '/assessment-student-report' },
-
+    { name: 'Grading System Config', path: '/assessment/grading-system' },
     {
       name: 'Weekly Quiz Performance',
       Path: '/assessment-weekly-quiz-performance-report',
@@ -595,10 +596,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     //   name: 'Self Driven Courses',
     //   Path: '/assignedCoursesByCordinator',
     // },
-    {
-      name: 'Mark Attendance',
-      Path: '/teacher-attendance',
-    },
+    // {
+    //   name: 'Mark Attendance',
+    //   Path: '/teacher-attendance',
+    // },
     {
       name: 'View Attendance',
       Path: '/teacher-attendance-verify',
@@ -618,6 +619,26 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'Observation Report',
       Path: '/pdf-table',
+    },
+    {
+      name: 'Create Activity',
+      Path: '/blog/create',
+    },
+    {
+      name: 'My Activities',
+      Path: '/blog/studentview',
+    },
+    {
+      name: 'Create Activity Type',
+      Path: '/blog/createactivitytype',
+    },
+    {
+      name: 'Blog',
+      Path: '/blog/activityreview',
+    },
+    {
+      name: 'Create Parameter',
+      Path: '/blog/createratingtype',
     },
     {
       name: 'Trainee Courses',

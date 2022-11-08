@@ -42,6 +42,7 @@ const Layout = ({ children, history }) => {
   const searchParams = new URLSearchParams(window.location.search);
   const isLayoutHidden = searchParams.get('wb_view');
   let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
+  let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
 
   const {
     apiGateway: { baseURLCentral, baseUdaan, baseEvent },
@@ -248,7 +249,7 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
-      case 'OnBoarding Report' : {
+      case 'OnBoarding Report': {
         history.push('/onboarding-report');
         break;
       }
@@ -382,11 +383,15 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher View': {
-        history.push('/lesson-plan/teacher-view');
+        history.push(
+          isV2 ? '/lesson-plan/teacher-view/period-view' : '/lesson-plan/teacher-view'
+        );
         break;
       }
       case 'Student View': {
-        history.push('/lesson-plan/student-view');
+        history.push(
+          isV2 ? '/lesson-plan/student-view/period-view' : '/lesson-plan/student-view'
+        );
         break;
       }
       case 'Assign Transport Fees': {
@@ -478,13 +483,21 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Attendance': {
-        history.push('/teacher-attendance-verify');
+        history.push(
+          userLevel == 13 ? '/student-attendance-dashboard' : '/teacher-attendance-verify'
+        );
+
         break;
       }
-      case 'Mark Attendance': {
-        history.push('/teacher-attendance');
+      case 'Mark Student Attendance': {
+        history.push('/mark-student-attendance');
         break;
       }
+      case 'Mark Staff Attendance': {
+        history.push('/mark-staff-attendance');
+        break;
+      }
+
       case 'Take Test': {
         history.push('/assessment');
         break;
@@ -521,6 +534,10 @@ const Layout = ({ children, history }) => {
         history.push('/assessment/report-config');
         break;
       }
+      case 'Grading System Config': {
+        history.push('/assessment/grading-system');
+        break;
+      }
       case 'ID Card View': {
         history.push('/student-id-card');
         break;
@@ -543,11 +560,17 @@ const Layout = ({ children, history }) => {
       }
 
       case 'Grievance Teacher': {
-        history.push('/griviences/admin-view');
+        window.open(
+          `${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`,
+          '_blank'
+        );
         break;
       }
       case 'Grievance Student': {
-        history.push('/griviences/student-view');
+        window.open(
+          `${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`,
+          '_blank'
+        );
         break;
       }
 
@@ -1038,6 +1061,56 @@ const Layout = ({ children, history }) => {
       }
       case 'Observation Report': {
         history.push('/pdf-table');
+        break;
+      }
+      // case 'Create Activity':{
+      //   history.push('/blog/create');
+      //   break;
+      // }
+      // case 'My Activities':{
+      //   history.push('/blog/studentview')
+      //   break;
+      // }
+      // case  'View Activity':{
+      //   history.push('/blog/blogview')
+      //   break;
+      // }
+      // case 'Create Activity Type': {
+      //   history.push('/blog/createactivitytype')
+      //   break;
+
+      // }
+      // case  'Blog':{
+      //   history.push('/blog/activityreview')
+      //   break;
+      // }
+      // case 'Create Parameter': {
+      //   history.push('/blog/createratingtype')
+      //   break;
+
+      // }
+      case 'Create Activity': {
+        history.push('/blog/create');
+        break;
+      }
+      case 'My Blogs': {
+        history.push('/blog/studentview');
+        break;
+      }
+      case 'Blog Activity': {
+        history.push('/blog/blogview');
+        break;
+      }
+      case 'Create Activity Type': {
+        history.push('/blog/createactivitytype');
+        break;
+      }
+      case 'Blog': {
+        history.push('/blog/activityreview');
+        break;
+      }
+      case 'Create Rating': {
+        history.push('/blog/createratingtype');
         break;
       }
 

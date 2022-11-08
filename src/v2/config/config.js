@@ -100,7 +100,7 @@ const prod = {
     baseEvent: 'http://events.letseduvate.com/',
     finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
     baseFinanceURL: chechUrl
-      ? 'https://revamp.finance.letseduvate.com/qbox'
+      ? 'https://orchids.finance.letseduvate.com/qbox'
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
   },
 };

@@ -78,7 +78,10 @@ const categories = [
   { id: '1', category: 'Knowledge' },
   { id: '2', category: 'Understanding' },
   { id: '3', category: 'Application' },
-  { id: '4', category: 'Analyse' },
+  { id: '4', category: 'Analysis' },
+  { id: '5', category: 'Remembering' },
+  { id: '6', category: 'Evaluation' },
+  { id: '7', category: 'Creating' },
 ];
 
 const questionType = [

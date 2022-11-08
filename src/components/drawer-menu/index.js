@@ -54,7 +54,7 @@ const resolveMenu = (url) => {
   if (url.includes('MiscFeeClass')) return 'Misc. Fee To Class';
   if (url.includes('feePlan')) return 'Fee Plan';
   if (url.includes('feeType')) return 'Fee Type';
-
+  if(url.includes('Grading System Config')) return 'Grading System Config'
   if (url.includes('griviences')) return 'Griviences';
   if (url.includes('appointments')) return 'Appointment';
   if (url.includes('contact-us')) return 'Appointment';
