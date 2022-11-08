@@ -415,6 +415,7 @@ import AllChaptersContent from 'containers/sure-learning/Initiate_Class/Chapter_
 import AcademicReport from 'containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
+import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject'
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
 import UserProfile from 'containers/login/profiles';
@@ -1512,6 +1513,11 @@ const V1Router = [
   <Route path='/curriculum-completion-chapter/'>
   {({ match }) => (
     <CurriculumCompletionChapter match={match} />
+  )}
+</Route>,
+<Route path='/curriculum-completion-chapter-subject/'>
+  {({ match }) => (
+    <CurriculumChapterWiseSubject match={match} />
   )}
 </Route>,
   <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>

@@ -137,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const CurriculumCompletionSubject = (props) => {
+const CurriculumChapterWiseSubject = (props) => {
   const classes = useStyles();
   const [volume, setVolume] = React.useState('');
   const history = useHistory();
@@ -298,11 +298,10 @@ const CurriculumCompletionSubject = (props) => {
         <span
           onClick={(e) =>
             history.push({
-              pathname: `/curriculum-completion-chapter/${branchId}/${row?.grade_id}`,
+              pathname: `/curriculum-completion-subject/${branchId}/${row?.grade_id}`,
               state: {
                 grade: row?.grade_id,
                 gradeName: row?.grade_name,
-                subject_id: row?.subject_id,
                 acad_session_id: acad_session_id,
                 acad_sess_id: acad_sess_id,
                 module_id: moduleId,
@@ -315,7 +314,7 @@ const CurriculumCompletionSubject = (props) => {
         >
           <RightOutlined className='th-grey th-pointer' />
         </span>
-      )
+      ),
     },
   ];
 
@@ -367,9 +366,127 @@ const CurriculumCompletionSubject = (props) => {
               </span>
             </div>
           </Grid>
-          
-          <div className='row '>
+          {/* <Grid item container xs={12} spacing={3}>
+              <Grid item xs={3}>
+
+              </Grid>
+
+              <Grid item xs={12}>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead className={clsx(classes.TableHeaderColor)}>
+                      <TableRow>
+                        <TableCell className={clsx(classes.TableTextLeft)} style={{ minWidth: '150px' }} >
+                          SUBJECT
+                        </TableCell>
+                        <TableCell className={clsx(classes.TableTextLeft)}>
+                          Total Periods
+                        </TableCell>
+                        <TableCell className={clsx(classes.TableTextLeft)}>
+                          Total Periods Conducted
+                        </TableCell>
+                        <TableCell className={clsx(classes.TableTextLeft)}>
+                          Total Periods Pending
+                        </TableCell>
+                        <TableCell className={clsx(classes.TableTextLeft)}>
+                          AVG. COMPLETION
+                        </TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+             
+                      {tableData &&
+                        tableData?.data?.map((each, index) => {
+                          return (
+                            <>
+                              <TableRow key={index}>
+                                <TableCell className={clsx(classes.TableTextLeft)}>
+                                  {' '}
+                                  {
+                                    each?.subject_name
+                                  }{' '}
+                                </TableCell>
+                                <TableCell
+                                  className={clsx(classes.TableTextLeft)}
+                                >
+                                  {each?.total_periods_sum} %
+                                </TableCell>
+                                <TableCell
+                                  className={clsx(classes.TableTextLeft)}
+                                >
+                                  {each?.completed_periods_sum} %
+                                </TableCell>
+
+                                <TableCell
+                                  className={clsx(classes.TableTextLeft)}
+                                >
+                                  {each?.pending_periods} %
+                                </TableCell>
+                                <TableCell
+                                  className={clsx(classes.TableTextLeft)}
+                                >
+                                  {each?.avg} %
+                                </TableCell>
+                                <TableCell className={clsx(classes.TableTextRight)}>
+                                  <IconButton
+                                    size='large'
+                                    onClick={() =>
+                                      handleCurrSubject(
+                                        each?.grade_id,
+                                        each?.grade_name,
+                                      )
+                                    }
+
+                                  >
+                                    <ArrowCircleRightIcon />
+                                  </IconButton>
+                                </TableCell>
+                              </TableRow>
+                            </>
+                          );
+                        })}
+                    </TableBody>
+                    <TableFooter>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell
+                          className={clsx(classes.TableTextLeft)}>
+                          Total Periods: {tableData?.total_periods ? tableData?.total_periods : ''}
+                        </TableCell>
+                        <TableCell
+                          className={clsx(classes.TableTextLeft)}>
+                          Total Periods Conducted	: {tableData?.completed_periods ? tableData?.completed_periods : ''}
+                        </TableCell>
+                        <TableCell
+                          className={clsx(classes.TableTextLeft)}>
+                          Total Periods Pending: {tableData?.pending_periods ? tableData?.pending_periods : ''}
+                        </TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    </TableFooter>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </Grid> */}
           <div className='row mt-3'>
+            <div className='col-12'>
+              <Table
+                className='th-table'
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                loading={loading}
+                columns={columns}
+                rowKey={(record) => record?.grade_id}
+                dataSource={tableData?.data}
+                pagination={false}
+                expandIconColumnIndex={6}
+
+                scroll={{ x: 'max-content' }}
+              />
+            </div>
+            <div className='row mt-3'>
               <div className='col-12'>
                 <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
                   <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
@@ -390,23 +507,6 @@ const CurriculumCompletionSubject = (props) => {
                 </div>
               </div>
             </div>
-            <div className='col-12'>
-              <Table
-                className='th-table'
-                rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                }
-                loading={loading}
-                columns={columns}
-                rowKey={(record) => record?.grade_id}
-                dataSource={tableData?.data}
-                pagination={false}
-                expandIconColumnIndex={6}
-
-                scroll={{ x: 'max-content' }}
-              />
-            </div>
-       
           </div>
         </Grid>
 
@@ -416,4 +516,4 @@ const CurriculumCompletionSubject = (props) => {
   );
 };
 
-export default withRouter(CurriculumCompletionSubject);
+export default withRouter(CurriculumChapterWiseSubject);

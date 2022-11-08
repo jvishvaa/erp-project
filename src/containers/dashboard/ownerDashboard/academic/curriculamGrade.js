@@ -191,15 +191,16 @@ const CurriculumCompletion = (props) => {
 
 
   const onTableRowExpand = (expanded, record) => {
+    console.log(record);
     teacherSubjectTable({
       date: dateToday,
       session_year: selectedAcademicYear?.id,
-      teacher_erp: record?.teacher_erp_id
+      teacher_erp: record?.erp_id
     })
     console.log(record);
     const keys = [];
     if (expanded) {
-      keys.push(record.central_gs_mapping_id);
+      keys.push(record.erp_id);
     }
 
     setExpandedRowKeys(keys);
@@ -275,6 +276,7 @@ const CurriculumCompletion = (props) => {
 
 
   const teacherSubjectTable = (params = {}) => {
+    console.log(params);
     setLoading(true);
     axiosInstance
       .get(`${endpoints.ownerDashboard.teacherSubjectWise}`, {
@@ -444,7 +446,7 @@ const CurriculumCompletion = (props) => {
   const columns1 = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>Teacher's Name</span>,
-      dataIndex: 'first_name',
+      dataIndex: 'name',
       width: '20%',
       align: 'left',
       render: (data) => <span className='pl-md-4 th-black-1 th-16'>{data}</span>,
@@ -536,17 +538,23 @@ const CurriculumCompletion = (props) => {
         align: 'center',
         width: '5%',
         key: 'icon',
-        render: (text, row) => (
+        render: (text, row) =>
+        (
           <span
-            onClick={() =>
+            onClick={(e) =>
               history.push({
-                pathname: '/curriculum-completion-chapter/',
+                pathname: `/curriculum-completion-chapter/${branchId}/${row?.grade_id}`,
                 state: {
+                  grade: row?.grade_id,
                   gradeName: row?.grade_name,
-                  gradeID: row?.grade_id,
-                  sectionName: row?.section_name,
-                  sectionID: row?.section_id,
-                  date: dateToday,
+                  subject_id: row?.subject_id,
+                  acad_session_id: acad_session_id,
+                  acad_sess_id: acad_sess_id,
+                  module_id: moduleId,
+                  branchName: branchName,
+                  selectedDate: dateToday,
+                  teacherView: teacherView,
+                  teacher_id: row?.erp_id
                 },
               })
             }
@@ -610,24 +618,8 @@ const CurriculumCompletion = (props) => {
             </div>
           </Grid>
           {!teacherView ?
-            <div className='row mt-3'>
-              <div className='col-12'>
-                <Table
-                  className='th-table'
-                  rowClassName={(record, index) =>
-                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                  }
-                  loading={loading}
-                  columns={columns}
-                  rowKey={(record) => record?.grade_id}
-                  dataSource={tableData?.data}
-                  pagination={false}
-                  expandIconColumnIndex={6}
-
-                  scroll={{ x: 'max-content' }}
-                />
-              </div>
-              <div className='row mt-3'>
+            <div className='row '>
+                <div className='row mt-3'>
                 <div className='col-12'>
                   <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
                     <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
@@ -648,9 +640,6 @@ const CurriculumCompletion = (props) => {
                   </div>
                 </div>
               </div>
-            </div>
-            :
-            <div className='row mt-3'>
               <div className='col-12'>
                 <Table
                   className='th-table'
@@ -658,8 +647,49 @@ const CurriculumCompletion = (props) => {
                     index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                   }
                   loading={loading}
+                  columns={columns}
+                  rowKey={(record) => record?.grade_id}
+                  dataSource={tableData?.data}
+                  pagination={false}
+                  expandIconColumnIndex={6}
+
+                  scroll={{ x: 'max-content' }}
+                />
+              </div>
+            
+            </div>
+            :
+            <div className='row '>
+              <div className='col-12'>
+              <div className='row mt-3'>
+                <div className='col-12'>
+                  <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
+                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
+                      Total Periods:{' '}
+                      <span className='th-primary'>{teacherData?.total_periods ? teacherData?.total_periods : ''}</span>
+                    </div>
+                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                      Total Periods Conducted:{' '}
+                      <span className='th-green'>{teacherData?.completed_periods ? teacherData?.completed_periods : ''}</span>
+                    </div>
+                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                      Total Periods Pending:{' '}
+                      <span className='th-fw-500 th-red'>
+                        {teacherData?.pending_periods ? teacherData?.pending_periods : ''}
+                      </span>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+                <Table
+                  className='th-table'
+                  rowClassName={(record, index) =>
+                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  }
+                  loading={loading}
                   columns={columns1}
-                  rowKey={(record) => record?.central_gs_mapping_id}
+                  rowKey={(record) => record?.erp_id}
                   expandable={{ expandedRowRender }}
                   dataSource={teacherData?.data}
                   pagination={false}
@@ -682,27 +712,7 @@ const CurriculumCompletion = (props) => {
                   scroll={{ x: 'max-content' }}
                 />
               </div>
-              <div className='row mt-3'>
-                <div className='col-12'>
-                  <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
-                      Total Periods:{' '}
-                      <span className='th-primary'>{teacherData?.total_periods ? teacherData?.total_periods : ''}</span>
-                    </div>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                      Total Periods Conducted:{' '}
-                      <span className='th-green'>{teacherData?.completed_periods ? teacherData?.completed_periods : ''}</span>
-                    </div>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                      Total Periods Pending:{' '}
-                      <span className='th-fw-500 th-red'>
-                        {teacherData?.pending_periods ? teacherData?.pending_periods : ''}
-                      </span>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
+           
             </div>
           }
         </Grid>
