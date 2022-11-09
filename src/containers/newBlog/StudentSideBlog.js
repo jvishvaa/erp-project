@@ -1,13 +1,10 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
 import RatingScale from './RatingScale';
 import Loader from 'components/loader/loader';
 
@@ -21,58 +18,24 @@ import {
   Divider,
   TextField,
   Button,
-  SvgIcon,
   makeStyles,
   Typography,
   Grid,
-  MenuItem,
-  TextareaAutosize,
-  Paper,
-  TableCell,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Table,
   Drawer,
-  TablePagination,
-  InputAdornment,
   Tooltip,
 } from '@material-ui/core';
-import Modal from '@material-ui/core/Modal';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import SearchIcon from '@material-ui/icons/Search';
 
 import Layout from 'containers/Layout';
-import Close from '@material-ui/icons/Close';
-import DoneIcon from '@material-ui/icons/Done';
 
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Box from '@material-ui/core/Box';
 import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import ForumIcon from '@material-ui/icons/Forum';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import './images.css';
 
 import './styles.scss';
 
-import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddIcon from '@material-ui/icons/Add';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import ReactHtmlParser from 'react-html-parser';
@@ -80,10 +43,8 @@ import moment from 'moment';
 import { Rating } from '@material-ui/lab';
 import Pagination from '@material-ui/lab/Pagination';
 import Slide from '@material-ui/core/Slide';
-import DialogActions from '@material-ui/core/DialogActions';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
-import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
-import { Tag, Breadcrumb, Button as ButtonAnt } from 'antd';
+import { Breadcrumb, Button as ButtonAnt } from 'antd';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 

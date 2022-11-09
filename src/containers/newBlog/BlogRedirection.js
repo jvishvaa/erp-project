@@ -1,99 +1,20 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 
 import {
-  // IconButton,
-  TextField,
-  // Button,
-  SvgIcon,
   makeStyles,
-  // Typography,
-  Grid,
-  Breadcrumbs,
-  Tooltip,
-  MenuItem,
-  TextareaAutosize,
-  Paper,
-  TableCell,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Table,
-  Drawer,
-  TablePagination,
-  // Select,
-  Dialog,
-  DialogTitle,
-  Checkbox,
-  CardActionArea,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from '@material-ui/core';
 import "./blog.css";
-import FormControl from '@material-ui/core/FormControl';
 import Layout from 'containers/Layout';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-import Box from '@material-ui/core/Box';
 import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useHistory } from 'react-router-dom';
-import MyTinyEditor from 'containers/question-bank/create-question/tinymce-editor';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
-import Carousel from "react-elastic-carousel";
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddIcon from '@material-ui/icons/Add';
-import Tab from '@material-ui/core/Tab';
-import TabContext from '@material-ui/lab/TabContext';
-import TabList from '@material-ui/lab/TabList';
-import BackupIcon from '@material-ui/icons/Backup';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import clsx from 'clsx';
-import ChatBubbleRoundedIcon from '@material-ui/icons/ChatBubbleRounded';
 import { Rating } from '@material-ui/lab';
-import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Space, Button, Divider } from 'antd';
-import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import ArtTrackIcon from '@material-ui/icons/ArtTrack';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-// import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-
-import {
-  fetchBranchesForCreateUser as getBranches,
-  fetchGrades as getGrades,
-  fetchSections as getSections,
-  fetchSubjects as getSubjects,
-} from '../../redux/actions';
-import axios from 'axios';
-import CloseIcon from '@material-ui/icons/Close';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-// import { Tabs } from 'antd';
+import { Breadcrumb, Tabs, Button, Divider } from 'antd';
 import moment from 'moment';
-import { DownOutlined, PlusOutlined, CheckOutlined, SearchOutlined } from '@ant-design/icons';
-import CollapsePanel from 'antd/lib/collapse/CollapsePanel';
-import CancelIcon from '@material-ui/icons/Cancel';
-import { UserOutlined } from '@ant-design/icons';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import image1 from "../../assets/images/gp1.png";
 import image2 from "../../assets/images/gp2.png"
 
@@ -289,8 +210,6 @@ const BlogWallRedirect = () => {
                         <div className='col-4 th-br-5'>
                           <img
                             src={getSubjectIcon(each?.name)}
-                            // src={getSubjectIcon((each?.subject_name).toLowerCase())}
-                            // style={{height:'30vh', width:'100%', backgroundSize:'cover', backgroundPosition:'center', backgroundRepeat:'no-repeat', borderRadius:'7px'}}
                             alt="Icon"
                             className='blog-redirect-card'
                           />

@@ -1,94 +1,50 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  // IconButton,
   Divider,
   TextField,
-  // Button,
-  SvgIcon,
   makeStyles,
-  // Typography,
   Grid,
-  Breadcrumbs,
-  Tooltip,
-  MenuItem,
-  TextareaAutosize,
-  Paper,
-  TableCell,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Table,
   Drawer,
-  TablePagination,
-  // Select,
-  Dialog,
-  DialogTitle,
-  Checkbox,
   CardActionArea,
   Accordion,
   AccordionSummary,
   AccordionDetails,
 } from '@material-ui/core';
 import "./blog.css";
-import FormControl from '@material-ui/core/FormControl';
 import Layout from 'containers/Layout';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-import Box from '@material-ui/core/Box';
 import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useHistory } from 'react-router-dom';
-import MyTinyEditor from 'containers/question-bank/create-question/tinymce-editor';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import Loader from '../../components/loader/loader';
-import Carousel from "react-elastic-carousel";
-import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import clsx from 'clsx';
-import ChatBubbleRoundedIcon from '@material-ui/icons/ChatBubbleRounded';
 import { Rating } from '@material-ui/lab';
-import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Space, Button } from 'antd';
-import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
+import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-// import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
-import {
-  fetchBranchesForCreateUser as getBranches,
-  fetchGrades as getGrades,
-  fetchSections as getSections,
-  fetchSubjects as getSubjects,
-} from '../../redux/actions';
 import axios from 'axios';
-import CloseIcon from '@material-ui/icons/Close';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import moment from 'moment';
-import { DownOutlined, PlusOutlined, CheckOutlined, SearchOutlined } from '@ant-design/icons';
-import CollapsePanel from 'antd/lib/collapse/CollapsePanel';
+import { DownOutlined, CheckOutlined, SearchOutlined } from '@ant-design/icons';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { UserOutlined } from '@ant-design/icons';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import './blog.css';
 
 const drawerWidth = 350;
 const { TabPane } = Tabs;
 
-const StyledRating = withStyles((theme) => ({
+const StyledRating = withStyles(() => ({
   iconFilled: {
     color: '#E1C71D',
   },
@@ -175,17 +131,11 @@ const useStyles = makeStyles((theme) => ({
 
 const BlogWall = () => {
   const classes = useStyles();
-  const themeContext = useTheme();
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const token = data?.token;
   const user_level = data?.user_level;
   console.log(user_level,'gl')
-  const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
   const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -331,8 +281,6 @@ const BlogWall = () => {
       .get(`${endpoints.newBlog.blogListDropApi}`, {
         params: {
           ...(branchIds ? { branch_ids: branchIds } : {}),
-          // ...(endDate ? { end_date: endDate } : {}),
-          // ...(startDate ? { start_date: startDate } : {}),
           ...(selectedGradeId ? { grade_ids: selectedGradeId } : {})
         },
         headers: {
@@ -347,14 +295,14 @@ const BlogWall = () => {
 
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false)
       })
   }
 
 
 
-  const handleGradeChange = (e, value) => {
+  const handleGradeChange = (e) => {
     if (e) {
       setSelectedGradeIds(e)
     } else {
@@ -393,7 +341,7 @@ const BlogWall = () => {
         }
         setLoading(false)
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false)
       })
   }
@@ -445,15 +393,6 @@ const BlogWall = () => {
     }
   }
 
-  const handleSection = (e, value) => {
-    if (value) {
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...sectionDropdown].filter(({ id }) => id !== 'all')
-          : value;
-      setSelectedSection(value);
-    }
-  };
 
   const handleClose = () => {
     setView(false);
@@ -471,34 +410,14 @@ const BlogWall = () => {
 
 
 
-  const formatdate = new Date();
-  const hoursAndMinutes =
-    'T' +
-    formatdate.getHours() +
-    ':' +
-    formatdate.getMinutes() +
-    ':' +
-    formatdate.getSeconds();
 
   const [typeText, setTypeText] = useState([{ name: "text" }, { name: "template" }])
   const [activityCategory, setActivityCategory] = useState([]);
   const [activityStorage, setActivityStorage] = useState([]);
 
-  const goBack = () => {
-    history.push('/blog/blogview');
-  }
 
-  const closePreview = () => {
-    setAssigned(false);
-  };
   const [title, setTitle] = useState('');
-  const handleTitle = (event) => {
-    setTitle(event.target.value);
-  };
   const [description, setDescription] = useState('');
-  const handleDescription = (event) => {
-    setDescription(event.target.value);
-  };
   const [templates, setTemplates] = useState([]);
 
   const getTemplate = (data) => {
@@ -525,13 +444,7 @@ const BlogWall = () => {
 
   const [checked, setChecked] = React.useState("");
 
-  const handleChange = (event, value) => {
-    setChecked(value);
-  };
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
 
 
   let array = [];
@@ -547,7 +460,7 @@ const BlogWall = () => {
         }
       )
       .then((response) => {
-        response.data.map((obj, index) => {
+        response.data.map((obj) => {
           let temp = {};
           temp['id'] = obj?.id;
           temp['name'] = obj?.level.name;
@@ -559,7 +472,7 @@ const BlogWall = () => {
         setRatingReview(array);
         setLoading(false)
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false)
       })
   };
@@ -568,13 +481,6 @@ const BlogWall = () => {
     setView(false);
   };
 
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-      style: { fontSize: '0.8rem' },
-    };
-  }
 
   const onChangeTab = (key) => {
     setShowTab(key.toString());
@@ -599,49 +505,6 @@ const BlogWall = () => {
     return (
       <>
         <div className='row mb-2 mb-md-0 mt-5'>
-          {' '}
-          {/* <div>
-            <Divider/>
-                  {!expandFilter ? (
-                    <IconButton
-                    onClick={() => setExpandFilter(true)}
-                    >
-                      <Typography
-                      component= 'h4'
-                      color='secondary'
-                      style={{marginRight:'5px'}}
-                      >
-                        Expand Filter
-                      </Typography>
-                      <FilterListIcon color='secondary'/>
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                    onClick={() => {
-                      setExpandFilter(false);
-                    }}
-                  >
-                    <Typography
-                      component='h4'
-                      color='secondary'
-                      style={{ marginRight: '5px' }}
-                    >
-                      Close Filter
-                    </Typography>
-                    <FilterListIcon color='secondary' />
-                  </IconButton>
-
-                  )}
-          </div> */}
-
-          {/* <Accordion
-            className='collapsible-section'
-            square
-            expanded={expandFilter}
-            onChange={() => {}}
-          > */}
-          {/* <AccordionSummary></AccordionSummary>
-            <AccordionDetails> */}
             {user_level == '13' || user_level == '11' || user_level == '10' ? (
             ' '
             ) : (
@@ -749,11 +612,6 @@ const BlogWall = () => {
               </Accordion>
             </div>
             )}
-
-
-          {/* </AccordionDetails>
-          </Accordion> */}
-
         </div>
         {loading ? (
           <div className='d-flex justify-content-center align-items-center h-50'>
@@ -1075,95 +933,6 @@ const BlogWall = () => {
                 <div>
                   {TabContent()}
                 </div>
-                {/* <Tabs type='card' onChange={onChangeTab} activeKey={showTab}>
-                  <TabPane
-                    tab={
-                      <div>
-                        All{' '}
-                        {showTab == 1 
-                        && !loading && (
-                          <span className='th-fw-400'>
-                            {listCount > 0 ? `(${listCount})` : ''}
-                          </span>
-                        )
-                        }
-                      </div>
-                    }
-                    key='1'
-                  >
-                    {TabContent()}
-                  </TabPane>
-                    <>
-                      <TabPane
-                        tab={
-                          <div>
-                            Intra Level{' '}
-                            {showTab == 2 
-                            && !loading && (
-                              <span className='th-fw-400'>
-                                {listCount > 0 ? `(${listCount})` : ''}
-                              </span>
-                            )
-                            }
-                          </div>
-                        }
-                        key='2'
-                      >
-                        {TabContent()}
-                      </TabPane>
-                      <TabPane
-                        tab={
-                          <div>
-                            Branch Level{' '}
-                            {showTab == 3 
-                            && !loading && (
-                              <span className='th-fw-400'>
-                                {listCount > 0 ? `(${listCount})` : ''}
-                              </span>
-                            )
-                            }
-                          </div>
-                        }
-                        key='3'
-                      >
-                        {TabContent()}
-                      </TabPane>
-                      <TabPane
-                        tab={
-                          <div>
-                            Grade Level{' '}
-                            {showTab == 4 
-                            && !loading && (
-                              <span className='th-fw-400'>
-                                {listCount > 0 ? `(${listCount})` : ''}
-                              </span>
-                            )
-                            }
-                          </div>
-                        }
-                        key='4'
-                      >
-                        {TabContent()}
-                      </TabPane>
-                      <TabPane
-                        tab={
-                          <div>
-                            Best Blog{' '}
-                            {showTab == 5 
-                            && !loading && (
-                              <span className='th-fw-400'>
-                                {listCount > 0 ? `(${listCount})` : ''}
-                              </span>
-                            )
-                            }
-                          </div>
-                        }
-                        key='5'
-                      >
-                        {TabContent()}
-                      </TabPane>
-                    </>
-                </Tabs> */}
               </div>
             </div>
           </div>
