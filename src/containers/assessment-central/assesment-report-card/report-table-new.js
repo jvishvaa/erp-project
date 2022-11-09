@@ -472,8 +472,12 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_osr}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_air}
+                          </td>
                         </>
                       );
                     })}
@@ -486,9 +490,15 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             })
                           ) / eachScholastic?.sub_component?.length}
                         </td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.total_grade}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.overall_osr}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.overall_air}
+                        </td>
                       </>
                     ) : null}
                   </tr>
@@ -790,8 +800,12 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_osr}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_air}
+                          </td>
                         </>
                       );
                     })}
@@ -805,9 +819,15 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             })
                           ) / eachScholastic?.sub_component?.length}
                         </td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.total_grade}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.overall_osr}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.overall_air}
+                        </td>
                       </>
                     ) : null}
                   </tr>
