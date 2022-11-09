@@ -122,12 +122,12 @@ button.active {
 }
 
 .card-design {
-    border: 1px solid black;
     transition: all 0.3s ease-out;
     width: 20vw;
     border-radius: 15px;
     margin: 10px auto;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
     
 }
 
@@ -142,5 +142,23 @@ button.active {
         /* width: calc(100% + 10px); */
         width: 24vw;
     }
+}
+
+.blog-redirect-card {
+    height: 15vh;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 7px;
+
+}
+
+@media screen and (max-width: 1500px){
+    .blog-redirect-card {
+        height: 22vh;
     }
+}
+
+
 

@@ -279,7 +279,7 @@ const BlogWallRedirect = () => {
             </div>
             <div className='row p-3' style={{ height: 500, overflowY: 'scroll' }}>
               {
-                periodData.map((each,index) =>
+                periodData && periodData?.map((each,index) =>
                   // each?.data?.map((item) => (
                   <div className='col-md-4 pl-0 mt-2'>
                     <div
@@ -290,9 +290,9 @@ const BlogWallRedirect = () => {
                           <img
                             src={getSubjectIcon(each?.name)}
                             // src={getSubjectIcon((each?.subject_name).toLowerCase())}
-                            style={{height:'153px', width:'153px', backgroundSize:'cover', backgroundPosition:'center', backgroundRepeat:'no-repeat', borderRadius:'7px'}}
+                            // style={{height:'30vh', width:'100%', backgroundSize:'cover', backgroundPosition:'center', backgroundRepeat:'no-repeat', borderRadius:'7px'}}
                             alt="Icon"
-                            // className='mb-1'
+                            className='blog-redirect-card'
                           />
                         </div>
                         <div className='col-8'>

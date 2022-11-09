@@ -128,6 +128,7 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 240,
     objectFit: 'cover',
+    width:'45%'
   },
   container: {
     maxHeight: '70vh',
@@ -813,7 +814,7 @@ const StudentSideBlog = () => {
                     </div>
                   </div>
                 </CardActionArea>
-                <CardActionArea style={{ padding: '11px' }}>
+                <CardActionArea style={{ padding: '11px', display:'flex' }}>
                   <CardMedia
                     className={classes.media}
                     style={{ border: '1px solid lightgray', borderRadius: '6px' }}
