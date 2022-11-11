@@ -116,6 +116,7 @@ const PendingReview = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [view, setView] = useState(false);
   const {user_id} = JSON.parse(localStorage.getItem('ActivityManagementSession'))
 
   const handleCloseViewMore = () => {
@@ -136,8 +137,8 @@ const PendingReview = (props) => {
   // }, []);
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
-    setView(false);
-    props.setValue(1)
+    // setView(false);
+    // props.setValue(1)
     // setSubmit(true);
     let mandatory = ratingReview.filter((e) => e?.name === "Overall")
     if(!mandatory[0].remarks){
@@ -156,7 +157,9 @@ const PendingReview = (props) => {
         },
       })
       .then((response) => {
+        props.setValue(1)
         console.log(response);
+        setView(false)
         setLoading(false)
         setAlert('success', ' Review Submitted Successfully');
       });
@@ -266,11 +269,11 @@ const PendingReview = (props) => {
         setLoading(false)
       });
   };
-  const [view, setView] = useState(false);
+  // const [view, setView] = useState(false);
   const [data, setData] = useState();
 
   const assignPage = (data) => {
-    setView(true);
+    setView(true);  
     setData(data);
     // setBookingId(data?.id);
     getRatingView(data?.id);
@@ -387,7 +390,6 @@ const PendingReview = (props) => {
           />
         </TableContainer>
       </Paper>
-
       <Drawer
         anchor='right'
         maxWidth={maxWidth}
@@ -397,8 +399,9 @@ const PendingReview = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <div style={{ width: '100%', marginTop: '72px' }}>
-          <div style={{ fontSize: '24px' }}>
+          <div style={{ fontSize: '24px', marginLeft:'6px', display:'flex', justifyContent:'space-between' }}>
             <strong>Preview</strong>
+            <strong  onClick={handleCloseViewMore} style={{cursor:'pointer', marginRight:'10px'}} > x </strong>
           </div>
           <Divider />
 

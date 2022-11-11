@@ -22,6 +22,8 @@ import {
   Table,
   Drawer,
   TablePagination,
+  Switch,
+  FormControlLabel
 } from '@material-ui/core';
 import Layout from 'containers/Layout';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
@@ -47,6 +49,13 @@ import axios from 'axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Loader from 'components/loader/loader';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+import { Dict } from 'pdfjs-dist/build/pdf.worker';
 
 
 const drawerWidth = 350;
@@ -117,6 +126,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const Shortlisted_1 = (props) => {
   const classes = useStyles();
   const themeContext = useTheme();
@@ -146,6 +159,10 @@ const Shortlisted_1 = (props) => {
   const [limit,setLimit] = useState(10);
   const [isClicked, setIsClicked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [activityLevel,setActivityLevel] = useState('')
+  const [bookingId,setBookingId] = useState(null)
+  const [checked,setChecked] = useState(false);
 
   const [desc, setDesc] = useState('');
 
@@ -430,7 +447,7 @@ const Shortlisted_1 = (props) => {
   
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&is_bookmarked=True`,
+          `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&is_bookmarked=True&is_published=False`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -442,7 +459,7 @@ const Shortlisted_1 = (props) => {
           props.setFlag(false);
           setTotalCount(response?.data?.count)
           setTotalPages(response?.data?.page_size)
-          setCurrentPage(response?.data?.page + 1)
+          setCurrentPage(response?.data?.page)
           setLimit(Number(limit))
           setAlert('success', response?.data?.message)
           setTotalSubmitted(response?.data?.result);
@@ -468,6 +485,85 @@ const Shortlisted_1 = (props) => {
   const handlePagination = (event, page) =>{
     setIsClicked(true);
     setCurrentPage(page);
+  }
+
+
+  const handlePublishMenu = (data) =>{
+    setBookingId(data?.id)
+    handleClickOpen()
+
+  }
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+
+
+  const handleClickClose = () => {
+    setOpen(false);
+  };
+
+  const handleClose = () => {
+    setActivityLevel('')
+    setOpen(false);
+  };
+
+  const top100Films = [
+    {title:'Intra Orchids Level', id : 1},
+    {title:'Branch Level', id : 2},
+    {title:'Grade Level', id : 3},
+    {title:'Section Level', id : 4},
+  ]
+
+
+  const userDetails =[
+    {name:'Sujit', erp_no :'23294293232'},
+  ]
+
+  const handleLevelChange = (event,data) => {
+    setActivityLevel(data)
+  }
+
+  const handlePublish = (event,data) => {
+    setLoading(true)
+    if(!activityLevel){
+      setLoading(false)
+      setAlert('error', 'Please Select Level')
+      return
+    }else{
+      let requestData ={
+        "booking_id": bookingId,
+        "is_published": true,
+        "publish_level": activityLevel?.title,
+        "is_best_blog" : checked
+      }
+      axios
+      .post(`${endpoints.newBlog.publishBlogWallApi}`, requestData ,{
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        }
+      })
+      .then((res) => {
+        if(res?.data?.status_code == 200) {
+          setLoading(false)
+          setAlert('success', res?.data?.message)
+
+        }
+      })
+      .catch((err) => {
+        setLoading(false)
+        setAlert('error',"Server Error")
+      })
+
+      setActivityLevel('')
+    }
+
+    setOpen(false)
+  }
+
+  const handleChangeSwitch =(e) =>{
+    console.log(e.target.checked,'kp')
+    setChecked(e.target.checked)
   }
 
   return (
@@ -558,14 +654,83 @@ const Shortlisted_1 = (props) => {
                 </TableCell>
 
                 <TableCell className={classes.tableCells}>
-                  <Button
+                  {/* <Button
                     variant='outlined'
                     size='small'
                     className={classes.buttonColor2}
                   >
                     Publish
-                  </Button>{' '}
+                  </Button>{' '} */}
+                  <Button variant="outlined" className={classes.buttonColor2} onClick ={() => handlePublishMenu(response)} >
+                    Publish
+                  </Button>
                   &nbsp;
+                  <Dialog
+                      open={open}
+                      TransitionComponent={Transition}
+                      keepMounted
+                      onClose={handleClose}
+                      aria-labelledby="alert-dialog-slide-title"
+                      aria-describedby="alert-dialog-slide-description"
+                    >
+                      <DialogTitle style={{display:'flex', margin:'auto'}} id="alert-dialog-slide-title">{"User Details"}</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                          <div>
+                            <div>
+
+                              {userDetails.map((event,index) => {
+                                return(
+                                <div> 
+                                  <p>Name : {event?.name}</p>
+                                  <p>ERP : {event?.erp_no}</p>
+                                </div>
+
+                                )
+                              })}
+
+
+                            </div>
+                            <div>
+                            <Autocomplete
+                              size="small"
+                              id="combo-box-demo"
+                              options={top100Films || []}
+                              value={activityLevel || ''}
+                              onChange={handleLevelChange}
+                              getOptionLabel={(option) => option.title || ''}
+                              style={{ width: 300 }}
+                              filterSelectedOptions
+                              required
+                              renderInput={(params) => <TextField {...params} size='small' label="Level" placeholder='Level' variant="outlined" />}
+                            />
+                            </div>
+                            <div>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={checked}
+                                  onChange={handleChangeSwitch}
+                                  value='bestBlog'
+                                  color='primary'
+                                />
+                              }
+                              label='Best Blogs'
+                            />
+                            </div>
+
+                          </div>
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions style={{display:'flex', margin: 'auto'}}>
+                        <Button onClick={handlePublish} color="primary" variant="contained">
+                          Publish
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={handleClose}>
+                            Close
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   {/* <Button
                     variant='outlined'
                     size='small'
@@ -585,7 +750,7 @@ const Shortlisted_1 = (props) => {
             rowsPerPage={limit}
             page={Number(currentPage) - 1}
             onChangePage={(e, page) => {
-            handlePagination(e, page + 1);
+            handlePagination(e, page);
             }}
             rowsPerPageOptions={false}
             className='table-pagination'

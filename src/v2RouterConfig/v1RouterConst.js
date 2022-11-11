@@ -424,7 +424,9 @@ import EventsMark from 'containers/attendance/eventsmark';
 import AdminViewBlog from '../containers/newBlog/AdminViewBlog';
 import AdminCreateBlog from '../containers/newBlog/AdminCreateBlog';
 import AdminPublishBlogShort from '../containers/newBlog/Shortlisted';
-// import BlogWall from '../containers/blog/Admin/BlogWall';
+import BlogWall from 'containers/newBlog/BlogWall';
+import BlogWallRedirect from 'containers/newBlog/BlogRedirection';
+import PublicSpeakingWall from 'containers/newBlog/PublicSpeaking';
 import StudentViewBlog from '../containers/newBlog/StudentSideBlog';
 import NewEditBlog from '../containers/newBlog/StudentBlog';
 import CreateActivityType from '../containers/newBlog/CreateActivityType';
@@ -1417,9 +1419,15 @@ const V1Router = [
   <Route exact path='/blog/create'>
     {({ match }) => <AdminCreateBlog match={match} />}
   </Route>,
-  // <Route exact path='/blog/wall'>
-  //   {({ match }) => <BlogWall match={match} />}
-  // </Route>,
+  <Route exact path='/blog/wall'>
+    {({ match }) => <BlogWall match={match} />}
+  </Route>,
+    <Route exact path='/blog/wall/redirect'>
+    {({ match }) => <BlogWallRedirect match={match} />}
+  </Route>,
+      <Route exact path='/blog/publicspeaking'>
+      {({ match }) => <PublicSpeakingWall match={match} />}
+    </Route>,
   <Route exact path='/blog/short'>
     {({ match }) => <AdminPublishBlogShort match={match} />}
   </Route>,
