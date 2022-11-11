@@ -274,10 +274,9 @@ const PeriodListView = () => {
   const chapterOptions = chapterListData?.map((each) => {
     return (
       <Option key={each?.id} value={each.id}>
-        {each?.chapter_name}
-        {each?.lt_module?.lt_module_name.toLowerCase() === 'kit activity'
-          ? ` (Kit Activity)`
-          : null}
+        {each?.lt_module?.lt_module_name.toLowerCase() == 'kit activity'
+          ? `${each?.chapter_name} (Kit Activity)`
+          : each?.chapter_name}
       </Option>
     );
   });
@@ -295,7 +294,9 @@ const PeriodListView = () => {
       keyConcept: null,
     });
     setChapterId('');
+    setChapterListData([]);
     setKeyConceptId();
+    setKeyConceptListData([]);
     if (each.length === 1 && each.some((item) => item.value === 'All')) {
       const all = moduleListData.slice();
       const allModules = all.map((item) => item.id).join(',');
@@ -328,18 +329,19 @@ const PeriodListView = () => {
   const fetchPeriodWiseData = (params = {}) => {
     setLoading(true);
     setAllComplete(false);
+
     axios
       .get(`/academic/period-view/grade-subject-wise-lp-overview/`, {
         params: { ...params, ...(keyConceptId ? { key_concepts: keyConceptId } : {}) },
       })
       .then((res) => {
         if (res?.data?.status === 200) {
-          myRef.current = null;
           setPeriodWiseData(res?.data?.data);
           setYCPData(res?.data?.ycp_data);
           if (res?.data?.data?.every((item) => item.is_complete == true)) {
             setAllComplete(true);
           }
+
           setLoading(false);
         } else {
           setLoading(false);
@@ -377,17 +379,17 @@ const PeriodListView = () => {
                 closeSectionList();
                 closeDrawer();
                 setSectionsCompleted([...sectionsCompleted, section]);
-                // fetchPeriodWiseData({
-                //   acad_session_id: selectedBranch?.id,
-                //   board_id: boardId,
-                //   grade: gradeId,
-                //   subject: subjectId,
-                //   chapters: chapterId,
-                //   modules: selectedModuleId,
-                //   board: boardId,
-                //   volume: volumeId,
-                //   central_gs_id: centralGSID,
-                // });
+                fetchPeriodWiseData({
+                  acad_session_id: selectedBranch?.id,
+                  board_id: boardId,
+                  grade: gradeId,
+                  subject: subjectId,
+                  chapters: chapterId,
+                  modules: selectedModuleId,
+                  board: boardId,
+                  volume: volumeId,
+                  central_gs_id: centralGSID,
+                });
                 setShowInfoModal(true);
                 if (!_.isEmpty(res.data.result)) {
                   setNextPeriodDetails(res.data.result);
@@ -483,11 +485,8 @@ const PeriodListView = () => {
     }
   };
   const executeScroll = () => {
-    console.log('Executing scroll', myRef);
-
     myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-
   useEffect(() => {
     const all = moduleListData.slice();
     const allModules = all.map((item) => item.id).join(',');
@@ -501,12 +500,18 @@ const PeriodListView = () => {
   useEffect(() => {
     if (myRef.current) executeScroll();
   }, [myRef.current]);
-
   useEffect(() => {
     if (history?.location?.state) {
       formRef.current.setFieldsValue({
         volume: history?.location?.state?.volumeName,
         chapter: history?.location?.state?.chapterName,
+      });
+      fetchChapterListData({
+        subject_id: history?.location?.state?.subjectID,
+        volume: history?.location?.state?.volumeID,
+        grade_id: history?.location?.state?.gradeID,
+        branch_id: selectedBranch?.branch?.id,
+        board: history?.location?.state?.boardID,
       });
       setGradeId(history?.location?.state?.gradeID);
       setGradeName(history?.location?.state?.gradeName);
@@ -528,13 +533,7 @@ const PeriodListView = () => {
       //     board: history?.location?.state?.boardID,
       //   });
       // } else {
-      //   fetchChapterListData({
-      //     subject_id: history?.location?.state?.subjectID,
-      //     volume: history?.location?.state?.volumeID,
-      //     grade_id: history?.location?.state?.gradeID,
-      //     branch_id: selectedBranch?.branch?.id,
-      //     board: history?.location?.state?.boardID,
-      //   });
+
       // }
     }
   }, [window.location.pathname]);
@@ -555,14 +554,16 @@ const PeriodListView = () => {
   }, [chapterId, keyConceptId]);
   useEffect(() => {
     if (selectedModuleId.length > 0) {
-      fetchChapterListData({
-        subject_id: subjectId,
-        volume: volumeId,
-        grade_id: gradeId,
-        branch_id: selectedBranch?.branch?.id,
-        board: boardId,
-        module_id: selectedModuleId,
-      });
+      if (chapterListData.length == 0) {
+        fetchChapterListData({
+          subject_id: subjectId,
+          volume: volumeId,
+          grade_id: gradeId,
+          branch_id: selectedBranch?.branch?.id,
+          board: boardId,
+          module_id: selectedModuleId,
+        });
+      }
     }
   }, [selectedModuleId]);
 
@@ -626,7 +627,7 @@ const PeriodListView = () => {
     <div className='row '>
       <div className='row align-items-center mb-2'>
         <div className='col-md-3 col-6 text-left pl-md-3'>
-          <span className='th-grey'>Grade </span>
+          <span className='th-grey'>Grade</span>
           <span className='text-capitalize th-fw-700 th-black-1'>{gradeName}</span>
         </div>
         <div className='col-md-3 col-6 text-left pl-md-2'>
@@ -708,7 +709,7 @@ const PeriodListView = () => {
                   optionFilterProp='children'
                   filterOption={(input, options) => {
                     return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      options?.children?.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     );
                   }}
                   onChange={(e) => {
