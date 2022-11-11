@@ -69,7 +69,6 @@ const TeacherwiseDiaryReport = () => {
         section_id: selectedSection?.section_id,
         start_date: startDate,
         end_date: endDate,
-        // till_date: 1,
       });
     }
   }, [startDate, endDate, diaryType]);
@@ -133,7 +132,6 @@ const TeacherwiseDiaryReport = () => {
               placement='bottomRight'
               showToday={false}
               suffixIcon={<DownOutlined />}
-              // defaultValue={[moment(), moment()]}
               value={[moment(startDate), moment(endDate)]}
               onChange={(value) => handleDateChange(value)}
               className='th-range-picker th-br-4'

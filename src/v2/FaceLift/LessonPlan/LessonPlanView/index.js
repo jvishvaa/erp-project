@@ -56,7 +56,7 @@ const LessonPlanView = (props) => {
         {' '}
         <FeeReminder />
         <div className='row py-3 px-2'>
-          <div className='col-md-8 th-bg-grey' style={{ zIndex: 2 }}>
+          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-grey th-18 th-pointer'

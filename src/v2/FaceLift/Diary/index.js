@@ -72,8 +72,8 @@ const Diary = () => {
         .then((result) => {
           if (result?.data?.status_code == 200) {
             setDiaryListData(result?.data?.result?.results);
-            setLoading(false);
           }
+          setLoading(false);
         })
         .catch((error) => {
           message.error('error', error?.message);
