@@ -8,13 +8,9 @@ import './index.css';
 export default function AssesmentReportNew({ reportCardDataNew }) {
   const [pricipalSignData, setPricipalSignData] = useState([]);
 
-  const selectedBranch = useSelector(
-    (state) => state.commonFilterReducer?.selectedBranch
-  );
-
   useEffect(() => {
     fetchPrincipalSignature({
-      branch_id: selectedBranch?.branch?.id,
+      branch_id: reportCardDataNew?.school_info?.branch_id,
     });
   }, [reportCardDataNew]);
 
@@ -42,6 +38,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
   let userData = data?.user_info;
   let ptsd_data = [data?.ptsd_data];
   let teacherRemarks = data?.teacher_remarks;
+  let teacherRemarksArr = teacherRemarks?.split('$');
   console.log(reportData, 'reportData');
 
   let scholasticData = _.filter(reportData, { component_type: 'SCHOLASTIC' });
@@ -377,7 +374,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   className='th-width-10  text-center'
                                   style={{ backgroundColor: '#ffffff' }}
                                 >
-                                  {subMarks}
+                                  {isNaN(subMarks) ? 'NA' : subMarks}
                                 </td>
                                 {/* Inserting Total marks column for each semester */}
                                 {j == eachSem?.marks_with_subject?.length - 1 ? (
@@ -467,13 +464,20 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             colSpan={examTypeHeader[i][x].length + 1}
                           >
                             {eachSem.total_secured_marks} out of {eachSem.total_marks} (
-                            {eachSem?.total_marks_percentage?.toFixed(2)}%)
+                            {isNaN(eachSem?.total_marks_percentage)
+                              ? eachSem?.total_marks_percentage
+                              : eachSem?.total_marks_percentage?.toFixed(2)}
+                            %)
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_osr}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_air}
+                          </td>
                         </>
                       );
                     })}
@@ -486,9 +490,15 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             })
                           ) / eachScholastic?.sub_component?.length}
                         </td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.total_grade}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.overall_osr}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.overall_air}
+                        </td>
                       </>
                     ) : null}
                   </tr>
@@ -692,7 +702,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   className='th-width-10  text-center'
                                   style={{ backgroundColor: '#ffffff' }}
                                 >
-                                  {subMarks ? subMarks : 'NA'}
+                                  {isNaN(subMarks) ? 'NA' : subMarks}
                                 </td>
                                 {/* Inserting Total marks column for each semester */}
                                 {j == eachSem?.marks_with_subject?.length - 1 ? (
@@ -782,13 +792,20 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             colSpan={coschSxamTypeHeader[coI][x].length + 1}
                           >
                             {eachSem.total_secured_marks} out of {eachSem.total_marks} (
-                            {eachSem?.total_marks_percentage?.toFixed(2)}%)
+                            {isNaN(eachSem?.total_marks_percentage)
+                              ? eachSem?.total_marks_percentage
+                              : eachSem?.total_marks_percentage?.toFixed(2)}
+                            %)
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
-                          <td className='th-width-12 th-fw-600 text-center'>{}</td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_osr}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_air}
+                          </td>
                         </>
                       );
                     })}
@@ -802,9 +819,15 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             })
                           ) / eachScholastic?.sub_component?.length}
                         </td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
-                        <td className='th-width-12 th-fw-600 text-center'>{''}</td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.total_grade}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.overall_osr}
+                        </td>
+                        <td className='th-width-12 th-fw-600 text-center'>
+                          {eachScholastic?.annual_score?.overall_air}
+                        </td>
                       </>
                     ) : null}
                   </tr>
@@ -961,7 +984,11 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
               <td className='th-width-18 py-2 text-center th-fw-600'>
                 CLASS TEACHER'S REMARK
               </td>
-              <td className='th-width-82 py-2'>{teacherRemarks}</td>
+              <td className='th-width-82 py-2'>
+                {teacherRemarksArr?.map((eachRemarks) => {
+                  return <div>{eachRemarks}</div>;
+                })}
+              </td>
             </tr>
 
             <tr>
