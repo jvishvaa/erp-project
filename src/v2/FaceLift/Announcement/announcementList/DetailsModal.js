@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Modal, Button, message, Carousel } from 'antd';
+import React, { useRef, useState, useEffect } from 'react';
+import { Modal, Button, message, Carousel, Tooltip } from 'antd';
 import {
   ArrowDownOutlined,
   LeftCircleFilled,
@@ -13,12 +13,16 @@ import endpoints from 'v2/config/endpoints';
 import imageFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/imageFileIcon.svg';
 import excelFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/excelFileIcon.svg';
 import pdfFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/pdfFileIcon.svg';
+import moment from 'moment';
 
 const DetailsModal = (props) => {
   const carousel = useRef();
   const data = props.data;
   const showTab = props.showTab;
-
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [grades, setGrades] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [branchName, setBranchName] = useState();
   const imageAttachments = data?.attachments.filter((item) =>
     ['jpg', 'jpeg', 'png'].includes(
       item.split('.')[item.split('.').length - 1].toLowerCase()
@@ -62,6 +66,21 @@ const DetailsModal = (props) => {
     });
   };
 
+  const getDuration = (date) => {
+    let currentDate = moment(date).format('DD/MM/YYYY');
+    if (currentDate === moment().format('DD/MM/YYYY')) {
+      return 'Today';
+    } else if (currentDate == moment().subtract(1, 'days').format('DD/MM/YYYY')) {
+      return 'Yesterday';
+    } else {
+      return (
+        <span>
+          on {currentDate} at {moment(data.created_time).format('LT')}
+        </span>
+      );
+    }
+  };
+
   function extractContent(s) {
     const span = document.createElement('span');
     span.innerHTML = s;
@@ -84,6 +103,25 @@ const DetailsModal = (props) => {
     props.setTab('3');
   };
 
+  useEffect(() => {
+    let gradelist = [];
+    let sectionList = [];
+    if (data.branch_name) {
+      setBranchName(data?.branch_name[0]);
+    }
+    if (data?.bgsm?.length > 0) {
+      data.bgsm.map((item) => {
+        if (!gradelist.includes(item?.grade_name)) {
+          gradelist.push(item?.grade_name);
+          setGrades(gradelist);
+        }
+        if (!sections.includes(`${item?.grade_name} ${item?.section_name}`)) {
+          sectionList.push(`${item?.grade_name} ${item?.section_name}`);
+          setSections(sectionList);
+        }
+      });
+    }
+  }, []);
   return (
     <>
       <Modal
@@ -150,8 +188,85 @@ const DetailsModal = (props) => {
             <div className='row th-black-1 th-fw-500 th-16 text-uppercase'>
               {data?.title}
             </div>
-            <div className='row th-grey '>
-              Posted {getTimeInterval(data?.created_time)} by {data?.created_user}
+
+            <div className='row my-1 th-12'>
+              <div className='row'>
+                <div className='col-2 px-0'>
+                  <div className='d-flex justify-content-between th-grey'>
+                    <span>Branch</span>
+                    <span>:&nbsp;</span>
+                  </div>
+                </div>
+                <div className='col-10 pl-0 th-grey'>{branchName}</div>
+              </div>
+              {data?.role?.includes(13) && user_level != 13 && (
+                <>
+                  <div className='row th-grey'>
+                    <div className='col-2 px-0'>
+                      <div className='d-flex justify-content-between'>
+                        <span>Grades</span>
+                        <span>:&nbsp;</span>
+                      </div>
+                    </div>
+                    <div className='col-10 pl-0'>
+                      <span>{grades.slice(0, 4).toString()}</span>
+                      {grades.length > 4 && (
+                        <Tooltip
+                          placement='bottomLeft'
+                          title={
+                            <div>
+                              {grades?.map((item) => (
+                                <div>{item}</div>
+                              ))}
+                            </div>
+                          }
+                          trigger='click'
+                          className='th-pointer'
+                          zIndex={2000}
+                        >
+                          <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
+                            Show All
+                          </span>
+                        </Tooltip>
+                      )}
+                    </div>
+                  </div>
+                  <div className='row th-grey'>
+                    <div className='col-2 px-0'>
+                      <div className='d-flex justify-content-between'>
+                        <span>Sections</span>
+                        <span>:&nbsp;</span>
+                      </div>
+                    </div>
+                    <div className='col-10 pl-0 '>
+                      <span>{sections.slice(0, 3).toString()}</span>
+                      {sections.length > 3 && (
+                        <Tooltip
+                          placement='bottomLeft'
+                          title={
+                            <div>
+                              {sections?.map((item) => (
+                                <div>{item}</div>
+                              ))}
+                            </div>
+                          }
+                          trigger='click'
+                          className='th-pointer'
+                          zIndex={2000}
+                        >
+                          <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
+                            Show All
+                          </span>
+                        </Tooltip>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className='row th-grey'>
+              Posted &nbsp;{getDuration(data.created_time)}&nbsp; by {data?.created_user}
             </div>
             <div className='row mt-1 th-12'>
               {data?.role.map((item) => (

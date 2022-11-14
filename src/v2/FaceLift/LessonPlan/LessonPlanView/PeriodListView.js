@@ -627,7 +627,7 @@ const PeriodListView = () => {
     <div className='row '>
       <div className='row align-items-center mb-2'>
         <div className='col-md-3 col-6 text-left pl-md-3'>
-          <span className='th-grey'>Grade</span>
+          <span className='th-grey'>Grade </span>
           <span className='text-capitalize th-fw-700 th-black-1'>{gradeName}</span>
         </div>
         <div className='col-md-3 col-6 text-left pl-md-2'>
@@ -1196,7 +1196,7 @@ const PeriodListView = () => {
                           <>
                             {' '}
                             for Section{' '}
-                            {resourcesData.section_wise_completion
+                            {resourcesData?.section_wise_completion
                               .filter((item) => item?.is_completed === true)
                               .map((item) =>
                                 item?.section__section_name.slice(-1).toUpperCase()
@@ -1261,7 +1261,7 @@ const PeriodListView = () => {
                       className='row justify-content-end py-2 mt-2 text-center'
                       style={{ borderTop: '1px solid #d9d9d9' }}
                     >
-                      {completeSections.length > 0 && (
+                      {completeSections?.length > 0 && (
                         <div
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}

@@ -47,7 +47,6 @@ const AnnouncementList = () => {
     const branches = item?.map((i) => i.value).join(',');
     setBranchIds(branches);
   };
-  console.log('anbr', branchIds);
   const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value).format('YYYY-MM-DD'));
@@ -216,7 +215,7 @@ const AnnouncementList = () => {
         ) : listCount > 0 ? (
           announcementListData?.map((item) => {
             return (
-              <div className='th-14 th-fw-500 th-black-1 th-lh-20 mb-4'>
+              <div className='th-14 th-fw-500 th-black-1 th-lh-20 mb-4 px-2'>
                 <div className='th-black-2 th-fw-600 mb-2'>{item?.date}</div>
                 {item?.events.map((item) => (
                   <ListCard data={item} showTab={showTab} setTab={onChange} />
@@ -266,7 +265,7 @@ const AnnouncementList = () => {
           </div>
 
           <div className='row'>
-            <div className='col-12'>
+            <div className='col-12 px-2'>
               <div className='th-bg-white th-tabs'>
                 <Tabs type='card' onChange={onChange} activeKey={showTab}>
                   <TabPane
