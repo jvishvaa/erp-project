@@ -137,7 +137,7 @@ const AdminCreateBlog = () => {
   const token = data?.token;
   const user_level = data?.user_level;
   const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
-
+  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
   const [branchList, setBranchList] = useState([]);
   const [maxWidth, setMaxWidth] = React.useState('lg');
@@ -153,7 +153,6 @@ const AdminCreateBlog = () => {
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
-
   const [status, setStatus] = React.useState('');
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
 
@@ -179,7 +178,6 @@ const AdminCreateBlog = () => {
     section: '',
   });
 
-  // console.log(branches,"branchesdropdown");
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -256,9 +254,10 @@ const AdminCreateBlog = () => {
   // `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
 
   const fetchBranches = () => {
+    var branchIds = branch_update_user?.branches?.map((item) => item?.id)
     setLoading(true)
     axiosInstance
-      .get(`${endpoints.newBlog.activityBranch}`, {
+      .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -275,7 +274,6 @@ const AdminCreateBlog = () => {
             name: 'Select All',
             id: 'all',
           });
-          console.log(transformedData, 'branchdata');
           setBranchList(transformedData);
           setLoading(false)
         }
@@ -326,26 +324,28 @@ const AdminCreateBlog = () => {
   };
 
   const fetchSections = (value) => {
-    const ids = value.map((el) => el.id) || [];
-    setLoading(true)
-    axiosInstance
-      .get(`${endpoints.newBlog.activitySection}?grade_ids=${ids}`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((result) => {
-        setLoading(false)
-        console.log(result, 'section');
-        if (result.data) {
-          const gradeData = result?.data?.result || [];
-          gradeData.unshift({
-            name: 'Select All',
-            id: 'all',
-          });
-          setSectionDropdown(gradeData);
-        }
-      });
+    if(value?.length !== 0){
+      const ids = value.map((el) => el.id) || [];
+      setLoading(true)
+      axiosInstance
+        .get(`${endpoints.newBlog.activitySection}?grade_ids=${ids}`, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((result) => {
+          setLoading(false)
+          console.log(result, 'section');
+          if (result.data) {
+            const gradeData = result?.data?.result || [];
+            gradeData.unshift({
+              name: 'Select All',
+              id: 'all',
+            });
+            setSectionDropdown(gradeData);
+          }
+        });
+    }
   };
 
   useEffect(() => {

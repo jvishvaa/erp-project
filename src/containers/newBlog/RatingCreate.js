@@ -408,6 +408,10 @@ const RatingCreate = () => {
   };
   const handleInputRating = (event, index) => {
     const { value } = event.target;
+    if(value > 5 || value < 0){
+      setAlert('error','Please Enter Number In Between 0 to 5')
+      return
+    }
     const newInputList = [...inputList];
     // newInputList[index].creativity = value;
     newInputList[index].rating = value;
@@ -656,7 +660,7 @@ const RatingCreate = () => {
           {inputList
             ? inputList.map((input, index) => (
                 <>
-                  <div style={{ marginTop: '1rem' }}>
+                  <div style={{ marginTop: '1rem', display:'flex' }}>
                     <TextField
                       label='Criteria Name'
                       size='small'
@@ -697,6 +701,8 @@ const RatingCreate = () => {
                     />
                     <Button
                       style={{ marginLeft: '12px' }}
+                      color='primary'
+                      variant='contained'
                       onClick={() => handleRemoveItem(index)}
                     >
                       Delete
@@ -710,6 +716,9 @@ const RatingCreate = () => {
             onClick={handleListAdd}
             disabled={isDisabled}
             style={{ marginTop: '1rem' }}
+            variant='contained'
+            color='primary'
+            
           >
             Add
           </Button>

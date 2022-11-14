@@ -930,12 +930,14 @@ export default {
     studentSideApi:`${newBlogURL}/api/student_activity_get/`,
     studentSideWriteApi:`${newBlogURL}/api/student_activity_create/`,
     createTemplates:`${newBlogURL}/api/template_create/`,
-    
+    studentPublishApi: `${newBlogURL}/api/publish_list/`,
 
-
-
-
-
+    studentPublicSpeakingApi: `${newBlogURL}/api/ps_submissions/`,
+    studentPSContentApi : `${newBlogURL}/api/ps_content/`,
+    publishBlogWallApi : `${newBlogURL}/api/publish_submission/`,
+    blogWallApi : `${newBlogURL}/api/blog_wall/`,
+    blogListDropApi : `${newBlogURL}/api/activity_dropdown/`,
+    blogRedirectApi : `${newBlogURL}/api/activity_type_count/`,
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
