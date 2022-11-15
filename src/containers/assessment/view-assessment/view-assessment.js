@@ -14,6 +14,7 @@ import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import axiosInstance from '../../../config/axios';
 import './view-assessment.css';
+import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -46,7 +47,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [totalCount, setTotalCount] = useState(0);
   const [status, setStatus] = useState(+getSearchParams(restProps).status || 0);
   const IsTestDone = JSON.parse(localStorage.getItem('is_test_comp')) || {};
-  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
   // const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();
   // const { containerRef } = React.useContext(ContainerContext);
   const getInfoDefaultVal = () => {
@@ -57,26 +58,30 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [testDate, setTestDate] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const query = new URLSearchParams(window.location.search);
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [showGrievanceModal, setShowGrievanceModal] = useState(false);
   useEffect(() => {
     localStorage.setItem('is_retest', query.get('status') === '2');
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (IsTestDone === true) {
-      setStatus(1)
-      localStorage.setItem("is_test_comp", false)
+      setStatus(1);
+      localStorage.setItem('is_test_comp', false);
     }
-    localStorage.setItem("is_test_comp", false)
-  }, [IsTestDone])
+    localStorage.setItem('is_test_comp', false);
+  }, [IsTestDone]);
 
   useEffect(() => {
-    setShowInfo()
-  }, [window.location.pathname])
+    setShowInfo();
+  }, [window.location.pathname]);
   const fetchQuestionPapers = () => {
     setLoading(true);
     const statusId = status === 0 ? 2 : 1;
     const params = [0, 1].includes(status)
-      ? `?user=${user}&page=${page}&page_size=${9}&status=${statusId}&session_year=${sessionYear?.id}`
+      ? `?user=${user}&page=${page}&page_size=${9}&status=${statusId}&session_year=${
+          sessionYear?.id
+        }`
       : `?page=${page}&page_size=${9}&session_year=${sessionYear?.id}`;
     const endpoint = [0, 1].includes(status)
       ? endpoints.assessment.questionPaperList
@@ -111,6 +116,10 @@ const ViewAssessments = ({ history, ...restProps }) => {
     //   containerRef.current.scrollTo(0, 0);
     // }
   };
+  const handleCloseGrievanceModal = () => {
+    setShowGrievanceModal(false);
+  };
+
   const handleShowInfo = (paperInfoObj) => {
     setShowInfo(paperInfoObj.id);
     setTestDate(paperInfoObj.test_date);
@@ -124,11 +133,8 @@ const ViewAssessments = ({ history, ...restProps }) => {
           responseType: 'blob',
         })
         .then((response) => {
-          const {
-            headers = {},
-            message = 'Question paper not available',
-            data = '',
-          } = response || {};
+          const { headers = {}, message = 'Question paper not available', data = '' } =
+            response || {};
           const contentType = headers['content-type'] || '';
           if (contentType === 'application/pdf') {
             handleDownloadPdf(data, testName);
@@ -155,7 +161,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const tabBar = () => {
     return (
       <>
-        <div className='tabArea' >
+        <div className='tabArea'>
           <Tabs
             indicatorColor='secondary'
             textColor='secondary'
@@ -173,21 +179,23 @@ const ViewAssessments = ({ history, ...restProps }) => {
             <Tab label='Completed' {...a11yProps(1)} />
             <Tab label='Retest' {...a11yProps(2)} />
           </Tabs>
-          {status == 1 ?
-            <div className='indexarea' >
-              <div className='onlinetotal' >
-                <p style={{ fontWeight: 600, fontSize: '15px' , margin: 'auto' }} >Index :</p>
+          {status == 1 ? (
+            <div className='indexarea'>
+              <div className='indexTag'>
+                <p>Index :</p>
               </div>
               <div className='onlinetotal'>
-                <div className='onbox' ></div>
-                <p style={{ fontWeight: 600, fontSize: '15px' , margin: 'auto' }}>Online</p>
+                <div className='onbox'></div>
+                <p style={{ fontWeight: 600, fontSize: '15px' }}>Online</p>
               </div>
               <div className='offlinetotal'>
                 <div className='offbox'></div>
-                <p style={{ fontWeight: 600, fontSize: '15px', margin: 'auto' }} >Offline</p>
+                <p style={{ fontWeight: 600, fontSize: '15px' }}>Offline</p>
               </div>
             </div>
-            : ''}
+          ) : (
+            ''
+          )}
         </div>
       </>
     );
@@ -216,7 +224,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
                   md={showInfo ? 6 : 4}
                   xs={12}
                   key={index}
-                // onClick={() => handleShowInfo(qp)}
+                  // onClick={() => handleShowInfo(qp)}
                 >
                   <QuestionPaperCard
                     {...(qp || {})}
@@ -251,6 +259,24 @@ const ViewAssessments = ({ history, ...restProps }) => {
               </div>
             )}
           </Grid>
+          {user_level == 13 || user_level == 12 ? (
+            <div
+              className='col-md-12 text-right th-pointer'
+              onClick={() => setShowGrievanceModal(true)}
+            >
+              Issues with Assessment/ Marks?
+              <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+                Raise your query
+              </span>
+            </div>
+          ) : null}
+          {showGrievanceModal && (
+            <GrievanceModal
+              title={'Assessment Related Query'}
+              showGrievanceModal={showGrievanceModal}
+              handleClose={handleCloseGrievanceModal}
+            />
+          )}
         </Grid>
       </Layout>
     </>

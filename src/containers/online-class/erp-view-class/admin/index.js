@@ -34,12 +34,13 @@ import DetailCardView from './DetailCardView';
 import TabPanel from './tab-panel/TabPanel';
 import APIREQUEST from '../../../../config/apiRequest';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
+import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 
 const ErpAdminViewClass = ({ history }) => {
-let filteredData = JSON.parse(localStorage.getItem('filterData'))
-      if(filteredData?.classtype?.id > 0 && filteredData?.classtype?.id !== 4){
-        localStorage.removeItem('filterData');
-      }
+  let filteredData = JSON.parse(localStorage.getItem('filterData'));
+  if (filteredData?.classtype?.id > 0 && filteredData?.classtype?.id !== 4) {
+    localStorage.removeItem('filterData');
+  }
   const [branchList, setBranchList] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
@@ -57,7 +58,7 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [selectedBranch, setSelectedBranch] = useState([]);
-  const [selectedAcadId,setSelectedAcadId] = useState([])
+  const [selectedAcadId, setSelectedAcadId] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -82,9 +83,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
   const [sectionToggle, setSectionToggle] = useState(false);
   const [selectedGroupData, setSelectedGroupData] = useState([]);
   const [selectedGroupId, setSelectedGroupId] = useState('');
-  const [groupSectionMappingId,setGroupSectionMappingId] = useState([]);
-  const [groupList,setGroupList] = useState([])
-
+  const [groupSectionMappingId, setGroupSectionMappingId] = useState([]);
+  const [groupList, setGroupList] = useState([]);
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
@@ -97,6 +97,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
   const [selectedClassType, setSelectedClassType] = useState('');
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [showGrievanceModal, setShowGrievanceModal] = useState(false);
 
   function getDaysAfter(date, amount) {
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -110,6 +112,10 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
     setPage(page);
     let data = JSON.parse(localStorage.getItem('filterData')) || '';
     localStorage.setItem('filterData', JSON.stringify({ ...data, page }));
+  };
+
+  const handleCloseGrievanceModal = () => {
+    setShowGrievanceModal(false);
   };
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -189,8 +195,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
                 const branchIds =
                   branch.filter((el) => el?.branch?.id > 0).map((el) => el?.branch?.id) ||
                   [];
-                let acadIds = branch.filter((el) => el?.id > 0).map((el) => el?.id) ||[];
-                setSelectedAcadId(acadIds)
+                let acadIds = branch.filter((el) => el?.id > 0).map((el) => el?.id) || [];
+                setSelectedAcadId(acadIds);
                 callApi(
                   `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
                   'gradeList'
@@ -200,16 +206,16 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
                   const gradeIds =
                     grade.filter((el) => el?.grade_id > 0).map((el) => el?.grade_id) ||
                     [];
-                  getGroup(gradeIds,acadIds)
+                  getGroup(gradeIds, acadIds);
                   callApi(
                     `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
                     'section'
                   );
-                  if(sectionToggle){
-                    setSectionToggle(sectionToggle)
+                  if (sectionToggle) {
+                    setSectionToggle(sectionToggle);
                     // setSelectedGroupData(group)
-                    handleGroup('',group)
-                    setSelectedSubject(subject)
+                    handleGroup('', group);
+                    setSelectedSubject(subject);
                   }
                   if (classtype?.id > 0) {
                     callApi(
@@ -277,6 +283,7 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
   };
 
   function noFilterGetClasses() {
+    debugger;
     const filterdata = JSON.parse(localStorage.getItem('filterData'));
     if (!filterdata?.branch) {
       var [startDateTechPer, endDateTechPer] = getminMaxDate().datearr;
@@ -292,7 +299,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
 
         APIREQUEST(
           'get',
-          `${url}?module_id=${moduleId}&user_level=${userLevel}&class_status=${tabValue + 1
+          `${url}?module_id=${moduleId}&user_level=${userLevel}&class_status=${
+            tabValue + 1
           }&audit=0&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
@@ -317,7 +325,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
           });
       } else {
         callApi(
-          `${endpoints.aol.onlineClassNoFilter}?class_status=${tabValue + 1
+          `${endpoints.aol.onlineClassNoFilter}?class_status=${
+            tabValue + 1
           }&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
@@ -333,20 +342,15 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
     if (window.location.pathname === '/erp-online-class-student-view') {
       if (tabValue === 0 || tabValue === 1) {
         return `/oncls/v1/student-oncls/?${path}`;
-      }
-      else {
+      } else {
         return `/reports/v1/student-oncls/?${path}`;
       }
     } else {
-      if (
-        window.location.pathname === '/erp-online-class'
-      ) {
+      if (window.location.pathname === '/erp-online-class') {
         return [0, 1].includes(tabValue)
           ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=1`
           : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=1`;
-      }
-      else if (
-        window.location.pathname === '/erp-online-class-teacher-view') {
+      } else if (window.location.pathname === '/erp-online-class-teacher-view') {
         return [0, 1].includes(tabValue)
           ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`
           : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`;
@@ -469,10 +473,12 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
           .then((result) => {
             if (result?.data?.status_code === 200) {
               callApi(
-                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${studentDetails &&
-                studentDetails.role_details &&
-                studentDetails.role_details.erp_user_id
-                }&page_number=${page}&page_size=${limit}&class_type=${selectedClassType?.id
+                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+                  studentDetails &&
+                  studentDetails.role_details &&
+                  studentDetails.role_details.erp_user_id
+                }&page_number=${page}&page_size=${limit}&class_type=${
+                  selectedClassType?.id
                 }&module_id=${moduleId}&class_status=${tabValue + 1}`,
                 'filter'
               );
@@ -491,39 +497,41 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
         window.location.pathname === '/erp-online-class-teacher-view'
       ) {
         if (selectedCourse?.id) {
-
-          let url =  `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-          }&class_type=${selectedClassType?.id
-          }&start_date=${startDateTechPer?.format(
+          let url = `${endpoints.aol.classes}?is_aol=0&session_year=${
+            selectedAcademicYear?.id
+          }&class_type=${selectedClassType?.id}&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
-          )}&end_date=${endDateTechPer?.format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
-          }&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
-          }&module_id=${moduleId}`
-          if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
-          if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
-            (el) => el?.id
-          )}`
-          callApi(
-           url,
-            'filter'
-          );
+          )}&end_date=${endDateTechPer?.format('YYYY-MM-DD')}&course_id=${
+            selectedCourse?.id
+          }&page_number=${page}&page_size=${limit}&class_status=${
+            tabValue + 1
+          }&module_id=${moduleId}`;
+          if (sectionToggle)
+            url += `&section_mapping_ids=${[
+              ...new Set(groupSectionMappingId),
+            ].toString()}`;
+          if (!sectionToggle)
+            url += `&section_mapping_ids=${selectedSection.map((el) => el?.id)}`;
+          callApi(url, 'filter');
         } else {
-          let url = `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-          }&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${selectedClassType?.id
+          let url = `${endpoints.aol.classes}?is_aol=0&session_year=${
+            selectedAcademicYear?.id
+          }&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
+            selectedClassType?.id
           }&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
             'YYYY-MM-DD'
-          )}&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
-          }&module_id=${moduleId}`
-          if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
-          if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
-            (el) => el?.id
-          )}`
-          callApi(
-            url,
-            'filter'
-          );
+          )}&page_number=${page}&page_size=${limit}&class_status=${
+            tabValue + 1
+          }&module_id=${moduleId}`;
+          if (sectionToggle)
+            url += `&section_mapping_ids=${[
+              ...new Set(groupSectionMappingId),
+            ].toString()}`;
+          if (!sectionToggle)
+            url += `&section_mapping_ids=${selectedSection.map((el) => el?.id)}`;
+          callApi(url, 'filter');
         }
       }
     }
@@ -550,43 +558,46 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
         window.location.pathname === '/erp-online-class-teacher-view'
       ) {
         if (selectedCourse?.id) {
-          let url =  `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-          }&class_type=${selectedClassType?.id
-          }&start_date=${startDateTechPer.format(
+          let url = `${endpoints.aol.classes}?is_aol=0&session_year=${
+            selectedAcademicYear?.id
+          }&class_type=${selectedClassType?.id}&start_date=${startDateTechPer.format(
             'YYYY-MM-DD'
-          )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
-          }&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
-          }&module_id=${moduleId}`
+          )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${
+            selectedCourse?.id
+          }&page_number=${page}&page_size=${limit}&class_status=${
+            tabValue + 1
+          }&module_id=${moduleId}`;
 
-          if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
-          if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
-            (el) => el?.id
-          )}`
-          callApi(
-           url,
-            'filter'
-          );
+          if (sectionToggle)
+            url += `&section_mapping_ids=${[
+              ...new Set(groupSectionMappingId),
+            ].toString()}`;
+          if (!sectionToggle)
+            url += `&section_mapping_ids=${selectedSection.map((el) => el?.id)}`;
+          callApi(url, 'filter');
         } else if (selectedSubject?.length > 0 || selectedGroupId) {
-          let url =  `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-          }&class_type=${selectedClassType?.id
-          }&start_date=${startDateTechPer.format(
+          let url = `${endpoints.aol.classes}?is_aol=0&session_year=${
+            selectedAcademicYear?.id
+          }&class_type=${selectedClassType?.id}&start_date=${startDateTechPer.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer.format(
             'YYYY-MM-DD'
-          )}&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
-          }&module_id=${moduleId}&subject_id=${selectedSubject.map((el) => el?.subject__id)}`
-          if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
-          if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
-            (el) => el?.id
-          )}`
-          callApi(
-           url,
-            'filter'
-          );
+          )}&page_number=${page}&page_size=${limit}&class_status=${
+            tabValue + 1
+          }&module_id=${moduleId}&subject_id=${selectedSubject.map(
+            (el) => el?.subject__id
+          )}`;
+          if (sectionToggle)
+            url += `&section_mapping_ids=${[
+              ...new Set(groupSectionMappingId),
+            ].toString()}`;
+          if (!sectionToggle)
+            url += `&section_mapping_ids=${selectedSection.map((el) => el?.id)}`;
+          callApi(url, 'filter');
         }
       } else if (
         window.location.pathname === '/erp-online-class-student-view' &&
-        (selectedClassType?.id >= 0)&&
+        selectedClassType?.id >= 0 &&
         moduleId
       ) {
         setLoading(true);
@@ -595,10 +606,12 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
           .then((result) => {
             if (result?.data?.status_code === 200) {
               callApi(
-                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${studentDetails &&
-                studentDetails.role_details &&
-                studentDetails.role_details.erp_user_id
-                }&page_number=${page}&page_size=${limit}&class_type=${selectedClassType?.id
+                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+                  studentDetails &&
+                  studentDetails.role_details &&
+                  studentDetails.role_details.erp_user_id
+                }&page_number=${page}&page_size=${limit}&class_type=${
+                  selectedClassType?.id
                 }&class_status=${tabValue + 1}&module_id=${moduleId}`,
                 'filter'
               );
@@ -634,8 +647,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
     setPage(1);
     setTabValue(0);
     setHistoricalData(false);
-    setSelectedGroupData([])
-    setGroupList([])
+    setSelectedGroupData([]);
+    setGroupList([]);
   }
 
   function handleFilter() {
@@ -652,11 +665,14 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
         .then((result) => {
           if (result?.data?.status_code === 200) {
             callApi(
-              `${endpoints.studentViewBatchesApi.getBatchesApi
-              }?module_id=${moduleId}&user_id=${studentDetails &&
-              studentDetails.role_details &&
-              studentDetails.role_details.erp_user_id
-              }&page_number=${1}&page_size=${limit}&class_type=${selectedClassType?.id
+              `${
+                endpoints.studentViewBatchesApi.getBatchesApi
+              }?module_id=${moduleId}&user_id=${
+                studentDetails &&
+                studentDetails.role_details &&
+                studentDetails.role_details.erp_user_id
+              }&page_number=${1}&page_size=${limit}&class_type=${
+                selectedClassType?.id
               }&class_status=${tabValue + 1}`,
               'filter'
             );
@@ -709,6 +725,7 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
           return;
         }
       }
+      debugger;
       setLoading(true);
       localStorage.setItem(
         'filterData',
@@ -721,8 +738,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
           subject: selectedSubject,
           course: selectedCourse,
           date: dateRangeTechPer,
-          group : selectedGroupData,
-          sectionToggle : sectionToggle,
+          group: selectedGroupData,
+          sectionToggle: sectionToggle,
           page,
           tabValue,
           historicalData,
@@ -730,35 +747,39 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
       );
 
       if (selectedCourse?.id) {
-        let url = `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-        }&class_type=${selectedClassType?.id
-        }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
-          endDateTechPer
-        ).format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
-        }&page_number=${1}&page_size=${limit}&class_status=${tabValue + 1
-        }&module_id=${moduleId}`
-        if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
-        if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
-          (el) => el?.id
-        )}`
-        callApi(url ,
-          'filter'
-        );
+        let url = `${endpoints.aol.classes}?is_aol=0&session_year=${
+          selectedAcademicYear?.id
+        }&class_type=${selectedClassType?.id}&start_date=${moment(
+          startDateTechPer
+        ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
+          'YYYY-MM-DD'
+        )}&course_id=${
+          selectedCourse?.id
+        }&page_number=${1}&page_size=${limit}&class_status=${
+          tabValue + 1
+        }&module_id=${moduleId}`;
+        if (sectionToggle)
+          url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`;
+        if (!sectionToggle)
+          url += `&section_mapping_ids=${selectedSection.map((el) => el?.id)}`;
+        callApi(url, 'filter');
       } else {
-        let url = `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-        }&class_type=${selectedClassType?.id
-        }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
-          endDateTechPer
-        ).format('YYYY-MM-DD')}&class_status=${tabValue + 1
-        }&module_id=${moduleId}&page_number=${1}&page_size=${limit}&subject_id=${selectedSubject.map((el) => el?.subject__id)}`
-        if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
-        if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
-          (el) => el?.id
-        )}`
-        callApi(
-          url,
-          'filter'
-        );
+        let url = `${endpoints.aol.classes}?is_aol=0&session_year=${
+          selectedAcademicYear?.id
+        }&class_type=${selectedClassType?.id}&start_date=${moment(
+          startDateTechPer
+        ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
+          'YYYY-MM-DD'
+        )}&class_status=${
+          tabValue + 1
+        }&module_id=${moduleId}&page_number=${1}&page_size=${limit}&subject_id=${selectedSubject.map(
+          (el) => el?.subject__id
+        )}`;
+        if (sectionToggle)
+          url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`;
+        if (!sectionToggle)
+          url += `&section_mapping_ids=${selectedSection.map((el) => el?.id)}`;
+        callApi(url, 'filter');
       }
     }
   }
@@ -768,24 +789,24 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
       const { data } =
         JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false
           ? await APIREQUEST(
-            'get',
-            `/reports/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
-              'YYYY-MM-DD'
-            )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
-            null,
-            'arraybuffer',
-            true
-          )
+              'get',
+              `/reports/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
+                'YYYY-MM-DD'
+              )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
+              null,
+              'arraybuffer',
+              true
+            )
           : await axiosInstance.get(
-            `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
-              startDateTechPer
-            ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
-              'YYYY-MM-DD'
-            )}`,
-            {
-              responseType: 'arraybuffer',
-            }
-          );
+              `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
+                startDateTechPer
+              ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
+                'YYYY-MM-DD'
+              )}`,
+              {
+                responseType: 'arraybuffer',
+              }
+            );
       const blob = new Blob([data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
@@ -822,8 +843,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
     setSubjectList([]);
     setSelectedViewMore('');
     setFilterList([]);
-    setSelectedGroupData([])
-    setSelectedGroupId([])
+    setSelectedGroupData([]);
+    setSelectedGroupId([]);
     setPage(1);
     setTotalCount(0);
     setTabValue(0);
@@ -836,11 +857,12 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.branch?.id);
-      const acadId = value.map((el)=>el.id)
+      const acadId = value.map((el) => el.id);
       setSelectedBranch(ids);
-      setSelectedAcadId(acadId)
+      setSelectedAcadId(acadId);
       callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
+        `${endpoints.academics.grades}?session_year=${
+          selectedAcademicYear?.id
         }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
         'gradeList'
       );
@@ -854,8 +876,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
     setSubjectList([]);
     setSelectedSubject([]);
     setFilterList([]);
-    setSelectedGroupData([])
-    setGroupList([])
+    setSelectedGroupData([]);
+    setGroupList([]);
 
     setPage(1);
     setTabValue(0);
@@ -863,8 +885,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
 
   const handleGrade = (event = {}, value = []) => {
     setSelectedGrade([]);
-    setSelectedGroupData([])
-    setGroupList([])
+    setSelectedGroupData([]);
+    setGroupList([]);
     if (value?.length) {
       value =
         value.filter(({ grade_id }) => grade_id === 'all').length === 1
@@ -874,7 +896,7 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
       const selectedId = value.map((el) => el?.grade_id) || [];
       const branchId = selectedBranch.map((el) => el?.branch?.id) || [];
       setSelectedGrade(ids);
-      getGroup(selectedId,selectedAcadId)
+      getGroup(selectedId, selectedAcadId);
       callApi(
         `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
         'section'
@@ -893,8 +915,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
     setSubjectList([]);
     setSelectedSubject([]);
     setFilterList([]);
-    setSelectedGroupData([])
-    setGroupList([])
+    setSelectedGroupData([]);
+    setGroupList([]);
     setPage(1);
     setTabValue(0);
   };
@@ -992,19 +1014,19 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
 
   const handleSectionToggle = (event) => {
     setSectionToggle(event.target.checked);
-    setSelectedGroupData([])
-    setSelectedGroupId('')
-    setSelectedSection([])
-    setSelectedSubject([])
-    setSubjectList([])
+    setSelectedGroupData([]);
+    setSelectedGroupId('');
+    setSelectedSection([]);
+    setSelectedSubject([]);
+    setSubjectList([]);
   };
 
-  const getGroup = (gradeId,AcadId) => {
+  const getGroup = (gradeId, AcadId) => {
     axiosInstance
       .get(
-        `${endpoints.assessmentErp.getGroups}?acad_session=${AcadId}&grade=${
-          
-          gradeId}&is_active=${true}` //&group_type=${2}
+        `${
+          endpoints.assessmentErp.getGroups
+        }?acad_session=${AcadId}&grade=${gradeId}&is_active=${true}` //&group_type=${2}
       )
       .then((result) => {
         if (result?.status === 200) {
@@ -1015,40 +1037,40 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
 
   const handleGroup = (e, value) => {
     setSelectedGroupData([]);
-    setSelectedSubject([])
-    setSubjectList([])
+    setSelectedSubject([]);
+    setSubjectList([]);
     setSelectedGroupId('');
     if (value) {
-      let sectionIds =[];
+      let sectionIds = [];
       let branchIds = [];
       let GradeIds = [];
-      let sessionIds = []
-      let secMappingIds = []
+      let sessionIds = [];
+      let secMappingIds = [];
       const retrieveIds = value?.forEach((item) => {
-        let secids = item?.group_section_mapping.map((i)=>i?.group_section_id)
-        let branchids = item?.group_section_mapping.map((i)=>i?.group_branch_id)
-        let gradeids = item?.group_section_mapping.map((i)=>i?.group_grade_id)
-        let sessids = item?.group_section_mapping.map((i)=>i?.group_session_year_id)
-        let secmapids = item?.group_section_mapping.map((i)=>i?.section_mapping_id)
- 
+        let secids = item?.group_section_mapping.map((i) => i?.group_section_id);
+        let branchids = item?.group_section_mapping.map((i) => i?.group_branch_id);
+        let gradeids = item?.group_section_mapping.map((i) => i?.group_grade_id);
+        let sessids = item?.group_section_mapping.map((i) => i?.group_session_year_id);
+        let secmapids = item?.group_section_mapping.map((i) => i?.section_mapping_id);
 
         sectionIds.push(secids.toString());
         branchIds.push(branchids.toString());
         GradeIds.push(gradeids.toString());
         sessionIds.push(sessids.toString());
-        secMappingIds.push(secmapids.toString())
-
-      })
-      let groupIds = value?.map((item) => item?.id)
-      setGroupSectionMappingId(secMappingIds)
+        secMappingIds.push(secmapids.toString());
+      });
+      let groupIds = value?.map((item) => item?.id);
+      setGroupSectionMappingId(secMappingIds);
       setSelectedGroupData(value);
       setSelectedGroupId(groupIds.toString());
 
-    callApi(
-      `${endpoints.academics.subjects}?branch=${branchIds}&session_year=${sessionIds}&grade=${GradeIds}&section=${sectionIds.toString()}&module_id=${moduleId}`,
-      'subject'
-    );
-      }
+      callApi(
+        `${
+          endpoints.academics.subjects
+        }?branch=${branchIds}&session_year=${sessionIds}&grade=${GradeIds}&section=${sectionIds.toString()}&module_id=${moduleId}`,
+        'subject'
+      );
+    }
   };
 
   const HistoricalDataEle = () => {
@@ -1080,8 +1102,8 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
                   .add(1, 'day')
                   .format('YYYY-MM-DD')} till date
                Historical data: records before ${moment(launchdate)
-                    .add(1, 'day')
-                    .format('YYYY-MM-DD')}`}
+                 .add(1, 'day')
+                 .format('YYYY-MM-DD')}`}
               >
                 <InfoIcon fontSize='small' color='disabled' />
               </Tooltip>
@@ -1107,10 +1129,10 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
               window.location.pathname === '/erp-online-class'
                 ? 'Online Class View'
                 : window.location.pathname === '/erp-online-class-teacher-view'
-                  ? 'Teacher View Class'
-                  : window.location.pathname === '/erp-online-class-student-view'
-                    ? 'Student Class View'
-                    : ''
+                ? 'Teacher View Class'
+                : window.location.pathname === '/erp-online-class-student-view'
+                ? 'Student Class View'
+                : ''
             }
             isAcademicYearVisible={true}
           />
@@ -1203,54 +1225,56 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
                         <Typography>Group</Typography>
                       </Grid>
                     </Grid>
-                    {!sectionToggle && (<Grid item md={3} xs={12}>
-                      <Autocomplete
-                        multiple
-                        style={{ width: '100%' }}
-                        size='small'
-                        limitTags={2}
-                        onChange={handleSection}
-                        id='section_id'
-                        className='dropdownIcon'
-                        value={selectedSection || []}
-                        options={sectionList || []}
-                        getOptionLabel={(option) => option?.section__section_name || ''}
-                        getOptionSelected={(option, value) => option?.id == value?.id}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Section'
-                            placeholder='Section'
-                          />
-                        )}
-                      />
-                    </Grid>)}
+                    {!sectionToggle && (
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          multiple
+                          style={{ width: '100%' }}
+                          size='small'
+                          limitTags={2}
+                          onChange={handleSection}
+                          id='section_id'
+                          className='dropdownIcon'
+                          value={selectedSection || []}
+                          options={sectionList || []}
+                          getOptionLabel={(option) => option?.section__section_name || ''}
+                          getOptionSelected={(option, value) => option?.id == value?.id}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Section'
+                              placeholder='Section'
+                            />
+                          )}
+                        />
+                      </Grid>
+                    )}
                     {sectionToggle && (
                       <Grid item xs={12} md={3}>
-                      <Autocomplete
-                        id='Group'
-                        name='group'
-                        multiple
-                        // limitTags={2}
-                        className='dropdownIcon'
-                        onChange={handleGroup}
-                        value={selectedGroupData || []}
-                        options={groupList || []}
-                        getOptionLabel={(option) => option?.group_name || ''}
-                        filterSelectedOptions
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Group'
-                            placeholder='Group'
-                            // required
-                          />
-                        )}
-                        size='small'
-                      />
-                    </Grid>
+                        <Autocomplete
+                          id='Group'
+                          name='group'
+                          multiple
+                          // limitTags={2}
+                          className='dropdownIcon'
+                          onChange={handleGroup}
+                          value={selectedGroupData || []}
+                          options={groupList || []}
+                          getOptionLabel={(option) => option?.group_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Group'
+                              placeholder='Group'
+                              // required
+                            />
+                          )}
+                          size='small'
+                        />
+                      </Grid>
                     )}
 
                     {(selectedClassType?.id === 0 || selectedClassType?.id === 4) && (
@@ -1279,7 +1303,7 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
                       </Grid>
                     )}
 
-                    {(selectedClassType?.id > 0 && selectedClassType?.id !== 4 ) && (
+                    {selectedClassType?.id > 0 && selectedClassType?.id !== 4 && (
                       <Grid item md={3} xs={12}>
                         <Autocomplete
                           style={{ width: '100%' }}
@@ -1476,7 +1500,6 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
                           </Grid>
                         )}
                       </Grid>
-
                       <Grid
                         container
                         spacing={3}
@@ -1498,6 +1521,24 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
               </Grid>
             </Grid>
           </Grid>
+          {user_level == 13 || user_level == 12 ? (
+            <div
+              className='col-md-12 text-right th-pointer'
+              onClick={() => setShowGrievanceModal(true)}
+            >
+              Not able to attend/join online classes?
+              <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+                Raise your query
+              </span>
+            </div>
+          ) : null}
+          {showGrievanceModal && (
+            <GrievanceModal
+              title={'Online Class Related Query'}
+              showGrievanceModal={showGrievanceModal}
+              handleClose={handleCloseGrievanceModal}
+            />
+          )}
         </div>
       </Layout>
     </>
