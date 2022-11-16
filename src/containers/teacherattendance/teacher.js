@@ -197,7 +197,7 @@ export default function TeacherAttendance(props) {
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const user_level = userData?.user_level;
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
-
+  const [notificationType , setNotificationType] = useState('')
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [data, setData] = React.useState([]);
   const [recordsData, setRecordsData] = React.useState([]);
@@ -570,7 +570,7 @@ export default function TeacherAttendance(props) {
     }
   };
 
-  const handleNotifyPopUp = (val) => {
+  const handleNotifyPopUp = (val,type) => {
     if (startDate !== moment().format('YYYY-MM-DD')) {
       setAlert('warning', "Please select today's date");
     }
@@ -584,6 +584,7 @@ export default function TeacherAttendance(props) {
       startDate == moment().format('YYYY-MM-DD')
     ) {
       setOpenModal(val);
+      setNotificationType(type)
     }
   };
   const local = 'localhost:3000';
@@ -899,17 +900,31 @@ export default function TeacherAttendance(props) {
                 window.location.host == qa ||
                 window.location.host == ui_revamp1 ||
                 window.location.host == prod || window.location.host == mclg) && (
-                <Grid item md={2} xs={12} style={{ marginLeft: 15 }}>
+                  <>
+                <Grid item container md={2} xs={12} style={{ marginLeft: 15, display:'contents' }}>
                   <Button
                     onClick={() => {
-                      handleNotifyPopUp(true);
+                      handleNotifyPopUp(true, 'Absent');
                     }}
                     variant='contained'
                     color='primary'
+                    style={{ marginLeft: 15 }}
                   >
                     Notify Absentees
                   </Button>
+                  <Button
+                  onClick={() => {
+                    handleNotifyPopUp(true, 'Present');
+                  }}
+                  variant='contained'
+                  style={{ marginLeft: 15 }}
+                  color='primary'
+                >
+                  Notify Presentees
+                </Button>
                 </Grid>
+                
+              </>
               )}
           </Grid>
         ) : null}
@@ -920,6 +935,7 @@ export default function TeacherAttendance(props) {
           sectionId={sectionId}
           startDate={startDate}
           rolesId={rolesId}
+          NotificationType = {notificationType}
         />
 
         <Dialog
