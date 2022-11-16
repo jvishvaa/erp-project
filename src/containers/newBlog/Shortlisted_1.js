@@ -56,6 +56,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { Dict } from 'pdfjs-dist/build/pdf.worker';
+import UserInfo from 'components/user-info';
 
 
 const drawerWidth = 350;
@@ -163,6 +164,7 @@ const Shortlisted_1 = (props) => {
   const [activityLevel,setActivityLevel] = useState('')
   const [bookingId,setBookingId] = useState(null)
   const [checked,setChecked] = useState(false);
+  const [userInform, setUserInform] = useState([]);
 
   const [desc, setDesc] = useState('');
 
@@ -489,6 +491,7 @@ const Shortlisted_1 = (props) => {
 
 
   const handlePublishMenu = (data) =>{
+    setUserInform(data?.booked_user)
     setBookingId(data?.id)
     handleClickOpen()
 
@@ -547,6 +550,7 @@ const Shortlisted_1 = (props) => {
         if(res?.data?.status_code == 200) {
           setLoading(false)
           setAlert('success', res?.data?.message)
+          getTotalSubmitted()
 
         }
       })
@@ -679,17 +683,12 @@ const Shortlisted_1 = (props) => {
                           <div>
                             <div>
 
-                              {userDetails.map((event,index) => {
-                                return(
+                                {/* {userInform.map((event,index) => { */}
+                                  {/* return( */}
                                 <div> 
-                                  <p>Name : {event?.name}</p>
-                                  <p>ERP : {event?.erp_no}</p>
+                                  <p>Name : {userInform?.name}</p>
+                                  <p>ERP : {userInform?.username}</p>
                                 </div>
-
-                                )
-                              })}
-
-
                             </div>
                             <div>
                             <Autocomplete
