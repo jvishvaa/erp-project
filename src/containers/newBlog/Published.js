@@ -9,15 +9,31 @@ import Paper from '@material-ui/core/Paper';
 import { Button } from '@material-ui/core';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarsIcon from '@material-ui/icons/Stars';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
 import RatingScale from './RatingScale';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
-
+import Rating from '@material-ui/lab/Rating';
 import './styles.scss';
 import { TablePagination } from '@material-ui/core';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
+import Loader from 'containers/sure-learning/hoc/loader';
+
+
+const StyledRating = withStyles((theme) => ({
+  iconFilled: {
+    color: 'yellow',
+  },
+  root: {
+    '& .MuiSvgIcon-root': {
+      color: 'currentColor',
+    },
+  },
+  iconHover: {
+    color: 'yellow',
+  },
+}))(Rating);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -129,6 +145,7 @@ const Published = (props) => {
       })
       .then((response) => {
         props.setFlag(false);
+        setAlert('success',response?.data?.message)
         setTotalPublish(response?.data?.result);
         setLoading(false);
 
@@ -137,6 +154,7 @@ const Published = (props) => {
   }
 
   const handleUnPublish = (data) => {
+    setLoading(true)
     let requestData = {
       "booking_id" : data?.booking_detail_id,
       "is_published": false,
@@ -165,7 +183,8 @@ const Published = (props) => {
 
   return (
     
-
+    <>
+    {loading && <Loader/>}
     <Paper className={`${classes.root} common-table`} id='singleStudent'>
       {user_level==11?"":
       <TableContainer
@@ -198,9 +217,19 @@ const Published = (props) => {
               <TableCell className={classes.tableCells}>{index +1}</TableCell>
               <TableCell className={classes.tableCells}>{response?.name}</TableCell>
               <TableCell className={classes.tableCells}>{response?.grade}</TableCell>
-              <TableCell className={classes.tableCells}>{response?.submitted_on}</TableCell>
+              <TableCell className={classes.tableCells}>{response?.submitted_on.slice(0,10)}</TableCell>
               <TableCell className={classes.tableCells}>
-                <RatingScale />
+                {/* <RatingScale /> */}
+                <StyledRating
+                  name={`rating${index}`}
+                  size='small'
+                  readOnly
+                  precision={0.5}
+                  // rating={response?.user_reviews?.given_rating}
+                  defaultValue={response?.given_rating}
+                  max={parseInt(response?.rating)}
+                
+                />
               </TableCell>
               <TableCell className={classes.tableCells}>
                 {' '}
@@ -212,9 +241,9 @@ const Published = (props) => {
                   Un-Publish
                 </Button>
                 &nbsp;&nbsp;
-                <Button variant='outlined' size='small' className={classes.buttonColor2}>
+                {/* <Button variant='outlined' size='small' className={classes.buttonColor2}>
                   View in School Wall
-                </Button>
+                </Button> */}
               </TableCell>
             </TableRow>
           </TableBody>
@@ -238,6 +267,7 @@ const Published = (props) => {
       </TableContainer>
 }
     </Paper>
+    </>
   );
 };
 

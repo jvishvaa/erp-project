@@ -636,8 +636,12 @@ const AdminViewBlog = () => {
         <Grid item md={2} xs={2} style={{ visibility: 'hidden' }} />
 
         <Grid item xs={6} md={6} style={{display:'flex', justifyContent:'end', paddingRight:'20px'}}>
-          
-            {(user_level !== 11 || user_level !== 10 || user_level !== 8 ) && <Button
+            {(user_level === 11 || user_level == 10 || user_level == 8) ? (
+                ''
+            ): (
+              
+            // {(user_level !==11 || user_level !== 10 || user_level !== 8) && 
+              <Button
               variant='contained'
               color='primary'
               size='medium'
@@ -647,7 +651,8 @@ const AdminViewBlog = () => {
             >
               Create Activity
             </Button> 
-            } 
+            // } 
+            )}
           {/* &nbsp;&nbsp;
           <Button
             variant='outlined'
