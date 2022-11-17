@@ -51,11 +51,12 @@ const qa = {
   s3: {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    //CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
-    baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURL: 'https://49e0-65-0-144-93.ngrok.io/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
     baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',

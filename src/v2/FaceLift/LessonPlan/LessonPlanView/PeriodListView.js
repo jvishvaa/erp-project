@@ -410,8 +410,8 @@ const PeriodListView = () => {
   };
   const getSortedPeriodData = (data) => {
     const conceptWisedata = data
-      .sort((a, b) => Number(a.key_concept__sequence) - Number(b.key_concept__sequence))
-      .reduce((initialValue, data) => {
+      ?.sort((a, b) => Number(a.key_concept__sequence) - Number(b.key_concept__sequence))
+      ?.reduce((initialValue, data) => {
         let key = data?.key_concept__topic_name;
         if (!initialValue[key]) {
           initialValue[key] = [];
@@ -419,7 +419,7 @@ const PeriodListView = () => {
         initialValue[key].push(data);
         return initialValue;
       }, {});
-    const sortedConceptData = Object.keys(conceptWisedata).map((concept) => {
+    const sortedConceptData = Object.keys(conceptWisedata)?.map((concept) => {
       return {
         concept,
         data: conceptWisedata[concept],
@@ -568,9 +568,9 @@ const PeriodListView = () => {
   }, [selectedModuleId]);
 
   useEffect(() => {
-    if (periodWiseData.length > 0) {
-      setPeriodSortedData(getSortedPeriodData(periodWiseData));
-    }
+    // if (periodWiseData.length > 0) {
+    setPeriodSortedData(getSortedPeriodData(periodWiseData));
+    // }
   }, [periodWiseData]);
 
   useEffect(() => {
@@ -623,6 +623,7 @@ const PeriodListView = () => {
     }
   }, [volumeId]);
 
+  console.log(modalData, keyConceptListData, 'resourcesData?.section_wise_completion');
   return (
     <div className='row '>
       <div className='row align-items-center mb-2'>
@@ -718,6 +719,7 @@ const PeriodListView = () => {
                   onClear={handleClearChapter}
                   className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                   bordered={false}
+                  allowClear
                 >
                   {chapterOptions}
                 </Select>
@@ -1231,7 +1233,7 @@ const PeriodListView = () => {
                 )}
                 {showSection && (
                   <div className='row' style={{ border: '1px solid #d9d9d9' }}>
-                    {resourcesData?.section_wise_completion.map((each, i) => (
+                    {resourcesData?.section_wise_completion?.map((each, i) => (
                       <div className='col-2 p-2'>
                         {each.is_completed ? (
                           <Button disabled>
@@ -1270,14 +1272,29 @@ const PeriodListView = () => {
                           Clear
                         </div>
                       )}
-                      <div
-                        className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
-                        onClick={() => {
-                          markPeriodComplete(resourcesData);
-                        }}
-                      >
-                        Update
-                      </div>
+
+                      {resourcesData?.section_wise_completion?.filter(
+                        (item) => item.is_completed
+                      )?.length === resourcesData?.section_wise_completion?.length ? (
+                        <div
+                          className='col-3 th-white p-2 mx-2 th-br-6'
+                          style={{
+                            background: '#8dadff',
+                            cursor: 'not-allowed',
+                          }}
+                        >
+                          Update
+                        </div>
+                      ) : (
+                        <div
+                          className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
+                          onClick={() => {
+                            markPeriodComplete(resourcesData);
+                          }}
+                        >
+                          Update
+                        </div>
+                      )}
                     </div>
                     {showError && completeSections?.length < 1 && (
                       <div className='th-red'>
@@ -1338,13 +1355,15 @@ const PeriodListView = () => {
         <Modal
           visible={showInfoModal}
           onCancel={closeshowInfoModal}
-          className='th-upload-modal'
+          className='th-upload-modal-grey-close'
           centered
-          footer={[]}
+          footer={false}
+          closeIcon={<CloseOutlined />}
+          closable={true}
         >
           <div className='row py-2'>
             <div className='col-12 px-md-4 pt-3 th-fw-500 th-18 th-grey'>
-              <div className='row pl-md-5'>
+              <div className='row justify-content-center'>
                 <div
                   style={{
                     border: '2px solid #25A53F',
@@ -1356,8 +1375,8 @@ const PeriodListView = () => {
                 >
                   <img src={tickIcon} height={50} className='mr-5' />
                 </div>
-                <div>
-                  Lesson is completed for <br />
+                <div className='text-center'>
+                  Period is completed for <br />
                   {sectionsCompleted.length > 1 ? 'Sections' : 'Section'}&nbsp;
                   <span className='th-black-1 th-fw-600 '>
                     {sectionsCompleted
@@ -1367,23 +1386,23 @@ const PeriodListView = () => {
                 </div>
               </div>
             </div>
-            <div className='col-12 pt-2 pl-md-5 th-16'>
-              <div>
+            <div className='col-12 pt-2 th-16'>
+              <div className='text-center'>
                 View Resources for Upcoming Class{' '}
                 {nextPeriodDetails ? (
-                  <span>
-                    : {nextPeriodDetails?.period_name} in{' '}
-                    {nextPeriodDetails?.key_concept__topic_name} in{' '}
-                    {nextPeriodDetails?.chapter__chapter_name} in
+                  <div className='text-center'>
+                    {nextPeriodDetails?.period_name} {'> '}
+                    {nextPeriodDetails?.key_concept__topic_name} {'> '}
+                    {nextPeriodDetails?.chapter__chapter_name} {'> '}
                     {nextPeriodDetails?.chapter__lt_module__lt_module_name?.toLowerCase() ==
                     'kit activity'
-                      ? ` (Kit Activity)`
+                      ? ` (Kit Activity) {'> '}`
                       : null}{' '}
-                    in {nextPeriodDetails?.volume_name}
-                  </span>
+                    {nextPeriodDetails?.volume_name}
+                  </div>
                 ) : null}
               </div>
-              <div>
+              <div className='text-center'>
                 <Button
                   type='default'
                   onClick={handleNextPeriodResource}
