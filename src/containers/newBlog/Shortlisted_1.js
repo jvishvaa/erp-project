@@ -142,7 +142,7 @@ const Shortlisted_1 = (props) => {
   const  ActivityId  = JSON.parse(localStorage.getItem('ActivityId')) || {};
 
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
-
+  const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
@@ -687,7 +687,7 @@ const Shortlisted_1 = (props) => {
                   >
                     Publish
                   </Button>{' '} */}
-                  <Button variant="outlined" className={classes.buttonColor2} onClick ={() => handlePublishMenu(response)} >
+                  <Button variant="outlined" className={classes.buttonColor2} disabled={userLevel == '11' ? true : false} onClick ={() => handlePublishMenu(response)} >
                     Publish
                   </Button>
                   &nbsp;

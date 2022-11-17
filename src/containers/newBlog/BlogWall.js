@@ -186,6 +186,7 @@ const BlogWall = () => {
   const [branchIds, setBranchIds] = useState('');
   const [date, setDate] = useState('');
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
+  const userId = JSON.parse(localStorage.getItem('userDetails'))?.user_id;
   const [categories, setCategories] = useState([]);
   const [listCount, setListCount] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
@@ -198,6 +199,10 @@ const BlogWall = () => {
   const [previewData, setPreviewData] = useState('');
   const [ratingReview, setRatingReview] = useState([]);
   const [expandFilter, setExpandFilter] = useState(true);
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  // const user_level = userData?.user_level;
+
+  console.log(userId,'pp')
 
 
 
@@ -313,6 +318,8 @@ const BlogWall = () => {
   const handleBlogListChange = (e, value) => {
     if (e) {
       setSelectedBlogListId(value?.value)
+    }else{
+      setSelectedBlogListId('')
     }
   }
 
@@ -364,37 +371,43 @@ const BlogWall = () => {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
+        user_id: userId,
       });
     } else if (showTab == 2) {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
-        publish_level: 'Intra Orchids Level'
+        publish_level: 'Intra Orchids Level',
+        user_id: userId,
       });
     } else if (showTab == 3) {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
-        publish_level: 'Branch Level'
+        publish_level: 'Branch Level',
+        user_id: userId,
       })
 
     } else if (showTab == 4) {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
-        publish_level: 'Grade Level'
+        publish_level: 'Grade Level',
+        user_id: userId,
       })
     } else if (showTab == 5) {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
         is_best_blog: 'true',
+        user_id: userId,
       })
     }  else if(showTab == 6){
           fetchSchoolWall({
           page_size: 10,
           page: pageNumber,
           publish_level: 'Section Level',
+          user_id: userId,
       })
     }
   }
@@ -511,7 +524,7 @@ const BlogWall = () => {
     return (
       <>
         <div className='row mb-2 mb-md-0 mt-5'>
-            {user_level == '13' || user_level == '11' || user_level == '10' ? (
+            {user_level == '13' || user_level == '10' ? (
             ' '
             ) : (
             <div className='row' >
@@ -527,7 +540,6 @@ const BlogWall = () => {
                   {/* <div className='row mb-2'> */}
                   <div className='col-md-2 px-0 py-2 py-md-0'>
                     <div className='mb-2 text-left'>Branch</div>
-                    {showBranchFilter.includes(userLevel) && (
                       <Select
                         className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
                         placement='bottomRight'
@@ -551,7 +563,7 @@ const BlogWall = () => {
                       >
                         {branchOptions}
                       </Select>
-                    )}
+      
                   </div>
                   <div className='col-md-2 col-5 px-0 px-md-2'>
                     <div className='mb-2 text-left'>Grade</div>
