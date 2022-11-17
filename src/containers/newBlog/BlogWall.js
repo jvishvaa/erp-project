@@ -186,6 +186,7 @@ const BlogWall = () => {
   const [branchIds, setBranchIds] = useState('');
   const [date, setDate] = useState('');
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
+  const userId = JSON.parse(localStorage.getItem('userDetails'))?.user_id;
   const [categories, setCategories] = useState([]);
   const [listCount, setListCount] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
@@ -198,6 +199,10 @@ const BlogWall = () => {
   const [previewData, setPreviewData] = useState('');
   const [ratingReview, setRatingReview] = useState([]);
   const [expandFilter, setExpandFilter] = useState(true);
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  // const user_level = userData?.user_level;
+
+  console.log(userId,'pp')
 
 
 
@@ -313,6 +318,8 @@ const BlogWall = () => {
   const handleBlogListChange = (e, value) => {
     if (e) {
       setSelectedBlogListId(value?.value)
+    }else{
+      setSelectedBlogListId('')
     }
   }
 
@@ -364,31 +371,43 @@ const BlogWall = () => {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
+        user_id: userId,
       });
     } else if (showTab == 2) {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
-        publish_level: 'Intra Orchids Level'
+        publish_level: 'Intra Orchids Level',
+        user_id: userId,
       });
     } else if (showTab == 3) {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
-        publish_level: 'Branch Level'
+        publish_level: 'Branch Level',
+        user_id: userId,
       })
 
     } else if (showTab == 4) {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
-        publish_level: 'Grade Level'
+        publish_level: 'Grade Level',
+        user_id: userId,
       })
     } else if (showTab == 5) {
       fetchSchoolWall({
         page_size: 10,
         page: pageNumber,
         is_best_blog: 'true',
+        user_id: userId,
+      })
+    }  else if(showTab == 6){
+          fetchSchoolWall({
+          page_size: 10,
+          page: pageNumber,
+          publish_level: 'Section Level',
+          user_id: userId,
       })
     }
   }
@@ -505,7 +524,7 @@ const BlogWall = () => {
     return (
       <>
         <div className='row mb-2 mb-md-0 mt-5'>
-            {user_level == '13' || user_level == '11' || user_level == '10' ? (
+            {user_level == '13' || user_level == '10' ? (
             ' '
             ) : (
             <div className='row' >
@@ -521,7 +540,6 @@ const BlogWall = () => {
                   {/* <div className='row mb-2'> */}
                   <div className='col-md-2 px-0 py-2 py-md-0'>
                     <div className='mb-2 text-left'>Branch</div>
-                    {showBranchFilter.includes(userLevel) && (
                       <Select
                         className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
                         placement='bottomRight'
@@ -545,7 +563,7 @@ const BlogWall = () => {
                       >
                         {branchOptions}
                       </Select>
-                    )}
+      
                   </div>
                   <div className='col-md-2 col-5 px-0 px-md-2'>
                     <div className='mb-2 text-left'>Grade</div>
@@ -574,7 +592,7 @@ const BlogWall = () => {
                       getPopupContainer={(trigger) => trigger.parentNode}
                       // value={selectedCategoryName}
                       placement='bottomRight'
-                      placeholder='Select Grade'
+                      placeholder='Select Blog List'
                       suffixIcon={<DownOutlined className='th-black-1' />}
                       dropdownMatchSelectWidth={false}
                       onChange={(e, val) => handleBlogListChange(e, val)}
@@ -593,7 +611,7 @@ const BlogWall = () => {
                       placement='bottomRight'
                       showToday={false}
                       suffixIcon={<DownOutlined />}
-                      defaultValue={[moment(), moment()]}
+                      // defaultValue={[moment(), moment()]}
                       onChange={(value) => handleDateChange(value)}
                       className='th-range-picker th-br-4'
                       separator={'to'}
@@ -654,7 +672,11 @@ const BlogWall = () => {
                           <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color:'blue' }}>
                               {item?.publish_level}
                           </div>
-
+                          </div>
+                          <div style={{display:'flex'}}>
+                          <div style={{ fontSize: '10px', marginLeft: '72px',color:'blue' }}>
+                              {moment(item?.created_at).format("MMM Do YY")}
+                          </div>
                           </div>
                         </CardActionArea>
                         <CardActionArea style={{ padding: '11px', display: 'flex' }}>
@@ -927,7 +949,8 @@ const BlogWall = () => {
                   <button className={showTab == 2 ? 'active' : ""} onClick={() => onChangeTab(2)} key={2} >Intra Orchids</button>
                   <button className={showTab == 3 ? 'active' : ""} onClick={() => onChangeTab(3)} key={3} >Branch Level</button>
                   <button className={showTab == 4 ? 'active' : ""} onClick={() => onChangeTab(4)} key={4} >Grade Level</button>
-                  <button className={showTab == 5 ? 'active' : ""} onClick={() => onChangeTab(5)} key={5} >Best Blogs</button>
+                  <button className={showTab == 6 ? 'active' : ""} onClick={() => onChangeTab(6)} key={6} >Section Level</button>
+                  <button className={showTab == 5 ? 'active' : ""} onClick={() => onChangeTab(5)} key={5} >Blogs Of The Month</button>
                 </div>
 
                 <div>
