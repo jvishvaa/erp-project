@@ -165,6 +165,7 @@ const Shortlisted_1 = (props) => {
   const [bookingId,setBookingId] = useState(null)
   const [checked,setChecked] = useState(false);
   const [userInform, setUserInform] = useState([]);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const [desc, setDesc] = useState('');
 
@@ -182,6 +183,24 @@ const Shortlisted_1 = (props) => {
     branch: '',
     year: '',
   });
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Activity Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Blog Activity') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
   useEffect(() => {
     handleAcademicYear('', selectedAcademicYear);
     setFilterData({
@@ -191,21 +210,24 @@ const Shortlisted_1 = (props) => {
   }, [moduleId]);
 
   function getBranch(acadId) {
-    setLoading(true)
-    axiosInstance
-      .get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData((prev) => {
-            return {
-              ...prev,
-              branch: result.data?.data?.results,
-            };
-          });
-        }
-        setLoading(false);
-      })
-      .catch((error) => {});
+    if(moduleId){
+      setLoading(true)
+      axiosInstance
+        .get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData((prev) => {
+              return {
+                ...prev,
+                branch: result.data?.data?.results,
+              };
+            });
+          }
+          setLoading(false);
+        })
+        .catch((error) => {});
+
+    }
   }
 
   const handleAcademicYear = (event, value) => {

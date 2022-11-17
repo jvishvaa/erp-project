@@ -474,8 +474,7 @@ const StudentSideBlog = () => {
 
     axios
       .get(
-        // `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id.id}`,
-        `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${5}`,
+        `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id.id}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
