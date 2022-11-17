@@ -135,7 +135,7 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
         </div>
 
         <div className='row th-black-2 th-fw-500 py-2'>
-          {diary?.dairy_type == 1 ? 'General Diary' : 'Daiy Dairy'}
+          {diary?.dairy_type == 1 ? 'General Diary' : 'Daily Dairy'}
         </div>
         <div className='row th-black-2 py-2'>
           <span className='text-truncate'>
