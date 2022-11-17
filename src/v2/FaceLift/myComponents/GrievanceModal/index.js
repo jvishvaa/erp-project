@@ -3,6 +3,7 @@ import { Modal, message, Input, Button, Form } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
+import ENVCONFIG from 'config/config';
 
 const { TextArea } = Input;
 
@@ -10,6 +11,7 @@ const GrievanceModal = (props) => {
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [description, setDescription] = useState('');
   const [attachment, setAttachment] = useState();
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const formRef = createRef();
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -17,32 +19,66 @@ const GrievanceModal = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const handleSubmit = () => {
-    const payload = new FormData();
 
-    payload.append('finance_session_year', selectedAcademicYear?.session_year);
-    payload.append('branch_id', selectedBranch?.branch?.id);
-    payload.append(
-      'student_name',
-      userDetails?.first_name + ' ' + userDetails?.last_name
-    );
-    payload.append('raised_by', userDetails?.erp);
-    payload.append('description', description);
-
-    if (attachment) {
-      payload.append('file', attachment);
+  const handleImage = (e) => {
+    let allowedExtension = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif',
+      'image/bmp',
+    ];
+    let imgType = e.target.files[0]?.type;
+    if (allowedExtension.indexOf(imgType) > -1) {
+      if (e.target.files[0].size > 5242880) {
+        message.error('File Size should be less than 5MB');
+        props.handleClose();
+      } else {
+        setAttachment(e.target.files[0]);
+      }
+    } else {
+      message.error('Only Jpeg, Jpg and png files are allowed');
+      setAttachment(null);
+      props.handleClose();
     }
-    axios
-      .post(`${endpoints.grievances.grievanceTicket}`, payload)
-      .then((res) => {
-        if (res.status === 201) {
-          props.handleClose();
-          message.success('Ticket raised successfully');
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
+  };
+
+  const handleSubmit = () => {
+    if (description) {
+      const payload = new FormData();
+      payload.append('finance_session_year', selectedAcademicYear?.session_year);
+      payload.append('branch_id', selectedBranch?.branch?.id);
+      payload.append(
+        'student_name',
+        userDetails?.first_name + ' ' + userDetails?.last_name
+      );
+      payload.append('raised_by', userDetails?.erp);
+      payload.append('description', description);
+
+      if (attachment) {
+        payload.append('file', attachment);
+      }
+      axios
+        .post(`${endpoints.grievances.grievanceTicket}`, payload)
+        .then((res) => {
+          if (res.status === 201) {
+            props.handleClose();
+            message.success('Ticket raised successfully');
+
+            setTimeout(function () {
+              window.open(
+                `${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`,
+                '_blank'
+              );
+            }, 800);
+          }
+        })
+        .catch((error) => {
+          message.error(error.message);
+        });
+    } else {
+      message.error('Please enter description!');
+    }
   };
   return (
     <div>
@@ -87,12 +123,14 @@ const GrievanceModal = (props) => {
               </Form.Item>
             </div>
             <div className='col-12'>
-              <Form.Item name='attachment' label='Attachment'>
+              <Form.Item name='attachment' label='Attachment (Max size 5MB)'>
                 <input
                   type='file'
-                  accept='image/*'
+                  id='image'
+                  accept='image/png, image/jpeg'
                   onChange={(e) => {
-                    setAttachment(e.target.files[0]);
+                    setAttachment(null);
+                    handleImage(e);
                   }}
                 />
               </Form.Item>

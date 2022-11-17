@@ -40,6 +40,7 @@ import './student-homework.css';
 import StudenthomeworkMobileScreen from './student-homework-mobile-screen';
 import MobileIconScreen from './student-homework-mobileScreen-Icon';
 import MobileDatepicker from './student-homework-mobile-datepicker';
+import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -114,6 +115,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true);
   const [displayRatingBox, setDisplayRatingBox] = useState(false);
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+    const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [showGrievanceModal, setShowGrievanceModal] = useState(false);
 
   const getTableDetails = async () => {
     try {
@@ -287,6 +290,10 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   // const handleToDateChange = (event, value) => {
   //   setSelectedToDate(value);
   // };
+
+  const handleCloseGrievanceModal = () => {
+    setShowGrievanceModal(false);
+  };
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -796,6 +803,24 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             )}
           </div>
         </div>
+        {user_level == 13 || user_level == 12 ? (
+          <div
+            className='col-md-12 text-right th-pointer'
+            onClick={() => setShowGrievanceModal(true)}
+          >
+            Having any issues with Homework ?
+            <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+              Raise your query
+            </span>
+          </div>
+        ) : null}
+        {showGrievanceModal && (
+          <GrievanceModal
+            title={'Homework Related Query'}
+            showGrievanceModal={showGrievanceModal}
+            handleClose={handleCloseGrievanceModal}
+          />
+        )}
       </Layout>
     </div>
   );
