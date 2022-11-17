@@ -64,7 +64,7 @@ const qa = {
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
-    baseURL: 'https://49e0-65-0-144-93.ngrok.io/qbox',
+    baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',

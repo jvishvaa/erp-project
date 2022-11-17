@@ -56,7 +56,7 @@ const qa = {
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
-    baseURL: 'https://49e0-65-0-144-93.ngrok.io/qbox',
+    baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
     baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',
