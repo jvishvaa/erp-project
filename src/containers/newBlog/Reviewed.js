@@ -317,7 +317,7 @@ const Reviewed = (props) => {
                       size='small'
                       className={response?.is_bookmarked ? classes.buttonColor9 : classes.buttonColor1}
                       onClick={() => confirmassign(response)}
-                      disabled={user_level==11 || response?.is_bookmarked }
+                      disabled={response?.is_bookmarked }
 
 
                     >

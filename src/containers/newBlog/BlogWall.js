@@ -186,7 +186,7 @@ const BlogWall = () => {
   const [branchIds, setBranchIds] = useState('');
   const [date, setDate] = useState('');
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
-  const userId = JSON.parse(localStorage.getItem('userDetails'))?.user_id;
+  const userId = JSON.parse(localStorage.getItem('ActivityManagementSession'))?.user_id;
   const [categories, setCategories] = useState([]);
   const [listCount, setListCount] = useState('');
   const [pageNumber, setPageNumber] = useState(1);

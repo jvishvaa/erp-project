@@ -103,6 +103,10 @@ const useStyles = makeStyles((theme) => ({
     color: '#FF6161 !important',
     backgroundColor: 'white',
   },
+  buttonDisable: {
+    color: 'gray !important',
+    backgroundColor: 'white',
+  },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
     fontWeight: 600,
@@ -687,7 +691,7 @@ const Shortlisted_1 = (props) => {
                   >
                     Publish
                   </Button>{' '} */}
-                  <Button variant="outlined" className={classes.buttonColor2} disabled={userLevel == '11' ? true : false} onClick ={() => handlePublishMenu(response)} >
+                  <Button variant="outlined" className={(userLevel == '11' || userLevel == '8') ? classes.buttonDisable : classes.buttonColor2} disabled={(userLevel == '11' || userLevel == '8') ? true : false} onClick ={() => handlePublishMenu(response)} >
                     Publish
                   </Button>
                   &nbsp;

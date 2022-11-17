@@ -260,6 +260,7 @@ const PublicSpeakingWall = () => {
   const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
+  const User_id = JSON.parse(localStorage.getItem('ActivityManagementSession'))?.user_id;
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
   const user_level = data?.user_level;
@@ -443,10 +444,9 @@ const PublicSpeakingWall = () => {
   const getAssinged = async () => {
     setLoading(true)
 
-    const UserData =  JSON.parse(localStorage.getItem('ActivityManagement')) || {};
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&user_id=${UserData.id}&is_draft=false&page_size=${12}&page=${page}`,
+        `${endpoints.newBlog.Assign}?section_ids=null&user_id=${User_id}&is_draft=false&page_size=${12}&page=${page}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -472,11 +472,10 @@ const PublicSpeakingWall = () => {
   const [totalReview, setTotalReview] = useState([]);
   const getTotalReview = async () => {
     setLoading(true)
-    const User_id = (await JSON.parse(localStorage.getItem('ActivityManagement'))) || {};
 
     axios
       .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id.id}&&activity_detail_id=null&is_reviewed=True`,
+        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_reviewed=True`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -492,11 +491,10 @@ const PublicSpeakingWall = () => {
 
   const getTotalPublish = async () => {
     setLoading(true)
-    const User_id = (await JSON.parse(localStorage.getItem('ActivityManagement'))) || {};
 
     axios
       .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id.id}&&activity_detail_id=null&is_published=True`,
+        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_published=True`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -514,32 +512,32 @@ const PublicSpeakingWall = () => {
 
 
   const getTotalPublicSpeaking = async () => {
-    setLoading(true)
-    const User_id = (await JSON.parse(localStorage.getItem('ActivityManagement'))) || {};
-    axios
-      .get(
-        `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id.id}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalPublicSpeaking(response?.data?.result)
-        setLoading(false);
-      });
+    if(User_id){
+      setLoading(true)
+      axios
+        .get(
+          `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response, 'response');
+          setTotalPublicSpeaking(response?.data?.result)
+          setLoading(false);
+        });
+    }
   };
   
 
   const getTotalSubmitted = async () => {
 
     setLoading(true)
-    const User_id = (await JSON.parse(localStorage.getItem('ActivityManagement'))) || {};
     axios
       .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id?.id}&&activity_detail_id=null&is_reviewed=False&is_submitted=True`,
+        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_reviewed=False&is_submitted=True`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
