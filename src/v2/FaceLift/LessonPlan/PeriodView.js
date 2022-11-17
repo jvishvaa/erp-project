@@ -381,9 +381,9 @@ const PeriodView = () => {
                                         Next Period
                                       </div>
                                       <div className='col-8 pl-2 th-truncate'>
-                                        {item?.next_period_name} in{' '}
-                                        {item?.next_topic_name} in{' '}
-                                        {item?.next_chapter_name} in{' '}
+                                        {item?.next_period_name} {'> '}
+                                        {item?.next_topic_name} {'> '}
+                                        {item?.next_chapter_name} {'> '}
                                         {item?.next_volume_name}
                                       </div>
                                     </div>

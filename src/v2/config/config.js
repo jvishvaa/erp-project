@@ -51,7 +51,8 @@ const qa = {
   s3: {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    //CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
