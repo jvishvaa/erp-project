@@ -479,14 +479,15 @@ function callApi(api,key){
                     className={value === 3 ? classes.tabsFont : classes.tabsFont1}
                   />
 
-                  { user_level==11 ?"":
-                  <Tab
-                    label='Published'
-                    classes={{
-                      selected: classes.selected1,
-                    }}
-                    className={value === 4 ? classes.tabsFont : classes.tabsFont1}
-                  />
+                  {(dataes?.user_level == '11' || dataes?.user_level == '8') ?  "" : (
+                    <Tab
+                      label='Published'
+                      classes={{
+                        selected: classes.selected1,
+                      }}
+                      className={value === 4 ? classes.tabsFont : classes.tabsFont1}
+                    />
+                  )
                 }
                   
                 
@@ -503,7 +504,6 @@ function callApi(api,key){
             )}
           </div>
         </div>
-        {console.log(value,'kl 33')}
         {value == 0 && <PendingReview  selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag} />}
         {value == 1 && <NotSubmitted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>}
 
