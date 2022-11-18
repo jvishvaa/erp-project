@@ -1415,13 +1415,31 @@ const PeriodListView = () => {
                 <div className='text-center'>
                   View Resources for Upcoming Class{' '}
                   <div className='text-center'>
-                    {nextPeriodDetails?.period_name} {'> '}
+                    <div className='col-12 pl-2 th-truncate'>
+                      <div>
+                        <div className='text-truncate'>
+                          {nextPeriodDetails?.period_name},
+                          {nextPeriodDetails?.key_concept__topic_name}{' '}
+                        </div>
+                        <div
+                          className='th-grey'
+                          style={{
+                            fontStyle: 'italic',
+                          }}
+                        >
+                          {nextPeriodDetails?.chapter__chapter_name}
+                          {boardFilterArr.includes(window.location.host)
+                            ? ',' + nextPeriodDetails?.chapter__lt_module__lt_module_name
+                            : null}
+                        </div>
+                      </div>
+                    </div>
+                    {/* {nextPeriodDetails?.period_name} {'> '}
                     {nextPeriodDetails?.key_concept__topic_name} {'> '}
                     {nextPeriodDetails?.chapter__chapter_name} {'> '}
                     {boardFilterArr.includes(window.location.host)
                       ? nextPeriodDetails?.chapter__lt_module__lt_module_name + ' > '
-                      : null}
-                    {nextPeriodDetails?.volume_name}
+                      : null} */}
                   </div>
                 </div>
                 <div className='text-center'>

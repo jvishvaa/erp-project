@@ -378,22 +378,44 @@ const PeriodView = () => {
                                           .join(', ')}
                                       </div>
                                     </div>
-                                    <div className='row pl-3 pt-1' style={{ height: 60 }}>
+                                    <div
+                                      className='row pl-2 pt-1'
+                                      style={{
+                                        height: 60,
+                                      }}
+                                    >
                                       <div className='th-fw-600 col-4 px-0'>
-                                        Next Period
+                                        <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                          Next Period
+                                        </div>
                                       </div>
+                                      {/* <div> */}
                                       {item?.next_period_name ? (
                                         <div className='col-8 pl-2 th-truncate'>
-                                          {item?.next_period_name} {'> '}
-                                          {item?.next_topic_name} {'> '}
-                                          {item?.next_chapter_name} {'> '}
-                                          {item?.next_volume_name}
+                                          <div>
+                                            <div className='text-truncate'>
+                                              {item?.next_period_name},
+                                              {item?.next_topic_name}{' '}
+                                            </div>
+                                            <div
+                                              className='th-grey'
+                                              style={{
+                                                fontStyle: 'italic',
+                                                lineHeight: '10px',
+                                              }}
+                                            >
+                                              {item?.next_chapter_name}
+                                            </div>
+                                          </div>
                                         </div>
                                       ) : (
-                                        <div>
-                                          {item?.total_teaching_periods > 0
-                                            ? 'Last period is completed'
-                                            : null}
+                                        <div className='col-8 pl-2'>
+                                          {item?.total_teaching_periods > 0 ? (
+                                            <div className='th-fw-500 th-green'>
+                                              Last period is{' '}
+                                              <span className=''>completed</span>
+                                            </div>
+                                          ) : null}
                                         </div>
                                       )}
                                     </div>
@@ -413,6 +435,7 @@ const PeriodView = () => {
                                       </div>
                                       <div className='col-5 text-right th-fw-600 pt-2 pb-1'>
                                         <div
+                                          // className='th-button p-2 th-bg-grey badge th-fw-500 th-br-10 th-pointer'
                                           className='badge p-2 th-br-10 th-bg-pink th-pointer '
                                           onClick={() =>
                                             history.push({
@@ -428,11 +451,19 @@ const PeriodView = () => {
                                                 subjectID: each?.subject_id,
                                                 subjectName: each?.subject_name,
                                                 boardID: boardId,
-                                                volumeName: item?.next_volume_name,
-                                                volumeID: item?.next_volume_id,
+                                                volumeName: item?.next_volume_name
+                                                  ? item?.next_volume_name
+                                                  : item?.last_completed_volume_name,
+                                                volumeID: item?.next_volume_id
+                                                  ? item?.next_volume_id
+                                                  : item?.last_completed_volume_id,
                                                 centralAcademicYearID,
-                                                chapterID: item?.next_chapter_id,
-                                                chapterName: item?.next_chapter_name,
+                                                chapterID: item?.next_chapter_id
+                                                  ? item?.next_chapter_id
+                                                  : item?.last_completed_chapter_id,
+                                                chapterName: item?.next_chapter_name
+                                                  ? item?.next_chapter_name
+                                                  : item?.last_completed_chapter_name,
                                                 showTab: '1',
                                                 centralGSID: item?.central_gs_id,
                                               },
@@ -503,17 +534,43 @@ const PeriodView = () => {
                               : item?.total_teaching_periods}
                           </div>
                         </div>
-                        <div className='row pl-3' style={{ height: 60 }}>
-                          <div className='th-fw-600 col-4 px-0'>Next Period</div>
+                        <div
+                          className='row pl-2 pt-1'
+                          style={{
+                            height: 60,
+                          }}
+                        >
+                          <div className='th-fw-600 col-4 px-0'>
+                            <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                              Next Period
+                            </div>
+                          </div>
+                          {/* <div> */}
                           {item?.next_period_name ? (
                             <div className='col-8 pl-2 th-truncate'>
-                              {item?.next_period_name} {'> '}
-                              {item?.next_topic_name} {'> '}
-                              {item?.next_chapter_name} {'> '}
-                              {item?.next_volume_name}
+                              <div>
+                                <div className='text-truncate'>
+                                  {item?.next_period_name},{item?.next_topic_name}{' '}
+                                </div>
+                                <div
+                                  className='th-grey'
+                                  style={{
+                                    fontStyle: 'italic',
+                                    lineHeight: '10px',
+                                  }}
+                                >
+                                  {item?.next_chapter_name}
+                                </div>
+                              </div>
                             </div>
                           ) : (
-                            <div> Last Period is completed</div>
+                            <div className='col-8 pl-2'>
+                              {item?.total_teaching_periods > 0 ? (
+                                <div className='th-fw-500 th-green'>
+                                  Last period is <span className=''>completed</span>
+                                </div>
+                              ) : null}
+                            </div>
                           )}
                         </div>
 
@@ -533,7 +590,7 @@ const PeriodView = () => {
                           </div>
                           <div className='col-5 text-right th-fw-600 pt-2 pb-1'>
                             <div
-                              className='badge p-2 th-br-10 th-bg-pink th-pointer '
+                              className='th-button p-2 th-bg-grey badge th-fw-500 th-br-10 th-pointer'
                               onClick={() =>
                                 history.push({
                                   pathname: window.location.pathname.includes(
@@ -547,11 +604,19 @@ const PeriodView = () => {
                                     subjectID: each?.subject_id,
                                     subjectName: each?.subject_name,
                                     boardID: boardId,
-                                    volumeName: item?.next_volume_name,
-                                    volumeID: item?.next_volume_id,
+                                    volumeName: item?.next_volume_name
+                                      ? item?.next_volume_name
+                                      : item?.last_completed_volume_name,
+                                    volumeID: item?.next_volume_id
+                                      ? item?.next_volume_id
+                                      : item?.last_completed_volume_id,
                                     centralAcademicYearID,
-                                    chapterID: item?.next_chapter_id,
-                                    chapterName: item?.next_chapter_name,
+                                    chapterID: item?.next_chapter_id
+                                      ? item?.next_chapter_id
+                                      : item?.last_completed_chapter_id,
+                                    chapterName: item?.next_chapter_name
+                                      ? item?.next_chapter_name
+                                      : item?.last_completed_chapter_name,
                                     showTab: '1',
                                     centralGSID: item?.central_gs_id,
                                   },
