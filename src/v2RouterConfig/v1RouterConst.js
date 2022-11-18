@@ -354,7 +354,11 @@ import TeacherAttendance from 'containers/teacherattendance/teacher';
 import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
 import Observation from 'containers/observation/observation';
 import Observationarea from 'containers/observation/observation-area';
-import Observationreport from 'containers/observation/observation-report';
+import ObservationV2 from 'v2/FaceLift/TeacherObservation/Observation';
+import ObservationArea from 'v2/FaceLift/TeacherObservation/ObservationArea';
+import ObservationEvaluation from 'v2/FaceLift/TeacherObservation/Evaluation';
+import ObservationreportPreview from 'v2/FaceLift/TeacherObservation/ObservationReport/PreviewObservationReport';
+import Observationreport from 'v2/FaceLift/TeacherObservation/ObservationReport';
 import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel';
 import ERPSystemConfig from 'containers/master-management/erp-system-config';
 import AcademicCalendar from 'containers/academicCalendar/index';
@@ -1220,12 +1224,19 @@ const V1Router = [
     {({ match }) => <TeacherAttendanceVerify match={match} />}
   </Route>,
   <Route exact path='/observation-area'>
-    {({ match }) => <Observation match={match} />}
+    {({ match }) => <ObservationArea match={match} />}
   </Route>,
-  <Route path='/observation'>{({ match }) => <Observationarea match={match} />}</Route>,
+  <Route path='/observation'>{({ match }) => <ObservationV2 match={match} />}</Route>,
+  <Route path='/observation-evalutaion'>
+    {({ match }) => <ObservationEvaluation match={match} />}
+  </Route>,
   <Route path='/observation-report'>
     {({ match }) => <Observationreport match={match} />}
   </Route>,
+  <Route path='/observation-report-preview'>
+    {({ match }) => <ObservationreportPreview match={match} />}
+  </Route>,
+
   <Route exact path='/finance/student_shuffle'>
     {({ match }) => <StudentShuffleReq match={match} alert={alert} />}
   </Route>,
