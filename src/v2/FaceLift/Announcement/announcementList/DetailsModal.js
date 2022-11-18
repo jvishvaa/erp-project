@@ -209,8 +209,8 @@ const DetailsModal = (props) => {
                       </div>
                     </div>
                     <div className='col-10 pl-0'>
-                      <span>{grades.slice(0, 4).toString()}</span>
-                      {grades.length > 4 && (
+                      <span>{grades.slice(0, 2).toString()}</span>
+                      {grades.length > 2 && (
                         <Tooltip
                           placement='bottomLeft'
                           title={
@@ -239,8 +239,8 @@ const DetailsModal = (props) => {
                       </div>
                     </div>
                     <div className='col-10 pl-0 '>
-                      <span>{sections.slice(0, 3).toString()}</span>
-                      {sections.length > 3 && (
+                      <span>{sections.slice(0, 2).toString()}</span>
+                      {sections.length > 2 && (
                         <Tooltip
                           placement='bottomLeft'
                           title={

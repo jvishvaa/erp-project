@@ -91,7 +91,6 @@ const PeriodListView = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [allComplete, setAllComplete] = useState(false);
   const [nextPeriodDetails, setNextPeriodDetails] = useState();
-
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -293,7 +292,7 @@ const PeriodListView = () => {
       chapter: null,
       keyConcept: null,
     });
-    setChapterId('');
+    setChapterId();
     setChapterListData([]);
     setKeyConceptId();
     setKeyConceptListData([]);
@@ -354,7 +353,7 @@ const PeriodListView = () => {
   };
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
-
+    let sectionSuccessful = [];
     if (completeSections?.length > 0) {
       setShowError(false);
       completeSections.map((section, index) => {
@@ -378,7 +377,6 @@ const PeriodListView = () => {
               if (index == completeSections?.length - 1) {
                 closeSectionList();
                 closeDrawer();
-                setSectionsCompleted([...sectionsCompleted, section]);
                 fetchPeriodWiseData({
                   acad_session_id: selectedBranch?.id,
                   board_id: boardId,
@@ -390,6 +388,11 @@ const PeriodListView = () => {
                   volume: volumeId,
                   central_gs_id: centralGSID,
                 });
+
+                if (!sectionSuccessful.includes(section?.section__section_name)) {
+                  sectionSuccessful.push(section?.section__section_name);
+                }
+                setSectionsCompleted(sectionSuccessful);
                 setShowInfoModal(true);
                 if (!_.isEmpty(res.data.result)) {
                   setNextPeriodDetails(res.data.result);
@@ -488,9 +491,14 @@ const PeriodListView = () => {
     myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
   useEffect(() => {
-    const all = moduleListData.slice();
-    const allModules = all.map((item) => item.id).join(',');
-    setSelectedModuleId(allModules);
+    if (moduleListData.length > 0) {
+      formRef.current.setFieldsValue({
+        module: ['All'],
+      });
+      const all = moduleListData.slice();
+      const allModules = all.map((item) => item.id).join(',');
+      setSelectedModuleId(allModules);
+    }
   }, [moduleListData]);
 
   useEffect(() => {
@@ -623,7 +631,6 @@ const PeriodListView = () => {
     }
   }, [volumeId]);
 
-  console.log(modalData, keyConceptListData, 'resourcesData?.section_wise_completion');
   return (
     <div className='row '>
       <div className='row align-items-center mb-2'>
@@ -754,294 +761,311 @@ const PeriodListView = () => {
           </div>
         </Form>
       </div>
-      <div className='row'>
-        {!loading && (
-          <div className='col-12 mb-3 px-3'>
-            <div className='row'>
-              {YCPData?.filter((item) => item?.lesson_type == '1')[0]?.media_file[0] && (
-                <div className='col-md-3 pl-0 col-12'>
-                  <a
-                    onClick={() => {
-                      const fileName = YCPData?.filter(
-                        (item) => item?.lesson_type == '1'
-                      )[0]?.media_file[0];
-                      const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
-                      openPreview({
-                        currentAttachmentIndex: 0,
-                        attachmentsArray: [
-                          {
-                            src: fileSrc,
-                            name: 'Portion Document',
-                            extension:
-                              '.' +
-                              fileName?.split('.')[fileName?.split('.')?.length - 1],
-                          },
-                        ],
-                      });
-                    }}
-                  >
-                    <div className='row th-fw-600 th-pointer th-primary'>
-                      <div className=''>Portion Document</div>
-                      <div className='ml-3'>
-                        <EyeFilled
-                          className='th-primary'
-                          fontSize={20}
-                          style={{ verticalAlign: 'inherit' }}
-                        />
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              )}
-              {YCPData?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0] && (
-                <div className='col-md-3 pl-0 col-12e4l'>
-                  <a
-                    onClick={() => {
-                      const fileName = YCPData?.filter(
-                        (item) => item?.lesson_type == '2'
-                      )[0]?.media_file[0];
-                      const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
-                      openPreview({
-                        currentAttachmentIndex: 0,
-                        attachmentsArray: [
-                          {
-                            src: fileSrc,
-                            name: 'Yearly Curriculum Plan',
-                            extension:
-                              '.' +
-                              fileName?.split('.')[fileName?.split('.')?.length - 1],
-                          },
-                        ],
-                      });
-                    }}
-                  >
-                    <div className='row th-fw-600 th-pointer th-primary'>
-                      <div className=''>Yearly Curriculum Plan</div>
-                      <div className='ml-3'>
-                        <EyeFilled
-                          className='th-primary'
-                          fontSize={20}
-                          style={{ verticalAlign: 'inherit' }}
-                        />
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-      {loading ? (
-        <div className='row justify-content-center my-5'>
-          <Spin title='Loading...' />
+
+      {!chapterId ? (
+        <div className='row justify-content-center my-5 th-24 th-black-2'>
+          Please select the chapter to show data!
         </div>
-      ) : periodSortedData.length > 0 ? (
-        <div className='row th-br-10 pt-2 pb-3'>
-          <div className='col-6 py-1 th-fw-600 th-20'>
-            {' '}
-            <img src={periodIcon} height='30' className='mr-3 pb-1 ml-1' />
-            Periods
+      ) : (
+        <>
+          <div className='row'>
+            {!loading && (
+              <div className='col-12 mb-3 px-3'>
+                <div className='row'>
+                  {YCPData?.filter((item) => item?.lesson_type == '1')[0]
+                    ?.media_file[0] && (
+                    <div className='col-md-3 pl-0 col-12'>
+                      <a
+                        onClick={() => {
+                          const fileName = YCPData?.filter(
+                            (item) => item?.lesson_type == '1'
+                          )[0]?.media_file[0];
+                          const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: [
+                              {
+                                src: fileSrc,
+                                name: 'Portion Document',
+                                extension:
+                                  '.' +
+                                  fileName?.split('.')[fileName?.split('.')?.length - 1],
+                              },
+                            ],
+                          });
+                        }}
+                      >
+                        <div className='row th-fw-600 th-pointer th-primary'>
+                          <div className=''>Portion Document</div>
+                          <div className='ml-3'>
+                            <EyeFilled
+                              className='th-primary'
+                              fontSize={20}
+                              style={{ verticalAlign: 'inherit' }}
+                            />
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  )}
+                  {YCPData?.filter((item) => item?.lesson_type == '2')[0]
+                    ?.media_file[0] && (
+                    <div className='col-md-3 pl-0 col-12e4l'>
+                      <a
+                        onClick={() => {
+                          const fileName = YCPData?.filter(
+                            (item) => item?.lesson_type == '2'
+                          )[0]?.media_file[0];
+                          const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: [
+                              {
+                                src: fileSrc,
+                                name: 'Yearly Curriculum Plan',
+                                extension:
+                                  '.' +
+                                  fileName?.split('.')[fileName?.split('.')?.length - 1],
+                              },
+                            ],
+                          });
+                        }}
+                      >
+                        <div className='row th-fw-600 th-pointer th-primary'>
+                          <div className=''>Yearly Curriculum Plan</div>
+                          <div className='ml-3'>
+                            <EyeFilled
+                              className='th-primary'
+                              fontSize={20}
+                              style={{ verticalAlign: 'inherit' }}
+                            />
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-          {allComplete ? (
-            <div className='col-md-6 col-12 py-3 text-md-right pr-4 th-fw-600 th-20 th-primary'>
-              All the periods are complete!
+          {loading ? (
+            <div className='row justify-content-center my-5'>
+              <Spin title='Loading...' />
             </div>
-          ) : null}
-          <div className='col-12' style={{ height: '400px', overflowY: 'scroll' }}>
-            <div className='row'>
-              {periodSortedData?.map((period) => (
-                <>
-                  <div className='row py-2 px-0 th-black-1 th-divider'>
-                    {window.innerWidth < 768 ? (
-                      <span className='th-fw-600 th-18'>{period?.concept}</span>
-                    ) : (
-                      <Divider className='' orientation='left' orientationMargin='0'>
-                        <span className='th-fw-600 th-18'>{period?.concept}</span>
-                      </Divider>
-                    )}
-                  </div>
-                  {period?.data?.map((each, index) => (
-                    <div
-                      className='col-lg-4 col-md-6 pl-0'
-                      ref={
-                        !isStudent
-                          ? each?.next_to_be_taught == true
-                            ? myRef
-                            : null
-                          : each?.last_taught == true
-                          ? myRef
-                          : null
-                      }
-                    >
-                      <div className='row mb-3 pb-1'>
+          ) : periodSortedData.length > 0 ? (
+            <div className='row th-br-10 pt-2 pb-3'>
+              <div className='col-6 py-1 th-fw-600 th-20'>
+                {' '}
+                <img src={periodIcon} height='30' className='mr-3 pb-1 ml-1' />
+                Periods
+              </div>
+              {allComplete ? (
+                <div className='col-md-6 col-12 py-3 text-md-right pr-4 th-fw-600 th-20 th-primary'>
+                  All the periods are complete!
+                </div>
+              ) : null}
+              <div className='col-12' style={{ height: '400px', overflowY: 'scroll' }}>
+                <div className='row'>
+                  {periodSortedData?.map((period) => (
+                    <>
+                      <div className='row py-2 px-0 th-black-1 th-divider'>
+                        {window.innerWidth < 768 ? (
+                          <span className='th-fw-600 th-18'>{period?.concept}</span>
+                        ) : (
+                          <Divider className='' orientation='left' orientationMargin='0'>
+                            <span className='th-fw-600 th-18'>{period?.concept}</span>
+                          </Divider>
+                        )}
+                      </div>
+                      {period?.data?.map((each, index) => (
                         <div
-                          className={`col-12 th-br-20 th-bg-pink py-2 ${
-                            isStudent
-                              ? each.last_taught == true
-                                ? 'highlighted-period'
-                                : 'period-card'
-                              : each.next_to_be_taught == true
-                              ? 'highlighted-period'
-                              : 'period-card'
-                          }`}
-                          // id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
+                          className='col-lg-4 col-md-6 pl-0'
+                          ref={
+                            !isStudent
+                              ? each?.next_to_be_taught == true
+                                ? myRef
+                                : null
+                              : each?.last_taught == true
+                              ? myRef
+                              : null
+                          }
                         >
-                          <div className='row px-1 pt-2'>
-                            <div className='col-md-7 col-6 px-0 th-18 th-fw-600'>
-                              {each?.period_name}
-                            </div>
-                            <div className='col-md-5 col-6 px-0 th-12 d-flex justify-content-end align-items-center'>
-                              <div
-                                style={{
-                                  borderRadius: '50%',
-                                  height: 8,
-                                  width: 8,
-                                  background: each?.is_complete ? 'green' : 'red',
-                                }}
-                                className='mr-2'
-                              ></div>
-                              <div
-                                className={`${
-                                  each?.is_complete ? 'th-green' : 'th-red'
-                                } th-fw-500`}
-                              >
-                                {each?.is_complete ? 'COMPLETED' : 'NOT COMPLETED'}
-                              </div>
-                            </div>
-                          </div>
-                          <div className='row pt-3 pb-2 px-1 th-12'>
-                            <div className='row'>
-                              <div className='col-md-2 col-3 px-0 th-fw-600'>Chapter</div>
-                              <div className='col-md-10 col-9 pl-1'>
-                                {each?.chapter__chapter_name}
-                              </div>
-                            </div>
-                            {boardFilterArr.includes(window.location.host) && (
-                              <div className='row'>
-                                <div className='col-md-2 col-3 px-0 th-fw-600'>
-                                  Module
+                          <div className='row mb-3 pb-1'>
+                            <div
+                              className={`col-12 th-br-20 th-bg-pink py-2 ${
+                                isStudent
+                                  ? each.last_taught == true
+                                    ? 'highlighted-period'
+                                    : 'period-card'
+                                  : each.next_to_be_taught == true
+                                  ? 'highlighted-period'
+                                  : 'period-card'
+                              }`}
+                              // id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
+                            >
+                              <div className='row px-1 pt-2'>
+                                <div className='col-md-7 col-6 px-0 th-18 th-fw-600'>
+                                  {each?.period_name}
                                 </div>
-                                <div className='col-md-10 col-3 pl-1'>
-                                  {each?.chapter__lt_module__lt_module_name}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                          <div className='row align-items-center'>
-                            <div className='col-6 px-0 text-left th-12'>
-                              {each?.completion_status?.some(
-                                (item) => item.is_complete == true
-                              ) ? (
-                                isStudent ? (
-                                  <Tooltip
-                                    placement={index % 3 === 0 ? 'bottomLeft' : 'bottom'}
-                                    title={each?.completion_status?.map((item) => (
-                                      <div className='row'>
-                                        <span>
-                                          Completed{' '}
-                                          {user_level !== 13 && (
-                                            <span>
-                                              in Sec{' '}
-                                              {item?.section_name.slice(-1).toUpperCase()}
-                                            </span>
-                                          )}{' '}
-                                          by{' '}
-                                          {item?.completed_by_user_id == user_id
-                                            ? 'You'
-                                            : item?.completed_by_user_name}{' '}
-                                          on{' '}
-                                          {moment(item?.completed_at).format(
-                                            'DD/MM/YYYY'
-                                          )}
-                                        </span>
-                                      </div>
-                                    ))}
-                                    trigger='click'
-                                    className='th-pointer'
-                                  >
-                                    <img
-                                      src={analysisIcon}
-                                      height='18'
-                                      className='mx-2'
-                                    />
-                                    View Status
-                                  </Tooltip>
-                                ) : (
+                                <div className='col-md-5 col-6 px-0 th-12 d-flex justify-content-end align-items-center'>
                                   <div
-                                    onClick={() => {
-                                      setModalData(each);
-                                      showModal();
+                                    style={{
+                                      borderRadius: '50%',
+                                      height: 8,
+                                      width: 8,
+                                      background: each?.is_complete ? 'green' : 'red',
                                     }}
-                                    className='th-pointer th-12'
+                                    className='mr-2'
+                                  ></div>
+                                  <div
+                                    className={`${
+                                      each?.is_complete ? 'th-green' : 'th-red'
+                                    } th-fw-500`}
                                   >
-                                    <img
-                                      src={analysisIcon}
-                                      height='18'
-                                      className='mx-2'
-                                    />
-                                    View Status
+                                    {each?.is_complete ? 'COMPLETED' : 'NOT COMPLETED'}
                                   </div>
-                                )
-                              ) : null}
-                            </div>
-                            <div className='col-6 px-0 text-right'>
-                              <div
-                                className='badge p-2 th-br-10 th-bg-pink th-pointer '
-                                style={{ border: '2px solid #d9d9d9' }}
-                                onClick={() => {
-                                  setDrawerData(each);
-                                  // setCurrentPeriodId(each?.id);
-                                  // showDrawer();
-                                  fetchLessonResourcesData(each);
-                                }}
-                              >
-                                View Resources &gt;
+                                </div>
+                              </div>
+                              <div className='row pt-3 pb-2 px-1 th-12'>
+                                <div className='row'>
+                                  <div className='col-md-2 col-3 px-0 th-fw-600'>
+                                    Chapter
+                                  </div>
+                                  <div className='col-md-10 col-9 pl-1'>
+                                    {each?.chapter__chapter_name}
+                                  </div>
+                                </div>
+                                {boardFilterArr.includes(window.location.host) && (
+                                  <div className='row'>
+                                    <div className='col-md-2 col-3 px-0 th-fw-600'>
+                                      Module
+                                    </div>
+                                    <div className='col-md-10 col-3 pl-1'>
+                                      {each?.chapter__lt_module__lt_module_name}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              <div className='row align-items-center'>
+                                <div className='col-6 px-0 text-left th-12'>
+                                  {each?.completion_status?.some(
+                                    (item) => item.is_complete == true
+                                  ) ? (
+                                    isStudent ? (
+                                      <Tooltip
+                                        placement={
+                                          index % 3 === 0 ? 'bottomLeft' : 'bottom'
+                                        }
+                                        title={each?.completion_status?.map((item) => (
+                                          <div className='row'>
+                                            <span>
+                                              Completed{' '}
+                                              {user_level !== 13 && (
+                                                <span>
+                                                  in Sec{' '}
+                                                  {item?.section_name
+                                                    .slice(-1)
+                                                    .toUpperCase()}
+                                                </span>
+                                              )}{' '}
+                                              by{' '}
+                                              {item?.completed_by_user_id == user_id
+                                                ? 'You'
+                                                : item?.completed_by_user_name}{' '}
+                                              on{' '}
+                                              {moment(item?.completed_at).format(
+                                                'DD/MM/YYYY'
+                                              )}
+                                            </span>
+                                          </div>
+                                        ))}
+                                        trigger='click'
+                                        className='th-pointer'
+                                      >
+                                        <img
+                                          src={analysisIcon}
+                                          height='18'
+                                          className='mx-2'
+                                        />
+                                        View Status
+                                      </Tooltip>
+                                    ) : (
+                                      <div
+                                        onClick={() => {
+                                          setModalData(each);
+                                          showModal();
+                                        }}
+                                        className='th-pointer th-12'
+                                      >
+                                        <img
+                                          src={analysisIcon}
+                                          height='18'
+                                          className='mx-2'
+                                        />
+                                        View Status
+                                      </div>
+                                    )
+                                  ) : null}
+                                </div>
+                                <div className='col-6 px-0 text-right'>
+                                  <div
+                                    className='badge p-2 th-br-10 th-bg-pink th-pointer '
+                                    style={{ border: '2px solid #d9d9d9' }}
+                                    onClick={() => {
+                                      setDrawerData(each);
+                                      // setCurrentPeriodId(each?.id);
+                                      // showDrawer();
+                                      fetchLessonResourcesData(each);
+                                    }}
+                                  >
+                                    View Resources &gt;
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                      ))}
+                    </>
                   ))}
-                </>
-              ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      ) : (
-        <div className='row justify-content-center my-5'>
-          <img src={NoDataIcon} />
-        </div>
-      )}
-      {!loading && (
-        <div className='row justify-content-between p-1'>
-          <div className='col-lg-2 col-6'>
-            <Button
-              disabled={currentIndex == 0}
-              type='primary'
-              onClick={handlePrevious}
-              className='th-br-6'
-            >
-              <LeftOutlined /> Previous {keyConceptId ? 'Key Concept' : 'Chapter'}
-            </Button>
-          </div>
-          <div className='col-lg-2 col-6 text-right'>
-            <Button
-              disabled={
-                keyConceptId
-                  ? currentIndex == keyConceptListData?.length - 1
-                  : currentIndex == chapterListData?.length - 1
-              }
-              type='primary'
-              onClick={handleNext}
-              className='th-br-6'
-            >
-              Next {keyConceptId ? 'Key Concept' : 'Chapter'}
-              <RightOutlined />
-            </Button>
-          </div>
-        </div>
+          ) : (
+            <div className='row justify-content-center my-5'>
+              <img src={NoDataIcon} />
+            </div>
+          )}
+          {!loading && (
+            <div className='row justify-content-between p-1'>
+              <div className='col-lg-2 col-6'>
+                <Button
+                  disabled={currentIndex == 0}
+                  type='primary'
+                  onClick={handlePrevious}
+                  className='th-br-6'
+                >
+                  <LeftOutlined /> Previous {keyConceptId ? 'Key Concept' : 'Chapter'}
+                </Button>
+              </div>
+              <div className='col-lg-2 col-6 text-right'>
+                <Button
+                  disabled={
+                    keyConceptId
+                      ? currentIndex == keyConceptListData?.length - 1
+                      : currentIndex == chapterListData?.length - 1
+                  }
+                  type='primary'
+                  onClick={handleNext}
+                  className='th-br-6'
+                >
+                  Next {keyConceptId ? 'Key Concept' : 'Chapter'}
+                  <RightOutlined />
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       <div>
@@ -1375,12 +1399,12 @@ const PeriodListView = () => {
                 >
                   <img src={tickIcon} height={50} className='mr-5' />
                 </div>
-                <div className='text-center'>
+                <div>
                   Period is completed for <br />
                   {sectionsCompleted.length > 1 ? 'Sections' : 'Section'}&nbsp;
                   <span className='th-black-1 th-fw-600 '>
                     {sectionsCompleted
-                      ?.map((item) => item.section__section_name.slice(-1).toUpperCase())
+                      ?.map((item) => item.slice(-1).toUpperCase())
                       .join(', ')}
                   </span>
                 </div>
