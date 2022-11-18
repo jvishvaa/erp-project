@@ -10,6 +10,7 @@ const {
     baseURLMPQ,
     msOriginUrl,
     msReportsUrlNew,
+    newBlogURL,
   },
   s3: { BUCKET: s3BUCKET, ERP_BUCKET, CENTRAL_BUCKET: CENTRAL_BUCKET },
 } = ENVCONFIG;
@@ -120,6 +121,15 @@ export default {
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
   },
+
+  diaryReport: {
+    dashboardDiaryreport: `${msReportsUrl}/api/reports/v2/dashboard/diary/`,
+    gradewiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/view/`,
+    sectionwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/view/`,
+    subjectwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/view/`,
+    subjectTeacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/view/`,
+    teacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/data/view/`,
+  },
   lessonPlan: {
     subjects: 'academic/v2/lesson-plan-subjects/',
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
@@ -130,6 +140,44 @@ export default {
   },
   homework: {
     resourcesFiles: `${CENTRAL_BUCKET}`,
+  },
+  grievances: {
+    grievanceTicket: `${baseFinanceURL}/apiV1/ticket/`,
+  },
+
+  newBlog: {
+    activityCreate: `${newBlogURL}/api/activity_detail_create/`,
+    activityWebLogin: `${newBlogURL}/api/web_login/`,
+    activitySessionLogin: `${newBlogURL}/api/update_user_session/`,
+    activityBranch: `${newBlogURL}/api/branches/`,
+    activityGrade: `${newBlogURL}/api/grades/`,
+    activitySection: `${newBlogURL}/api/sections/`,
+    getActivityType: `${newBlogURL}/api/activity_types/`,
+    getTemplates: `${newBlogURL}/api/get_templates/`,
+
+    previewDetails: `${newBlogURL}/api/get_activity_detail/`,
+    unAssign: `${newBlogURL}/api/get_activities/`,
+    Assign: `${newBlogURL}/api/get_activities/`,
+    confirmAssign: `${newBlogURL}/api/activity_detail_update/`,
+    pendingReview: `${newBlogURL}/api/review_student_activity/`,
+    activityReview: `${newBlogURL}/api/student_activity_update/`,
+
+    activityTypeSubmit: `${newBlogURL}/api/activity_type_create/`,
+
+    studentReviews: `${newBlogURL}/api/student_review/`,
+    studentReviewss: `${newBlogURL}/api/student_reviews/`,
+
+    studentSideApi: `${newBlogURL}/api/student_activity_get/`,
+    studentSideWriteApi: `${newBlogURL}/api/student_activity_create/`,
+    createTemplates: `${newBlogURL}/api/template_create/`,
+    studentPublishApi: `${newBlogURL}/api/publish_list/`,
+
+    studentPublicSpeakingApi: `${newBlogURL}/api/ps_submissions/`,
+    studentPSContentApi: `${newBlogURL}/api/ps_content/`,
+    publishBlogWallApi: `${newBlogURL}/api/publish_submission/`,
+    blogWallApi: `${newBlogURL}/api/blog_wall/`,
+    blogListDropApi: `${newBlogURL}/api/activity_dropdown/`,
+    blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
   },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },

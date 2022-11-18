@@ -179,7 +179,7 @@ const LearningVideos = () => {
   const handleChapters = () => {
       if(moduleId !== null){
     axios
-      .get(endpoints.sureLearning.LearningVideos + `?page_size=${limit}&page=${pageNumber}`, {
+      .get(endpoints.sureLearning.LearningVideos + `?page_size=${limit}&page=${pageNumber}&type=1`, {
         headers: {
           Authorization: `Bearer ${udaanToken}`,
           module: moduleId,

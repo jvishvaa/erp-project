@@ -1,7 +1,6 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { Select, Form, message, Spin } from 'antd';
 import axios from 'v2/config/axios';
-import axiosInstance from 'axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import 'slick-carousel/slick/slick.css';
@@ -45,7 +44,6 @@ const AnnualPlan = () => {
   const [boardListData, setBoardListData] = useState([]);
   const [boardId, setBoardId] = useState();
   const [annualPlanData, setAnnualPlanData] = useState([]);
-  const [YCPPlanData, setYCPPlanData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filtered, setFiltered] = useState(false);
 
@@ -161,9 +159,6 @@ const AnnualPlan = () => {
     setSubjectName('');
   };
   const handleSubject = (item) => {
-    // formRef.current.setFieldsValue({
-    //   board: [],
-    // });
     if (item) {
       setSubjectId(item.value);
       setSubjectName(item.children);

@@ -135,6 +135,9 @@ const FeesOverview = (props) => {
     chart: {
       type: 'column',
     },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: ' ',
     },

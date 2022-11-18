@@ -1,0 +1,164 @@
+.filter-container-tab button {
+    margin-right: 2rem;
+    min-width: 5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: white;
+    color: rgb(65,98,168);
+    border-radius: 2rem;
+    border: 2px solid rgb(65,98,168);
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 2rem;
+    font-size: 14px;
+
+}
+button.active {
+    background:rgb(65,98,168);
+    color:white;
+}
+
+
+.button-design {
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(315deg, #ffffff 0%, #d7e1ec 74%);
+
+}
+.dummy-background {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    
+}
+
+.dummy-background:hover {
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    transition: all 0.3s ease-out;
+}
+.body {
+    /* border:1px solid black; */
+    border-radius: 20px;
+    display: grid;
+    height: 90vh;
+    width: 100%;
+    /* place-items: center; */
+    display: flex;
+    /* justify-content: center; */
+    /* justify-content: baseline; */
+    /* align-items: center; */
+    background: linear-gradient(315deg, #ffffff 0%, #d7e1ec 74%);
+}
+.wrapper .button {
+    display: inline-block;
+    height: 85px;
+    width: 85px;
+    float: left;
+    margin: 0 30px;
+    overflow: hidden;
+    /* background: red; */
+    background: #fff;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease-out;
+
+    
+
+}
+.wrapper .button .icon {
+    display: inline-block;
+    height: 85px;
+    width: 85px;
+    text-align: center;
+    border-radius: 50px;
+    box-sizing: border-box;
+    line-height: 80px;
+    transition: all 0.3s ease-out;
+
+}
+
+.button-label {
+    border: 1px solid black;
+}
+
+.wrapper .button:nth-child(1):hover .icon {
+    background: #4267B2;
+    color: #fff;
+}
+.wrapper .button:nth-child(2):hover .icon {
+    background: #E1306C;
+    color: #fff;
+}
+
+.wrapper .button:nth-child(1) span {
+    color: #4267B2;
+}
+.wrapper .button:nth-child(2) span {
+    color: #E1306C;
+}
+
+
+
+.wrapper .button .icon i {
+    font-size: 40px;
+    line-height: 60px;
+    transition: all 0.3s ease-out;
+}
+.wrapper .button:hover .icon i{
+    color: #fff;
+}
+.wrapper .button:hover {
+    width: 260px;
+}
+
+.wrapper .button span {
+    font-size: 20px;
+    font-weight: 500;
+    line-height:  60px;
+    margin-left: 10px;
+    transition: all 0.3s ease-out;
+
+}
+
+.card-design {
+    transition: all 0.3s ease-out;
+    width: 20vw;
+    border-radius: 15px;
+    margin: 10px auto;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
+    
+}
+
+.card-design:hover {
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    transition: all 0.3s ease-out;
+
+}
+
+@media screen and (max-width: 1300px){
+    .card-design {
+        /* width: calc(100% + 10px); */
+        width: 24vw;
+    }
+}
+
+.blog-redirect-card {
+    height: 15vh;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 7px;
+
+}
+
+@media screen and (max-width: 1500px){
+    .blog-redirect-card {
+        height: 22vh;
+    }
+}
+
+
+

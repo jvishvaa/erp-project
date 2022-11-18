@@ -606,15 +606,39 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name: 'Evaluation',
-      Path: '/observation-report',
+      Path: '/observation-evalutaion',
     },
     {
       name: 'Observation Report',
-      Path: '/pdf-table',
+      Path: '/observation-report',
     },
     {
       name: 'Trainee Courses',
       Path: '/sure-learning-trainee-courses',
+    },
+    {
+      name: 'Create Activity',
+      Path: '/blog/create',
+    },
+    {
+      name: 'Blog Wall',
+      Path:'/blog/wall',
+    },
+    {
+      name: 'My Blogs',
+      Path: '/blog/wall/redirect',
+    },
+    {
+      name: 'Create Activity Type',
+      Path: '/blog/createactivitytype',
+    },
+    {
+      name: 'Blog',
+      Path: '/blog/activityreview',
+    },
+    {
+      name: 'Create Rating',
+      Path: '/blog/createratingtype',
     },
     {
       name: 'Assign Trainee',
