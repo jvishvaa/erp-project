@@ -74,10 +74,11 @@ const ObservationArea = () => {
     setEditId(id);
     setDrawerOpen(true);
     axios.get(`${endpoints.observation.observationGet}${id}/`).then((res) => {
-      console.log(res.data, 'wdwdwu');
       formRef.current.setFieldsValue({
         observation_area_name: res.data.result.observation_area_name,
-        levels: res.data.result.levels_data,
+        levels: res.data?.result?.levels_data?.map((each) => {
+          return each?.id;
+        }),
       });
     });
   };
@@ -125,9 +126,7 @@ const ObservationArea = () => {
       const valuess = new FormData();
       valuess.append('observation_area_name', updateValues.observation_area_name);
 
-      for (let i = 0; i < updateValues.levels?.length; i += 1) {
-        valuess.append('levels', updateValues.levels[i]);
-      }
+      valuess.append('levels', updateValues.levels?.toString());
 
       if (!editId) {
         valuess.append('status', true);

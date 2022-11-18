@@ -15,6 +15,7 @@ import {
   Button,
   Popconfirm,
   Select,
+  InputNumber,
 } from 'antd';
 import { PlusOutlined, EditOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
@@ -31,13 +32,15 @@ const Observation = () => {
 
   useEffect(() => {
     observationGet();
-    getObservationArea();
+    getObservationArea({ status: true });
   }, []);
 
-  const observationGet = () => {
+  const observationGet = (params = {}) => {
     setLoading(true);
     axios
-      .get(`${endpoints.observationName.observationGet}`)
+      .get(`${endpoints.observationName.observationGet}`, {
+        params: { ...params },
+      })
       .then((result) => {
         if (result.status === 200) {
           setData(result?.data);
@@ -53,9 +56,11 @@ const Observation = () => {
       });
   };
 
-  const getObservationArea = () => {
+  const getObservationArea = (params = {}) => {
     const result = axios
-      .get(`${endpoints.observationName.observationArea}`)
+      .get(`${endpoints.observationName.observationArea}`, {
+        params: { ...params },
+      })
       .then((result) => {
         if (result.status === 200) {
           setObseravationAreaData(result?.data);
@@ -222,7 +227,6 @@ const Observation = () => {
       },
     },
   ];
-  console.log(obseravationAreaData, 'obseravationAreaData');
 
   const observationAreaOptions = obseravationAreaData?.map((item) => {
     return (
@@ -324,7 +328,7 @@ const Observation = () => {
                 label='Enter Score'
                 rules={[{ required: true, message: 'Please enter Score' }]}
               >
-                <Input placeholder='Enter Score' />
+                <InputNumber className='w-100' min={0} placeholder='Enter Score' />
               </Form.Item>
             </div>
           </Form>

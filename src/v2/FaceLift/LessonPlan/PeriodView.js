@@ -365,7 +365,9 @@ const PeriodView = () => {
                                         Total Periods
                                       </div>
                                       <div className='col-8 text-truncate px-2'>
-                                        {item?.total_teaching_periods}
+                                        {item?.next_volume_name
+                                          ? `${item?.total_teaching_periods} in ${item?.next_volume_name}`
+                                          : item?.total_teaching_periods}
                                       </div>
                                     </div>
                                     <div className='row pl-3'>
@@ -380,12 +382,20 @@ const PeriodView = () => {
                                       <div className='th-fw-600 col-4 px-0'>
                                         Next Period
                                       </div>
-                                      <div className='col-8 pl-2 th-truncate'>
-                                        {item?.next_period_name} {'> '}
-                                        {item?.next_topic_name} {'> '}
-                                        {item?.next_chapter_name} {'> '}
-                                        {item?.next_volume_name}
-                                      </div>
+                                      {item?.next_period_name ? (
+                                        <div className='col-8 pl-2 th-truncate'>
+                                          {item?.next_period_name} {'> '}
+                                          {item?.next_topic_name} {'> '}
+                                          {item?.next_chapter_name} {'> '}
+                                          {item?.next_volume_name}
+                                        </div>
+                                      ) : (
+                                        <div>
+                                          {item?.total_teaching_periods > 0
+                                            ? 'Last period is completed'
+                                            : null}
+                                        </div>
+                                      )}
                                     </div>
                                     <div
                                       className='row my-2 align-items-center'
@@ -488,15 +498,23 @@ const PeriodView = () => {
                         <div className='row pl-3'>
                           <div className='th-fw-600 col-4 px-0'>Total Periods </div>
                           <div className='col-8 pl-2'>
-                            {item?.total_teaching_periods}{' '}
+                            {item?.next_volume_name
+                              ? `${item?.total_teaching_periods} in ${item?.next_volume_name}`
+                              : item?.total_teaching_periods}
                           </div>
                         </div>
                         <div className='row pl-3' style={{ height: 60 }}>
                           <div className='th-fw-600 col-4 px-0'>Next Period</div>
-                          <div className='col-8 pl-2 th-truncate'>
-                            {item?.next_period_name} in {item?.next_topic_name} in{' '}
-                            {item?.next_chapter_name} in {item?.next_volume_name}
-                          </div>
+                          {item?.next_period_name ? (
+                            <div className='col-8 pl-2 th-truncate'>
+                              {item?.next_period_name} {'> '}
+                              {item?.next_topic_name} {'> '}
+                              {item?.next_chapter_name} {'> '}
+                              {item?.next_volume_name}
+                            </div>
+                          ) : (
+                            <div> Last Period is completed</div>
+                          )}
                         </div>
 
                         <div
