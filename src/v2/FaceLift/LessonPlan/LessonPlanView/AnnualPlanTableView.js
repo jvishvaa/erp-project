@@ -1071,28 +1071,27 @@ const TableView = (props) => {
                 </div>
               </div>
             </div>
-            <div className='col-12 pt-2 pl-md-5 th-16'>
-              View Resources for Upcoming Class
-              {nextPeriodDetails ? (
+            {nextPeriodDetails ? (
+              <div className='col-12 pt-2 pl-md-5 th-16'>
+                View Resources for Upcoming Class
                 <span>
-                  : {nextPeriodDetails?.period_name} in{' '}
-                  {nextPeriodDetails?.key_concept__topic_name} in{' '}
-                  {nextPeriodDetails?.chapter__chapter_name} in
-                  {nextPeriodDetails?.chapter__lt_module__lt_module_name?.toLowerCase() ==
-                  'kit activity'
-                    ? ` (Kit Activity)`
-                    : null}{' '}
-                  in {nextPeriodDetails?.volume_name}
+                  : {nextPeriodDetails?.period_name} {'> '}
+                  {nextPeriodDetails?.key_concept__topic_name} {'> '}
+                  {nextPeriodDetails?.chapter__chapter_name} {'> '}
+                  {boardFilterArr.includes(window.location.host)
+                    ? nextPeriodDetails?.chapter__lt_module__lt_module_name + ' > '
+                    : null}
+                  {nextPeriodDetails?.volume_name}
                 </span>
-              ) : null}
-              <Button
-                type='default'
-                onClick={handleNextPeriodResource}
-                className='ml-3 th-primary th-bg-grey'
-              >
-                Resources <RightCircleOutlined />
-              </Button>
-            </div>
+                <Button
+                  type='default'
+                  onClick={handleNextPeriodResource}
+                  className='ml-3 th-primary th-bg-grey'
+                >
+                  Resources <RightCircleOutlined />
+                </Button>
+              </div>
+            ) : null}
           </div>
         </Modal>
       </div>

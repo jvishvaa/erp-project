@@ -77,7 +77,9 @@ const AnnouncementList = () => {
           ...params,
           ...(date ? { date: date } : {}),
           ...(selectedCategoryId ? { is_category: selectedCategoryId } : {}),
-          ...(branchIds ? { branch_id: branchIds } : {}),
+          ...(branchIds
+            ? { branch_id: branchIds }
+            : { branch_id: selectedBranch?.branch?.id }),
         },
       })
       .then((response) => {

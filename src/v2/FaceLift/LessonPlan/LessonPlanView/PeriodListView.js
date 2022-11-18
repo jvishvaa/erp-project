@@ -353,7 +353,7 @@ const PeriodListView = () => {
   };
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
-    let sectionSuccessful = [];
+    let sectionsCompletedSuccess = [];
     if (completeSections?.length > 0) {
       setShowError(false);
       completeSections.map((section, index) => {
@@ -374,6 +374,10 @@ const PeriodListView = () => {
           .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
+              if (!sectionsCompletedSuccess.includes(section?.section__section_name)) {
+                sectionsCompletedSuccess.push(section?.section__section_name);
+              }
+              setSectionsCompleted(sectionsCompletedSuccess);
               if (index == completeSections?.length - 1) {
                 closeSectionList();
                 closeDrawer();
@@ -388,11 +392,6 @@ const PeriodListView = () => {
                   volume: volumeId,
                   central_gs_id: centralGSID,
                 });
-
-                if (!sectionSuccessful.includes(section?.section__section_name)) {
-                  sectionSuccessful.push(section?.section__section_name);
-                }
-                setSectionsCompleted(sectionSuccessful);
                 setShowInfoModal(true);
                 if (!_.isEmpty(res.data.result)) {
                   setNextPeriodDetails(res.data.result);
@@ -433,6 +432,7 @@ const PeriodListView = () => {
   };
   const fetchLessonResourcesData = (data) => {
     setResourcesData([]);
+    setNextPeriodDetails();
     showDrawer();
     setLoadingDrawer(true);
     const params = {
@@ -1401,7 +1401,7 @@ const PeriodListView = () => {
                 </div>
                 <div>
                   Period is completed for <br />
-                  {sectionsCompleted.length > 1 ? 'Sections' : 'Section'}&nbsp;
+                  {sectionsCompleted?.length > 1 ? 'Sections' : 'Section'}&nbsp;
                   <span className='th-black-1 th-fw-600 '>
                     {sectionsCompleted
                       ?.map((item) => item.slice(-1).toUpperCase())
@@ -1410,32 +1410,31 @@ const PeriodListView = () => {
                 </div>
               </div>
             </div>
-            <div className='col-12 pt-2 th-16'>
-              <div className='text-center'>
-                View Resources for Upcoming Class{' '}
-                {nextPeriodDetails ? (
+            {nextPeriodDetails ? (
+              <div className='col-12 pt-2 th-16'>
+                <div className='text-center'>
+                  View Resources for Upcoming Class{' '}
                   <div className='text-center'>
                     {nextPeriodDetails?.period_name} {'> '}
                     {nextPeriodDetails?.key_concept__topic_name} {'> '}
                     {nextPeriodDetails?.chapter__chapter_name} {'> '}
-                    {nextPeriodDetails?.chapter__lt_module__lt_module_name?.toLowerCase() ==
-                    'kit activity'
-                      ? ` (Kit Activity) {'> '}`
-                      : null}{' '}
+                    {boardFilterArr.includes(window.location.host)
+                      ? nextPeriodDetails?.chapter__lt_module__lt_module_name + ' > '
+                      : null}
                     {nextPeriodDetails?.volume_name}
                   </div>
-                ) : null}
+                </div>
+                <div className='text-center'>
+                  <Button
+                    type='default'
+                    onClick={handleNextPeriodResource}
+                    className='my-1 th-primary th-bg-grey'
+                  >
+                    Resources <RightCircleOutlined />
+                  </Button>
+                </div>
               </div>
-              <div className='text-center'>
-                <Button
-                  type='default'
-                  onClick={handleNextPeriodResource}
-                  className='my-1 th-primary th-bg-grey'
-                >
-                  Resources <RightCircleOutlined />
-                </Button>
-              </div>
-            </div>
+            ) : null}
           </div>
         </Modal>
       </div>
