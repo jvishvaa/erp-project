@@ -138,8 +138,8 @@ const CreateAnnouncement = () => {
         params: { ...params },
       })
       .then((res) => {
-        if (res.data.status_code === 200) {
-          setSectionData(res.data.data);
+        if (res?.data?.status_code === 200) {
+          setSectionData(res?.data?.data);
         }
       })
       .catch((error) => {
@@ -196,12 +196,10 @@ const CreateAnnouncement = () => {
   };
 
   const handleSelectGrade = (value, arr) => {
-    setAllGradesSelected(false);
     if (value == 'all') {
       formRef.current.setFieldsValue({
         grade: arr,
       });
-
       setGradeIds(arr);
     } else {
       if (!gradeIds.includes(value)) {
@@ -213,24 +211,13 @@ const CreateAnnouncement = () => {
     formRef.current.setFieldsValue({
       section: [],
     });
-    setAllGradesSelected(false);
     const index = gradeIds.indexOf(each?.value);
     const newGradeList = gradeIds.slice();
     newGradeList.splice(index, 1);
     setGradeIds(newGradeList);
   };
 
-  const handleClearGrade = () => {
-    formRef.current.setFieldsValue({
-      section: [],
-    });
-    setGradeIds([]);
-    setSectionData([]);
-    setSectionIds([]);
-    setSectionMappingIds([]);
-  };
   const handleSelectSection = (each) => {
-    console.log('SectionSelected', each);
     if (each.value == 'all') {
       formRef.current.setFieldsValue({
         section: sectionData?.map((item) => item.id),
@@ -390,7 +377,7 @@ const CreateAnnouncement = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedUserLevels)
+    if (selectedUserLevels) {
       if (isStudentIncluded) {
         if (sectionIds.length > 0) {
           fetchMembersCount({
@@ -410,13 +397,12 @@ const CreateAnnouncement = () => {
           is_allowed_for_all: true,
         });
       }
+    }
   }, [selectedUserLevels, gradeIds, sectionIds]);
 
   useEffect(() => {
+    setSectionData([]);
     if (gradeIds.length > 0) {
-      if (gradeIds.length == gradeData.length) {
-        setAllGradesSelected(true);
-      }
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
         branch_id: branchId,
@@ -428,15 +414,15 @@ const CreateAnnouncement = () => {
 
   useEffect(() => {
     if (sectionData.length > 0) {
-      if (allGradesSelected) {
-        formRef.current.setFieldsValue({
-          section: sectionData?.map((item) => item.id),
-        });
-        setSectionIds(sectionData?.map((item) => item?.section_id));
-        setSectionMappingIds(sectionData?.map((item) => item?.id));
-      }
+      // if (allGradesSelected) {
+      formRef.current.setFieldsValue({
+        section: sectionData?.map((item) => item.id),
+      });
+      setSectionIds(sectionData?.map((item) => item?.section_id));
+      setSectionMappingIds(sectionData?.map((item) => item?.id));
+      // }
     }
-  }, [allGradesSelected, sectionData]);
+  }, [sectionData]);
   return (
     <Layout>
       <div className='row'>
@@ -554,7 +540,6 @@ const CreateAnnouncement = () => {
                             showArrow={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
                             maxTagCount={2}
-                            allowClear={true}
                             dropdownMatchSelectWidth={false}
                             onSelect={(e) => {
                               handleSelectGrade(
@@ -565,7 +550,6 @@ const CreateAnnouncement = () => {
                             onDeselect={(e, value) => {
                               handleDeSelectGrade(value);
                             }}
-                            onClear={handleClearGrade}
                             filterOption={(input, options) => {
                               return (
                                 options.children
