@@ -1036,11 +1036,11 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Evaluation': {
-        history.push('/observation-report');
+        history.push('/observation-evalutaion');
         break;
       }
       case 'Observation Report': {
-        history.push('/pdf-table');
+        history.push('/observation-report');
         break;
       }
       // case 'Create Activity':{

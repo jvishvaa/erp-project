@@ -1584,7 +1584,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/observation'>
                               {({ match }) => <Observationarea match={match} />}
                             </Route>
-                            <Route path='/observation-report'>
+                            <Route path='/observation-evalutaion'>
                               {({ match }) => <Observationreport match={match} />}
                             </Route>
                             <Route exact path='/finance/student_shuffle'>
