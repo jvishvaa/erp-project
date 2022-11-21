@@ -45,10 +45,7 @@
 }
 
 .volume-card:hover {
-  border: 1px outset #1b4ccb !important;
-}
-.th-icon .anticon-eye > svg {
-  vertical-align: baseline !important;
+  border: 1px solid #1b4ccb !important;
 }
 .th-button {
   border: 1px solid #1b4ccb !important;
@@ -70,6 +67,15 @@
 .period-card:hover {
   border: 1px solid #1b4ccb !important;
 }
+.highlighted-period {
+   border: 3px solid #1b4ccb !important;
+}
 .th-divider .ant-divider-horizontal.ant-divider-with-text {
   margin: 5px 0px !important;
+}
+.th-truncate{
+    -webkit-line-clamp:3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

@@ -15,6 +15,7 @@ import Doodle from 'v2/FaceLift/Doodle/Doodle';
 import { message } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
+import DiaryReport from '../myComponents/DiaryReport';
 
 const TeacherdashboardNew = () => {
   const [todaysAttendance, setTodaysAttendance] = useState([]);
@@ -60,6 +61,7 @@ const TeacherdashboardNew = () => {
             <HomeWorkReport />
             <CurriculumCompletion />
             <Shortcut />
+            {/* <DiaryReport /> */}
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <Assessment />

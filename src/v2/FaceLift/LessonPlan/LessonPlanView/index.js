@@ -11,6 +11,7 @@ const LessonPlanView = (props) => {
   const history = useHistory();
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showTab, setShowTab] = useState();
+  console.log('showTab', showTab, history.location.state);
   const [volumeId, setVolumeId] = useState(history?.location?.state?.volumeID);
   const [volumeName, setVolumeName] = useState(history?.location?.state?.volumeName);
   let isStudent = window.location.pathname.includes('student-view');
@@ -55,7 +56,7 @@ const LessonPlanView = (props) => {
         {' '}
         <FeeReminder />
         <div className='row py-3 px-2'>
-          <div className='col-md-8 th-bg-grey' style={{ zIndex: 2 }}>
+          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-grey th-18 th-pointer'

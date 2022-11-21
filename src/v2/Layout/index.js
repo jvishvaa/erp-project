@@ -1036,11 +1036,11 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Evaluation': {
-        history.push('/observation-report');
+        history.push('/observation-evalutaion');
         break;
       }
       case 'Observation Report': {
-        history.push('/pdf-table');
+        history.push('/observation-report');
         break;
       }
       // case 'Create Activity':{
@@ -1074,7 +1074,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'My Blogs': {
-        history.push('/blog/studentview');
+        history.push('/blog/wall/redirect');
         break;
       }
       case 'Blog Activity': {
@@ -1083,6 +1083,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Create Activity Type': {
         history.push('/blog/createactivitytype');
+        break;
+      }
+      case 'Blog Wall': {
+        history.push('/blog/wall');
         break;
       }
       case 'Blog': {

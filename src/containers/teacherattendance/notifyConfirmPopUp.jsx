@@ -10,7 +10,7 @@ import Loader from '../../components/loader/loader';
 
 
 const NotifyConfirmPopUp = (props) => {
-  const { openModal, handleNotifyPopUp,startDate,sectionId,rolesId } = props;
+  const { openModal, handleNotifyPopUp,startDate,sectionId,rolesId,NotificationType } = props;
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = React.useState(false);
 
@@ -23,6 +23,7 @@ const NotifyConfirmPopUp = (props) => {
       section_mapping_id:sectionMappingId,
       date : startDate,
       role : rolesId,
+      status : NotificationType === "Absent" ? 0 : 1
     }
     axiosInstance.post(`${endpoints.academics.notifyAttendance}`,payLoad).then((result)=>{
       if(result.data.status_code === 200){
@@ -50,7 +51,7 @@ const NotifyConfirmPopUp = (props) => {
       />
       <DialogTitle id='draggable-dialog-title'>
         <Grid style={{ marginTop: 15 }}>
-          Share the attendance status for the students marked <b>"Absent"</b> ?
+          Share the attendance status for the students marked <b>"{NotificationType}"</b> ?
         </Grid>
       </DialogTitle>
       <Grid container justifyContent='center' style={{ marginBottom: 20 }}>

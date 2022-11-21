@@ -8,7 +8,7 @@ import {
   message,
   Collapse,
   Button,
-  Radio,
+  Modal,
   Spin,
   Tooltip,
 } from 'antd';
@@ -17,7 +17,7 @@ import {
   UpOutlined,
   CloseOutlined,
   CaretRightOutlined,
-  DownloadOutlined,
+  RightCircleOutlined,
   RightOutlined,
   EyeFilled,
 } from '@ant-design/icons';
@@ -29,6 +29,7 @@ import audioFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/audiofile.sv
 import textFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/textfile.svg';
 import excelFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/excelfile.svg';
 import imageFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/imagefile.svg';
+import tickIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/greenTick.svg';
 import defaultFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/defaultfile.svg';
 import axiosInstance from 'axios';
 import axios from 'v2/config/axios';
@@ -36,10 +37,10 @@ import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import '../index.css';
 import { useHistory } from 'react-router-dom';
-import fileDownload from 'js-file-download';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import _ from 'lodash';
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -100,7 +101,6 @@ const TableView = (props) => {
   const [boardId, setBoardId] = useState('');
   const [volumeName, setVolumeName] = useState([]);
   const [moduleListData, setModuleListData] = useState([]);
-  const [selectedModuleId, setSelectedModuleId] = useState([]);
   const [annualPlanData, setAnnualPlanData] = useState([]);
   const [keyConceptsData, setKeyConceptsData] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState([]);
@@ -109,11 +109,12 @@ const TableView = (props) => {
   const [completeSections, setCompleteSections] = useState([]);
   const [showError, setShowError] = useState(false);
   const [loadingDrawer, setLoadingDrawer] = useState(false);
-  const [completionCheck, setCompletionCheck] = useState(false);
   const [currentPeriodId, setCurrentPeriodId] = useState('');
   const [currentPeriodPanel, setCurrentPeriodPanel] = useState(0);
   let isStudent = window.location.pathname.includes('student-view');
   const [YCPData, setYCPData] = useState([]);
+  const [nextPeriodDetails, setNextPeriodDetails] = useState();
+  const [showInfoModal, setShowInfoModal] = useState(false);
 
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -137,7 +138,9 @@ const TableView = (props) => {
   const closeSectionList = () => {
     setShowSection(false);
   };
-
+  const closeshowInfoModal = () => {
+    setShowInfoModal(false);
+  };
   const fetchGradeData = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
@@ -182,25 +185,6 @@ const TableView = (props) => {
       })
       .catch((error) => {
         message.error(error.message);
-      });
-  };
-  const fetchModuleListData = (params = {}) => {
-    setLoading(true);
-    axios
-      .get(`academic/get-module-list/`, {
-        params: { ...params },
-      })
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setModuleListData(result?.data?.result?.module_list);
-          setLoading(false);
-        } else {
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
       });
   };
   const fetchAnnualPlanData = (params = {}) => {
@@ -252,7 +236,6 @@ const TableView = (props) => {
       acad_session_id: selectedBranch?.id,
       topic_id: data?.key_concept_id,
       chapter_id: data?.chapter_id,
-      is_kit_activity: data?.is_kit_activity,
     };
     axios
       .get(`academic/annual-plan/chapter-topic-wise-lp-data/`, {
@@ -261,6 +244,15 @@ const TableView = (props) => {
       .then((result) => {
         if (result?.data?.status === 200) {
           setResourcesData(result?.data?.data);
+          if (!isStudent) {
+            let index = result?.data?.data.findIndex(
+              (item) => item.next_to_be_taught == true
+            );
+            index == -1 ? setCurrentPeriodPanel(0) : setCurrentPeriodPanel(index);
+          } else {
+            let index = result?.data?.data.findIndex((item) => item.last_taught == true);
+            index == -1 ? setCurrentPeriodPanel(0) : setCurrentPeriodPanel(index);
+          }
           setLoadingDrawer(false);
         } else {
           setLoadingDrawer(false);
@@ -304,23 +296,6 @@ const TableView = (props) => {
     setVolumeId('');
   };
 
-  const handleModule = (each) => {
-    if (each.length === 1 && each.some((item) => item.value === 'All')) {
-      const all = moduleListData.slice();
-      const allModules = all.map((item) => item.id).join(',');
-      setSelectedModuleId(allModules);
-    } else if (each.some((item) => item.value === 'All') && each.length > 1) {
-      message.error('Either select all modules or other options');
-      return;
-    } else {
-      setSelectedModuleId(each.map((item) => item.value).join(','));
-    }
-  };
-
-  const handleClearModule = () => {
-    setSelectedModuleId('');
-  };
-
   const gradeOptions = gradeData?.map((each) => {
     return (
       <Option key={each?.id} value={each.grade_id}>
@@ -342,13 +317,7 @@ const TableView = (props) => {
       </Option>
     );
   });
-  const moduleOptions = moduleListData?.map((each) => {
-    return (
-      <Option key={each?.id} value={each.id}>
-        {each?.lt_module_name}
-      </Option>
-    );
-  });
+
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
     setKeyConceptsData([]);
@@ -378,16 +347,20 @@ const TableView = (props) => {
           // grade_subject: item.central_grade_subject_map_id,
           central_gs_mapping_id: item.central_grade_subject_map_id,
           period_id: item?.id,
-          section_mapping_id: [section],
+          section_mapping_id: [section?.id],
+          fetch_upcoming_period: true,
         };
         axios
           .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
               if (index == completeSections?.length - 1) {
-                setCompleteSections([]);
                 closeSectionList();
-                fetchLessonResourcesData(selectedKeyConcept);
+                setShowInfoModal(true);
+                // fetchLessonResourcesData(selectedKeyConcept);
+                if (!_.isEmpty(res.data.result)) {
+                  setNextPeriodDetails(res.data.result);
+                }
               }
             }
           })
@@ -398,6 +371,30 @@ const TableView = (props) => {
       });
     } else {
       setShowError(true);
+    }
+  };
+
+  const handleNextPeriodResource = () => {
+    setCompleteSections([]);
+    closeshowInfoModal();
+    if (nextPeriodDetails) {
+      fetchLessonResourcesData(nextPeriodDetails);
+
+      if (nextPeriodDetails?.volume_id !== volumeId) {
+        formRef.current.setFieldsValue({
+          volume: nextPeriodDetails.volume_name,
+        });
+        setVolumeId(nextPeriodDetails?.volume_id);
+        setVolumeName(nextPeriodDetails.volume_name);
+      } else if (nextPeriodDetails?.chapter_id !== selectedChapter.chapter_id) {
+        setSelectedChapter(nextPeriodDetails);
+      } else if (
+        nextPeriodDetails?.key_concept_id !== selectedKeyConcept.key_concept_id
+      ) {
+        setSelectedChapter(nextPeriodDetails);
+      } else {
+        setCurrentPeriodPanel(currentPeriodPanel + 1);
+      }
     }
   };
 
@@ -448,30 +445,6 @@ const TableView = (props) => {
     }
   }, [props.showTab]);
 
-  // useEffect(() => {
-  //   if (gradeId && volumeId && subjectId) {
-  //     formRef.current.setFieldsValue({
-  //       module: ['All'],
-  //     });
-  //     fetchModuleListData({
-  //       subject_id: subjectId,
-  //       volume: volumeId,
-  //       academic_year: history?.location?.state?.centralAcademicYearID,
-  //       grade_id: gradeId,
-  //       branch_id: selectedBranch?.branch?.id,
-  //       board: history?.location?.state?.boardID,
-  //     });
-  //   }
-  // }, [subjectId, volumeId]);
-
-  // useEffect(() => {
-  //   // if (selectedModuleId.length == 0) {
-  //   const all = moduleListData.slice();
-  //   const allModules = all.map((item) => item.id).join(',');
-  //   setSelectedModuleId(allModules);
-  //   // }
-  // }, [moduleListData]);
-
   useEffect(() => {
     if (subjectId && volumeId) {
       fetchAnnualPlanData({
@@ -521,11 +494,8 @@ const TableView = (props) => {
                 placement='bottom'
                 title={<span>{row.key_concept__topic_name}</span>}
               >
-                {/* <div className='text-truncate th-width-95 text-center'> */}
                 {index + 1}. {row.key_concept__topic_name}
-                {/* </div> */}
               </Tooltip>
-              {/* </div> */}
             </div>
           );
         },
@@ -689,40 +659,6 @@ const TableView = (props) => {
                 </Select>
               </Form.Item>
             </div>
-
-            {/* <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
-                <div className='text-left pb-2'>Module</div>
-                <Form.Item name='module'>
-                  <Select
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    // placeholder={<span className='th-black-1'>All</span>}
-                    showSearch
-                    mode='multiple'
-                    maxTagCount={2}
-                    // defaultValue={'All'}
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => {
-                      handleModule(value);
-                    }}
-                    onClear={handleClearModule}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={false}
-                    placement='bottomRight'
-                    showArrow={true}
-                    suffixIcon={<DownOutlined className='th-grey' />}
-                  >
-                    <Option key='0' value='All'>
-                      All
-                    </Option>
-                    {moduleOptions}
-                  </Select>
-                </Form.Item>
-              </div> */}
           </div>
         </Form>
       </div>
@@ -849,8 +785,7 @@ const TableView = (props) => {
           ) : resourcesData.length > 0 ? (
             resourcesData.map((item, i) => (
               <Collapse
-                defaultActiveKey={currentPeriodPanel}
-                accordion={true}
+                activeKey={currentPeriodPanel}
                 expandIconPosition='right'
                 bordered={true}
                 className='th-br-6 my-2 th-bg-grey th-collapse'
@@ -858,19 +793,17 @@ const TableView = (props) => {
                 expandIcon={({ isActive }) => (
                   <CaretRightOutlined rotate={isActive ? 90 : 0} />
                 )}
+                onChange={() => setCurrentPeriodPanel(i)}
               >
                 <Panel
+                  collapsible={true}
                   header={
                     <div className='row'>
                       <div className='th-black-1 px-0 col-12 pl-0'>
                         <div className='row justify-content-between'>
                           <span className='th-fw-500'>{item.period_name} </span>
-                          {/* <span>:&nbsp;</span> */}
                         </div>
                       </div>
-                      {/* <div className='th-black-1 th-fw-600 col-9 px-0'>
-                        {selectedKeyConcept.key_concept__topic_name}
-                      </div> */}
                     </div>
                   }
                   key={i}
@@ -931,11 +864,16 @@ const TableView = (props) => {
                         ) {
                         } else {
                           let fullName = each?.split(
-                            `${files.document_type.toLowerCase()}/`
-                          );
-                          let fileName = fullName
-                            ? fullName[fullName?.length - 1]?.split('.')
-                            : null;
+                            `${files?.document_type.toLowerCase()}/`
+                          )[1];
+                          let textIndex = fullName
+                            ?.split('_')
+                            .indexOf(fullName.split('_').find((item) => isNaN(item)));
+                          let displayName = fullName
+                            .split('_')
+                            .slice(textIndex)
+                            .join('_');
+                          let fileName = displayName ? displayName.split('.') : null;
                           let file = fileName ? fileName[fileName?.length - 2] : '';
                           let extension = fileName ? fileName[fileName?.length - 1] : '';
                           return (
@@ -943,10 +881,10 @@ const TableView = (props) => {
                               className='row mt-2 py-2 align-items-center'
                               style={{ border: '1px solid #d9d9d9' }}
                             >
-                              <div className='col-3'>
+                              <div className='col-2'>
                                 <img src={getFileIcon(extension)} />
                               </div>
-                              <div className='col-9 px-0 th-pointer'>
+                              <div className='col-10 px-0 th-pointer'>
                                 <a
                                   onClick={() => {
                                     openPreview({
@@ -965,7 +903,9 @@ const TableView = (props) => {
                                   target='_blank'
                                 >
                                   <div className='row align-items-center'>
-                                    <div className='col-10'>{file}</div>
+                                    <div className='col-10 px-0'>
+                                      {files.document_type}_{file}
+                                    </div>
                                     <div className='col-2'>
                                       <EyeFilled />
                                     </div>
@@ -1038,16 +978,16 @@ const TableView = (props) => {
                           ) : (
                             <Button
                               type={
-                                completeSections.includes(each.id) ? 'primary' : 'default'
+                                completeSections.includes(each) ? 'primary' : 'default'
                               }
                               onClick={() => {
-                                if (completeSections.includes(each.id)) {
-                                  const index = completeSections.indexOf(each.id);
+                                if (completeSections.includes(each)) {
+                                  const index = completeSections.indexOf(each);
                                   const newFileList = completeSections.slice();
                                   newFileList.splice(index, 1);
                                   setCompleteSections(newFileList);
                                 } else {
-                                  setCompleteSections([...completeSections, each.id]);
+                                  setCompleteSections([...completeSections, each]);
                                 }
                               }}
                             >
@@ -1056,19 +996,6 @@ const TableView = (props) => {
                           )}
                         </div>
                       ))}
-                      {/* <div className='row mt-2 justify-content-end'>
-                        <div
-                          className='col-4 px-2 py-1 th-br-4 mr-2'
-                          style={{ border: '1px solid #d9d9d9' }}
-                        >
-                          <Radio
-                            onChange={handleCompletionCheck}
-                            checked={completionCheck}
-                          >
-                            Completed
-                          </Radio>
-                        </div>
-                      </div> */}
                       <div
                         className='row justify-content-end py-2 mt-2 text-center'
                         style={{ borderTop: '1px solid #d9d9d9' }}
@@ -1077,14 +1004,12 @@ const TableView = (props) => {
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}
                           onClick={() => setCompleteSections([])}
-                          // onClick={() => closeSectionList()}
                         >
                           Clear
                         </div>
                         <div
                           className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
                           onClick={() => {
-                            setCurrentPeriodPanel(i);
                             markPeriodComplete(item);
                           }}
                         >
@@ -1112,6 +1037,82 @@ const TableView = (props) => {
             </div>
           )}
         </Drawer>
+      </div>
+      <div>
+        <Modal
+          visible={showInfoModal}
+          onCancel={closeshowInfoModal}
+          className='th-upload-modal'
+          centered
+          footer={[]}
+        >
+          <div className='row py-2'>
+            <div className='col-12 px-md-4 pt-3 th-fw-500 th-18 th-grey'>
+              <div className='row pl-md-5'>
+                <div
+                  style={{
+                    border: '2px solid #25A53F',
+                    borderRadius: '50%',
+                    width: 50,
+                    height: 50,
+                  }}
+                  className='row mr-3'
+                >
+                  <img src={tickIcon} height={50} className='mr-5' />
+                </div>
+                <div>
+                  Lesson is completed for <br />
+                  {completeSections.length > 1 ? 'Sections' : 'Section'}&nbsp;
+                  <span className='th-black-1 th-fw-600 '>
+                    {completeSections
+                      ?.map((item) => item.section__section_name.slice(-1).toUpperCase())
+                      .join(', ')}
+                  </span>
+                </div>
+              </div>
+            </div>
+            {nextPeriodDetails ? (
+              <div className='col-12 pt-2 th-16'>
+                View Resources for Upcoming Class
+                <div className='col-12 pl-2 th-truncate'>
+                  <div>
+                    <div className='text-truncate'>
+                      {nextPeriodDetails?.period_name},
+                      {nextPeriodDetails?.key_concept__topic_name}{' '}
+                    </div>
+                    <div
+                      className='th-grey'
+                      style={{
+                        fontStyle: 'italic',
+                      }}
+                    >
+                      {nextPeriodDetails?.chapter__chapter_name}
+                      {boardFilterArr.includes(window.location.host)
+                        ? ',' + nextPeriodDetails?.chapter__lt_module__lt_module_name
+                        : null}
+                    </div>
+                  </div>
+                </div>
+                {/* <span>
+                  : {nextPeriodDetails?.period_name} {'> '}
+                  {nextPeriodDetails?.key_concept__topic_name} {'> '}
+                  {nextPeriodDetails?.chapter__chapter_name} {'> '}
+                  {boardFilterArr.includes(window.location.host)
+                    ? nextPeriodDetails?.chapter__lt_module__lt_module_name + ' > '
+                    : null}
+                  {nextPeriodDetails?.volume_name}
+                </span> */}
+                <Button
+                  type='default'
+                  onClick={handleNextPeriodResource}
+                  className='ml-3 th-primary th-bg-grey'
+                >
+                  Resources <RightCircleOutlined />
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        </Modal>
       </div>
     </div>
   );
