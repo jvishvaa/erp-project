@@ -22,6 +22,12 @@ import DailyDairy from '../daily-dairy/dairy-card/index';
 import ViewMoreDailyDairyCard from '../daily-dairy/view-more-card/index';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 
+const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -390,7 +396,7 @@ const GeneralDairyList = () => {
               </div>
             )}
           </Paper>
-          {user_level == 13 || user_level == 12 ? (
+          {(user_level == 13 || user_level == 12) && isOrchids ? (
             <div
               className='col-md-12 text-right th-pointer'
               onClick={() => setShowGrievanceModal(true)}

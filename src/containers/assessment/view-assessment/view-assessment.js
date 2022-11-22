@@ -15,6 +15,13 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import axiosInstance from '../../../config/axios';
 import './view-assessment.css';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+
+const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
+
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -259,7 +266,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
               </div>
             )}
           </Grid>
-          {user_level == 13 || user_level == 12 ? (
+          {(user_level == 13 || user_level == 12) && isOrchids ? (
             <div
               className='col-md-12 text-right th-pointer'
               onClick={() => setShowGrievanceModal(true)}
