@@ -24,6 +24,13 @@ import moment from 'moment';
 import Filter from '../filter.jsx';
 import { Close } from '@material-ui/icons';
 import ViewBook from '../chapterpage/ViewBook';
+import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+
+const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,6 +80,8 @@ const AllBooksPage = () => {
   const [environment, setenvironment] = useState('');
   const [type, settype] = useState('');
   const [bookName, setbookName] = useState('');
+  const [showGrievanceModal, setShowGrievanceModal] = useState(false);
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
@@ -92,6 +101,9 @@ const AllBooksPage = () => {
       subDomain = hostSplitArray[0];
     }
     return subDomain;
+  };
+  const handleCloseGrievanceModal = () => {
+    setShowGrievanceModal(false);
   };
 
   useEffect(() => {
@@ -260,7 +272,6 @@ const AllBooksPage = () => {
             />
           </Grid>
         </Grid>
-
         <Paper className={classes.root}>
           <Grid
             container
@@ -375,7 +386,24 @@ const AllBooksPage = () => {
             )}
           </Grid>
         </Paper>
-
+        {(user_level == 13 || user_level == 12) && isOrchids ? (
+          <div
+            className='col-md-12 text-right th-pointer'
+            onClick={() => setShowGrievanceModal(true)}
+          >
+            Not able to see the Ibooks?
+            <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+              Raise your query
+            </span>
+          </div>
+        ) : null}
+        {showGrievanceModal && (
+          <GrievanceModal
+            title={'IBook Related Query'}
+            showGrievanceModal={showGrievanceModal}
+            handleClose={handleCloseGrievanceModal}
+          />
+        )}
         <Dialog fullScreen open={open} style={{ zIndex: '10000' }}>
           <Grid container>
             <Grid item sm={12}>
@@ -414,7 +442,6 @@ const AllBooksPage = () => {
             </Grid>
           </Grid>
         </Dialog>
-
         {booksData?.length > 0 && (
           <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
             <Pagination

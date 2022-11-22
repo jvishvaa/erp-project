@@ -94,6 +94,7 @@ const BlogReview = () => {
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [branchList, setBranchList] = useState([]);
+  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
   const newBranches = JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
   const user_level = dataes?.user_level;
@@ -124,9 +125,10 @@ const BlogReview = () => {
   // }, [history]);
   useEffect(() =>{
     if(moduleId){
+      let branchIds = branch_update_user?.branches?.map((item) => item?.id)
       setLoading(true)
       axios
-      .get(`${endpoints.newBlog.activityBranch}`,
+      .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
       {
         headers:{
           'X-DTS-HOST' : X_DTS_HOST,
@@ -323,12 +325,12 @@ function callApi(api,key){
             // background: '#F1F4F6',
             width: '96%',
             height: 'auto',
-            marginLeft: '19px',
+            // marginLeft: '19px',
             paddingBottom: '9px',
             paddingTop: '6px',
           }}
         >
-          <div style={{ marginLeft: '29px', marginTop: '9px' }}>
+          <div style={{ marginLeft: '22px', marginTop: '9px' }}>
             <div style={{ display: 'flex' }}>
               <div style={{ fontSize: '16px', fontWeight: '400' }}>
                 Topic Name:{' '}
@@ -477,14 +479,15 @@ function callApi(api,key){
                     className={value === 3 ? classes.tabsFont : classes.tabsFont1}
                   />
 
-                  { user_level==11 ?"":
-                  <Tab
-                    label='Published'
-                    classes={{
-                      selected: classes.selected1,
-                    }}
-                    className={value === 4 ? classes.tabsFont : classes.tabsFont1}
-                  />
+                  {(dataes?.user_level == '11' || dataes?.user_level == '8') ?  "" : (
+                    <Tab
+                      label='Published'
+                      classes={{
+                        selected: classes.selected1,
+                      }}
+                      className={value === 4 ? classes.tabsFont : classes.tabsFont1}
+                    />
+                  )
                 }
                   
                 
@@ -501,7 +504,6 @@ function callApi(api,key){
             )}
           </div>
         </div>
-        {console.log(value,'kl 33')}
         {value == 0 && <PendingReview  selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag} />}
         {value == 1 && <NotSubmitted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>}
 

@@ -49,6 +49,7 @@ import { Button, Select, Switch } from 'antd';
 import './styles.scss';
 import { IsV2Checker } from 'v2/isV2Checker';
 import { isMsAPI } from 'utility-functions';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
 
@@ -385,6 +386,34 @@ const Appbar = ({ children, history, ...props }) => {
       });
     return result;
   };
+
+  const getActivitySession = () => {
+    // setLoading(true)
+    axios
+      .post(
+        `${endpoints.newBlog.activitySessionLogin}`,
+        {},
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+            Authorization: `${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        // setActivityStorage(response.data.result);
+        localStorage.setItem(
+          'ActivityManagementSession',
+          JSON.stringify(response?.data?.result)
+        );
+        // setLoading(false)
+      });
+  };
+
+  useEffect(() =>{
+    getActivitySession()
+
+  },[])
 
   const handleSwitchChange = (item) => {
     sessionStorage.removeItem('branch_list');

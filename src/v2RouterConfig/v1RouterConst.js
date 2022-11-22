@@ -354,7 +354,11 @@ import TeacherAttendance from 'containers/teacherattendance/teacher';
 import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
 import Observation from 'containers/observation/observation';
 import Observationarea from 'containers/observation/observation-area';
-import Observationreport from 'containers/observation/observation-report';
+import ObservationV2 from 'v2/FaceLift/TeacherObservation/Observation';
+import ObservationArea from 'v2/FaceLift/TeacherObservation/ObservationArea';
+import ObservationEvaluation from 'v2/FaceLift/TeacherObservation/Evaluation';
+import ObservationreportPreview from 'v2/FaceLift/TeacherObservation/ObservationReport/PreviewObservationReport';
+import Observationreport from 'v2/FaceLift/TeacherObservation/ObservationReport';
 import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel';
 import ERPSystemConfig from 'containers/master-management/erp-system-config';
 import AcademicCalendar from 'containers/academicCalendar/index';
@@ -424,7 +428,9 @@ import EventsMark from 'containers/attendance/eventsmark';
 import AdminViewBlog from '../containers/newBlog/AdminViewBlog';
 import AdminCreateBlog from '../containers/newBlog/AdminCreateBlog';
 import AdminPublishBlogShort from '../containers/newBlog/Shortlisted';
-// import BlogWall from '../containers/blog/Admin/BlogWall';
+import BlogWall from 'containers/newBlog/BlogWall';
+import BlogWallRedirect from 'containers/newBlog/BlogRedirection';
+import PublicSpeakingWall from 'containers/newBlog/PublicSpeaking';
 import StudentViewBlog from '../containers/newBlog/StudentSideBlog';
 import NewEditBlog from '../containers/newBlog/StudentBlog';
 import CreateActivityType from '../containers/newBlog/CreateActivityType';
@@ -1218,12 +1224,19 @@ const V1Router = [
     {({ match }) => <TeacherAttendanceVerify match={match} />}
   </Route>,
   <Route exact path='/observation-area'>
-    {({ match }) => <Observation match={match} />}
+    {({ match }) => <ObservationArea match={match} />}
   </Route>,
-  <Route path='/observation'>{({ match }) => <Observationarea match={match} />}</Route>,
+  <Route path='/observation'>{({ match }) => <ObservationV2 match={match} />}</Route>,
+  <Route path='/observation-evalutaion'>
+    {({ match }) => <ObservationEvaluation match={match} />}
+  </Route>,
   <Route path='/observation-report'>
     {({ match }) => <Observationreport match={match} />}
   </Route>,
+  <Route path='/observation-report-preview'>
+    {({ match }) => <ObservationreportPreview match={match} />}
+  </Route>,
+
   <Route exact path='/finance/student_shuffle'>
     {({ match }) => <StudentShuffleReq match={match} alert={alert} />}
   </Route>,
@@ -1417,9 +1430,15 @@ const V1Router = [
   <Route exact path='/blog/create'>
     {({ match }) => <AdminCreateBlog match={match} />}
   </Route>,
-  // <Route exact path='/blog/wall'>
-  //   {({ match }) => <BlogWall match={match} />}
-  // </Route>,
+  <Route exact path='/blog/wall'>
+    {({ match }) => <BlogWall match={match} />}
+  </Route>,
+    <Route exact path='/blog/wall/redirect'>
+    {({ match }) => <BlogWallRedirect match={match} />}
+  </Route>,
+      <Route exact path='/blog/publicspeaking'>
+      {({ match }) => <PublicSpeakingWall match={match} />}
+    </Route>,
   <Route exact path='/blog/short'>
     {({ match }) => <AdminPublishBlogShort match={match} />}
   </Route>,

@@ -74,7 +74,7 @@
   margin: 5px 0px !important;
 }
 .th-truncate{
-    -webkit-line-clamp:2;
+    -webkit-line-clamp:3;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;

@@ -317,6 +317,20 @@ body {
 .th-upload-modal .ant-modal-close-x {
   color: #ffffff !important;
 }
+
+
+.th-upload-modal-grey-close .ant-modal-header {
+  background-color: #1b4ccb !important;
+  border-radius: 10px 10px 0px 0px !important;
+}
+.th-upload-modal-grey-close .ant-modal-title {
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+.th-upload-modal-grey-close .ant-modal-close-x {
+  color: #868686 !important
+}
+
 .slick-next:before,
 .slick-prev:before {
   color: #1b4ccb !important;
@@ -333,3 +347,7 @@ body {
 svg {
   vertical-align: baseline !important;
 } 
+.ant-btn-primary {
+    border-color: #1b4ccb;
+    background: #1b4ccb;
+}

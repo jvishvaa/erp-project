@@ -614,11 +614,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name: 'Evaluation',
-      Path: '/observation-report',
+      Path: '/observation-evalutaion',
     },
     {
       name: 'Observation Report',
-      Path: '/pdf-table',
+      Path: '/observation-report',
     },
     {
       name: 'Create Activity',
