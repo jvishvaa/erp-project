@@ -42,6 +42,12 @@ import MobileIconScreen from './student-homework-mobileScreen-Icon';
 import MobileDatepicker from './student-homework-mobile-datepicker';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 
+const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
+    
 const useStyles = makeStyles((theme) => ({
   root: {
     ...theme.homeworkTableWrapper,
@@ -803,7 +809,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             )}
           </div>
         </div>
-        {user_level == 13 || user_level == 12 ? (
+        {(user_level == 13 || user_level == 12) && isOrchids? (
           <div
             className='col-md-12 text-right th-pointer'
             onClick={() => setShowGrievanceModal(true)}
