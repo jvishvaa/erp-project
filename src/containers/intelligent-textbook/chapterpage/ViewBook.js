@@ -28,7 +28,7 @@ const ViewBook = (props) => {
 
   const { bookId, chapterId, bookUid, localStorageName, environment, type } = props;
   let bookPath = `${environment}/${type}/`;
-  let bookUrl = `${bookUid}/index.html#/reader/chapter/`;
+  let bookUrl = `${bookUid}/index.html#/reader/`;
   let localStoreName = `note_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
   let bookmarksLocalStoreName = `bookmark_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
   let highlightsLocalstoreName = `hlight_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
@@ -424,7 +424,7 @@ const ViewBook = (props) => {
       )}
       <div style={{}}>
         <iframe
-          src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}?vi=0`}
+          src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}`}
           id='bookReader'
           className='bookReader'
           style={{
