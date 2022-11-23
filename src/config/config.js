@@ -49,8 +49,8 @@ const dev = {
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
     baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
-    // newBlogURL: 'https://activities-ms.dev-k8.letseduvate.com',
-    newBlogURL:'https://activities-revamp.dev-k8.letseduvate.com',
+    newBlogURL: 'https://activities-ms.dev-k8.letseduvate.com',
+    // newBlogURL:'https://activities-revamp.dev-k8.letseduvate.com',
     erpBlogURL:'https://dev.olvorchidnaigaon.letseduvate.com/mb_droid/'
   },
 };
