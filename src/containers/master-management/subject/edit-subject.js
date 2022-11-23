@@ -85,7 +85,7 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
             />
           </Grid>
         </Grid>
-        <Grid container spacing={5}>
+        {/* <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
             <TextField
               id='description'
@@ -122,7 +122,7 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
               }
             />
           </Grid>
-        </Grid>
+        </Grid> */}
       </div>
 
       <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '10px' }}>

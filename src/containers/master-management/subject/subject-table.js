@@ -66,6 +66,13 @@ const columns = [
     labelAlign: 'center',
   },
   {
+    id: 'subject_slag',
+    label: 'Eduvate Subject Name',
+    minWidth: 100,
+    align: 'center',
+    labelAlign: 'center',
+  },
+  {
     id: 'created_by',
     label: 'Created by',
     minWidth: 100,
@@ -115,6 +122,7 @@ const SubjectTable = () => {
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [ centralSubjects , setCentralSubjects ] = useState()
 
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
@@ -174,6 +182,18 @@ const SubjectTable = () => {
     setOpenDeleteModal(true);
   };
 
+  const getCentralSubjects = () => {
+    axiosInstance
+    .get(`${endpoints.masterManagement.centralSubjects}`)
+    .then((result) => {
+     console.log(result);
+     setCentralSubjects(result?.data?.result)
+    })
+    .catch((error) => {
+      setAlert('error', error?.response?.data.message || error?.response?.data.msg);
+    });
+  }
+
   const handleCloseDeleteModal = () => {
     setOpenDeleteModal(false);
   };
@@ -201,6 +221,7 @@ const SubjectTable = () => {
       .catch((error) => {
         setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
       });
+      getCentralSubjects()
   }, [goBackFlag, delFlag, page, searchSubject]);
 
   return (
@@ -224,7 +245,7 @@ const SubjectTable = () => {
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} />
+          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack}  centralSubjects={centralSubjects} />
         )}
         {!tableFlag && !addFlag && editFlag && (
           <EditSubject
@@ -301,6 +322,9 @@ const SubjectTable = () => {
                           <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                             <TableCell className={classes.tableCell}>
                               {subject?.subject_name}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {subject?.subject_slag}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
                               {subject?.created_by}

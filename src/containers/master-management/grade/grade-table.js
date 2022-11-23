@@ -31,6 +31,7 @@ import EditGrade from './edit-grade';
 import '../master-management.css';
 import Loading from '../../../components/loader/loader';
 import GradeCard from './grade-card';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   { id: 'grade_name', label: 'Grade', minWidth: 100 },
-  { id: 'grade_by', label: 'Type', minWidth: 100 },
+  { id: 'grade_by', label: 'Eduvate Grade Name', minWidth: 100 },
   { id: 'created_by', label: 'Created by', minWidth: 100 },
   {
     id: 'actions',
@@ -83,6 +84,7 @@ const GradeTable = () => {
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
   const [goBackFlag, setGoBackFlag] = useState(false);
+  const [ centralGrades , setCentralGrades ] = useState()
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -172,7 +174,20 @@ const GradeTable = () => {
       .catch((error) => {
         setAlert('error', error?.response?.data.message || error?.response?.data.msg);
       });
+      getCentralGrades()
   }, [delFlag, goBackFlag, page, searchGrade]);
+
+  const getCentralGrades = () => {
+    axiosInstance
+    .get(`${endpoints.masterManagement.centralGrades}`)
+    .then((result) => {
+     console.log(result);
+     setCentralGrades(result?.data?.result)
+    })
+    .catch((error) => {
+      setAlert('error', error?.response?.data.message || error?.response?.data.msg);
+    });
+  }
 
   return (
     <>
@@ -190,7 +205,7 @@ const GradeTable = () => {
           }
         />
         {!tableFlag && addFlag && !editFlag && (
-          <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack} />
+          <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack} centralGrades={centralGrades} />
         )}
         {!tableFlag && !addFlag && editFlag && (
           <EditGrade

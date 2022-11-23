@@ -71,7 +71,7 @@ const EditGrade = ({ id, name, type, handleGoBack, setLoading }) => {
             </abbr>
           </Grid>
         </Grid>
-        <Grid container spacing={5}>
+        {/* <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
             <abbr title={gradeType} style={{ textDecoration: 'none' }}>
               <TextField
@@ -88,7 +88,7 @@ const EditGrade = ({ id, name, type, handleGoBack, setLoading }) => {
               />
             </abbr>
           </Grid>
-        </Grid>
+        </Grid> */}
       </div>
       <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '10px' }}>
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
