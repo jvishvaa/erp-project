@@ -940,6 +940,7 @@ export default {
     blogRedirectApi : `${newBlogURL}/api/activity_type_count/`,
     subActivityListApi : `${newBlogURL}/api/activity_types/`,
     physicalActivityListApi : `${newBlogURL}/api/get_activities/`,
+    physicalAddRating:`${newBlogURL}/api/student_performance/`, 
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

@@ -226,7 +226,7 @@ const PhysicalActivity = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [subActivityId,setSubActivityId] = useState('')
-  const sudActId = history.location.state.subActiveId
+  const [sudActId,setSubActId] = useState(history?.location?.state?.subActiveId);
   const [subActivityListData,setSubActivityListData] = useState([])
 
   let boardFilterArr = [
@@ -439,22 +439,23 @@ const PhysicalActivity = () => {
 
   useEffect(()=>{
     getAssinged()
-  },[currentPageAssigned])
+  },[currentPageAssigned,sudActId,boardId])
   const getAssinged = () => {
     // const branchIds = selectedBranch.map((obj) => obj.id);
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.physicalActivityListApi}?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
-        {
+        `${endpoints.newBlog.physicalActivityListApi}?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${sudActId}`,{
+          params: {
+            ...(boardId ? {branch_ids: boardId} : {})
+          },
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
-        }
+        } 
       )
       .then((response) => {
         if(response?.status == 200){
-          debugger;
           setTotalCountAssigned(response?.data?.total)
           setTotalPagesAssigned(response?.data?.page_size)
           setCurrentPageAssigned(response?.data?.page)
@@ -734,10 +735,12 @@ const fetchSubActivityListData = () => {
   }
   const handleSubActivity =(e) => {
     setSubActivityId(e)
+    setSubActId(e)
   }
 
   const handleClearSubActivity = (e) => {
     setSubActivityId('')
+    
   }
   const handleBoard = (e) => {
     setBoardId(e);
@@ -836,8 +839,10 @@ const fetchSubActivityListData = () => {
                   <div className='mb-2 text-left'>Sub-Activity </div>
                   <Form.Item name='board'>
                     <Select
+                      // allowClear={true}
                       placeholder='Select Sub-Activity'
                       showSearch
+                      suffixIcon={<DownOutlined className='th-grey' />}
                       // defaultValue={'CBSE'}
                       optionFilterProp='children'
                       filterOption={(input, options) => {
@@ -908,9 +913,9 @@ const fetchSubActivityListData = () => {
               </div> */}
               <div className='col-md-2 col-6 pr-0 px-0 pl-md-3 mt-3' style={{display:'flex', paddingTop:'5px'}}>
                 <div  className='mb-2 text-left'>  </div>
-                <ButtonAnt type="primary" icon={<SearchOutlined />} size={'medium'}  onClick={handleSearch}>
+                {/* <ButtonAnt type="primary" icon={<SearchOutlined />} size={'medium'}  onClick={handleSearch}>
                   Search
-                </ButtonAnt>
+                </ButtonAnt> */}
               </div>
             </div>
           </Form>
@@ -976,7 +981,7 @@ const fetchSubActivityListData = () => {
                     <TableCell className={classes.tableCells}>{index + 1 + (Number(currentPageAssigned) -1) * limitAssigned}</TableCell>
                     <TableCell className={classes.tableCells}>{response.title}</TableCell>
                     <TableCell className={classes.tableCells}>
-                      {moment(response.issue_date).format('DD-MM-YYYY')}
+                      {moment(response?.created_at).format('DD-MM-YYYY')}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
                       {response?.creator?.name}
@@ -1093,9 +1098,9 @@ const fetchSubActivityListData = () => {
               <div style={{ paddingTop: '8px', fontSize: '16px' }}>
                 {previewData?.description}
               </div>
-              <div style={{ paddingTop: '28px', fontSize: '14px' }}>
+              {/* <div style={{ paddingTop: '28px', fontSize: '14px' }}>
                 <img src={previewData?.template?.template_path} width='50%' />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

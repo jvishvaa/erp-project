@@ -40,6 +40,7 @@ import React, {
   } from '@material-ui/core';
   
   import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import axiosInstance from 'config/axios';
   
   const DEFAULT_RATING = 0;
   const StyledRating = withStyles((theme) => ({
@@ -107,10 +108,18 @@ import React, {
     {id:1,name:"harsha", title:"nadjabjn"},
     {id:2,name:"gjadjga", title:'bajbjabdjabj'}
   ]
+
+  const dummyData1 = [
+    {user_id: 9709, name: "Vinay_04", erp_id: "2200367_AYI", level: 13},
+    {user_id: 9707, name: "Vinay_03", erp_id: "2200366_AYI", level: 13},
+    {user_id: 970, name: "Vinay_2", erp_id: "2200365_AYI", level: 13}
+  ]
   
   const PhysicalPendingReview = (props) => {
+    console.log(props,'FF 1')
     const history = useHistory();
     const [value, setValue] = useState();
+    const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
     const { setAlert } = useContext(AlertNotificationContext);
     const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
     console.log(ActivityId, 'ActivityId');
@@ -125,6 +134,8 @@ import React, {
     const [totalPages, setTotalPages] = useState(0);
     const [view, setView] = useState(false);
     const {user_id} = JSON.parse(localStorage.getItem('ActivityManagementSession'))
+    const [sourceData,setSourceData] = useState([])
+    const [targetData,setTargetData] = useState([])
   
     const handleCloseViewMore = () => {
       setView(false);
@@ -174,26 +185,6 @@ import React, {
   
     const [dataId, setDataId] = useState();
   
-    const confirmassign = () => {
-      let body = {
-        booking_detail: {
-          is_bookmarked: true,
-          is_reassigned: false,
-        },
-      };
-      setLoading(true)
-      axios
-        .put(`${endpoints.newBlog.activityReview}${dataId}/`, body, {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
-        .then((response) => {
-          setLoading(false)
-          setAlert('success', 'Activity Successfully Shortlisted');
-        });
-    };
-  
     const handleInputCreativity = (event, index) => {
       console.log(index, 'text');
   
@@ -216,69 +207,71 @@ import React, {
     };
   
     const [maxWidth, setMaxWidth] = React.useState('lg');
+
+    const functionFilter =(sourceData,targetData) =>{
+      var finalData =[]
+      for(let i=0;i<sourceData.length; i++){
+        for(let j=0 ;j<targetData.length; j++){
+          if(sourceData[i].user_id == targetData[j].user_id){
+            finalData.push(sourceData[i])
+          }
+        }
+      }
+      setTotalSubmitted(finalData)
+    }
   
     const getTotalSubmitted = () => {
-        // if(props){
-          const branchIds = props?.selectedBranch?.map((obj) => obj?.id);
-          const gradeIds = props?.selectedGrade?.id;
+        if(props){
           setLoading(true)
-          axios
-            .get(
-              `${
-                endpoints.newBlog.studentSideApi
-              }?section_ids=null&&user_id=null&&activity_detail_id=${
-                ActivityId?.id
-              }&branch_ids=${branchIds == '' ? null : branchIds}&grade_id=${gradeIds}&is_reviewed=False`,
-              {
-                headers: {
-                  'X-DTS-HOST': X_DTS_HOST,
-                },
-              }
-            )
+          axiosInstance
+            .get(`${endpoints.userManagement.getUserLevel}?page_num=${1}&page_size=15&user_level=${13}`,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
             .then((response) => {
+              // debugger;
+              console.log(response?.data?.result?.results)
+              setSourceData(response?.data?.result?.results)
               props.setFlag(false);
-              setTotalCount(response?.data?.count);
-              setTotalPages(response?.data?.page_size);
-              setCurrentPage(response?.data?.page + 1);
-              setLimit(Number(limit));
+              // setTotalCount(response?.data?.count);
+              // setTotalPages(response?.data?.page_size);
+              // setCurrentPage(response?.data?.page + 1);
+              // setLimit(Number(limit));
               setAlert('success', response?.data?.message)
+              functionFilter(response?.data?.result?.results, dummyData1)
               // setTotalSubmitted(response?.data?.result);
-              setTotalSubmitted(dummyData)
+              // setTotalSubmitted(dummyData)
               setLoading(false);
             });
   
-        // }    
+        }    
     };
-  
-  
-    useEffect(() =>{
-      setTotalSubmitted(dummyData)
-    },[dummyData])
-  
+
     const [ratingReview, setRatingReview] = useState([]);
     console.log(ratingReview, 'ratingReview')
     let array = [];
     const getRatingView = (data) => {
       setLoading(true);
       axios
-        .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
+        .get(`${endpoints.newBlog.physicalAddRating}`, {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
         })
         .then((response) => {
           console.log(response, 'responses');
-          response.data.map((obj, index) => {
-            let temp = {};
-            temp['id'] = obj.id;
-            temp['name'] = obj.level.name;
-            temp['rating'] = Number(obj.level.rating);
-            temp['remarks'] = obj.remarks;
-            temp['given_rating'] = obj.given_rating;
-            temp['reviewer_id'] = user_id
-            array.push(temp);
-          });
-          setRatingReview(array);
+          // response.data.map((obj, index) => {
+          //   let temp = {};
+          //   temp['id'] = obj.id;
+          //   temp['name'] = obj.level.name;
+          //   temp['rating'] = Number(obj.level.rating);
+          //   temp['remarks'] = obj.remarks;
+          //   temp['given_rating'] = obj.given_rating;
+          //   temp['reviewer_id'] = user_id
+          //   array.push(temp);
+          // });
+          // setRatingReview(array);
           setLoading(false)
         });
     };
@@ -289,18 +282,18 @@ import React, {
       setView(true);  
       setData(data);
       // setBookingId(data?.id);
-      getRatingView(data?.id);
-      setDataId(data?.id);
+      getRatingView(data);
+      setDataId(data?.erp_id);
     };
   
     // let counting = '5';
   
   
     useEffect(()=>{
-      if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
-        // setTotalSubmitted([])
+      if(props.selectedBranch === undefined || props.selectedGrade === undefined){
+        setTotalSubmitted([])
       }
-    },[props.selectedBranch, props.selectedGrade, props.flag])
+    },[props.selectedBranch, props.selectedGrade,  props.flag])
   
     useEffect(() => {
       if(props.flag){
@@ -368,7 +361,7 @@ import React, {
                       {response?.name}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
-                      {response?.booked_user?.username}
+                      {response?.erp_id}
                     </TableCell>
                     {/* <TableCell className={classes.tableCells}>GRADE 1</TableCell> */}
                     <TableCell className={classes.tableCells}>
@@ -384,10 +377,10 @@ import React, {
                         Add Review hi
                       </Button> */}
                       <ButtonAnt type="primary" 
-                        style={{ backgroundColor: '#4caf50', padding:'0.5rem 1rem', border:'1px solid #4caf50'}}
+                        style={{ backgroundColor: '#4caf50', border:'1px solid #4caf50'}}
                         icon={<MonitorOutlined/>} 
                         onClick={() => assignPage(response)}
-                        size={'large'}>
+                        size={'medium'}>
                         Add Review
                     </ButtonAnt>
                     </TableCell>

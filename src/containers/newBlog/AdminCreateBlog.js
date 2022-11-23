@@ -131,6 +131,14 @@ tickSize:{
 },
 }));
 
+const dummyRound =[
+  {id:1,round:1,name:'One'},
+  {id:2,round:2,name:'Two'},
+  {id:3,round:3,name:'Three'},
+  {id:4,round:4,name:'Four'},
+  {id:5,round:5,name:'Five'},
+]
+
 const AdminCreateBlog = () => {
   const classes = useStyles();
   const themeContext = useTheme();
@@ -148,6 +156,7 @@ const AdminCreateBlog = () => {
   const [assigned, setAssigned] = useState(false);
 
   const [sectionDropdown, setSectionDropdown] = useState([]);
+  const [roundDropdown,setRoundDropdown] = useState(dummyRound)
 
   const [moduleId, setModuleId] = React.useState();
   const [month, setMonth] = React.useState('1');
@@ -341,6 +350,12 @@ const AdminCreateBlog = () => {
     }
   };
 
+  const handleRound =(e,value) => {
+    if(value){
+      console.log(value,'opp')
+    }
+  }
+
   const handleStartDateChange = (val) => {
     setStartDate(val);
   };
@@ -465,7 +480,7 @@ const AdminCreateBlog = () => {
       formData.append('branch_ids', branchIds);
       formData.append('grade_ids', gradeIds);
       formData.append('section_ids', sectionIds);
-      formData.append('is_draft', true);
+      formData.append('is_draft', false);
       formData.append('template_type',"template");
       formData.append('template_id',checked);
       axios
@@ -695,18 +710,8 @@ const AdminCreateBlog = () => {
             {isPhysicalActivity ? (
               <>
               <div style={{marginLeft:'15px'}}>
-                Sub-Activity Category * :
+                Sub-Activity Type : <b style={{color:'blue'}}>{activityName?.sub_type}</b>
               </div>
-              <Autocomplete
-                style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
-                size='small'
-                onChange={handleChangeActivity}
-                options={activityCategory || []}
-                value={activityName || []}
-                getOptionLabel={(option) => option?.name}
-                filterSelectedOptions
-                renderInput={(params) => <TextField {...params} variant='outlined' />}
-              />
               </>
             ) : ""}
           </div>
@@ -797,6 +802,32 @@ const AdminCreateBlog = () => {
                   fullWidth
                   variant='outlined'
                   label='Section'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <Autocomplete
+              multiple
+              fullWidth
+              limitTags={1}
+              size='small'
+              className='filter-student meeting-form-input'
+              options={roundDropdown || []}
+              getOptionLabel={(option) => option?.round || ''}
+              filterSelectedOptions
+              value={selectedSection || []}
+              onChange={(event, value) => {
+                // handleSection(event, value);
+                handleRound(event,value)
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  fullWidth
+                  variant='outlined'
+                  label='Round'
                 />
               )}
             />

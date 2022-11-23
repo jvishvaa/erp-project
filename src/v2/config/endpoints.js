@@ -91,6 +91,9 @@ export default {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,
   },
+  userManagement : {
+    getUserLevel: '/erp_user/level_list/',
+  },
   profile: {
     getUserStatus: '/erp_user/user-information/',
     getPendingFeeStatus: '/apiV1/fee-defaulters-banner/',

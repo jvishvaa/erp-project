@@ -33,14 +33,15 @@ import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useHistory } from 'react-router-dom';
 import Shortlisted from './Shortlisted_1';
-import axiosInstance from 'config/axios';
-import endpoints from 'config/endpoints';
+// import axiosInstance from 'config/axios';
+// import endpoints from 'config/endpoints';
+import axios from 'v2/config/axios';
+import endpoints from 'v2/config/endpoints';
 import { NavigateNext as NavigateNextIcon } from '@material-ui/icons'
-import axios from 'axios';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Loader from 'components/loader/loader';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import {SearchOutlined} from '@ant-design/icons'
+import {SearchOutlined,DownOutlined} from '@ant-design/icons'
 
 const DEFAULT_RATING = 0;
 
@@ -91,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PhysicalActivityReview = () => {
+    const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
     const formRef = createRef();
     const classes = useStyles();
     const history = useHistory();
@@ -107,9 +109,6 @@ const PhysicalActivityReview = () => {
     const [view, setView] = useState(false);
     const [flag,setFlag] = useState(false);
     const [gradeList, setGradeList] = useState([]);
-    const selectedAcademicYear = useSelector(
-        (state) => state.commonFilterReducer?.selectedYear
-    );
     const { setAlert } = useContext(AlertNotificationContext);
     const [academicYear, setAcademicYear] = useState([]);
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -122,12 +121,17 @@ const PhysicalActivityReview = () => {
     const [title, setTitle] = useState('');
     const [loading,setLoading] = useState(false)
     const [boardId, setBoardId] = useState();
-    const [boardListData, setBoardListData] = useState([]);
+    // const [boardListData, setBoardListData] = useState([]);
     const {Option} = Select;
     const [gradeId, setGradeId] = useState();
     const [gradeName, setGradeName] = useState();
     const [gradeData, setGradeData] = useState([]);
     const [subjectData, setSubjectData] = useState([]);
+    const selectedAcademicYear = useSelector(
+      (state) => state.commonFilterReducer?.selectedYear
+    );
+    const [subjectId, setSubjectId] = useState();
+    const [subjectName, setSubjectName] = useState();
   // console.log(history,"history")
   // useEffect(() => {
   //   if (history?.location?.pathname === '/blog/addreview') {
@@ -135,27 +139,33 @@ const PhysicalActivityReview = () => {
 
   //   }
   // }, [history]);
-  useEffect(() =>{
-    if(moduleId){
-      let branchIds = branch_update_user?.branches?.map((item) => item?.id)
-      setLoading(true)
-      axios
-      .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
-      {
-        headers:{
-          'X-DTS-HOST' : X_DTS_HOST,
-        },
-      })
-      .then((response) =>{
-        if(response?.data?.status_code === 200){
-          setBranchList(response?.data?.result|| [])
-          setLoading(false)
-  
-        }
 
-      })
-    }
-  },[window.location.pathname, moduleId])
+  console.log(boardListData,'up')
+
+
+  
+
+  // useEffect(() =>{
+  //   if(moduleId){
+  //     let branchIds = branch_update_user?.branches?.map((item) => item?.id)
+  //     setLoading(true)
+  //     axios
+  //     .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
+  //     {
+  //       headers:{
+  //         'X-DTS-HOST' : X_DTS_HOST,
+  //       },
+  //     })
+  //     .then((response) =>{
+  //       if(response?.data?.status_code === 200){
+  //         setBranchList(response?.data?.result|| [])
+  //         setLoading(false)
+  
+  //       }
+
+  //     })
+  //   }
+  // },[window.location.pathname, moduleId])
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -169,7 +179,7 @@ const PhysicalActivityReview = () => {
             if (
               item.child_name === 'Blog Activity' 
               &&
-              window.location.pathname === '/blog/activityreview'
+              window.location.pathname === '/physical/activity/review'
             ) {
               setModuleId(item.child_id);
               localStorage.setItem('moduleId', item.child_id);
@@ -178,43 +188,61 @@ const PhysicalActivityReview = () => {
         }
       });
     }
-  }, [window.location.pathname]);
+  }, []);
 
-function callApi(api,key){
-  setLoading(true)
-  axiosInstance
-    .get(api)
-    .then((result) => {
-      if(result.status === 200){
-        if (key === 'academicYearList') {
-          setAcademicYear(result?.data?.data || []);
-          const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
-          if (
-            window.location.pathname !== '/erp-online-class-student-view' &&
-            !viewMoreData?.academic
-          )
-            callApi(
-              `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
-              'branchList'
-            );
-        }
-        if(key === 'branchList') {
-          setBranchList(result?.data?.data?.results || [])
-        }
-        if(key === 'gradeList'){
-          const gradeData = result?.data?.data || [];
-          gradeData.unshift({
-            grade_grade_name: 'Select All',
-            grade_id:'all',
-            id:'all',
-          });
-          setGradeList(gradeData);
-        }
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'Activity Management' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item.child_name === 'Blog Activity') {
+  //             setModuleId(item.child_id);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, []);
 
-      }
-      setLoading(false)
-    })
-}
+// function callApi(api,key){
+//   setLoading(true)
+//   axiosInstance
+//     .get(api)
+//     .then((result) => {
+//       if(result.status === 200){
+//         if (key === 'academicYearList') {
+//           setAcademicYear(result?.data?.data || []);
+//           const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
+//           if (
+//             window.location.pathname !== '/erp-online-class-student-view' &&
+//             !viewMoreData?.academic
+//           )
+//             callApi(
+//               `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+//               'branchList'
+//             );
+//         }
+//         if(key === 'branchList') {
+//           setBranchList(result?.data?.data?.results || [])
+//         }
+//         if(key === 'gradeList'){
+//           const gradeData = result?.data?.data || [];
+//           gradeData.unshift({
+//             grade_grade_name: 'Select All',
+//             grade_id:'all',
+//             id:'all',
+//           });
+//           setGradeList(gradeData);
+//         }
+
+//       }
+//       setLoading(false)
+//     })
+// }
 
   const fetchBranches = () => {
     
@@ -262,7 +290,6 @@ function callApi(api,key){
           },
         })
         .then((response) =>{
-          // debugger;
           console.log(response?.data?.result);
           setGradeList(response?.data?.result)
           setLoading(false)
@@ -289,11 +316,11 @@ function callApi(api,key){
 
   const goSearch =() =>{
     setLoading(true)
-    if(selectedBranch?.length === 0){
+    if(boardId === undefined){
       setAlert('error','Please Select Branch');
       setLoading(false)
       return
-    }else if(selectedGrade?.length == 0){
+    }else if(gradeId== undefined){
       setAlert('error', 'Please Select Grade');
       setLoading(false)
       return
@@ -324,33 +351,16 @@ function callApi(api,key){
     );
   });
 
-  const fetchBoardListData = () => {
-    axios
-      .get(`/academic/get-board-list/`)
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setBoardListData(result?.data?.result);
-          // if (!boardFilterArr.includes(window.location.host)) {
-          let data = result?.data?.result?.filter(
-            (item) => item?.board_name === 'CBSE'
-          )[0];
-          setBoardId(data?.id);
-          // }
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
-  };
 
+  const handleBoard = (e , value) => {
+    formRef.current.setFieldsValue({
+      grade: null,
+      subject: null
+    })
+    if(value){
+      setBoardId(value?.value);
 
-  useEffect(()=>{
-    fetchBoardListData()
-
-  },[])
-
-  const handleBoard = (e) => {
-    setBoardId(e);
+    }
   };
 
   const handleGrade = (item) => {
@@ -370,6 +380,62 @@ function callApi(api,key){
     //     grade: item.value,
     //   });
     }
+  };
+
+  useEffect(() => {
+    if(moduleId && boardId){
+
+      fetchGradeData()
+    }
+  },[boardId])
+
+  const fetchGradeData = () => {
+    const params = {
+      session_year: selectedAcademicYear?.id,
+      branch_id: boardId,
+      module_id: moduleId,
+    };
+    axios
+      .get(`${endpoints.academics.grades}`, { params })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setGradeData(res?.data?.data);
+          // if (user_level == 13) {
+            // setGradeId(res?.data?.data[0]?.grade_id);
+            setGradeName(res?.data?.data[0]?.grade__grade_name);
+          // }
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  useEffect(() =>{
+    if(gradeId !== ""){
+      fetchSubjectData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: boardId,
+        module_id: moduleId,
+        grade_id: gradeId,
+      });
+
+    }
+  },[gradeId])
+
+  const fetchSubjectData = (params = {}) => {
+    axios
+      .get(`${endpoints.lessonPlan.subjects}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          setSubjectData(res.data.result);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
   };
 
   const gradeOptions = gradeData?.map((each) => {
@@ -396,6 +462,37 @@ function callApi(api,key){
     return (
       <Option key={each?.id} value={each.subject_id}>
         {each?.subject_name}
+      </Option>
+    );
+  });
+
+  const handleSubject = (e,item) => {
+    if (item) {
+      // setSubjectId(item.value);
+      setSubjectId(item.value);
+      setSubjectName(item.children);
+    }
+  };
+
+
+
+  const erpData = () =>{
+    axios 
+      .get(`${endpoints.userManagement.getUserLevel}`,{
+        headers: {
+          'X-Api-Key': 'vikash@12345#1231',
+        },
+      })
+      .then((res) => {
+        console.log(res,'PP')
+        
+      })
+  }
+
+  const branchOptions = boardListData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.branch?.id}>
+        {each?.branch?.branch_name}
       </Option>
     );
   });
@@ -506,28 +603,31 @@ function callApi(api,key){
             <div className='row align-items-center'>
               {/* {boardFilterArr.includes(window.location.host) && ( */}
                 <div className='col-md-2 col-6 pl-0'>
-                  <div className='mb-2 text-left'>Board</div>
-                  <Form.Item name='board'>
+                  <div className='mb-2 text-left'>Branch</div>
+                  <Form.Item name='branch'>
                     <Select
-                      placeholder='Select Board'
-                      showSearch
-                    //   defaultValue={'CBSE'}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e) => {
-                        handleBoard(e);
-                      }}
-                      onClear={handleClearBoard}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={true}
-                    >
-                      {boardOptions}
-                    </Select>
-                  </Form.Item>
+                        showSearch
+                        placeholder='Select Branch'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        placement='bottomRight'
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        dropdownMatchSelectWidth={false}
+                        onChange={(e,value) => handleBoard(e,value)}
+                        allowClear={true}
+                        onClear={handleClearBoard}
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                      >
+                        {branchOptions}
+                      </Select>
+                </Form.Item>
                 </div>
               {/* )} */}
               <div className='col-md-2 col-6 px-0'>
@@ -535,13 +635,7 @@ function callApi(api,key){
                 <Form.Item name='grade'>
                   <Select
                     allowClear
-                    placeholder={
-                      gradeName ? (
-                        <span className='th-black-1'>{gradeName}</span>
-                      ) : (
-                        'Select Grade'
-                      )
-                    }
+                    placeholder='Select Name'
                     showSearch
                     disabled={user_level == 13}
                     optionFilterProp='children'
@@ -573,9 +667,9 @@ function callApi(api,key){
                         options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       );
                     }}
-                    // onChange={(e, value) => {
-                    //   handleSubject(value);
-                    // }}
+                    onChange={(e, value) => {
+                      handleSubject(e,value);
+                    }}
                     onClear={handleClearSubject}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={true}
@@ -662,10 +756,10 @@ function callApi(api,key){
           </div>
         </div>
         {console.log(value,'kl 33')}
-        {value == 0 && <PhysicalPendingReview  selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag} />}
+        {value == 0 && <PhysicalPendingReview  selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} flag={flag} setFlag={setFlag} />}
         {/* {value == 1 && <NotSubmitted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
 
-        {value == 1 && <PhysicalReviewed selectedBranch={selectedBranch}  setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag} />}
+        {value == 1 && <PhysicalReviewed selectedBranch={selectedBranch}  setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} selectedSubject={subjectId} flag={flag} setFlag={setFlag} />}
         {/* {value == 3 && <Shortlisted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
         {/* {value == 4 && <Published selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
 

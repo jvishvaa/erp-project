@@ -193,8 +193,8 @@ const CentralBlogRedirection = () => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
   const user_level = data?.user_level;
-  const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
-  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  // const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
+  // const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
   const [periodData,setPeriodData] = useState([]);
   const [subId,setSubId] = useState('')

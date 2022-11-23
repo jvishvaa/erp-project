@@ -344,10 +344,12 @@ const RatingCreate = () => {
       return
     }
     let body = {
+      sub_type:ActivityType?.sub_type,
       activity_type: ActivityType?.name,
       grading_scheme:
         // name: scoreType,
         inputList,
+      
     };
     setLoading(true)
     axios
@@ -665,7 +667,13 @@ const RatingCreate = () => {
                 />
               )}
             />
+          
           </div>
+          {ActivityType?.name == "Physical Activity" ? (
+            <div style={{width:'73vh', fontWeight: 400, marginTop:'10px', paddingLeft:'10px'}}>
+              Sub-Activity Type :<b style={{color:'blue'}}> {ActivityType?.sub_type} </b>
+            </div>
+          ) : ""}
           {inputList
             ? inputList.map((input, index) => (
                 <>
