@@ -211,9 +211,9 @@ const PendingReview = (props) => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
   const getTotalSubmitted = () => {
-      if(props){
-        const branchIds = props.selectedBranch?.map((obj) => obj?.id);
-        const gradeIds = props.selectedGrade?.id;
+      // if(props){
+        const branchIds = props?.selectedBranch?.map((obj) => obj?.id);
+        const gradeIds = props?.selectedGrade?.id;
         setLoading(true)
         axios
           .get(
@@ -239,7 +239,7 @@ const PendingReview = (props) => {
             setLoading(false);
           });
 
-      }    
+      // }    
   };
 
   const [ratingReview, setRatingReview] = useState([]);
@@ -350,7 +350,8 @@ const PendingReview = (props) => {
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                   <TableCell className={classes.tableCells}>
-                    {response?.booked_user?.name}
+                    {/* {response?.booked_user?.name} */}
+                    {response?.name}
                   </TableCell>
                   <TableCell className={classes.tableCells}>
                     {response?.booked_user?.username}

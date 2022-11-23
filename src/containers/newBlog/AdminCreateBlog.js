@@ -10,7 +10,6 @@ import {
   makeStyles,
   Typography,
   Grid,
-  Breadcrumbs,
   Tooltip,
   MenuItem,
   TextareaAutosize,
@@ -51,6 +50,8 @@ import Tab from '@material-ui/core/Tab';
 import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
 import BackupIcon from '@material-ui/icons/Backup';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import { Breadcrumb } from 'antd';
 
 import {
   fetchBranchesForCreateUser as getBranches,
@@ -171,6 +172,7 @@ const AdminCreateBlog = () => {
   const [activityName, setActivityName] = useState([]);
   const [changeText,setChangeText]=useState("");
   const [visible,setVisible] = useState(false);
+  const [isPhysicalActivity,setIsPhysicalActivity] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -184,67 +186,20 @@ const AdminCreateBlog = () => {
   const handleEditorChange = (content, editor) => {
     setDesc(content);
   };
-  const months = [
-    {
-      label: 'January',
-      value: '1',
-    },
-    {
-      label: 'Febraury',
-      value: '2',
-    },
-    {
-      label: 'March',
-      value: '3',
-    },
-    {
-      label: 'April',
-      value: '4',
-    },
-    {
-      label: 'May',
-      value: '5',
-    },
-    {
-      label: 'June',
-      value: '6',
-    },
-    {
-      label: 'July',
-      value: '7',
-    },
-    {
-      label: 'August',
-      value: '8',
-    },
-    {
-      label: 'September',
-      value: '9',
-    },
-    {
-      label: 'October',
-      value: '10',
-    },
-    {
-      label: 'November',
-      value: '11',
-    },
-    {
-      label: 'December',
-      value: '12',
-    },
-  ];
-  console.log(history.location.pathname == '/blog/create', 'history');
+
   const handleChangeActivity = (e, value) => {
     setActivityName([])
     setSelectedBranch([])
     setSelectedGrade([])
     setSelectedSection([])
+    setIsPhysicalActivity(false)
     setVisible(false)
     if(value){
       setVisible(true)
-      console.log(e,"event",value);
       setActivityName(value);
+      if(value?.name == "Physical Activity"){
+        setIsPhysicalActivity(true)
+      }
     }
   };
   const handleChangeText = (e, value) => {
@@ -351,8 +306,6 @@ const AdminCreateBlog = () => {
   useEffect(() => {
     fetchBranches();
   }, []);
-  console.log(selectedBranch, 'selectedBranch');
-
   const handleBranch = (e, value) => {
     setSelectedGrade([]);
     if (value) {
@@ -388,20 +341,6 @@ const AdminCreateBlog = () => {
     }
   };
 
-  const blogsContent = [
-    {
-      label: 'Public Speaking',
-      value: '1',
-    },
-    {
-      label: 'Post Card Writting',
-      value: '2',
-    },
-    {
-      label: 'Blog Card Writting',
-      value: '3',
-    },
-  ];
   const handleStartDateChange = (val) => {
     setStartDate(val);
   };
@@ -507,11 +446,11 @@ const AdminCreateBlog = () => {
       return;
     }
 
-    if(!checked) {
-      setLoading(false);
-      setAlert('error','Please Select Templates')
-      return;
-    }
+    // if(!checked) {
+    //   setLoading(false);
+    //   setAlert('error','Please Select Templates')
+    //   return;
+    // }
     else{
       const formData = new FormData();
       formData.append('title', title);
@@ -548,11 +487,6 @@ const AdminCreateBlog = () => {
           setTitle('');
           setStartDate('');
           history.push('/blog/blogview');
-  
-          // localStorage.setItem(
-          //   'ActivityManagement',
-          //   JSON.stringify(response?.data?.result)
-          // );
         });
 
     }
@@ -673,6 +607,10 @@ const AdminCreateBlog = () => {
     { width: 768, itemsToShow: 3 },
     { width: 1200, itemsToShow: 4 }
   ];
+
+  const handleGoBack = () =>{
+    history.goBack()
+  }
   
 
   return (
@@ -686,20 +624,26 @@ const AdminCreateBlog = () => {
         container
         direction='row'
         style={{ paddingLeft: '22px', paddingRight: '10px' }}
-      >
-        <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' />}
-            aria-label='breadcrumb'
-          >
-            <Typography color='textPrimary' variant='h6'>
-              <strong>Activity Management</strong>
-            </Typography>
-            <Typography color='textPrimary' style={{fontSize:'23px', fontWeight:'bolder'}}>Activity</Typography>
-            <Typography color='textPrimary' style={{fontSize:'23px', fontWeight:'bolder'}}>Create Activity</Typography>
-          </Breadcrumbs>
-        </Grid>
+      > 
       </Grid>
+      <div className='col-md-6' style={{zIndex:2, display: 'flex', alignItems:'center' }}>
+        <div>
+          <IconButton aria-label="back" onClick={handleGoBack}>
+           <KeyboardBackspaceIcon style={{fontSize:'20px', color:'black'}}/>
+          </IconButton>
+          </div>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+               Activity Management
+              </Breadcrumb.Item>
+              <Breadcrumb.Item href='' className='th-grey th-16'>
+                Activity 
+              </Breadcrumb.Item>
+              <Breadcrumb.Item href='' className='th-grey th-16'>
+               Create Activity
+              </Breadcrumb.Item>
+            </Breadcrumb>
+        </div>
       {/* <div style={{    marginLeft:"15px", marginBottom: "18px",
     marginTop: "-14px", cursor: 'pointer' }} onClick={goBack}>
           <div>
@@ -748,25 +692,23 @@ const AdminCreateBlog = () => {
               filterSelectedOptions
               renderInput={(params) => <TextField {...params} variant='outlined' />}
             />
-            {/* <TextField
-
-
-              select
-              style={{ marginTop: '-6px', borderRadius: '1px', width: '198px' }}
-              size='small'
-              value={activityName}
-              onChange={handleChangeActivity}
-              SelectProps={{
-                native: true,
-              }}
-              variant='outlined'
-            >
-              {activityCategory.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.name}
-                </option>
-              ))}
-            </TextField> */}
+            {isPhysicalActivity ? (
+              <>
+              <div style={{marginLeft:'15px'}}>
+                Sub-Activity Category * :
+              </div>
+              <Autocomplete
+                style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
+                size='small'
+                onChange={handleChangeActivity}
+                options={activityCategory || []}
+                value={activityName || []}
+                getOptionLabel={(option) => option?.name}
+                filterSelectedOptions
+                renderInput={(params) => <TextField {...params} variant='outlined' />}
+              />
+              </>
+            ) : ""}
           </div>
           <div>
             {' '}
@@ -985,27 +927,34 @@ const AdminCreateBlog = () => {
               </label>
             </div>
           </div> */}
-          {selectedBranch?.length !== 0 && activityName?.length !== 0  ? (
-          <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
-        {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
-        <div style={{ height: "200px", color: "#fff" }}>this is slide 2</div>
-        <div style={{ height: "200px", color: "#fff" }}>this is slide 3</div> */}
-        {templates?.map((obj,index)=>(
-        <div style={{display:'flex', alignItems:'center',flexDirection:'column'}}>
-        <img src={obj?.template_path} alt="images" style={{maxWidth:"34%"}}/> 
-        {/* <div> */}
-         <Checkbox
-         value={checked}
-         onChange={()=>handleChange(obj?.id,obj?.id)}
-         className={classes.tickSize}        
-        color="primary"
-        inputProps={{ 'aria-label': 'secondary checkbox' }}
-      />
-      <div>{obj?.title}</div>
-      {/* </div> */}
-      </div>))}
-          </Carousel>
-          ) : ''}
+          {isPhysicalActivity ? (
+            ''
+
+          ): (
+            <>
+            {selectedBranch?.length !== 0 && activityName?.length !== 0  ? (
+            <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
+          {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
+          <div style={{ height: "200px", color: "#fff" }}>this is slide 2</div>
+          <div style={{ height: "200px", color: "#fff" }}>this is slide 3</div> */}
+          {templates?.map((obj,index)=>(
+          <div style={{display:'flex', alignItems:'center',flexDirection:'column'}}>
+          <img src={obj?.template_path} alt="images" style={{maxWidth:"34%"}}/> 
+          {/* <div> */}
+          <Checkbox
+          value={checked}
+          onChange={()=>handleChange(obj?.id,obj?.id)}
+          className={classes.tickSize}        
+          color="primary"
+          inputProps={{ 'aria-label': 'secondary checkbox' }}
+        />
+        <div>{obj?.title}</div>
+        {/* </div> */}
+        </div>))}
+            </Carousel>
+            ) : ''}
+            </>
+          )}
         </div>
         <div
           style={{
