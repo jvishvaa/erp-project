@@ -287,7 +287,7 @@ const GradeTable = () => {
                           {grade?.created_by || ''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          <IconButton
+                          {/* <IconButton
                             onClick={(e) => {
                               setGradeName(grade.grade_name);
                               handleOpenDeleteModal(grade.id);
@@ -296,7 +296,7 @@ const GradeTable = () => {
 
                           >
                             <DeleteOutlinedIcon />
-                          </IconButton>
+                          </IconButton> */}
 
                           <IconButton
                             onClick={(e) =>

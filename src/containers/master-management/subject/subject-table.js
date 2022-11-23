@@ -122,7 +122,7 @@ const SubjectTable = () => {
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [ centralSubjects , setCentralSubjects ] = useState()
+  const [centralSubjects, setCentralSubjects] = useState()
 
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
@@ -184,14 +184,14 @@ const SubjectTable = () => {
 
   const getCentralSubjects = () => {
     axiosInstance
-    .get(`${endpoints.masterManagement.centralSubjects}`)
-    .then((result) => {
-     console.log(result);
-     setCentralSubjects(result?.data?.result)
-    })
-    .catch((error) => {
-      setAlert('error', error?.response?.data.message || error?.response?.data.msg);
-    });
+      .get(`${endpoints.masterManagement.centralSubjects}`)
+      .then((result) => {
+        console.log(result);
+        setCentralSubjects(result?.data?.result)
+      })
+      .catch((error) => {
+        setAlert('error', error?.response?.data.message || error?.response?.data.msg);
+      });
   }
 
   const handleCloseDeleteModal = () => {
@@ -221,7 +221,7 @@ const SubjectTable = () => {
       .catch((error) => {
         setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
       });
-      getCentralSubjects()
+    getCentralSubjects()
   }, [goBackFlag, delFlag, page, searchSubject]);
 
   return (
@@ -237,15 +237,15 @@ const SubjectTable = () => {
                 addFlag && !tableFlag
                   ? 'Add Subject'
                   : editFlag && !tableFlag
-                  ? 'Edit Subject'
-                  : null
+                    ? 'Edit Subject'
+                    : null
               }
             />
           </div>
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack}  centralSubjects={centralSubjects} />
+          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} centralSubjects={centralSubjects} />
         )}
         {!tableFlag && !addFlag && editFlag && (
           <EditSubject
@@ -324,7 +324,7 @@ const SubjectTable = () => {
                               {subject?.subject_name}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {subject?.subject_slag}
+                              {subject?.eduvate_subject_id == null ? '-' : subject?.subject_slag}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
                               {subject?.created_by}
@@ -336,14 +336,17 @@ const SubjectTable = () => {
                               {subject?.is_optional ? 'Yes' : 'No'}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              <IconButton
-                                onClick={(e) => {
-                                  handleOpenDeleteModal(subject);
-                                }}
-                                title='Delete Subject'
-                              >
-                                <DeleteOutlinedIcon />
-                              </IconButton>
+                              {subject?.eduvate_subject_id == null ?
+                                <IconButton
+                                  onClick={(e) => {
+                                    handleOpenDeleteModal(subject);
+                                  }}
+                                  title='Delete Subject'
+                                  name='click'
+                                >
+                                  <DeleteOutlinedIcon />
+                                </IconButton>
+                                : ''}
                               <IconButton
                                 onClick={(e) => handleEditSubject(subject)}
                                 title='Edit Subject'

@@ -82,7 +82,7 @@ const CreateSubject = ({ setLoading, handleGoBack, centralSubjects }) => {
         subject_name: subjectName,
         description: description,
         is_optional: optional,
-      eduvate_subject_id : null
+        eduvate_subject_id: null
       })
       .then((result) => {
         if (result.data.status_code === 201) {
@@ -227,24 +227,26 @@ const CreateSubject = ({ setLoading, handleGoBack, centralSubjects }) => {
             </Grid>
           </form>
           : */}
-          <div style={{ padding: '2%', width: '50%', margin: '0 auto' }} className='tableSubjectAdd'>
-            <div style={{marginBottom : '1%' , display: 'flex' , justifyContent: 'space-between'}} >
-            <Button className='buttonAddSub' style={{minWidth: '10%' }} onClick={handleGoBack}>Back</Button>
-            <Button className='buttonAddSub' style={{minWidth: '10%' }} onClick={showModal}>Add Subject</Button>
-            </div>
-            <div>
-              <Table
-                rowSelection={rowSelection}
-                columns={columns}
-                dataSource={newArr}
-                pagination={false}
-                className='th-table'
-                rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                }
-              />
-            </div>
+        <div>
+          <Button style={{ minWidth: '5%', margin: '0 1%' }} onClick={handleGoBack}>Back</Button>
+        </div>
+        <div style={{ padding: '2%', width: '50%', margin: '0 auto' }} className='tableSubjectAdd'>
+          <div style={{ marginBottom: '1%', display: 'flex', justifyContent: 'space-between' }} >
+            <Button className='buttonAddSub' style={{ minWidth: '10%' }} onClick={showModal}>Add Subject</Button>
           </div>
+          <div>
+            <Table
+              rowSelection={rowSelection}
+              columns={columns}
+              dataSource={newArr}
+              pagination={false}
+              className='th-table'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+              }
+            />
+          </div>
+        </div>
         {/* } */}
       </div>
       <Dialog
@@ -252,15 +254,15 @@ const CreateSubject = ({ setLoading, handleGoBack, centralSubjects }) => {
         onClose={handleCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        style={{minWidth: '700px'}}
+        style={{ minWidth: '700px' }}
         className='addSubjectCss'
       >
         <DialogTitle id="alert-dialog-title">{"Add Subject"}</DialogTitle>
         <DialogContent>
-        <form autoComplete='off' onSubmit={handleSubmit}>
+          <form autoComplete='off' onSubmit={handleSubmit}>
             <div style={{ width: '95%', margin: '20px auto' }}>
               <div>
-                <div  className={isMobile ? '' : 'addEditPadding'}>
+                <div className={isMobile ? '' : 'addEditPadding'}>
                   <TextField
                     id='subname'
                     style={{ width: '100%' }}
