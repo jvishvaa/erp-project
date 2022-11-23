@@ -136,7 +136,7 @@ const MultipleChoice = ({
           ? [
             { isChecked: false, optionValue: '', images: [] },
             { isChecked: false, optionValue: '', images: [] },
-            { isChecked: false, optionValue: '', images: [] },
+            // { isChecked: false, optionValue: '', images: [] },
           ]
           : showQuestionType?.TrueFalse
             ? [{ isChecked: false, optionValue: true }, { isChecked: false, optionValue: false }]
