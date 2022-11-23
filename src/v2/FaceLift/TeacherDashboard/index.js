@@ -60,8 +60,8 @@ const TeacherdashboardNew = () => {
           <div className='col-md-4 th-custom-col-padding'>
             <HomeWorkReport />
             <CurriculumCompletion />
-            <Shortcut />
-            {/* <DiaryReport /> */}
+            {/* <Shortcut /> */}
+            <DiaryReport />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <Assessment />
