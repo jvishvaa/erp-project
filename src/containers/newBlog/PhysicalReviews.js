@@ -89,15 +89,6 @@ function createData(slno, name, grade, submissiondate, overallscore, actions) {
   return { slno, name, grade, submissiondate, overallscore, actions };
 }
 
-const rows = [
-  createData('1', 'Student Name', 'Grade:1A', '18 / 02 / 2022', '2', '1'),
-  createData('2', 'Student Name', 'Grade:1A', '18 / 02 / 2022', '2', '1'),
-  createData('3', 'Student Name', 'Grade:1A', '18 / 02 / 2022', '2', '1'),
-  createData('4', 'Student Name', 'Grade:1A', '18 / 02 / 2022', '2', '1'),
-  createData('5', 'Student Name', 'Grade:1A', '18 / 02 / 2022', '2', '1'),
-];
-
-
 const dummyData = [
     {id:1, name:'Hk', label:'kandkandk'},
     {id:2, name:'raj', label:'kandkandk'},
@@ -186,12 +177,12 @@ const PhysicalReviewed = (props) => {
   const getTotalSubmitted = () => {
     if(props){
       setLoading(true)
-      const branchIds = props.selectedBranch.map((obj) => obj.id);
-      const gradeIds = props?.selectedGrade?.id
+      // const branchIds = props.selectedBranch.map((obj) => obj.id);
+      // const gradeIds = props?.selectedGrade?.id
   
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=null&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&activity_detail_id=${ActivityId?.id}&is_reviewed=True`,
+          `${endpoints.newBlog.studentSideApi}?&user_id=null&activity_detail_id=${1784}&is_reviewed=True&is_submitted=True&grade_id=${2}&branch_ids=${1}&section_ids=${1}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -205,8 +196,7 @@ const PhysicalReviewed = (props) => {
           setLimit(Number(limit))
           props.setFlag(false)
           setAlert('success', response?.data?.message)
-        //   setTotalSubmitted(response?.data?.result);
-        setTotalSubmitted(dummyData)
+          setTotalSubmitted(response?.data?.result);
           setLoading(false)
         });
       
@@ -227,14 +217,14 @@ const PhysicalReviewed = (props) => {
 
   useEffect(()=>{
     if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
-    //   setTotalSubmitted([])
+      // setTotalSubmitted([])
     }
 
   },[props.selectedBranch, props.selectedGrade, props.flag])
 
   useEffect(() => {
     if(props?.flag){
-    //   getTotalSubmitted();
+      getTotalSubmitted();
     }
   }, [props.selectedBranch, props.selectedGrade,props.flag, currentPage]);
   const [view, setView] = useState(false);
@@ -247,10 +237,6 @@ const PhysicalReviewed = (props) => {
     setIsClicked(true);
     setCurrentPage(page);
   }
-
-  useEffect(()=>{
-    setTotalSubmitted(dummyData)
-  },[dummyData])
 
   return (
     <>
@@ -290,17 +276,17 @@ const PhysicalReviewed = (props) => {
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                   <TableCell className={classes.tableCells}>
                     {' '}
-                    {/* {response?.booked_user?.name} */}
+                    {response?.booked_user?.name}
                     {response?.name}
                   </TableCell>
                   <TableCell className={classes.tableCells}>
                     {' '}
-                    {/* {response?.booked_user?.username} */}
+                    {response?.booked_user?.username}
                   </TableCell>
                   {/* <TableCell className={classes.tableCells}>GRADE 1</TableCell> */}
                   <TableCell className={classes.tableCells}>
                     {' '}
-                    {/* {response?.submitted_on?.substring(0, 10)} */}
+                    {response?.submitted_on?.substring(0, 10)}
                   </TableCell>
                   <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell>
                   <TableCell className={classes.tableCells}>
@@ -312,6 +298,7 @@ const PhysicalReviewed = (props) => {
                       defaultValue={response?.user_reviews?.given_rating}
                       max={parseInt(response?.user_reviews?.level?.rating)}
                     /> */}
+                    {response?.user_reviews?.remarks}
                   </TableCell>
                   <TableCell className={classes.tableCells}>
                     {' '}
@@ -327,7 +314,7 @@ const PhysicalReviewed = (props) => {
                         type="primary" 
                         icon={<FileProtectOutlined/>} 
                         onClick={() => assignPage(response)}
-                        size={'large'}>
+                        size={'medium'}>
                         Check Review
                     </ButtonAnt>
                   </TableCell>
@@ -335,7 +322,7 @@ const PhysicalReviewed = (props) => {
               </TableBody>
             ))}
           </Table>
-          <TablePagination
+          {/* <TablePagination
             component='div'
             count={totalCount}
             rowsPerPage={limit}
@@ -349,7 +336,7 @@ const PhysicalReviewed = (props) => {
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
             }}
-          />
+          /> */}
         </TableContainer>
       </Paper>
 

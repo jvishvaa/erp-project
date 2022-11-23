@@ -110,7 +110,7 @@ import axiosInstance from 'config/axios';
   ]
 
   const dummyData1 = [
-    {user_id: 9709, name: "Vinay_04", erp_id: "2200367_AYI", level: 13},
+    {user_id: 9709, name: "Vinay_04", erp_id: "20217770127_OLV", level: 13},
     {user_id: 9707, name: "Vinay_03", erp_id: "2200366_AYI", level: 13},
     {user_id: 970, name: "Vinay_2", erp_id: "2200365_AYI", level: 13}
   ]
@@ -122,7 +122,6 @@ import axiosInstance from 'config/axios';
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
     const { setAlert } = useContext(AlertNotificationContext);
     const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
-    console.log(ActivityId, 'ActivityId');
     const [inputList, setInputList] = useState([{ remarks: '', id: '', given_rating: '' }]);
   
     console.log(inputList, 'input');
@@ -136,7 +135,7 @@ import axiosInstance from 'config/axios';
     const {user_id} = JSON.parse(localStorage.getItem('ActivityManagementSession'))
     const [sourceData,setSourceData] = useState([])
     const [targetData,setTargetData] = useState([])
-  
+
     const handleCloseViewMore = () => {
       setView(false);
     };
@@ -155,7 +154,7 @@ import axiosInstance from 'config/axios';
     // }, []);
     const [submit, setSubmit] = useState(false);
     const submitReview = () => {
-      // setView(false);
+      setView(false);
       // props.setValue(1)
       // setSubmit(true);
       let mandatory = ratingReview.filter((e) => e?.name === "Overall")
@@ -169,14 +168,13 @@ import axiosInstance from 'config/axios';
       // let allRating = body.map((each) => each?.given_rating).slice(0,body?.length -1)
       setLoading(true)
       axios
-        .post(`${endpoints.newBlog.pendingReview}`, body, {
+        .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
         })
         .then((response) => {
-          props.setValue(1)
-          console.log(response);
+          // props.setValue(1)
           setView(false)
           setLoading(false)
           setAlert('success', ' Review Submitted Successfully');
@@ -199,7 +197,7 @@ import axiosInstance from 'config/axios';
   
       arr[index].given_rating = Number(event.target.value);
       setRatingReview(arr);
-      calculateOverallRating();
+
     };
   
     const expandMore = () => {
@@ -209,80 +207,128 @@ import axiosInstance from 'config/axios';
     const [maxWidth, setMaxWidth] = React.useState('lg');
 
     const functionFilter =(sourceData,targetData) =>{
+      setLoading(true)
       var finalData =[]
       for(let i=0;i<sourceData.length; i++){
         for(let j=0 ;j<targetData.length; j++){
-          if(sourceData[i].user_id == targetData[j].user_id){
+          if(sourceData[i].erp_id == targetData[j].erp_id){
             finalData.push(sourceData[i])
           }
         }
       }
       setTotalSubmitted(finalData)
+      setLoading(false)
+    }
+
+    const erpAPI =()=>{
+      axios
+      .get(`${endpoints.newBlog.erpDataStudentsAPI}?section_mapping_id=${props.setSubjectName}&subject_id=${props.selectedSubject}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setSourceData(response?.data?.result)
+        ActivityManagement(response?.data?.result)
+        props.setFlag(false);
+        setAlert('success', response?.data?.message)
+        setLoading(false);
+      });
+
+    }
+
+    const ActivityManagement =(sourceData) =>{
+          axios
+            .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${1}&grade_id=${2}&section_id=${1}&activity_id=${1784}`, {
+              // .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${props.selectedBranch}&grade_id=${props.selectedGrade}&section_id=${props.setSubjectName}&activity_id=${ActivityId?.id}`, {
+              headers: {
+                'X-DTS-HOST': X_DTS_HOST,
+              },
+            })
+            .then((response) => {
+              setTargetData(response?.data?.result)
+              functionFilter(sourceData,response?.data?.result)
+              // functionFilter(sourceData,dummyData1)
+              setLoading(false);
+            })
+            .catch((err) =>{
+              setLoading(false)
+            })
+
     }
   
     const getTotalSubmitted = () => {
         if(props){
           setLoading(true)
-          axiosInstance
-            .get(`${endpoints.userManagement.getUserLevel}?page_num=${1}&page_size=15&user_level=${13}`,{
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .then((response) => {
-              // debugger;
-              console.log(response?.data?.result?.results)
-              setSourceData(response?.data?.result?.results)
-              props.setFlag(false);
-              // setTotalCount(response?.data?.count);
-              // setTotalPages(response?.data?.page_size);
-              // setCurrentPage(response?.data?.page + 1);
-              // setLimit(Number(limit));
-              setAlert('success', response?.data?.message)
-              functionFilter(response?.data?.result?.results, dummyData1)
-              // setTotalSubmitted(response?.data?.result);
-              // setTotalSubmitted(dummyData)
-              setLoading(false);
-            });
+          erpAPI()
+          setLoading(false)
   
         }    
     };
 
     const [ratingReview, setRatingReview] = useState([]);
-    console.log(ratingReview, 'ratingReview')
-    let array = [];
-    const getRatingView = (data) => {
-      setLoading(true);
-      axios
-        .get(`${endpoints.newBlog.physicalAddRating}`, {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
-        .then((response) => {
-          console.log(response, 'responses');
-          // response.data.map((obj, index) => {
-          //   let temp = {};
-          //   temp['id'] = obj.id;
-          //   temp['name'] = obj.level.name;
-          //   temp['rating'] = Number(obj.level.rating);
-          //   temp['remarks'] = obj.remarks;
-          //   temp['given_rating'] = obj.given_rating;
-          //   temp['reviewer_id'] = user_id
-          //   array.push(temp);
-          // });
-          // setRatingReview(array);
-          setLoading(false)
-        });
-    };
-    // const [view, setView] = useState(false);
     const [data, setData] = useState();
+    let array = [];
+    const showReview = (data) =>{
+      if(data){
+      setLoading(true)
+      axios
+        .get(
+          `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data?.booking_detail_id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          response.data.map((obj, index) => {
+            let temp = {};
+            temp['id'] = obj?.id;
+            temp['name'] = obj?.level.name;
+            temp['remarks'] = obj?.remarks;
+            temp['given_rating'] = obj?.given_rating;
+            // temp['level'] = obj?.level?.rating;
+            temp['reviewer_id'] = user_id;
+            array.push(temp);
+          });
+          setRatingReview(array);
+          setLoading(false)
+          setView(true); 
+        })
+        .catch((err) => {
+          setLoading(false)
+        })
+
+      }
+    }
+
+
+    const addBookingApi = (data) =>{
+      setLoading(true)
+      axios
+      .get(`${endpoints.newBlog.bookingDetailsApi}?erp_id=${data?.erp_id}&activity_detail_id=${ActivityId?.id}&user_level=${13}`,{
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+          Authorization:`${token}`,
+
+        }
+      })
+      .then((response) =>{
+        showReview(response?.data?.result)
+      })
+      .catch((error) =>{
+        setLoading(false)
+        
+      })
+
+    }
   
     const assignPage = (data) => {
-      setView(true);  
+      addBookingApi(data) 
       setData(data);
       // setBookingId(data?.id);
-      getRatingView(data);
+      // getRatingView(data);
       setDataId(data?.erp_id);
     };
   
@@ -342,7 +388,7 @@ import axiosInstance from 'config/axios';
                   <TableCell className={classes.tableCell}>ERP ID</TableCell>
   
                   {/* <TableCell className={classes.tableCell}></TableCell> */}
-                  <TableCell className={classes.tableCell}>Submission Date</TableCell>
+                  {/* <TableCell className={classes.tableCell}>Submission Date</TableCell> */}
                   <TableCell className={classes.tableCell}>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -358,15 +404,15 @@ import axiosInstance from 'config/axios';
                     <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                     <TableCell className={classes.tableCells}>
                       {/* {response?.booked_user?.name} */}
-                      {response?.name}
+                      {response?.student_name}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
                       {response?.erp_id}
                     </TableCell>
                     {/* <TableCell className={classes.tableCells}>GRADE 1</TableCell> */}
-                    <TableCell className={classes.tableCells}>
+                    {/* <TableCell className={classes.tableCells}>
                       {response?.submitted_on?.substring(0, 10)}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className={classes.tableCells}>
                       {/* <Button
                         variant='outlined'
@@ -388,7 +434,7 @@ import axiosInstance from 'config/axios';
                 </TableBody>
               ))}
             </Table>
-            <TablePagination
+            {/* <TablePagination
               component='div'
               count={totalCount}
               rowsPerPage={limit}
@@ -402,7 +448,7 @@ import axiosInstance from 'config/axios';
                 spacer: classes.tablePaginationSpacer,
                 toolbar: classes.tablePaginationToolbar,
               }}
-            />
+            /> */}
           </TableContainer>
         </Paper>
         <Drawer
@@ -446,20 +492,20 @@ import axiosInstance from 'config/axios';
                         width='130'
                         alt='image'
                       />
-                      <div>
+                      {/* <div>
                         <div style={{ fontWeight: 'bold' }}>
                           ERP Id :
                           <span style={{ fontWeight: 'normal' }}>
-                            {data?.booked_user?.username}{' '}
+                            {data?.erp_id}{' '}
                           </span>
                         </div>
                         <div style={{ fontWeight: 'bold' }}>
                           Name :
                           <span style={{ fontWeight: 'normal' }}>
-                            {data?.booked_user?.name}
+                            {data?.name}
                           </span>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
   
@@ -475,9 +521,9 @@ import axiosInstance from 'config/axios';
                     <div
                       style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
                     >
-                      Title:{' '}
+                      Name:{' '}
                       <span style={{ fontWeight: 'normal' }}>
-                        {data?.activity_detail?.title}
+                        {data?.name}
                       </span>
                     </div>
                     <div
@@ -488,9 +534,9 @@ import axiosInstance from 'config/axios';
                         fontWeight: 'bold',
                       }}
                     >
-                      Description:
+                      ERP ID:
                       <span style={{ fontWeight: 'normal' }}>
-                        {data?.activity_detail?.description}
+                        {data?.erp_id}
                       </span>
                     </div>
                   </div>
@@ -508,14 +554,14 @@ import axiosInstance from 'config/axios';
 
                     <Grid item>
                 {submit == false ? (
-                  <div style={{ paddingLeft: '10px' }}>Add Review</div>
+                  <div style={{display:'flex', justifyContent:'center',alignItems:'center',fontSize:'18px', fontWeight:600, color:'blue', padding:'0.5rem 1rem'}}>Add Review</div>
                 ) : (
-                  <div style={{ paddingLeft: '8px' }}>Edit Review</div>
+                  <div style={{display:'flex', justifyContent:'center',alignItems:'center',fontSize:'18px', fontWeight:600, color:'blue', padding:'0.5rem 1rem'}}>Edit Review</div>
                 )}
                 {submit == false && (
                   <div
                     style={{
-                      border: '1px solid #707070',
+                      border: '1px solid gray',
                       borderRadius:'10px',
                       height: 'auto',
                       padding:'0.5rem'
@@ -559,7 +605,7 @@ import axiosInstance from 'config/axios';
                                                         onChange={(event) => handleInputCreativity(event, index)}
                                                         label ="Mandatory"
                                                       /> */}
-                                                      <Input placeholder="Mandatory" 
+                                                      <Input placeholder={obj?.name}
                                                        onChange={(event) => handleInputCreativity(event, index)}
                                                        value={obj?.remarks}
                                                       />
@@ -621,9 +667,8 @@ import axiosInstance from 'config/axios';
                     >
                       {' '}
                       <ButtonAnt
-                        // variant='contained'
-                        // color='primary'
                         type="primary"
+                        // disabled={ratingReview[0]?.remarks ? true : false}
                         size='large'
                         className={classes.buttonColor}
                         onClick={() => submitReview()}

@@ -424,18 +424,21 @@ const PhysicalActivityReview = () => {
   },[gradeId])
 
   const fetchSubjectData = (params = {}) => {
-    axios
-      .get(`${endpoints.lessonPlan.subjects}`, {
-        params: { ...params },
-      })
-      .then((res) => {
-        if (res.data.status_code === 200) {
-          setSubjectData(res.data.result);
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
+    if(gradeId){
+      axios
+        .get(`${endpoints.academics.sections}`, {
+          params: { ...params },
+        })
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            setSubjectData(res?.data?.data);
+          }
+        })
+        .catch((error) => {
+          message.error(error.message);
+        });
+
+    }
   };
 
   const gradeOptions = gradeData?.map((each) => {
@@ -460,17 +463,17 @@ const PhysicalActivityReview = () => {
 
   const subjectOptions = subjectData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.subject_id}>
-        {each?.subject_name}
+      <Option key={each?.id} value={each?.section_id} mappingId={each?.id}>
+        {each?.section__section_name}
       </Option>
     );
   });
 
-  const handleSubject = (e,item) => {
+  const handleSubject = (item) => {
     if (item) {
       // setSubjectId(item.value);
       setSubjectId(item.value);
-      setSubjectName(item.children);
+      setSubjectName(item?.mappingId);
     }
   };
 
@@ -518,7 +521,7 @@ const PhysicalActivityReview = () => {
             <Typography color='textPrimary' style={{fontSize:'18px', fontWeight:'bold'}}>Activity</Typography>
             <Typography color='textPrimary' style={{fontSize:'18px', fontWeight:'bold'}}>{ActivityId?.title}</Typography>
           </Breadcrumbs> */}
-          <div className='col-md-8' style={{zIndex:2, display: 'flex', alignItems:'center' }}>
+          <div className='col-md-8' style={{zIndex:2, display: 'flex', alignItems:'center', padding:'0.5rem' }}>
           <div>
           <IconButton aria-label="back" onClick={handleGoBack}>
            <KeyboardBackspaceIcon style={{fontSize:'20px', color:'black'}}/>
@@ -597,7 +600,7 @@ const PhysicalActivityReview = () => {
 
         {/* <Grid container spacing={2} style={{ padding: '20px' }}> */}
         {/* <Grid item md={4} xs={12}> */}
-        <div className='row'>
+        <div className='row' style={{padding:'0.5rem'}}>
         <div className='col-12'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row align-items-center'>
@@ -656,10 +659,10 @@ const PhysicalActivityReview = () => {
                 </Form.Item>
               </div>
               <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                <div className='mb-2 text-left'>Subject</div>
+                <div className='mb-2 text-left'>Section</div>
                 <Form.Item name='subject'>
                   <Select
-                    placeholder='Select Subject'
+                    placeholder='Select Section'
                     showSearch
                     optionFilterProp='children'
                     filterOption={(input, options) => {
@@ -668,7 +671,7 @@ const PhysicalActivityReview = () => {
                       );
                     }}
                     onChange={(e, value) => {
-                      handleSubject(e,value);
+                      handleSubject(value);
                     }}
                     onClear={handleClearSubject}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -678,7 +681,7 @@ const PhysicalActivityReview = () => {
                   </Select>
                 </Form.Item>
               </div>
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3'>
+                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3' style={{display:'flex', alignItem:'center'}}>
                 <ButtonAnt type="primary" 
                 icon={<SearchOutlined />}
                 onClick={goSearch}
@@ -756,10 +759,10 @@ const PhysicalActivityReview = () => {
           </div>
         </div>
         {console.log(value,'kl 33')}
-        {value == 0 && <PhysicalPendingReview  selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} flag={flag} setFlag={setFlag} />}
+        {value == 0 && <PhysicalPendingReview  selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
         {/* {value == 1 && <NotSubmitted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
 
-        {value == 1 && <PhysicalReviewed selectedBranch={selectedBranch}  setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} selectedSubject={subjectId} flag={flag} setFlag={setFlag} />}
+        {value == 1 && <PhysicalReviewed selectedBranch={boardId}  setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
         {/* {value == 3 && <Shortlisted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
         {/* {value == 4 && <Published selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
 

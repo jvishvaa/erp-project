@@ -242,7 +242,7 @@ const CentralBlogRedirection = () => {
 
 
   const handleExplore = (data) => {
-    if (data?.name == "Blog Wall" || data?.name == "Blog Writing") {
+    if (data?.name == "Blog Wall" || data?.name == "Blog Writing" ||  data?.name == "blog writting" ) {
       handleBlogWriting()
     } else if (data?.name === "Public Speaking") {
         handlePublicSpeaking()

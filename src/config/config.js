@@ -51,6 +51,7 @@ const dev = {
     baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     // newBlogURL: 'https://activities-ms.dev-k8.letseduvate.com',
     newBlogURL:'https://activities-revamp.dev-k8.letseduvate.com',
+    erpBlogURL:'https://dev.olvorchidnaigaon.letseduvate.com/mb_droid/'
   },
 };
 
@@ -77,6 +78,7 @@ const qa = {
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://qafinance.school.letseduvate.com',
     newBlogURL: 'https://activities-ms.qa.letseduvate.com',
+    erpBlogURL:'https://qa.olvorchidnaigaon.letseduvate.com/mb_droid/',
   },
 };
 
@@ -97,7 +99,8 @@ const stage = {
     baseURLCentral: 'https://stage.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     baseEvent: 'http://events.letseduvate.com/',
-    newBlogURL: 'https://activities.letseduvate.com',
+    newBlogURL:'https://activities.letseduvate.com',
+    erpBlogURL:`${window.location.origin}/mb_droid/`,
   },
 };
 
@@ -124,7 +127,9 @@ const prod = {
     msReportsUrl: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
-    newBlogURL: 'https://activities.letseduvate.com',
+    newBlogURL:'https://activities.letseduvate.com',
+    erpBlogURL:`${window.location.origin}/mb_droid/`,
+
   },
 };
 

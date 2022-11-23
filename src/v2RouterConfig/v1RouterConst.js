@@ -445,6 +445,8 @@ import OnboardingReport from 'containers/user-management/onboarding-report/onboa
 import AddTemplates from 'containers/newBlog/addTemplates';
 import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
 import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
+import PostActivityView from 'containers/newBlog/postActivityView';
+import CreatePostActivity from 'containers/newBlog/createPostActivity';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -452,6 +454,12 @@ const V1Router = [
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
+  </Route>,
+    <Route path='/post-activity-view'>
+    {({ match }) => <PostActivityView match={match} />}
+  </Route>,
+  <Route path='/create-post-activity'>
+      {({ match }) => <CreatePostActivity match={match} />}
   </Route>,
   <Route exact path='/blog/templates'>
     {({ match }) => <AddTemplates match={match} />}

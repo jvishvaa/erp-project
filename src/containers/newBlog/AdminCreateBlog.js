@@ -132,11 +132,11 @@ tickSize:{
 }));
 
 const dummyRound =[
-  {id:1,round:1,name:'One'},
-  {id:2,round:2,name:'Two'},
-  {id:3,round:3,name:'Three'},
-  {id:4,round:4,name:'Four'},
-  {id:5,round:5,name:'Five'},
+  {id:1,round:1,name:'1'},
+  {id:2,round:2,name:'2'},
+  {id:3,round:3,name:'3'},
+  {id:4,round:4,name:'4'},
+  {id:5,round:5,name:'5'},
 ]
 
 const AdminCreateBlog = () => {
@@ -170,6 +170,8 @@ const AdminCreateBlog = () => {
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
+  const [selectedRound, setSelectedRound] = useState([]);
+  const [selectedRoundID, setSelectedRoundID] = useState('');
   const [gradeIds, setGradeIds] = useState('');
   const [sectionId, setSectionId] = useState('');
   const [sectionList, setSectionList] = useState([]);
@@ -352,7 +354,8 @@ const AdminCreateBlog = () => {
 
   const handleRound =(e,value) => {
     if(value){
-      console.log(value,'opp')
+      setSelectedRound(value)
+      setSelectedRoundID(value[0].id)
     }
   }
 
@@ -483,6 +486,7 @@ const AdminCreateBlog = () => {
       formData.append('is_draft', false);
       formData.append('template_type',"template");
       formData.append('template_id',checked);
+      formData.append('round_count',selectedRoundID);
       axios
         .post(`${endpoints.newBlog.activityCreate}`, formData, {
           headers: {
@@ -814,9 +818,9 @@ const AdminCreateBlog = () => {
               size='small'
               className='filter-student meeting-form-input'
               options={roundDropdown || []}
-              getOptionLabel={(option) => option?.round || ''}
+              getOptionLabel={(option) => option?.name || ''}
               filterSelectedOptions
-              value={selectedSection || []}
+              value={selectedRound || []}
               onChange={(event, value) => {
                 // handleSection(event, value);
                 handleRound(event,value)

@@ -57,6 +57,7 @@ import BookAppointment from './containers/BookAppointments/BookAppointment';
 import Appointments from './containers/BookAppointments/Appointments';
 import ResponderView from './containers/BookAppointments/ResponderView';
 import AssessmentForm from './containers/sure-learning/assessment_form/assessment_form';
+import PostActivityView from 'containers/newBlog/postActivityView';
 
 import {
   ViewAssessments,
@@ -451,6 +452,7 @@ import GradingCreate from 'containers/assessment-central/grading-system/gradingC
 import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
 import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
 import PhysicalPendingReview from 'containers/newBlog/PhysicalPendingReview';
+import CreatePostActivity from 'containers/newBlog/createPostActivity';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -481,6 +483,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Switch>
                             <Route path='/userprofile'>
                               {({ match }) => <UserProfile match={match} />}
+                            </Route>
+                            <Route path='/post-activity-view'>
+                              {({ match }) => <PostActivityView match={match} />}
+                            </Route>
+                            <Route path='/create-post-activity'>
+                              {({ match }) => <CreatePostActivity match={match} />}
                             </Route>
                             <Route path='/profile'>
                               {({ match }) => <Profile match={match} />}
