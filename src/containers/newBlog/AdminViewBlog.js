@@ -440,7 +440,7 @@ const AdminViewBlog = () => {
   };
 
   useEffect(() =>{
-    if(moduleId && branch_update_user){
+    if(branch_update_user){
       if(selectedAcademicYear?.id > 0)
     var branchIds = branch_update_user?.branches?.map((item) => item?.id)
     setLoading(true)
@@ -461,10 +461,11 @@ const AdminViewBlog = () => {
       }else{
         setLoading(false)
       }
+      setLoading(false)
     });
     }
 
-  },[window.location.pathname, moduleId])
+  },[window.location.pathname])
 
   console.log(unassingeds,'@@')
 
@@ -495,7 +496,7 @@ const AdminViewBlog = () => {
     }
   };
   useEffect(() => {
-    ActvityLocalStorage();
+    // ActvityLocalStorage();
 
     fetchBranches();
   }, []);
@@ -503,8 +504,14 @@ const AdminViewBlog = () => {
 
   useEffect(() => {
     if(selectedBranch?.length !== 0 && searchFlag){
-      getUnAssinged();
-      getAssinged();
+      if(value === 0){
+        getUnAssinged();
+        return
+
+      }else{
+        getAssinged();
+        return;
+      }
     }
   }, [value, selectedBranch, searchFlag,currentPageAssigned,currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
@@ -526,53 +533,53 @@ const AdminViewBlog = () => {
   const closePreview = () => {
     setPreview(false);
   };
-  const ActvityLocalStorage = () => {
-    setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activityWebLogin}`,
-        {},
-        {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        getActivitySession();
+  // const ActvityLocalStorage = () => {
+  //   setLoading(true)
+  //   axios
+  //     .post(
+  //       `${endpoints.newBlog.activityWebLogin}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `${token}`,
+  //           'X-DTS-HOST': X_DTS_HOST,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       // getActivitySession();
 
-        localStorage.setItem(
-          'ActivityManagement',
-          JSON.stringify(response?.data?.result)
-        );
-        setLoading(false)
-      });
-  };
+  //       localStorage.setItem(
+  //         'ActivityManagement',
+  //         JSON.stringify(response?.data?.result)
+  //       );
+  //       setLoading(false)
+  //     });
+  // };
 
-  const [activityStorage, setActivityStorage] = useState([]);
-  const getActivitySession = () => {
-    setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activitySessionLogin}`,
-        {},
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-            Authorization: `${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        setActivityStorage(response.data.result);
-        localStorage.setItem(
-          'ActivityManagementSession',
-          JSON.stringify(response?.data?.result)
-        );
-        setLoading(false)
-      });
-  };
+  // const [activityStorage, setActivityStorage] = useState([]);
+  // const getActivitySession = () => {
+  //   setLoading(true)
+  //   axios
+  //     .post(
+  //       `${endpoints.newBlog.activitySessionLogin}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           'X-DTS-HOST': X_DTS_HOST,
+  //           Authorization: `${token}`,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       setActivityStorage(response.data.result);
+  //       localStorage.setItem(
+  //         'ActivityManagementSession',
+  //         JSON.stringify(response?.data?.result)
+  //       );
+  //       setLoading(false)
+  //     });
+  // };
 
   const EditActivity = (data) => {
     history.push({

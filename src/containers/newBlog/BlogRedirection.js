@@ -11,6 +11,8 @@ import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
+// import axios from 'v2/config/axios';
+import axios from 'axios';
 import endpoints from '../../config/endpoints';
 import { Rating } from '@material-ui/lab';
 import { Breadcrumb, Tabs, Button, Divider } from 'antd';
@@ -121,6 +123,8 @@ const BlogWallRedirect = () => {
   const [loading,setLoading]= useState(false);
 
 
+  console.log(token,'P4')
+
 
   const handleBlogWriting = () => {
     history.push('/blog/studentview')
@@ -130,10 +134,69 @@ const BlogWallRedirect = () => {
     history.push('/blog/publicspeaking')
   }
 
+
+  useEffect(() =>{
+    getActivitySession()
+    ActvityLocalStorage()
+  },[])
+
+  const getActivitySession = () =>{
+    setLoading(true)
+    axios
+    .post(`${endpoints.newBlog.activitySessionLogin}`,
+    {},
+      {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+          Authorization:`${token}`,
+        },
+      }
+    )
+    .then((response) => {
+      // setBlogLoginId(response?.data?.result)
+      localStorage.setItem(
+        'ActivityManagementSession',
+        JSON.stringify(response?.data?.result)
+      );
+
+      setLoading(false)
+      
+    })
+    .catch((err) =>{
+
+      console.log(err)
+    }
+    )
+  }
+
+  const ActvityLocalStorage = () => {
+    setLoading(true)
+    axios
+      .post(
+        `${endpoints.newBlog.activityWebLogin}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((response) => {
+        // getActivitySession();
+
+        localStorage.setItem(
+          'ActivityManagement',
+          JSON.stringify(response?.data?.result)
+        );
+        setLoading(false)
+      });
+  };
+
   const periodDataAPI = () => {
       setLoading(true)
       axiosInstance
-        .get(`${endpoints.newBlog.blogRedirectApi}`, {
+        .get(`${endpoints.newBlog.blogRedirectApi}?type=student`, {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
@@ -155,7 +218,7 @@ const BlogWallRedirect = () => {
 
 
   const handleExplore = (data) => {
-    if (data?.name == "Blog Wall" || data?.name == "Blog Writting" || data?.name == "Blog Writing" ||  data?.name == "blog writting") {
+    if (data?.name == "Blog Activity") {
       handleBlogWriting()
     } else if (data?.name === "Public Speaking") {
       handlePublicSpeaking()
@@ -165,11 +228,11 @@ const BlogWallRedirect = () => {
 
   const getSubjectIcon = (value) => {
     switch(value) {
-      case 'Blog Writing' :
+      case 'Blog Activity' :
         return image2;
       case 'Public Speaking' : 
         return image1;
-      case 'blogger list' :
+      case 'Physical Activity' :
         return image2;
       case 'actiivtytype' : 
         return image1;

@@ -221,7 +221,7 @@ const PendingReview = (props) => {
               endpoints.newBlog.studentSideApi
             }?section_ids=null&&user_id=null&&activity_detail_id=${
               ActivityId?.id
-            }&branch_ids=${branchIds == '' ? null : branchIds}&grade_id=${gradeIds}&is_reviewed=False`,
+            }&branch_ids=${branchIds == '' ? null : branchIds}&grade_id=${gradeIds}&is_reviewed=False&page=${currentPage}&page_size=${limit}`,
             {
               headers: {
                 'X-DTS-HOST': X_DTS_HOST,
@@ -232,7 +232,7 @@ const PendingReview = (props) => {
             props.setFlag(false);
             setTotalCount(response?.data?.count);
             setTotalPages(response?.data?.page_size);
-            setCurrentPage(response?.data?.page + 1);
+            setCurrentPage(response?.data?.page);
             setLimit(Number(limit));
             setAlert('success', response?.data?.message)
             setTotalSubmitted(response?.data?.result);

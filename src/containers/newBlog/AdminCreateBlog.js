@@ -422,6 +422,7 @@ const AdminCreateBlog = () => {
     formatdate.getMinutes() +
     ':' +
     formatdate.getSeconds();
+
   const dataPost = () => {
     setLoading(true)
     const branchIds = selectedBranch.map((obj) => obj?.id);
@@ -505,7 +506,14 @@ const AdminCreateBlog = () => {
           setDescription('');
           setTitle('');
           setStartDate('');
-          history.push('/blog/blogview');
+          if(activityName?.name == "Physical Activity"){
+            history.push('/physical/activity')
+            return
+
+          }else{
+            history.push('/blog/blogview');
+            return
+          }
         });
 
     }
@@ -527,7 +535,7 @@ const AdminCreateBlog = () => {
       .then((response) => {
         setLoading(false)
         setActivityCategory(response.data.result);
-        ActvityLocalStorage();
+        // ActvityLocalStorage();
       });
   };
   useEffect(() => {

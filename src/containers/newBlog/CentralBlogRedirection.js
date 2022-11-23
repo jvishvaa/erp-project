@@ -76,7 +76,6 @@ import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calenda
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-// import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 import {
   fetchBranchesForCreateUser as getBranches,
@@ -199,6 +198,8 @@ const CentralBlogRedirection = () => {
   const [periodData,setPeriodData] = useState([]);
   const [subId,setSubId] = useState('')
   const [loading,setLoading]= useState(false);
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [blogLoginId, setBlogLoginId] = useState('')
 
 
 
@@ -211,6 +212,16 @@ const CentralBlogRedirection = () => {
       pathname:'/physical/activity',
       state: {
         subActiveId: subId,
+      }
+    })
+  }
+
+
+  const handleBlogActivity = () =>{
+    history.push({
+      pathname:'/blog/blogview',
+      state: {
+        blogLoginId : blogLoginId,
       }
     })
   }
@@ -228,6 +239,11 @@ const CentralBlogRedirection = () => {
           setPeriodData(result?.data?.result)
           const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
           setSubId(physicalData[0]?.id)
+          localStorage.setItem(
+            'PhysicalActivityId',
+            JSON.stringify(physicalData[0]?.id)
+          );
+
         })
         .catch((err) => {
           setLoading(false)
@@ -240,25 +256,102 @@ const CentralBlogRedirection = () => {
   },[])
 
 
+  console.log(user_level,'ll')
 
   const handleExplore = (data) => {
-    if (data?.name == "Blog Wall" || data?.name == "Blog Writing" ||  data?.name == "blog writting" ) {
-      handleBlogWriting()
-    } else if (data?.name === "Public Speaking") {
+    let dataLower = data?.name.toLowerCase()
+    if (dataLower == "blog wall" || dataLower == "blog writing" ||  dataLower == "blog writting" ) {
+      // handleBlogWriting()
+      return
+    } else if (dataLower === "public speaking") {
         handlePublicSpeaking()
-    } else if(data?.name === "Physical Activity") {
+        return
+    } else if(dataLower === "physical activity") {
         handlePublicSpeaking()
+        return
+    }else if(dataLower === "art writting" || dataLower === "blog activity"){
+      if(user_level === 2 || user_level === 8 || user_level === 11){
+        handleBlogActivity()
+        return
+      }else if(user_level === 13){
+       
+        handleBlogWriting()
+        return
+      }
+      return
+    }else{
+      setAlert('error', 'Level Does Not Exist')
+      return
     }
   }
 
+  useEffect(() =>{
+    getActivitySession()
+    ActvityLocalStorage()
+  },[])
+
+
+  const getActivitySession = () =>{
+    setLoading(true)
+    axios
+    .post(`${endpoints.newBlog.activitySessionLogin}`,
+    {},
+      {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+          Authorization: `${token}`,
+        },
+      }
+    )
+    .then((response) => {
+      setBlogLoginId(response?.data?.result)
+      localStorage.setItem(
+        'ActivityManagementSession',
+        JSON.stringify(response?.data?.result)
+      );
+
+      setLoading(false)
+      
+    })
+    .catch((err) =>{
+
+      console.log(err)
+    }
+    )
+  }
+
+  const ActvityLocalStorage = () => {
+    setLoading(true)
+    axios
+      .post(
+        `${endpoints.newBlog.activityWebLogin}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((response) => {
+        // getActivitySession();
+
+        localStorage.setItem(
+          'ActivityManagement',
+          JSON.stringify(response?.data?.result)
+        );
+        setLoading(false)
+      });
+  };
+
   const getSubjectIcon = (value) => {
     switch(value) {
-      case 'Blog Writing' :
+      case 'Blog Activity' :
         return image2;
       case 'Public Speaking' : 
         return image1;
-      case 'blogger list' :
-        return image2;
+      case 'Physical Activity' :
+        return image1;
       case 'actiivtytype' : 
         return image1;
       default : 
@@ -287,7 +380,7 @@ const CentralBlogRedirection = () => {
               <Divider orientation="left" orientationMargin="0" style={{ fontSize: '22px' }}>Activities</Divider>
             </div>
             <div className='row p-3' style={{ height: 500, overflowY: 'scroll' }}>
-              {
+              {periodData &&
                 periodData?.map((each,index) =>
                   // each?.data?.map((item) => (
                   <div className='col-md-4 pl-0 mt-2'>

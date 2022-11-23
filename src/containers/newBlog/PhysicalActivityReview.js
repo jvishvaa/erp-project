@@ -758,7 +758,6 @@ const PhysicalActivityReview = () => {
             )}
           </div>
         </div>
-        {console.log(value,'kl 33')}
         {value == 0 && <PhysicalPendingReview  selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
         {/* {value == 1 && <NotSubmitted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
 

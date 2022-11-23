@@ -217,6 +217,7 @@ const PhysicalActivity = () => {
   const [loading,setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const physicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId'))
   // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const [subjectData, setSubjectData] = useState([]);
   const token = dataes?.token;
@@ -445,7 +446,7 @@ const PhysicalActivity = () => {
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.physicalActivityListApi}?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${sudActId}`,{
+        `${endpoints.newBlog.physicalActivityListApi}?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${sudActId ? sudActId : physicalActivityId}`,{
           params: {
             ...(boardId ? {branch_ids: boardId} : {})
           },
@@ -541,7 +542,7 @@ const PhysicalActivity = () => {
     }
   };
   useEffect(() => {
-    ActvityLocalStorage();
+    // ActvityLocalStorage();
 
     fetchBranches();
   }, []);
@@ -683,7 +684,7 @@ const PhysicalActivity = () => {
 
 const fetchSubActivityListData = () => {
   axiosInstance
-    .get(`${endpoints.newBlog.subActivityListApi}?type_id=${sudActId}`,{
+    .get(`${endpoints.newBlog.subActivityListApi}?type_id=${sudActId ? sudActId : physicalActivityId }`,{
       headers: {
         'X-DTS-HOST': X_DTS_HOST,
       },
@@ -818,7 +819,7 @@ const fetchSubActivityListData = () => {
           </div>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                Physical Activities
+                Physical Activity
               </Breadcrumb.Item>
             </Breadcrumb>
         </div>
@@ -936,7 +937,7 @@ const fetchSubActivityListData = () => {
           >
            
             <Tab
-            label='Activities'
+            label='Physical Activities'
             classes={{
               selected: classes.selected2,
             }}

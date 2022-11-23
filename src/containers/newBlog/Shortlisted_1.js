@@ -475,7 +475,7 @@ const Shortlisted_1 = (props) => {
   
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&is_bookmarked=True&is_published=False`,
+          `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&is_bookmarked=True&is_published=False&page=${currentPage}&page_size=${limit}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,

@@ -239,8 +239,8 @@ import axiosInstance from 'config/axios';
 
     const ActivityManagement =(sourceData) =>{
           axios
-            .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${1}&grade_id=${2}&section_id=${1}&activity_id=${1784}`, {
-              // .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${props.selectedBranch}&grade_id=${props.selectedGrade}&section_id=${props.setSubjectName}&activity_id=${ActivityId?.id}`, {
+            // .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${1}&grade_id=${2}&section_id=${1}&activity_id=${1784}`, {
+              .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${props.selectedBranch}&grade_id=${props.selectedGrade}&section_id=${props.setSubjectName}&activity_id=${ActivityId?.id}`, {
               headers: {
                 'X-DTS-HOST': X_DTS_HOST,
               },

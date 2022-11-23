@@ -97,6 +97,7 @@ const dummyData = [
 const PhysicalReviewed = (props) => {
   const [value, setValue] = React.useState();
   const [totalSubmitted, setTotalSubmitted] = useState([]);
+  const PhysicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId')) || {};
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -182,7 +183,7 @@ const PhysicalReviewed = (props) => {
   
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?&user_id=null&activity_detail_id=${1784}&is_reviewed=True&is_submitted=True&grade_id=${2}&branch_ids=${1}&section_ids=${1}`,
+          `${endpoints.newBlog.studentSideApi}?&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&is_submitted=True&grade_id=${props.selectedGrade}&branch_ids=${props.selectedBranch}&section_ids=${props.selectedSubject}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -192,13 +193,16 @@ const PhysicalReviewed = (props) => {
         .then((response) => {
           setTotalCount(response?.data?.count)
           setTotalPages(response?.data?.page_size)
-          setCurrentPage(response?.data?.page + 1)
+          setCurrentPage(response?.data?.page)
           setLimit(Number(limit))
           props.setFlag(false)
           setAlert('success', response?.data?.message)
           setTotalSubmitted(response?.data?.result);
           setLoading(false)
-        });
+        })
+        .catch((err) =>{
+          setLoading(false)
+        })
       
     }
   };
