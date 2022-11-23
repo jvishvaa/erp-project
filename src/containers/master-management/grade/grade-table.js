@@ -32,6 +32,7 @@ import '../master-management.css';
 import Loading from '../../../components/loader/loader';
 import GradeCard from './grade-card';
 import axios from 'axios';
+import { Modal } from 'antd';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -54,16 +55,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const columns = [
-  { id: 'grade_name', label: 'Grade', minWidth: 100 },
+  { id: 'grade_name', label: 'School Grade', minWidth: 100 },
   { id: 'grade_by', label: 'Eduvate Grade Name', minWidth: 100 },
   { id: 'created_by', label: 'Created by', minWidth: 100 },
-  {
-    id: 'actions',
-    label: 'Actions',
-    minWidth: 170,
-    align: 'right',
-    labelAlign: 'center',
-  },
+  // {
+  //   id: 'actions',
+  //   label: 'Actions',
+  //   minWidth: 170,
+  //   align: 'right',
+  //   labelAlign: 'center',
+  // },
 ];
 
 const GradeTable = () => {
@@ -84,12 +85,28 @@ const GradeTable = () => {
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
   const [goBackFlag, setGoBackFlag] = useState(false);
-  const [ centralGrades , setCentralGrades ] = useState()
+  const [centralGrades, setCentralGrades] = useState()
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
+
+  // const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const showModal = () => {
+    setOpen(true);
+  };
+  const handleOk = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setOpen(false);
+    }, 3000);
+  };
+  const handleCancel = () => {
+    setOpen(false);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
@@ -102,12 +119,13 @@ const GradeTable = () => {
   };
 
   const handleEditGrade = (id, name, type) => {
-    setTableFlag(false);
-    setAddFlag(false);
+    // setTableFlag(false);
+    // setAddFlag(false);
     setEditFlag(true);
     setGradeId(id);
     setGradeName(name);
     setGradeType(type);
+    setOpen(true)
   };
 
   const handleGoBack = () => {
@@ -174,19 +192,19 @@ const GradeTable = () => {
       .catch((error) => {
         setAlert('error', error?.response?.data.message || error?.response?.data.msg);
       });
-      getCentralGrades()
+    getCentralGrades()
   }, [delFlag, goBackFlag, page, searchGrade]);
 
   const getCentralGrades = () => {
     axiosInstance
-    .get(`${endpoints.masterManagement.centralGrades}`)
-    .then((result) => {
-     console.log(result);
-     setCentralGrades(result?.data?.result)
-    })
-    .catch((error) => {
-      setAlert('error', error?.response?.data.message || error?.response?.data.msg);
-    });
+      .get(`${endpoints.masterManagement.centralGrades}`)
+      .then((result) => {
+        console.log(result);
+        setCentralGrades(result?.data?.result)
+      })
+      .catch((error) => {
+        setAlert('error', error?.response?.data.message || error?.response?.data.msg);
+      });
   }
 
   return (
@@ -200,24 +218,29 @@ const GradeTable = () => {
             addFlag && !tableFlag
               ? 'Add Grade'
               : editFlag && !tableFlag
-              ? 'Edit Grade'
-              : null
+                ? 'Edit Grade'
+                : null
           }
         />
         {!tableFlag && addFlag && !editFlag && (
           <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack} centralGrades={centralGrades} />
         )}
-        {!tableFlag && !addFlag && editFlag && (
+        {/* {!tableFlag && !addFlag && editFlag && (
           <EditGrade
             id={gradeId}
             name={gradeName}
             type={gradeType}
             handleGoBack={handleGoBack}
             setLoading={setLoading}
+            loading={loading}
+            open={open}
+            showModal={showModal}
+            handleCancel={handleCancel}
+            handleOk={handleOk}
           />
-        )}
+        )} */}
 
-        {tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && (
           <Grid
             container
             spacing={isMobile ? 3 : 5}
@@ -255,7 +278,7 @@ const GradeTable = () => {
           </Grid>
         )}
 
-        {tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -277,8 +300,23 @@ const GradeTable = () => {
                   {grades.map((grade, index) => {
                     return (
                       <TableRow hover grade='checkbox' tabIndex={-1} key={index}>
-                        <TableCell className={classes.tableCell}>
-                          {grade?.grade_name}
+                        <TableCell className={classes.tableCell} style={{display: 'flex' , justifyContent: 'center'}} >
+                          <div style={{display: 'flex' , justifyContent: 'space-between' , width: '20%'}} >
+                          <span style={{display: 'flex' , alignItems: 'center' , minWidth: '100px'}}>{grade?.grade_name}</span>
+                            <IconButton
+                              onClick={(e) =>
+                                handleEditGrade(
+                                  grade.id,
+                                  grade.grade_name,
+                                  grade.grade_type
+                                )
+                              }
+                              title='Edit Grade'
+                              style={{marginLeft: '10%'}}
+                            >
+                              <EditOutlinedIcon />
+                            </IconButton>
+                          </div>
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           {grade?.grade_type}
@@ -286,8 +324,8 @@ const GradeTable = () => {
                         <TableCell className={classes.tableCell}>
                           {grade?.created_by || ''}
                         </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {/* <IconButton
+                        {/* <TableCell className={classes.tableCell}>
+                          <IconButton
                             onClick={(e) => {
                               setGradeName(grade.grade_name);
                               handleOpenDeleteModal(grade.id);
@@ -296,7 +334,7 @@ const GradeTable = () => {
 
                           >
                             <DeleteOutlinedIcon />
-                          </IconButton> */}
+                          </IconButton>
 
                           <IconButton
                             onClick={(e) =>
@@ -310,7 +348,7 @@ const GradeTable = () => {
                           >
                             <EditOutlinedIcon />
                           </IconButton>
-                        </TableCell>
+                        </TableCell> */}
                       </TableRow>
                     );
                   })}
@@ -381,6 +419,21 @@ const GradeTable = () => {
           </DialogActions>
         </Dialog>
       </Layout>
+      {gradeName && gradeId && (
+        <EditGrade
+          id={gradeId}
+          name={gradeName}
+          type={gradeType}
+          handleGoBack={handleGoBack}
+          setLoading={setLoading}
+          loading={loading}
+          open={open}
+          showModal={showModal}
+          handleCancel={handleCancel}
+          handleOk={handleOk}
+          setOpen={setOpen}
+        />
+      )}
     </>
   );
 };

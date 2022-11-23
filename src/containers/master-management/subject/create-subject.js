@@ -231,9 +231,7 @@ const CreateSubject = ({ setLoading, handleGoBack, centralSubjects }) => {
           <Button style={{ minWidth: '5%', margin: '0 1%' }} onClick={handleGoBack}>Back</Button>
         </div>
         <div style={{ padding: '2%', width: '50%', margin: '0 auto' }} className='tableSubjectAdd'>
-          <div style={{ marginBottom: '1%', display: 'flex', justifyContent: 'space-between' }} >
-            <Button className='buttonAddSub' style={{ minWidth: '10%' }} onClick={showModal}>Add Subject</Button>
-          </div>
+          
           <div>
             <Table
               rowSelection={rowSelection}
@@ -245,6 +243,9 @@ const CreateSubject = ({ setLoading, handleGoBack, centralSubjects }) => {
                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
               }
             />
+          </div>
+          <div style={{ margin: '1% 0', display: 'flex', justifyContent: 'space-between' }} >
+            <Button className='buttonAddSub' style={{ minWidth: '10%' }} onClick={showModal}>Add Subject</Button>
           </div>
         </div>
         {/* } */}
