@@ -200,6 +200,8 @@ export default {
     updateTopic: '/assessment/',
     erpSystemConfig: '/erp_user/erp_system_config/',
     defaultAcademicYear: '/erp_user/default-current-session-year/',
+    centralGrades : '/erp_user/v1/grades-list/',
+    centralSubjects : '/erp_user/v1/subjects-list/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',

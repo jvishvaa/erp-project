@@ -30,6 +30,7 @@ const QuestionBankCard = ({
   showAddToQuestionPaper,
   periodColor,
   toggleComplete,
+  toggleCompleteQuestion,
   isSelectAll,
   redFlag,
   checkbox,
@@ -202,11 +203,21 @@ const QuestionBankCard = ({
       <Grid container spacing={2}>
         <Grid item sm = {11} xs={8}>
           <Box style={{display:'flex', alignItems:'center'}}>
-            {period?.question_status === '3' ? 
+            {period?.question_status === '3' && window.location.search?.length == 0 ? 
               <Checkbox
               id={period?.id}
               checked={period?.checked}
               onChange={(e) => toggleComplete(e,period,index)} 
+              name={period?.id}
+              size="small"
+             inputProps={{ 'aria-label': 'primary checkbox' }}
+             />
+          : ''}
+             {showAddToQuestionPaper && period?.question_status === '2' ? 
+              <Checkbox
+              id={period?.id}
+              checked={period?.checked}
+              onChange={(e) => toggleCompleteQuestion(e,period,index)} 
               name={period?.id}
               size="small"
              inputProps={{ 'aria-label': 'primary checkbox' }}
