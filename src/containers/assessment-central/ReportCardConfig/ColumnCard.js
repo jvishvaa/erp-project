@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   Grid,
   TextField,
-  Button,
   makeStyles,
-  Checkbox
+  Checkbox,
+  Button,
+  Modal
 } from "@material-ui/core";
-import Modal from "@material-ui/core/Modal";
-import Assesment from "../../../containers/assessment-central";
 import RemoveIcon from '@material-ui/icons/Remove';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,6 +19,8 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { indexOf } from "lodash";
+import AssesmentSelection from './assessmentSelection'
+// import { Modal } from "antd";
 
 
 const useStyles = makeStyles(theme => ({
@@ -233,9 +234,9 @@ function ColumnCard({ subComponentId, componentId, columnId,
             >
               <div
                 className={classes.paper}
-                style={{ width: "86%", height: "100%" }}
+                style={{ width: "86%", height: "100%",overflow:'scroll' }}
               >
-                <Assesment
+                <AssesmentSelection
                   handleColumnSelectedTestChange={handleColumnSelectedTestChange}
                   handleClose={handleClose}
                 />

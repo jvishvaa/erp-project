@@ -36,10 +36,10 @@ const CreateAnnouncement = () => {
   const [selectedUserLevels, setSelectedUserLevels] = useState();
   const [branchId, setBranchId] = useState('');
   const [gradeData, setGradeData] = useState([]);
-  const [gradeIds, setGradeIds] = useState();
+  const [gradeIds, setGradeIds] = useState([]);
   const [sectionData, setSectionData] = useState([]);
-  const [sectionIds, setSectionIds] = useState();
-  const [sectionMappingIds, setSectionMappingIds] = useState();
+  const [sectionIds, setSectionIds] = useState([]);
+  const [sectionMappingIds, setSectionMappingIds] = useState([]);
   const [membersCount, setMembersCount] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -49,7 +49,7 @@ const CreateAnnouncement = () => {
   const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const isStudentIncluded = selectedUserLevels?.includes(13);
-
+  const [allGradesSelected, setAllGradesSelected] = useState(false);
   const { TextArea } = Input;
 
   const handleUploadModalClose = () => {
@@ -138,8 +138,8 @@ const CreateAnnouncement = () => {
         params: { ...params },
       })
       .then((res) => {
-        if (res.data.status_code === 200) {
-          setSectionData(res.data.data);
+        if (res?.data?.status_code === 200) {
+          setSectionData(res?.data?.data);
         }
       })
       .catch((error) => {
@@ -156,7 +156,7 @@ const CreateAnnouncement = () => {
   const gradeOptions = gradeData?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each?.grade_id}>
-        {each?.grade_name}
+        {each?.grade__grade_name}
       </Option>
     );
   });
@@ -195,33 +195,54 @@ const CreateAnnouncement = () => {
     setSectionMappingIds([]);
   };
 
-  const handleGrade = (e) => {
-    const grades = e.map((item) => item?.value).join(',');
-    setGradeIds(grades);
-    setSectionData([]);
+  const handleSelectGrade = (value, arr) => {
+    if (value == 'all') {
+      formRef.current.setFieldsValue({
+        grade: arr,
+      });
+      setGradeIds(arr);
+    } else {
+      if (!gradeIds.includes(value)) {
+        setGradeIds([...gradeIds, Number(value)]);
+      }
+    }
+  };
+  const handleDeSelectGrade = (each) => {
     formRef.current.setFieldsValue({
       section: [],
     });
+    const index = gradeIds.indexOf(each?.value);
+    const newGradeList = gradeIds.slice();
+    newGradeList.splice(index, 1);
+    setGradeIds(newGradeList);
+  };
 
-    if (grades) {
-      fetchSectionData({
-        session_year: selectedAcademicYear?.id,
-        branch_id: branchId,
-        module_id: moduleId,
-        grade_id: grades,
+  const handleSelectSection = (each) => {
+    if (each.value == 'all') {
+      formRef.current.setFieldsValue({
+        section: sectionData?.map((item) => item.id),
       });
+
+      setSectionIds(sectionData.map((item) => item.section_id));
+      setSectionMappingIds(sectionData.map((item) => item.id));
+    } else {
+      if (!sectionIds.includes(each.sectionId)) {
+        setSectionIds([...sectionIds, Number(each.sectionId)]);
+      }
+      if (!sectionMappingIds.includes(each.value)) {
+        setSectionMappingIds([...sectionMappingIds, Number(each.value)]);
+      }
     }
   };
-  const handleClearGrade = () => {
-    setGradeIds([]);
-    setSectionIds([]);
-    setSectionMappingIds([]);
-  };
-  const handleSection = (e) => {
-    const sections = e.map((item) => item?.sectionId).join(',');
-    const sectionMappingIds = e.map((item) => item?.value).join(',');
-    setSectionIds(sections);
-    setSectionMappingIds(sectionMappingIds);
+  const handleDeSelectSection = (each) => {
+    const sectionIdIndex = sectionIds.indexOf(each?.sectionId);
+    const newSectionIdList = sectionIds.slice();
+    newSectionIdList.splice(sectionIdIndex, 1);
+    setSectionIds(newSectionIdList);
+    const sectionMappingIdIndex = sectionMappingIds.indexOf(each?.value);
+    const newSectionMappingIdList = sectionMappingIds.slice();
+    newSectionMappingIdList.splice(sectionMappingIdIndex, 1);
+    setSectionIds(newSectionMappingIdList);
   };
   const handleClearSection = () => {
     setSectionIds([]);
@@ -280,7 +301,7 @@ const CreateAnnouncement = () => {
         message.error('Please select atleast one grade');
         return;
       }
-      if (!sectionIds) {
+      if (sectionIds.length < 1) {
         message.error('Please select atleast one section');
         return;
       }
@@ -304,7 +325,7 @@ const CreateAnnouncement = () => {
       payLoad['intimate_via_whatsapp'] = true;
     }
     if (isStudentIncluded) {
-      payLoad['section_mapping_id'] = sectionMappingIds;
+      payLoad['section_mapping_id'] = sectionMappingIds.join(',');
     }
     if (intimation.includes('Intimate Via Email')) {
       payLoad['intimate_via_email'] = true;
@@ -356,16 +377,16 @@ const CreateAnnouncement = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedUserLevels)
+    if (selectedUserLevels) {
       if (isStudentIncluded) {
-        if (sectionIds) {
+        if (sectionIds.length > 0) {
           fetchMembersCount({
             role_id: selectedUserLevels,
             session_year: selectedAcademicYear?.id,
             branch_id: branchId,
             is_allowed_for_all: true,
-            section_id: sectionIds,
-            grade_id: gradeIds,
+            section_id: sectionIds.join(','),
+            grade_id: gradeIds.join(','),
           });
         }
       } else {
@@ -376,8 +397,32 @@ const CreateAnnouncement = () => {
           is_allowed_for_all: true,
         });
       }
+    }
   }, [selectedUserLevels, gradeIds, sectionIds]);
 
+  useEffect(() => {
+    setSectionData([]);
+    if (gradeIds.length > 0) {
+      fetchSectionData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: branchId,
+        module_id: moduleId,
+        grade_id: gradeIds.join(','),
+      });
+    }
+  }, [gradeIds]);
+
+  useEffect(() => {
+    if (sectionData.length > 0) {
+      // if (allGradesSelected) {
+      formRef.current.setFieldsValue({
+        section: sectionData?.map((item) => item.id),
+      });
+      setSectionIds(sectionData?.map((item) => item?.section_id));
+      setSectionMappingIds(sectionData?.map((item) => item?.id));
+      // }
+    }
+  }, [sectionData]);
   return (
     <Layout>
       <div className='row'>
@@ -462,8 +507,8 @@ const CreateAnnouncement = () => {
                   <div className='col-md-6 py-3 py-md-0'>
                     <span className='th-grey th-14'>Choose User Level*</span>
                     <Select
-                      getPopupContainer={(trigger) => trigger.parentNode}
                       mode='multiple'
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       maxTagCount={5}
                       allowClear={true}
                       suffixIcon={<DownOutlined className='th-grey' />}
@@ -488,17 +533,23 @@ const CreateAnnouncement = () => {
                         <span className='th-grey th-14'>Grades*</span>
                         <Form.Item name='grade'>
                           <Select
-                            getPopupContainer={(trigger) => trigger.parentNode}
                             mode='multiple'
+                            getPopupContainer={(trigger) => trigger.parentNode}
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                             placement='bottomRight'
                             showArrow={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            maxTagCount={3}
-                            allowClear={true}
+                            maxTagCount={2}
                             dropdownMatchSelectWidth={false}
-                            onChange={(e, value) => handleGrade(value)}
-                            onClear={handleClearGrade}
+                            onSelect={(e) => {
+                              handleSelectGrade(
+                                e,
+                                gradeData?.map((item) => item.grade_id)
+                              );
+                            }}
+                            onDeselect={(e, value) => {
+                              handleDeSelectGrade(value);
+                            }}
                             filterOption={(input, options) => {
                               return (
                                 options.children
@@ -507,6 +558,13 @@ const CreateAnnouncement = () => {
                               );
                             }}
                           >
+                            {gradeData.length > 1 && (
+                              <>
+                                <Option key={0} value={'all'}>
+                                  All
+                                </Option>
+                              </>
+                            )}
                             {gradeOptions}
                           </Select>
                         </Form.Item>
@@ -515,16 +573,22 @@ const CreateAnnouncement = () => {
                         <span className='th-grey th-14'>Sections*</span>
                         <Form.Item name='section'>
                           <Select
-                            getPopupContainer={(trigger) => trigger.parentNode}
                             mode='multiple'
+                            value={sectionMappingIds}
+                            getPopupContainer={(trigger) => trigger.parentNode}
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                             placement='bottomRight'
                             showArrow={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            maxTagCount={3}
+                            maxTagCount={2}
                             allowClear={true}
                             dropdownMatchSelectWidth={false}
-                            onChange={(e, value) => handleSection(value)}
+                            onSelect={(e, value) => {
+                              handleSelectSection(value);
+                            }}
+                            onDeselect={(e, value) => {
+                              handleDeSelectSection(value);
+                            }}
                             onClear={handleClearSection}
                             filterOption={(input, options) => {
                               return (
@@ -534,6 +598,13 @@ const CreateAnnouncement = () => {
                               );
                             }}
                           >
+                            {sectionData.length > 1 && (
+                              <>
+                                <Option key={0} value={'all'}>
+                                  All
+                                </Option>
+                              </>
+                            )}
                             {sectionOptions}
                           </Select>
                         </Form.Item>

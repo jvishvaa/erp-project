@@ -45,6 +45,8 @@ import Loader from './../../../components/loader/loader';
 import Checkbox from '@material-ui/core/Checkbox';
 import './styles.scss';
 import AssesmentTest from './assesment-test';
+import { addQuestionPaperToTest } from '../../../redux/actions';
+
 
 const testTypes = [
   { id: 1, name: 'Online' },
@@ -68,6 +70,7 @@ const CreateAssesment = ({
   initialTotalMarks,
   initQuestionsLength,
   initResetFormState,
+  initAddQuestionPaperToTest
 }) => {
   const [CentralFilter, setCentralFilter] = useState(false);
   const [flag, setFlag] = useState(false);
@@ -113,6 +116,10 @@ const CreateAssesment = ({
   const [values, setValues] = useState({ val: [] });
   const [sectionWiseTest, setSectionWiseTest] = useState(false)
 
+  const EditData = location?.state?.data;
+  const isEdit = location?.state?.isEdit;
+
+
   const formik = useFormik({
     initialValues: {
       test_mode: '',
@@ -122,6 +129,102 @@ const CreateAssesment = ({
     validateOnChange: false,
     validateOnBlur: false,
   });
+
+  useEffect(() => {
+if(isEdit && EditData){
+    setTestName(EditData?.test_name);
+    setTestId(EditData?.test_id);
+    setTestDate(EditData?.test_date);
+    setTestDuration(EditData?.test_duration);
+    setTotalmarks(EditData?.total_mark);
+    initChangeTestFormFields('testName', EditData?.test_name);
+    initChangeTestFormFields('testId', EditData?.test_id);
+    initChangeTestFormFields('testDate', EditData?.test_date);
+    initChangeTestFormFields('testDuration', EditData?.test_duration);
+    initChangeTestFormFields('totalMarks', EditData?.total_mark);
+    // setTestMarks(EditData?.test_name);
+    // initAddQuestionPaperToTest({
+    //   is_central : EditData?.central_qp_id !== null ? true : false
+    // });
+   let typetest =  testTypes.filter((item) => item?.id == EditData?.test_mode)
+    formik.setFieldValue('test_mode', typetest[0]);
+    initSetFilter('selectedTestType', typetest[0]);
+
+if(EditData?.has_sub_groups){
+  setSectionToggle(true)
+}
+
+}
+  },[isEdit])
+
+  useEffect(() => {
+if(isEdit && branchDropdown.length){
+  let branchDetail = EditData?.branch_details
+  let data = branchDetail?.map((item) => {
+    let dict = {
+      branch: {
+        id : item?.branch_id,
+        branch_name : item?.branch_name
+      },
+      id : item?.acad_session_id
+    }
+    return dict
+  })
+  handleBranch('',data)
+  axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${EditData?.acad_session_id}&grade=${EditData?.grade_id}&is_active=${true}&is_assessment=${true}&is_central_grade=${EditData?.question_paper_id == null ? true : false}`).then((result) => {
+    if (result?.status === 200) {
+      setGroupList(result?.data)
+    }
+  })
+}
+  },[isEdit,branchDropdown])
+
+  useEffect(() => {
+if(isEdit && groupList.length && EditData?.group_id !== null){
+  let filteredgroup = groupList.filter((item) => item?.id === EditData?.group_id)
+handleGroup('',filteredgroup)
+}
+  },[groupList])
+
+  useEffect(() => {
+    if(branchId?.length && isEdit){
+      getEditSection(EditData?.grade_id)
+    }
+  },[EditData,branchId])
+
+
+  useEffect(() => {
+    if(assesmentTypes?.length && isEdit){
+      let assessmentType =  assesmentTypes?.filter((item) =>item?.exam_name == EditData?.test_type__exam_name)
+
+      formik.setFieldValue('test_type', assessmentType[0]);
+      if(assessmentType[0]?.exam_name == 'Quiz'){
+        setSectionWiseTest(false)
+      }
+    }
+    
+  },[isEdit,assesmentTypes.length])
+
+  useEffect(() => {
+    setInstructions(EditData?.instructions);
+    initChangeTestFormFields('testInstructions', EditData?.instructions);
+  },[EditData,branchId])
+
+  useEffect(() => {
+    if(sectionList.length && isEdit){
+      let sectionFilterData = []
+      let sectionData = sectionList?.filter((item) => {
+        let v = EditData?.section_mapping.forEach((id) => {
+          if(id === item?.id){
+            sectionFilterData.push(item)
+          }
+        })
+        // return item?.id
+       })
+       setSelectedSectionData(sectionFilterData)
+       setSelectedSectionMappingId(EditData?.section_mapping)
+    }
+  },[sectionList.length])
 
   const resetForm = () => {
     setTestName('');
@@ -165,7 +268,7 @@ const CreateAssesment = ({
   // }, [moduleId]);
 
   useEffect(() => {
-    if (selectedQuestionPaper?.is_central && moduleId) {
+    if ((selectedQuestionPaper?.is_central || EditData?.central_qp_id != null) && moduleId) {
       setCentralFilter(true);
       axiosInstance
         .get(
@@ -188,7 +291,7 @@ const CreateAssesment = ({
           setAlert('error', error?.message);
         });
     }
-  }, [selectedQuestionPaper?.is_central, moduleId]);
+  }, [selectedQuestionPaper?.is_central, moduleId,isEdit]);
 
   const getSection = (gradeID) => {
     let branchID = selectedQuestionPaper?.is_central ? branchId : branchIdFromErp;
@@ -216,6 +319,34 @@ const CreateAssesment = ({
       .finally((e) => setLoading(false));
   };
 
+
+  const getEditSection = (gradeID) => {
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${endpoints.academics.sectionsV2}?acad_session=${branchId}&grade=${gradeID}&is_central=${EditData?.question_paper_id == null ? true : false}`
+      )
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          const transformData = res?.data?.result.map((item) => ({
+            section_name: item.section_name,
+            id: item.id,
+          }));
+          if(transformData?.length > 1){
+          transformData.unshift({
+            section_name: 'Select All',
+            id: 'all',
+          });
+        }
+          setSectionList(transformData);
+        } else {
+          setSectionList([]);
+        }
+        setLoading(false);
+      })
+      .finally((e) => setLoading(false));
+  };
+
   useEffect(() => {
     if (
       selectedQuestionPaper &&
@@ -228,7 +359,7 @@ const CreateAssesment = ({
   }, [branchIdFromErp]);
 
   useEffect(() => {
-    if (branch.length > 0) {
+    if (branch.length > 0 && !isEdit) {
       getSection(selectedQuestionPaper?.grade);
     }
   }, [branch]);
@@ -255,6 +386,8 @@ const CreateAssesment = ({
       }
     })
   };
+
+
 
   useEffect(() => {
     if (selectedQuestionPaper) {
@@ -510,6 +643,15 @@ const CreateAssesment = ({
     }
   };
 
+  const handleBack = () => {
+    history.push({
+      pathname: '/assesment',
+      state: {
+        filtersData: location?.state?.filterData,
+      },
+    });
+  };
+
   const handleChangeTestMarks = (
     questionId,
     isQuestion,
@@ -647,6 +789,7 @@ const CreateAssesment = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           let data = result?.data?.data?.results;
+          setBranchDropdown(data)
           let filterBranch = data.filter(
             (item) => selectedQuestionPaper?.academic_session.indexOf(item?.id) !== -1
           );
@@ -662,10 +805,10 @@ const CreateAssesment = ({
       .finally((e) => setLoading(false));
   };
   useEffect(() => {
-    if (selectedQuestionPaper && !selectedQuestionPaper?.is_central && moduleId) {
+    if (((selectedQuestionPaper && !selectedQuestionPaper?.is_central) || EditData?.question_paper_id != null) && moduleId) {
       getBranch();
     }
-  }, [selectedQuestionPaper, moduleId]);
+  }, [selectedQuestionPaper, moduleId , isEdit]);
   useEffect(() => {
     if (selectedQuestionPaper) {
       // initFetchQuestionPaperDetails(3);
@@ -703,6 +846,86 @@ const CreateAssesment = ({
   const handleChangeSection = (event) => {
     setSectionWiseTest(event.target.checked);
   };
+
+  const updateTest = () => {
+
+    if (!branchId) {
+      setAlert('warning', 'Please Select Branch');
+      return;
+    }
+    if (totalMarks < 0 || totalMarks > 1000) {
+      setAlert('warning', 'Please enter valid marks.');
+      return;
+    }
+
+    if (testDuration < 0 || testDuration > 1441) {
+      setAlert('warning', 'Please enter valid duration.');
+      return;
+    }
+    if (!instructions.length) {
+      return setAlert('warning', 'Please Enter Test Instruction ');
+    }
+    if (!formik.values.test_type?.id) {
+      setAlert('error', 'Select Assessment Type');
+      return;
+    }
+    if (!formik.values.test_mode?.id) {
+      setAlert('error', 'Select Test Mode');
+      return;
+    }
+
+    let reqObj = {
+      // question_paper: EditData?.id,
+      test_name: testName,
+      total_mark: totalMarks,
+      test_mode: formik.values.test_mode?.id,
+      test_type: formik.values.test_type?.id,
+      test_duration: testDuration,
+      instructions,
+      descriptions: 'Assessment',
+      acad_session : branchId,
+      
+      // has_sub_groups : 
+      // group : 
+      // is_question_wise: !paperchecked,
+      // grade: selectedQuestionPaper['grade'],
+      // subjects: selectedQuestionPaper['subjects'],
+      // acad_session:
+      //   CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
+      // is_central: selectedQuestionPaper['is_central'],
+    };
+
+    if (!sectionToggle && selectedSectionData?.length > 0) {
+      reqObj = { ...reqObj, section_mapping: selectedSectionMappingId };
+    }
+
+    if (sectionToggle && groupSectionMappingId.length > 0) {
+      reqObj = {
+        ...reqObj,
+        has_sub_groups: true,
+        group: selectedGroupId,
+        section_mapping: groupSectionMappingId,
+      };
+    }
+    
+    setLoading(true)
+      axiosInstance.patch(
+        `${endpoints.assessmentErp.deleteAssessmentTest}${EditData?.id}/test/`, 
+          reqObj
+      ).then((results) => {
+        setLoading(false)
+        if (results?.data?.status_code === 200) {
+          setAlert("success", results?.data?.message);
+          handleBack()
+          // filterResults(1); // 1 is the current page no.
+        } else {
+          setLoading(false)
+          setAlert("error", results?.response?.data?.message);
+        }
+      }).catch((error) => {
+        setAlert("error", error?.response?.data?.message);
+      })
+  }
 
   return (
     <Layout>
@@ -816,7 +1039,7 @@ const CreateAssesment = ({
                             size='small'
                           />
                         </Grid>
-                        {CentralFilter === true ? (
+                        {(CentralFilter === true || isEdit) ? (
                           <Grid item xs={12} md={4}>
                             <Autocomplete
                               id='branch_name'
@@ -892,15 +1115,23 @@ const CreateAssesment = ({
                           </Grid>
                         } */}
                       </Grid>
-                      {selectedQuestionPaper && (
+                      {(selectedQuestionPaper || isEdit) && (
                         <Grid container alignItems='center' style={{ marginTop: 15 }}>
                           <Grid
                             container
-                            alignItems='center'
-                            justifyContent='center'
                             xs={12}
                             md={4}
                           >
+                            <Grid 
+                            xs={6}
+                            md={2}>
+                            <Button color='primary' variant = 'contained' 
+                            onClick={handleBack}
+                            >
+                              Back
+                            </Button>
+                            </Grid>
+                            <div className='d-flex' style={{marginLeft:'20%'}}>
                             <Typography>Section</Typography>
                             <Switch
                               checked={sectionToggle}
@@ -909,6 +1140,7 @@ const CreateAssesment = ({
                               inputProps={{ 'aria-label': 'checkbox with default color' }}
                             />
                             <Typography>Group</Typography>
+                            </div>
                           </Grid>
                           {sectionToggle ? (
                             <Grid item xs={12} md={4}>
@@ -1003,6 +1235,7 @@ const CreateAssesment = ({
             testDuration={testDuration}
             testDate={testDate}
             testInstructions={instructions}
+            isEdit = {isEdit}
             totalMarks={totalMarks}
             onTestNameChange={(value) => {
               setTestName(value);
@@ -1051,6 +1284,7 @@ const CreateAssesment = ({
             sectionDate={sectionDate}
             values={values}
             sectionWiseTest={sectionWiseTest}
+            updateTest = {updateTest}
           />
         </div>
       </div>
@@ -1080,5 +1314,7 @@ const mapDispatchToProps = (dispatch) => ({
   initCreateAssesment: (data) => dispatch(createAssesment(data)),
   initChangeTestFormFields: (field, data) => dispatch(changeTestFormField(field, data)),
   initResetFormState: () => dispatch(resetFormState()),
+  initAddQuestionPaperToTest: (data) => dispatch(addQuestionPaperToTest(data)),
+
 });
 export default connect(mapStateToProps, mapDispatchToProps)(CreateAssesment);

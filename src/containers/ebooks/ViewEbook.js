@@ -16,9 +16,15 @@ import GridList from './gridList';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { getModuleInfo } from '../../utility-functions';
-import './viewEbook.css'
+import './viewEbook.css';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
+import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 
+const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -82,6 +88,7 @@ class ViewEbook extends Component {
       selectedSubject: '',
       selectedVolume: '',
       central_branchid: '',
+      showGrievanceModal: false,
     };
   }
   static contextType = AlertNotificationContext;
@@ -105,6 +112,9 @@ class ViewEbook extends Component {
         } else {
         }
       });
+  };
+  handleCloseGrievanceModal = () => {
+    this.setState({ showGrievanceModal: false });
   };
 
   handleCentralGradeId = (central_branchid) => {
@@ -336,28 +346,33 @@ class ViewEbook extends Component {
 
   render() {
     const { classes } = this.props;
-    const { tabValue, data, totalEbooks, pageNo, pageSize, startDate, endDate } =
-      this.state;
+    const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+    const {
+      tabValue,
+      data,
+      totalEbooks,
+      pageNo,
+      pageSize,
+      startDate,
+      endDate,
+      showGrievanceModal,
+    } = this.state;
 
     return (
-  
-        <Layout className='layout-container'>
+      <Layout className='layout-container'>
         <FeeReminder />
-        <div className='layout-container-div ebookscroll' style={{
-        // background: 'white',
-        height: '90vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-      }}>
-          <div
-            className='message_log_wrapper'
-            style={{ backgroundColor: '#F9F9F9' }}
-          >
+        <div
+          className='layout-container-div ebookscroll'
+          style={{
+            // background: 'white',
+            height: '90vh',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+          }}
+        >
+          <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
             <div style={{ backgroundColor: '#F9F9F9' }}>
-              <div
-                className='create_group_filter_container'
-               
-              >
+              <div className='create_group_filter_container'>
                 <Grid container spacing={2}>
                   <Grid item md={12} xs={12} style={{ textAlign: 'left' }}>
                     <CommonBreadcrumbs
@@ -408,6 +423,27 @@ class ViewEbook extends Component {
                         </TabPanel>
                       </div>
                     </Grid>
+                    {(user_level == 13 || user_level == 12) && isOrchids ? (
+                      <div
+                        className='col-md-12 text-right th-pointer'
+                        onClick={() => this.setState({ showGrievanceModal: true })}
+                      >
+                        Not able to see the Ebooks?
+                        <span
+                          className='th-primary pl-1'
+                          style={{ textDecoration: 'underline' }}
+                        >
+                          Raise your query
+                        </span>
+                      </div>
+                    ) : null}
+                    {this.state.showGrievanceModal && (
+                      <GrievanceModal
+                        title={'Ebook Related Query'}
+                        showGrievanceModal={this.state.showGrievanceModal}
+                        handleClose={this.handleCloseGrievanceModal}
+                      />
+                    )}
                     <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
                       {this.state.data.length > 0 && (
                         <Pagination
@@ -424,9 +460,8 @@ class ViewEbook extends Component {
               </div>
             </div>
           </div>
-          </div>
-        </Layout>
-      
+        </div>
+      </Layout>
     );
   }
 }

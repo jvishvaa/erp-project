@@ -49,6 +49,7 @@ import { Button, Select, Switch } from 'antd';
 import './styles.scss';
 import { IsV2Checker } from 'v2/isV2Checker';
 import { isMsAPI } from 'utility-functions';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
 
@@ -385,7 +386,7 @@ const Appbar = ({ children, history, ...props }) => {
       });
     return result;
   };
-
+  
   const handleSwitchChange = (item) => {
     sessionStorage.removeItem('branch_list');
     sessionStorage.removeItem('selected_branch');

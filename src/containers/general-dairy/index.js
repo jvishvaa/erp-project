@@ -20,6 +20,13 @@ import { Context } from './context/context';
 import { useLocation } from 'react-router-dom';
 import DailyDairy from '../daily-dairy/dairy-card/index';
 import ViewMoreDailyDairyCard from '../daily-dairy/view-more-card/index';
+import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+
+const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,12 +70,14 @@ const GeneralDairyList = () => {
   const [endDate, setEDate] = useState([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [initialFlag, setInitialFlag] = useState(false);
-  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
 
   const [academic_year, setAcademicYear] = useState([]);
   const [subjects, setSubjects] = useState();
   const [moduleId, setModuleId] = useState(0);
   const [multipleGradeId, setMultipleGradeId] = useState([]);
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [showGrievanceModal, setShowGrievanceModal] = useState(false);
 
   // subjects,
   //   moduleId,
@@ -81,7 +90,19 @@ const GeneralDairyList = () => {
 
   const handlePagination = (event, page) => {
     setPage(page);
-    handleDairyList(branch, grade, sections, startDate, endDate, activeTab, page, subjects, moduleId, academic_year, multipleGradeId);
+    handleDairyList(
+      branch,
+      grade,
+      sections,
+      startDate,
+      endDate,
+      activeTab,
+      page,
+      subjects,
+      moduleId,
+      academic_year,
+      multipleGradeId
+    );
   };
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -89,7 +110,7 @@ const GeneralDairyList = () => {
   useEffect(() => {
     // if(page !== 1 && branch && grade && sections && startDate && endDate && activeTab)
     //   handleDairyList(branch,grade,sections,startDate,endDate,activeTab)
-    if (NavData && NavData.length) {     
+    if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
           item.parent_modules === 'Diary' &&
@@ -113,8 +134,20 @@ const GeneralDairyList = () => {
         }
       });
     }
-    if (initialFlag){      
-      handleDairyList(branch, grade, sections, startDate, endDate, activeTab, page, subjects, moduleId, academic_year, multipleGradeId);
+    if (initialFlag) {
+      handleDairyList(
+        branch,
+        grade,
+        sections,
+        startDate,
+        endDate,
+        activeTab,
+        page,
+        subjects,
+        moduleId,
+        academic_year,
+        multipleGradeId
+      );
     }
   }, [location.pathname, page, deleteFlag]);
 
@@ -130,8 +163,7 @@ const GeneralDairyList = () => {
     moduleId,
     academic_year,
     multipleGradeId
-  ) => {  
-    
+  ) => {
     setLoading(true);
     setPeriodData([]);
     setBranch(branchId);
@@ -144,10 +176,10 @@ const GeneralDairyList = () => {
     setViewMore(false);
     setPeriodDataForView('');
     setSelectedIndex(-1);
-    setSubjects(subjects)
-    setModuleId(moduleId)
+    setSubjects(subjects);
+    setModuleId(moduleId);
     setAcademicYear(academic_year);
-    setMultipleGradeId(multipleGradeId)
+    setMultipleGradeId(multipleGradeId);
     // setPeriodColor(false)
     const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (isTeacher) {
@@ -193,7 +225,7 @@ const GeneralDairyList = () => {
           setLoading(false);
           setPeriodData(result.data.result.results);
           setTotalPages(result.data.result.total_pages);
-          setInitialFlag(true)
+          setInitialFlag(true);
         } else {
           setLoading(false);
           setAlert('error', result.data.description);
@@ -208,6 +240,11 @@ const GeneralDairyList = () => {
   const handleDairyType = (type) => {
     setDairyType(type);
   };
+
+  const handleCloseGrievanceModal = () => {
+    setShowGrievanceModal(false);
+  };
+
   const isTeacher = location.pathname === '/diary/teacher' ? true : false;
   const path = isTeacher ? 'Teacher Diary' : 'Student Diary';
 
@@ -215,147 +252,168 @@ const GeneralDairyList = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-      <div className='assessment-ques' style={{
-        background: 'white',
-        height: '90vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-      }} >
-        <CommonBreadcrumbs componentName='Diary' childComponentName={path} />
-        <GeneralDairyFilter
-          handleDairyList={handleDairyList}
-          setPeriodData={setPeriodData}
-          isTeacher={isTeacher}
-          sessionYear={sessionYear}
-          showSubjectDropDown={showSubjectDropDown}
-          studentModuleId={studentModuleId}
-          // pageup={page}
-          //  setCurrentTab={setCurrentTab}
-        />
-        <Paper className={classes.root}>
-          {periodData?.length > 0 ? (
-            <Grid
-              container
-              style={
-                isMobile
-                  ? { width: '95%', margin: '20px auto' }
-                  : { width: '100%', margin: '20px auto' }
-              }
-              spacing={5}
-            >
-              <Grid item xs={12} sm={viewMore && periodData?.length > 0 ? 7 : 12}>
-                <Grid container spacing={isMobile ? 3 : 5}>
-                  {periodData.map((period, i) => (
-                    <Grid
-                      item
-                      xs={12}
-                      style={isMobile ? { marginLeft: '-8px' } : null}
-                      sm={viewMore && periodData?.length > 0 ? 6 : 4}
-                    >
-                      {period.dairy_type === '1' && (
-                        <PeriodCard
-                          index={i}
-                          lesson={period}
-                          viewMore={viewMore}
-                          setLoading={setLoading}
-                          setViewMore={setViewMore}
-                          setViewMoreData={setViewMoreData}
-                          setPeriodDataForView={setPeriodDataForView}
-                          setSelectedIndex={setSelectedIndex}
-                          // setSelectedIndex={setSelectedIndex}
-                          periodColor={selectedIndex === i ? true : false}
-                          setPeriodColor={setPeriodColor}
-                          handleDairyType={handleDairyType}
-                          deleteFlag={deleteFlag}
-                          setDeleteFlag={setDeleteFlag}
-                        />
-                      )}
-                      {period.dairy_type === '2' ? (
-                        <DailyDairy
-                          index={i}
-                          lesson={period}
-                          viewMore={viewMore}
-                          setLoading={setLoading}
-                          setViewMore={setViewMore}
-                          setViewMoreData={setViewMoreData}
-                          setPeriodDataForView={setPeriodDataForView}
-                          setSelectedIndex={setSelectedIndex}
-                          // setSelectedIndex={setSelectedIndex}
-                          periodColor={selectedIndex === i ? true : false}
-                          setPeriodColor={setPeriodColor}
-                          handleDairyType={handleDairyType}
-                          deleteFlag={deleteFlag}
-                          setDeleteFlag={setDeleteFlag}
-                        />
-                      ) : (
-                        ''
-                      )}
-                    </Grid>
-                  ))}
+        <div
+          className='assessment-ques'
+          style={{
+            background: 'white',
+            height: '90vh',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+          }}
+        >
+          <CommonBreadcrumbs componentName='Diary' childComponentName={path} />
+          <GeneralDairyFilter
+            handleDairyList={handleDairyList}
+            setPeriodData={setPeriodData}
+            isTeacher={isTeacher}
+            sessionYear={sessionYear}
+            showSubjectDropDown={showSubjectDropDown}
+            studentModuleId={studentModuleId}
+            // pageup={page}
+            //  setCurrentTab={setCurrentTab}
+          />
+          <Paper className={classes.root}>
+            {periodData?.length > 0 ? (
+              <Grid
+                container
+                style={
+                  isMobile
+                    ? { width: '95%', margin: '20px auto' }
+                    : { width: '100%', margin: '20px auto' }
+                }
+                spacing={5}
+              >
+                <Grid item xs={12} sm={viewMore && periodData?.length > 0 ? 7 : 12}>
+                  <Grid container spacing={isMobile ? 3 : 5}>
+                    {periodData.map((period, i) => (
+                      <Grid
+                        item
+                        xs={12}
+                        style={isMobile ? { marginLeft: '-8px' } : null}
+                        sm={viewMore && periodData?.length > 0 ? 6 : 4}
+                      >
+                        {period.dairy_type === '1' && (
+                          <PeriodCard
+                            index={i}
+                            lesson={period}
+                            viewMore={viewMore}
+                            setLoading={setLoading}
+                            setViewMore={setViewMore}
+                            setViewMoreData={setViewMoreData}
+                            setPeriodDataForView={setPeriodDataForView}
+                            setSelectedIndex={setSelectedIndex}
+                            // setSelectedIndex={setSelectedIndex}
+                            periodColor={selectedIndex === i ? true : false}
+                            setPeriodColor={setPeriodColor}
+                            handleDairyType={handleDairyType}
+                            deleteFlag={deleteFlag}
+                            setDeleteFlag={setDeleteFlag}
+                          />
+                        )}
+                        {period.dairy_type === '2' ? (
+                          <DailyDairy
+                            index={i}
+                            lesson={period}
+                            viewMore={viewMore}
+                            setLoading={setLoading}
+                            setViewMore={setViewMore}
+                            setViewMoreData={setViewMoreData}
+                            setPeriodDataForView={setPeriodDataForView}
+                            setSelectedIndex={setSelectedIndex}
+                            // setSelectedIndex={setSelectedIndex}
+                            periodColor={selectedIndex === i ? true : false}
+                            setPeriodColor={setPeriodColor}
+                            handleDairyType={handleDairyType}
+                            deleteFlag={deleteFlag}
+                            setDeleteFlag={setDeleteFlag}
+                          />
+                        ) : (
+                          ''
+                        )}
+                      </Grid>
+                    ))}
+                  </Grid>
                 </Grid>
-              </Grid>
 
-              {viewMore && periodData?.length > 0 && dairyType === 1 && (
-                <Grid item xs={12} sm={5} style={{ width: '100%' }}>
-                  <ViewMoreCard
-                    viewMoreData={viewMoreData}
-                    setViewMore={setViewMore}
-                    periodDataForView={periodDataForView}
-                    setSelectedIndex={setSelectedIndex}
-                  />
-                </Grid>
-              )}
-              {viewMore && periodData?.length > 0 && dairyType === 2 && (
-                <Grid item xs={12} sm={5} style={{ width: '100%' }}>
-                  <ViewMoreDailyDairyCard
-                    viewMoreData={viewMoreData}
-                    setViewMore={setViewMore}
-                    periodDataForView={periodDataForView}
-                    setSelectedIndex={setSelectedIndex}
-                  />
-                </Grid>
-              )}
-            </Grid>
-          ) : (
-            <div className='periodDataUnavailable'>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={
-                      isMobile
-                        ? { height: '100px', width: '200px' }
-                        : { height: '160px', width: '290px' }
-                    }
-                    src={unfiltered}
-                  />
+                {viewMore && periodData?.length > 0 && dairyType === 1 && (
+                  <Grid item xs={12} sm={5} style={{ width: '100%' }}>
+                    <ViewMoreCard
+                      viewMoreData={viewMoreData}
+                      setViewMore={setViewMore}
+                      periodDataForView={periodDataForView}
+                      setSelectedIndex={setSelectedIndex}
+                    />
+                  </Grid>
                 )}
-              />
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={
-                      isMobile
-                        ? { height: '20px', width: '250px' }
-                        : { height: '50px', width: '400px', marginLeft: '5%' }
-                    }
-                    src={selectfilter}
-                  />
+                {viewMore && periodData?.length > 0 && dairyType === 2 && (
+                  <Grid item xs={12} sm={5} style={{ width: '100%' }}>
+                    <ViewMoreDailyDairyCard
+                      viewMoreData={viewMoreData}
+                      setViewMore={setViewMore}
+                      periodDataForView={periodDataForView}
+                      setSelectedIndex={setSelectedIndex}
+                    />
+                  </Grid>
                 )}
-              />
+              </Grid>
+            ) : (
+              <div className='periodDataUnavailable'>
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={
+                        isMobile
+                          ? { height: '100px', width: '200px' }
+                          : { height: '160px', width: '290px' }
+                      }
+                      src={unfiltered}
+                    />
+                  )}
+                />
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={
+                        isMobile
+                          ? { height: '20px', width: '250px' }
+                          : { height: '50px', width: '400px', marginLeft: '5%' }
+                      }
+                      src={selectfilter}
+                    />
+                  )}
+                />
+              </div>
+            )}
+            {periodData?.length > 0 && (
+              <div className='paginateData paginateMobileMargin'>
+                <Pagination
+                  onChange={handlePagination}
+                  style={{ marginTop: 25 }}
+                  count={Math.ceil(totalCount / limit)}
+                  color='primary'
+                  page={page}
+                />
+              </div>
+            )}
+          </Paper>
+          {(user_level == 13 || user_level == 12) && isOrchids ? (
+            <div
+              className='col-md-12 text-right th-pointer'
+              onClick={() => setShowGrievanceModal(true)}
+            >
+              Having any issues with Dairy ?
+              <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+                Raise your query
+              </span>
             </div>
+          ) : null}
+          {showGrievanceModal && (
+            <GrievanceModal
+              title={'Dairy Related Query'}
+              showGrievanceModal={showGrievanceModal}
+              handleClose={handleCloseGrievanceModal}
+            />
           )}
-          {periodData?.length > 0 && (
-            <div className='paginateData paginateMobileMargin'>
-              <Pagination
-                onChange={handlePagination}
-                style={{ marginTop: 25 }}
-                count={Math.ceil(totalCount / limit)}
-                color='primary'
-                page={page}
-              />
-            </div>
-          )}
-        </Paper>
         </div>
       </Layout>
     </>

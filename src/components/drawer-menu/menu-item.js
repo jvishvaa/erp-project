@@ -214,7 +214,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Report Card Pipeline', Path: '/assessment/report-card-pipeline' },
     { name: 'Report Card Category', Path: '/assessment/category' },
     { name: 'Report Config', Path: '/assessment/report-config' },
-    { name: 'Question Bank', Path: '/question-bank' },
+    { name: 'Question Bank', Path: '/question-chapter-wise' },
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },
@@ -614,11 +614,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name: 'Evaluation',
-      Path: '/observation-report',
+      Path: '/observation-evalutaion',
     },
     {
       name: 'Observation Report',
-      Path: '/pdf-table',
+      Path: '/observation-report',
     },
     {
       name: 'Create Activity',

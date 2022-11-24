@@ -57,6 +57,8 @@ import BookAppointment from './containers/BookAppointments/BookAppointment';
 import Appointments from './containers/BookAppointments/Appointments';
 import ResponderView from './containers/BookAppointments/ResponderView';
 import AssessmentForm from './containers/sure-learning/assessment_form/assessment_form';
+import Chapterwise from './containers/question-bank-new/question-bank-list/chapterwise'
+import PostActivityView from 'containers/newBlog/postActivityView';
 
 import {
   ViewAssessments,
@@ -97,7 +99,10 @@ import {
 import AdminViewBlog from './containers/newBlog/AdminViewBlog';
 import AdminCreateBlog from './containers/newBlog/AdminCreateBlog';
 import AdminPublishBlogShort from './containers/newBlog/Shortlisted';
-// import BlogWall from './containers/blog/Admin/BlogWall';
+import BlogWall from 'containers/newBlog/BlogWall';
+import BlogWallRedirect from 'containers/newBlog/BlogRedirection';
+import CentralBlogRedirection from 'containers/newBlog/CentralBlogRedirection';
+import PublicSpeakingWall from 'containers/newBlog/PublicSpeaking';
 import StudentViewBlog from './containers/newBlog/StudentSideBlog';
 import NewEditBlog from './containers/newBlog/StudentBlog';
 import CreateActivityType from './containers/newBlog/CreateActivityType';
@@ -448,6 +453,10 @@ import OnboardingReport from 'containers/user-management/onboarding-report/onboa
 import AddTemplates from './containers/newBlog/addTemplates';
 import Gradingview from 'containers/assessment-central/grading-system/gradingview';
 import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
+import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
+import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
+import PhysicalPendingReview from 'containers/newBlog/PhysicalPendingReview';
+import CreatePostActivity from 'containers/newBlog/createPostActivity';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -478,6 +487,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Switch>
                             <Route path='/userprofile'>
                               {({ match }) => <UserProfile match={match} />}
+                            </Route>
+                            <Route path='/post-activity-view'>
+                              {({ match }) => <PostActivityView match={match} />}
+                            </Route>
+                            <Route path='/create-post-activity'>
+                              {({ match }) => <CreatePostActivity match={match} />}
                             </Route>
                             <Route path='/profile'>
                               {({ match }) => <Profile match={match} />}
@@ -550,6 +565,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                         */}
                             <Route exact path='/question-bank'>
                               {({ match }) => <QuestionBankList match={match} />}
+                            </Route>
+                            <Route exact path='/question-chapter-wise'>
+                              {({ match }) => <Chapterwise match={match} />}
                             </Route>
                             <Route exact path='/create-question/:qId?'>
                               {({ match }) => <CreateQuestion match={match} />}
@@ -661,9 +679,27 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/blog/create'>
                               {({ match }) => <AdminCreateBlog match={match} />}
                             </Route>
-                            {/* <Route exact path='/blog/wall'>
+                            <Route exact path='/blog/wall'>
                               {({ match }) => <BlogWall match={match} />}
+                            </Route>
+                            <Route exact path='/blog/wall/redirect'>
+                              {({ match }) => <BlogWallRedirect match={match} />}
+                            </Route>
+                            <Route exact path='/physical/activity'>
+                              {({ match }) => <PhysicalActivity match={match} />}
+                            </Route>
+                            <Route exact path='/physical/activity/review'>
+                              {({ match }) => <PhysicalActivityReview match={match} />}
+                            </Route>
+                            <Route exact path='/blog/wall/central/redirect'>
+                              {({ match }) => <CentralBlogRedirection match={match} />}
+                            </Route>
+                            {/* <Route exact path="phsical/pending/review">
+                                {({match}) => <PhysicalPendingReview/>}
                             </Route> */}
+                            <Route exact path='/blog/publicspeaking'>
+                              {({ match }) => <PublicSpeakingWall match={match} />}
+                            </Route>
                             <Route exact path='/blog/short'>
                               {({ match }) => <AdminPublishBlogShort match={match} />}
                             </Route>
@@ -1579,7 +1615,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/observation'>
                               {({ match }) => <Observationarea match={match} />}
                             </Route>
-                            <Route path='/observation-report'>
+                            <Route path='/observation-evalutaion'>
                               {({ match }) => <Observationreport match={match} />}
                             </Route>
                             <Route exact path='/finance/student_shuffle'>

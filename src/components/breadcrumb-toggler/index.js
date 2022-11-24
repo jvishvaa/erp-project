@@ -36,14 +36,14 @@ const BreadcrumbToggler = ({ isFilter, setIsFilter, children }) => {
   const classes = useStyles();
   return (
     <div className={classes.breadCrumbFilterRow}>
-      {children}
+      {children}      
       <div className='hideShowFilterIcon'>
         <IconButton onClick={() => setIsFilter(!isFilter)}>
-          {!isMobile && (
+          {/* {!isMobile && (
             <div className='togglerTag'>
               {isFilter ? 'Close Filter' : 'Expand Filter'}
             </div>
-          )}
+          )} */}
           <SvgIcon
             component={() => (
               <img

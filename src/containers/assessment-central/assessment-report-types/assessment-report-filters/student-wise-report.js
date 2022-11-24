@@ -165,7 +165,7 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
       })
 
       .catch((error) => {
-        setAlert('error', 'Error While Fetching Report Card');
+        setAlert('error', error.response.data.message ||  "Error while fetching Report card");
         setIsLoading(false);
         setisstudentList(false)
       });

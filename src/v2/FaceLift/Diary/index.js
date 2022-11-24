@@ -1,15 +1,27 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
-import { Breadcrumb, Select, Tabs, Button, DatePicker, message, Form, Spin } from 'antd';
+import {
+  Breadcrumb,
+  Select,
+  Tabs,
+  Button,
+  DatePicker,
+  message,
+  Spin,
+  Divider,
+} from 'antd';
 import moment from 'moment';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import DiaryCard from 'v2/FaceLift/Diary/Diary-Card/index';
-import { DownOutlined } from '@ant-design/icons';
+import GeneralDiaryCard from 'v2/FaceLift/Diary/Diary-Card/GeneralDiaryCard.js';
+import DailyDiaryCard from 'v2/FaceLift/Diary/Diary-Card/DailyDiaryCard.js';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 
+const { RangePicker } = DatePicker;
+const dateFormat = 'YYYY-MM-DD';
 const Diary = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -17,13 +29,17 @@ const Diary = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  let isStudentDiary = window.location.pathname.includes('diary/student');
+  const [selectedSubject, setSelectedSubject] = useState('');
   const [moduleId, setModuleId] = useState();
-  const [diaryListData, setDiaryListData] = useState([]);
+  const [generalDiaryList, setGeneralDiaryList] = useState([]);
+  const [dailyDiaryData, setDailyDiaryData] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState();
   const [gradeID, setGradeID] = useState();
   const [loading, setLoading] = useState(false);
   const [sectionDropdown, setSectionDropdown] = useState();
   const [sectionID, setSectionID] = useState();
+  const [date, setDate] = useState(moment().format(dateFormat));
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [showTab, setShowTab] = useState('1');
@@ -36,56 +52,52 @@ const Diary = () => {
   const history = useHistory();
   const { TabPane } = Tabs;
 
-  const { RangePicker } = DatePicker;
-  const dateFormat = 'YYYY/MM/DD';
-
-  const onChange = (key) => {
+  const onTabChange = (key) => {
     setShowTab(key);
   };
 
-  const handleDateChange = (value) => {
-    if (value) {
-      setStartDate(moment(value[0]).format('YYYY-MM-DD'));
-      setEndDate(moment(value[1]).format('YYYY-MM-DD'));
-    }
+  const fetchDailyDiaryList = () => {
+    setLoading(true);
+    axios
+      .get(`/academic/new/dialy-diary-messages/?date=${date}&diary_type=2`)
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setDailyDiaryData(response?.data?.result);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+        setLoading(false);
+      });
   };
 
-  const fetchDiaryList = () => {
-    if (!sectionID || !gradeID) {
-      message.error('Please Select All Filters');
-    } else {
-      setLoading(true);
-      setDataFiltered(true);
-      const params = {
-        module_id: moduleId,
-        session_year: selectedAcademicYear?.id,
-        branch: selectedBranch?.branch?.id,
-        grades: gradeID,
-        sections: sectionID,
-        page: 1,
-        // page_size: 6,
-        start_date: startDate,
-        end_date: endDate,
-      };
-      axios
-        .get(`${endpoints.generalDiary.diaryList}`, { params })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            setDiaryListData(result?.data?.result?.results);
-            setLoading(false);
-          }
-        })
-        .catch((error) => {
-          message.error('error', error?.message);
-          setLoading(false);
-        });
-    }
+  const fetchGeneralDiaryList = () => {
+    setLoading(true);
+    const params = {
+      date_fetch: date,
+      dairy_type: 1,
+      module_id: moduleId,
+      session_year: selectedAcademicYear?.id,
+      branch: selectedBranch?.branch?.id,
+    };
+    axios
+      .get(`${endpoints.generalDiary.diaryList}`, { params })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setGeneralDiaryList(response?.data?.result?.results);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+        setLoading(false);
+      });
   };
-
   const handleCreateGeneralDiary = () => {
     history.push('/create/general-diary');
   };
-
+  console.log('showTabData', dailyDiaryData);
   const handleCreateDailyDiary = () => {
     history.push('/create/daily-diary');
   };
@@ -102,7 +114,7 @@ const Diary = () => {
     setSectionDropdown([]);
     setGradeID();
     setSectionID();
-    setDiaryListData([]);
+    // setDiaryListData([]);
     setDataFiltered(false);
   };
 
@@ -190,205 +202,161 @@ const Diary = () => {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    if (selectedBranch && moduleId) {
-      fetchGradeData();
+    if (date) {
+      showTab == '1' ? fetchDailyDiaryList() : fetchGeneralDiaryList();
     }
-  }, [moduleId]);
+  }, [date, showTab]);
 
+  const handleDateChange = (value) => {
+    setDate(moment(value).format(dateFormat));
+  };
   return (
     <Layout>
-      <div className='row'>
+      <div className='row th-bg-white'>
         <div className='col-12 px-md-4'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-black-1'>Diary</Breadcrumb.Item>
-            <Breadcrumb.Item className='th-black-1'>Teacher Diary</Breadcrumb.Item>
+            <Breadcrumb.Item className='th-grey'>Diary</Breadcrumb.Item>
+            <Breadcrumb.Item className='th-black-1'>View Diary</Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <div className='row mt-3'>
-          <div className='col-12 px-2 px-md-3'>
-            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-              <div className='row py-2'>
-                <div className='col-md-4 px-md-2'>
-                  <Form.Item name='grade'>
-                    <Select
-                      mode='multiple'
-                      className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                      placement='bottomRight'
-                      placeholder='Grades'
-                      showArrow={true}
-                      suffixIcon={<DownOutlined className='th-grey' />}
-                      maxTagCount={2}
-                      allowClear={true}
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, value) => handleGrade(value)}
-                      onClear={handleClearGrade}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {gradeOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-4'>
-                  <Form.Item name='section'>
-                    <Select
-                      mode='multiple'
-                      placeholder='Sections'
-                      className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                      placement='bottomRight'
-                      showArrow={true}
-                      suffixIcon={<DownOutlined className='th-grey' />}
-                      maxTagCount={2}
-                      allowClear={true}
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, value) => handleSection(value)}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {sectionOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-4'>
-                  <RangePicker
-                    className='th-width-100 th-br-4'
-                    onChange={(value) => handleDateChange(value)}
-                    defaultValue={[moment(), moment()]}
-                    format={dateFormat}
-                    separator={'to'}
-                  />
-                </div>
-              </div>
-            </Form>
+        <div className='row p-2 '>
+          <div className='col-md-2'>
+            <DatePicker
+              className='th-br-6 th-date-picker w-100'
+              disabledDate={(current) => current.isAfter(moment())}
+              allowClear={false}
+              placement='bottomRight'
+              defaultValue={moment()}
+              showToday={false}
+              onChange={handleDateChange}
+              format={dateFormat}
+            />
           </div>
+          {!isStudentDiary && (
+            <div className='col-md-2'>
+              <Button
+                type='primary'
+                className='th-br-6 th-bg-primary th-pointer th-white'
+                onClick={() => history.push('/create-diary')}
+                block
+              >
+                <PlusOutlined className='ml-2' />
+                Create Diary
+              </Button>
+            </div>
+          )}
         </div>
-
-        <div className='row p-2'>
-          <div className='col-md-2 col-6 mb-2 mb-md-0'>
-            <Button
-              type='primary'
-              className='th-br-6 th-pointer th-bg-grey th-black-2'
-              onClick={handleClearAll}
-              block
-            >
-              Clear All
-            </Button>
+        {showTab == 1 && (
+          <div className='row px-2'>
+            {dailyDiaryData.length > 0 ? (
+              <>
+                {dailyDiaryData.length > 1 && (
+                  <>
+                    <div className='col-md-2 col-6'>
+                      <Button
+                        className={`${
+                          selectedSubject == '' ? 'th-button-active' : 'th-button'
+                        } th-width-100 th-br-6 mt-2`}
+                        onClick={() => setSelectedSubject('')}
+                      >
+                        All Subjects
+                      </Button>
+                    </div>
+                  </>
+                )}
+                {dailyDiaryData?.map((item, i) => (
+                  <div className='col-md-2 col-6'>
+                    <Button
+                      className={`${
+                        item?.subject_id == selectedSubject
+                          ? 'th-button-active'
+                          : 'th-button'
+                      } th-width-100 th-br-6 mt-2`}
+                      onClick={() => setSelectedSubject(item?.subject_id)}
+                    >
+                      {item?.subject_name}
+                    </Button>
+                  </div>
+                ))}
+              </>
+            ) : null}
           </div>
-          <div className='col-md-2 col-6 mb-2 mb-md-0'>
-            <Button
-              type='primary'
-              className='th-br-6 th-bg-primary th-pointer th-white'
-              onClick={fetchDiaryList}
-              block
-            >
-              Filter
-            </Button>
-          </div>
-          <div className='col-md-3 mb-2 mb-md-0'>
-            <Button
-              type='primary'
-              className='th-br-6 th-bg-primary th-pointer th-white'
-              onClick={handleCreateGeneralDiary}
-              block
-            >
-              Create General Diary
-            </Button>
-          </div>
-          <div className='col-md-3 mb-2 mb-md-0'>
-            <Button
-              type='primary'
-              className='th-br-6 th-pointer th-bg-primary th-white'
-              onClick={handleCreateDailyDiary}
-              block
-            >
-              Create Daily Diary
-            </Button>
-          </div>
-        </div>
+        )}
         <div className='row px-3 py-3'>
-          <Tabs defaultActiveKey='1' onChange={onChange} className='th-width-100 px-3'>
-            <TabPane tab='All' key='1' className='th-pointer'>
+          <Tabs activeKey={showTab} onChange={onTabChange} className='th-width-100 px-3'>
+            <TabPane tab='Daily Diary' key='1' className='th-pointer'>
+              <div className='row th-bg-white'>
+                {loading ? (
+                  <div className='th-width-100 text-center mt-5'>
+                    <Spin tip='Loading...'></Spin>
+                  </div>
+                ) : dailyDiaryData.length > 0 ? (
+                  <div
+                    className='col-12 px-0'
+                    style={{ maxHeight: 400, overflowY: 'scroll' }}
+                  >
+                    {dailyDiaryData
+                      ?.filter((item) => {
+                        if (selectedSubject) {
+                          return item?.subject_id == selectedSubject;
+                        } else {
+                          return item;
+                        }
+                      })
+                      .map((each) => {
+                        return (
+                          <div className='row px-0 th-black-1 th-divider'>
+                            <Divider
+                              className=''
+                              orientation='left'
+                              orientationMargin='0'
+                            >
+                              <span className='th-fw-700 th-22'>
+                                {each?.subject_name}
+                              </span>
+                            </Divider>
+                            {each?.grade_data?.map((item) => {
+                              return (
+                                <div className='col-md-4 mb-2 pl-0'>
+                                  <DailyDiaryCard
+                                    diary={item}
+                                    subject={each}
+                                    fetchDiaryList={fetchDailyDiaryList}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                  </div>
+                ) : (
+                  <div className='row justify-content-center pt-5'>
+                    <img src={NoDataIcon} />
+                  </div>
+                )}
+              </div>
+            </TabPane>
+            <TabPane tab='General Diary' key='2' className='th-pointer'>
               <div className='row'>
                 {loading ? (
                   <div className='th-width-100 text-center mt-5'>
                     <Spin tip='Loading...'></Spin>
                   </div>
-                ) : diaryListData.length > 0 ? (
-                  diaryListData?.map((diary, i) => (
-                    <div className='col-md-4 mb-2'>
-                      <DiaryCard
+                ) : generalDiaryList.length > 0 ? (
+                  generalDiaryList.map((diary, i) => (
+                    <div className='col-md-4 mb-2 pl-0'>
+                      <GeneralDiaryCard
                         diary={diary}
                         showTab={showTab}
-                        fetchDiaryList={fetchDiaryList}
+                        fetchDiaryList={fetchGeneralDiaryList}
                       />
                     </div>
                   ))
                 ) : (
-                  dataFiltered && (
-                    <div className='row justify-content-center pt-5'>
-                      <img src={NoDataIcon} />
-                    </div>
-                  )
-                )}
-              </div>
-            </TabPane>
-            <TabPane tab='Daily Diary' key='2' className='th-pointer'>
-              <div className='row'>
-                {loading ? (
-                  <div className='th-width-100 text-center mt-5'>
-                    <Spin tip='Loading...'></Spin>
+                  <div className='row justify-content-center pt-5'>
+                    <img src={NoDataIcon} />
                   </div>
-                ) : diaryListData?.filter((item) => item.dairy_type == 2).length > 0 ? (
-                  diaryListData
-                    ?.filter((item) => item.dairy_type == 2)
-                    .map((diary, i) => (
-                      <div className='col-md-4 mb-2'>
-                        <DiaryCard
-                          diary={diary}
-                          showTab={showTab}
-                          fetchDiaryList={fetchDiaryList}
-                        />
-                      </div>
-                    ))
-                ) : (
-                  dataFiltered && (
-                    <div className='row justify-content-center pt-5'>
-                      <img src={NoDataIcon} />
-                    </div>
-                  )
-                )}
-              </div>
-            </TabPane>
-            <TabPane tab='General Diary' key='3' className='th-pointer'>
-              <div className='row'>
-                {loading ? (
-                  <div className='th-width-100 text-center mt-5'>
-                    <Spin tip='Loading...'></Spin>
-                  </div>
-                ) : diaryListData.length > 0 ? (
-                  diaryListData
-                    ?.filter((item) => item.dairy_type == 1)
-                    .map((diary, i) => (
-                      <div className='col-md-4 mb-2'>
-                        <DiaryCard
-                          diary={diary}
-                          showTab={showTab}
-                          fetchDiaryList={fetchDiaryList}
-                        />
-                      </div>
-                    ))
-                ) : (
-                  dataFiltered && (
-                    <div className='row justify-content-center pt-5'>
-                      <img src={NoDataIcon} />
-                    </div>
-                  )
                 )}
               </div>
             </TabPane>

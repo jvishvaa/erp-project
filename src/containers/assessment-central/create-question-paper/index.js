@@ -63,6 +63,7 @@ const CreateQuestionPaper = ({
   initSetFilter,
   selectedAcademic,
   selectedBranch,
+  erpCategory,
   selectedGrade,
   selectedSubject,
   selectedLevel,
@@ -88,26 +89,27 @@ const CreateQuestionPaper = ({
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [erpCategoryDropdown, setErpcategoryDropdown] = useState([]);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [ filterData ,setFilterData ] = useState()
-  const { refresh = false } = history.location?.state || {};
+  const { refresh = false , isEdit} = history.location?.state || {};
+  const [isErpCategory , setIsErpCategory] = useState(false)
   let preselectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
 
 
   useEffect(() => {
-    if (refresh) {
+    if (refresh || isEdit) {
       setIsFetched(false);
     }
-  }, [refresh]);
+  }, [refresh,isEdit]);
 
   useEffect(() => {
     if (Number(location.pathname.slice(23)) && !isFetched) {
       handleFetch();
     }
-  }, []);
-
+  }, [isFetched]);
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -150,11 +152,16 @@ const CreateQuestionPaper = ({
       }
     }
   }, [moduleId]);
+
+  useEffect(() => {
+    getErpCategory()
+  },[moduleId])
 //
   const formik = useFormik({
     initialValues: {
       academic: selectedAcademic,
       branch: selectedBranch,
+      category : erpCategory,
       grade: selectedGrade,
       subject: selectedSubject,
       question_paper_level: selectedLevel,
@@ -170,6 +177,17 @@ const CreateQuestionPaper = ({
   const getAcademic = () => {
     handleAcademicYear({}, selectedAcademicYear);
   };
+
+  const getErpCategory = () => {
+    axiosInstance
+        .get(`${endpoints.questionBank.erpCategory}`)
+        .then((result) => {
+          setErpcategoryDropdown(result?.data?.result)
+        })
+        .catch((error) => {
+          setAlert('error', error?.message);
+        });
+  }
 
   const getBranch = async (acadId) => {
     try {
@@ -224,12 +242,14 @@ const CreateQuestionPaper = ({
     initSetFilter('selectedGrade', '');
     initSetFilter('selectedSubject', []);
     initSetFilter('selectedLevel', '');
+    initSetFilter('erpCategory', '');
     setFilterData()
   };
   const handleClearFilters = () => {
     formik.setFieldValue('branch', []);
     formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
+    formik.setFieldValue('category', '')
     formik.setFieldValue('question_paper_level', {});
     formik.handleReset();
   };
@@ -273,7 +293,7 @@ const CreateQuestionPaper = ({
         grade: formik.values.grade?.grade_id,
         // academic_session: formik.values.branch.id,
         academic_session: formik.values.branch?.map((branch) => branch?.id),
-        subjects: formik.values.subject?.map((obj) => obj?.subject_id),
+        // subjects: formik.values.subject?.map((obj) => obj?.subject_id),
         paper_level: formik.values.question_paper_level?.id,
         section: sectionData,
         sections: sectionData,
@@ -281,6 +301,28 @@ const CreateQuestionPaper = ({
         is_draft: isDraft ? 'True' : 'False',
         is_verified: 'False',
       };
+      let filterdata = {
+        branch : formik.values.branch,
+        academic: formik.values.academic,
+        grade: formik.values.grade,
+        qpValue: {
+          id : formik.values.question_paper_level?.id,
+          level : formik.values.question_paper_level?.name
+        },
+        type: { id: 1, flag: false, name: 'ERP' }
+      }
+
+      if(formik.values.category && formik.values.subject.length === 0){
+        reqObj['category'] = formik.values.category?.erp_category_id
+        filterdata['category'] = formik.values.category
+
+      }
+      if(!formik.values.category && formik.values.subject.length > 0){
+        reqObj['subjects'] = formik.values.subject?.map((obj) => obj?.subject_id)
+        filterdata['subject'] = formik.values.subject[0]
+
+      }
+
 
       if (questionData?.length) {
         reqObj = { ...reqObj, question: questionData.flat() };
@@ -310,13 +352,21 @@ const CreateQuestionPaper = ({
         Section: sectionFlag,
         'Question Paper Name': questionPaperName,
         'Question Level': formik.values.question_paper_level.id,
-        Subject: formik.values.subject.length,
+        // Subject: formik.values.subject.length,
         Grade: formik.values.grade.grade_id,
       };
+      // debugger
+      // if(formik.values.category){
+      //   submitArray['Category'] = formik.values.category
+      // }
+      // if(formik.values.subject.length){
+      //   submitArray['Subject'] = formik.values.subject.length
+      // }
       let finalSubmitFlag =
         Object.entries(submitArray).every(([key, value]) => value) && sectionData.length;
       if (finalSubmitFlag) {
         await initEditQuestionPaper(reqObj, location.pathname.slice(23));
+        sessionStorage.setItem('filter', JSON.stringify(filterdata))
         // await initEditQuestionPaper(reqObj);
         // history.push('/assessment-question');
         history.push({
@@ -373,17 +423,33 @@ const CreateQuestionPaper = ({
         academic_year: formik.values.academic?.id || selectedAcademicYear?.id,
         paper_name: questionPaperName,
         grade: formik.values.grade?.grade_id,
-        // academic_session: formik.values.branch.id,
         academic_session: formik.values.branch?.map((branch) => branch?.id),
-        subjects: formik.values.subject?.map((obj) => obj?.subject_id),
         paper_level: formik.values.question_paper_level?.id,
         section: sectionData,
         sections: sectionData,
-        // is_review: 'True',
-        // is_draft: 'False',
         is_review: isDraft ? 'False' : 'True',
         is_draft: isDraft ? 'True' : 'False',
       };
+      let filterdata = {
+        branch : formik.values.branch,
+        academic: formik.values.academic,
+        grade: formik.values.grade,
+        qpValue: {
+          id : formik.values.question_paper_level?.id,
+          level : formik.values.question_paper_level?.name
+        },
+        type: { id: 1, flag: false, name: 'ERP' }
+      }
+
+      if(formik.values.category){
+        reqObj['category'] = formik.values.category?.erp_category_id
+        filterdata['category'] = formik.values.category
+      }
+      if(formik.values.subject.length > 0){
+        reqObj['subjects'] = formik.values.subject?.map((obj) => obj?.subject_id)
+        filterdata['subject'] = formik.values.subject[0]
+
+      }
 
       if (questionData?.length) {
         reqObj = { ...reqObj, question: questionData.flat() };
@@ -413,15 +479,24 @@ const CreateQuestionPaper = ({
         Section: sectionFlag,
         'Question Paper Name': questionPaperName,
         'Question Level': formik.values.question_paper_level.id,
-        Subject: formik.values.subject.length,
+        // Subject: formik.values.subject.length,
+        // Category : formik.values.category.length,
         Grade: formik.values.grade.grade_id,
       };
+      // if(formik.values.category){
+      //   submitArray['Category'] = formik.values.category
+      // }
+      // if(formik.values.subject.length){
+      //   submitArray['Subject'] = formik.values.subject.length
+      // }
       let finalSubmitFlag =
         Object.entries(submitArray).every(([key, value]) => value) && sectionData.length;
 
       if (finalSubmitFlag) {
         await initCreateQuestionPaper(reqObj);
         // history.push('/assessment-question');
+        // sessionStorage.removeItem('filter')
+        sessionStorage.setItem('filter', JSON.stringify(filterdata))
         history.push({
           pathname: '/assessment-question',
           state: {
@@ -494,7 +569,6 @@ const CreateQuestionPaper = ({
         if (result.data.status_code === 200) {
           initSetFilter('questionPaperName', result.data.result.paper_name);
           setFilterData(result.data.result)
-
           const { questions: responseQuestions = [], sections: responseSections = [] } =
             result.data.result || {};
           handleTransformResponse(responseQuestions, responseSections); //for edit question-paper
@@ -530,14 +604,19 @@ const CreateQuestionPaper = ({
 
   },[grades , filterData])
 
+  useEffect(()=>{
+    if(filterData?.category ){
+      let categoryVal = erpCategoryDropdown.filter((i) => filterData?.category == i?.erp_category_id)
+      console.log(categoryVal,'categoryVal')
+      handleerpCategory(filterData, categoryVal[0])
+    }
+  },[filterData, erpCategoryDropdown])
+
   useEffect(() => {
-    if(filterData?.subject ){
+    if(filterData?.subject?.length ){
       let subjectVal = [...subjects].filter((i) => filterData?.subject.includes(i?.subject_id))
       console.log(subjectVal);
       handleSubject(filterData , subjectVal)
-      let levelVal = [...levels].filter((i) => filterData?.question_level == i?.id)
-      console.log(levelVal);
-      handleLevel(filterData , levelVal[0])
     }
     if(filterData?.paper_name){
       initSetFilter(
@@ -545,6 +624,11 @@ const CreateQuestionPaper = ({
         filterData?.paper_name.replace(/\b(\w)/g, (s) => s.toUpperCase())
       )
       formik.setFieldValue('questionPaperName', filterData?.paper_name.replace(/\b(\w)/g, (s) => s.toUpperCase()))
+    }
+    if(filterData?.question_level){
+    let levelVal = [...levels].filter((i) => filterData?.question_level == i?.id)
+      console.log(levelVal);
+      handleLevel(filterData , levelVal[0])
     }
   },[subjects , filterData])
 
@@ -568,6 +652,21 @@ const CreateQuestionPaper = ({
       initSetFilter('selectedBranch', value);
     }
   };
+
+  const handleerpCategory = (e,value) => {
+    formik.setFieldValue('category', '');
+    initSetFilter('erpCategory', '');
+    formik.setFieldValue('subject', []);
+    initSetFilter('selectedSubject', []);   
+     setIsErpCategory(false)
+    if (value) {
+      setIsErpCategory(true) 
+      formik.setFieldValue('category', value);
+      initSetFilter('erpCategory', value);
+      formik.setFieldValue('subject', []);
+      initSetFilter('selectedSubject', []);
+    }
+}
   const handleSubmitPaper = (e ) => {
     console.log(e)
     if (Number(location.pathname.slice(23))) {
@@ -596,9 +695,13 @@ const CreateQuestionPaper = ({
   const handleSubject = (event, value) => {
     formik.setFieldValue('subject', []);
     initSetFilter('selectedSubject', []);
+    formik.setFieldValue('category', '');
+    // initSetFilter('erpCategory', '');
     if (value.length > 0) {
       formik.setFieldValue('subject', value);
       initSetFilter('selectedSubject', value);
+      formik.setFieldValue('category', '');
+      // initSetFilter('erpCategory', '');
     }
   };
 
@@ -624,7 +727,7 @@ const CreateQuestionPaper = ({
             className='collapsible-section'
             square
             expanded={expandFilter}
-            onChange={() => { }}
+            onChange={() => {}}
           >
             <AccordionSummary>
               <div className='header mv-20'>
@@ -699,6 +802,29 @@ const CreateQuestionPaper = ({
                 <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
                     <Autocomplete
+                      style={{ width: '100%' }}
+                      size='small'
+                      onChange={handleerpCategory}
+                      id='Category'
+                      className='dropdownIcon'
+                      value={erpCategory || {}}
+                      options={erpCategoryDropdown || []}
+                      getOptionLabel={(option) => option?.erp_category_name || ''}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='ERP Category'
+                          placeholder='ERP Category'
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <FormControl fullWidth variant='outlined'>
+                    <Autocomplete
                       id='grade'
                       name='grade'
                       className='dropdownIcon'
@@ -722,7 +848,7 @@ const CreateQuestionPaper = ({
                     </FormHelperText>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} md={3}>
+                {(!erpCategory)  && <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
                     <Autocomplete
                       id='subject'
@@ -746,11 +872,11 @@ const CreateQuestionPaper = ({
                       )}
                       size='small'
                     />
-                    <FormHelperText style={{ color: 'red' }}>
+                    {/* <FormHelperText style={{ color: 'red' }}>
                       {formik.errors.subject ? formik.errors.subject : ''}
-                    </FormHelperText>
+                    </FormHelperText> */}
                   </FormControl>
-                </Grid>
+                </Grid>}
 
                 <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
@@ -792,19 +918,19 @@ const CreateQuestionPaper = ({
             <Divider />
           </div>
           <div className='form-actions-container mv-20'>
-            <div className='btn-container' style={{ marginRight: "1%" }} >
+            <div className='btn-container' style={{ marginRight: '1%' }}>
               <Button
                 variant='contained'
                 className='cancelButton labelColor'
                 style={{ width: '100%' }}
                 onClick={() => {
-                  setFilterData()
+                  setFilterData();
                   history.push({
                     pathname: '/assessment-question',
-                    // state: {
-                    //   isSet : 'true'
-                    // }
-                  })
+                    state: {
+                      isSet: isEdit ? 'true' :  'false',
+                    },
+                  });
                 }}
               >
                 Back
@@ -835,8 +961,8 @@ const CreateQuestionPaper = ({
               handleAddSection={handleAddSection}
               onCreateQuestionPaper={handleSubmitPaper}
               updateQuesionPaper={Number(location.pathname.slice(23))}
-              onChangePaperName={(e) =>
-                handleQuestionPaper(e)
+              onChangePaperName={
+                (e) => handleQuestionPaper(e)
 
                 // initSetFilter(
                 //   'questionPaperName',
@@ -860,6 +986,7 @@ const mapStateToProps = (state) => ({
   isFetched: state.createQuestionPaper.isFetched,
   selectedAcademic: state.createQuestionPaper.selectedAcademic,
   selectedBranch: state.createQuestionPaper.selectedBranch,
+  erpCategory : state.createQuestionPaper.erpCategory,
   selectedGrade: state.createQuestionPaper.selectedGrade,
   selectedSubject: state.createQuestionPaper.selectedSubject,
   selectedLevel: state.createQuestionPaper.selectedLevel,

@@ -80,15 +80,13 @@ const UploadDocument = (props) => {
     }
   });
 
-
   useEffect(() => {
     if (uniqueFilesList.length !== 0) {
       setUploading(false);
     } else {
       setUploading(true);
-
     }
-  }, [uniqueFilesList])
+  }, [uniqueFilesList]);
   return (
     <>
       <Modal
@@ -98,18 +96,17 @@ const UploadDocument = (props) => {
         className='th-upload-modal'
         title='Upload Files'
         onCancel={() => {
-          setFileList([])
-          props.handleClose()
+          setFileList([]);
+          props.handleClose();
         }}
         footer={
           <div className='d-flex justify-content-center'>
             <Button
               className='th-br-4 th-black-2'
               onClick={() => {
-                setFileList([])
-                props.handleClose()
-              }
-              }
+                setFileList([]);
+                props.handleClose();
+              }}
               style={{ border: '1px solid #868686' }}
             >
               Cancel
@@ -146,7 +143,7 @@ const UploadDocument = (props) => {
 
             <p className='pt-2'>
               {' '}
-              Drap And Drop Files Here <br /> or
+              Drag And Drop Files Here <br /> or
             </p>
 
             <Button

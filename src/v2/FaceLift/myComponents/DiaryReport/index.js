@@ -69,7 +69,6 @@ const DiaryReport = () => {
             <div className='px-2'>
               <div className='row justify-content-between mb-1'>
                 <div className='col-6 th-grey th-fw-400 th-12'>Grade</div>
-                {/* <div className='col-4 th-grey th-fw-400 th-12 text-center'>Subject</div> */}
                 <div className='col-6 th-grey th-fw-400 th-12 pr-3 text-right'>
                   Total Assigned
                 </div>

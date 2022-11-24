@@ -207,7 +207,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Report Card Pipeline', Path: '/assessment/report-card-pipeline' },
     { name: 'Report Card Category', Path: '/assessment/category' },
     { name: 'Report Card Config', Path: '/assessment/report-config' },
-    { name: 'Question Bank', Path: '/question-bank' },
+    { name: 'Question Bank', Path: '/question-chapter-wise' },
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },
@@ -601,20 +601,49 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/observation-area',
     },
     {
+      name: 'Blog Activity',
+      // Path: '/blog/blogview',
+      Path:'/blog/wall/central/redirect',
+    },
+    {
       name: 'Create Observation',
       Path: '/observation',
     },
     {
       name: 'Evaluation',
-      Path: '/observation-report',
+      Path: '/observation-evalutaion',
     },
     {
       name: 'Observation Report',
-      Path: '/pdf-table',
+      Path: '/observation-report',
     },
     {
       name: 'Trainee Courses',
       Path: '/sure-learning-trainee-courses',
+    },
+    {
+      name: 'Create Activity',
+      Path: '/blog/create',
+    },
+    {
+      name: 'Blog Wall',
+      Path:'/blog/wall',
+    },
+    {
+      name: 'My Blogs',
+      Path: '/blog/wall/redirect',
+    },
+    {
+      name: 'Create Activity Type',
+      Path: '/blog/createactivitytype',
+    },
+    {
+      name: 'Blog',
+      Path: '/blog/activityreview',
+    },
+    {
+      name: 'Create Rating',
+      Path: '/blog/createratingtype',
     },
     {
       name: 'Assign Trainee',

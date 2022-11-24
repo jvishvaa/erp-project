@@ -1,3 +1,4 @@
+import endpoints from 'v2/config/endpoints';
 import ENVCONFIG from './config';
 
 const {
@@ -9,6 +10,7 @@ const {
     baseURL,
     baseURLMPQ,
     newBlogURL,
+    erpBlogURL,
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -82,7 +84,7 @@ export default {
     assignLevel: '/erp_user/level_create/',
     centralUserLevel: '/erp_user/central-user-level/',
     passwordChange: '/erp_user/password-reset/',
-    onBoardingReport : `${msReportsUrl}/api/reports/v1/onboarding-report/`
+    onBoardingReport : `${msReportsUrl}/api/reports/v1/onboarding-report/`,
   },
   timeTable: {
     tableData: '/academic/time_table/',
@@ -200,6 +202,8 @@ export default {
     updateTopic: '/assessment/',
     erpSystemConfig: '/erp_user/erp_system_config/',
     defaultAcademicYear: '/erp_user/default-current-session-year/',
+    centralGrades : '/erp_user/v1/grades-list/',
+    centralSubjects : '/erp_user/v1/subjects-list/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -938,12 +942,24 @@ export default {
     studentSideApi:`${newBlogURL}/api/student_activity_get/`,
     studentSideWriteApi:`${newBlogURL}/api/student_activity_create/`,
     createTemplates:`${newBlogURL}/api/template_create/`,
-    
+    studentPublishApi: `${newBlogURL}/api/publish_list/`,
 
-
-
-
-
+    studentPublicSpeakingApi: `${newBlogURL}/api/ps_submissions/`,
+    studentPSContentApi : `${newBlogURL}/api/ps_content/`,
+    publishBlogWallApi : `${newBlogURL}/api/publish_submission/`,
+    blogWallApi : `${newBlogURL}/api/blog_wall/`,
+    blogListDropApi : `${newBlogURL}/api/activity_dropdown/`,
+    blogRedirectApi : `${newBlogURL}/api/activity_type_count/`,
+    subActivityListApi : `${newBlogURL}/api/activity_types/`,
+    physicalActivityListApi : `${newBlogURL}/api/get_activities/`,
+    physicalAddRating:`${newBlogURL}/api/student_performance/`, 
+    physicalErpReview: `${newBlogURL}/api/reviewed_erps/`,
+    bookingDetailsApi: `${newBlogURL}/api/check_student/`,
+    erpDataStudentsAPI : `${erpBlogURL}erp_user/fetch-user-details-by-section-mapping/`,
+    physicalStudentReviewAPI: `${newBlogURL}/api/student_performance/`,
+    postActivityListAPI : `${newBlogURL}/api/get_all_posts/`,
+    postActivityViewMoreAPI: `${newBlogURL}/api/get_posts_details/`,
+    postActivityCreateAPI : `${newBlogURL}/api/wall_post_create/`
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

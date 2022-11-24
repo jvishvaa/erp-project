@@ -192,6 +192,7 @@ const RatingCreate = () => {
   const [accordianBulkFilter, setAccordianBulkFilter] = useState(false);
   const [creativityType, setCreativityType] = useState('');
   const [loading,setLoading] = useState(false)
+  const [showPhy,setShowPhy] = useState(false);
 
   const [score1, setScore1] = useState('');
   const [creativity, setCreativity] = useState('');
@@ -343,10 +344,12 @@ const RatingCreate = () => {
       return
     }
     let body = {
+      sub_type:ActivityType?.sub_type,
       activity_type: ActivityType?.name,
       grading_scheme:
         // name: scoreType,
         inputList,
+      
     };
     setLoading(true)
     axios
@@ -408,6 +411,10 @@ const RatingCreate = () => {
   };
   const handleInputRating = (event, index) => {
     const { value } = event.target;
+    if(value > 5 || value < 0){
+      setAlert('error','Please Enter Number In Between 0 to 5')
+      return
+    }
     const newInputList = [...inputList];
     // newInputList[index].creativity = value;
     newInputList[index].rating = value;
@@ -447,7 +454,15 @@ const RatingCreate = () => {
 
   const handleActivity = (e,value) => {
      setSearch(value)
-  } 
+  }
+  
+  useEffect(() => {
+    if(ActivityType?.name == "Physical Activity"){
+      setShowPhy(true)
+    }else{
+      setShowPhy(false)
+    }
+  },[ActivityType])
   return (
     <div>
       {loading && <Loader/>}
@@ -613,7 +628,7 @@ const RatingCreate = () => {
             marginRight: '28px',
           }}
         >
-          <div style={{ fontSize: '28px', fontWeight: 'bold' }}>Create Rating</div>
+          <div style={{ fontSize: '28px', fontWeight: 'bold', width: '46vw' }}>Create Rating</div>
           <Divider />
           <div style={{ marginTop: '8px' }}>
             {/* <TextField
@@ -652,11 +667,17 @@ const RatingCreate = () => {
                 />
               )}
             />
+          
           </div>
+          {ActivityType?.name == "Physical Activity" ? (
+            <div style={{width:'73vh', fontWeight: 400, marginTop:'10px', paddingLeft:'10px'}}>
+              Sub-Activity Type :<b style={{color:'blue'}}> {ActivityType?.sub_type} </b>
+            </div>
+          ) : ""}
           {inputList
             ? inputList.map((input, index) => (
                 <>
-                  <div style={{ marginTop: '1rem' }}>
+                  <div style={{ marginTop: '1rem', display:'flex' }}>
                     <TextField
                       label='Criteria Name'
                       size='small'
@@ -665,38 +686,46 @@ const RatingCreate = () => {
                       variant='outlined'
                     />
                     &nbsp;&nbsp;&nbsp;
-                    <TextField
-                      label='Rating'
-                      size='small'
-                      type='number'
-                      // value={rating1}
-                      onChange={(event) => handleInputRating(event, index)}
-                      // onInput={(e) => {
-                      //   e.target.value = Math.max(0, parseInt(e.target.value))
-                      //     .toString()
-                      //     .slice(0, 1);
-                      // }}
-                      // onChange={(event) => handleInputChange(event, index)}
-                      variant='outlined'
-                    />
-                    &nbsp;&nbsp;&nbsp;
-                    <TextField
-                      label='Score'
-                      size='small'
-                      type='number'
-                      // onInput={(e) => {
-                      //   e.target.value = Math.max(0, parseInt(e.target.value))
-                      //     .toString()
-                      //     .slice(0, 1);
-                      // }}
-                      // onChange={(e) => activityScore(e)}
-                      // onChange={(event) => handleInputChange(event, index)}
-                      // onChange={(e) => activityScore1(e)}
-                      onChange={(event) => handleInputChange1(event, index)}
-                      variant='outlined'
-                    />
+                    {showPhy ? (
+                      ""
+                    ) : (
+                      <>
+                      <TextField
+                        label='Rating'
+                        size='small'
+                        type='number'
+                        // value={rating1}
+                        onChange={(event) => handleInputRating(event, index)}
+                        // onInput={(e) => {
+                        //   e.target.value = Math.max(0, parseInt(e.target.value))
+                        //     .toString()
+                        //     .slice(0, 1);
+                        // }}
+                        // onChange={(event) => handleInputChange(event, index)}
+                        variant='outlined'
+                      />
+                      &nbsp;&nbsp;&nbsp;
+                      <TextField
+                        label='Score'
+                        size='small'
+                        type='number'
+                        // onInput={(e) => {
+                        //   e.target.value = Math.max(0, parseInt(e.target.value))
+                        //     .toString()
+                        //     .slice(0, 1);
+                        // }}
+                        // onChange={(e) => activityScore(e)}
+                        // onChange={(event) => handleInputChange(event, index)}
+                        // onChange={(e) => activityScore1(e)}
+                        onChange={(event) => handleInputChange1(event, index)}
+                        variant='outlined'
+                      />
+                      </>
+                    )}
                     <Button
                       style={{ marginLeft: '12px' }}
+                      color='primary'
+                      variant='contained'
                       onClick={() => handleRemoveItem(index)}
                     >
                       Delete
@@ -710,6 +739,9 @@ const RatingCreate = () => {
             onClick={handleListAdd}
             disabled={isDisabled}
             style={{ marginTop: '1rem' }}
+            variant='contained'
+            color='primary'
+            
           >
             Add
           </Button>

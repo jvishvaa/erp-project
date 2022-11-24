@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
@@ -12,13 +11,10 @@ import {
   Divider,
   TextField,
   Button,
-  SvgIcon,
   makeStyles,
   Typography,
   Grid,
   Breadcrumbs,
-  MenuItem,
-  TextareaAutosize,
   Paper,
   TableCell,
   TableBody,
@@ -26,15 +22,10 @@ import {
   TableRow,
   TableContainer,
   Table,
-  Drawer,
   TablePagination,
   InputAdornment,
   DialogActions,
 } from '@material-ui/core';
-import Modal from '@material-ui/core/Modal';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SearchIcon from '@material-ui/icons/Search';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -44,12 +35,8 @@ import Close from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
 
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Box from '@material-ui/core/Box';
-import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { useTheme } from '@material-ui/core/styles';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import ForumIcon from '@material-ui/icons/Forum';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -61,11 +48,9 @@ import './styles.scss';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -156,6 +141,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AdminViewBlog = () => {
+  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
@@ -217,7 +203,7 @@ const AdminViewBlog = () => {
             if (
               item.child_name === 'Blog Activity' 
               &&
-              window.location.pathname === '/blog/blogview'
+              window.location.pathname === '/blog/wall/central/redirect'
             ) {
               setModuleId(item.child_id);
               localStorage.setItem('moduleId', item.child_id);
@@ -389,7 +375,7 @@ const AdminViewBlog = () => {
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.unAssign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
+        `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -400,7 +386,7 @@ const AdminViewBlog = () => {
         if(response.status === 200){
           setTotalCountUnassign(response?.data?.total)
           setTotalPagesUnassign(response?.data?.page_size)
-          setCurrentPageUnassign(response?.data?.page + 1)
+          setCurrentPageUnassign(response?.data?.page)
           setLimitUnassign(Number(limitUnassign))
           setSearchFlag(false)
           setUnAssigneds(response?.data?.result);
@@ -416,7 +402,7 @@ const AdminViewBlog = () => {
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&&user_id=null&&branch_ids=${branchIds}&&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
+        `${endpoints.newBlog.Assign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -427,7 +413,7 @@ const AdminViewBlog = () => {
         if(response?.status == 200){
           setTotalCountAssigned(response?.data?.total)
           setTotalPagesAssigned(response?.data?.page_size)
-          setCurrentPageAssigned(response?.data?.page + 1)
+          setCurrentPageAssigned(response?.data?.page)
           setLimitAssigned(Number(limitAssigned))
           setSearchFlag(false)
           setAssigneds(response?.data?.result);
@@ -454,12 +440,13 @@ const AdminViewBlog = () => {
   };
 
   useEffect(() =>{
-    if(moduleId){
+    if(branch_update_user){
       if(selectedAcademicYear?.id > 0)
+    var branchIds = branch_update_user?.branches?.map((item) => item?.id)
     setLoading(true)
     axios
     .get(
-      `${endpoints.newBlog.activityBranch}`,
+      `${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
       {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
@@ -474,10 +461,11 @@ const AdminViewBlog = () => {
       }else{
         setLoading(false)
       }
+      setLoading(false)
     });
     }
 
-  },[window.location.pathname, moduleId])
+  },[window.location.pathname])
 
   console.log(unassingeds,'@@')
 
@@ -508,7 +496,7 @@ const AdminViewBlog = () => {
     }
   };
   useEffect(() => {
-    ActvityLocalStorage();
+    // ActvityLocalStorage();
 
     fetchBranches();
   }, []);
@@ -516,8 +504,14 @@ const AdminViewBlog = () => {
 
   useEffect(() => {
     if(selectedBranch?.length !== 0 && searchFlag){
-      getUnAssinged();
-      getAssinged();
+      if(value === 0){
+        getUnAssinged();
+        return
+
+      }else{
+        getAssinged();
+        return;
+      }
     }
   }, [value, selectedBranch, searchFlag,currentPageAssigned,currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
@@ -539,53 +533,53 @@ const AdminViewBlog = () => {
   const closePreview = () => {
     setPreview(false);
   };
-  const ActvityLocalStorage = () => {
-    setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activityWebLogin}`,
-        {},
-        {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        getActivitySession();
+  // const ActvityLocalStorage = () => {
+  //   setLoading(true)
+  //   axios
+  //     .post(
+  //       `${endpoints.newBlog.activityWebLogin}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `${token}`,
+  //           'X-DTS-HOST': X_DTS_HOST,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       // getActivitySession();
 
-        localStorage.setItem(
-          'ActivityManagement',
-          JSON.stringify(response?.data?.result)
-        );
-        setLoading(false)
-      });
-  };
+  //       localStorage.setItem(
+  //         'ActivityManagement',
+  //         JSON.stringify(response?.data?.result)
+  //       );
+  //       setLoading(false)
+  //     });
+  // };
 
-  const [activityStorage, setActivityStorage] = useState([]);
-  const getActivitySession = () => {
-    setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activitySessionLogin}`,
-        {},
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-            Authorization: `${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        setActivityStorage(response.data.result);
-        localStorage.setItem(
-          'ActivityManagementSession',
-          JSON.stringify(response?.data?.result)
-        );
-        setLoading(false)
-      });
-  };
+  // const [activityStorage, setActivityStorage] = useState([]);
+  // const getActivitySession = () => {
+  //   setLoading(true)
+  //   axios
+  //     .post(
+  //       `${endpoints.newBlog.activitySessionLogin}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           'X-DTS-HOST': X_DTS_HOST,
+  //           Authorization: `${token}`,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       setActivityStorage(response.data.result);
+  //       localStorage.setItem(
+  //         'ActivityManagementSession',
+  //         JSON.stringify(response?.data?.result)
+  //       );
+  //       setLoading(false)
+  //     });
+  // };
 
   const EditActivity = (data) => {
     history.push({
@@ -617,6 +611,10 @@ const AdminViewBlog = () => {
     setCurrentPageUnassign(page);
   }
 
+  const createPushBlogWall = () => {
+    history.push('/blog/wall');
+  };
+
 
   return (
     <div>
@@ -645,8 +643,12 @@ const AdminViewBlog = () => {
         <Grid item md={2} xs={2} style={{ visibility: 'hidden' }} />
 
         <Grid item xs={6} md={6} style={{display:'flex', justifyContent:'end', paddingRight:'20px'}}>
-          
-            { user_level !== 11 && <Button
+            {(user_level === 11 || user_level == 10 || user_level == 8) ? (
+                ''
+            ): (
+              
+            // {(user_level !==11 || user_level !== 10 || user_level !== 8) && 
+              <Button
               variant='contained'
               color='primary'
               size='medium'
@@ -655,7 +657,9 @@ const AdminViewBlog = () => {
               onClick={createPush}
             >
               Create Activity
-            </Button> } 
+            </Button> 
+            // } 
+            )}
           {/* &nbsp;&nbsp;
           <Button
             variant='outlined'
@@ -667,14 +671,15 @@ const AdminViewBlog = () => {
             Shortlisted Activity
           </Button>{' '} */}
           &nbsp;&nbsp;
-          {/* <Button
+          <Button
             variant='contained'
             style={{ backgroundColor: '#F7B519' }}
             color='primary'
             startIcon={<ForumIcon />}
+            onClick={createPushBlogWall}
           >
-            Activity Wall
-          </Button> */}
+            School Wall
+          </Button>
         </Grid>
       </Grid>
       <Grid container style={{ paddingTop: '25px', paddingLeft: '23px' }}>
@@ -766,7 +771,8 @@ const AdminViewBlog = () => {
             value={value}
           >
            
-            { user_level !== 11 && <Tab
+            {(user_level !== 11 || user_level !== 10 || user_level !== 8) && 
+            <Tab
             label='Unassigned'
             classes={{
               selected: classes.selected2,
@@ -786,7 +792,7 @@ const AdminViewBlog = () => {
         </Grid>
       </Grid>
 
-      {(value === 1 || (value === 0 && user_level ===11)) && (
+      {(value === 1 || (value === 0  && user_level === 11 || user_level === 10 || user_level=== 8)) && (
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
@@ -884,7 +890,7 @@ const AdminViewBlog = () => {
 
       {value === 0 &&
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
-          {user_level==11 ? "":
+          {(user_level==11 || user_level == 10 || user_level == 8) ? "":
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
           >
@@ -931,7 +937,7 @@ const AdminViewBlog = () => {
                         size='small'
                         className={classes.buttonColor2}
                         onClick={() => EditActivity(response)}
-                        disabled={user_level == 11}
+                        disabled={user_level == 11 || user_level == 10 || user_level == 8}
                       >
                         Edit
                       </Button>
@@ -941,7 +947,7 @@ const AdminViewBlog = () => {
                         size='small'
                         className={classes.buttonColor2}
                         onClick={() => assignIcon(response)}
-                        disabled={user_level == 11}
+                        disabled={user_level == 11 || user_level == 10 || user_level == 8}
                       >
                         Assign
                       </Button>
@@ -967,7 +973,7 @@ const AdminViewBlog = () => {
               rowsPerPage={limitUnassign}
               page={Number(currentPageUnassign) - 1}
               onChangePage={(e, page) => {
-              handlePaginationUnassign(e, page + 1);
+              handlePaginationUnassign(e, page);
               }}
               rowsPerPageOptions={false}
               className='table-pagination'

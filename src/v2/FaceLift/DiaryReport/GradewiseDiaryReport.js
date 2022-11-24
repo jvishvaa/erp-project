@@ -50,11 +50,9 @@ const GradewiseDiaryReport = () => {
       keys.push(record.grade_id);
       fetchSectionwiseReport({
         session_year: selectedAcademicYear?.id,
-        // session_year: 1,
         dairy_type: diaryType,
         start_date: startDate,
         end_date: endDate,
-        // till_date: 1,
         grade_id: record.grade_id,
       });
     }
@@ -169,11 +167,9 @@ const GradewiseDiaryReport = () => {
     if (startDate && endDate) {
       fetchGradewiseReport({
         session_year: selectedAcademicYear?.id,
-        // session_year: 1,
         dairy_type: diaryType,
         start_date: startDate,
         end_date: endDate,
-        // till_date: 1,
       });
     }
   }, [startDate, endDate, diaryType]);

@@ -134,7 +134,7 @@ const AdminEditCreateBlogs = () => {
   const token = data?.token;
   const user_level = data?.user_level;
   const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
-
+  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
   const [branchList, setBranchList] = useState([]);
   const [maxWidth, setMaxWidth] = React.useState('lg');
@@ -238,11 +238,8 @@ const AdminEditCreateBlogs = () => {
       value: '12',
     },
   ];
-  console.log(history, 'history');
   const [changeText,setChangeText]=useState("");
-  console.log(changeText.name,"changetex")
   const handleChangeActivity = (e, value) => {
-    console.log(value);
     setActivityName(value);
   };
   const handleChangeText = (e, value) => {
@@ -253,35 +250,38 @@ const AdminEditCreateBlogs = () => {
 
   const fetchBranches = () => {
     setLoading(true)
-    axiosInstance
-      .get(`${endpoints.newBlog.activityBranch}`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((res) => {
-        console.log('res', res);
-        if (res?.data) {
-          const transformedData = res.data.result?.map((obj) => ({
-            id: obj.id,
-            name: obj.name,
-          }));
-          transformedData.unshift({
-            name: 'Select All',
-            id: 'all',
-          });
-          console.log(transformedData, 'branchdata');
-          setBranchList(transformedData);
-          if(selectedBranch && selectedBranch.length > 0) {
-            const selectedSectionArray = transformedData.filter((obj) => selectedBranch.findIndex((sec) => obj.id == sec.id) > -1);
-            setSelectedBranch(selectedSectionArray)
-  
-            
+    if(branch_update_user){
+      var branchIds = branch_update_user?.branches?.map((item) => item?.id);
+      axiosInstance
+        .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((res) => {
+          if (res?.data) {
+            const transformedData = res.data.result?.map((obj) => ({
+              id: obj.id,
+              name: obj.name,
+            }));
+            transformedData.unshift({
+              name: 'Select All',
+              id: 'all',
+            });
+            console.log(transformedData, 'branchdata');
+            setBranchList(transformedData);
+            if(selectedBranch && selectedBranch.length > 0) {
+              const selectedSectionArray = transformedData.filter((obj) => selectedBranch.findIndex((sec) => obj.id == sec.id) > -1);
+              setSelectedBranch(selectedSectionArray)
+    
+              
+            }
           }
-        }
-        setLoading(false)
+          setLoading(false)
+  
+        });
 
-      });
+    }
     // })
   };
 
@@ -438,29 +438,29 @@ const AdminEditCreateBlogs = () => {
     setFileUrl(null);
     setSelectedFile(null);
   };
-  const ActvityLocalStorage = () => {
-    setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activityWebLogin}`,
-        {},
-        {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        getActivitySession();
+  // const ActvityLocalStorage = () => {
+  //   setLoading(true)
+  //   axios
+  //     .post(
+  //       `${endpoints.newBlog.activityWebLogin}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `${token}`,
+  //           'X-DTS-HOST': X_DTS_HOST,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       getActivitySession();
 
-        localStorage.setItem(
-          'ActivityManagement',
-          JSON.stringify(response?.data?.result)
-        );
-        setLoading(false);
-      });
-  };
+  //       localStorage.setItem(
+  //         'ActivityManagement',
+  //         JSON.stringify(response?.data?.result)
+  //       );
+  //       setLoading(false);
+  //     });
+  // };
   const handleClear = () => {
     setSelectedGrade([]);
     setSelectedBranch([]);
@@ -645,7 +645,7 @@ const AdminEditCreateBlogs = () => {
       })
       .then((response) => {
         setActivityCategory(response.data.result);
-        ActvityLocalStorage();
+        // ActvityLocalStorage();
         setLoading(false)
       });
   };
@@ -669,7 +669,6 @@ const AdminEditCreateBlogs = () => {
       )
       .then((response) => {
         console.log(response, 'session');
-
         setActivityStorage(response.data.result);
 
         localStorage.setItem(

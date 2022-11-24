@@ -538,7 +538,7 @@ const QuestionCard = ({
         academic_year: sessionYear,
         grade_id: grade,
         branch_id: branch,
-        board: selectedBoards,
+        board: selectedBoardsID,
         module_id: each?.id,
       });
     }
@@ -802,7 +802,7 @@ const QuestionCard = ({
               <Grid
                 item
                 xs={12}
-                md={3}
+                md={window.location.pathname.includes('/diary/') ? 6 : 3}
                 // className='question-ctrls-inner'
                 style={{ display: 'flex' }}
               >
@@ -832,7 +832,12 @@ const QuestionCard = ({
                 {/* </Box> */}
               </Grid>
               {enableAttachments && (
-                <Grid item xs={12} md={3} className='question-ctrl-outer-container'>
+                <Grid
+                  item
+                  xs={12}
+                  md={window.location.pathname.includes('/diary/') ? 6 : 3}
+                  className='question-ctrl-outer-container'
+                >
                   {/* <Box className='question-ctrl-inner-container max-attachments'> */}
                   <div>
                     <div className='question-ctrl-label'>Maximum number of files</div>
@@ -852,9 +857,14 @@ const QuestionCard = ({
                   {/* </Box> */}
                 </Grid>
               )}
-              <Grid item xs={12} md={3} style={{ display: 'flex' }}>
+              <Grid
+                item
+                xs={12}
+                md={window.location.pathname.includes('/diary/') ? 6 : 3}
+                style={{ display: 'flex' }}
+              >
                 {/* <Box className='question-ctrl-inner-container'> */}
-                <div>
+                <div style={{ display: 'flex' }}>
                   {/* <IconButton className='question-cntrl-file-upload'> */}
                   <IconButton>
                     <CreateIcon color='primary' />
@@ -879,24 +889,30 @@ const QuestionCard = ({
                 </div>
                 {/* </Box> */}
               </Grid>
-              <Grid
-                item
-                xs={12}
-                md={2}
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-              >
-                {/* <Box className='question-ctrl-inner-container th-pointer'> */}
-                <div>
-                  <Button
-                    onClick={handleResourcesDrawerOpen}
-                    variant='contained'
-                    color='primary'
-                  >
-                    Resources
-                  </Button>
-                </div>
-                <div className='th-12 pt-2'>(From Leson Plan)</div>
-              </Grid>
+              {!window.location.pathname.includes('/diary/') && (
+                <Grid
+                  item
+                  xs={12}
+                  md={2}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  {/* <Box className='question-ctrl-inner-container th-pointer'> */}
+                  <div>
+                    <Button
+                      onClick={handleResourcesDrawerOpen}
+                      variant='contained'
+                      color='primary'
+                    >
+                      Resources
+                    </Button>
+                  </div>
+                  <div className='th-12 pt-2'>(From Leson Plan)</div>
+                </Grid>
+              )}
             </Grid>
           </CardContent>
         </Card>

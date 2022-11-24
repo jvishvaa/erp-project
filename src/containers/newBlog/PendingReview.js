@@ -116,6 +116,7 @@ const PendingReview = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [view, setView] = useState(false);
   const {user_id} = JSON.parse(localStorage.getItem('ActivityManagementSession'))
 
   const handleCloseViewMore = () => {
@@ -136,8 +137,8 @@ const PendingReview = (props) => {
   // }, []);
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
-    setView(false);
-    props.setValue(1)
+    // setView(false);
+    // props.setValue(1)
     // setSubmit(true);
     let mandatory = ratingReview.filter((e) => e?.name === "Overall")
     if(!mandatory[0].remarks){
@@ -156,7 +157,9 @@ const PendingReview = (props) => {
         },
       })
       .then((response) => {
+        props.setValue(1)
         console.log(response);
+        setView(false)
         setLoading(false)
         setAlert('success', ' Review Submitted Successfully');
       });
@@ -208,9 +211,9 @@ const PendingReview = (props) => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
   const getTotalSubmitted = () => {
-      if(props){
-        const branchIds = props.selectedBranch?.map((obj) => obj?.id);
-        const gradeIds = props.selectedGrade?.id;
+      // if(props){
+        const branchIds = props?.selectedBranch?.map((obj) => obj?.id);
+        const gradeIds = props?.selectedGrade?.id;
         setLoading(true)
         axios
           .get(
@@ -218,7 +221,7 @@ const PendingReview = (props) => {
               endpoints.newBlog.studentSideApi
             }?section_ids=null&&user_id=null&&activity_detail_id=${
               ActivityId?.id
-            }&branch_ids=${branchIds == '' ? null : branchIds}&grade_id=${gradeIds}&is_reviewed=False`,
+            }&branch_ids=${branchIds == '' ? null : branchIds}&grade_id=${gradeIds}&is_reviewed=False&page=${currentPage}&page_size=${limit}`,
             {
               headers: {
                 'X-DTS-HOST': X_DTS_HOST,
@@ -229,14 +232,14 @@ const PendingReview = (props) => {
             props.setFlag(false);
             setTotalCount(response?.data?.count);
             setTotalPages(response?.data?.page_size);
-            setCurrentPage(response?.data?.page + 1);
+            setCurrentPage(response?.data?.page);
             setLimit(Number(limit));
             setAlert('success', response?.data?.message)
             setTotalSubmitted(response?.data?.result);
             setLoading(false);
           });
 
-      }    
+      // }    
   };
 
   const [ratingReview, setRatingReview] = useState([]);
@@ -266,11 +269,11 @@ const PendingReview = (props) => {
         setLoading(false)
       });
   };
-  const [view, setView] = useState(false);
+  // const [view, setView] = useState(false);
   const [data, setData] = useState();
 
   const assignPage = (data) => {
-    setView(true);
+    setView(true);  
     setData(data);
     // setBookingId(data?.id);
     getRatingView(data?.id);
@@ -347,7 +350,8 @@ const PendingReview = (props) => {
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                   <TableCell className={classes.tableCells}>
-                    {response?.booked_user?.name}
+                    {/* {response?.booked_user?.name} */}
+                    {response?.name}
                   </TableCell>
                   <TableCell className={classes.tableCells}>
                     {response?.booked_user?.username}
@@ -387,7 +391,6 @@ const PendingReview = (props) => {
           />
         </TableContainer>
       </Paper>
-
       <Drawer
         anchor='right'
         maxWidth={maxWidth}
@@ -397,8 +400,9 @@ const PendingReview = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <div style={{ width: '100%', marginTop: '72px' }}>
-          <div style={{ fontSize: '24px' }}>
+          <div style={{ fontSize: '24px', marginLeft:'6px', display:'flex', justifyContent:'space-between' }}>
             <strong>Preview</strong>
+            <strong  onClick={handleCloseViewMore} style={{cursor:'pointer', marginRight:'10px'}} > x </strong>
           </div>
           <Divider />
 

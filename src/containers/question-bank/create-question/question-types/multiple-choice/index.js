@@ -136,7 +136,7 @@ const MultipleChoice = ({
           ? [
             { isChecked: false, optionValue: '', images: [] },
             { isChecked: false, optionValue: '', images: [] },
-            { isChecked: false, optionValue: '', images: [] },
+            // { isChecked: false, optionValue: '', images: [] },
           ]
           : showQuestionType?.TrueFalse
             ? [{ isChecked: false, optionValue: true }, { isChecked: false, optionValue: false }]
@@ -208,7 +208,7 @@ const MultipleChoice = ({
   const handleCancel = () => {
     handleSetDefault();
     if (editData?.id) {
-      history.push('/question-bank');
+      history.push('/question-chapter-wise');
     }
   };
 

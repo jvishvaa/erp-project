@@ -329,7 +329,7 @@ function AddTemplates() {
 
       </div>
       <div style={{display:'flex', justifyContent:'center', margin:'15px'}}>
-        <Button size='large' onClick={submitProcess} >
+        <Button size='large' variant='contained' color='primary' onClick={submitProcess} >
               Submit
             </Button>
       </div>

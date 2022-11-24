@@ -253,7 +253,7 @@ const SingleOption = ({
                 <IconButton
                   style={{
                     visibility:
-                      (showQuestionType?.FillInTheBlanks ? index < 1 : index < 3) &&
+                      (showQuestionType?.FillInTheBlanks ? index < 1 : showQuestionType?.MultipleChoiceMultipleSelect ? index < 2 : showQuestionType?.MultipleChoiceSingleSelect ? index < 2 : index < 3) &&
                       'hidden',
                   }}
                   onClick={() => handleDeleteOption(index, isMatching)}
@@ -283,6 +283,7 @@ const SingleOption = ({
                   </div>
                 </IconButton>
               )}
+                {console.log(showQuestionType , 'qtype')}
             </div>
           </>
         )}

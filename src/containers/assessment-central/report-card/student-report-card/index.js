@@ -20,9 +20,16 @@ import TabPanel from '../../../../components/tab-panel';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-import './student-report-card.css'
+import './student-report-card.css';
 import AssesmentReportNew from 'containers/assessment-central/assesment-report-card/newReportPrint';
 import ReportCardNewBack from 'containers/assessment-central/assesment-report-card/reportCardNewBack';
+import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+
+const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
 
 const StudentReportCard = () => {
   const themeContext = useTheme();
@@ -42,24 +49,26 @@ const StudentReportCard = () => {
   const { erp = '' } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { id: sessionYearId = '' } =
     JSON.parse(sessionStorage.getItem('acad_session')) || {};
-
+  const [showGrievanceModal, setShowGrievanceModal] = useState(false);
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const renderReportCardNew = () => {
     switch (tabValue) {
       case 0:
         return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
       case 1:
         return <ReportCardNewBack reportCardDataNew={reportCardDataNew} />;
-
     }
   };
-
+  const handleCloseGrievanceModal = () => {
+    setShowGrievanceModal(false);
+  };
   const getGrades = () => {
     axiosInstance
       .get(
         `${endpoints.reportCard.studentReportGrade}?session_year=${selectedAcademicYear?.id}`
       )
       .then((response) => setGradeList(response?.data?.data))
-      .catch(() => { });
+      .catch(() => {});
   };
 
   const handleGrade = (event, value) => {
@@ -75,7 +84,6 @@ const StudentReportCard = () => {
       acad_session_id: selectedBranch?.id,
       erp_id: erp,
       grade_id: value?.gr_id,
-
     };
 
     let params = `?${generateQueryParamSting({ ...paramObj })}`;
@@ -99,11 +107,9 @@ const StudentReportCard = () => {
     setLoading(false);
   };
 
-
   useEffect(() => {
     getGrades();
   }, []);
-
 
   return (
     <>
@@ -114,17 +120,20 @@ const StudentReportCard = () => {
           childComponentName='Report-Card'
           isAcademicYearVisible={true}
         />
-        <div className='student-report-card' style={{
-          // background: 'white',
-          height: '90vh',
-          overflowX: 'hidden',
-          overflowY: 'scroll',
-        }} >
+        <div
+          className='student-report-card'
+          style={{
+            // background: 'white',
+            height: '90vh',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+          }}
+        >
           <Grid
             container
             spacing={isMobile ? 3 : 5}
             style={{
-              width: '100%',
+              width: '99%',
               margin: '0 auto',
             }}
           >
@@ -165,6 +174,24 @@ const StudentReportCard = () => {
               </Grid>
             )}
           </Grid>
+          {(user_level == 13 || user_level == 12) && isOrchids ? (
+            <div
+              className='col-md-12 text-right th-pointer'
+              onClick={() => setShowGrievanceModal(true)}
+            >
+              Issues with Report Card/Marks?
+              <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+                Raise your query
+              </span>
+            </div>
+          ) : null}
+          {showGrievanceModal && (
+            <GrievanceModal
+              title={'Report Card Related Query'}
+              showGrievanceModal={showGrievanceModal}
+              handleClose={handleCloseGrievanceModal}
+            />
+          )}
         </div>
       </Layout>
     </>
