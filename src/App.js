@@ -386,6 +386,8 @@ import CoursesView from 'containers/sure-learning/PrincipalDashboard/PrincipalCo
 import CourseEnroleModle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleModle';
 import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/academic/curriculamSubject';
 import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
+import CurriculumCompletionChapter from 'containers/dashboard/ownerDashboard/academic/chapterWise';
+import TeacherSubject from 'containers/dashboard/ownerDashboard/academic/teacherSubject';
 
 import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade';
 import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report';
@@ -434,6 +436,7 @@ import ResourcesFolderList from './containers/sure-learning/Resources_Folders/re
 import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
 import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
+import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject'
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
@@ -2006,9 +2009,25 @@ function App({ alert, isMsAPI, erpConfig }) {
                                 <CurriculumCompletionSubject match={match} />
                               )}
                             </Route>
+                            <Route path='/curriculum-completion-chapter/:branchId/:gradeId'>
+                              {({ match }) => (
+                                <CurriculumCompletionChapter match={match} />
+                              )}
+                            </Route>
+                            <Route path='/curriculum-completion-chapter-subject/'>
+                              {({ match }) => (
+                                <CurriculumChapterWiseSubject match={match} />
+                              )}
+                            </Route>
+
                             <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
                               {({ match }) => (
                                 <CurriculumCompletionSection match={match} />
+                              )}
+                            </Route>
+                            <Route path='/curriculum-completion-teacher-subject/:branchId'>
+                              {({ match }) => (
+                                <TeacherSubject match={match} />
                               )}
                             </Route>
                             <Route path='/sure-learning-trainee-courses'>

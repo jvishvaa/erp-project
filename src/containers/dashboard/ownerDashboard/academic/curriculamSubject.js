@@ -2,75 +2,29 @@
 import React, { useContext, useState, useEffect } from 'react';
 import {
   Grid,
-  TextField,
-  Divider,
-  Button,
-  Typography,
-  InputAdornment,
-  Card,
-  CardHeader,
-  CardContent,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Table,
-  Paper,
-  Box,
-  Collapse,
+
 } from '@material-ui/core';
-import {
-  Search as SearchIcon,
-  ExpandMore as ExpandMoreIcon,
-  ArrowBack as ArrowBackIcon,
-  // ChevronRightIcon as ArrowCircleRightIcon
-  ChevronRight as ChevronRightIcon,
-} from '@material-ui/icons';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-// import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { withRouter } from 'react-router-dom';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Pagination } from '@material-ui/lab';
-import MediaQuery from 'react-responsive';
 import { makeStyles } from '@material-ui/core';
-// import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-// import Loader from '../../components/loader/loader';
-// import axiosInstance from '../../config/axios';
-// import endpoints from '../../config/endpoints';
-// import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import Layout from '../../../Layout';
-// import { getModuleInfo } from '../../utility-functions';
-import { useLocation } from 'react-router-dom';
-import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import moment from 'moment';
-import './style.scss';
+import Layout from '../../../Layout';
+import { Button , Form , Select , message } from 'antd';
+import axios from 'axios';
+import clsx from 'clsx';
 import axiosInstance from 'config/axios';
+import moment from 'moment';
 import endpoints from 'config/endpoints';
-import Loader from 'components/loader/loader';
 import { connect, useSelector } from 'react-redux';
-// import { TableHeader } from 'semantic-ui-react';
 import '../academic/style.scss';
-import { TableHeader } from 'semantic-ui-react';
-import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { Table, Breadcrumb } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
+
+const { Option } = Select;
 
 const useStyles = makeStyles((theme) => ({
   gradeBoxContainer: {
-    marginTop: '10px',
-    overflow: 'auto',
-    // height: '250px',
-    height: 'inherit',
   },
   gradeDiv: {
     width: '100%',
@@ -81,19 +35,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor: '#f3edee',
 
-    // '&::before': {
-    //   backgroundColor: 'black',
-    // },
   },
   gradeBox: {
     border: '1px solid black',
     padding: '3px',
-    textAlign: 'center',
-    borderRadius: '5px',
-    fontSize: '15px',
-    backgroundColor: 'white',
   },
   gradeOverviewContainer: {
     border: '1px solid black',
@@ -114,9 +60,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '10px',
       '-webkit-box-shadow': ' inset 0 0 6px rgba(0,0,0,0.5)',
     },
-    //   ::-webkit-scrollbar {
-    //     width: 12px;
-    // }
+
   },
   eachGradeOverviewContainer: {
     border: '1px solid black',
@@ -132,7 +76,6 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
     padding: '4px',
     borderRadius: '5px',
-    fontWeight: 'bolder',
   },
   textAlignEnd: {
     textAlign: 'end',
@@ -144,300 +87,108 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
-  cursorUI: {
-    cursor: 'pointer',
+  TableTextLeft: {
+    textAlign: 'center !important',
+    fontSize: '13px',
   },
-  tableStateMent: {
-    color: `${theme.palette.v2Color1.primaryV2} !important`,
-    fontWeight: 'bolder',
-    fontSize: '20px',
-    textAlign: 'left',
+  TableTextRight: {
+    textAlign: 'right !important',
+    fontSize: '14px'
+  },
+  TableTextRightContainer: {
+    textAlign: 'right !important',
+    paddingRight: '48px',
   },
   TableHeaderColor: {
     backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
-    border: '1px solid #D7E0E7',
-    borderRadius: '8px 8px 0px 0px',
-    fontWeight: 'bolder',
-    fontSize: '20px',
+    color: 'black',
   },
-  textAlignLeft: {
-    textAlign: 'left !important',
+  tableStateMent: {
+    color: `${theme.palette.v2Color1.primaryV2} !important`,
+    fontWeight: 'bolder'
   },
-  textAlignRight: {
-    textAlign: 'right !important',
+  viewButton: {
+    backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
   },
 }));
 
-function Row(props) {
-  const classes = useStyles();
-  const {
-    row,
-    params: { branchId, gradeId },
-    acad_session_id,
-    selectedAcademicYear
-  } = props;
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [propsData, setPropsData] = useState([]);
-  const history = useHistory();
-  const [grade, setGrade] = useState(null);
-  const [gradeName, setGradeName] = useState('');
-  const [subjectIdProps, setSubjectIdProps] = useState(null);
-  const [subjectNameProps, setSubjectNameProps] = useState('');
 
-  const [collapseData, setCollapseData] = useState([]);
-
-  const { session_year: sessionYearId = '' } =
-    JSON.parse(sessionStorage.getItem('acad_session')) || {};
-
-  // useEffect(() => {
-  //   setPropsData(history.location.state);
-  // }, [history]);
-
-  const handleOpen = (e, name) => {
-    if (open === true) {
-      setOpen(!open);
-    } else {
-      setSubjectIdProps(e);
-      setSubjectNameProps(name);
-      setLoading(true);
-      setOpen(!open);
-      axiosInstance
-        .get(
-          `${endpoints.ownerDashboard.curriculumGradeSubjectReport}?acad_session_id=${acad_session_id}&grade_id=${gradeId}&subject_id=${e}&session_year=${selectedAcademicYear?.session_year}`,
-          {
-            headers: {
-              'X-DTS-Host': window.location.host,
-              // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
-              // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
-            },
-          }
-        )
-        .then((res) => {
-          // setSubjectHeader(res.data.result.grand_dict);
-          setCollapseData(res?.data?.result);
-          // setSubTable(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          // console.log(err);
-          setLoading(false);
-        });
-    }
-  };
-
-  const handleHistory = () => {
-    history.push({
-      pathname: `/curriculum-completion-section/${branchId}/${gradeId}/${subjectIdProps}/`,
-      state: {
-        gradeId: gradeId,
-        // gradeName: historyGrade?.gradeName,
-        subject: subjectIdProps,
-        subjectName: subjectNameProps,
-        acad_session_id: sessionYearId,
-        branchId: branchId,
-        // branchName: historyGrade?.branchName,
-      },
-    });
-  };
-
-  return (
-    <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell className={clsx(classes.textAlignLeft)} component='th' scope='row'>
-          {row?.subject_name}
-        </TableCell>
-        <TableCell align='right'></TableCell>
-        <TableCell align='right'></TableCell>
-        <TableCell align='right'></TableCell>
-        <TableCell>
-          <IconButton
-            aria-label='expand row'
-            size='small'
-            onClick={() => handleOpen(row?.subject_id, row?.subject_name)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-        {/* <TableCell align="right">{row?.protein}</TableCell> */}
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout='auto' unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant='h6' gutterBottom component='div'></Typography>
-              <Table size='small' aria-label='purchases'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Sections</TableCell>
-                    <TableCell>Total Periods</TableCell>
-                    <TableCell align='right'>Completed Periods</TableCell>
-                    <TableCell align='right'>Avg. Completion</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {collapseData &&
-                    collapseData.map((item, index) => (
-                      <TableRow
-                        key={
-                          item?.section_name
-                        }
-                      >
-                        <TableCell component='th' scope='row'>
-                          <b style={{ color: '#4768A1' }}>
-                            {
-                              item?.section_name
-                            }
-                          </b>
-                        </TableCell>
-                        <TableCell>{item?.total_topics}</TableCell>
-                        <TableCell align='right'>
-                          {item?.completed_topics}
-                        </TableCell>
-                        <TableCell align='right'>
-                          {item?.percentage_completed !== null ? (
-                            item?.percentage
-                          ) : (
-                            <b
-                              style={{
-                                color: 'red',
-                                fontWeight: 'bolder',
-                              }}
-                            >
-                              NA
-                            </b>
-                          )}{' '}
-                          {' '}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-              {/* <Grid item xs={12} style={{ float: 'right' }}>
-                <Button
-                  onClick={() => handleHistory()}
-                  style={{
-                    borderRadius: '4px',
-                    background: '#BADAF9',
-                    color: '#3D6CDB',
-                    fontWeight: 'bold',
-                    margin: '10px',
-                  }}
-                  endIcon={<ChevronRightIcon style={{ color: '#3D6CDB' }} />}
-                  size='small'
-                >
-                  Compare Topics
-                </Button>
-              </Grid> */}
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </React.Fragment>
-  );
-}
 
 const CurriculumCompletionSubject = (props) => {
   const classes = useStyles();
   const [volume, setVolume] = React.useState('');
   const history = useHistory();
-  const [expanded, setExpanded] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [gradeWiseSubjectTable, setGradeWiseSubjectTable] = useState([]);
-  const [subject, setSubject] = useState([]);
-  const [subjectId, setSubjectId] = useState(null);
-  const [historyGrade, setHistoryGrade] = useState({});
-  const [totalGrade, setTotalGrade] = useState([]);
-  const [date, setDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
-  const [subjectHeader, setSubjectHeader] = useState([]);
-  const [moduleId, setModuleId] = useState('');
-  // const [branchName,setBranchName] = useState('')
-  const [errorValue, setErrorValue] = useState(true);
-  const [clicked, setClicked] = useState(false);
+  const [tableData, setTableData] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [moduleId, setModuleId] = React.useState('');
+  const [acadeId, setAcadeId] = React.useState('');
+  const [gradeApiData, setGradeApiData] = React.useState([]);
+  const [branchName, setBranchName] = React.useState([]);
+  const [teacherView, setTeacherView] = useState()
+  const [dateToday, setDateToday] = useState();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [volumeListData, setVolumeListData] = useState([]);
+  const [volumeId, setVolumeId] = useState([]);
+  const [volumeName, setVolumeName] = useState('');
+
 
   const {
     match: {
-      params: { branchId, gradeId },
+      params: { branchId },
     },
   } = props;
 
-  const handleDateClass = (e) => {
-    setDate(e.target.value);
-  };
-
-  const handleChange = () => {
-    setExpanded(expanded ? false : true);
-  };
-
-  const handleVolumeChange = (event) => {
-    setVolume(event.target.value);
-  };
+  console.log(props);
 
   useEffect(() => {
-    setHistoryGrade(history.location.state);
+    setModuleId(history?.location?.state?.module_id);
+    setAcadeId(history?.location?.state?.acad_session_id);
+    setBranchName(history?.location?.state?.branchName)
+    setDateToday(history?.location?.state?.selectedDate)
+    setTeacherView(history?.location?.state?.teacherView)
+    if(history?.location?.state?.volume != null){
+      setVolumeId(history?.location?.state?.volume)
+    }
+    fetchVolumeListData()
   }, [history]);
 
-  useEffect(() => {
-    gradeList({
-      session_year: selectedAcademicYear?.id,
-      grade: gradeId,
-    });
-  }, [gradeId]);
 
-  const gradeList = (params = {}) => {
+
+
+  const { acad_session_id, module_id, acad_sess_id } = history.location.state;
+
+  useEffect(() => {
+    console.log(dateToday);
+    if (volumeId != null) {
+      gradeListTable({
+        grade_id: history?.location?.state?.grade,
+        session_year: selectedAcademicYear?.id,
+        acad_session : acad_sess_id,
+        volume: volumeId
+      });
+    } else {
+      gradeListTable({
+        grade_id: history?.location?.state?.grade,
+        session_year: selectedAcademicYear?.id,
+        acad_session : acad_sess_id
+      });
+    }
+  }, [volumeId]);
+
+  const gradeListTable = (params = {}) => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.ownerDashboard.curriculumGradeList}`, {
+      .get(`${endpoints.ownerDashboard.subjectWise}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': window.location.host,
-          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
-          // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
+          'X-DTS-Host': X_DTS_HOST,
         },
       })
       .then((res) => {
-        setSubject(res.data.result);
-        setLoading(false);
-
-        // setStudentData(res.data.result);
-      })
-      .catch((err) => {
-        // console.log(err);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    subjectList();
-  }, [gradeId]);
-
-  // useEffect(()=> {
-  //   subjectList()
-  // },[gradeId])
-
-  const subjectList = (params) => {
-    setLoading(true);
-    axiosInstance
-      .get(
-        `${endpoints.ownerDashboard.subjectListGradeFilter}?session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${gradeId}`,
-        {
-          params: { ...params },
-          headers: {
-            'X-DTS-Host': window.location.host,
-            // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
-            // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
-          },
-        }
-      )
-      .then((res) => {
-        // console.log(res?.data?.result, 'Subject');
-        setSubject(res.data.result);
-        setSubjectId(res?.data?.result[0]?.id);
-        // setGradeWiseSubjectTable(res.data.result)
-        // setTableData(res?.data?.result)
+        console.log(res);
+        setTableData(res?.data?.result);
         setLoading(false);
 
         // setStudentData(res.data.result);
@@ -448,210 +199,180 @@ const CurriculumCompletionSubject = (props) => {
       });
   };
 
-  useEffect(() => {
-    if (historyGrade?.acad_sess_id) {
-      gradeListTable({
-        acad_session_id: historyGrade?.acad_sess_id,
-      });
-    }
-  }, [historyGrade?.acad_session_id]);
 
-  const gradeListTable = (params = {}) => {
-    setLoading(true);
-    axiosInstance
-      .get(`${endpoints.ownerDashboard.curriculumGradeReport}`, {
-        params: { ...params },
+  const fetchVolumeListData = () => {
+    axios
+      .get(`${endpoints.lessonPlan.volumeList}`, {
         headers: {
-          'X-DTS-Host': window.location.host,
-          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
-          // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
+          'x-api-key': 'vikash@12345#1231',
         },
       })
-      .then((res) => {
-        // setTableData(res?.data?.result)
-        setTotalGrade(res?.data?.result);
-        setLoading(false);
-
-        // setStudentData(res.data.result);
-      })
-      .catch((err) => {
-        // console.log(err);
-        setLoading(false);
-      });
-  };
-
-  //   console.log(subjectId,'ID====>')
-
-  useEffect(() => {
-    if (subjectId && gradeId && date) {
-      gradeWiseSubjectList({
-        acad_session_id : historyGrade?.acad_sess_id,
-        grade_id: gradeId,
-        subject_id: subjectId,
-        date: date,
-      });
-    }
-  }, [subjectId, gradeId, date]);
-
-  const gradeWiseSubjectList = (params = {}) => {
-    setGradeWiseSubjectTable([]);
-    setLoading(true);
-    axiosInstance
-      .get(`${endpoints.ownerDashboard.curriculumGradeSubjectReport}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-Host': window.location.host,
-          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
-          // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
-        },
-      })
-      .then((res) => {
-        setErrorValue(true);
-        setSubjectHeader(res?.data?.result?.grand_dict);
-
-        setGradeWiseSubjectTable(res?.data?.result?.data);
-        // setTableData(res?.data?.result)
-        setLoading(false);
-        if (res?.data?.result?.length === 0) {
-          setErrorValue(false);
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setVolumeListData(result?.data?.result?.results);
         }
-
-        // setStudentData(res.data.result);
       })
-      .catch((err) => {
-        setErrorValue(false);
-        setSubjectHeader([]);
-        setGradeWiseSubjectTable([]);
-        // console.log(err);
-        setLoading(false);
+      .catch((error) => {
+        message.error(error.message);
       });
   };
+  const volumeOptions = volumeListData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.volume_name}
+      </Option>
+    );
+  });
 
-  const handleAccordion = (params, value) => (e, isExpanded) => {
-    const testclick = document.querySelectorAll('#branchWise');
-    setLoading(true);
-    setClicked(true);
-    setExpanded(isExpanded ? value : false);
-    setSubjectId(null);
-    if (params) {
-      setSubjectId(params?.id);
-      setLoading(false);
-    }
+  const handlevolume = (e) => {
+    setVolumeId(e.value);
+    setVolumeName(e.children);
+  };
+  const handleClearVolume = () => {
+    setVolumeId('');
+    setVolumeName('');
   };
 
-  const handleHistory = (subjectId, subjectName) => {
-    history.push({
-      pathname: `/curriculum-completion-section/${branchId}/${gradeId}/${subjectId}/`,
-      state: {
-        gradeId: gradeId,
-        gradeName: historyGrade?.gradeName,
-        subject: subjectId,
-        subjectName: subjectName,
-        acad_session_id: historyGrade?.acad_session_id,
-        branchName: historyGrade?.branchName,
-      },
-    });
-  };
 
-  const handleScroll = (each, index) => {
-    // history.push(`/curriculum-completion-subject/${branchId}/${1}`)
+  const handleBack = () => {
     history.goBack();
-  };
+  }
+
+  const columns = [
+    {
+      title: <span className='th-white pl-4 th-fw-700 '>Subject</span>,
+      dataIndex: 'subject_name',
+      width: '20%',
+      align: 'left',
+      render: (data) => <span className='pl-md-4 th-black-1 th-16'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>TOTAL PERIODS</span>,
+      width: '15%',
+      align: 'center',
+      dataIndex: 'total_periods_sum',
+      render: (data) => <span className='th-black-1 th-16'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>AVG PERIODS CONDUCTED</span>,
+      dataIndex: 'completed_periods_sum',
+      width: '15%',
+      align: 'center',
+      render: (data) => <span className='th-green th-16'>{Math.round(data)}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>AVG PERIODS PENDING</span>,
+      dataIndex: 'pending_periods_sum',
+      width: '15%',
+      align: 'center',
+      render: (data) => <span className='th-green th-16'>{Math.round(data)}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
+      dataIndex: 'avg',
+      width: '15%',
+      align: 'center',
+      render: (data) => <span className='th-green th-16'>{data} %</span>,
+    },
+    {
+      title: '',
+      align: 'center',
+      width: '5%',
+      key: 'icon',
+      render: (text, row) => (
+        <span
+          onClick={(e) =>
+            history.push({
+              pathname: `/curriculum-completion-chapter/${branchId}/${history?.location?.state?.grade}`,
+              state: {
+                grade: history?.location?.state?.grade,
+                gradeName: row?.grade_name,
+                subject_id: row?.subject_id_id,
+                acad_session_id: acad_session_id,
+                acad_sess_id: acad_sess_id,
+                module_id: moduleId,
+                branchName: branchName,
+                selectedDate: dateToday,
+                teacherView: teacherView,
+                central_gs : row?.central_gs
+              },
+            })
+          }
+        >
+          <RightOutlined className='th-grey th-pointer' />
+        </span>
+      )
+    },
+  ];
+
 
   return (
     <Layout>
-      <div
-        style={{ width: '100%', overflow: 'hidden', padding: '20px' }}
-        className='whole-subject-curr'
-      >
+      <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-          < CommonBreadcrumbs 
-          componentName='Dashboard'
-          childComponentName='Academic Performance' 
-          childComponentNameNext = 'Curriculum Completion'
-          />
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
+                Dashboard
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                onClick={() => history.goBack()}
+                className='th-grey th-pointer'
+              >
+                Curriculum Completion
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1'>Subject Wise</Breadcrumb.Item>
+            </Breadcrumb>
           </Grid>
-          <Grid item container xs={12} spacing={3}>
-            {/* <Grid item xs={3}>
-              <FormControl fullWidth variant='outlined' margin='dense'>
-                <InputLabel id='volume'>Volume</InputLabel>
+          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
+            <Button onClick={handleBack} icon={<LeftOutlined />} className={clsx(classes.backButton)} >Back</Button>
+              <div className='col-md-3 col-6 pl-md-1'>
+              <div className='text-left pl-md-1'>Volume</div>
+              <Form.Item name='volume'>
                 <Select
-                  labelId='volume'
-                  value={volume}
-                  label='Volume'
-                  onChange={handleVolumeChange}
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  placeholder='Select Volume'
+                  showSearch
+                  defaultValue='All'
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => {
+                    handlevolume(value);
+                  }}
+                  onClear={handleClearVolume}
+                  allowClear
+                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                  bordered={false}
                 >
-                  <MenuItem value={10}>Volume 1</MenuItem>
-                  <MenuItem value={20}>Volume 2</MenuItem>
-                  <MenuItem value={30}>Volume 3</MenuItem>
+                  {volumeOptions}
                 </Select>
-              </FormControl>
-            </Grid> */}
-            {/* <Grid item xs={3}>
-              <TextField
-                id='date'
-                label='Select Date'
-                type='date'
-                value={date}
-                size='small'
-                variant='outlined'
-                inputProps={{ max: new Date().toISOString().slice(0, 10) }}
-                // defaultValue={dateToday}
-                onChange={(e) => setDate(e.target.value)}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid> */}
-            <Grid item xs={12}>
-              <Typography variant='body1' className={clsx(classes.tableStateMent)}>
-                Curriculum Completion Details :{' '}
-                <b style={{ color: 'black' }}>{historyGrade.branchName}</b>{' '}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <TableContainer component={Paper}>
-                <Table aria-label='collapsible table'>
-                  <TableHead className={clsx(classes.TableHeaderColor)} >
-                    <TableRow>
-                      <TableCell className={clsx(classes.textAlignLeft)}>
-                        {' '}
-                        <b style={{ color: 'black' }}>{historyGrade.gradeName}</b> :
-                        Overview of All Subjects
-                      </TableCell>
-                      <TableCell className={clsx(classes.textAlignRight)} align='right'>
-                        {/* Total Topics */}
-                      </TableCell>
-                      <TableCell className={clsx(classes.textAlignRight)} align='right'>
-                        {/* Completed Topics */}
-                      </TableCell>
-                      <TableCell className={clsx(classes.textAlignRight)} align='right'>
-                        {/* Avg.Completion */}
-                      </TableCell>
-                      <TableCell />
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {subject &&
-                      subject.map((row, index) => (
-                        <Row
-                          key={row?.subject_id}
-                          row={row}
-                          params={props.match.params}
-                          acad_session_id = {historyGrade?.acad_sess_id}
-                          selectedAcademicYear = {selectedAcademicYear}
-                        />
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
+              </Form.Item>
+            </div>
           </Grid>
+          
+          <div className='row '>
+            <div className='col-12'>
+              <Table
+                className='th-table'
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                loading={loading}
+                columns={columns}
+                rowKey={(record) => record?.subject_id_id}
+                dataSource={tableData}
+                pagination={false}
+                expandIconColumnIndex={6}
+                scroll={{ x: 'max-content' }}
+              />
+            </div>
+       
+          </div>
         </Grid>
-
-        {loading && <Loader />}
       </div>
     </Layout>
   );
