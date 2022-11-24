@@ -1078,7 +1078,8 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Blog Activity': {
-        history.push('/blog/blogview');
+        // history.push('/blog/blogview');
+        history.push('/blog/wall/central/redirect');
         break;
       }
       case 'Create Activity Type': {

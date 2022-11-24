@@ -323,6 +323,7 @@ const CreateActivityType = () => {
     getAssinged();
   }, []);
   const [ActivityType, setActivityType] = useState('');
+  const [SubActivityType, setSubActivityType] = useState('');
 
   const submitActivity = () => {
     if(!ActivityType){
@@ -331,7 +332,7 @@ const CreateActivityType = () => {
     }else{
       let body = {
         activity_type: ActivityType,
-  
+        sub_type : SubActivityType,
       };
       axios
         .post(
@@ -451,6 +452,16 @@ const CreateActivityType = () => {
               </Grid>
               &nbsp;&nbsp;
               <Grid item>
+                <TextField label="Sub-Activity Type" 
+                variant='outlined' 
+                size='small' 
+                value={SubActivityType}
+                type={'text'}
+                inputProps={{ maxLength: 30 }}
+                onChange={(e)=>setSubActivityType(e.target.value)} />
+              </Grid>
+              &nbsp;&nbsp;
+              <Grid item>
                 <Button  onClick={submitActivity}>Submit</Button>
                 
                 </Grid>
@@ -471,6 +482,7 @@ const CreateActivityType = () => {
                   S No.
                 </TableCell>
                 <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
+                <TableCell className={classes.tableCell}>Sub-Activity Type Name </TableCell>
               </TableRow>
             </TableHead>
             {activityCategory.map((response, index) => (
@@ -482,7 +494,8 @@ const CreateActivityType = () => {
                   // key={`user_table_index${i}`}
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                  <TableCell className={classes.tableCells}>{response.name}</TableCell>
+                  <TableCell className={classes.tableCells}>{response?.name}</TableCell>
+                  <TableCell className={classes.tableCells}>{response?.sub_type == null ? (<b style={{color:'red'}}>NA</b> ) : (response?.sub_type) }</TableCell>
                 </TableRow>
               </TableBody>
             ))}

@@ -601,6 +601,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/observation-area',
     },
     {
+      name: 'Blog Activity',
+      // Path: '/blog/blogview',
+      Path:'/blog/wall/central/redirect',
+    },
+    {
       name: 'Create Observation',
       Path: '/observation',
     },
