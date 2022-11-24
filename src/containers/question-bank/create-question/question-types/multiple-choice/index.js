@@ -208,7 +208,7 @@ const MultipleChoice = ({
   const handleCancel = () => {
     handleSetDefault();
     if (editData?.id) {
-      history.push('/question-bank');
+      history.push('/question-chapter-wise');
     }
   };
 

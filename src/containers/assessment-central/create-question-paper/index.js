@@ -928,7 +928,7 @@ const CreateQuestionPaper = ({
                   history.push({
                     pathname: '/assessment-question',
                     state: {
-                      isSet: 'true',
+                      isSet: isEdit ? 'true' :  'false',
                     },
                   });
                 }}

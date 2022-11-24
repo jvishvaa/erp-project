@@ -337,7 +337,7 @@ const QuestionTypeFilters = ({
             setSaveFlag(false);
             setEditData([]);
             setAlert('success', result?.data?.message);
-            history.push('/question-bank');
+            history.push('/question-chapter-wise');
           } else {
             setSubmitFlag(false);
             setSaveFlag(false);
@@ -371,7 +371,7 @@ const QuestionTypeFilters = ({
             setSubmitFlag(false);
             setSaveFlag(false);
             setAlert('success', result?.data?.message);
-            history.push('/question-bank');
+            history.push('/question-chapter-wise');
           } else {
             setSubmitFlag(false);
             setSaveFlag(false);
@@ -455,7 +455,7 @@ const QuestionTypeFilters = ({
     setIsQuestionFilterOpen(true);
     setIsCreateManuallyOpen(false);
     if (editData?.id) {
-      history.push('/question-bank');
+      history.push('/question-chapter-wise');
     }
   };
 

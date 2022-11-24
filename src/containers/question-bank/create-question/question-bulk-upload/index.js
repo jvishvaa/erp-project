@@ -229,7 +229,7 @@ function QuestionBulkCreation(props) {
               data: { status_code: statusCode, message },
             } = response;
             if (statusCode === 200) {
-              history.push('/question-bank');
+              history.push('/question-chapter-wise');
             }
             setAlert(statusCode === 200 ? 'success' : 'error', `${message}`);
             // }
@@ -238,7 +238,7 @@ function QuestionBulkCreation(props) {
         .catch((error) => {
           setUploading(false);
         });
-      history.push('/question-bank');
+      history.push('/question-chapter-wise');
     }
     return true;
   }

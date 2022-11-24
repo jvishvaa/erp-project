@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { createRef, useContext, useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
@@ -10,7 +10,12 @@ import { connect, useSelector } from 'react-redux';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import { Form, Select } from 'antd';
+import { setFilter } from 'redux/actions';
 // import './lesson.css';
+
+const { Option } = Select;
+
 
 const AssessmentFilters = ({
   handlePeriodList,
@@ -24,6 +29,7 @@ const AssessmentFilters = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const history = useHistory();
+  const formRef = createRef();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
@@ -41,15 +47,17 @@ const AssessmentFilters = ({
   ];
   const [isErpCategory , setIsErpCategory] = useState(false)
   const [erpCategoryDropdown, setErpGradeDropdown] = useState([]);
-  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const filterDataQP = JSON.parse(sessionStorage.getItem('filter')) || [];
   const [filterData, setFilterData] = useState({
     academic: '',
-    branch: [],
+    branch: [selectedBranch],
     grade: '',
     subject: '',
-    is_erp_central: is_ERP_CENTRAL[0],
+    // is_erp_central: is_ERP_CENTRAL[0],
     erp_category : ''
   });
   // question level input
@@ -80,6 +88,23 @@ const AssessmentFilters = ({
     }
   }, []);
 
+  const question_level_options = [
+    { value: 1, Question_level: 'Easy' },
+    { value: 2, Question_level: 'Average' },
+    { value: 3, Question_level: 'Difficult' },
+  ];
+  const questionLeveloptions = question_level_options?.map((each) => {
+    return (
+      <Option key={each?.value} value={each.value}>
+        {each?.Question_level}
+      </Option>
+    );
+  });
+  useEffect(() => {
+    if(selectedBranch && moduleId){
+      handleBranch('',[selectedBranch])
+    }
+  },[selectedBranch,moduleId])
   // useEffect(() => {
   //   if(selectedBranch && branchDropdown){
   //     let branch = branchDropdown.filter((item) => item?.id === selectedBranch?.id)
@@ -98,51 +123,65 @@ const getErpCategory = () => {
         setAlert('error', error?.message);
       });
 }
- 
 
-  useEffect(() => {
-    if (moduleId && selectedAcademicYear) {
-      handleAcademicYear();
-      getErpCategory()
-      if(history?.location?.state?.isSet == 'true'){
-      if(filterDataQP?.branch){
-        handleBranch(filterDataQP , filterDataQP?.branch)
-      }
-      setFilterData({
-        branch : filterDataQP?.branch,
-        grade: filterDataQP?.grade,
-        subject: filterDataQP?.subject,
-        erp_category : filterDataQP?.category,
-        is_erp_central: filterDataQP?.type,
-        academic : selectedAcademicYear,
-      })
-      if(filterDataQP?.category){
-        setIsErpCategory(true)
-      }
-      if(filterDataQP?.subject){
-        setSub()
-      }
-      if(filterDataQP?.qpValue){
-        setQpValue(filterDataQP?.qpValue)
-      }
-      handlePeriodList(
-        filterDataQP?.type,
-        selectedAcademicYear,
-        filterDataQP?.branch,
-        filterDataQP?.grade,
-        filterDataQP?.subject,
-        filterDataQP?.qpValue,
-        filterDataQP?.category,
-      );
-      }
-    }
-  }, [moduleId, selectedAcademicYear]);
+useEffect(() => {
+if(filterData?.grade && filterData?.subject){
+  handleFilter()
+}
+},[filterData?.subject,qpValue])
+
+  // useEffect(() => {
+  //   if (moduleId && selectedAcademicYear) {
+  //     handleAcademicYear();
+  //     getErpCategory()
+  //     if(history?.location?.state?.isSet == 'true'){
+  //     // if(filterDataQP?.branch){
+  //     //   handleBranch(filterDataQP , filterDataQP?.branch)
+  //     // }
+  //     formRef.current.setFieldsValue({
+  //       grade : filterDataQP?.grade,
+  //       // subject: filterDataQP?.subject,
+  //       // questionlevel : 
+
+  //     });
+  //     // handleBranch('',[selectedBranch])
+  //     handleGrade('',filterDataQP?.grade)
+  //     // handleSubject('' , filterDataQP?.subject)
+  //     setFilterData({
+  //       branch : filterDataQP?.branch,
+  //       grade: filterDataQP?.grade,
+  //       subject: filterDataQP?.subject,
+  //       // erp_category : filterDataQP?.category,
+  //       is_erp_central: filterDataQP?.type,
+  //       academic : selectedAcademicYear,
+  //     })
+  //     if(filterDataQP?.category){
+  //       setIsErpCategory(true)
+  //     }
+  //     if(filterDataQP?.subject){
+  //       setSub()
+  //     }
+  //     if(filterDataQP?.qpValue){
+  //       setQpValue(filterDataQP?.qpValue)
+  //     }
+  //     handlePeriodList(
+  //       filterDataQP?.type,
+  //       selectedAcademicYear,
+  //       filterDataQP?.branch,
+  //       filterDataQP?.grade,
+  //       filterDataQP?.subject,
+  //       filterDataQP?.qpValue,
+  //       // filterDataQP?.category,
+  //     );
+  //     }
+  //   }
+  // }, [moduleId, selectedAcademicYear]);
 
   const setSub = () => {
     const acadSessionIds = filterDataQP?.branch.map(({ id }) => id) || [];
     axiosInstance
     .get(
-      `${endpoints.assessmentErp.subjectList}?session_year=${acadSessionIds}&grade=${filterDataQP?.grade?.grade_id}`
+      `${endpoints.assessmentErp.subjectList}?session_year=${acadSessionIds}&grade=${filterDataQP?.grade?.value}`
     )
     .then((result) => {
       if (result?.data?.status_code === 200) {
@@ -265,20 +304,25 @@ const getErpCategory = () => {
   };
 
   const handleGrade = (event, value) => {
+    formRef.current.setFieldsValue({
+      subject: null,
+      // board: null,
+    });
     setFilterData({
       ...filterData,
       grade: '',
       subject: '',
     });
+    sessionStorage.removeItem('filter')
     setQpValue('');
     setPeriodData([]);
     setSubjectDropdown([]);
     if (value) {
-      setFilterData({ ...filterData, grade: value });
+      setFilterData({ ...filterData, grade: value, subject:'' });
       const acadSessionIds = filterData.branch.map(({ id }) => id) || [];
       axiosInstance
         .get(
-          `${endpoints.assessmentErp.subjectList}?session_year=${acadSessionIds}&grade=${value?.grade_id}`
+          `${endpoints.assessmentErp.subjectList}?session_year=${acadSessionIds}&grade=${value?.value}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
@@ -300,13 +344,15 @@ const getErpCategory = () => {
 
   const handleSubject = (event, value) => {
     setFilterData({ ...filterData, subject: '' });
-    setQpValue('');
+    // setQpValue('');
     setPeriodData([]);
     if (value) {
       setFilterData({ ...filterData, subject: value });
+      // handleFilter()
     }
   };
 
+  console.log(filterData,'@filter')
   const handleQpLevel = (event, value) => {
     setPeriodData([]);
     if (value) {
@@ -315,26 +361,26 @@ const getErpCategory = () => {
   };
 
   const handleFilter = () => {
-    if (filterData?.branch.length === 0) {
-      setAlert('error', 'Select Branch!');
-      return;
-    }
+    // if (filterData?.branch.length === 0) {
+    //   setAlert('error', 'Select Branch!');
+    //   return;
+    // }
     if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
       return;
     }
-    if (isErpCategory === false && !filterData?.subject) {
+    if (!filterData?.subject) {
       setAlert('error', 'Select Subject!');
       return;
     }
-    if (!qpValue) {
-      setAlert('error', 'Select QP Level!');
-      return;
-    }
-    if (!filterData?.is_erp_central) {
-      setAlert('error', `Select Question Paper From! ${filterData?.is_erp_central?.name}`);
-      return;
-    }
+    // if (!qpValue) {
+    //   setAlert('error', 'Select QP Level!');
+    //   return;
+    // }
+    // if (!filterData?.is_erp_central) {
+    //   setAlert('error', `Select Question Paper From! ${filterData?.is_erp_central?.name}`);
+    //   return;
+    // }
     setSelectedIndex(-1);
     handlePeriodList(
       filterData.is_erp_central,
@@ -343,223 +389,354 @@ const getErpCategory = () => {
       filterData.grade,
       filterData.subject,
       qpValue,
-      filterData?.erp_category,
+      // filterData?.erp_category,
     );
   };
+  const handleClearSubject = () => {
+    setFilterData({...filterData , subject : ''})
+  }
+  const handleClearGrade = () => {
+    setFilterData({...filterData , grade : '' , subject : ''})
+    setSubjectDropdown([])
+  }
+
+  const gradeOptions = gradeDropdown?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.grade_id}>
+        {each?.grade_name}
+      </Option>
+    );
+  });
+  const subjectOptions = subjectDropdown?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.subject_id}>
+        {each?.subject_name}
+      </Option>
+    );
+  });
 
   return (
-    <Grid
-      container
-      spacing={isMobile ? 3 : 5}
-      style={{ width: widerWidth, margin: wider }}
-    >
-      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleAcademicYear}
-          id='academic-year'
-          className='dropdownIcon'
-          value={filterData.academic || ''}
-          options={academicDropdown || []}
-          getOptionLabel={(option) => option?.session_year || ''}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Academic Year'
-              placeholder='Academic Year'
-            />
-          )}
-        />
-      </Grid> */}
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleBranch}
-          id='branch'
-          multiple
-          limitTags={2}
-          className='dropdownIcon'
-          value={filterData.branch || []}
-          options={branchDropdown || []}
-          getOptionLabel={(option) => option?.branch?.branch_name || ''}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Branch'
-              placeholder='Branch'
-              required
-            />
-          )}
-        />
-      </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onChange={handleerpCategory}
-            id='Category'
-            className='dropdownIcon'
-            value={filterData?.erp_category || {}}
-            options={erpCategoryDropdown || []}
-            getOptionLabel={(option) => option?.erp_category_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='ERP Category'
-                placeholder='ERP Category'
-              />
-            )}
-          />
-        </Grid>
+    // <Grid
+    //   container
+    //   spacing={isMobile ? 3 : 5}
+    //   style={{ width: widerWidth, margin: wider }}
+    // >
+    //   {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+    //     <Autocomplete
+    //       style={{ width: '100%' }}
+    //       size='small'
+    //       onChange={handleAcademicYear}
+    //       id='academic-year'
+    //       className='dropdownIcon'
+    //       value={filterData.academic || ''}
+    //       options={academicDropdown || []}
+    //       getOptionLabel={(option) => option?.session_year || ''}
+    //       filterSelectedOptions
+    //       renderInput={(params) => (
+    //         <TextField
+    //           {...params}
+    //           variant='outlined'
+    //           label='Academic Year'
+    //           placeholder='Academic Year'
+    //         />
+    //       )}
+    //     />
+    //   </Grid> */}
+    //   <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+    //     <Autocomplete
+    //       style={{ width: '100%' }}
+    //       size='small'
+    //       onChange={handleBranch}
+    //       id='branch'
+    //       multiple
+    //       limitTags={2}
+    //       className='dropdownIcon'
+    //       value={filterData.branch || []}
+    //       options={branchDropdown || []}
+    //       getOptionLabel={(option) => option?.branch?.branch_name || ''}
+    //       filterSelectedOptions
+    //       renderInput={(params) => (
+    //         <TextField
+    //           {...params}
+    //           variant='outlined'
+    //           label='Branch'
+    //           placeholder='Branch'
+    //           required
+    //         />
+    //       )}
+    //     />
+    //   </Grid>
+    //   <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+    //       <Autocomplete
+    //         style={{ width: '100%' }}
+    //         size='small'
+    //         onChange={handleerpCategory}
+    //         id='Category'
+    //         className='dropdownIcon'
+    //         value={filterData?.erp_category || {}}
+    //         options={erpCategoryDropdown || []}
+    //         getOptionLabel={(option) => option?.erp_category_name || ''}
+    //         filterSelectedOptions
+    //         renderInput={(params) => (
+    //           <TextField
+    //             {...params}
+    //             variant='outlined'
+    //             label='ERP Category'
+    //             placeholder='ERP Category'
+    //           />
+    //         )}
+    //       />
+    //     </Grid>
 
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleGrade}
-          id='grade'
-          className='dropdownIcon'
-          value={filterData.grade || ''}
-          options={gradeDropdown || []}
-          getOptionLabel={(option) => option?.grade__grade_name || ''}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' required/>
-          )}
-        />
-      </Grid>
-      {!isErpCategory && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleSubject}
-          id='subject'
-          className='dropdownIcon'
-          value={filterData.subject || ''}
-          options={subjectDropdown || []}
-          getOptionLabel={(option) => option?.subject_name || ''}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Subject'
-              placeholder='Subject'
-              required
-            />
-          )}
-        />
-      </Grid>}
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleQpLevel}
-          id='questionpaperLevel'
-          className='dropdownIcon'
-          value={qpValue || ''}
-          options={qpLevel || []}
-          getOptionLabel={(option) => option?.level || ''}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              disabled
-              {...params}
-              variant='outlined'
-              label='Question Paper Level'
-              placeholder='Question Paper Level'
-              required
-            />
-          )}
-        />
-      </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleIsErpCentral}
-          id='Question Type'
-          className='dropdownIcon'
-          value={filterData?.is_erp_central || {}}
-          options={is_ERP_CENTRAL || []}
-          getOptionLabel={(option) => option?.name || ''}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Question Paper From'
-              placeholder='Question Paper From'
-              required
-            />
-          )}
-        />
-      </Grid>
-      {!isMobile && (
-        <Grid item xs={12} sm={12}>
-          <Divider />
-        </Grid>
-      )}
-      {isMobile && <Grid item xs={3} sm={0} />}
-      <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-        <Button
-          variant='contained'
-          style={{ width: '100%' }}
-          className='cancelButton labelColor'
-          size='medium'
-          onClick={handleClear}
-        >
-          Clear All
-        </Button>
-      </Grid>
-      {isMobile && <Grid item xs={3} sm={0} />}
-      {isMobile && <Grid item xs={3} sm={0} />}
-      <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-        <Button
-          variant='contained'
-          color='primary'
-          style={{ color: 'white', width: '100%' }}
-          size='medium'
-          onClick={handleFilter}
-        >
-          Filter
-        </Button>
-      </Grid>
-      {isMobile && <Grid item xs={3} sm={0} />}
-      {isMobile && <Grid item xs={3} sm={0} />}
-      <Grid
-        item
-        xs={6}
-        sm={2}
-        className={isMobile ? 'createButton' : 'createButton addButtonPadding'}
-      >
-        <Button
-          startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-          variant='contained'
-          style={{ color: 'white', width: '100%' }}
-          color='primary'
-          onClick={() =>
-            history.push({
-              pathname: '/create-question-paper',
-              search: 'show-question-paper=true',
-              state: { refresh: true },
-            })
-          }
-          size='medium'
-        >
-          Create
-        </Button>
-      </Grid>
-      {isMobile && <Grid item xs={3} sm={0} />}
-    </Grid>
+    //   <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+    //     <Autocomplete
+    //       style={{ width: '100%' }}
+    //       size='small'
+    //       onChange={handleGrade}
+    //       id='grade'
+    //       className='dropdownIcon'
+    //       value={filterData.grade || ''}
+    //       options={gradeDropdown || []}
+    //       getOptionLabel={(option) => option?.grade__grade_name || ''}
+    //       filterSelectedOptions
+    //       renderInput={(params) => (
+    //         <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' required/>
+    //       )}
+    //     />
+    //   </Grid>
+    //   {!isErpCategory && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+    //     <Autocomplete
+    //       style={{ width: '100%' }}
+    //       size='small'
+    //       onChange={handleSubject}
+    //       id='subject'
+    //       className='dropdownIcon'
+    //       value={filterData.subject || ''}
+    //       options={subjectDropdown || []}
+    //       getOptionLabel={(option) => option?.subject_name || ''}
+    //       filterSelectedOptions
+    //       renderInput={(params) => (
+    //         <TextField
+    //           {...params}
+    //           variant='outlined'
+    //           label='Subject'
+    //           placeholder='Subject'
+    //           required
+    //         />
+    //       )}
+    //     />
+    //   </Grid>}
+    //   <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+    //     <Autocomplete
+    //       style={{ width: '100%' }}
+    //       size='small'
+    //       onChange={handleQpLevel}
+    //       id='questionpaperLevel'
+    //       className='dropdownIcon'
+    //       value={qpValue || ''}
+    //       options={qpLevel || []}
+    //       getOptionLabel={(option) => option?.level || ''}
+    //       filterSelectedOptions
+    //       renderInput={(params) => (
+    //         <TextField
+    //           disabled
+    //           {...params}
+    //           variant='outlined'
+    //           label='Question Paper Level'
+    //           placeholder='Question Paper Level'
+    //           required
+    //         />
+    //       )}
+    //     />
+    //   </Grid>
+    //   <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+    //     <Autocomplete
+    //       style={{ width: '100%' }}
+    //       size='small'
+    //       onChange={handleIsErpCentral}
+    //       id='Question Type'
+    //       className='dropdownIcon'
+    //       value={filterData?.is_erp_central || {}}
+    //       options={is_ERP_CENTRAL || []}
+    //       getOptionLabel={(option) => option?.name || ''}
+    //       filterSelectedOptions
+    //       renderInput={(params) => (
+    //         <TextField
+    //           {...params}
+    //           variant='outlined'
+    //           label='Question Paper From'
+    //           placeholder='Question Paper From'
+    //           required
+    //         />
+    //       )}
+    //     />
+    //   </Grid>
+    //   {!isMobile && (
+    //     <Grid item xs={12} sm={12}>
+    //       <Divider />
+    //     </Grid>
+    //   )}
+    //   {isMobile && <Grid item xs={3} sm={0} />}
+    //   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+    //     <Button
+    //       variant='contained'
+    //       style={{ width: '100%' }}
+    //       className='cancelButton labelColor'
+    //       size='medium'
+    //       onClick={handleClear}
+    //     >
+    //       Clear All
+    //     </Button>
+    //   </Grid>
+    //   {isMobile && <Grid item xs={3} sm={0} />}
+    //   {isMobile && <Grid item xs={3} sm={0} />}
+    //   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+    //     <Button
+    //       variant='contained'
+    //       color='primary'
+    //       style={{ color: 'white', width: '100%' }}
+    //       size='medium'
+    //       onClick={handleFilter}
+    //     >
+    //       Filter
+    //     </Button>
+    //   </Grid>
+    //   {isMobile && <Grid item xs={3} sm={0} />}
+    //   {isMobile && <Grid item xs={3} sm={0} />}
+    //   <Grid
+    //     item
+    //     xs={6}
+    //     sm={2}
+    //     className={isMobile ? 'createButton' : 'createButton addButtonPadding'}
+    //   >
+    //     <Button
+    //       startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+    //       variant='contained'
+    //       style={{ color: 'white', width: '100%' }}
+    //       color='primary'
+    //       onClick={() =>
+    //         history.push({
+    //           pathname: '/create-question-paper',
+    //           search: 'show-question-paper=true',
+    //           state: { refresh: true },
+    //         })
+    //       }
+    //       size='medium'
+    //     >
+    //       Create
+    //     </Button>
+    //   </Grid>
+    //   {isMobile && <Grid item xs={3} sm={0} />}
+    // </Grid>
+    <div className='row'>
+          <div className='col-12'>
+            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+              <div className='row align-items-center'>
+                {/* {boardFilterArr.includes(window.location.host) && ( */}
+                {/* )} */}
+                <div className='col-md-2 col-6 px-0'>
+                  <div className='mb-2 text-left'>Grade</div>
+                  <Form.Item name='grade'>
+                    <Select
+                      allowClear
+                      placeholder={
+                        // filterData?.grade ? filterData?.grade?.children :
+                        'Select Grade'
+                      }
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handleGrade(e,value);
+                      }}
+                      onClear={handleClearGrade}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {gradeOptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                  <div className='mb-2 text-left'>Subject</div>
+                  <Form.Item name='subject'>
+                    <Select
+                    allowClear
+                      placeholder={
+                        filterData?.subject ?  (
+                          <span className='th-black-1'>{filterData?.subject?.children}</span>
+                        ) :
+                        'Select Subject'
+                      }
+                      // value={filterData?.subject}
+                      showSearch
+                      optionFilterProp='children'
+                      // defaultValue={subjectName}
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handleSubject(e,value);
+                      }}
+                      onClear={handleClearSubject}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {subjectOptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='col-md-2 col-6 pl-0'>
+                    <div className='mb-2 text-left'>Question Level</div>
+                    <Form.Item name='questionlevel'>
+                      <Select
+                        allowClear
+                        placeholder='Question Level'
+                        showSearch
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e,value) => {
+                          handleQpLevel(e,value);
+                        }}
+                        
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={false}
+                      >
+                        {questionLeveloptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                <div
+                  className='col-md-5 col-6 px-0'
+                  style={{ display: 'flex', justifyContent: 'flex-end' }}
+                >
+                  <Button
+                    type='primary'
+                    onClick={() => history.push('/create-question-paper')}
+                    style={{width:'30%'}}
+                    shape="round"
+                    variant='contained'
+                    color='primary'
+                    className='th-br-6'
+                  >
+                    Create
+                  </Button>
+                </div>
+              </div>
+            </Form>
+          </div>
+          </div>
   );
 };
 

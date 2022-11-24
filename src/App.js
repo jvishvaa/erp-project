@@ -57,6 +57,8 @@ import BookAppointment from './containers/BookAppointments/BookAppointment';
 import Appointments from './containers/BookAppointments/Appointments';
 import ResponderView from './containers/BookAppointments/ResponderView';
 import AssessmentForm from './containers/sure-learning/assessment_form/assessment_form';
+import Chapterwise from './containers/question-bank-new/question-bank-list/chapterwise'
+import PostActivityView from 'containers/newBlog/postActivityView';
 
 import {
   ViewAssessments,
@@ -549,6 +551,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                         */}
                             <Route exact path='/question-bank'>
                               {({ match }) => <QuestionBankList match={match} />}
+                            </Route>
+                            <Route exact path='/questionbank'>
+                              {({ match }) => <Chapterwise match={match} />}
                             </Route>
                             <Route exact path='/create-question/:qId?'>
                               {({ match }) => <CreateQuestion match={match} />}

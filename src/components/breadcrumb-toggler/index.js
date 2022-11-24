@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import hidefilter from '../../assets/images/hidefilter.svg';
 import showfilter from '../../assets/images/showfilter.svg';
+import { Button } from 'antd';
 
 const useStyles = makeStyles((theme) => ({
   breadCrumbFilterRow: {
@@ -37,13 +38,20 @@ const BreadcrumbToggler = ({ isFilter, setIsFilter, children }) => {
   return (
     <div className={classes.breadCrumbFilterRow}>
       {children}
+      <div className='col-3'><Button
+      type='primary'
+      size='default'
+      >
+      Back
+      </Button></div>
+      
       <div className='hideShowFilterIcon'>
         <IconButton onClick={() => setIsFilter(!isFilter)}>
-          {!isMobile && (
+          {/* {!isMobile && (
             <div className='togglerTag'>
               {isFilter ? 'Close Filter' : 'Expand Filter'}
             </div>
-          )}
+          )} */}
           <SvgIcon
             component={() => (
               <img
