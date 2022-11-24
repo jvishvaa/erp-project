@@ -438,29 +438,29 @@ const AdminEditCreateBlogs = () => {
     setFileUrl(null);
     setSelectedFile(null);
   };
-  const ActvityLocalStorage = () => {
-    setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activityWebLogin}`,
-        {},
-        {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        getActivitySession();
+  // const ActvityLocalStorage = () => {
+  //   setLoading(true)
+  //   axios
+  //     .post(
+  //       `${endpoints.newBlog.activityWebLogin}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `${token}`,
+  //           'X-DTS-HOST': X_DTS_HOST,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       getActivitySession();
 
-        localStorage.setItem(
-          'ActivityManagement',
-          JSON.stringify(response?.data?.result)
-        );
-        setLoading(false);
-      });
-  };
+  //       localStorage.setItem(
+  //         'ActivityManagement',
+  //         JSON.stringify(response?.data?.result)
+  //       );
+  //       setLoading(false);
+  //     });
+  // };
   const handleClear = () => {
     setSelectedGrade([]);
     setSelectedBranch([]);
@@ -645,7 +645,7 @@ const AdminEditCreateBlogs = () => {
       })
       .then((response) => {
         setActivityCategory(response.data.result);
-        ActvityLocalStorage();
+        // ActvityLocalStorage();
         setLoading(false)
       });
   };

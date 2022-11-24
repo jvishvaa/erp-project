@@ -91,6 +91,9 @@ export default {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,
   },
+  userManagement : {
+    getUserLevel: '/erp_user/level_list/',
+  },
   profile: {
     getUserStatus: '/erp_user/user-information/',
     getPendingFeeStatus: '/apiV1/fee-defaulters-banner/',
@@ -120,6 +123,7 @@ export default {
     removeFile: '/academic/delete-file/',
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
+    upcomingPeriodData: `${baseURLCentral}/lesson_plan/v2/upcoming-period-data/`,
   },
 
   diaryReport: {
@@ -129,6 +133,7 @@ export default {
     subjectwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/view/`,
     subjectTeacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/view/`,
     teacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/data/view/`,
+    resources: `${baseURLCentral}/lesson_plan/lesson/`,
   },
   lessonPlan: {
     subjects: 'academic/v2/lesson-plan-subjects/',

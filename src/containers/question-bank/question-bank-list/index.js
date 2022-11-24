@@ -99,6 +99,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   };
 
   const handleAddQuestionToQuestionPaper = (question) => {
+    console.log(question);
     const questionIds = [];
     const centralQuestionIds = [];
     sections.forEach((q) => {
@@ -240,6 +241,7 @@ if(filtersDetails){
       tabGradeId && page
     ) {
       setIsSelectAll(false)
+      setIsSelectAllQuestion(false)
       setSelectedId([])
       setSelectedIndex(-1);
       handlePeriodList(
@@ -276,7 +278,9 @@ if(filtersDetails){
   }, [clearFlag]);
 
   const toggleComplete= (e, question, index) => {
+    console.log("hit");
     const {name,checked} = e.target;
+    console.log(name , checked);
     if(name === "allSelect"){
       if(checked === true){
         setIsSelectAll(true)

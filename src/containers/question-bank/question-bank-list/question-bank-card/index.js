@@ -31,6 +31,7 @@ const QuestionBankCard = ({
   showAddToQuestionPaper,
   periodColor,
   toggleComplete,
+  toggleCompleteQuestion,
   isSelectAll,
   redFlag,
   checkbox,

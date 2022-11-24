@@ -430,6 +430,7 @@ import AdminCreateBlog from '../containers/newBlog/AdminCreateBlog';
 import AdminPublishBlogShort from '../containers/newBlog/Shortlisted';
 import BlogWall from 'containers/newBlog/BlogWall';
 import BlogWallRedirect from 'containers/newBlog/BlogRedirection';
+import CentralBlogRedirection from 'containers/newBlog/CentralBlogRedirection';
 import PublicSpeakingWall from 'containers/newBlog/PublicSpeaking';
 import StudentViewBlog from '../containers/newBlog/StudentSideBlog';
 import NewEditBlog from '../containers/newBlog/StudentBlog';
@@ -443,6 +444,10 @@ import GradingCreate from 'containers/assessment-central/grading-system/gradingC
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 import AddTemplates from 'containers/newBlog/addTemplates';
 import Chapterwise from 'containers/question-bank-new/question-bank-list/chapterwise';
+import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
+import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
+import PostActivityView from 'containers/newBlog/postActivityView';
+import CreatePostActivity from 'containers/newBlog/createPostActivity';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -450,6 +455,12 @@ const V1Router = [
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
+  </Route>,
+    <Route path='/post-activity-view'>
+    {({ match }) => <PostActivityView match={match} />}
+  </Route>,
+  <Route path='/create-post-activity'>
+      {({ match }) => <CreatePostActivity match={match} />}
   </Route>,
   <Route exact path='/blog/templates'>
     {({ match }) => <AddTemplates match={match} />}
@@ -1440,6 +1451,16 @@ const V1Router = [
     <Route exact path='/blog/wall/redirect'>
     {({ match }) => <BlogWallRedirect match={match} />}
   </Route>,
+    <Route exact path='/blog/wall/central/redirect'>
+    {({ match }) => <CentralBlogRedirection match={match} />}
+  </Route>,
+   <Route exact path='/physical/activity'>
+   {({ match }) => <PhysicalActivity match={match} />}
+ </Route>,
+    <Route exact path='/physical/activity/review'>
+    {({ match }) => <PhysicalActivityReview match={match} />}
+  </Route>,
+
       <Route exact path='/blog/publicspeaking'>
       {({ match }) => <PublicSpeakingWall match={match} />}
     </Route>,
