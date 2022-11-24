@@ -1,20 +1,24 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext, createRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import Loader from '../../components/loader/loader';
+
 
 import {
   IconButton,
   Divider,
   TextField,
   Button,
+  SvgIcon,
   makeStyles,
   Typography,
   Grid,
-  Breadcrumbs,
+  MenuItem,
+  TextareaAutosize,
   Paper,
   TableCell,
   TableBody,
@@ -22,10 +26,15 @@ import {
   TableRow,
   TableContainer,
   Table,
+  Drawer,
   TablePagination,
   InputAdornment,
   DialogActions,
 } from '@material-ui/core';
+import Modal from '@material-ui/core/Modal';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import NativeSelect from '@material-ui/core/NativeSelect';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SearchIcon from '@material-ui/icons/Search';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -35,22 +44,35 @@ import Close from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
 
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { useTheme } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import { useTheme, withStyles } from '@material-ui/core/styles';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import ForumIcon from '@material-ui/icons/Forum';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import CloseIcon from '@material-ui/icons/Close';
-
 import './styles.scss';
-
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import {PieChartOutlined, IdcardOutlined, DownOutlined} from '@ant-design/icons';
+import { Breadcrumb, Button as ButtonAnt, Form, Select, message } from 'antd';
+
+import {
+    AppstoreAddOutlined,
+    SearchOutlined,
+  } from '@ant-design/icons';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -140,18 +162,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AdminViewBlog = () => {
+
+const dummyData = [
+    {id:1,title:"harsha", date:'28/7'},
+    {id:2,title:"harsha2", date:'28/7'},
+]
+
+const subActivityData = [
+  {id:1,branch_name:"Cycling", date:'28/7'},
+  {id:2,branch_name:"Swimming", date:'28/7'},
+]
+
+const PhysicalActivity = () => {
+  const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
+  const formRef = createRef();
   const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [gradeData, setGradeData] = useState([]);
+  const [gradeName, setGradeName] = useState();
   const [moduleId, setModuleId] = React.useState('');
   const [month, setMonth] = React.useState('1');
   const [status, setStatus] = React.useState('');
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
-
+  // const [boardListData, setBoardListData] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
@@ -173,22 +209,35 @@ const AdminViewBlog = () => {
   const [isClickedUnassign, setIsClickedUnassign] = useState(false);
   const [totalCountAssigned,setTotalCountAssigned] = useState(0);
   const [currentPageAssigned,setCurrentPageAssigned] = useState(1)
+  const [boardId, setBoardId] = useState();
   const [totalPagesAssigned,setTotalPagesAssigned] = useState(0);
   const [limitAssigned,setLimitAssigned] = useState(10);
   const [isClickedAssigned, setIsClickedAssigned] = useState(false);
   const [searchFlag,setSearchFlag] = useState(false)
   const [loading,setLoading] = useState(false);
-
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const physicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId'))
   // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
-
+  const [subjectData, setSubjectData] = useState([]);
   const token = dataes?.token;
   const user_level = dataes?.user_level;
-
+  const { Option } = Select;
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [subActivityId,setSubActivityId] = useState('')
+  const [sudActId,setSubActId] = useState(history?.location?.state?.subActiveId);
+  const [subActivityListData,setSubActivityListData] = useState([])
+
+  let boardFilterArr = [
+    'orchids.letseduvate.com',
+    'localhost:3000',
+    'dev.olvorchidnaigaon.letseduvate.com',
+    'ui-revamp1.letseduvate.com',
+    'qa.olvorchidnaigaon.letseduvate.com',
+  ];
+
 
   useEffect(() => {
     setLoading(true)
@@ -225,7 +274,7 @@ const AdminViewBlog = () => {
 
   const handleBranch = (event, value) => {
     setSelectedBranch([])
-    setAssigneds([])
+    // setAssigneds([])
     setUnAssigneds([])
     if (value?.length) {
       // value =
@@ -314,20 +363,6 @@ const AdminViewBlog = () => {
     setBranchView(false);
     setBranchSearch(true);
   };
-  const blogsContent = [
-    {
-      label: 'Public Speaking',
-      value: '1',
-    },
-    {
-      label: 'Post Card Writting',
-      value: '2',
-    },
-    {
-      label: 'Blog Card Writting',
-      value: '3',
-    },
-  ];
   const shortList = () => {
     history.push('/blog/short');
   };
@@ -364,7 +399,7 @@ const AdminViewBlog = () => {
         setAssigned(false);
         setAlert('success', 'Activity Successfully Assign');
         getUnAssinged();
-        getAssinged();
+        // getAssinged();
         setLoading(false)
       });
   };
@@ -397,17 +432,28 @@ const AdminViewBlog = () => {
       });
   };
   const [assingeds, setAssigneds] = useState([]);
+
+
+  // useEffect(()=>{
+  //   setAssigneds(dummyData)
+  // },[])
+
+  useEffect(()=>{
+    getAssinged()
+  },[currentPageAssigned,sudActId,boardId])
   const getAssinged = () => {
-    const branchIds = selectedBranch.map((obj) => obj.id);
+    // const branchIds = selectedBranch.map((obj) => obj.id);
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
-        {
+        `${endpoints.newBlog.physicalActivityListApi}?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${sudActId ? sudActId : physicalActivityId}`,{
+          params: {
+            ...(boardId ? {branch_ids: boardId} : {})
+          },
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
-        }
+        } 
       )
       .then((response) => {
         if(response?.status == 200){
@@ -417,6 +463,7 @@ const AdminViewBlog = () => {
           setLimitAssigned(Number(limitAssigned))
           setSearchFlag(false)
           setAssigneds(response?.data?.result);
+            // setAssigneds(dummyData)
           setLoading(false)
 
         }else{
@@ -430,7 +477,7 @@ const AdminViewBlog = () => {
       localStorage.setItem('ActivityId', JSON.stringify(data));
   
       history.push({
-        pathname: '/blog/activityreview',
+        pathname: '/physical/activity/review',
         state: {
           data,
         },
@@ -440,7 +487,7 @@ const AdminViewBlog = () => {
   };
 
   useEffect(() =>{
-    if(branch_update_user){
+    if(moduleId && branch_update_user){
       if(selectedAcademicYear?.id > 0)
     var branchIds = branch_update_user?.branches?.map((item) => item?.id)
     setLoading(true)
@@ -461,11 +508,10 @@ const AdminViewBlog = () => {
       }else{
         setLoading(false)
       }
-      setLoading(false)
     });
     }
 
-  },[window.location.pathname])
+  },[window.location.pathname, moduleId])
 
   console.log(unassingeds,'@@')
 
@@ -504,14 +550,8 @@ const AdminViewBlog = () => {
 
   useEffect(() => {
     if(selectedBranch?.length !== 0 && searchFlag){
-      if(value === 0){
-        getUnAssinged();
-        return
-
-      }else{
-        getAssinged();
-        return;
-      }
+      getUnAssinged();
+      getAssinged();
     }
   }, [value, selectedBranch, searchFlag,currentPageAssigned,currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
@@ -533,53 +573,53 @@ const AdminViewBlog = () => {
   const closePreview = () => {
     setPreview(false);
   };
-  // const ActvityLocalStorage = () => {
-  //   setLoading(true)
-  //   axios
-  //     .post(
-  //       `${endpoints.newBlog.activityWebLogin}`,
-  //       {},
-  //       {
-  //         headers: {
-  //           Authorization: `${token}`,
-  //           'X-DTS-HOST': X_DTS_HOST,
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       // getActivitySession();
+  const ActvityLocalStorage = () => {
+    setLoading(true)
+    axios
+      .post(
+        `${endpoints.newBlog.activityWebLogin}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((response) => {
+        getActivitySession();
 
-  //       localStorage.setItem(
-  //         'ActivityManagement',
-  //         JSON.stringify(response?.data?.result)
-  //       );
-  //       setLoading(false)
-  //     });
-  // };
+        localStorage.setItem(
+          'ActivityManagement',
+          JSON.stringify(response?.data?.result)
+        );
+        setLoading(false)
+      });
+  };
 
-  // const [activityStorage, setActivityStorage] = useState([]);
-  // const getActivitySession = () => {
-  //   setLoading(true)
-  //   axios
-  //     .post(
-  //       `${endpoints.newBlog.activitySessionLogin}`,
-  //       {},
-  //       {
-  //         headers: {
-  //           'X-DTS-HOST': X_DTS_HOST,
-  //           Authorization: `${token}`,
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       setActivityStorage(response.data.result);
-  //       localStorage.setItem(
-  //         'ActivityManagementSession',
-  //         JSON.stringify(response?.data?.result)
-  //       );
-  //       setLoading(false)
-  //     });
-  // };
+  const [activityStorage, setActivityStorage] = useState([]);
+  const getActivitySession = () => {
+    setLoading(true)
+    axios
+      .post(
+        `${endpoints.newBlog.activitySessionLogin}`,
+        {},
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+            Authorization: `${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setActivityStorage(response.data.result);
+        localStorage.setItem(
+          'ActivityManagementSession',
+          JSON.stringify(response?.data?.result)
+        );
+        setLoading(false)
+      });
+  };
 
   const EditActivity = (data) => {
     history.push({
@@ -600,6 +640,82 @@ const AdminViewBlog = () => {
     }
   }
 
+  const fetchGradeData = () => {
+    const params = {
+      session_year: selectedAcademicYear?.id,
+      branch_id: selectedBranch?.branch?.id,
+      module_id: moduleId,
+    };
+    axios
+      .get(`${endpoints.academics.grades}`, { params })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setGradeData(res?.data?.data);
+          if (user_level == 13) {
+            // setGradeId(res?.data?.data[0]?.grade_id);
+            setGradeName(res?.data?.data[0]?.grade__grade_name);
+          }
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  const fetchSubjectData = (params = {}) => {
+    axios
+      .get(`${endpoints.lessonPlan.subjects}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          // setSubjectData(res.data.result);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  useEffect(() =>{
+    // fetchBoardListData()
+    fetchSubActivityListData()
+  },[])
+
+const fetchSubActivityListData = () => {
+  axiosInstance
+    .get(`${endpoints.newBlog.subActivityListApi}?type_id=${sudActId ? sudActId : physicalActivityId }`,{
+      headers: {
+        'X-DTS-HOST': X_DTS_HOST,
+      },
+    })
+    .then((result) =>{
+      setLoading(false)
+      console.log(result?.data?.result,'sub')
+      setSubActivityListData(result?.data?.result)
+    })
+}
+
+
+  // const fetchBoardListData = () => {
+  //   axios
+  //     .get(`/academic/get-board-list/`)
+  //     .then((result) => {
+  //       if (result?.data?.status_code === 200) {
+  //         setBoardListData(result?.data?.result);
+  //         // if (!boardFilterArr.includes(window.location.host)) {
+  //         let data = result?.data?.result?.filter(
+  //           (item) => item?.board_name === 'CBSE'
+  //         )[0];
+  //         setBoardId(data?.id);
+  //         // }
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       message.error(error.message);
+  //     });
+  // };
+
   const handlePaginationAssign = (event, page) =>{
     setSearchFlag(true)
     setIsClickedAssigned(true);
@@ -615,6 +731,72 @@ const AdminViewBlog = () => {
     history.push('/blog/wall');
   };
 
+  const handleGoBack = () =>{
+    history.goBack()
+  }
+  const handleSubActivity =(e) => {
+    setSubActivityId(e)
+    setSubActId(e)
+  }
+
+  const handleClearSubActivity = (e) => {
+    setSubActivityId('')
+    
+  }
+  const handleBoard = (e) => {
+    setBoardId(e);
+  };
+  const handleClearBoard = () => {
+    setBoardId('');
+  };
+
+  const handleSubject = (item) => {
+    // formRef.current.setFieldsValue({
+    //   board: [],
+    // });
+    // if (item) {
+    //   setSubjectId(item.value);
+    //   setSubjectName(item.children);
+    // }
+  };
+
+  const handleClearGrade = () => {
+    // setGradeId('');
+    // setGradeName('');
+    // setSubjectId('');
+    // setSubjectName('');
+  };
+
+  const gradeOptions = gradeData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.grade_id}>
+        {each?.grade_name}
+      </Option>
+    );
+  });
+  const subjectOptions = subjectData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.subject_id}>
+        {each?.subject_name}
+      </Option>
+    );
+  });
+  const branchOptions = boardListData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.branch?.branch_name}
+      </Option>
+    );
+  });
+
+  const subActivityOption = subActivityListData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.sub_type}
+      </Option>
+    );
+  });
+
 
   return (
     <div>
@@ -629,140 +811,123 @@ const AdminViewBlog = () => {
           paddingBottom: '15px',
         }}
       >
-        <Grid item xs={4} md={4}>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' />}
-            aria-label='breadcrumb'
-          >
-            <Typography color='textPrimary' variant='h6'>
-              <strong>Activity Management</strong>
-            </Typography>
-            <Typography color='Primary' style={{fontSize:'23px', color:'black', fontWeight:'bold'}}>Activity</Typography>
-          </Breadcrumbs>
-        </Grid>
-        <Grid item md={2} xs={2} style={{ visibility: 'hidden' }} />
-
-        <Grid item xs={6} md={6} style={{display:'flex', justifyContent:'end', paddingRight:'20px'}}>
-            {(user_level === 11 || user_level == 10 || user_level == 8) ? (
-                ''
-            ): (
-              
-            // {(user_level !==11 || user_level !== 10 || user_level !== 8) && 
-              <Button
-              variant='contained'
-              color='primary'
-              size='medium'
-              className={classes.buttonColor}
-              startIcon={<AddCircleIcon />}
-              onClick={createPush}
+        <div className='col-md-6' style={{zIndex:2, display: 'flex', alignItems:'center' }}>
+        <div>
+          <IconButton aria-label="back" onClick={handleGoBack}>
+           <KeyboardBackspaceIcon style={{fontSize:'20px', color:'black'}}/>
+          </IconButton>
+          </div>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+                Physical Activity
+              </Breadcrumb.Item>
+            </Breadcrumb>
+        </div>
+        <div className='col-md-6' style={{zIndex:2, display: 'flex', alignItems:'center', justifyContent:'end' }}>
+            <ButtonAnt type="primary" icon={<AppstoreAddOutlined />} 
+            size={'large'}
+            onClick={createPush}
             >
-              Create Activity
-            </Button> 
-            // } 
-            )}
-          {/* &nbsp;&nbsp;
-          <Button
-            variant='outlined'
-            size='medium'
-            onClick={shortList}
-            className={classes.buttonColor1}
-            startIcon={<BookmarksIcon style={{ color: 'grey' }} />}
-          >
-            Shortlisted Activity
-          </Button>{' '} */}
-          &nbsp;&nbsp;
-          <Button
-            variant='contained'
-            style={{ backgroundColor: '#F7B519' }}
-            color='primary'
-            startIcon={<ForumIcon />}
-            onClick={createPushBlogWall}
-          >
-            School Wall
-          </Button>
-        </Grid>
+              Create Physical Activity
+            </ButtonAnt>
+        </div>
+        <div className='row'>
+        <div className='col-12'>
+          <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+            <div className='row align-items-center'>
+              {/* {boardFilterArr.includes(window.location.host) && ( */}
+                <div className='col-md-2 col-6 pl-0'>
+                  <div className='mb-2 text-left'>Sub-Activity </div>
+                  <Form.Item name='board'>
+                    <Select
+                      // allowClear={true}
+                      placeholder='Select Sub-Activity'
+                      showSearch
+                      suffixIcon={<DownOutlined className='th-grey' />}
+                      // defaultValue={'CBSE'}
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e) => {
+                        handleSubActivity(e);
+                      }}
+                      onClear={handleClearSubActivity}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={true}
+                    >
+                      {subActivityOption}
+                    </Select>
+                  </Form.Item>
+                </div>
+              <div className='col-md-2 col-6 px-0'>
+                <div className='mb-2 text-left'>Branch</div>
+                <Form.Item name='branch'>
+                    <Select
+                        showSearch
+                        placeholder='Select Branch'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        placement='bottomRight'
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        dropdownMatchSelectWidth={false}
+                        onChange={(e) => handleBoard(e)}
+                        allowClear={true}
+                        onClear={handleClearBoard}
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                      >
+                        {branchOptions}
+                      </Select>
+                </Form.Item>
+              </div>
+              {/* <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                <div className='mb-2 text-left'>Subject</div>
+                <Form.Item name='subject'>
+                  <Select
+                    placeholder='Select Subject'
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    // onChange={(e, value) => {
+                    //   handleSubject(value);
+                    // }}
+                    // onClear={handleClearSubject}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={true}
+                  >
+                    {subjectOptions}
+                  </Select>
+                </Form.Item>
+              </div> */}
+              <div className='col-md-2 col-6 pr-0 px-0 pl-md-3 mt-3' style={{display:'flex', paddingTop:'5px'}}>
+                <div  className='mb-2 text-left'>  </div>
+                {/* <ButtonAnt type="primary" icon={<SearchOutlined />} size={'medium'}  onClick={handleSearch}>
+                  Search
+                </ButtonAnt> */}
+              </div>
+            </div>
+          </Form>
+        </div>
+        </div>
+
       </Grid>
-      <Grid container style={{ paddingTop: '25px', paddingLeft: '23px' }}>
-        {/* <Grid item md={2}>
-          <TextField
-            select
-            style={{ borderRadius: '1px', width: '160px' }}
-            size='small'
-            // value={month}
-            // onChange={handleChanges}
-            SelectProps={{
-              native: true,
-            }}
-            variant='outlined'
-          >
-            {months.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </TextField>
-        </Grid> */}
-        {/* <Grid item md={3}>
-          <TextField
-            select
-            style={{ borderRadius: '1px', width: '218px' }}
-            size='small'
-            // value={month}
-            // onChange={handleChanges}
-            SelectProps={{
-              native: true,
-            }}
-            variant='outlined'
-          >
-            {blogsContent.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </TextField>
-        </Grid> */}
-        <Grid item md={2}>
-          <Autocomplete
-            multiple
-            fullWidth
-            size='small'
-            limitTags={1}
-            // style={{ width: '82%', marginLeft: '4px' }}
-            options={branchList || []}
-            value={selectedBranch || []}
-            getOptionLabel={(option) => option?.name}
-            filterSelectedOptions
-            onChange={(event, value) => {
-              handleBranch(event, value);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                required
-                fullWidth
-                variant='outlined'
-                label='Branch'
-              />
-            )}
-          />
-        </Grid>
-        &nbsp;&nbsp;
-        <Grid item md={2}>
-          <Button
-            variant='contained'
-            color='primary'
-            size='medium'
-            className={classes.buttonColor}
-            onClick={handleSearch}
-          >
-            Search
-          </Button>
-        </Grid>
-      </Grid>
+     
 
       <Grid container>
         <Grid item md={12} xs={12} className={classes.tabStatic}>
-          
          <Tabs
             onChange={handleTab}
             textColor='primary'
@@ -771,28 +936,19 @@ const AdminViewBlog = () => {
             value={value}
           >
            
-            {(user_level !== 11 || user_level !== 10 || user_level !== 8) && 
             <Tab
-            label='Unassigned'
+            label='Physical Activities'
             classes={{
               selected: classes.selected2,
             }}
             className={value === 0 ? classes.tabsFont : classes.tabsFont1}
-          />}
-        <Tab
-          label='Assigned'
-          classes={{
-            selected: classes.selected1,
-          }}
-          className={value === 1 ? classes.tabsFont : classes.tabsFont1}
-        />
+          />
           </Tabs>
          
           <Divider className={classes.dividerColor} />
         </Grid>
       </Grid>
 
-      {(value === 1 || (value === 0  && user_level === 11 || user_level === 10 || user_level=== 8)) && (
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
@@ -824,46 +980,42 @@ const AdminViewBlog = () => {
                     // key={`user_table_index${i}`}
                   >
                     <TableCell className={classes.tableCells}>{index + 1 + (Number(currentPageAssigned) -1) * limitAssigned}</TableCell>
-                    {/* <TableCell className={classes.tableCells}>
-                      {response?.grades.map((obj) => obj?.name).join(', ')}
-                    </TableCell> */}
                     <TableCell className={classes.tableCells}>{response.title}</TableCell>
                     <TableCell className={classes.tableCells}>
-                      {moment(response.issue_date).format('DD-MM-YYYY')}
+                      {moment(response?.created_at).format('DD-MM-YYYY')}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
                       {response?.creator?.name}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        className={classes.buttonColor2}
-                        // style={{whiteSpace: 'nowrap'}}
+                      <ButtonAnt
+                        type="primary" 
+                        icon={<PieChartOutlined />} 
+                        size={'medium'}
                         onClick={() => viewedAssign(response)}
-                      >
+                        >
                         Review
-                      </Button>{' '}
+                      </ButtonAnt>
                       &nbsp;&nbsp;
-                      <Button
+                      {/* <Button
                         variant='outlined'
                         size='small'
                         className={classes.buttonColor2}
                         onClick={() => handlePreview(response)}
                       >
                         Preview
-                      </Button>
+                      </Button> */}
+                      <ButtonAnt
+                        type="primary" 
+                        icon={<IdcardOutlined />} 
+                        size={'medium'}
+                        style={{backgroundColor:'#ff9800', border:'1px solid #ff9800'}}
+                        // onClick={() => viewedAssign(response)}
+                        onClick={() => handlePreview(response)}
+                        >
+                        Preview
+                      </ButtonAnt>
                       &nbsp;&nbsp;
-                      {/* <Button
-                        variant='outlined'
-                        size='small'
-                        // style={{whiteSpace: 'nowrap'}}
-
-                        className={classes.buttonColor2}
-                        onClick={viewed}
-                      >
-                        View{' '}
-                      </Button>{' '} */}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -886,106 +1038,8 @@ const AdminViewBlog = () => {
             />
           </TableContainer>
         </Paper>
-      )}
 
-      {value === 0 &&
-        <Paper className={`${classes.root} common-table`} id='singleStudent'>
-          {(user_level==11 || user_level == 10 || user_level == 8) ? "":
-          <TableContainer
-            className={`table table-shadow view_users_table ${classes.container}`}
-          >
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead className={`${classes.columnHeader} table-header-row`}>
-                <TableRow>
-                  <TableCell
-                    className={classes.tableCell}
-                    style={{ whiteSpace: 'nowrap' }}
-                  >
-                    S No.
-                  </TableCell>
-                  {/* <TableCell className={classes.tableCell}>Grade </TableCell> */}
-                  <TableCell className={classes.tableCell}>Topic Name</TableCell>
-                  <TableCell className={classes.tableCell}>Submission On</TableCell>
-                  <TableCell className={classes.tableCell}>Created By</TableCell>
-                  <TableCell style={{ width: '287px' }} className={classes.tableCell}>
-                    Action
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              {unassingeds.map((response, index) => (
-                <TableBody>
-                  <TableRow
-                    hover
-                    role='checkbox'
-                    tabIndex={-1}
-                    // key={`user_table_index${i}`}
-                  >
-                    <TableCell className={classes.tableCells}>{index + 1 +(Number(currentPageUnassign) -1) * limitUnassign}</TableCell>
-                    {/* <TableCell className={classes.tableCells}>
-                      {response?.grades.map((obj) => obj?.name).join(', ')}
-                    </TableCell> */}
-                    <TableCell className={classes.tableCells}>{response.title}</TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {moment(response.submission_date).format('DD-MM-YYYY')}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {response?.creator?.name}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        className={classes.buttonColor2}
-                        onClick={() => EditActivity(response)}
-                        disabled={user_level == 11 || user_level == 10 || user_level == 8}
-                      >
-                        Edit
-                      </Button>
-                      &nbsp;
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        className={classes.buttonColor2}
-                        onClick={() => assignIcon(response)}
-                        disabled={user_level == 11 || user_level == 10 || user_level == 8}
-                      >
-                        Assign
-                      </Button>
-                      &nbsp;{' '}
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        className={classes.buttonColor2}
-                        onClick={() => handlePreview(response)}
-                      >
-                        Preview
-                      </Button>
-                      &nbsp;
-                       {/* <DeleteIcon style={{ cursor: 'pointer' }} /> */}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              ))}
-            </Table>
-            <TablePagination
-              component='div'
-              count={totalCountUnassign}
-              rowsPerPage={limitUnassign}
-              page={Number(currentPageUnassign) - 1}
-              onChangePage={(e, page) => {
-              handlePaginationUnassign(e, page);
-              }}
-              rowsPerPageOptions={false}
-              className='table-pagination'
-              classes={{
-                spacer: classes.tablePaginationSpacer,
-                toolbar: classes.tablePaginationToolbar,
-              }}
-            />
-          </TableContainer>
-}
-        </Paper>
-      }
+
       <Dialog open={preview} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
         <div style={{ width: '642px' }}>
           <div
@@ -1012,7 +1066,7 @@ const AdminViewBlog = () => {
               marginBottom: '9px',
             }}
           >
-            <div style={{ marginLeft: '23px', marginTop: '28px' , overflow:'scroll' }}>
+            <div style={{ marginLeft: '23px', marginTop: '28px', overflow:'scroll' }}>
               <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
               <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
               <div style={{ fontSize: '10px', color: '#7F92A3' }}>
@@ -1036,7 +1090,6 @@ const AdminViewBlog = () => {
                   {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
                 </span>
               </div>
-
               <div style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}>
                 {/* word limit -300 */}
               </div>
@@ -1046,9 +1099,9 @@ const AdminViewBlog = () => {
               <div style={{ paddingTop: '8px', fontSize: '16px' }}>
                 {previewData?.description}
               </div>
-              <div style={{ paddingTop: '28px', fontSize: '14px' }}>
+              {/* <div style={{ paddingTop: '28px', fontSize: '14px' }}>
                 <img src={previewData?.template?.template_path} width='50%' />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -1082,9 +1135,7 @@ const AdminViewBlog = () => {
 
       {assigned == true && (
         <Dialog
-          // open={deleteModel}
           open={assigned}
-          // onClose={handleClose}
           aria-labelledby='alert-dialog-title'
           aria-describedby='alert-dialog-description'
         >
@@ -1114,9 +1165,7 @@ const AdminViewBlog = () => {
 
       <Dialog
         open={view}
-        // onClose={handleClose}
         maxWidth={maxWidth}
-        // style={{width:'700px'}}
       >
         {' '}
         <div style={{ width: '700px' }}>
@@ -1257,4 +1306,4 @@ const AdminViewBlog = () => {
     </div>
   );
 };
-export default AdminViewBlog;
+export default PhysicalActivity;

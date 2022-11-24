@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState , useEffect } from 'react';
 import {
   Grid,
   TextField,
@@ -12,8 +12,10 @@ import {
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { Modal } from 'antd';
 
-const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
+
+const EditSubject = ({ subjectData, handleGoBack, setLoading, open, showModal, handleOk, loading, setOpen }) => {
   const { id, subject_name, subject_description: desc, is_optional: opt } = subjectData;
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName, setSubjectName] = useState(subject_name || '');
@@ -25,6 +27,16 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
   const handleChange = (event) => {
     setOptional(event.target.checked);
   };
+
+  useEffect(() => {
+    setSubjectName(subject_name)
+
+  }, [open])
+
+  const handleCancel = () => {
+    setOpen(false)
+    setSubjectName('')
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,6 +63,7 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
             setDescription('');
             setOptional(false);
             setLoading(false);
+            setOpen(false)
             setAlert('success', `Subject ${result.data.message || result.data.msg}`);
           } else {
             setLoading(false);
@@ -68,88 +81,26 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
   };
 
   return (
-    <form autoComplete='off' onSubmit={handleSubmit}>
+    <Modal
+      visible={open}
+      title="Edit Subject Name"
+      onOk={handleSubmit}
+      onCancel={handleCancel}
+    >
       <div style={{ width: '95%', margin: '20px auto' }}>
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-            <TextField
-              id='subname'
-              label='Subject Name'
-              variant='outlined'
-              style={{ width: '100%' }}
-              size='small'
-              value={subjectName}
-              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 20 }}
-              name='subname'
-              onChange={(e) => setSubjectName(e.target.value)}
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-            <TextField
-              id='description'
-              label='Description'
-              variant='outlined'
-              size='small'
-              style={{ width: '100%' }}
-              multiline
-              rows={4}
-              rowsMax={6}
-              inputProps={{ maxLength: 100 }}
-              value={description}
-              name='description'
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
-            <FormControlLabel
-              className='switchLabel'
-              control={
-                <Switch
-                  checked={optional}
-                  onChange={handleChange}
-                  name='optional'
-                  color='primary'
-                />
-              }
-              label={
-                <Typography color='secondary'>
-                  {optional ? 'Optional' : 'Not-Optional'}
-                </Typography>
-              }
-            />
-          </Grid>
-        </Grid>
-      </div>
-
-      <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '10px' }}>
-        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
-          <Button
-            variant='contained'
-            style={{ width: '100%' }}
-            className='cancelButton labelColor'
-            size='medium'
-            onClick={handleGoBack}
-          >
-            Back
-          </Button>
-        </Grid>
-        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
-          <Button
-            variant='contained'
-            style={{color:'white', width: '100%' }}
-            color='primary'
-            size='medium'
-            type='submit'
-          >
-            Submit
-          </Button>
-        </Grid>
-      </Grid>
-    </form>
+      <TextField
+        id='subname'
+        label='Subject Name'
+        variant='outlined'
+        style={{ width: '100%' }}
+        size='small'
+        value={subjectName}
+        inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 20 }}
+        name='subname'
+        onChange={(e) => setSubjectName(e.target.value)}
+      />
+    </div>
+    </Modal>
   );
 };
 

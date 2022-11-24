@@ -77,6 +77,9 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [questionStatus,setQuestionStatus] = useState('');
   const [publishedQuestion, setPublishedQuestion] = useState([])
   const [isSelectAll, setIsSelectAll] = useState(false);
+  const [isSelectAllQuestion, setIsSelectAllQuestion] = useState(false);
+  const [selectedIdQuestion,setSelectedIdQuestion] = useState([])
+  const [selectedQuestion , setSelectedQuestion ] = useState([])
   const [redFlag,setRedflag] = useState(false);
   const [isVisible,setIsVisible] = useState([])
   const [checkbox,setCheckbox] = useState(false);
@@ -93,6 +96,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   };
 
   const handleAddQuestionToQuestionPaper = (question) => {
+    console.log(question);
     const questionIds = [];
     const centralQuestionIds = [];
     sections.forEach((q) => {
@@ -210,6 +214,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
       tabIsErpCentral&& page
     ) {
       setIsSelectAll(false)
+      setIsSelectAllQuestion(false)
       setSelectedId([])
       setSelectedIndex(-1);
       handlePeriodList(
@@ -238,11 +243,15 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabChapterId('');
     setTabIsErpCentral(false);
     setSelectedId([])
+    setSelectedIdQuestion([])
     setIsSelectAll(false)
+    setIsSelectAllQuestion(false)
   }, [clearFlag]);
 
   const toggleComplete= (e, question, index) => {
+    console.log("hit");
     const {name,checked} = e.target;
+    console.log(name , checked);
     if(name === "allSelect"){
       if(checked === true){
         setIsSelectAll(true)
@@ -285,6 +294,63 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
 
     }
 
+  }
+
+  const toggleCompleteQuestion = (e, question, index) => {
+    const {name,checked} = e.target;
+    console.log(name , checked);
+    console.log(question ,'hit');
+    if(name === "allSelect"){
+      if(checked === true){
+        setIsSelectAllQuestion(true)
+        setRedflag(true)
+        let tempData = [...periodData]
+        let tempArr = tempData.map((item)=>{ return {...item, checked}})
+        let temQuestionId = tempArr.filter((item) => item?.question_status === "2").map((ques) => ques?.id)
+        let tempQues = tempArr.filter((item) => item?.question_status === "2").map((ques) => ques)
+        setSelectedIdQuestion(temQuestionId)
+        setSelectedQuestion(tempQues)
+        setPeriodData(tempArr)
+        // setLoading(false)
+
+      } else{
+        setIsSelectAllQuestion(false)
+        setRedflag(false)
+        let tempData = [...periodData]
+        let tempArr = tempData.map((item)=>{ return {...item, checked}})
+        setSelectedIdQuestion([])
+        setSelectedQuestion([])
+        setPeriodData(tempArr)
+        // setLoading(false)
+      }
+
+    }else{
+
+      // for child component ->
+      setIsSelectAllQuestion(false)
+      let tempAllData =   [...periodData];
+      let newData = {...periodData[index], checked}
+      console.log("checking12",periodData[index],newData);
+      tempAllData.splice(index, 1, newData);
+      setPeriodData(tempAllData);
+      if(selectedIdQuestion.includes(question?.id) === false){
+        setSelectedIdQuestion([...selectedIdQuestion,question?.id])
+        setSelectedQuestion([...selectedQuestion,question])
+          setLoading(false)
+      }else{
+        let tempArr=[]
+        let tempQues = []
+        tempArr=selectedIdQuestion.filter((el) => el !== question?.id)
+        tempQues = selectedQuestion.filter((el) => el?.id !== question?.id)
+        console.log(tempQues);
+        setSelectedIdQuestion(tempArr)
+        setSelectedQuestion(tempQues)
+        setIsSelectAllQuestion(false)
+        console.log(tempArr);
+      }
+
+    }
+    console.log(selectedQuestion);
   }
 
 
@@ -339,6 +405,12 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     }
   };
 
+  const handleAdd = () => {
+    let callRedux = selectedQuestion?.map((item , index) => {
+      handleAddQuestionToQuestionPaper(item)
+    })
+  }
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -386,7 +458,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
           <Grid item xs={12} sm={12}>
             <TabPanel setTabValue={setTabValue} tabValue={tabValue} setPage={setPage} />
           </Grid>
-          {isVisible?.length > 0 ?(
+          {isVisible?.length > 0 && window.location.search?.length == 0 ?(
           <Grid item xs={12} sm={12} 
           >
             <Grid container spacing={3} style={{alignItems:"center"}}>
@@ -415,11 +487,48 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
                 label="Select All"
               />
             </Grid>
+            
             </Grid>
          
           </Grid>
 
           ): ''}
+           {window.location.search?.length > 0 ?(
+          <Grid item xs={12} sm={12} 
+          >
+            <Grid container spacing={3} style={{alignItems:"center"}}>
+               <Grid item xs={3}>
+            <Button
+              style={{ margin: '0.5rem', color: 'white', width:'100%'}}
+              onClick={(e) => handleAdd()}
+              color='primary'
+              disabled={selectedIdQuestion.length === 0 ? true : false }
+              variant='contained'
+              size='medium'
+              startIcon={<DoneAllIcon/>}
+            >
+              ADD QUESTIONS
+            </Button> 
+
+            </Grid>
+
+            <Grid item xs={3}>
+            <FormControlLabel
+                style={{minWidth:"150px"}}
+                control={<Checkbox 
+                checked={isSelectAllQuestion}
+                onChange={(e) => toggleCompleteQuestion(e,periodData)} 
+                name="allSelect" />}
+                label="Select All"
+              />
+            </Grid>
+            
+            </Grid>
+         
+          </Grid>
+
+          ): ''}
+         
         </Grid>
         <Grid
           container
@@ -467,7 +576,9 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
                         }
                         showAddToQuestionPaper={questionId && section}
                         toggleComplete={toggleComplete}
+                        toggleCompleteQuestion={toggleCompleteQuestion}
                         isSelectAll={isSelectAll}
+                        isSelectAllQuestion={isSelectAllQuestion}
                         redFlag={redFlag}
                         checkbox = {checkbox}
                         periodData={periodData}

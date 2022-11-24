@@ -424,7 +424,7 @@ const StudentSideBlog = () => {
   };
 
   useEffect(() => {
-    ActvityLocalStorage();
+    // ActvityLocalStorage();
   }, []);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalReview, setTotalReview] = useState([]);
