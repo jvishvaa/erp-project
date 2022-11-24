@@ -41,6 +41,7 @@ import TeacherDiaryReport from 'v2/FaceLift/DiaryReport/TeacherDiaryReport';
 import TeacherwiseDiaryReport from 'v2/FaceLift/DiaryReport/TeacherwiseDiaryReport';
 import endpoints from 'config/endpoints';
 import axios from 'axios';
+import CreateDiary from 'v2/FaceLift/Diary/CreateDiary';
 
 const V2Router = () => {
   useEffect(() => {
@@ -134,6 +135,12 @@ const V2Router = () => {
                         </Route>
                         <Route path='/diary/teacher'>
                           {({ match }) => <Diary match={match} />}
+                        </Route>
+                        <Route path='/diary/student'>
+                          {({ match }) => <Diary match={match} />}
+                        </Route>
+                        <Route path='/create-diary'>
+                          {({ match }) => <CreateDiary match={match} />}
                         </Route>
                         <Route path='/create/daily-diary'>
                           {({ match }) => <DailyDiary match={match} />}

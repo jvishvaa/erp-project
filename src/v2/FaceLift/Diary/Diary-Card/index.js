@@ -2,32 +2,44 @@ import React, { useState } from 'react';
 import '../index.css';
 import fileDownload from 'js-file-download';
 import {
+  FileUnknownOutlined,
   PaperClipOutlined,
-  EllipsisOutlined,
+  MoreOutlined,
   CloseOutlined,
-  ArrowDownOutlined,
+  EyeFilled,
 } from '@ant-design/icons';
-import { Button, message, Space, Drawer, Popover, Popconfirm } from 'antd';
+import {
+  Badge,
+  Avatar,
+  message,
+  Space,
+  Drawer,
+  Popover,
+  Popconfirm,
+  Divider,
+} from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useHistory } from 'react-router-dom';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import moment from 'moment';
+import hwIcon from 'v2/Assets/dashboardIcons/diaryIcons/hwIcon.png';
+import { getFileIcon } from 'v2/getFileIcon';
 
 const DiaryCard = ({ diary, fetchDiaryList }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const [visible, setVisible] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [homeworkDetails, setHomeworkDetails] = useState(false);
 
   const history = useHistory();
 
   const showDrawer = () => {
-    setVisible(true);
+    setDrawerVisible(true);
   };
 
   const closeDrawer = () => {
-    setVisible(false);
+    setDrawerVisible(false);
   };
 
   const handleDownloadAll = (files) => {
@@ -89,19 +101,32 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
   };
 
   return (
-    <div
-      className={`row th-br-6 ${diary?.dairy_type == 2 ? 'th-bg-yellow' : 'th-bg-grey'}`}
-      style={{ border: '1px solid #d9d9d9' }}
-    >
-      <div className='col-md-12 py-3'>
-        <div className='row th-16 th-fw-700 d-flex justify-content-between th-black-1'>
-          {' '}
-          <div className='col-10 text-truncate pl-0'>
-            {diary?.dairy_type == 2
-              ? diary?.subject?.subject_name
-              : `Topic: ${diary?.title}`}
+    <>
+      <div className={`th-br-6 th-bg-white`} style={{ border: '1px solid #d9d9d9' }}>
+        <div
+          className={`row ${
+            diary?.diary_type == 2 ? 'th-bg-blue-1' : 'th-bg-pink-3'
+          } align-items-center py-1`}
+          style={{ borderRadius: '6px 6px 0px 0px' }}
+        >
+          <div className='col-7 pl-2'>
+            <div className='th-fw-600 th-black-2'>
+              <span>{diary?.grade[0]?.grade_name}, </span>
+              <span>
+                {diary?.section[0]?.section__section_name?.slice(-1).toUpperCase()}
+              </span>
+            </div>
           </div>
-          <div className='col-2'>
+          <div className='col-4 text-center px-0 py-1'>
+            <span
+              className={`${
+                diary?.diary_type == 2 ? 'th-bg-primary' : 'th-bg-violet'
+              } th-white th-br-6 p-1`}
+            >
+              {diary?.diary_type == 2 ? 'Daily Diary' : 'General Diary'}
+            </span>
+          </div>
+          <div className='col-1 text-right '>
             <Popover
               content={
                 <>
@@ -129,141 +154,140 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
               trigger='click'
               placement='bottomRight'
             >
-              <EllipsisOutlined />
-            </Popover>{' '}
+              <MoreOutlined />
+            </Popover>
           </div>
         </div>
+        <div className='row' onClick={showDrawer}>
+          <div className='col-12 p-1'>
+            <div className='row th-bg-grey py-1 px-2'>
+              {diary?.diary_type == 1 ? (
+                <>
+                  <>
+                    <div className='col-12 px-0 th-10'>
+                      <div className='th-fw-600 th-black-1 '></div>Title
+                    </div>
+                    <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+                      {diary?.title}
+                    </div>
+                    <div className='col-12 px-0 th-10'>
+                      <div className='th-fw-600 th-black-1'></div>Description
+                    </div>
+                    <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+                      {diary?.message}
+                    </div>
+                  </>
+                </>
+              ) : (
+                <>
+                  <div className='col-12 px-0 th-10 '>
+                    <div className='th-fw-600 th-black-1'></div>Topic Name{' '}
+                    <span className='th-black-2'>({diary?.period_name})</span>
+                  </div>
+                  <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+                    {diary?.topic_name}
+                  </div>
+                  <div className='col-12 px-0 th-10'>
+                    <div className='th-fw-600 th-black-1'></div>Key Concept{' '}
+                  </div>
+                  <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+                    {diary?.key_concept__topic_name}
+                  </div>
+                </>
+              )}{' '}
+            </div>
+          </div>
+          <div className='col-12 p-0 px-1'>
+            <div className='row'>
+              <div className='col-6 px-1 th-10'>
+                <div className='row th-grey'></div>Created By
+                <div className='row th-black-2 th-16 th-fw-600'>
+                  {diary?.created_by?.first_name}&nbsp;{diary?.created_by?.last_name}
+                </div>
+                <div className='row px-0 th-12 th-grey'>
+                  {moment(diary?.created_at).format('DD/MM/YYYY HH:mm a')}
+                </div>
+              </div>
 
-        <div className='row th-black-2 th-fw-500 py-2'>
-          {diary?.dairy_type == 1 ? 'General Diary' : 'Daily Dairy'}
-        </div>
-        <div className='row th-black-2 py-2'>
-          <span className='text-truncate'>
-            {diary?.dairy_type == 2
-              ? diary?.teacher_report?.homework
-              : `Message: ${diary?.message}`}
-          </span>
-        </div>
-
-        <div className='row th-black-2'>
-          Created By -
-          <span>
-            {diary?.created_by?.first_name} on {diary?.created_at?.substring(0, 10)}
-          </span>
-        </div>
-        <Button
-          className='th-white badge th-bg-primary th-br-10 mt-2'
-          onClick={() => {
-            showDrawer();
-            if (diary?.dairy_type == 2) {
-              fetchHomeworkDetails({
-                section_mapping: diary?.section_mapping[0],
-                subject: diary?.subject?.id,
-                date: moment().format('YYYY-MM-DD'),
-                user_id: user_id,
-              });
-            }
-          }}
-          visible={visible}
-        >
-          View More
-        </Button>
-        <div className='row py-2'>
-          <div
-            className='col-4 th-br-10 py-1 th-bg-grey'
-            style={{ border: '1px solid #d9d9d9' }}
-          >
-            <PaperClipOutlined /> {diary?.documents ? diary?.documents.length : 0} Files
+              <div className='col-6 px-2 pb-1'>
+                <div
+                  className={`row ${
+                    diary?.diary_type == 1
+                      ? 'justify-content-end'
+                      : 'justify-content-between'
+                  } align-items-end h-100`}
+                >
+                  {diary?.diary_type == 2 && (
+                    <div className='d-flex align-items-end th-bg-grey th-12 p-0'>
+                      <span>
+                        <img src={hwIcon} height={35} />
+                      </span>
+                      <span className='th-red px-2 th-fw-500'>
+                        Homework <br />
+                        not assigned
+                      </span>
+                    </div>
+                  )}
+                  <div>
+                    <Badge count={diary?.documents.length} size='small'>
+                      <Avatar
+                        shape='square'
+                        size='large'
+                        icon={<PaperClipOutlined />}
+                        className='th-bg-grey th-black-2'
+                      />
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <Drawer
         placement='right'
         className='th-diaryDrawer'
+        zIndex={1300}
         title={
-          <div>
-            <div className='th-fw-600 th-primary th-18 text-capitalize'>
-              {diary?.dairy_type == 2 ? diary?.subject?.subject_name : diary?.title}
+          <div className='row pr-1'>
+            <div className='col-12 th-bg-yellow-2'>
+              {diary?.diary_type == 1 ? (
+                <>
+                  <div className='th-fw-600 th-primary th-18 text-capitalize pt-2'>
+                    {diary?.title}
+                  </div>
+                  <div className='th-fw-400 mt-1'>Created On:</div>
+                  <div className='th-fw-400 mb-1'>21-11-2022, 12:56 pm</div>
+                </>
+              ) : (
+                <>
+                  <div className='row th-fw-700 th-black-1 py-1'>
+                    <div className='col-3 px-0'>Subject : </div>
+                    <div className='col-8 pl-0'>Mathematics </div>
+                    <div className='col-1 px-0 tex-right'>
+                      <CloseOutlined onClick={closeDrawer} />
+                    </div>
+                  </div>
+                  <div className='row th-fw-600'>Grade: 2B</div>
+                  <div className='row py-1'>
+                    <div className='row'>
+                      <span className='th-black-2'>Created By : </span>{' '}
+                      <span className='th-fw-600'>Teachers Name</span>
+                    </div>
+                    <div className='row th-12 th-black-2'> 21-11-2022, 12:56 pm</div>
+                  </div>
+                </>
+              )}
             </div>
-            <div className='th-fw-400 mt-2'>Created On:</div>
-            <div className='th-fw-400'>{diary?.created_at?.substring(0, 10)}</div>
           </div>
         }
         onClose={closeDrawer}
-        // visible={true}
-        visible={visible}
+        visible={drawerVisible}
         closable={false}
-        extra={
-          <Space>
-            <CloseOutlined clasName='th-primary' onClick={closeDrawer} />
-          </Space>
-        }
+        width={window.innerWidth < 768 ? '90vw' : '450px'}
       >
-        <div className='row pb-2'>
-          {diary?.dairy_type == 2 ? (
-            <>
-              <div
-                className='row px-3 py-2 th-bg-grey th-br-6 flex-column th-black-2 mb-3'
-                style={{ border: '1px solid #d9d9d9' }}
-              >
-                <div className='th-16 th-black-2 th-fw-500'>Recap of previous class:</div>
-                <div className='th-16 th-primary th-width-100 text-wrap'>
-                  {diary?.teacher_report?.previous_class}
-                </div>
-              </div>
-              <div
-                className='row px-3 py-2 th-bg-grey th-br-6 flex-column th-black-2 mb-3'
-                style={{ border: '1px solid #d9d9d9' }}
-              >
-                <div className='th-16 th-black-2 th-fw-500'>Details of classwork:</div>
-                <div className='th-16 th-primary th-width-100 text-wrap'>
-                  {diary?.teacher_report?.class_work}
-                </div>
-              </div>
-              <div
-                className='row px-3 py-2 th-bg-grey th-br-6 flex-column th-black-2 mb-3'
-                style={{ border: '1px solid #d9d9d9' }}
-              >
-                <div className='th-16 th-black-2 th-fw-500'>Summary:</div>
-                <div className='th-16 th-primary th-width-100 text-wrap'>
-                  {diary?.teacher_report?.summary}
-                </div>
-              </div>
-              <div
-                className='row px-3 py-2 th-bg-grey th-br-6 flex-column th-black-2 mb-3'
-                style={{ border: '1px solid #d9d9d9' }}
-              >
-                <div className='th-16 th-black-2 th-fw-500'>Tools Used:</div>
-                <div className='th-16 th-primary th-width-100 text-wrap'>
-                  {diary?.teacher_report?.tools_used}
-                </div>
-              </div>
-              <div
-                className='row px-3 py-2 th-bg-grey th-br-6 flex-column th-black-2 mb-3'
-                style={{ border: '1px solid #d9d9d9' }}
-              >
-                <div className='th-16 th-black-2 th-fw-500'>Homework Details:</div>
-                <div className='th-16 th-black-2 th-fw-500 mt-2'>
-                  Title:
-                  <div className='th-16 th-primary th-width-100 text-wrap'>
-                    {homeworkDetails?.homework_name}
-                  </div>
-                </div>
-                <div className='th-16 th-black-2 th-fw-500'>
-                  Instructions:
-                  <div className='th-16 th-primary th-width-100 text-wrap'>
-                    {homeworkDetails?.description}
-                  </div>
-                </div>
-                <div className='th-16 th-black-2 th-fw-500'>
-                  Last Submission Date:
-                  <div className='th-16 th-primary th-width-100 text-wrap'>
-                    {moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD')}
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
+        <>
+          {diary?.diary_type == 1 ? (
             <>
               <div
                 className='row px-3 py-2 th-bg-grey th-br-6 flex-column th-black-2 mb-3'
@@ -284,14 +308,104 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
                 </div>
               </div>
             </>
+          ) : (
+            <>
+              <div
+                className='th-bg-white shadom-sm pb-3 th-br-4'
+                style={{ border: '2px solid #d9d9d9' }}
+              >
+                <div className='row th-black-1 th-fw-600 th-bg-pink-2 px-2 py-1 th-18'>
+                  Today's Topic
+                </div>
+                <div className='row th-fw-600 pt-2'>
+                  <div className='col-4 pr-0'>Period Number :</div>
+                  <div className='col-8 pl-0 text-truncate'>2</div>
+                </div>
+                <div className='row'>
+                  <div className='col-4 pr-0 th-fw-600'>Module :</div>
+                  <div className='col-8 pl-0 text-truncate th-grey-1'>Module name</div>
+                </div>
+                <div className='row'>
+                  <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
+                  <div className='col-8 pl-0 text-truncate th-grey-1'>Chapter name</div>
+                </div>
+                <div className='row'>
+                  <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
+                  <div className='col-8 pl-0 text-truncate th-grey-1'>Concept name</div>
+                </div>
+                <div className='row'>
+                  <div className='col-12'>
+                    <Divider className='my-3' />
+                  </div>
+                </div>
+                <div className='row th-fw-600'>
+                  <div className='col-12 th-grey-1 th-18'>Upcoming Period</div>
+                </div>
+                <div className='row th-fw-600 pt-2'>
+                  <div className='col-4 pr-0'>Period Number :</div>
+                  <div className='col-8 pl-0 text-truncate'>2</div>
+                </div>
+                <div className='row'>
+                  <div className='col-4 pr-0 th-fw-600'>Module :</div>
+                  <div className='col-8 pl-0 text-truncate th-grey-1'>Module name</div>
+                </div>
+                <div className='row'>
+                  <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
+                  <div className='col-8 pl-0 text-truncate th-grey-1'>Chapter name</div>
+                </div>
+                <div className='row'>
+                  <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
+                  <div className='col-8 pl-0 text-truncate th-grey-1'>Concept name</div>
+                </div>
+              </div>
+              <div className='row py-2'>
+                <div className='col-12 px-0 th-fw-600'>Homework</div>
+                <div className='col-12 px-0'>
+                  <div className='row th-bg-blue-2 th-br-6'>
+                    <div className='row pt-1'>
+                      <div className='col-3 pr-0 th-black-1'>Title</div>
+                      <div className='col-9 pl-0'>Concept name</div>
+                    </div>
+                    <div className='row pt-1'>
+                      <div className='col-3 pr-0 th-black-1'>Instructions</div>
+                      <div className='col-9 pl-0'>Concept name</div>
+                    </div>
+                    <div className='row pt-1'>
+                      <div className='col-3 pr-0 th-black-1'>Due Date</div>
+                      <div className='col-9 pl-0'>Concept name</div>
+                    </div>
+                    <div className='row py-1'>
+                      <div className='col-3 pr-0 th-black-1'>Description</div>
+                      <div className='col-9 pl-0'>Concept name</div>
+                    </div>
+                    <div class='row py-1 pb-2 justify-content-end'>
+                      <div class='col-4 text-center'>
+                        <div class='th-bg-primary th-white px-2 py-1 th-br-6 th-pointer'>
+                          {' '}
+                          View Details
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='row py-2'>
+                <div className='col-12 px-0 th-fw-600'>Notes</div>
+                <div className='col-12 px-0'>
+                  <div className='row th-bg-blue-1 th-br-6'>
+                    <div className='row py-1'>
+                      <div className='col-3 pr-0 th-black-1'>Description</div>
+                      <div className='col-9 pl-0'>Concept name</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
           {diary?.documents?.length > 0 && (
-            <div
-              className='row px-3 py-2 th-bg-grey th-br-6 flex-column th-black-2 mb-3'
-              style={{ border: '1px solid #d9d9d9' }}
-            >
+            <>
               <div className='th-16 th-black-2 th-fw-500 row'>
-                <div className='col-6 pl-0 text-left'>Media:</div>
+                <div className='col-6 pl-0 text-left'>Attachments:</div>
                 <div className='col-6 text-right'>
                   <u
                     className='th-pointer th-12'
@@ -301,37 +415,64 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
                   </u>
                 </div>
               </div>
-              <div className='th-16 th-primary' style={{ height: 80, overflowY: 'auto' }}>
-                {diary?.documents?.map((each) => {
-                  const fullName = each?.split('_')[each?.split('_').length - 1];
-                  const fileName = fullName.split('.')[fullName?.split('.').length - 2];
-                  const extension = fullName.split('.')[fullName?.split('.').length - 1];
+              <div
+                className='row px-3 py-2 th-bg-white th-br-6 flex-column th-black-2 mb-3'
+                style={{ border: '1px solid #d9d9d9' }}
+              >
+                <div
+                  className='th-16 th-primary'
+                  style={{ height: 120, overflowY: 'auto' }}
+                >
+                  {diary?.documents?.map((each) => {
+                    const fullName = each?.split('_')[each?.split('_').length - 1];
+                    const fileName = fullName.split('.')[fullName?.split('.').length - 2];
+                    const extension =
+                      fullName.split('.')[fullName?.split('.').length - 1];
 
-                  return (
-                    <div className='row py-2'>
-                      <div className='col-8 pl-0'>
-                        <div
-                          className='th-primary text-truncate'
-                          style={{ width: '200px' }}
-                        >
-                          {fileName}
+                    return (
+                      <div
+                        className='row mt-2 py-2 align-items-center th-bg-grey'
+                        style={{ border: '1px solid #d9d9d9' }}
+                      >
+                        <div className='col-2'>
+                          <img src={getFileIcon(extension)} />
+                        </div>
+                        <div className='col-10 px-0 th-pointer'>
+                          <a
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    src: `${endpoints.announcementList.s3erp}${each}`,
+
+                                    name: fileName,
+                                    extension: '.' + extension,
+                                  },
+                                ],
+                              });
+                            }}
+                            rel='noopener noreferrer'
+                            target='_blank'
+                          >
+                            <div className='row align-items-center'>
+                              <div className='col-10 px-1'>{fileName}</div>
+                              <div className='col-2'>
+                                <EyeFilled />
+                              </div>
+                            </div>
+                          </a>
                         </div>
                       </div>
-                      <div className='col-4 text-center'>
-                        <ArrowDownOutlined
-                          className='th-primary th-pointer'
-                          onClick={() => handleDownloadAll([each])}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            </>
           )}
-        </div>
+        </>
       </Drawer>
-    </div>
+    </>
   );
 };
 

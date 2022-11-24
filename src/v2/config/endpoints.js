@@ -120,6 +120,7 @@ export default {
     removeFile: '/academic/delete-file/',
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
+    upcomingPeriodData: `${baseURLCentral}/lesson_plan/v2/upcoming-period-data/`,
   },
 
   diaryReport: {
@@ -129,6 +130,7 @@ export default {
     subjectwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/view/`,
     subjectTeacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/view/`,
     teacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/data/view/`,
+    resources: `${baseURLCentral}/lesson_plan/lesson/`,
   },
   lessonPlan: {
     subjects: 'academic/v2/lesson-plan-subjects/',

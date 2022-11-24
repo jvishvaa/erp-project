@@ -1,20 +1,32 @@
 import React, { useState, createRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
-  Breadcrumb,
+  Modal,
   Form,
   Select,
   Input,
   Button,
   message,
-  Modal,
-  Checkbox,
+  Collapse,
+  Drawer,
   DatePicker,
   Spin,
+  Checkbox,
 } from 'antd';
-import { DownOutlined, InfoCircleFilled } from '@ant-design/icons';
+import {
+  DownOutlined,
+  CloseOutlined,
+  ArrowRightOutlined,
+  DeleteOutlined,
+  CloseCircleOutlined,
+  PlusOutlined,
+  CaretRightOutlined,
+  EyeFilled,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
+import axiosInstance from 'axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector, useDispatch } from 'react-redux';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
@@ -26,7 +38,20 @@ import moment from 'moment';
 import cuid from 'cuid';
 import { addHomeWork } from 'redux/actions/teacherHomeworkActions';
 import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
-
+import tickIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/greenTick.svg';
+import deleteIcon from 'v2/Assets/dashboardIcons/diaryIcons/deleteRedIcon.svg';
+import { getTimeInterval } from 'v2/timeIntervalCalculator';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import { getFileIcon } from 'v2/getFileIcon';
+let boardFilterArr = [
+  'orchids.letseduvate.com',
+  'localhost:3000',
+  'dev.olvorchidnaigaon.letseduvate.com',
+  'ui-revamp1.letseduvate.com',
+  'qa.olvorchidnaigaon.letseduvate.com',
+];
+const { Panel } = Collapse;
 const DailyDiary = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -35,6 +60,8 @@ const DailyDiary = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const dispatch = useDispatch();
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [hwId, sethwId] = useState();
@@ -42,21 +69,26 @@ const DailyDiary = () => {
   const [acadID, setAcadID] = useState(selectedBranch?.id);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
+  const [keyConceptDropdown, setKeyConceptDropdown] = useState([]);
   const [gradeID, setGradeID] = useState([]);
+  const [gradeName, setGradeName] = useState();
+  const [sectionName, setSectionName] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-  // const [sectionMapping, setSectionMapping] = useState([]);
   const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [sectionID, setSectionID] = useState([]);
   const [sectionMappingID, setSectionMappingID] = useState([]);
   const [subjectID, setSubjectID] = useState();
   const [subjectName, setSubjectName] = useState();
   const [chapterID, setChapterID] = useState();
+  const [keyConceptID, setKeyConceptID] = useState();
+  const [gsMappingID, setGSMappingID] = useState();
   const [recap, setRecap] = useState('');
   const [classwork, setClasswork] = useState('');
   const [summary, setSummary] = useState('');
   const [tools, setTools] = useState('');
   const [homework, setHomework] = useState('');
+  // const [homeworkCreated, setHomeworkCreated] = useState(false);
   const [assignedHomework, setAssignedHomework] = useState('');
   const [assignedHomeworkModal, setAssignedHomeworkModal] = useState('');
   const [declined, setDeclined] = useState(false);
@@ -86,6 +118,19 @@ const DailyDiary = () => {
       penTool: false,
     },
   ]);
+  const [centralAcademicYearID, setCentralAcademicYearID] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [loadingDrawer, setLoadingDrawer] = useState(false);
+  const [resourcesData, setResourcesData] = useState(false);
+  const [completedPeriod, setCompletedPeriod] = useState(false);
+  const [showPeriodInfoModal, setShowPeriodInfoModal] = useState(false);
+  const [currentPeriodPanel, setCurrentPeriodPanel] = useState(0);
+  const [currentPanel, setCurrentPanel] = useState(null);
+
+  const [addedPeriods, setAddedPeriods] = useState([]);
+  const [isPeriodAdded, setIsPeriodAdded] = useState(false);
+  const [clearTodaysTopic, setClearTodaysTopic] = useState(true);
+  const [clearUpcomingPeriod, setClearUpcomingPeriod] = useState(false);
 
   const questionModify = (questions) => {
     let arr = [];
@@ -103,6 +148,7 @@ const DailyDiary = () => {
   };
 
   const formRef = createRef();
+  const drawerFormRef = createRef();
   const history = useHistory();
 
   let editData = '';
@@ -112,6 +158,13 @@ const DailyDiary = () => {
   const handleUploadModalClose = () => {
     setShowUploadModal(false);
   };
+  const openPeriodInfoModal = () => {
+    setShowPeriodInfoModal(true);
+  };
+  const closePeriodInfoModal = () => {
+    setShowPeriodInfoModal(false);
+  };
+
   const handleChange = (index, field, value) => {
     const form = questionList[index];
     const modifiedForm = { ...form, [field]: value };
@@ -145,7 +198,7 @@ const DailyDiary = () => {
   };
   const handleShowModal = () => {
     if (!branchID && !gradeID) {
-      message.error('Please select branch and grade first');
+      message.error('Please select grade first');
       return;
     } else {
       setShowUploadModal(true);
@@ -164,6 +217,12 @@ const DailyDiary = () => {
   const closeAssignedHomeworkModal = () => {
     setAssignedHomeworkModal(false);
     setDeclined(true);
+  };
+  const showDrawer = () => {
+    setDrawerVisible(true);
+  };
+  const closeDrawer = () => {
+    setDrawerVisible(false);
   };
 
   const handleBack = () => {
@@ -207,10 +266,11 @@ const DailyDiary = () => {
   };
 
   const handleSubmit = () => {
-    if (showHomeworkForm && !homework) {
+    if (showHomeworkForm && !homeworkCreated) {
       message.error('Please finish the homework first');
       return;
     }
+
     if (!gradeID) {
       message.error('Please select Grade');
       return;
@@ -223,10 +283,14 @@ const DailyDiary = () => {
       message.error('Please select Subject');
       return;
     }
-    if (!chapterID) {
-      message.error('Please select Chapter');
-      return;
-    }
+    // if (addedPeriods.length < 1) {
+    //   message.error("Please add Today's Topic");
+    //   return;
+    // }
+    // if (!chapterID) {
+    //   message.error('Please select Chapter');
+    //   return;
+    // }
     setLoading(true);
     let payload = {
       academic_year: acadID,
@@ -251,8 +315,18 @@ const DailyDiary = () => {
     if (hwMappingID) {
       payload['hw_dairy_mapping_id'] = hwMappingID;
     }
-    if(payload?.teacher_report?.previous_class || payload?.teacher_report?.summary || payload?.teacher_report?.class_work || payload?.teacher_report?.tools_used || showHomeworkForm && payload?.teacher_report?.homework || assignedHomework?.length > 0 ){
-      axios
+    if (addedPeriods.length > 0) {
+      payload['period_added_ids'] = addedPeriods.map((item) => item.id).toString();
+    }
+    // if (
+    //   payload?.teacher_report?.previous_class ||
+    //   payload?.teacher_report?.summary ||
+    //   payload?.teacher_report?.class_work ||
+    //   payload?.teacher_report?.tools_used ||
+    //   (showHomeworkForm && payload?.teacher_report?.homework) ||
+    //   assignedHomework?.length > 0
+    // ) {
+    axios
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {
         if (res?.data?.status_code == 200) {
@@ -269,12 +343,11 @@ const DailyDiary = () => {
         setLoading(false);
         message.error(error?.message);
       });
-    }else {
-      message.error('Please Enter Details')
-      setLoading(false);
-      return;
-
-    }
+    // } else {
+    //   message.error('Please Enter Details');
+    //   setLoading(false);
+    //   return;
+    // }
 
     // if (hwMappingID) {
     //   payload['hw_dairy_mapping_id'] = hwMappingID;
@@ -307,9 +380,13 @@ const DailyDiary = () => {
   const handleClearSection = () => {
     setSubjectDropdown([]);
     setChapterDropdown([]);
+    setSectionMappingID();
+    setSectionID();
+    setSubjectID();
   };
 
   const handleClearSubject = () => {
+    setSubjectID();
     setChapterDropdown([]);
   };
 
@@ -321,11 +398,66 @@ const DailyDiary = () => {
       </Option>
     );
   });
+  const keyConceptOptions = keyConceptDropdown?.map((each) => {
+    return (
+      <Option
+        key={each?.id}
+        value={each.id}
+        gsMappingId={each.chptr_fk__grade_subject_mapping_id}
+      >
+        {each?.topic_name}
+      </Option>
+    );
+  });
 
   const handleChapter = (e) => {
-    setChapterID(e);
+    drawerFormRef.current.setFieldsValue({
+      key_concept: null,
+    });
+    setChapterID(e.value);
+    // setChapterName(e.children);
+    fetchKeyConceptListData({
+      chapter_id: e.value,
+    });
+  };
+  const handleKeyConcept = (e) => {
+    if (e) {
+      setKeyConceptID(e.value);
+      setGSMappingID(e.gsMappingId);
+      fetchLessonResourcesData(e);
+    } else {
+      setResourcesData([]);
+    }
   };
 
+  const fetchLessonResourcesData = (data) => {
+    setLoadingDrawer(true);
+    const params = {
+      grade: gradeID,
+      acad_session_id: selectedBranch?.id,
+      chapters: chapterID,
+      subject: subjectID,
+      central_gs_id: data.gsMappingId,
+      for_diary: 1,
+      key_concepts: data.value,
+    };
+    axios
+      .get(`/academic/period-view/grade-subject-wise-lp-overview/`, {
+        params: { ...params },
+      })
+      .then((result) => {
+        if (result?.data?.status === 200) {
+          setResourcesData(result?.data?.data);
+          setLoadingDrawer(false);
+        } else {
+          setLoadingDrawer(false);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoadingDrawer(false);
+      });
+  };
   //For Subject
   const subjectOptions = subjectDropdown?.map((each) => {
     return (
@@ -336,9 +468,12 @@ const DailyDiary = () => {
   });
 
   const handleSubject = (e) => {
-    formRef.current.setFieldsValue({
-      chapter: null,
-    });
+    // drawerFormRef.current.setFieldsValue({
+    //   chapter: null,
+    //   key_concept: null,
+    // });
+    setAddedPeriods([]);
+    setResourcesData([]);
     setAssignedHomework();
     setHomework('');
     setShowIcon(false);
@@ -346,25 +481,24 @@ const DailyDiary = () => {
     setShowHomeworkForm(false);
     if (e) {
       setSubjectID(e.value);
-      setSubjectName(e.children);
+      setSubjectName(e.children.split('_')[e.children.split('_').length - 1]);
       setDeclined(false);
       setHwMappingID();
       checkAssignedHomework({
         section_mapping: sectionMappingID,
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
-        // user_id: user_id,
       });
       const params = {
-        session_year: selectedBranch.branch.id,
-        subject_id: e.id,
-        subject: e.value,
+        branch_id: selectedBranch.branch.id,
+        subject_id: e.value,
+        grade_id: gradeID,
       };
       axios
-        .get(`${endpoints.academics.chapter}`, { params: { ...params } })
+        .get('/academic/diary/chapters/', { params: { ...params } })
         .then((result) => {
           if (result?.data?.status_code == 200) {
-            setChapterDropdown(result?.data?.result);
+            setChapterDropdown(result?.data?.data);
           }
         })
         .catch((error) => {
@@ -390,6 +524,7 @@ const DailyDiary = () => {
     if (each) {
       setSectionID(each?.value);
       setSectionMappingID(each?.mappingId);
+      setSectionName(each?.children?.slice(-1).toUpperCase());
       const params = {
         session_year: selectedAcademicYear?.id,
         branch: selectedBranch?.branch?.id,
@@ -412,32 +547,31 @@ const DailyDiary = () => {
   const gradeOptions = gradeDropdown?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each?.grade_id}>
-        {each?.grade__grade_name}
+        {each?.grade_name}
       </Option>
     );
   });
 
-  const handleGrade = (e, value) => {
+  const handleGrade = (e) => {
     formRef.current.setFieldsValue({
       section: null,
       subject: null,
-      chapter: null,
     });
     setSectionDropdown([]);
     if (e) {
-      setGradeID(e);
+      setGradeID(e.value);
+      setGradeName(e.children);
       const params = {
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
-        grade_id: e,
+        grade_id: e.value,
         module_id: moduleId,
       };
       axios
         .get(`${endpoints.academics.sections}`, { params })
         .then((result) => {
           if (result?.data?.status_code == 200) {
-            const sectionData = result?.data?.data || [];
-            setSectionDropdown(sectionData);
+            setSectionDropdown(result?.data?.data);
           }
         })
         .catch((error) => message.error('error', error?.message));
@@ -459,6 +593,20 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
+  const fetchKeyConceptListData = (params = {}) => {
+    axios
+      .get(`/academic/diary/topics/`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setKeyConceptDropdown(res?.data?.data);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
 
   const checkAssignedHomework = (params = {}) => {
     axios
@@ -467,6 +615,26 @@ const DailyDiary = () => {
         if (result?.data?.status == 200) {
           if (result?.data?.data.length > 0) {
             setAssignedHomework(result?.data?.data);
+            // mapAssignedHomework();
+          }
+          setShowIcon(true);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+  const fetchUpcomigPeriod = (data) => {
+    axiosInstance
+      .get(`${endpoints?.dailyDiary?.upcomingPeriodData}?current_period_id=${data}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          if (response?.data?.data.length > 0) {
+            console.log('upcoming', response?.data);
+            // setupcomingPeriodData(result?.data?.data);
+            // mapAssignedHomework();
           }
           setShowIcon(true);
         }
@@ -474,10 +642,16 @@ const DailyDiary = () => {
       .catch((error) => message.error('error', error?.message));
   };
   useEffect(() => {
-    if (assignedHomework && homeworkCreated) {
+    if (assignedHomework) {
       mapAssignedHomework();
     }
   }, [assignedHomework]);
+  useEffect(() => {
+    if (addedPeriods.length > 0) {
+      fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
+    }
+  }, [addedPeriods]);
+
   const mapAssignedHomework = () => {
     setQuestionEdit(true);
     axios
@@ -581,6 +755,55 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
+  const fetchResourceYear = () => {
+    axiosInstance
+      .get(`${endpoints.lessonPlan.academicYearList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setCentralAcademicYearID(
+            result?.data?.result?.results?.filter(
+              (item) => item?.session_year == selectedAcademicYear.session_year
+            )[0]?.id
+          );
+        }
+      })
+      .catch((error) => {
+        message.error(error?.message);
+      });
+  };
+
+  const markPeriodComplete = (item) => {
+    setLoadingDrawer(true);
+    let payLoad = {
+      academic_year: selectedAcademicYear?.session_year,
+      academic_year_id: centralAcademicYearID,
+      volume_id: Number(item?.chapter__volume_id),
+      volume_name: item?.chapter__volume__volume_name,
+      subject_id: subjectID,
+      chapter_id: chapterID,
+      chapter_name: item?.chapter__chapter_name,
+      central_gs_mapping_id: Number(gsMappingID),
+      period_id: item?.id,
+      section_mapping_id: [sectionMappingID],
+    };
+    axios
+      .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          message.success('Period Completed Successfully');
+        }
+      })
+      .catch((error) => {
+        message.error(error.response.data.message);
+      })
+      .finally(() => {
+        setLoadingDrawer(false);
+      });
+  };
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -603,37 +826,46 @@ const DailyDiary = () => {
   useEffect(() => {
     if (moduleId && selectedBranch) {
       fetchGradeData();
+      fetchResourceYear();
     }
   }, [moduleId]);
 
   useEffect(() => {
     if (history?.location?.state?.data) {
       let editData = history.location.state.data;
+      let editSubject = history.location.state.subject;
       setIsDiaryEdit(history?.location?.state?.isDiaryEdit);
       setDiaryID(history.location.state.data?.id);
       formRef.current.setFieldsValue({
-        grade: editData?.grade[0]?.grade_name,
-        section: editData?.section[0]?.section__section_name,
-        subject: editData?.subject?.subject_name,
-        chapter: editData?.chapter[0]?.chapter_name,
+        grade: editData?.grade_name,
+        section: editData?.section_name,
+        subject: editSubject?.subject_name,
+        // chapter: editData?.chapter[0]?.chapter_name,
       });
-      setAcadID(editData?.academic_year?.id);
-      setBranchID(editData?.branch?.id);
-      setGradeID(editData?.grade[0]?.id);
-      setSectionID(editData?.section[0]?.id);
-      setSectionMappingID(editData?.section_mapping[0]);
-      setSubjectID(editData?.subject?.id);
-      setRecap(editData?.teacher_report?.previous_class);
-      setClasswork(editData?.teacher_report?.class_work);
-      setSummary(editData?.teacher_report?.summary);
-      setTools(editData?.teacher_report?.tools_used);
-      setHomework(editData?.teacher_report?.homework);
+      setAcadID(editData?.academic_year_id);
+      setBranchID(editData?.branch_id);
+      setGradeID(editData?.grade_id);
+      setGradeName(editData?.grade_name);
+      setSectionName(editData?.section_name.slice(-1).toUpperCase());
+      setSectionID(editData?.section_id);
+      setSectionMappingID(editData?.section_mapping_id);
+      setSubjectID(editSubject?.subject_id);
+      setSubjectName(editSubject?.subject_name);
+      if (editData?.periods_data.length > 0) {
+        setClearTodaysTopic(false);
+        setAddedPeriods(editData?.periods_data);
+      }
+      // setRecap(editData?.teacher_report?.previous_class);
+      // setClasswork(editData?.teacher_report?.class_work);
+      // setSummary(editData?.teacher_report?.summary);
+      // setTools(editData?.teacher_report?.tools_used);
+      // setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
       fetchHomeworkDetails({
-        section_mapping: editData?.section_mapping[0],
-        subject: editData?.subject?.id,
+        section_mapping: editData?.section_mapping_id,
+        subject: editSubject?.subject_id,
         date: moment(editData?.created_at).format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
     }
   }, []);
@@ -648,411 +880,1025 @@ const DailyDiary = () => {
   }, [homeworkDetails]);
 
   return (
-    <Layout>
-      <div className='row'>
-        <div className='col-md-12 px-4'>
-          <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-black-1'>Diary</Breadcrumb.Item>
-            <Breadcrumb.Item className='th-black-1'>Create Daily Diary</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
-
-        <div className='row py-3'>
-          <div className='col-12'>
-            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-              <div className='row py-2 text-left'>
-                <div className='col-md-4 py-2'>
-                  <Form.Item name='grade'>
-                    <Select
-                      disabled={isDiaryEdit}
-                      className='th-width-100 th-br-6'
-                      onChange={handleGrade}
-                      placeholder='Grade'
-                      allowClear
-                      onClear={handleClearGrade}
-                      showSearch
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {gradeOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-
-                <div className='col-md-4 py-2'>
-                  <Form.Item name='section'>
-                    <Select
-                      disabled={isDiaryEdit}
-                      className='th-width-100 th-br-6'
-                      onChange={(e, value) => handleSection(value)}
-                      placeholder='Section'
-                      allowClear
-                      onClear={handleClearSection}
-                      showSearch
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {sectionOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-4 py-2'>
-                  <Form.Item name='subject'>
-                    <Select
-                      disabled={isDiaryEdit}
-                      className='th-width-100 th-br-6'
-                      onChange={(e, value) => handleSubject(value)}
-                      placeholder='Subject'
-                      allowClear
-                      onClear={handleClearSubject}
-                      showSearch
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {subjectOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-4 py-2'>
-                  <Form.Item name='chapter'>
-                    <Select
-                      disabled={isDiaryEdit}
-                      className='th-width-100 th-br-6'
-                      onChange={handleChapter}
-                      placeholder='Chapter'
-                      allowClear
-                      showSearch
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {chapterOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
+    <div className='row th-bg-white'>
+      <div className='row py-1'>
+        <div className='col-12'>
+          <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+            <div className='row py-2 text-left'>
+              <div className='col-md-3 py-2'>
+                <div className='text-capitalize th-fw-700 th-black-1'>Grade</div>
+                <Form.Item name='grade'>
+                  <Select
+                    disabled={isDiaryEdit}
+                    className='th-width-100 th-br-6'
+                    onChange={(e, value) => handleGrade(value)}
+                    placeholder='Grade'
+                    allowClear
+                    onClear={handleClearGrade}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {gradeOptions}
+                  </Select>
+                </Form.Item>
               </div>
-            </Form>
-            {loading ? (
-              <div className='d-flex justify-content-center align-items-center h-50'>
-                <Spin tip='Creating Diary...' size='large' />
-              </div>
-            ) : (
-              <>
-                <div className='row'>
-                  <div className='col-12'>
-                    <div
-                      className='row px-2 py-3 th-br-10'
-                      style={{ border: '1px solid #d9d9d9' }}
-                    >
-                      <div className='col-md-4 py-2'>
-                        <TextArea
-                          className='th-width-100 th-br-6'
-                          value={recap}
-                          onChange={(e) => setRecap(e.target.value)}
-                          placeholder='Recap of Previous Class'
-                          rows={4}
-                          style={{ resize: 'none' }}
-                        />
-                      </div>
-                      <div className='col-md-4 py-2'>
-                        <TextArea
-                          className='th-width-100 th-br-6'
-                          value={classwork}
-                          onChange={(e) => setClasswork(e.target.value)}
-                          placeholder='Details of ClassWork'
-                          rows={4}
-                          style={{ resize: 'none' }}
-                        />
-                      </div>
-                      <div className='col-md-4 py-2'>
-                        <TextArea
-                          className='th-width-100 th-br-6'
-                          value={summary}
-                          onChange={(e) => setSummary(e.target.value)}
-                          placeholder='Summary'
-                          rows={4}
-                          style={{ resize: 'none' }}
-                        />
-                      </div>
 
-                      <div className='col-md-4 py-2'>
-                        <TextArea
-                          className='th-width-100 th-br-6'
-                          value={tools}
-                          onChange={(e) => setTools(e.target.value)}
-                          placeholder='Tools Used'
-                          rows={4}
-                          style={{ resize: 'none' }}
-                        />
-                      </div>
-                      <div
-                        className='col-md-4 py-2 d-flex'
-                        style={{ position: 'relative' }}
-                      >
-                        {/* <TextArea
-                          className='th-width-100 th-br-6'
-                          value={homework}
-                          onChange={(e) => setHomework(e.target.value)}
-                          rows={4}
-                          placeholder='Add Homework'
-                        /> */}
-                        {showIcon && !assignedHomework && (
-                          <div className='col-12 py-2'>
-                            <Checkbox
-                              checked={showHomeworkForm}
-                              onChange={() =>
-                                setShowHomeworkForm((prevState) => !prevState)
+              <div className='col-md-3 py-2'>
+                <div className='text-capitalize th-fw-700 th-black-1'>Section</div>
+                <Form.Item name='section'>
+                  <Select
+                    disabled={isDiaryEdit}
+                    className='th-width-100 th-br-6'
+                    onChange={(e, value) => handleSection(value)}
+                    placeholder='Section'
+                    allowClear
+                    onClear={handleClearSection}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {sectionOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-3 py-2'>
+                <div className='text-capitalize th-fw-700 th-black-1'>Subject</div>
+                <Form.Item name='subject'>
+                  <Select
+                    disabled={isDiaryEdit}
+                    className='th-width-100 th-br-6'
+                    onChange={(e, value) => handleSubject(value)}
+                    placeholder='Subject'
+                    allowClear
+                    onClear={handleClearSubject}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {subjectOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+            </div>
+          </Form>
+          {loading ? (
+            <div className='d-flex justify-content-center align-items-center h-50'>
+              <Spin tip='Creating Diary...' size='large' />
+            </div>
+          ) : (
+            <>
+              <div className='row th-bg-white py-1'>
+                <div className='col-12 px-0'>
+                  <div
+                    className='row'
+                    // style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    <div className='col-md-5 py-2 th-bg-grey th-br-6 ml-2'>
+                      <div className='row px-2 align-items-center'>
+                        <div className='col-6 px-0 th-black-2 th-fw-600 th-18'>
+                          Today's Topic
+                        </div>
+                        <div className='col-6 text-right pr-0 mr-2C'>
+                          <span
+                            className='th-12 px-1 th-primary py-1 th-pointer '
+                            style={{ border: '1px solid #d9d9d9' }}
+                            onClick={() =>
+                              subjectID
+                                ? showDrawer()
+                                : message.error('Please select Subject first')
+                            }
+                          >
+                            Add More
+                          </span>
+                          {addedPeriods.length > 0 ? (
+                            <span
+                              className='th-12 px-1 th-red py-1 th-pointer'
+                              style={{ border: '1px solid red' }}
+                              onClick={() =>
+                                setClearTodaysTopic((prevState) => !prevState)
                               }
                             >
-                              Assign Homework
-                            </Checkbox>
-                          </div>
-                        )}
+                              {clearTodaysTopic ? (
+                                <>
+                                  <ReloadOutlined className='mr-2' />
+                                  Redo
+                                </>
+                              ) : (
+                                <>
+                                  <DeleteOutlined className='mr-2' />
+                                  Delete
+                                </>
+                              )}
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
 
-                        {showIcon ? (
+                      <div
+                        className='row mt-1 th-br-6'
+                        style={{
+                          border: '1px solid #d9d9d9',
+                          boxShadow: '0px 0px 6px 0px #0000005E',
+                          height: 165,
+                          overflowY: 'auto',
+                        }}
+                      >
+                        {clearTodaysTopic ? (
                           <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
+                            className='row h-100 align-items-center th-pointer'
+                            onClick={() =>
+                              subjectID
+                                ? showDrawer()
+                                : message.error('Please select Subject first')
+                            }
                           >
-                            {assignedHomework && !homework ? (
-                              <div onClick={mapAssignedHomework} className='th-pointer'>
-                                <span>
-                                  <InfoCircleFilled
-                                    className='th-primary'
-                                    style={{ fontSize: 20 }}
-                                  />
-                                </span>
-                                <span className='ml-2 th-fw-500'>
-                                  Homework Exists (click to map to diary)
-                                </span>
-                              </div>
-                            ) : null}
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className='col-md-4 py-2'>
-                        {hwMappingID && homework ? (
-                          <>
-                            <span>
-                              <img src={AsignHomework} className='py-3' />
-                            </span>
-                            <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
-                              Homework Mapped to Diary
-                            </span>
-                          </>
-                        ) : null}
-                      </div>
-
-                      <div className='col-12'>
-                        <span className='th-grey th-14'>
-                          Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
-                        </span>
-                        <div
-                          className='row justify-content-start align-items-center th-br-4 py-1 mt-1 th-bg-white'
-                          style={{ border: '1px solid #D9D9D9' }}
-                        >
-                          <div className='col-8'>
-                            <div className='row'>
-                              {uploadedFiles?.map((item, index) => {
-                                const fullName = item?.split('_')[
-                                  item?.split('_').length - 1
-                                ];
-
-                                const fileName = fullName.split('.')[
-                                  fullName?.split('.').length - 2
-                                ];
-                                const extension = fullName.split('.')[
-                                  fullName?.split('.').length - 1
-                                ];
-
-                                return (
-                                  <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
-                                    <span className='th-12 th-black-1 text-truncate'>
-                                      {fileName}
-                                    </span>
-                                    <span className='th-12 th-black-1 '>
-                                      .{extension}
-                                    </span>
-
-                                    <span className='ml-md-3 ml-1 th-pointer '>
-                                      <img
-                                        src={smallCloseIcon}
-                                        onClick={() => handleRemoveUploadedFile(index)}
-                                      />
-                                    </span>
-                                  </div>
-                                );
-                              })}
+                            <div className='col-12 text-center th-fw-500 th-black-2'>
+                              <PlusOutlined className='mr-3' />
+                              Select from Lesson plan
                             </div>
                           </div>
-                          <div className='col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'>
-                            <span onClick={handleShowModal}>
-                              <span className='th-12'>
-                                {' '}
-                                <u>Upload</u>
-                              </span>
-                              <span className='ml-3 pb-2'>
-                                <img src={uploadIcon} />
-                              </span>
-                            </span>
+                        ) : (
+                          addedPeriods?.map((item, index) => (
+                            <div className='row px-1 th-diary-collapse'>
+                              <Collapse
+                                activeKey={currentPanel}
+                                expandIconPosition='right'
+                                bordered={true}
+                                showArrow={false}
+                                className='th-br-6 my-2 th-bg-grey th-width-100'
+                                style={{ border: '1px solid #d9d9d9' }}
+                                onChange={() => {
+                                  if (currentPanel == index) {
+                                    setCurrentPanel(null);
+                                  } else {
+                                    setCurrentPanel(index);
+                                  }
+                                }}
+                              >
+                                <Panel
+                                  collapsible={true}
+                                  showArrow={false}
+                                  header={
+                                    <div
+                                      className='row th-fw-600 align-items-center py-1 th-bg-pink-2 th-width-100'
+                                      style={{ borderRadius: '6px 6px 0px 0px' }}
+                                    >
+                                      <div className='col-6 pr-0 th-18'>
+                                        {item?.period_name}
+                                      </div>
+                                      <div className='col-6 pl-0 text-right'>
+                                        <div className='d-flex flex-column'>
+                                          <div className='th-10 th-grey-1'>
+                                            Last Updated on
+                                          </div>
+                                          <div className='th-10 th-black-1'>
+                                            21/11/2022, 12:33 pm
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  }
+                                  key={index}
+                                >
+                                  <div
+                                    className='row th-pointer'
+                                    onClick={() => {
+                                      subjectID
+                                        ? showDrawer()
+                                        : message.error('Please select Subject first');
+                                    }}
+                                  >
+                                    <div className='col-12 px-0'>
+                                      <div className='row pt-3'>
+                                        <div className='col-4 pr-0 th-fw-600'>
+                                          Module :
+                                        </div>
+                                        <div className='col-8 pl-0 th-grey-1'>
+                                          {item?.module_name}
+                                        </div>
+                                      </div>
+                                      <div className='row py-1'>
+                                        <div className='col-4 pr-0 th-fw-600'>
+                                          Chapter Name :
+                                        </div>
+                                        <div className='col-8 pl-0 th-grey-1'>
+                                          {item?.chapter_name}
+                                        </div>
+                                      </div>
+                                      <div className='row pb-2'>
+                                        <div className='col-4 pr-0 th-fw-600'>
+                                          Key Concept :
+                                        </div>
+                                        <div className='col-8 pl-0 th-grey-1'>
+                                          {item?.topic_name}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-12 text-right pb-1'>
+                                      <ArrowRightOutlined />
+                                    </div>
+                                  </div>
+                                </Panel>
+                              </Collapse>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                    <div
+                      className='col-md-5 py-2 th-bg-grey th-br-6 ml-3'
+                      style={{ height: '215px' }}
+                    >
+                      <div className='row px-2 align-items-center'>
+                        <div className='col-sm-6 col-8 px-0 th-black-2 th-fw-600 th-18'>
+                          Upcoming Period
+                        </div>
+                        <div className='col-sm-6 col-4 text-right pr-0'>
+                          <span
+                            className='th-12 px-1 th-red py-1 th-pointer'
+                            style={{
+                              border: '1px solid red',
+                            }}
+                            onClick={() =>
+                              setClearUpcomingPeriod((prevState) => !prevState)
+                            }
+                          >
+                            {clearUpcomingPeriod ? (
+                              <>
+                                <ReloadOutlined className='mr-2' />
+                                Redo
+                              </>
+                            ) : (
+                              <>
+                                <DeleteOutlined className='mr-2' />
+                                Delete
+                              </>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        className='row my-2 th-br-6'
+                        style={{
+                          border: '1px solid #d9d9d9',
+                          boxShadow: '0px 0px 6px 0px #0000005E',
+                          height: '150px',
+                        }}
+                      >
+                        {clearUpcomingPeriod ? (
+                          <>
+                            <div
+                              className='row h-100 align-items-center th-pointer'
+                              onClick={() =>
+                                subjectID
+                                  ? showDrawer()
+                                  : message.error('Please select Subject first')
+                              }
+                            >
+                              <div className='col-12 text-center th-fw-500 th-black-2'>
+                                <PlusOutlined className='mr-3' />
+                                Select from Lesson plan
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <div
+                            className='row th-pointer'
+                            onClick={() => {
+                              subjectID
+                                ? showDrawer()
+                                : message.error('Please select Subject first');
+                            }}
+                          >
+                            <div className='col-12 px-0'>
+                              <div
+                                className='row th-fw-600 align-items-center py-1 th-bg-pink'
+                                style={{ borderRadius: '6px 6px 0px 0px' }}
+                              >
+                                <div className='col-6 pr-0 th-18'>Period : 3</div>
+                                <div className='col-6 pl-0 text-right'>
+                                  <div className='d-flex flex-column'>
+                                    <div className='th-10 th-grey-1'>Last Updated on</div>
+                                    <div className='th-10 th-black-1'>
+                                      21/11/2022, 12:33 pm
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className='row pt-3'>
+                                <div className='col-4 pr-0 th-fw-600'>Module :</div>
+                                <div className='col-8 pl-0 th-grey-1'>Module name</div>
+                              </div>
+                              <div className='row py-1'>
+                                <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
+                                <div className='col-8 pl-0 th-grey-1'>Chapter name</div>
+                              </div>
+                              <div className='row pb-2'>
+                                <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
+                                <div className='col-8 pl-0 th-grey-1'>Concept name</div>
+                              </div>
+                            </div>
+                            <div className='col-12 text-right pb-1'>
+                              <ArrowRightOutlined />
+                            </div>
                           </div>
+                        )}
+                      </div>
+                    </div>
+                    {/* <div className='col-md-4 py-2'>
+                      <TextArea
+                        className='th-width-100 th-br-6'
+                        value={recap}
+                        onChange={(e) => setRecap(e.target.value)}
+                        placeholder='Recap of Previous Class'
+                        rows={4}
+                        style={{ resize: 'none' }}
+                      />
+                    </div> */}
+                    {/* <div className='col-md-4 py-2'>
+                      <TextArea
+                        className='th-width-100 th-br-6'
+                        value={classwork}
+                        onChange={(e) => setClasswork(e.target.value)}
+                        placeholder='Details of ClassWork'
+                        rows={4}
+                        style={{ resize: 'none' }}
+                      />
+                    </div> */}
+                    {/* <div className='col-md-4 py-2'>
+                      <TextArea
+                        className='th-width-100 th-br-6'
+                        value={summary}
+                        onChange={(e) => setSummary(e.target.value)}
+                        placeholder='Summary'
+                        rows={4}
+                        style={{ resize: 'none' }}
+                      />
+                    </div> */}
+
+                    {/* <div className='col-md-4 py-2'>
+                      <TextArea
+                        className='th-width-100 th-br-6'
+                        value={tools}
+                        onChange={(e) => setTools(e.target.value)}
+                        placeholder='Tools Used'
+                        rows={4}
+                        style={{ resize: 'none' }}
+                      />
+                    </div> */}
+                    {/* <div
+                      className='col-md-4 py-2 d-flex'
+                      style={{ position: 'relative' }}
+                    >
+                     
+                      {showIcon && !assignedHomework && (
+                        <div className='col-12 py-2'>
+                          <Checkbox
+                            checked={showHomeworkForm}
+                            onChange={() =>
+                              setShowHomeworkForm((prevState) => !prevState)
+                            }
+                          >
+                            Assign Homework
+                          </Checkbox>
+                        </div>
+                      )}
+
+                      {showIcon ? (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {assignedHomework && !homework ? (
+                            <div onClick={mapAssignedHomework} className='th-pointer'>
+                              <span>
+                                <InfoCircleFilled
+                                  className='th-primary'
+                                  style={{ fontSize: 20 }}
+                                />
+                              </span>
+                              <span className='ml-2 th-fw-500'>
+                                Homework Exists (click to map to diary)
+                              </span>
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div> */}
+                    {/* <div className='col-md-4 py-2'>
+                      {hwMappingID && homework ? (
+                        <>
+                          <span>
+                            <img src={AsignHomework} className='py-3' />
+                          </span>
+                          <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
+                            Homework Mapped to Diary
+                          </span>
+                        </>
+                      ) : null}
+                    </div> */}
+
+                    <div className='col-12 py-2'>
+                      <span className='th-grey th-14'>
+                        Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
+                      </span>
+                      <div
+                        className='row justify-content-start align-items-center th-br-4 py-1 mt-1 th-bg-white'
+                        style={{ border: '1px solid #D9D9D9' }}
+                      >
+                        <div className='col-8'>
+                          <div className='row'>
+                            {uploadedFiles?.map((item, index) => {
+                              const fullName =
+                                item?.split('_')[item?.split('_').length - 1];
+
+                              const fileName =
+                                fullName.split('.')[fullName?.split('.').length - 2];
+                              const extension =
+                                fullName.split('.')[fullName?.split('.').length - 1];
+
+                              return (
+                                <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                                  <span className='th-12 th-black-1 text-truncate'>
+                                    {fileName}
+                                  </span>
+                                  <span className='th-12 th-black-1 '>.{extension}</span>
+
+                                  <span className='ml-md-3 ml-1 th-pointer '>
+                                    <img
+                                      src={smallCloseIcon}
+                                      onClick={() => handleRemoveUploadedFile(index)}
+                                    />
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div className='col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'>
+                          <span onClick={handleShowModal}>
+                            <span className='th-12'>
+                              {' '}
+                              <u>Upload</u>
+                            </span>
+                            <span className='ml-3 pb-2'>
+                              <img src={uploadIcon} />
+                            </span>
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                {showHomeworkForm && (
-                  <div className='row px-3 mt-3'>
+              </div>
+
+              {subjectID && (
+                <div className='row px-3 py-2'>
+                  {assignedHomework ? (
                     <div
-                      className='col-12 py-2 px-3 th-br-6'
-                      style={{ border: '1px solid #d9d9d9' }}
+                      className='th-fw-600 th-black-1 px-2'
+                      onClick={() => setShowHomeworkForm(true)}
                     >
-                      <div className='row align-items-center'>
-                        <span className='th-black-1'>Due Date</span>
-                        <span className='th-br-4 p-1 th-bg-white'>
-                          <img src={calendarIcon} className='pl-2' />
-                          <DatePicker
-                            disabledDate={(current) =>
-                              current.isBefore(moment().subtract(1, 'day'))
-                            }
-                            allowClear={false}
-                            bordered={false}
-                            placeholder={submissionDate}
-                            placement='bottomRight'
-                            onChange={(event, value) => handleSubmissionDate(value)}
-                            showToday={false}
-                            suffixIcon={<DownOutlined className='th-black-1' />}
-                            className='th-black-2 pl-0 th-date-picker'
-                            format={'YYYY-MM-DD'}
-                          />
-                        </span>
-                      </div>
-                      <div className='row py-2'>
-                        <Input
-                          className='th-width-100 th-br-6'
-                          value={homeworkTitle}
-                          onChange={(e) => setHomeworkTitle(e.target.value)}
-                          placeholder='Title'
-                          maxLength={30}
+                      Existing Homework
+                    </div>
+                  ) : !showHomeworkForm ? (
+                    <div
+                      className='th-bg-grey th-black-1 px-2 py-1 th-pointer'
+                      style={{ border: '1px solid #d9d9d9' }}
+                      onClick={() => setShowHomeworkForm(true)}
+                    >
+                      <PlusOutlined className='mr-2' />
+                      Add Homework
+                    </div>
+                  ) : (
+                    <div
+                      className='th-bg-primary th-white px-2 py-1'
+                      onClick={() => setShowHomeworkForm(false)}
+                    >
+                      Remove Homework <CloseCircleOutlined className='ml-2' />
+                    </div>
+                  )}
+                </div>
+              )}
+              {showHomeworkForm && (
+                <div className='row px-3 mt-3'>
+                  <div
+                    className='col-12 py-2 px-3 th-br-6'
+                    style={{ border: '1px solid black' }}
+                  >
+                    <div className='row py-2'>
+                      <div className='th-black-1 th-fw-600 pb-1'>Title</div>
+                      <Input
+                        className='th-width-100 th-br-6'
+                        value={homeworkTitle}
+                        onChange={(e) => setHomeworkTitle(e.target.value)}
+                        placeholder='Enter Title'
+                        maxLength={30}
+                      />
+                    </div>
+                    <div className='row py-2'>
+                      <div className='th-black-1 th-fw-600 pb-1'>Instructions</div>
+                      <Input
+                        className='th-width-100 th-br-6'
+                        value={homeworkInstructions}
+                        onChange={(e) => setHomeworkInstructions(e.target.value)}
+                        placeholder='Enter Instructions'
+                        maxLength={250}
+                      />
+                    </div>
+                    <div className='row align-items-center'>
+                      <span className='th-black-1 th-fw-600'>Due Date</span>
+                      <span className='th-br-4 p-1 th-bg-grey ml-2'>
+                        {/* <img src={calendarIcon} className='pl-2' /> */}
+                        <DatePicker
+                          disabledDate={(current) =>
+                            current.isBefore(moment().subtract(1, 'day'))
+                          }
+                          allowClear={false}
+                          // defaultValue={moment()}
+                          placeholder={submissionDate}
+                          placement='bottomRight'
+                          onChange={(event, value) => handleSubmissionDate(value)}
+                          showToday={false}
+                          suffixIcon={<DownOutlined className='th-black-1' />}
+                          className='th-black-2 pl-0 th-date-picker'
+                          format={'DD/MM/YYYY'}
                         />
-                      </div>
-                      <div className='row py-2'>
-                        <Input
-                          className='th-width-100 th-br-6'
-                          value={homeworkInstructions}
-                          onChange={(e) => setHomeworkInstructions(e.target.value)}
-                          placeholder='Instructions'
-                          maxLength={250}
+                      </span>
+                    </div>
+                    <div className='row py-2'>
+                      <div className='th-black-1 th-fw-600 pb-1'>Questions</div>
+                      {questionList?.map((question, index) => (
+                        <QuestionCard
+                          key={question.id}
+                          question={question}
+                          isEdit={isDiaryEdit || questionEdit}
+                          index={index}
+                          addNewQuestion={addNewQuestion}
+                          handleChange={handleChange}
+                          removeQuestion={removeQuestion}
+                          sessionYear={selectedAcademicYear?.id}
+                          branch={selectedBranch?.branch?.id}
+                          grade={gradeID}
+                          subject={subjectID}
                         />
+                      ))}
+                    </div>
+                    {!homeworkCreated && (
+                      <div className='row'>
+                        <div className='col-6'>
+                          <Button
+                            className='th-width-100 th-br-6 th-pointer'
+                            onClick={() => {
+                              setQueIndexCounter(queIndexCounter + 1);
+                              addNewQuestion(queIndexCounter + 1);
+                            }}
+                          >
+                            Add Another Question
+                          </Button>
+                        </div>
+                        <div className='col-6'>
+                          <Button
+                            className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
+                            onClick={handleAddHomeWork}
+                          >
+                            {isDiaryEdit ? 'Update' : 'Finish'}
+                          </Button>
+                        </div>
                       </div>
-                      <div className='row py-2'>
-                        {questionList?.map((question, index) => (
-                          <QuestionCard
-                            key={question.id}
-                            question={question}
-                            isEdit={isDiaryEdit || questionEdit}
-                            index={index}
-                            addNewQuestion={addNewQuestion}
-                            handleChange={handleChange}
-                            removeQuestion={removeQuestion}
-                            sessionYear={selectedAcademicYear?.id}
-                            branch={selectedBranch?.branch?.id}
-                            grade={gradeID}
-                            subject={subjectID}
-                          />
-                        ))}
-                      </div>
-                      {!homeworkCreated && (
+                    )}
+                  </div>
+                </div>
+              )}
+              <div className='row py-2'>
+                <div className='col-3 th-black-2'>Note (Optional)</div>
+                <div className='col-12 py-2'>
+                  <TextArea
+                    className='th-width-100 th-br-6'
+                    value={classwork}
+                    onChange={(e) => setClasswork(e.target.value)}
+                    placeholder='Write Something'
+                    // rows={4}
+                    style={{ resize: 'none' }}
+                  />
+                </div>
+              </div>
+
+              <div className='row pt-3'>
+                <div className='col-md-2 col-6'>
+                  <Button
+                    className='th-width-100 th-br-6 th-pointer'
+                    onClick={handleBack}
+                  >
+                    Back
+                  </Button>
+                </div>
+                <div className='col-md-2 col-6'>
+                  <Button
+                    className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
+                    onClick={isDiaryEdit ? handleEdit : handleSubmit}
+                  >
+                    {isDiaryEdit ? 'Update' : 'Submit'}
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+      <Drawer
+        placement='right'
+        className='th-diaryDrawer'
+        zIndex={1300}
+        title={
+          <div className='row th-bg-grey py-2 th-fw-600'>
+            <div className='col-10 '>Details </div>
+            <div className='col-2 text-right'>
+              <CloseOutlined onClick={closeDrawer} />
+            </div>
+          </div>
+        }
+        onClose={closeDrawer}
+        visible={drawerVisible}
+        closable={false}
+        width={window.innerWidth < 768 ? '95vw' : '450px'}
+      >
+        <div className='th-bg-white'>
+          <div className='row align-items-center th-fw-700 th-18 th-black-2 text-capitalize'>
+            <div className='col-6'>
+              {gradeName}
+              {sectionName}
+            </div>
+            <div className='col-6 text-right'>{subjectName}</div>
+          </div>
+          <Form id='filterDrawerForm' ref={drawerFormRef} layout={'horizontal'}>
+            <div className='row align-items-center'>
+              <div className='col-3 th-primary th-fw-600 pr-0'>Chapter</div>
+              <div className='col-9 pt-2'>
+                <Form.Item name='chapter'>
+                  <Select
+                    // disabled={isDiaryEdit}
+                    className='th-width-100 th-br-6'
+                    onChange={(e, value) => handleChapter(value)}
+                    placeholder='Chapter'
+                    allowClear
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {chapterOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+            </div>
+            <div className='row align-items-center'>
+              <div className='col-3 pr-0 th-primary th-fw-600'>Key Concept</div>
+              <div className='col-9 pt-2'>
+                <Form.Item name='key_concept'>
+                  <Select
+                    // disabled={isDiaryEdit}
+                    className='th-width-100 th-br-6'
+                    onChange={(e, value) => handleKeyConcept(value)}
+                    placeholder='Key Concept'
+                    allowClear
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {keyConceptOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+            </div>
+          </Form>
+          <div className='row'>
+            {loadingDrawer ? (
+              <div className='text-center w-100 mt-5'>
+                <Spin tip='Loading...' />
+              </div>
+            ) : resourcesData.length > 0 ? (
+              resourcesData.map((item, i) => (
+                <div className='row'>
+                  <Collapse
+                    activeKey={currentPeriodPanel}
+                    expandIconPosition='right'
+                    bordered={true}
+                    className='th-br-6 my-2 th-bg-grey th-width-100'
+                    style={{ border: '1px solid #d9d9d9' }}
+                    expandIcon={({ isActive }) => (
+                      <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                    )}
+                    onChange={() => setCurrentPeriodPanel(i)}
+                  >
+                    <Panel
+                      collapsible={true}
+                      header={
                         <div className='row'>
-                          <div className='col-6'>
-                            <Button
-                              className='th-width-100 th-br-6 th-pointer'
-                              onClick={() => {
-                                setQueIndexCounter(queIndexCounter + 1);
-                                addNewQuestion(queIndexCounter + 1);
-                              }}
-                            >
-                              Add Another Question
-                            </Button>
+                          <div className='th-black-1 px-0 col-12 pl-0'>
+                            <div className='row justify-content-between'>
+                              <span className='th-fw-500'>{item.period_name} </span>
+                            </div>
                           </div>
-                          <div className='col-6'>
-                            <Button
-                              className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
-                              onClick={handleAddHomeWork}
-                            >
-                              {isDiaryEdit ? 'Update' : 'Finish'}
-                            </Button>
+                        </div>
+                      }
+                      key={i}
+                    >
+                      {boardFilterArr.includes(window.location.host) && (
+                        <div className='row mt-1 th-fw-600'>
+                          <div className='col-3 col-md-2 th-black-1 px-0'>
+                            <div className='row justify-content-between'>
+                              <span>Module</span>
+                              <span>:&nbsp;</span>
+                            </div>
+                          </div>
+
+                          <div className='col-9 col-md-10 text-truncate th-primary px-0'>
+                            {item?.chapter__lt_module__lt_module_name}
                           </div>
                         </div>
                       )}
-                    </div>
-                  </div>
-                )}
-                <div className='row pt-3'>
-                  <div className='col-md-2 col-6'>
-                    <Button
-                      className='th-width-100 th-br-6 th-pointer'
-                      onClick={handleBack}
-                    >
-                      Back
-                    </Button>
-                  </div>
-                  <div className='col-md-2 col-6'>
-                    <Button
-                      className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
-                      onClick={isDiaryEdit ? handleEdit : handleSubmit}
-                    >
-                      {isDiaryEdit ? 'Update' : 'Submit'}
-                    </Button>
-                  </div>
+                      <div className='row mt-2 th-fw-600'>
+                        <div className='col-3 col-md-2 th-black-1 px-0'>
+                          <div className='row justify-content-between'>
+                            <span>Chapter</span>
+                            <span>:&nbsp;</span>
+                          </div>
+                        </div>
+
+                        <div className='col-9 col-md-10 text-truncate th-primary px-0'>
+                          {item?.chapter__chapter_name}
+                        </div>
+                      </div>
+                      <div className='row mt-2 th-fw-600'>
+                        <div className='col-3 th-black-1 px-0'>
+                          <div className='row justify-content-between'>
+                            <span>Key Concept</span>
+                            <span>:&nbsp;</span>
+                          </div>
+                        </div>
+
+                        <div className='col-9 col-md-10 text-truncate th-primary px-0'>
+                          {item?.key_concept__topic_name}
+                        </div>
+                      </div>
+                      {/* <div className='row mt-2'>
+                        <div className='col-12 text-through pl-0'>
+                          <span className='th-grey'>Resources</span>
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          overflowY: 'scroll',
+                          overflowX: 'hidden',
+                          maxHeight: 160,
+                        }}
+                        className='th-question'
+                      >
+                        {item?.lp_files.map((files, i) =>
+                          files?.media_file?.map((each, index) => {
+                            if (
+                              (user_level == 13 &&
+                                files?.document_type == 'Lesson_Plan') ||
+                              (user_level == 13 &&
+                                files?.document_type == 'Teacher_Reading_Material')
+                            ) {
+                            } else {
+                              let fullName = each?.split(
+                                `${files?.document_type.toLowerCase()}/`
+                              )[1];
+                              let textIndex = fullName
+                                ?.split('_')
+                                .indexOf(fullName.split('_').find((item) => isNaN(item)));
+                              let displayName = fullName
+                                .split('_')
+                                .slice(textIndex)
+                                .join('_');
+                              let fileName = displayName ? displayName.split('.') : null;
+                              let file = fileName ? fileName[fileName?.length - 2] : '';
+                              let extension = fileName
+                                ? fileName[fileName?.length - 1]
+                                : '';
+                              return (
+                                <div
+                                  className='row mt-2 py-2 align-items-center'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                >
+                                  <div className='col-2'>
+                                    <img src={getFileIcon(extension)} />
+                                  </div>
+                                  <div className='col-10 px-0 th-pointer'>
+                                    <a
+                                      onClick={() => {
+                                        openPreview({
+                                          currentAttachmentIndex: 0,
+                                          attachmentsArray: [
+                                            {
+                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                              name: fileName,
+                                              extension: '.' + extension,
+                                            },
+                                          ],
+                                        });
+                                      }}
+                                      rel='noopener noreferrer'
+                                      target='_blank'
+                                    >
+                                      <div className='row align-items-center'>
+                                        <div className='col-10 px-0'>
+                                          {files.document_type}_{file}
+                                        </div>
+                                        <div className='col-2'>
+                                          <EyeFilled />
+                                        </div>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              );
+                            }
+                          })
+                        )}
+                      </div> */}
+                      <hr className='mt-1' />
+
+                      <div className='row mb-2 align-items-center'>
+                        <div className='col-12 col-sm-6 th-black-2 pl-0'>
+                          <div className='row'>
+                            Status :{' '}
+                            {item?.completion_status?.filter(
+                              (item) => item?.section_id === sectionMappingID
+                            )[0].is_complete === true ? (
+                              <span>
+                                <span className='th-green th-fw-500'>Completed</span>
+                              </span>
+                            ) : (
+                              <span className='th-fw-500 th-red'> Not Completed</span>
+                            )}
+                          </div>
+                          <div className='row th-black-2 '>
+                            <div className='col-12 th-grey pl-0 th-12'>
+                              Last Updated {getTimeInterval(item.updated_at)}
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-12 col-sm-6 pl-0'>
+                          {item?.completion_status?.filter(
+                            (item) => item?.section_id === sectionMappingID
+                          )[0].is_complete == false && (
+                            <div className='th-bg-green-2 px-2 py-1 th-br-6'>
+                              <Checkbox
+                                // checked={completePeriod}
+                                onChange={() =>
+                                  // setShowHomeworkForm((prevState) => !prevState)
+                                  markPeriodComplete(item)
+                                }
+                                className='th-green th-fw-500'
+                              >
+                                Mark Complete
+                              </Checkbox>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className='row th-black-2 mt-1 '>
+                        <div className='col-12 th-primary pl-0 th-12'>
+                          <div className='row align-items-center th-bg-primary py-2 th-br-4'>
+                            <div className='col-8 th-white'>
+                              {addedPeriods.includes(item)
+                                ? 'Period Added to Diary'
+                                : 'Add this Period to Diary'}
+                            </div>
+                            <div className='col-4 pl-0 text-center th-fw-600'>
+                              {addedPeriods.includes(item) ? (
+                                <div
+                                  className='th-bg-white th-red py-1 px-2 th-br-6 th-pointer'
+                                  onClick={() => {
+                                    setIsPeriodAdded(false);
+                                    setCompletedPeriod(item);
+                                    openPeriodInfoModal();
+                                    if (addedPeriods.length == 1) {
+                                      setClearTodaysTopic(true);
+                                    }
+                                    const index = addedPeriods.indexOf(item);
+                                    const newList = addedPeriods.slice();
+                                    newList.splice(index, 1);
+                                    setAddedPeriods(newList);
+                                  }}
+                                >
+                                  Remove
+                                </div>
+                              ) : (
+                                <div
+                                  className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
+                                  onClick={() => {
+                                    setIsPeriodAdded(true);
+                                    setClearTodaysTopic(false);
+                                    setCompletedPeriod(item);
+                                    openPeriodInfoModal();
+                                    setAddedPeriods([...addedPeriods, item]);
+                                  }}
+                                >
+                                  Add to Diary
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Panel>
+                  </Collapse>
                 </div>
-              </>
+              ))
+            ) : (
+              <div className='row justify-content-center mt-5'>
+                <img src={NoDataIcon} />
+              </div>
             )}
           </div>
         </div>
-        <Modal
-          visible={!declined && assignedHomeworkModal}
-          title='Assign Existing Homework'
-          onCancel={closeAssignedHomeworkModal}
-          footer={[
-            <Button key='back' onClick={closeAssignedHomeworkModal}>
-              No
-            </Button>,
-            <Button key='submit' type='primary' onClick={mapAssignedHomework}>
-              Yes
-            </Button>,
-          ]}
+      </Drawer>
+      <Modal
+        visible={showPeriodInfoModal}
+        onCancel={closePeriodInfoModal}
+        className='th-upload-modal'
+        centered
+        footer={false}
+        closeIcon={<CloseOutlined />}
+        closable={true}
+      >
+        <div
+          className='row py-4 align-items-center'
+          style={{ color: isPeriodAdded ? '#25A53F' : 'red' }}
         >
-          <div className='row px-4 py-3'>
-            Homework already exists, do you want to link it to Diary?
+          <div className='col-2'>
+            <div
+              style={{
+                border: `2px solid ${isPeriodAdded ? '#25A53F' : 'red'}`,
+                borderRadius: '50%',
+                width: 50,
+                height: 50,
+                position: 'relative',
+              }}
+            >
+              {isPeriodAdded ? (
+                <img src={tickIcon} height={50} />
+              ) : (
+                <img
+                  src={deleteIcon}
+                  height={30}
+                  style={{
+                    position: 'relative',
+                    left: '20%',
+                    top: '10%',
+                  }}
+                />
+              )}
+            </div>
           </div>
-        </Modal>
-        <UploadDocument
-          show={showUploadModal}
-          branchName={selectedBranch?.branch?.branch_name}
-          gradeID={gradeID}
-          handleClose={handleUploadModalClose}
-          setUploadedFiles={handleUploadedFiles}
-        />
-      </div>
-    </Layout>
+
+          <div className='col-10 th-20'>
+            {isPeriodAdded ? (
+              <span>'{completedPeriod.period_name}' added to Dairy Successfully</span>
+            ) : (
+              <span>'{completedPeriod.period_name}' removed from Dairy</span>
+            )}
+          </div>
+        </div>
+      </Modal>
+      <UploadDocument
+        show={showUploadModal}
+        branchName={selectedBranch?.branch?.branch_name}
+        gradeID={gradeID}
+        handleClose={handleUploadModalClose}
+        setUploadedFiles={handleUploadedFiles}
+      />
+    </div>
+    // </Layout>
   );
 };
 
