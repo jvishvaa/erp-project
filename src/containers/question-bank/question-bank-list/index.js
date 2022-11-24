@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
-import { Grid, useTheme, SvgIcon, IconButton, Button, FormGroup,FormControlLabel, Checkbox} from '@material-ui/core';
+import { Grid, useTheme, SvgIcon, IconButton, FormGroup,FormControlLabel, Checkbox} from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -24,6 +24,7 @@ import showfilter from '../../../assets/images/showfilter.svg';
 import { addQuestionToSection } from '../../../redux/actions';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import axios from 'axios';
+import { Breadcrumb, Button, Switch } from 'antd';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,9 +50,10 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [periodDataForView, setPeriodDataForView] = useState([]);
   const [filterDataDown, setFilterDataDown] = useState({});
   const limit = 21;
+  const history = useHistory();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [isFilter, setIsFilter] = useState(true);
+  const [isFilter, setIsFilter] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [tabMapId, setTabMapId] = useState('');
   const [tabQueLevel, setTabQueLevel] = useState('');
@@ -84,6 +86,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [isVisible,setIsVisible] = useState([])
   const [checkbox,setCheckbox] = useState(false);
   const [erpCategory , setErpCategory] = useState()
+  const filtersDetails = location?.state?.params
 
   const addQuestionToPaper = (question, questionId, section) => {
     initAddQuestionToSection(question, questionId, section);
@@ -151,7 +154,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabValue(newValue);
     setErpCategory(erp_category)
     let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
-    requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;  
+    requestUrl += `&request_type=${tabIsErpCentral? 2 : 1}`;  
     if (subjMapId) {
       requestUrl += `&subject=${subjMapId}`;
     }
@@ -159,22 +162,22 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
       requestUrl += `&question_status=${newValue}`;
     }
     if(chapterObj){
-      requestUrl += `&chapter=${chapterObj?.id}`;
+      requestUrl += `&chapter=${chapterObj}`;
     }
     if(quesLevel){
-      requestUrl += `&question_level=${quesLevel?.value}`;
+      requestUrl += `&question_level=${quesLevel}`;
     }
     if(quesTypeId){
       requestUrl += `&question_type=${quesTypeId}`;
     }
     if (quesCatId) {
-      requestUrl += `&question_categories=${quesCatId?.value}`;
+      requestUrl += `&question_categories=${quesCatId}`;
     }
     if (topicId) {
-      requestUrl += `&topic=${topicId?.id}`;
+      requestUrl += `&topic=${topicId}`;
     }
     if (erp_category) {
-      requestUrl += `&category=${isErpCentral?.flag ? erp_category?.central_category_id : erp_category?.erp_category_id}`;
+      requestUrl += `&category=${erp_category}`;
     }
     setFilter(false)
     axiosInstance
@@ -197,21 +200,45 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
           setSelectedIndex(-1);
         } else {
           setLoading(false);
-          setAlert('error', result?.data?.description);
+          setAlert('error', result?.data?.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error?.message);
+        setAlert('error',  error?.response?.data?.message ||
+        error?.response?.data?.msg);
       });
   };
+
+useEffect(() => {
+if(filtersDetails){
+  setTabChapterId(filtersDetails?.chapter)
+  setTabGradeId(filtersDetails?.grade)
+  setTabYearId(filtersDetails?.academic_session)
+  setTabTopicId(filtersDetails?.topic)
+  handlePeriodList(
+    tabQueTypeId,
+    tabQueCatId,
+    tabMapId,
+    tabQueLevel,
+    filtersDetails?.topic,
+    filtersDetails?.academic_session,
+    filtersDetails?.grade,
+    filtersDetails?.chapter,
+    tabIsErpCentral,
+    tabValue,
+    erpCategory
+  )
+}
+
+},[filtersDetails])
+
 
   useEffect(() => {
     if (
       // tabMapId &&
       tabYearId &&
-      tabGradeId &&
-      tabIsErpCentral&& page
+      tabGradeId && page
     ) {
       setIsSelectAll(false)
       setIsSelectAllQuestion(false)
@@ -231,21 +258,23 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
         erpCategory
       );
     }
-  }, [page, tabValue, callFlag]);
+  }, [page, tabValue, callFlag, tabIsErpCentral ]);
 
   useEffect(() => {
-    setTabMapId('');
-    setTabQueLevel('');
-    setTabQueTypeId('');
-    setTabQueCatId('');
-    setTabTopicId('');
-    setTabGradeId('');
-    setTabChapterId('');
-    setTabIsErpCentral(false);
-    setSelectedId([])
-    setSelectedIdQuestion([])
-    setIsSelectAll(false)
-    setIsSelectAllQuestion(false)
+    if(clearFlag === true){
+      setTabMapId('');
+      setTabQueLevel('');
+      setTabQueTypeId('');
+      setTabQueCatId('');
+      setTabTopicId('');
+      setTabGradeId('');
+      setTabChapterId('');
+      setTabIsErpCentral(false);
+      setSelectedId([])
+      setIsSelectAll(false)
+      setClearFlag(false)
+    }
+    
   }, [clearFlag]);
 
   const toggleComplete= (e, question, index) => {
@@ -295,6 +324,81 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     }
 
   }
+
+  const changequestionFrom = (e) => {
+setTabIsErpCentral((prev) => !prev)
+  }
+
+  const handleGoBack = () => {
+    if(questionId && section){
+      history.push({
+        pathname:  `/question-chapter-wise`, //?question=${questionId}&section=${section}&isedit=${isEdit}
+        state : {
+         filters : filtersDetails
+        }
+         
+         })
+    }else{
+      history.push({
+        pathname:  `/question-chapter-wise`,
+        state : {
+         filters : filtersDetails
+        }
+         
+         })
+    }
+  }
+
+  const handlePublish = () => {
+    if(selectedId.length < 0){
+      setAlert('error',"Please Select Question to Publish")
+      return
+
+    }else{
+      
+      if (publishedQuestion?.is_central) {
+        axios
+          .put(
+            `${endpoints.questionBank.deleteQuestion}`,
+            {
+              question_status: 2,
+              question: selectedId.toString(),
+            },
+            {
+              headers: { 'x-api-key': 'vikash@12345#1231' },
+            }
+          )
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              setSelectedIndex(-1);
+              setCallFlag((prev) => !prev);
+              setAlert('success', result?.data?.message);
+              setIsSelectAll(false)
+            } else {
+              setAlert('error', 'ERROR!');
+            }
+          })
+          .catch((error) => setAlert('error', error?.message));
+      }
+      if (!publishedQuestion?.is_central) {
+        axiosInstance
+          .put(`${endpoints.questionBank.erpQuestionNewPublishing}`, {
+            question_status: 2,
+            question: selectedId.toString(),
+          })
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              setSelectedIndex(-1);
+              setCallFlag((prev) => !prev);
+              setAlert('success', result?.data?.message);
+            } else {
+              setAlert('error', 'ERROR!');
+            }
+          })
+          .catch((error) => setAlert('error', error?.message));
+      }
+    }
+  };
 
   const toggleCompleteQuestion = (e, question, index) => {
     const {name,checked} = e.target;
@@ -353,58 +457,6 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     console.log(selectedQuestion);
   }
 
-
-  const handlePublish = () => {
-    if(selectedId.length < 0){
-      setAlert('error',"Please Select Question to Publish")
-      return
-
-    }else{
-      
-      if (publishedQuestion?.is_central) {
-        axios
-          .put(
-            `${endpoints.questionBank.deleteQuestion}`,
-            {
-              question_status: 2,
-              question: selectedId.toString(),
-            },
-            {
-              headers: { 'x-api-key': 'vikash@12345#1231' },
-            }
-          )
-          .then((result) => {
-            if (result?.data?.status_code === 200) {
-              setSelectedIndex(-1);
-              setCallFlag((prev) => !prev);
-              setAlert('success', result?.data?.message);
-              setIsSelectAll(false)
-            } else {
-              setAlert('error', 'ERROR!');
-            }
-          })
-          .catch((error) => setAlert('error', error?.message));
-      }
-      if (!publishedQuestion?.is_central) {
-        axiosInstance
-          .put(`${endpoints.questionBank.erpQuestionNewPublishing}`, {
-            question_status: 2,
-            question: selectedId.toString(),
-          })
-          .then((result) => {
-            if (result?.data?.status_code === 200) {
-              setSelectedIndex(-1);
-              setCallFlag((prev) => !prev);
-              setAlert('success', result?.data?.message);
-            } else {
-              setAlert('error', 'ERROR!');
-            }
-          })
-          .catch((error) => setAlert('error', error?.message));
-      }
-    }
-  };
-
   const handleAdd = () => {
     let callRedux = selectedQuestion?.map((item , index) => {
       handleAddQuestionToQuestionPaper(item)
@@ -416,208 +468,329 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div
-        className='question-bank-scroll'
-        style={{
-          height: '90vh',
-          overflowX: 'scroll',
-          overflowY: 'scroll',
-        }}>
-        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
-          <CommonBreadcrumbs
-            componentName='Assessment'
-            childComponentName='Question Bank'
-            isAcademicYearVisible={true}
-          />
-        </BreadcrumbToggler>
-
-        <div className={isFilter ? 'showFilters' : 'hideFilters'} ref={filterRef}>
-          <QuestionBankFilters
-            setClearFlag={setClearFlag}
-            questionId={questionId}
-            section={section}
-            isEdit={isEdit}
-            handlePeriodList={handlePeriodList}
-            setPeriodData={setPeriodData}
-            setViewMore={setViewMore}
-            setViewMoreData={setViewMoreData}
-            setFilterDataDown={setFilterDataDown}
-            setSelectedIndex={setSelectedIndex}
-            setFilter={setFilter}
-            setPage={setPage}
-          />
-        </div>
-        <Grid
-          container
-          style={
-            isMobile
-              ? { width: '95%', margin: '20px auto' }
-              : { width: '100%', margin: '20px auto' }
-          }
-          spacing={5}
+          className='question-bank-scroll'
+          style={{
+            height: '90vh',
+            overflowX: 'scroll',
+            overflowY: 'scroll',
+          }}
         >
-          <Grid item xs={12} sm={12}>
-            <TabPanel setTabValue={setTabValue} tabValue={tabValue} setPage={setPage} />
-          </Grid>
-          {isVisible?.length > 0 && window.location.search?.length == 0 ?(
-          <Grid item xs={12} sm={12} 
-          >
-            <Grid container spacing={3} style={{alignItems:"center"}}>
-               <Grid item xs={3}>
-            <Button
-              style={{ margin: '0.5rem', color: 'white', width:'100%'}}
-              onClick={(e) => handlePublish()}
-              color='primary'
-              disabled={selectedId.length === 0 ? true : false }
-              variant='contained'
-              size='medium'
-              startIcon={<DoneAllIcon/>}
-            >
-              BULK PUBLISH
-            </Button> 
-
-            </Grid>
-
-            <Grid item xs={3}>
-            <FormControlLabel
-                style={{minWidth:"150px"}}
-                control={<Checkbox 
-                checked={isSelectAll}
-                onChange={(e) => toggleComplete(e,periodData)} 
-                name="allSelect" />}
-                label="Select All"
-              />
-            </Grid>
-            
-            </Grid>
-         
-          </Grid>
-
-          ): ''}
-           {window.location.search?.length > 0 ?(
-          <Grid item xs={12} sm={12} 
-          >
-            <Grid container spacing={3} style={{alignItems:"center"}}>
-               <Grid item xs={3}>
-            <Button
-              style={{ margin: '0.5rem', color: 'white', width:'100%'}}
-              onClick={(e) => handleAdd()}
-              color='primary'
-              disabled={selectedIdQuestion.length === 0 ? true : false }
-              variant='contained'
-              size='medium'
-              startIcon={<DoneAllIcon/>}
-            >
-              ADD QUESTIONS
-            </Button> 
-
-            </Grid>
-
-            <Grid item xs={3}>
-            <FormControlLabel
-                style={{minWidth:"150px"}}
-                control={<Checkbox 
-                checked={isSelectAllQuestion}
-                onChange={(e) => toggleCompleteQuestion(e,periodData)} 
-                name="allSelect" />}
-                label="Select All"
-              />
-            </Grid>
-            
-            </Grid>
-         
-          </Grid>
-
-          ): ''}
-         
-        </Grid>
-        <Grid
-          container
-          style={
-            isMobile
-              ? { width: '95%', margin: '20px auto' }
-              : { width: '100%', margin: '20px auto' }
-          }
-          spacing={5}
-        ></Grid>
-        <Paper className={classes.root}>
-          {periodData?.length > 0 ? (
-            <Grid
-              container
-              style={
-                isMobile
-                  ? { width: '95%', margin: '20px auto' }
-                  : { width: '100%', margin: '20px auto' }
-              }
-              spacing={5}
-            >
-              <Grid item xs={12} sm={viewMore ? 7 : 12}>
-                <Grid container spacing={isMobile ? 3 : 5}>
-                  {periodData.map((period, i) => (
-                    <Grid
-                      item
-                      xs={12}
-                      style={isMobile ? { marginLeft: '-8px' } : null}
-                      sm={viewMore ? 6 : 4}
-                    >
-                      <QuestionBankCard
-                        index={i}
-                        filterDataDown={filterDataDown}
-                        period={period}
-                        setSelectedIndex={setSelectedIndex}
-                        periodColor={selectedIndex === i}
-                        viewMore={viewMore}
-                        setLoading={setLoading}
-                        setViewMore={setViewMore}
-                        setViewMoreData={setViewMoreData}
-                        setPeriodDataForView={setPeriodDataForView}
-                        setCallFlag={setCallFlag}
-                        onClick={
-                          questionId && section ? handleAddQuestionToQuestionPaper : null
-                        }
-                        showAddToQuestionPaper={questionId && section}
-                        toggleComplete={toggleComplete}
-                        toggleCompleteQuestion={toggleCompleteQuestion}
-                        isSelectAll={isSelectAll}
-                        isSelectAllQuestion={isSelectAllQuestion}
-                        redFlag={redFlag}
-                        checkbox = {checkbox}
-                        periodData={periodData}
+          {/* <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}> */}
+          <div className='row col-6'>
+            <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item className='th-black-1 th-18'>Assessment</Breadcrumb.Item>
+                <Breadcrumb.Item className='th-black-1 th-18'>
+                  Question Bank
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
+          </div>
+          <div style={{background:'white'}}>
+          {/* </BreadcrumbToggler> */}
+          <div className='col-12 mt-5 ml-1 mb-2 th-bg-white'>
+            <div className='row align-items-center d-flex p-2 ml-2'>
+              <div className='col-md-2 col-6 pl-0'>
+                Grade : {filtersDetails?.gradeName}
+              </div>
+              <div className='col-md-2 col-6 pl-0'>
+                Subject : {filtersDetails?.subjectName}
+              </div>
+              <div className='col-md-2 col-6 pl-0'>
+                {/* Borad : {filtersDetails?.boardName} */}
+              </div>
+              <div className='col-md-3 col-6 pl-0'></div>
+              <div className='col-md-2 col-6 pl-0 d-flex justify-content-end'>
+                <Button
+                  type='primary'
+                  size='default'
+                  shape='round'
+                  color='primary'
+                  variant='contained'
+                  onClick={handleGoBack}
+                  style={{ width: '70%' }}
+                >
+                  Back
+                </Button>
+              </div>
+              <div className='hideShowFilterIcon'>
+                <IconButton onClick={() => setIsFilter(!isFilter)}>
+                  {/* {!isMobile && (
+            <div className='togglerTag'>
+              {isFilter ? 'Close Filter' : 'Expand Filter'}
+            </div>
+          )} */}
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ height: '20px', width: '25px' }}
+                        src={isFilter ? hidefilter : showfilter}
                       />
-                    </Grid>
-                  ))}
+                    )}
+                  />
+                </IconButton>
+              </div>
+            </div>
+
+            <div className={isFilter ? 'showFilters' : 'hideFilters'} ref={filterRef}>
+              <QuestionBankFilters
+                setClearFlag={setClearFlag}
+                questionId={questionId}
+                section={section}
+                isEdit={isEdit}
+                handlePeriodList={handlePeriodList}
+                setPeriodData={setPeriodData}
+                setViewMore={setViewMore}
+                setViewMoreData={setViewMoreData}
+                setFilterDataDown={setFilterDataDown}
+                setSelectedIndex={setSelectedIndex}
+                setFilter={setFilter}
+                setPage={setPage}
+                FilteredData={filtersDetails}
+                tabIsErpCentral={tabIsErpCentral}
+              />
+            </div>
+          </div>
+          <Grid
+            container
+            style={
+              isMobile
+                ? { width: '95%', margin: '20px auto', background:'white' }
+                : { width: '100%', margin: '20px auto' , background:'white' }
+
+            }
+            spacing={5}
+          >
+            {/* <TabPanel setTabValue={setTabValue} tabValue={tabValue} setPage={setPage} /> */}
+            <div className='row ml-2'>
+              <div className='col-md-1 col-6'>
+                <Button
+                  className={`${
+                    tabValue == 0 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => setTabValue(0)}
+                >
+                  All
+                </Button>
+              </div>
+              <div className='col-md-2 col-6'>
+                <Button
+                  className={`${
+                    tabValue == 1 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => setTabValue(1)}
+                >
+                  Draft
+                </Button>
+              </div>
+              <div className='col-md-2 col-6'>
+                <Button
+                  className={`${
+                    tabValue == 2 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => setTabValue(2)}
+                >
+                  Published
+                </Button>
+              </div>
+              <div className='col-md-2 col-6'>
+                <Button
+                  className={`${
+                    tabValue == 3 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => setTabValue(3)}
+                >
+                  For Review
+                </Button>
+              </div>
+              <div className='col-md-1 col-6'></div>
+              <div className='col-md-2 col-6'>
+                <Button
+                  className={`${ tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'
+                  } th-width-100 th-br-6 mt-2`}
+                  style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
+                  onClick={() => changequestionFrom('edu')}
+                >
+                  Eduvate Question
+                </Button>
+                </div>
+                {/* <div className='d-flex align-items-center'> 
+                <Switch onChange={changequestionFrom} checked={tabIsErpCentral}/>
+                </div> */}
+                <div className='col-md-2 col-6'> 
+                <Button
+                  className={`${
+                    !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'}
+                     th-width-100 th-br-6 mt-2`}
+                  onClick={() => changequestionFrom('school')}
+                  style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
+                >
+                  School Question
+                </Button>
+                </div>
+            </div>
+            {isVisible?.length > 0 && !questionId ?  (
+              <Grid item xs={12} sm={12}>
+                <Grid container spacing={3} style={{ alignItems: 'center' }}>
+                  <Grid item xs={3}>
+                    <Button
+                      style={{ margin: '0.5rem', width: '100%' }}
+                      className='th-button'
+                      onClick={(e) => handlePublish()}
+                      color='primary'
+                      disabled={selectedId.length === 0 ? true : false}
+                      variant='contained'
+                      size='medium'
+                      startIcon={<DoneAllIcon />}
+                    >
+                      BULK PUBLISH
+                    </Button>
+                  </Grid>
+
+                  <Grid item xs={3}>
+                    <FormControlLabel
+                      style={{ minWidth: '150px' }}
+                      control={
+                        <Checkbox
+                          checked={isSelectAll}
+                          onChange={(e) => toggleComplete(e, periodData)}
+                          name='allSelect'
+                        />
+                      }
+                      label='Select All'
+                    />
+                  </Grid>
+                  <div className='col-md-1 col-4'></div>
                 </Grid>
+                
               </Grid>
-              {viewMore && (
-                <Grid item xs={12} sm={5} style={{ width: '100%' }}>
-                  <ViewMoreCard
-                    setSelectedIndex={setSelectedIndex}
-                    viewMoreData={viewMoreData}
-                    setViewMore={setViewMore}
-                    filterDataDown={filterDataDown}
-                    periodDataForView={periodDataForView}
-                    setCallFlag={setCallFlag}
+            ) : ''} {questionId ? (
+              <Grid item xs={12} sm={12} 
+              >
+                <Grid container spacing={3} style={{alignItems:"center"}}>
+                   <Grid item xs={3}>
+                <Button
+                  style={{ margin: '0.5rem', color: 'white', width:'100%'}}
+                  onClick={(e) => handleAdd()}
+                  className='th-button'
+                  color='primary'
+                  disabled={selectedIdQuestion.length === 0 ? true : false }
+                  variant='contained'
+                  size='medium'
+                  startIcon={<DoneAllIcon/>}
+                >
+                  ADD QUESTIONS
+                </Button> 
+    
+                </Grid>
+    
+                <Grid item xs={3}>
+                <FormControlLabel
+                    style={{minWidth:"150px"}}
+                    control={<Checkbox 
+                    checked={isSelectAllQuestion}
+                    onChange={(e) => toggleCompleteQuestion(e,periodData)} 
+                    name="allSelect" />}
+                    label="Select All"
                   />
                 </Grid>
-              )}
-            </Grid>
-          ) : (
-            <div className='periodDataUnavailable'>
-             <NoFilterData selectfilter={true}/>
-            </div>
-          )}
+                
+                </Grid>
+             
+              </Grid>
+    
+              ): ''}
+    
+          </Grid>
+          <Grid
+            container
+            style={
+              isMobile
+                ? { width: '95%', margin: '20px auto' }
+                : { width: '100%', margin: '20px auto' }
+            }
+            spacing={5}
+          ></Grid>
+          <Paper className={classes.root}>
+            {periodData?.length > 0 ? (
+              <Grid
+                container
+                style={
+                  isMobile
+                    ? { width: '95%', margin: '20px auto' }
+                    : { width: '100%', margin: '20px auto' }
+                }
+                spacing={5}
+              >
+                <Grid item xs={12} sm={viewMore ? 7 : 12}>
+                  <Grid container spacing={isMobile ? 3 : 5}>
+                    {periodData.map((period, i) => (
+                      <Grid
+                        item
+                        xs={12}
+                        style={isMobile ? { marginLeft: '-8px' } : null}
+                        sm={viewMore ? 6 : 4}
+                      >
+                        <QuestionBankCard
+                          index={i}
+                          filterDataDown={filterDataDown}
+                          period={period}
+                          setSelectedIndex={setSelectedIndex}
+                          periodColor={selectedIndex === i}
+                          viewMore={viewMore}
+                          setLoading={setLoading}
+                          setViewMore={setViewMore}
+                          setViewMoreData={setViewMoreData}
+                          setPeriodDataForView={setPeriodDataForView}
+                          setCallFlag={setCallFlag}
+                          onClick={
+                            questionId && section
+                              ? handleAddQuestionToQuestionPaper
+                              : null
+                          }
+                          showAddToQuestionPaper={questionId && section}
+                          toggleComplete={toggleComplete}
+                          isSelectAll={isSelectAll}
+                          redFlag={redFlag}
+                          checkbox={checkbox}
+                          periodData={periodData}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Grid>
+                {viewMore && (
+                  <Grid item xs={12} sm={5} style={{ width: '100%' }}>
+                    <ViewMoreCard
+                      setSelectedIndex={setSelectedIndex}
+                      viewMoreData={viewMoreData}
+                      setViewMore={setViewMore}
+                      filterDataDown={filterDataDown}
+                      periodDataForView={periodDataForView}
+                      setCallFlag={setCallFlag}
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            ) : (
+              <div className='periodDataUnavailable'>
+                <NoFilterData selectfilter={true} />
+              </div>
+            )}
 
-          {periodData?.length > 0 && (
-            <div className='paginateData paginateMobileMargin'>
-              <Pagination
-                onChange={handlePagination}
-                style={{ marginTop: 25 }}
-                count={Math.ceil(totalCount / limit)}
-                color='primary'
-                page={page}
-              />
-            </div>
-          )}
-        </Paper>
+            {periodData?.length > 0 && (
+              <div className='paginateData paginateMobileMargin'>
+                <Pagination
+                  onChange={handlePagination}
+                  style={{ marginTop: 25 }}
+                  count={Math.ceil(totalCount / limit)}
+                  color='primary'
+                  page={page}
+                />
+              </div>
+            )}
+          </Paper>
+          </div>
         </div>
       </Layout>
     </>

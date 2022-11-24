@@ -53,54 +53,50 @@ export const fetchAssesmentTests = async (
     let url = '';
     if (fetchAll) {
       if (type === 'all') {
-        url = `${endpoints.assessmentErp.listAssessment}?all=1`;
+        url = `${endpoints.assessmentErp.listAssessment}?all=1&is_delete=False`;
       } else if (type === 'physical-test') {
-        url = `${endpoints.assessmentErp.listAssessment}?test_mode=2`;
+        url = `${endpoints.assessmentErp.listAssessment}?test_mode=2&is_delete=False`;
       } else if (type === 'online-pattern') {
-        url = `${endpoints.assessmentErp.listAssessment}?test_mode=1`;
+        url = `${endpoints.assessmentErp.listAssessment}?test_mode=1&is_delete=False`;
+      }else if(type === 'deleted'){
+        url = `${endpoints.assessmentErp.listAssessment}?is_delete=True`;
+
       }
-    } else {
-      const startDate = moment(date[0]).format('YYYY-MM-DD');
-      const endDate = moment(date[1]).format('YYYY-MM-DD');
-      if (type === 'all') {
-        url = `${
-          endpoints.assessmentErp.listAssessment
-        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
-          statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
-        }&start_date=${startDate}&end_date=${endDate}&page=${page}&page_size=${pageSize}
-        &has_sub_group=${hasGroup ? true : false}`;
-        if(!hasGroup && sectionFlag){
-          url += `&section_mappings=${sectionMappingId}`
-        }
-        if(hasGroup && groupFlag){
-          url += `&group=${groupIds}`
-        }
-      } else if (type === 'physical-test') {
-        url = `${
-          endpoints.assessmentErp.listAssessment
-        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
-          statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
-        }&start_date=${startDate}&end_date=${endDate}&test_mode=2&page=${page}&page_size=${pageSize}
-        &has_sub_group=${hasGroup ? true : false}`;
-        if(!hasGroup && sectionFlag){
-          url += `&section_mappings=${sectionMappingId}`
-        }
-        if(hasGroup && groupFlag){
-          url += `&group=${groupIds}`
-        }
+    } else {      
+      url = `${ endpoints.assessmentErp.listAssessment
+      }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&page=${page}&page_size=${pageSize}
+      &has_sub_group=${hasGroup ? true : false}`
+
+      if(date){
+        const startDate = moment(date[0]).format('YYYY-MM-DD');
+        const endDate = moment(date[1]).format('YYYY-MM-DD');
+
+        url += `&start_date=${startDate}&end_date=${endDate}`
+      }
+      if(testTypeId){
+        url += `&test_type=${testTypeId}`
+      }
+      if(statusId){
+        url +=  `&is_completed=${
+          statusId === 1 ? 'False' : statusId === 2 ? 'True' : null}`
+      }
+      if(!hasGroup && sectionFlag){
+        url += `&section_mappings=${sectionMappingId}`
+      }
+      if(hasGroup && groupFlag){
+        url += `&group=${groupIds?.value}`
+      }
+      if (type === 'physical-test') {
+        url += `&test_mode=2&is_delete=False`
+
       } else if (type === 'online-pattern') {
-        url = `${
-          endpoints.assessmentErp.listAssessment
-        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
-          statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
-        }&academic_session=${acadSessionId}&start_date=${startDate}&end_date=${endDate}&test_mode=1&page=${page}&page_size=${pageSize}
-        &has_sub_group=${hasGroup ? true : false}`;
-        if(!hasGroup && sectionFlag){
-          url += `&section_mappings=${sectionMappingId}`
-        }
-        if(hasGroup && groupFlag){
-          url += `&group=${groupIds}`
-        }
+
+        url += `&test_mode=1&is_delete=False`
+
+      }else if(type === 'deleted'){
+        url += '&is_delete=True'
+      }else if(type === 'all'){
+        url += '&is_delete=False'
       }
     }
     const response = await axiosInstance.get(url);

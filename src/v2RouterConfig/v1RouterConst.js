@@ -443,6 +443,7 @@ import Gradingview from 'containers/assessment-central/grading-system/gradingvie
 import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 import AddTemplates from 'containers/newBlog/addTemplates';
+import Chapterwise from 'containers/question-bank-new/question-bank-list/chapterwise';
 import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
 import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
 import PostActivityView from 'containers/newBlog/postActivityView';
@@ -505,6 +506,9 @@ const V1Router = [
 
   <Route exact path='/question-bank'>
     {({ match }) => <QuestionBankList match={match} />}
+  </Route>,
+  <Route exact path='/question-chapter-wise'>
+  {({ match }) => <Chapterwise match={match} />}
   </Route>,
   <Route exact path='/create-question/:qId?'>
     {({ match }) => <CreateQuestion match={match} />}

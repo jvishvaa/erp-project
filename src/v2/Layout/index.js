@@ -458,7 +458,7 @@ const Layout = ({ children, history }) => {
       //   break;
       // }
       case 'Question Bank': {
-        history.push('/question-bank');
+        history.push('/question-chapter-wise');
         break;
       }
       case 'Question Paper': {

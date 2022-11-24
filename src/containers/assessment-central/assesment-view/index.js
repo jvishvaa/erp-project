@@ -20,6 +20,7 @@ import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 import './assesment-view-scroll.css';
+import { Breadcrumb, Button } from 'antd';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,23 +57,46 @@ const AssessmentView = () => {
   const [tabSubjectId, setTabSubjectId] = useState('');
   const [tabQpValue, setTabQpValue] = useState('');
   const [publishFlag, setPublishFlag] = useState(false);
-  const [tabIsErpCentral, setTabIsErpCentral] = useState(false);
+  const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
   const [clearFlag, setClearFlag] = useState(false);
   const [callFlag, setCallFlag] = useState(false);
+  const [erpCategory , setErpCategory] = useState('')
   const handlePagination = (event, page) => {
     setPage(page);
   };
 
+
+  useEffect(() => {
+if(tabGradeId && tabSubjectId){
+  handlePeriodList(
+    tabIsErpCentral,
+    tabAcademic,
+    tabBranch,
+    tabGradeId,
+    tabSubjectId,
+    tabQpValue,
+    // erpCategory,
+    tabValue,
+  );
+}
+  },[tabValue, tabIsErpCentral, page])
+
   const handleGetQuestionPapers = (newValue = 0, requestURL) => {
     setTabValue(newValue);
-    if (newValue == 1) {
-      requestURL += `&is_draft=True`;
+    if (newValue == 0) {
+      requestURL += `&is_delete=False`;
     }
-    if (newValue == 2) {
-      requestURL += `&is_review=True`;
+    if (newValue == 1) {
+      requestURL += `&is_draft=True&is_delete=False`;
     }
     if (newValue == 3) {
-      requestURL += `&is_verified=True`;
+      requestURL += `&is_review=True&is_delete=False`;
+    }
+    if (newValue == 2) {
+      requestURL += `&is_verified=True&is_delete=False`;
+    }
+    if(newValue == 4){
+      requestURL += `&is_delete=True`;
     }
     axiosInstance
       .get(requestURL)
@@ -94,15 +118,16 @@ const AssessmentView = () => {
       });
   };
   const handlePeriodList = (
-    isErpCentral = {},
+    isErpCentral = false,
     academic = '',
     branch = [],
     grade = '',
     subject = '',
     qpValue,
+    // erpCategory = '',
     newValue = 0,
   ) => {
-    if (!academic || branch?.length === 0 || !grade || !subject || !qpValue) {
+    if (!academic || branch?.length === 0 || !grade ||!subject) {
       setAlert('error', 'Select all the fields!');
       return;
     }
@@ -113,13 +138,21 @@ const AssessmentView = () => {
     setTabGradeId(grade);
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
-    setTabIsErpCentral(isErpCentral);
+    // setTabIsErpCentral(isErpCentral);
+    // setErpCategory(erpCategory)
     const branchIds = branch.map((element) => element?.branch?.id) || [];
-    const requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&page=${page}&page_size=${limit}&request_type=${isErpCentral.id} `;
+    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&grade=${grade?.value}&subjects=${subject?.value}&page=${page}&page_size=${limit}&request_type=${tabIsErpCentral ? 2 : 1} `;
+    if(qpValue) {
+      requestURL += `&paper_level=${qpValue?.value}`
+    }
+    // if (!subject && erpCategory) {
+    //   requestURL += `&category=${isErpCentral?.flag ? erpCategory?.central_category_id : erpCategory?.erp_category_id}`;
+    // }
     handleGetQuestionPapers(newValue, requestURL);
     let filterdata = {
       branch : branch,
       academic: academic,
+      // category : erpCategory,
       subject: subject,
       grade: grade,
       qpValue: qpValue,
@@ -127,12 +160,22 @@ const AssessmentView = () => {
       limit: limit,
       type: isErpCentral
     }
+    // if(erpCategory && !subject){
+    //   filterdata['category'] = erpCategory
+    // }
+    // if(!erpCategory && subject){
+    //   filterdata['subject'] = subject
+
+    // }
     sessionStorage.setItem('filter',JSON.stringify(filterdata));
   };
+  const changequestionFrom = (e) => {
+    setTabIsErpCentral((prev) => !prev)
+      }
 
   useEffect(() => {
     if (publishFlag)
-      handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue);
+      handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue ); //erpCategory
     if (tabAcademic && tabBranch && tabGradeId && tabSubjectId && tabQpValue && tabIsErpCentral)
       handlePeriodList(
         tabIsErpCentral,
@@ -141,7 +184,9 @@ const AssessmentView = () => {
         tabGradeId,
         tabSubjectId,
         tabQpValue,
+        // erpCategory,
         tabValue,
+        
       );
   }, [publishFlag, page]);
 
@@ -156,13 +201,18 @@ const AssessmentView = () => {
            overflowX: 'scroll',
            overflowY: 'scroll',
          }}>
-        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
-          <CommonBreadcrumbs
-            componentName='Assessment'
-            childComponentName='Question Paper'
-            isAcademicYearVisible={true}
-          />
-        </BreadcrumbToggler>
+        {/* <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}> */}
+        <div className='row py-3 px-2'>
+          <div className='col-md-8 th-bg-grey' style={{ zIndex: 2 }}>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item className='th-black-1 th-18'>Assessment</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-18'>
+                Question Paper
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+        </div>
+        {/* </BreadcrumbToggler> */}
         <div className={!isFilter ? 'showFilters' : 'hideFilters'}>
           <AssessmentFilters
             setClearFlag={setClearFlag}
@@ -174,8 +224,7 @@ const AssessmentView = () => {
             setSelectedIndex={setSelectedIndex}
           />
         </div>
-        <div>
-          <TabPanel
+          {/* <TabPanel
             handlePeriodList={handlePeriodList}
             tabAcademic={tabAcademic}
             tabBranch={tabBranch}
@@ -183,11 +232,104 @@ const AssessmentView = () => {
             tabSubjectId={tabSubjectId}
             tabQpValue={tabQpValue}
             setTabValue={setTabValue}
+            erpCategory={erpCategory}
             page={page}
             setPage={setPage}
             setSelectedIndex={setSelectedIndex}
             tabIsErpCentral={tabIsErpCentral}
-          />
+          /> */}
+          <div className='row ml-2'>
+              <div className='col-md-1 col-6'>
+              <Button
+                  className={`${
+                    tabValue == 0 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => 
+                  {setTabValue(0)
+                  setPage(1)}}
+                >
+                  All
+                </Button>
+              </div>
+            <div className='col-md-5 d-flex'>
+              <div className='col-md-4 col-6'>
+                <Button
+                  className={`${
+                    tabValue == 2 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => {setTabValue(2) 
+                    setPage(1)}}
+                >
+                  Published
+                </Button>
+              </div>
+              {!tabIsErpCentral && <div className='col-md-4 col-6'>
+                <Button
+                  className={`${
+                    tabValue == 3 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => {setTabValue(3)
+                    setPage(1)
+                  }}
+                >
+                  For Review
+                </Button>
+              </div>}
+              {!tabIsErpCentral &&<div className='col-md-4 col-6'>
+                <Button
+                  className={`${
+                    tabValue == 1 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => {setTabValue(1)
+                  setPage(1)}}
+                >
+                  Draft
+                </Button>
+              </div>}
+            </div>
+            <div className='col-md-2 d-flex' style={{marginLeft : '-2%'}}>
+            {!tabIsErpCentral &&<div className='col-md-10 col-6'>
+                <Button
+                  className={`${
+                    tabValue == 4 ? 'th-button-active' : 'th-button'
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={() => {setTabValue(4)
+                  setPage(1)}}
+                >
+                  Deleted
+                </Button>
+              </div>}
+              <div className='col-md-2 col-6'></div>
+              </div>
+              <div className='col-md-4 d-flex'>
+                <div className='col-md-1 col-6'></div>
+              
+                {/* <div className='d-flex align-items-center'> 
+                <Switch onChange={changequestionFrom} checked={tabIsErpCentral}/>
+                </div> */}
+               <div className='col-md-6 col-12'>
+                <Button
+                  className={`${
+                    tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'}
+                  } th-width-100 th-br-6 mt-2`}
+                  style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
+                  onClick={changequestionFrom}
+                >
+                  Eduvate Question
+                </Button>
+                </div>
+                <div className='col-md-6 col-12'> 
+                <Button
+                  className={`${
+                    !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'}
+                  } th-width-100 th-br-6 mt-2`}
+                  onClick={changequestionFrom}
+                  style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
+                >
+                  School Question
+                </Button>
+                </div>
+            </div>
         </div>
 
         <Paper className={classes.root}>
@@ -224,6 +366,7 @@ const AssessmentView = () => {
                         setPeriodDataForView={setPeriodDataForView}
                         setPublishFlag={setPublishFlag}
                         tabIsErpCentral={tabIsErpCentral}
+                        tabValue = {tabValue}
                       />
                     </Grid>
                   ))}
@@ -243,7 +386,7 @@ const AssessmentView = () => {
               )}
             </Grid>
           ) : (
-            <div className='periodDataUnavailable'>
+            <div className='periodDataUnavailable mt-4'>
               <SvgIcon
                 component={() => (
                   <img
@@ -283,7 +426,7 @@ const AssessmentView = () => {
             </div>
           )}
         </Paper>
-        </div>
+      </div>
       </Layout>
     </>
   );

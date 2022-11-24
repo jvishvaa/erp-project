@@ -39,7 +39,7 @@ const resolveMenu = (url) => {
   if (url.includes('assign_other_fees')) return 'Transport Fees';
   if (url.includes('OtherFeeType')) return 'Transport Fees';
   if (url.includes('assesment')) return 'Assessment';
-  if (url.includes('question-bank')) return 'Assessment';
+  if (url.includes('question-chapter-wise')) return 'Assessment';
   if (url.includes('orchadio')) return 'Orchadio';
   if (url.includes('student-strength')) return 'School Strength';
   if (url.includes('student-strength')) return 'School Strength';

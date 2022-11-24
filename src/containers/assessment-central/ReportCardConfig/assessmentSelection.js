@@ -31,35 +31,35 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
-import Layout from '../Layout';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import TabPanel from '../lesson-plan/create-lesson-plan/tab-panel';
-import './styles.scss';
-import AssesmentCard from './assesment-card';
-import AssesmentDetails from './assesment-details';
-import hidefilter from '../../assets/images/hidefilter.svg'; //hidefilter.svg
-import showfilter from '../../assets/images/showfilter.svg'; //showfilter.svg
+// import Layout from '../Layout';
+// import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+// import TabPanel from '../lesson-plan/create-lesson-plan/tab-panel';
+import '../styles.scss';
+import AssesmentCard from '../assesment-card';
+import AssesmentDetails from '../assesment-details';
+import hidefilter from '../../../assets/images/hidefilter.svg'; //hidefilter.svg
+import showfilter from '../../../assets/images/showfilter.svg'; //showfilter.svg
 import {
   fetchAssesmentTypes,
   fetchAssesmentTests,
   fetchAssesmentTestDetail,
-} from '../../redux/actions';
+} from '../../../redux/actions';
 import {
   fetchAcademicYears,
   fetchBranches,
   fetchGrades,
   fetchSubjects,
-} from '../lesson-plan/create-lesson-plan/apis';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import DateRangeSelector from '../../components/date-range-selector';
-import infoIcon from '../../assets/images/info-icon.svg';
-import unfiltered from '../../assets/images/unfiltered.svg';
-import selectfilter from '../../assets/images/selectfilter.svg';
-import axios from './../../config/axios';
+} from '../../lesson-plan/create-lesson-plan/apis';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+// import DateRangeSelector from '../../components/date-range-selector';
+// import infoIcon from '../../assets/images/info-icon.svg';
+// import unfiltered from '../../assets/images/unfiltered.svg';
+// import selectfilter from '../../assets/images/selectfilter.svg';
+// import axios from './../../config/axios';
 import endpoints from 'config/endpoints';
-import Loader from './../../components/loader/loader';
+import Loader from '../../../components/loader/loader';
 import FileSaver from 'file-saver';
-import axiosInstance from './../../config/axios';
+import axiosInstance from '../../../config/axios';
 import { Breadcrumb, Button, Form, Select, Space, Typography, DatePicker } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { DownOutlined } from '@ant-design/icons';
@@ -81,7 +81,7 @@ const statuses = [
 
 const { Option } = Select;
 
-const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
+const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
@@ -128,20 +128,17 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const [sectionFlag, setSectionFlag] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [groupFlag, setGroupFlag] = useState(false);
-  const [isRestoreUnable, setIsRestoreUnable] = useState(false)
-  const testFilterData = JSON.parse(sessionStorage.getItem('createTestData')) || {}
-  const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {}
-  let isRestoreFields = history?.location?.state?.dataRestore || false
+  const [isRestoreUnable, setIsRestoreUnable] = useState(false);
+  const testFilterData = JSON.parse(sessionStorage.getItem('createTestData')) || {};
+  const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {};
+  let isRestoreFields = history?.location?.state?.dataRestore || false;
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const [checkDel, setCheckDel] = useState(false);
   const [showFilter, setShowfilter] = useState(false);
-  const filtersData = history?.location?.state?.filtersData
-
 
   useEffect(() => {
-    if (isRestoreFields) setIsRestoreUnable(true)
-  }, [])
-
+    if (isRestoreFields) setIsRestoreUnable(true);
+  }, []);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -180,56 +177,6 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     validateOnBlur: false,
   });
 
-useEffect(() => {
-  if(filtersData && moduleId){
-    handleBranch('',filtersData?.branch)
-      formik.setFieldValue('branch', filtersData?.branch);
-      // handleGrade('',filtersData?.grade)
-      // formik.setFieldValue('grade', filtersData?.grade);
-      // handleSubject()
-      formik.setFieldValue('status', filtersData?.status);
-      formik.setFieldValue('section', filtersData?.section);
-      formik.setFieldValue('group', filtersData?.group);
-      formik.setFieldValue('assesment_type', filtersData?.assesment_type);
-      formik.setFieldValue('date', filtersData?.date);
-      formRef.current.setFieldsValue({
-        branch : filtersData?.branch,
-        // grade : filtersData?.grade,
-        // subject : filtersData?.subject,
-        status : filtersData?.status,
-        assessmentType : filtersData?.assesment_type,
-        section : filtersData?.section,
-        date : filtersData?.date
-
-
-      })
-      // formik.setFieldValue('grade', filtersData?.grade);
-     
-  }
-
-},[filtersData, moduleId])
-
-useEffect(() => {
-  if(filtersData && formik.values.branch.length){
-    handleGrade('',filtersData?.grade)
-      formik.setFieldValue('grade', filtersData?.grade);
-      formRef.current.setFieldsValue({
-        grade : filtersData?.grade,
-      })
-  }
-},[formik.values.branch])
-
-useEffect(() => {
-  if(filtersData && formik.values.grade){
-    handleSubject('',filtersData?.subject)
-    formik.setFieldValue('subject', filtersData?.subject);
-    formRef.current.setFieldsValue({
-        subject : filtersData?.subject,
-      })
-  }
-},[formik.values.grade])
-
-
   const getAcademic = async () => {
     // try {
     //   setAcademicDropdown([]);
@@ -256,7 +203,7 @@ useEffect(() => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      if(moduleId){
+      if (moduleId) {
         const data = await fetchBranches(acadId, moduleId);
         setBranchDropdown(data);
         setLoading(false)
@@ -300,11 +247,12 @@ useEffect(() => {
     try {
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
-    } catch (e) { }
+    } catch (e) {}
   };
   let filterData1 = [];
   const filterResults = async (page) => {
     setLoading(true)
+
     const {
       branch = [],
       grade,
@@ -320,12 +268,8 @@ useEffect(() => {
       grade: formik.values.grade,
       subject: formik.values.subject,
       status: formik.values.status,
-      assesment_type : formik.values.assesmentType,
-      date :formik.values?.date ,
-      section : formik.values.section,
-      group : formik.values.group,
-
     };
+    console.log(filterData1);
     setFilterData(filterData1);
     // const acadSessionId = branch?.id;
     const acadSessionIds = branch.map((element) => element?.value) || [];
@@ -340,8 +284,8 @@ useEffect(() => {
         acadSessionIds,
         grade?.value,
         subjectIds,
-        assesmentType?.value,
-        status?.value,
+        assesmentType.value,
+        status.value,
         date,
         page,
         9,
@@ -386,27 +330,27 @@ useEffect(() => {
     }
   };
 
-  // useEffect(() => {
-  //   if (formik.values.academic) {
-  //     getBranch(formik.values.academic?.id);
-  //     if (formik.values.branch.length) {
-  //       const branchIds =
-  //         formik.values.branch.map((element) => element?.branch?.id) || [];
-  //       setSelectedBranchId(branchIds);
-  //       getGrades(formik.values.academic?.id, branchIds);
-  //       if (formik.values.grade) {
-  //         const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
-  //         getSubjects(acadSessionIds, formik.values.grade?.grade_id);
-  //       } else {
-  //         setSubjects([]);
-  //       }
-  //     } else {
-  //       setGrades([]);
-  //     }
-  //   } else {
-  //     setBranchDropdown([]);
-  //   }
-  // }, [moduleId]);
+  useEffect(() => {
+    if (formik.values.academic) {
+      getBranch(formik.values.academic?.id);
+      if (formik.values.branch.length) {
+        const branchIds =
+          formik.values.branch.map((element) => element?.branch?.id) || [];
+        setSelectedBranchId(branchIds);
+        getGrades(formik.values.academic?.id, branchIds);
+        if (formik.values.grade) {
+          const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
+          getSubjects(acadSessionIds, formik.values.grade?.grade_id);
+        } else {
+          setSubjects([]);
+        }
+      } else {
+        setGrades([]);
+      }
+    } else {
+      setBranchDropdown([]);
+    }
+  }, [moduleId]);
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
@@ -423,7 +367,7 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    if (formik?.values?.status  && formik?.values?.branch?.length && formik?.values?.grade && formik?.values?.subject?.length) {
+    if (formik?.values?.branch?.length && formik?.values?.grade && formik?.values?.subject?.length) {
       setFilteredAssesmentTestPage(1);
       setSelectedAssesmentTest(null);
       filterResults(1); // reseting the page
@@ -488,33 +432,43 @@ useEffect(() => {
     //   return;
     // }
     formik.handleSubmit();
-    sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
-    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList, isSectionToggle: sectionToggle }))
+    sessionStorage.setItem('createTestData', JSON.stringify(formik?.values));
+    sessionStorage.setItem(
+      'dropDownData',
+      JSON.stringify({
+        branch: branchDropdown,
+        grade: grades,
+        subject: subjects,
+        assesmentTypes: assesmentTypes,
+        section: sectionList,
+        group: groupList,
+        isSectionToggle: sectionToggle,
+      })
+    );
   };
 
   useEffect(() => {
     if (isRestoreUnable) {
-      formik.setFieldValue('status', testFilterData?.status)
+      formik.setFieldValue('status', testFilterData?.status);
       formik.setFieldValue('branch', testFilterData?.branch);
       formik.setFieldValue('grade', testFilterData?.grade);
       formik.setFieldValue('subject', testFilterData?.subject);
       formik.setFieldValue('section', testFilterData?.section);
       formik.setFieldValue('group', testFilterData?.group);
-      formik.setFieldValue('assesment_type', testFilterData?.assesment_type)
-      formik.setFieldValue('date', testFilterData?.date)
-      setBranchDropdown(testFilterDropdownList?.branch)
-      setGrades(testFilterDropdownList?.grade)
-      setSubjects(testFilterDropdownList?.subject)
-      setAssesmentTypes(testFilterDropdownList?.assesmentTypes)
-      setGroupList(testFilterDropdownList?.group)
-      setSectionList(testFilterDropdownList?.section)
-      setSectionToggle(testFilterDropdownList?.isSectionToggle)
-      history.replace({ state: { dataRestore: false } })
+      formik.setFieldValue('assesment_type', testFilterData?.assesment_type);
+      formik.setFieldValue('date', testFilterData?.date);
+      setBranchDropdown(testFilterDropdownList?.branch);
+      setGrades(testFilterDropdownList?.grade);
+      setSubjects(testFilterDropdownList?.subject);
+      setAssesmentTypes(testFilterDropdownList?.assesmentTypes);
+      setGroupList(testFilterDropdownList?.group);
+      setSectionList(testFilterDropdownList?.section);
+      setSectionToggle(testFilterDropdownList?.isSectionToggle);
+      history.replace({ state: { dataRestore: false } });
       testFilterDropdownList?.isSectionToggle ? setGroupFlag(true) : setSectionFlag(true);
       if (testFilterData?.status?.id) formik.handleSubmit();
     }
-
-  }, [isRestoreUnable])
+  }, [isRestoreUnable]);
 
   const handleAcademicYear = (event = {}, value = '') => {
     formik.setFieldValue('academic', '');
@@ -586,7 +540,8 @@ useEffect(() => {
   const fetchGroupList = (acadId, grade) => {
     axiosInstance
       .get(
-        `${endpoints.assessmentErp.getGroups
+        `${
+          endpoints.assessmentErp.getGroups
         }?acad_session=${acadId}&grade=${grade}&is_active=${true}`
       )
       .then((result) => {
@@ -718,13 +673,12 @@ useEffect(() => {
     if (checked) {
       setAddedId([...addedId, id]);
     } else {
-      const previousArr = [...addedId]
+      const previousArr = [...addedId];
       const index = addedId.indexOf(id);
       previousArr.splice(index, 1);
       setAddedId(previousArr);
     }
-  }
-
+  };
 
   const handleSectionToggle = (event) => {
     setSectionToggle(event.target.checked);
@@ -733,16 +687,18 @@ useEffect(() => {
   };
 
   const filterbasedonsub = (subjectid) => {
-    let filtereddata = filteredAssesmentTests?.filter((data) => addedId?.includes(data?.id))
-    let newfiltered = filtereddata?.map((id) => id?.subjects[0])
+    let filtereddata = filteredAssesmentTests?.filter((data) =>
+      addedId?.includes(data?.id)
+    );
+    let newfiltered = filtereddata?.map((id) => id?.subjects[0]);
     // newfiltered.includes(subjectid)
-    return newfiltered.includes(subjectid)
-  }
+    return newfiltered.includes(subjectid);
+  };
 
-  const reportLoad = (e , v) => {
-    console.log(e , v);
-    setLoading(e)
-  }
+  const reportLoad = (e, v) => {
+    console.log(e, v);
+    setLoading(e);
+  };
 
   const branchOptions = branchDropdown?.map((each) => {
     return (
@@ -801,7 +757,8 @@ useEffect(() => {
   // let newid = filterbasedonsub()
 
   return (
-    <Layout>
+    // <Layout>
+      <>
       {loading && <Loader />}
       {/* <div
         className='assesment-container assessment-ques'
@@ -826,44 +783,12 @@ useEffect(() => {
         <div className='col-12 py-3 ml-2'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row align-items-center'>
-            <div className='col-md-2 col-6 pr-0 px-0 pl-0'>
-                  <div className='mb-2 text-left'>Status</div>
-                  <Form.Item name='status'>
-                    <Select
-                      allowClear
-                      placeholder={
-                        // subjectName ? (
-                        //   <span className='th-black-1'>{subjectName}</span>
-                        // ) : (
-                        //   'Select Subject'
-                        // )
-                        'Select Status'
-                      }
-                      showSearch
-                      optionFilterProp='children'
-                      // defaultValue={subjectName}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e, value) => {
-                        formik.setFieldValue('status', value);
-                      }}
-                      // onClear={handleClearSubject}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={false}
-                    >
-                      {statusOption}
-                    </Select>
-                  </Form.Item>
-                </div>
               <div className='col-md-2 col-6 pl-0'>
                 <div className='mb-2 text-left'>Branch</div>
                 <Form.Item name='branch'>
                   <Select
                     allowClear
-                    placeholder= 'Select Branch'                   
+                    placeholder='Select Branch'
                     mode='multiple'
                     showSearch
                     optionFilterProp='children'
@@ -877,6 +802,7 @@ useEffect(() => {
                       handleBranch(e, value);
                     }}
                     getPopupContainer={node => node.parentNode}
+
                     // onClear={handleClearBoard}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={false}
@@ -946,7 +872,7 @@ useEffect(() => {
                 </Form.Item>
               </div>
               {!handleClose && <div
-                className='col-md-3 col-6 px-0'
+                className='col-md-5 col-6 px-0'
                 style={{ display: 'flex', justifyContent: 'flex-end' }}
               >
                  <Button
@@ -961,7 +887,7 @@ useEffect(() => {
 
               </div>}
               {handleClose && <div
-                className='col-md-3 col-6 px-0'
+                className='col-md-5 col-6 px-0'
                 style={{ display: 'flex', justifyContent: 'flex-end' }}
               >
                  <Button
@@ -992,6 +918,39 @@ useEffect(() => {
             </div>
             {showFilter && (
               <div className='row align-items-center mt-2'>
+                <div className='col-md-2 col-6 pr-0 px-0 pl-0'>
+                  <div className='mb-2 text-left'>Status</div>
+                  <Form.Item name='status'>
+                    <Select
+                      allowClear
+                      placeholder={
+                        // subjectName ? (
+                        //   <span className='th-black-1'>{subjectName}</span>
+                        // ) : (
+                        //   'Select Subject'
+                        // )
+                        'Select Status'
+                      }
+                      getPopupContainer={node => node.parentNode}
+                      showSearch
+                      optionFilterProp='children'
+                      // defaultValue={subjectName}
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        formik.setFieldValue('status', value);
+                      }}
+                      // onClear={handleClearSubject}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {statusOption}
+                    </Select>
+                  </Form.Item>
+                </div>
                 <div className='col-md-2 col-6 pl-0'>
                   <div className='mb-2 text-left'>Assesment Type</div>
                   <Form.Item name='assessmentType'>
@@ -1000,6 +959,7 @@ useEffect(() => {
                       placeholder='Select Type'
                       showSearch
                       optionFilterProp='children'
+                      getPopupContainer={node => node.parentNode}
                       filterOption={(input, options) => {
                         return (
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -1009,7 +969,7 @@ useEffect(() => {
                       //   value: item,
                       //   label: item?.branch?.branch_name,
                       // }))}
-                      // value={formik.values.branch || []}
+                      value={formik.values.branch || []}
                       onChange={(e, value) => {
                         formik.setFieldValue('assesment_type', value);
                       }}
@@ -1028,6 +988,7 @@ useEffect(() => {
                       <RangePicker
                         style={{width:'100%'}}
                         allowClear={false}
+                        getPopupContainer={node => node.parentNode}
                         bordered={false}
                         placement='bottomRight'
                         showToday={false}
@@ -1055,6 +1016,7 @@ useEffect(() => {
                       <Select
                         allowClear
                         mode='multiple'
+                        getPopupContainer={node => node.parentNode}
                         placeholder={
                           // subjectName ? (
                           //   <span className='th-black-1'>{subjectName}</span>
@@ -1090,6 +1052,7 @@ useEffect(() => {
                     <Form.Item name='group'>
                       <Select
                         allowClear
+                        getPopupContainer={node => node.parentNode}
                         placeholder={
                           // subjectName ? (
                           //   <span className='th-black-1'>{subjectName}</span>
@@ -1240,8 +1203,9 @@ useEffect(() => {
         </div>
       {/* </div> */}
       
-    </Layout>
+    {/* </Layout> */}
+    </>
   );
 };
 
-export default Assesment;
+export default AssesmentSelection;
