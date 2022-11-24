@@ -61,8 +61,8 @@ const qa = {
     baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://qa.classes.letseduvate.com',
-    msReportsUrl: 'https://qa.reports.letseduvate.com',
-    msReportsUrlNew: 'https://qa.reports.letseduvate.com',
+    msReportsUrl: 'https://reports.qa.letseduvate.com',
+    msReportsUrlNew: 'https://reports.qa.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
   },
@@ -110,7 +110,7 @@ const DEV = 'DEV';
 const QA = 'QA';
 const STAGE = 'STAGE';
 const env = { [PROD]: prod, [DEV]: dev, [QA]: qa, [STAGE]: stage };
-const config = env[process.env.REACT_APP_UI_ENV] || dev;
+const config = env[process.env.REACT_APP_UI_ENV] || qa;
 
 export default {
   // Add common config values here
