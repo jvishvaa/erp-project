@@ -121,11 +121,7 @@ const BlogWallRedirect = () => {
   const history = useHistory();
   const [periodData,setPeriodData] = useState([]);
   const [loading,setLoading]= useState(false);
-
-
-  console.log(token,'P4')
-
-
+  
   const handleBlogWriting = () => {
     history.push('/blog/studentview')
   }
