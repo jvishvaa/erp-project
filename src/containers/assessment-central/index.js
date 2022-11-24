@@ -181,7 +181,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   });
 
 useEffect(() => {
-  if(filtersData){
+  if(filtersData && moduleId){
     handleBranch('',filtersData?.branch)
       formik.setFieldValue('branch', filtersData?.branch);
       // handleGrade('',filtersData?.grade)
@@ -207,7 +207,7 @@ useEffect(() => {
      
   }
 
-},[filtersData])
+},[filtersData, moduleId])
 
 useEffect(() => {
   if(filtersData && formik.values.branch.length){

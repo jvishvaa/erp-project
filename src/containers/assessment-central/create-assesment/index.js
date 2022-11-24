@@ -132,7 +132,6 @@ const CreateAssesment = ({
 
   useEffect(() => {
 if(isEdit && EditData){
-  debugger
     setTestName(EditData?.test_name);
     setTestId(EditData?.test_id);
     setTestDate(EditData?.test_date);
@@ -151,8 +150,6 @@ if(isEdit && EditData){
     formik.setFieldValue('test_mode', typetest[0]);
     initSetFilter('selectedTestType', typetest[0]);
 
-
- setSelectedSectionMappingId(EditData?.section_mapping)
 if(EditData?.has_sub_groups){
   setSectionToggle(true)
 }
@@ -183,10 +180,18 @@ if(isEdit && branchDropdown.length){
   },[isEdit,branchDropdown])
 
   useEffect(() => {
+if(isEdit && groupList.length && EditData?.group_id !== null){
+  let filteredgroup = groupList.filter((item) => item?.id === EditData?.group_id)
+handleGroup('',filteredgroup)
+}
+  },[groupList])
+
+  useEffect(() => {
     if(branchId?.length && isEdit){
       getEditSection(EditData?.grade_id)
     }
   },[EditData,branchId])
+
 
   useEffect(() => {
     if(assesmentTypes?.length && isEdit){
@@ -207,10 +212,17 @@ if(isEdit && branchDropdown.length){
 
   useEffect(() => {
     if(sectionList.length && isEdit){
+      let sectionFilterData = []
       let sectionData = sectionList?.filter((item) => {
-        let v = EditData?.section_mapping.forEach((id) => id == item?.id)
+        let v = EditData?.section_mapping.forEach((id) => {
+          if(id === item?.id){
+            sectionFilterData.push(item)
+          }
+        })
+        // return item?.id
        })
-       setSelectedSectionData(sectionData)
+       setSelectedSectionData(sectionFilterData)
+       setSelectedSectionMappingId(EditData?.section_mapping)
     }
   },[sectionList.length])
 
@@ -309,11 +321,10 @@ if(isEdit && branchDropdown.length){
 
 
   const getEditSection = (gradeID) => {
-    debugger
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.academics.sectionsV2}?acad_session=${selectedBranchId[0]}&grade=${gradeID}&is_central=${EditData?.question_paper_id == null ? true : false}`
+        `${endpoints.academics.sectionsV2}?acad_session=${branchId}&grade=${gradeID}&is_central=${EditData?.question_paper_id == null ? true : false}`
       )
       .then((res) => {
         if (res?.data?.status_code == 200) {
@@ -837,6 +848,32 @@ if(isEdit && branchDropdown.length){
   };
 
   const updateTest = () => {
+
+    if (!branchId) {
+      setAlert('warning', 'Please Select Branch');
+      return;
+    }
+    if (totalMarks < 0 || totalMarks > 1000) {
+      setAlert('warning', 'Please enter valid marks.');
+      return;
+    }
+
+    if (testDuration < 0 || testDuration > 1441) {
+      setAlert('warning', 'Please enter valid duration.');
+      return;
+    }
+    if (!instructions.length) {
+      return setAlert('warning', 'Please Enter Test Instruction ');
+    }
+    if (!formik.values.test_type?.id) {
+      setAlert('error', 'Select Assessment Type');
+      return;
+    }
+    if (!formik.values.test_mode?.id) {
+      setAlert('error', 'Select Test Mode');
+      return;
+    }
+
     let reqObj = {
       // question_paper: EditData?.id,
       test_name: testName,
@@ -857,6 +894,20 @@ if(isEdit && branchDropdown.length){
       //   CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
       // is_central: selectedQuestionPaper['is_central'],
     };
+
+    if (!sectionToggle && selectedSectionData?.length > 0) {
+      reqObj = { ...reqObj, section_mapping: selectedSectionMappingId };
+    }
+
+    if (sectionToggle && groupSectionMappingId.length > 0) {
+      reqObj = {
+        ...reqObj,
+        has_sub_groups: true,
+        group: selectedGroupId,
+        section_mapping: groupSectionMappingId,
+      };
+    }
+    
     setLoading(true)
       axiosInstance.patch(
         `${endpoints.assessmentErp.deleteAssessmentTest}${EditData?.id}/test/`, 

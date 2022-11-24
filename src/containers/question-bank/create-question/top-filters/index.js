@@ -401,7 +401,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   };
   const handleBack = () => {
     history.push({
-      pathname: '/question-bank-new',
+      pathname: '/question-chapter-wise',
     });
     // window.location.href = '/question-bank';
   };

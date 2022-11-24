@@ -190,8 +190,10 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
     <Drawer title = {testMode === 1 ? "Online" : "Offline"} zIndex={1300} width={'450px'} placement="right" onClose={onClosedrawer} open={open} visible={open}>
       <div>
         <div className='row'>
-        Test Name : <Typography className='ml-2'>{testName}</Typography>
-        <div className='col-md-2 d-flex justify-content-end' style={{marginLeft:'50%'}}>
+          <div className='col-md-10 d-flex ' style={{marginLeft : '-4%'}}>
+          Test Name : <p title= {testName} className='ml-2'>{testName.length >20 ? testName.slice(0,20) + '...' : testName}</p>
+          </div>
+        <div className='col-md-2 d-flex justify-content-end'>
           <Button color='primary' variant='contained' onClick={() => {
             history.push({
               pathname :  '/create-assesment',
@@ -350,7 +352,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                     </>
                     : ''}
                 </Grid>
-                {enable && <Grid item xs={12} >
+                {enable && <Grid item xs={12} style={{marginTop:'5%'}}>
                   <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
                     <GetAppIcon fontSize="small" />
                     Download Question Paper

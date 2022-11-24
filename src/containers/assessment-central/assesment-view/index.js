@@ -240,7 +240,7 @@ if(tabGradeId && tabSubjectId){
           /> */}
           <div className='row ml-2'>
               <div className='col-md-1 col-6'>
-                <Button
+              <Button
                   className={`${
                     tabValue == 0 ? 'th-button-active' : 'th-button'
                   } th-width-100 th-br-6 mt-2`}
@@ -263,7 +263,7 @@ if(tabGradeId && tabSubjectId){
                   Published
                 </Button>
               </div>
-              <div className='col-md-4 col-6'>
+              {!tabIsErpCentral && <div className='col-md-4 col-6'>
                 <Button
                   className={`${
                     tabValue == 3 ? 'th-button-active' : 'th-button'
@@ -274,8 +274,8 @@ if(tabGradeId && tabSubjectId){
                 >
                   For Review
                 </Button>
-              </div>
-              <div className='col-md-4 col-6'>
+              </div>}
+              {!tabIsErpCentral &&<div className='col-md-4 col-6'>
                 <Button
                   className={`${
                     tabValue == 1 ? 'th-button-active' : 'th-button'
@@ -285,10 +285,10 @@ if(tabGradeId && tabSubjectId){
                 >
                   Draft
                 </Button>
-              </div>
+              </div>}
             </div>
             <div className='col-md-2 d-flex' style={{marginLeft : '-2%'}}>
-              <div className='col-md-10 col-6'>
+            {!tabIsErpCentral &&<div className='col-md-10 col-6'>
                 <Button
                   className={`${
                     tabValue == 4 ? 'th-button-active' : 'th-button'
@@ -298,7 +298,7 @@ if(tabGradeId && tabSubjectId){
                 >
                   Deleted
                 </Button>
-              </div>
+              </div>}
               <div className='col-md-2 col-6'></div>
               </div>
               <div className='col-md-4 d-flex'>
