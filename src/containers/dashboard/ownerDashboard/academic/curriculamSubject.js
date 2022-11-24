@@ -2,48 +2,29 @@
 import React, { useContext, useState, useEffect } from 'react';
 import {
   Grid,
-  TextField,
 
 } from '@material-ui/core';
-import {
-  Search as SearchIcon,
-  ExpandMore as ExpandMoreIcon,
-  ArrowBack as ArrowBackIcon,
-  ChevronRight as ArrowCircleRightIcon,
-} from '@material-ui/icons';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { withRouter } from 'react-router-dom';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Pagination } from '@material-ui/lab';
-import MediaQuery from 'react-responsive';
-import { DatePicker, Space } from 'antd';
 import { makeStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-// import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../../Layout';
-import { Button } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { Button , Form , Select , message } from 'antd';
+import axios from 'axios';
 import clsx from 'clsx';
 import axiosInstance from 'config/axios';
 import moment from 'moment';
 import endpoints from 'config/endpoints';
-import Loader from 'components/loader/loader';
 import { connect, useSelector } from 'react-redux';
 import '../academic/style.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { Table, Breadcrumb } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
-import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 
-
-// import { TableCell, TableRow } from 'semantic-ui-react';
+const { Option } = Select;
 
 const useStyles = makeStyles((theme) => ({
   gradeBoxContainer: {
-    // marginTop: '15px',
   },
   gradeDiv: {
     width: '100%',
@@ -54,9 +35,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    // '&::before': {
-    //   backgroundColor: 'black',
-    // },
+
   },
   gradeBox: {
     border: '1px solid black',
@@ -81,9 +60,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '10px',
       '-webkit-box-shadow': ' inset 0 0 6px rgba(0,0,0,0.5)',
     },
-    //   ::-webkit-scrollbar {
-    //     width: 12px;
-    // }
+
   },
   eachGradeOverviewContainer: {
     border: '1px solid black',
@@ -152,7 +129,9 @@ const CurriculumCompletionSubject = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-
+  const [volumeListData, setVolumeListData] = useState([]);
+  const [volumeId, setVolumeId] = useState([]);
+  const [volumeName, setVolumeName] = useState('');
 
 
   const {
@@ -164,59 +143,39 @@ const CurriculumCompletionSubject = (props) => {
   console.log(props);
 
   useEffect(() => {
-    // console.log(history?.location?.state, 'Mobile99999999')
     setModuleId(history?.location?.state?.module_id);
     setAcadeId(history?.location?.state?.acad_session_id);
     setBranchName(history?.location?.state?.branchName)
     setDateToday(history?.location?.state?.selectedDate)
     setTeacherView(history?.location?.state?.teacherView)
+    if(history?.location?.state?.volume != null){
+      setVolumeId(history?.location?.state?.volume)
+    }
+    fetchVolumeListData()
   }, [history]);
 
 
-  useEffect(() => {
-    gradeData(branchId);
-  }, [branchId, moduleId]);
+
 
   const { acad_session_id, module_id, acad_sess_id } = history.location.state;
-  const dateFormat = 'YYYY/MM/DD';
-  const handleCurrSubject = (gradeId, gradeName) => {
-    history.push({
-      pathname: `/curriculum-completion-chapter/`,
-      state: {
-        grade: gradeId,
-        gradeName: gradeName,
-        acad_session_id: acad_session_id,
-        acad_sess_id: acad_sess_id,
-        module_id: moduleId,
-        branchName: branchName,
-        selectedDate: dateToday
-      },
-    });
-  };
-
-  const gradeData = (branchId) => {
-    if (moduleId !== '' || null || undefined) {
-      axiosInstance
-        .get(
-          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}`
-        )
-        .then((res) => {
-          setGradeApiData(res?.data?.data);
-        })
-        .catch(() => { });
-    }
-  };
 
   useEffect(() => {
     console.log(dateToday);
-    if (dateToday) {
+    if (volumeId != null) {
       gradeListTable({
         grade_id: history?.location?.state?.grade,
         session_year: selectedAcademicYear?.id,
-        date: moment(dateToday).format('YYYY-MM-DD')
+        acad_session : acad_sess_id,
+        volume: volumeId
+      });
+    } else {
+      gradeListTable({
+        grade_id: history?.location?.state?.grade,
+        session_year: selectedAcademicYear?.id,
+        acad_session : acad_sess_id
       });
     }
-  }, [dateToday]);
+  }, [volumeId]);
 
   const gradeListTable = (params = {}) => {
     setLoading(true);
@@ -241,14 +200,40 @@ const CurriculumCompletionSubject = (props) => {
   };
 
 
+  const fetchVolumeListData = () => {
+    axios
+      .get(`${endpoints.lessonPlan.volumeList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setVolumeListData(result?.data?.result?.results);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  const volumeOptions = volumeListData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.volume_name}
+      </Option>
+    );
+  });
+
+  const handlevolume = (e) => {
+    setVolumeId(e.value);
+    setVolumeName(e.children);
+  };
+  const handleClearVolume = () => {
+    setVolumeId('');
+    setVolumeName('');
+  };
 
 
-
-  const onChangeDate = (value) => {
-    if (value) {
-      setDateToday(moment(value).format('YYYY-MM-DD'));
-    }
-  }
   const handleBack = () => {
     history.goBack();
   }
@@ -269,18 +254,18 @@ const CurriculumCompletionSubject = (props) => {
       render: (data) => <span className='th-black-1 th-16'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>TOTAL PERIODS CONDUCTED</span>,
+      title: <span className='th-white th-fw-700'>AVG PERIODS CONDUCTED</span>,
       dataIndex: 'completed_periods_sum',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data}</span>,
+      render: (data) => <span className='th-green th-16'>{Math.round(data)}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>TOTAL PERIODS PENDING</span>,
-      dataIndex: 'pending_periods',
+      title: <span className='th-white th-fw-700'>AVG PERIODS PENDING</span>,
+      dataIndex: 'pending_periods_sum',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data}</span>,
+      render: (data) => <span className='th-green th-16'>{Math.round(data)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
@@ -298,17 +283,18 @@ const CurriculumCompletionSubject = (props) => {
         <span
           onClick={(e) =>
             history.push({
-              pathname: `/curriculum-completion-chapter/${branchId}/${row?.grade_id}`,
+              pathname: `/curriculum-completion-chapter/${branchId}/${history?.location?.state?.grade}`,
               state: {
-                grade: row?.grade_id,
+                grade: history?.location?.state?.grade,
                 gradeName: row?.grade_name,
-                subject_id: row?.subject_id,
+                subject_id: row?.subject_id_id,
                 acad_session_id: acad_session_id,
                 acad_sess_id: acad_sess_id,
                 module_id: moduleId,
                 branchName: branchName,
                 selectedDate: dateToday,
-                teacherView: teacherView
+                teacherView: teacherView,
+                central_gs : row?.central_gs
               },
             })
           }
@@ -325,11 +311,6 @@ const CurriculumCompletionSubject = (props) => {
       <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {/* < CommonBreadcrumbs
-              componentName='Dashboard'
-              // childComponentName='Academic Performance' 
-              childComponentNameNext='Curriculum Completion'
-            /> */}
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
                 Dashboard
@@ -345,51 +326,35 @@ const CurriculumCompletionSubject = (props) => {
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
             <Button onClick={handleBack} icon={<LeftOutlined />} className={clsx(classes.backButton)} >Back</Button>
-            {/* <Space direction="vertical">
-              <DatePicker onChange={onChangeDate} />
-            </Space> */}
-            <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
-              <span className='th-br-4 p-1 th-bg-white'>
-                <img src={calendarIcon} className='pl-2' />
-                <DatePicker
-                  disabledDate={(current) => current.isAfter(moment())}
-                  allowClear={false}
+              <div className='col-md-3 col-6 pl-md-1'>
+              <div className='text-left pl-md-1'>Volume</div>
+              <Form.Item name='volume'>
+                <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  placeholder='Select Volume'
+                  showSearch
+                  defaultValue='All'
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => {
+                    handlevolume(value);
+                  }}
+                  onClear={handleClearVolume}
+                  allowClear
+                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   bordered={false}
-                  placement='bottomRight'
-                  // defaultValue={dateToday}
-                  value={moment(dateToday)}
-                  onChange={(value) => onChangeDate(value)}
-                  showToday={false}
-                  suffixIcon={<DownOutlined className='th-black-1' />}
-                  className='th-black-2 pl-0 th-date-picker'
-                  format={'YYYY/MM/DD'}
-                />
-              </span>
+                >
+                  {volumeOptions}
+                </Select>
+              </Form.Item>
             </div>
           </Grid>
           
           <div className='row '>
-          <div className='row mt-3'>
-              <div className='col-12'>
-                <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
-                  <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
-                    Total Periods:{' '}
-                    <span className='th-primary'>{tableData?.total_periods ? tableData?.total_periods : ''}</span>
-                  </div>
-                  <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                    Total Periods Conducted:{' '}
-                    <span className='th-green'>{tableData?.completed_periods ? tableData?.completed_periods : ''}</span>
-                  </div>
-                  <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                    Total Periods Pending:{' '}
-                    <span className='th-fw-500 th-red'>
-                      {tableData?.pending_periods ? tableData?.pending_periods : ''}
-                    </span>
-                  </div>
-
-                </div>
-              </div>
-            </div>
             <div className='col-12'>
               <Table
                 className='th-table'
@@ -398,19 +363,16 @@ const CurriculumCompletionSubject = (props) => {
                 }
                 loading={loading}
                 columns={columns}
-                rowKey={(record) => record?.grade_id}
-                dataSource={tableData?.data}
+                rowKey={(record) => record?.subject_id_id}
+                dataSource={tableData}
                 pagination={false}
                 expandIconColumnIndex={6}
-
                 scroll={{ x: 'max-content' }}
               />
             </div>
        
           </div>
         </Grid>
-
-        {loading && <Loader />}
       </div>
     </Layout>
   );

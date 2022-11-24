@@ -2,82 +2,32 @@
 import React, { useContext, useState, useEffect } from 'react';
 import {
   Grid,
-  TextField,
-  Divider,
-  Typography,
-  InputAdornment,
-  Card,
-  CardHeader,
-  CardContent,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TableContainer,
-  TableFooter,
-  Paper,
-  // Table,
-  TableHead,
-  TableBody,
-  TableCell,
-  TableRow,
-  Box,
-  Collapse,
 } from '@material-ui/core';
-import {
-  Search as SearchIcon,
-  ExpandMore as ExpandMoreIcon,
-  ArrowBack as ArrowBackIcon,
-  ChevronRight as ArrowCircleRightIcon,
-} from '@material-ui/icons';
-
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { withRouter } from 'react-router-dom';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Pagination } from '@material-ui/lab';
-import MediaQuery from 'react-responsive';
-import { DatePicker, Space } from 'antd';
 import { makeStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
-// import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-// import Loader from '../../components/loader/loader';
-// import axiosInstance from '../../config/axios';
-// import endpoints from '../../config/endpoints';
-// import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../../Layout';
-// import { getModuleInfo } from '../../utility-functions';
-import { Button } from 'antd';
-import { useLocation } from 'react-router-dom';
+import {
+  Button, Form,
+  message, Select
+} from 'antd';
 import clsx from 'clsx';
 import axiosInstance from 'config/axios';
 import moment from 'moment';
 import endpoints from 'config/endpoints';
-import { fetchAllSectionsPerGrade } from 'containers/Finance/src/components/Finance/store/actions';
 import Loader from 'components/loader/loader';
 import { connect, useSelector } from 'react-redux';
-import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
 import '../academic/style.scss';
-import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { Table, Breadcrumb } from 'antd';
 import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
-import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
-
-
-
-
-// import { TableCell, TableRow } from 'semantic-ui-react';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { Column } from '@ant-design/plots';
+import axios from 'axios';
+const { Option } = Select;
 
 const useStyles = makeStyles((theme) => ({
   gradeBoxContainer: {
-    // marginTop: '15px',
   },
   gradeDiv: {
     width: '100%',
@@ -88,9 +38,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    // '&::before': {
-    //   backgroundColor: 'black',
-    // },
   },
   gradeBox: {
     border: '1px solid black',
@@ -115,9 +62,6 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '10px',
       '-webkit-box-shadow': ' inset 0 0 6px rgba(0,0,0,0.5)',
     },
-    //   ::-webkit-scrollbar {
-    //     width: 12px;
-    // }
   },
   eachGradeOverviewContainer: {
     border: '1px solid black',
@@ -175,6 +119,7 @@ const CurriculumCompletion = (props) => {
   const [volume, setVolume] = React.useState('');
   const history = useHistory();
   const [tableData, setTableData] = React.useState([]);
+  const [data, setData] = React.useState([]);
   const [teacherData, setTeacherData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [moduleId, setModuleId] = React.useState('');
@@ -188,19 +133,25 @@ const CurriculumCompletion = (props) => {
   );
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [collapseData, setCollapseData] = useState([]);
-
+  const [volumeListData, setVolumeListData] = useState([]);
+  const [volumeId, setVolumeId] = useState([]);
+  const [volumeName, setVolumeName] = useState('');
+  const [teacherErp, setTeacherErp] = useState('')
 
   const onTableRowExpand = (expanded, record) => {
     console.log(record);
+    setTeacherErp(record?.teacher_erp_id)
     teacherSubjectTable({
-      date: dateToday,
       session_year: selectedAcademicYear?.id,
-      teacher_erp: record?.erp_id
+      teacher_erp_id: record?.teacher_erp_id,
+      acad_session: acad_sess_id,
+      central_gs: record?.central_gs.toString(),
+      branch_id: branchId
     })
     console.log(record);
     const keys = [];
     if (expanded) {
-      keys.push(record.erp_id);
+      keys.push(record.teacher_erp);
     }
 
     setExpandedRowKeys(keys);
@@ -213,66 +164,51 @@ const CurriculumCompletion = (props) => {
   } = props;
 
   useEffect(() => {
-    // console.log(history?.location?.state, 'Mobile99999999')
+    fetchVolumeListData()
     setModuleId(history?.location?.state?.module_id);
-    setAcadeId(history?.location?.state?.acad_session_id);
+    setAcadeId(history?.location?.state?.acad_sess_id);
     setBranchName(history?.location?.state?.branchName)
   }, [history]);
 
-  const handleVolumeChange = (event) => {
-    setVolume(event.target.value);
-  };
+  const handlevolume = (e) => {
+    console.log(e);
+    if (e != undefined) {
+      setVolumeId(e.value);
+      setVolumeName(e.children);
+    }
 
-  useEffect(() => {
-    gradeData(branchId);
-  }, [branchId, moduleId]);
+  };
+  const handleClearVolume = () => {
+    setVolumeId(null);
+    setVolumeName('');
+  };
+  const volumeOptions = volumeListData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.volume_name}
+      </Option>
+    );
+  });
+  const fetchVolumeListData = () => {
+    axios
+      .get(`${endpoints.lessonPlan.volumeList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setVolumeListData(result?.data?.result?.results);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
 
   const { acad_session_id, module_id, acad_sess_id } = history.location.state;
 
-  const handleCurrSubject = (gradeId, gradeName) => {
-    if (teacherView == true) {
-      history.push({
-        pathname: `/curriculum-completion-subject/${branchId}/${gradeId}`,
-        state: {
-          grade: gradeId,
-          gradeName: gradeName,
-          acad_session_id: acad_session_id,
-          acad_sess_id: acad_sess_id,
-          module_id: moduleId,
-          branchName: branchName,
-          selectedDate: dateToday,
-          teacherView: teacherView
-        },
-      });
-    } else {
-      history.push({
-        pathname: `/curriculum-completion-subject/${branchId}/${gradeId}`,
-        state: {
-          grade: gradeId,
-          gradeName: gradeName,
-          acad_session_id: acad_session_id,
-          acad_sess_id: acad_sess_id,
-          module_id: moduleId,
-          branchName: branchName,
-          selectedDate: dateToday,
-          teacherView: teacherView
-        },
-      });
-    }
-  };
 
-  const gradeData = (branchId) => {
-    if (moduleId !== '' || null || undefined) {
-      axiosInstance
-        .get(
-          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}`
-        )
-        .then((res) => {
-          setGradeApiData(res?.data?.data);
-        })
-        .catch(() => { });
-    }
-  };
 
 
   const teacherSubjectTable = (params = {}) => {
@@ -301,37 +237,57 @@ const CurriculumCompletion = (props) => {
   useEffect(() => {
     console.log(dateToday);
     if (teacherView == false) {
-      gradeListTable({
-        // acad_session_id: acad_sess_id,
-        session_year: selectedAcademicYear?.id,
-        date: moment(dateToday).format('YYYY-MM-DD')
-      });
+      console.log(selectedAcademicYear);
+      if (volumeId != null) {
+        gradeListTable({
+          acad_session: acad_sess_id,
+          session_year: selectedAcademicYear?.id,
+          volume: volumeId,
+          branch_id: branchId,
+        });
+      } else {
+        gradeListTable({
+          acad_session: acad_sess_id,
+          session_year: selectedAcademicYear?.id,
+          branch_id: branchId,
+        });
+      }
     } else {
-      gradeTeacherTable({
-        // acad_session_id: acad_sess_id,
-        session_year: selectedAcademicYear?.id,
-        date: moment(dateToday).format('YYYY-MM-DD')
-      });
+      if (volumeId != null) {
+        gradeTeacherTable({
+          acad_session: acad_sess_id,
+          session_year: selectedAcademicYear?.id,
+          branch_id: branchId,
+          volume: volumeId,
+        });
+      } else {
+
+        gradeTeacherTable({
+          acad_session: acad_sess_id,
+          branch_id: branchId,
+          session_year: selectedAcademicYear?.id,
+        });
+      }
     }
-  }, [acad_session_id, dateToday, teacherView]);
+  }, [acad_session_id, volumeId, teacherView]);
 
   const gradeListTable = (params = {}) => {
     setLoading(true);
+
     axiosInstance
       .get(`${endpoints.ownerDashboard.gradeWise}`, {
         params: { ...params },
         headers: {
-          // 'X-DTS-Host': window.location.host,
-          'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
-          // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
+          'X-DTS-Host': X_DTS_HOST,
         },
       })
       .then((res) => {
         console.log(res);
         setTableData(res?.data?.result);
+        // setData(res?.data?.result?.data)
         setLoading(false);
+        transData(res?.data?.result?.data)
 
-        // setStudentData(res.data.result);
       })
       .catch((err) => {
         console.log(err);
@@ -345,16 +301,13 @@ const CurriculumCompletion = (props) => {
       .get(`${endpoints.ownerDashboard.teacherWise}`, {
         params: { ...params },
         headers: {
-          // 'X-DTS-Host': window.location.host,
           'X-DTS-Host': X_DTS_HOST,
-          // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
       .then((res) => {
         console.log(res);
         setTeacherData(res?.data?.result);
         setLoading(false);
-
         // setStudentData(res.data.result);
       })
       .catch((err) => {
@@ -362,8 +315,35 @@ const CurriculumCompletion = (props) => {
         setLoading(false);
       });
   };
+  let newData = [];
+  const transData = (data) => {
+    if (data?.length > 0) {
+      data && data.map((ele) => {
+        let pending = {
+          Pending: Math.round(ele?.pending_periods),
+          grade_name: ele?.grade_name,
+          grade_id: ele?.grade_id,
+          name: 'Pending',
+          avg: ele?.avg,
+          Completed: Math.round(ele?.completed_periods_sum),
+        }
+        let completed = {
+          periods: ele?.completed_periods_sum,
+          grade_name: ele?.grade_name,
+          grade_id: ele?.grade_id,
+          name: 'Completed',
+          avg: ele?.avg
+        }
+        newData.push(pending)
+        newData.push(completed)
+      })
+    }
+    console.log(newData);
+    setData(newData)
+  }
 
   const handleViewChange = () => {
+    setData([])
     if (teacherView == false) {
       setTeacherView(true)
     } else {
@@ -371,82 +351,35 @@ const CurriculumCompletion = (props) => {
     }
   }
 
-  const onChangeDate = (value) => {
-    console.log(value);
-    if (value) {
-      setDateToday(moment(value).format('YYYY-MM-DD'));
-    }
-  }
 
-  const columns = [
-    {
-      title: <span className='th-white pl-4 th-fw-700 '>GRADE</span>,
-      dataIndex: 'grade_name',
-      width: '20%',
-      align: 'left',
-      render: (data) => <span className='pl-md-4 th-black-1 th-16'>{data}</span>,
+  const config = {
+    data,
+    autoFit: true,
+    xField: 'grade_name',
+    yField: 'avg',
+    tooltip: {
+      fields: ['Completed', 'Pending'],
+    }
+    ,
+    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 900 : window.innerWidth > 1400 ? 1200 : window.innerWidth > 1200 ? 1150 : 350,
+    height: window.innerHeight > 600 ? 700 : 200,
+    minColumnWidth: 70,
+    maxColumnWidth: 70,
+    label: {
+      position: 'middle',
+      content: (item) => {
+        return `${item.avg.toFixed(2)}%`;
+      },
+      layout: [
+
+      ],
     },
-    {
-      title: <span className='th-white th-fw-700'>TOTAL PERIODS</span>,
-      width: '15%',
-      align: 'center',
-      dataIndex: 'total_periods_sum',
-      render: (data) => <span className='th-black-1 th-16'>{data}</span>,
-    },
-    {
-      title: <span className='th-white th-fw-700'>TOTAL PERIODS CONDUCTED</span>,
-      dataIndex: 'completed_periods_sum',
-      width: '15%',
-      align: 'center',
-      render: (data) => <span className='th-green th-16'>{data}</span>,
-    },
-    {
-      title: <span className='th-white th-fw-700'>TOTAL PERIODS PENDING</span>,
-      dataIndex: 'pending_periods',
-      width: '15%',
-      align: 'center',
-      render: (data) => <span className='th-green th-16'>{data}</span>,
-    },
-    {
-      title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
-      dataIndex: 'avg',
-      width: '15%',
-      align: 'center',
-      render: (data) => <span className='th-green th-16'>{data} %</span>,
-    },
-    {
-      title: '',
-      align: 'center',
-      width: '5%',
-      key: 'icon',
-      render: (text, row) => (
-        <span
-          onClick={(e) =>
-            history.push({
-              pathname: `/curriculum-completion-subject/${branchId}/${row?.grade_id}`,
-              state: {
-                grade: row?.grade_id,
-                gradeName: row?.grade_name,
-                acad_session_id: acad_session_id,
-                acad_sess_id: acad_sess_id,
-                module_id: moduleId,
-                branchName: branchName,
-                selectedDate: dateToday,
-                teacherView: teacherView,
-              },
-            })
-          }
-        >
-          <RightOutlined className='th-grey th-pointer' />
-        </span>
-      ),
-    },
-  ];
+  };
 
   const columns1 = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>Teacher's Name</span>,
-      dataIndex: 'name',
+      dataIndex: 'teacher_name',
       width: '20%',
       align: 'left',
       render: (data) => <span className='pl-md-4 th-black-1 th-16'>{data}</span>,
@@ -455,39 +388,40 @@ const CurriculumCompletion = (props) => {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS</span>,
       width: '15%',
       align: 'center',
-      dataIndex: 'total_periods_sum',
+      dataIndex: 'total_periods',
       render: (data) => <span className='th-black-1 th-16'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS CONDUCTED</span>,
-      dataIndex: 'completed_periods_sum',
+      dataIndex: 'avg_conducted_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data}</span>,
+      render: (data) => <span className='th-green th-16'>{data.toFixed(2)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS PENDING</span>,
-      dataIndex: 'pending_periods',
+      dataIndex: 'avg_pending_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data}</span>,
+      render: (data) => <span className='th-green th-16'>{data.toFixed(2)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
-      dataIndex: 'avg',
+      dataIndex: 'avg_completion_percentage',
       width: '15%',
       align: 'center',
       render: (data) => <span className='th-green th-16'>{data} %</span>,
     },
-    // {
-    //   title: <span className='th-white th-fw-700'></span>,
-    //   dataIndex: '',
-    //   width: '15%',
-    //   align: 'center',
-    //   render: (data) => <span className='th-red th-16'>{data}</span>,
-    // },
+
   ];
 
+  const datagen = (data) => {
+    console.log(data);
+    let sec_name = data.map((sec) => sec?.section_name)
+
+    console.log(JSON.stringify(sec_name));
+    return <span className='th-green th-16'>{sec_name.toString()}</span>
+  }
 
   const expandedRowRender = (record) => {
     const innerColumn = [
@@ -507,32 +441,32 @@ const CurriculumCompletion = (props) => {
       },
       {
         title: <span className='th-white '>Section List</span>,
-        dataIndex: 'section_name',
+        dataIndex: 'sections',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-green th-16'>{data}</span>,
-      },
-      {
-        title: <span className='th-white '>Total Periods</span>,
-        dataIndex: 'total_periods_sum',
-        align: 'center',
-        width: '15%',
-        render: (data) => <span className='th-red th-16'>{data}</span>,
+        render: (data) => datagen(data),
       },
       {
         title: <span className='th-white '>Total Periods Conducted</span>,
-        dataIndex: 'completed_periods_sum',
-        align: 'center',
-        width: '15%',
-        render: (data) => <span className='th-green th-16'>{data}</span>,
-      },
-      {
-        title: <span className='th-white '>Total Periods Pending</span>,
-        dataIndex: 'pending_periods',
+        dataIndex: 'total_periods',
         align: 'center',
         width: '15%',
         render: (data) => <span className='th-red th-16'>{data}</span>,
       },
+      {
+        title: <span className='th-white '>Avg. Completion</span>,
+        dataIndex: 'avg_completion',
+        align: 'center',
+        width: '15%',
+        render: (data) => <span className='th-green th-16'>{data} %</span>,
+      },
+      // {
+      //   title: <span className='th-white '>Total Periods Pending</span>,
+      //   dataIndex: 'pending_periods',
+      //   align: 'center',
+      //   width: '15%',
+      //   render: (data) => <span className='th-red th-16'>{data}</span>,
+      // },
       {
         title: '',
         align: 'center',
@@ -554,7 +488,9 @@ const CurriculumCompletion = (props) => {
                   branchName: branchName,
                   selectedDate: dateToday,
                   teacherView: teacherView,
-                  teacher_id: row?.erp_id
+                  teacher_id: teacherErp,
+                  branch_id: branchId,
+                  central_gs: row?.central_gs
                 },
               })
             }
@@ -568,7 +504,7 @@ const CurriculumCompletion = (props) => {
     return (
       <Table
         columns={innerColumn}
-        dataSource={collapseData?.data}
+        dataSource={collapseData}
         rowKey={(record) => record?.id}
         pagination={false}
         className='th-inner-head'
@@ -578,6 +514,30 @@ const CurriculumCompletion = (props) => {
       />
     );
   };
+
+  const downloadReport = () => {
+    const data = {
+      acad_session: acad_sess_id,
+      session_year: selectedAcademicYear?.id,
+      branch_id: branchId,
+    }
+    axiosInstance
+      .get(`${endpoints.ownerDashboard.gradeWiseReport}`, {
+        params: data,
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setTeacherData(res?.data?.result);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }
 
   return (
     <Layout>
@@ -596,124 +556,109 @@ const CurriculumCompletion = (props) => {
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
             <Button onClick={handleViewChange} className={clsx(classes.viewButton)} >{teacherView ? 'Grade View' : "Teacher's View"}</Button>
-            {/* <Space direction="vertical">
-              <DatePicker onChange={onChangeDate} />
-            </Space> */}
-            <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
-              <span className='th-br-4 p-1 th-bg-white'>
-                <img src={calendarIcon} className='pl-2' />
-                <DatePicker
-                  disabledDate={(current) => current.isAfter(moment())}
-                  allowClear={false}
+            {/* <Button onClick={downloadReport} className={clsx(classes.viewButton)} >Download Report</Button> */}
+            <div className='col-md-3 col-6 pl-md-1'>
+              <div className='text-left pl-md-1'>Volume</div>
+              <Form.Item name='volume'>
+                <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  placeholder='Select Volume'
+                  showSearch
+                  defaultValue='All'
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => {
+                    handlevolume(value);
+                  }}
+                  onClear={handleClearVolume}
+                  allowClear
+                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   bordered={false}
-                  placement='bottomRight'
-                  defaultValue={moment()}
-                  onChange={(value) => onChangeDate(value)}
-                  showToday={false}
-                  suffixIcon={<DownOutlined className='th-black-1' />}
-                  className='th-black-2 pl-0 th-date-picker'
-                  format={'YYYY/MM/DD'}
-                />
-              </span>
+                >
+                  {volumeOptions}
+                </Select>
+              </Form.Item>
             </div>
           </Grid>
           {!teacherView ?
-            <div className='row '>
-                <div className='row mt-3'>
-                <div className='col-12'>
-                  <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
-                      Total Periods:{' '}
-                      <span className='th-primary'>{tableData?.total_periods ? tableData?.total_periods : ''}</span>
-                    </div>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                      Total Periods Conducted:{' '}
-                      <span className='th-green'>{tableData?.completed_periods ? tableData?.completed_periods : ''}</span>
-                    </div>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                      Total Periods Pending:{' '}
-                      <span className='th-fw-500 th-red'>
-                        {tableData?.pending_periods ? tableData?.pending_periods : ''}
-                      </span>
-                    </div>
+            <div style={{ width: '100%', marginTop: '5%' }}>
 
+              {data?.length > 0 ?
+                <>
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                    <div>
+                      {console.log({ ...config })}
+                      <Column {...config} onReady={(plot) => {
+                        plot.on('element:click', (e) => {
+                          console.log(e?.data?.data);
+                          history.push({
+                            pathname: `/curriculum-completion-subject/${branchId}/${e?.data?.data?.grade_id}`,
+                            state: {
+                              grade: e?.data?.data?.grade_id,
+                              gradeName: e?.data?.data?.grade_name,
+                              acad_session_id: acad_session_id,
+                              acad_sess_id: acad_sess_id,
+                              module_id: moduleId,
+                              branchName: branchName,
+                              selectedDate: dateToday,
+                              teacherView: teacherView,
+                            },
+                          })
+                        })
+                      }
+                      } />
+                    </div>
                   </div>
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%', fontSize: '20px', fontWeight: 600, margin: '2% 0' }}>Grades</div>
+                </>
+                :
+                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '40px', margin: '5% 0' }} >
+                  <span>No Data Found</span>
                 </div>
-              </div>
-              <div className='col-12'>
-                <Table
-                  className='th-table'
-                  rowClassName={(record, index) =>
-                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                  }
-                  loading={loading}
-                  columns={columns}
-                  rowKey={(record) => record?.grade_id}
-                  dataSource={tableData?.data}
-                  pagination={false}
-                  expandIconColumnIndex={6}
 
-                  scroll={{ x: 'max-content' }}
-                />
-              </div>
-            
+              }
             </div>
             :
-            <div className='row '>
-              <div className='col-12'>
-              <div className='row mt-3'>
+            <>
+              <div className='row '>
                 <div className='col-12'>
-                  <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
-                      Total Periods:{' '}
-                      <span className='th-primary'>{teacherData?.total_periods ? teacherData?.total_periods : ''}</span>
-                    </div>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                      Total Periods Conducted:{' '}
-                      <span className='th-green'>{teacherData?.completed_periods ? teacherData?.completed_periods : ''}</span>
-                    </div>
-                    <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                      Total Periods Pending:{' '}
-                      <span className='th-fw-500 th-red'>
-                        {teacherData?.pending_periods ? teacherData?.pending_periods : ''}
-                      </span>
-                    </div>
-
-                  </div>
+                  <Table
+                    className='th-table'
+                    rowClassName={(record, index) =>
+                      index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                    }
+                    loading={loading}
+                    columns={columns1}
+                    rowKey={(record) => record?.teacher_erp}
+                    expandable={{ expandedRowRender }}
+                    dataSource={teacherData?.data}
+                    pagination={{ total: teacherData?.total_pages }}
+                    expandIconColumnIndex={6}
+                    expandedRowKeys={expandedRowKeys}
+                    onExpand={onTableRowExpand}
+                    expandIcon={({ expanded, onExpand, record }) =>
+                      expanded ? (
+                        <UpOutlined
+                          className='th-black-1 th-pointer'
+                          onClick={(e) => onExpand(record, e)}
+                        />
+                      ) : (
+                        <DownOutlined
+                          className='th-black-1 th-pointer'
+                          onClick={(e) => onExpand(record, e)}
+                        />
+                      )
+                    }
+                    scroll={{ x: 'max-content' }}
+                  />
                 </div>
+
               </div>
-                <Table
-                  className='th-table'
-                  rowClassName={(record, index) =>
-                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                  }
-                  loading={loading}
-                  columns={columns1}
-                  rowKey={(record) => record?.erp_id}
-                  expandable={{ expandedRowRender }}
-                  dataSource={teacherData?.data}
-                  pagination={false}
-                  expandIconColumnIndex={6}
-                  expandedRowKeys={expandedRowKeys}
-                  onExpand={onTableRowExpand}
-                  expandIcon={({ expanded, onExpand, record }) =>
-                    expanded ? (
-                      <UpOutlined
-                        className='th-black-1 th-pointer'
-                        onClick={(e) => onExpand(record, e)}
-                      />
-                    ) : (
-                      <DownOutlined
-                        className='th-black-1 th-pointer'
-                        onClick={(e) => onExpand(record, e)}
-                      />
-                    )
-                  }
-                  scroll={{ x: 'max-content' }}
-                />
-              </div>
-           
-            </div>
+            </>
           }
         </Grid>
 
