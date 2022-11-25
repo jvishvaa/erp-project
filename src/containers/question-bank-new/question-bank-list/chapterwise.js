@@ -346,6 +346,7 @@ if(filters.questionId){
       setSelectedChapter(record);
       fetchKeyConceptsData({
         chapter_id: record.chapter_id,
+        is_central : record?.is_central
       });
     }
 
