@@ -23,8 +23,8 @@ const GradewiseDiaryReport = () => {
   );
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const history = useHistory();
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [diaryType, setDiaryType] = useState(2);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [gradewiseDiaryData, setGradewiseDiaryData] = useState([]);
@@ -173,6 +173,7 @@ const GradewiseDiaryReport = () => {
       });
     }
   }, [startDate, endDate, diaryType]);
+  console.log('Diary', startDate, endDate, diaryType);
 
   useEffect(() => {
     if (history.location.state) {
