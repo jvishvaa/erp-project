@@ -187,7 +187,170 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
   };
 
   return (
-    <Drawer title = {testMode === 1 ? "Online" : "Offline"} zIndex={1300} width={'450px'} placement="right" onClose={onClosedrawer} open={open} visible={open}>
+    <Drawer title = {testMode == 1 ? "Online" : "Offline"} zIndex={1300} width={'450px'} placement="right" onClose={onClosedrawer} open={open} visible={open}>
+      {/* <div className='header-container'>
+        <div
+          className='primary-header-container'
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div className='primary-header-text-container'>
+            <span className='primary-text font-lg'>{testType}</span>
+            <br />
+            <span className='secondary-text'>{
+              `${grade}`
+            }</span>
+          </div>
+        </div>
+        {testDate != null ?
+          <div className='secondary-header-container'>
+            <div className='secondary-text font-lg'>{testName}</div>
+            <div className='secondary-text font-sm sop'>
+              <div>Created on</div>
+              {console.log(testDate?.slice(11, 16), 'dateteimeeeeee')}
+              <div>
+                {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}{' '}
+                {testDate ? testDate?.slice(11, 16) : '--'}
+              </div>
+            </div>
+          </div>
+          : ''}
+      </div>
+      <div className='parameters-container'>
+        <div className='parameters-header'>
+          <span className='header-text font-lg font-center'>Test Parameters</span>
+        </div>
+        <div className='parameters-content'>
+          <Grid container>
+            <Grid item md={4} className='parameter-cell-grid'>
+              <div className='parameter-cell'>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Test type
+                </p>
+                <p className='cell-header left-align'>{testType}</p>
+              </div>
+            </Grid>
+            <Grid
+              item
+              md={4}
+              className='parameter-cell-grid'
+              style={{ backgroundColor: '#f6f6f6' }}
+            >
+              <div className='parameter-cell'>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Test ID
+                </p>
+                <p className='cell-header left-align'>{id}</p>
+              </div>
+            </Grid>
+            <Grid item md={4} className='parameter-cell-grid'>
+              <div className='parameter-cell'>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Duration
+                </p>
+                <p className='cell-header left-align'>{testDuration}</p>
+              </div>
+            </Grid>
+            <Grid item md={4} className='parameter-cell-grid'>
+              <div className='parameter-cell'>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Total marks
+                </p>
+                <p className='cell-header left-align'>{totalMark}</p>
+              </div>
+            </Grid>
+            <Grid
+              item
+              md={4}
+              className='parameter-cell-grid'
+              style={{ backgroundColor: '#f6f6f6' }}
+            >
+              <div className='parameter-cell'>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Created
+                </p>
+                <p className='cell-header left-align'>
+                  {createdDate ? moment(createdDate).format('DD-MM-YYYY') : ''}
+                </p>
+              </div>
+            </Grid>
+            <Grid item md={4} className='parameter-cell-grid'>
+              <div className='parameter-cell'>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Updated
+                </p>
+                <p className='cell-header left-align'>
+                  {updatedDate ? moment(updatedDate).format('DD-MM-YYYY') : ''}
+                </p>
+              </div>
+            </Grid>
+          </Grid>
+          {!handleClose &&
+            <div style={{ margin: '1rem' }}>
+              <Grid container >
+                <Grid item xs={12} >
+                  <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
+                    <GetAppIcon fontSize="small" />
+                    Download Question Paper
+                  </Button>
+                </Grid>
+                {test?.test_mode == 2 ?
+                  <Grid item xs={12} style={{ margin: '4% 0' }} >
+                    <Button variant='contained' color='primary' onClick={handleData}>
+                      Upload Marks
+                    </Button>
+                  </Grid>
+                  : ''}
+                <Grid item xs={12} style={{ margin: '4% 0' }} >
+                  <Button variant='contained' color='primary' onClick={handleTest}>
+                    Preview
+                  </Button>
+                  {testType == 'Quiz' && test?.test_mode == 1 ?
+                  <>
+                  {testDate == null ?
+                    <Button variant='contained' color='primary' onClick={handleTeststart}>
+                      Start Test
+                    </Button>  
+                    : '' }
+                    </>
+                    : ''}
+                </Grid>
+                <Grid item xs={12}  >
+
+                  {testType == 'Quiz' && test?.test_mode == 1 ?
+                    <>
+                      {testDate == null ?
+                      <>
+                      {!testStart ?
+                        <Button variant='contained' color='primary' onClick={handleTeststart}>
+                          Start Test
+                        </Button>
+                        : 
+                        <Button variant='contained' color='primary' disabled>
+                          In Progress
+                        </Button>
+                        }
+                        </>
+                        :
+                        <Button variant='contained' disabled color='primary' >
+                          Test Completed
+                        </Button>
+                      }
+                    </>
+                    : ''}
+                </Grid>
+                {((filterData?.status?.name === "Completed" || filterData?.status?.id === 2) || (testType == 'Quiz' && testDate != null)) && <Grid item xs={12} style={{margin : '4% 0'}}>
+                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
+                    <GetAppIcon fontSize="small" />
+                    Download Report
+                  </Button>
+                </Grid>}
+              </Grid>
+            </div>}
+        </div>
+      </div> */}
       <div>
         <div className='row'>
           <div className='col-md-10 d-flex ' style={{marginLeft : '-4%'}}>

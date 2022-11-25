@@ -228,9 +228,11 @@ const AssesmentCard = ({
           />
         }
         <div className = 'd-flex align-items-center' style={{marginLeft : '2%', whiteSpace: 'nowrap' , overflow: 'hidden' , textOverflow: 'ellipsis',}}>{value?.test_name?.length > 20 ? `${value?.test_name.slice(0,20)}...` : value?.test_name}</div>
-        {checkDel == true ? (
+        
           <div className="col menu d-flex justify-content-end">
             <div className="d-flex align-items-center justify-content-center">{`${value?.test_mode == 1 ? "(Online)" : "(Offline)"}`}</div>
+            {checkDel == true ? (     
+              <>      
             <IconButton
               aria-label="more"
               aria-controls="long-menu"
@@ -322,8 +324,10 @@ const AssesmentCard = ({
                 />
               )}
             </Popover>
+            </>
+            ) : ''}
           </div>
-        ) : ''}
+        
       </div>
       <div className="assessment-name">
           <p className="idPara" style={{ marginLeft: "10px" , fontSize: '14px'}} >{`Test Id: ${value?.test_id}`}</p>

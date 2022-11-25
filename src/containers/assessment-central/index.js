@@ -248,7 +248,7 @@ useEffect(() => {
     if (formik.values.subject.length > 0) {
       handleFilterAssessment();
     }
-  }, [formik.values.subject]);
+  }, [formik.values.date]);
 
   const getBranch = async (acadId) => {
     setLoading(true)
@@ -423,7 +423,7 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    if (formik?.values?.status  && formik?.values?.branch?.length && formik?.values?.grade && formik?.values?.subject?.length) {
+    if (formik?.values?.status  && formik?.values?.branch?.length && formik?.values?.grade && formik?.values?.subject?.length && formik?.values?.date) {
       setFilteredAssesmentTestPage(1);
       setSelectedAssesmentTest(null);
       filterResults(1); // reseting the page
@@ -487,6 +487,10 @@ useEffect(() => {
     //   setAlert('error', 'Select Assessment Type');
     //   return;
     // }
+    if(!formik?.values?.date){
+      setAlert('error', 'Select Date');
+      return;
+    }
     formik.handleSubmit();
     sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
     sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList, isSectionToggle: sectionToggle }))
@@ -945,14 +949,35 @@ useEffect(() => {
                   </Select>
                 </Form.Item>
               </div>
+              <div className='col-md-2 col-6 px-0'>
+                  <div className='mb-2 ml-1 text-left'>Date Range</div>
+                  <Form.Item name='date'>
+                    <Space direction='vertical' size={12}>
+                      <RangePicker
+                        allowClear={false}
+                        style={{width:'105%'}}
+                        bordered={false}
+                        placement='bottomRight'
+                        showToday={false}
+                        suffixIcon={<DownOutlined />}
+                        // defaultValue={[moment(), moment()]}
+                        onChange={(value) => handleDateChange(value)}
+                        className='th-range-picker th-br-4'
+                        separator={'-'}
+                        format={'DD/MM/YYYY'}
+                      />
+                    </Space>
+                  </Form.Item>
+                </div>
+              <div className='col-md-2 d-flex mt-2'>
               {!handleClose && <div
-                className='col-md-3 col-6 px-0'
-                style={{ display: 'flex', justifyContent: 'flex-end' }}
+                className='col-md-8 col-6 px-0'
+                style={{ display: 'flex', justifyContent: 'center' }}
               >
                  <Button
                   // type='primary'
                   onClick={() => history.push('/create-assesment?clear=true')}
-                  style={{ width: '30%' }}
+                  // style={{ width: '30%' }}
                   // shape='round'
                   className='th-br-6 th-button'
                 >
@@ -961,15 +986,15 @@ useEffect(() => {
 
               </div>}
               {handleClose && <div
-                className='col-md-3 col-6 px-0'
-                style={{ display: 'flex', justifyContent: 'flex-end' }}
+                className='col-md-8 col-6 px-0'
+                style={{ display: 'flex', justifyContent: 'center' }}
               >
                  <Button
                   // type='primary'
                   onClick={() => {
                   handleColumnSelectedTestChange(addedId)
                   handleClose()}}
-                  style={{ width: '30%' }}
+                  // style={{ width: '30%' }}
                   // shape='round'
                   className='th-br-6 th-button'
                 >
@@ -977,7 +1002,7 @@ useEffect(() => {
                 </Button>
 
               </div>}
-              <div className='hideShowFilterIcon' style={{ marginLeft: '2%' }}>
+              <div className='hideShowFilterIcon' style={{ marginTop: '-4%' }}>
                 <IconButton onClick={() => setShowfilter(!showFilter)}>
                   <SvgIcon
                     component={() => (
@@ -988,6 +1013,7 @@ useEffect(() => {
                     )}
                   />
                 </IconButton>
+              </div>
               </div>
             </div>
             {showFilter && (
@@ -1019,26 +1045,6 @@ useEffect(() => {
                     >
                       {assessmentTypeoption}
                     </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-3 col-6 px-0 mr-2'>
-                  <div className='mb-2 ml-1 text-left'>Date Range</div>
-                  <Form.Item name='date'>
-                    <Space direction='vertical' size={12}>
-                      <RangePicker
-                        style={{width:'100%'}}
-                        allowClear={false}
-                        bordered={false}
-                        placement='bottomRight'
-                        showToday={false}
-                        suffixIcon={<DownOutlined />}
-                        // defaultValue={[moment(), moment()]}
-                        onChange={(value) => handleDateChange(value)}
-                        className='th-range-picker th-br-4'
-                        separator={'to'}
-                        format={'DD/MM/YYYY'}
-                      />
-                    </Space>
                   </Form.Item>
                 </div>
                 <div className='col-md-2 col-6 px-0 d-flex'>
@@ -1156,7 +1162,7 @@ useEffect(() => {
             Offline
           </Button>
         </div>
-        {!handleClose && <div className='col-md-2 col-6'>
+        {!handleClose && checkDel &&  <div className='col-md-2 col-6'>
           <Button
             className={`${
               activeTab == 'deleted' ? 'th-button-active' : 'th-button'
