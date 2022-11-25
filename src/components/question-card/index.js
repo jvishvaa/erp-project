@@ -605,7 +605,9 @@ const QuestionCard = ({
                       id='question'
                       name='question'
                       onChange={(e) => {
-                        setquestionData(e.target.value);
+                        if (!window.location.pathname.includes('/diary/')) {
+                          setquestionData(e.target.value);
+                        }
                       }}
                       label='Question'
                       autoFocus

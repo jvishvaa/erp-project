@@ -106,13 +106,26 @@ const CurriculumCompletion = () => {
                       <div
                         className='row justify-content-between py-3 th-br-6 align-items-center'
                         onClick={() =>
+                          // history.push({
+                          //   pathname: '/curriculum-completion-branchWise',
+                          //   state: {
+                          //     branchData: [selectedBranch],
+                          //     module_id: moduleId,
+                          //     iscurriculam: true,
+                          //   },
+                          // })
                           history.push({
-                            pathname: '/curriculum-completion-branchWise',
+                            pathname: `/curriculum-completion-teacher-subject/${selectedBranch?.branch?.id}`,
                             state: {
-                              branchData: [selectedBranch],
+                              branchId: selectedBranch?.branch?.id,
+                              acad_sess_id: selectedBranch?.id,
+                              branchName: selectedBranch?.branch?.branch_name,
+                              acad_session_id: selectedBranch?.session_year?.id,
                               module_id: moduleId,
-                              iscurriculam: true,
-                            },
+                              central_gs_mapping: item?.central_gs_mapping,
+                              erp_gs_mapping: item?.erp_gs_mapping,
+                              grade_name: item?.grade_name,
+                            }
                           })
                         }
                       >
@@ -146,8 +159,9 @@ const CurriculumCompletion = () => {
         <div className='d-flex justify-content-center mt-5'>
           <img src={NoDataIcon} />
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 

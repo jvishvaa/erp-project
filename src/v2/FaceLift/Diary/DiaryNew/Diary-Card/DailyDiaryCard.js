@@ -32,10 +32,10 @@ import { getFileIcon } from 'v2/getFileIcon';
 import QuestionCard from 'components/question-card';
 import cuid from 'cuid';
 import { useSelector } from 'react-redux';
+import _ from 'lodash';
 const { Panel } = Collapse;
 
-const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
-  console.log('diaryData', diary);
+const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -57,7 +57,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
     },
   ]);
   const [showHomeworkDrawer, setShowHomeworkDrawer] = useState(false);
-  const [currentPanel, setCurrentPanel] = useState(null);
+  const [currentPanel, setCurrentPanel] = useState(0);
   const [currentPeriodId, setCurrentPeriodId] = useState(null);
   const [showResources, setShowResources] = useState(false);
   const [resourcesData, setResourcesData] = useState(false);
@@ -86,7 +86,6 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
       .then((response) => {
         if (response?.data?.status_code === 200) {
           setResourcesData(response?.data?.result);
-          // console.log('resources', result?.data?.result);
         }
         setLoadingResources(false);
       })
@@ -125,7 +124,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
 
   const editDiary = (data) => {
     history.push({
-      pathname: '/create-diary',
+      pathname: '/create/diary',
       state: {
         data: data,
         subject,
@@ -133,7 +132,6 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
       },
     });
   };
-  console.log('questionList', questionList);
   const questionModify = (questions) => {
     let arr = [];
     questions.map((question) => {
@@ -217,67 +215,105 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
           style={{ borderRadius: '6px 6px 0px 0px' }}
         >
           <div className='col-7 pl-2'>
-            <div className='th-fw-600 th-black-2 text-capitalize'>
-              <span>{diary?.grade_name}, </span>
-              <span>Sec {diary?.section_name?.slice(-1)}</span>
-            </div>
+            {isStudentDiary ? (
+              <div className='th-fw-600 th-black-2 text-capitalize'>
+                {subject?.section_name}
+              </div>
+            ) : (
+              <>
+                <div className='th-fw-600 th-black-2 text-capitalize'>
+                  <span>{diary?.grade_name}, </span>
+                  <span>Sec {diary?.section_name?.slice(-1)}</span>
+                </div>
+              </>
+            )}
           </div>
           <div className='col-4 text-center px-0 py-1'>
             <span className={`th-bg-primary th-white th-br-6 p-1`}>Daily Diary</span>
           </div>
-          <div className='col-1 text-right '>
-            <Popover
-              content={
-                <>
-                  <div
-                    className='row justify-content-between th-pointer'
-                    onClick={() => editDiary(diary)}
-                  >
-                    <span className='th-green th-16'>Edit</span>
-                  </div>
-
-                  <Popconfirm
-                    placement='bottomRight'
-                    title={'Are you sure you want to delete this diary?'}
-                    onConfirm={() => deleteDiary(diary?.diary_id)}
-                    okText='Yes'
-                    cancelText='No'
-                  >
-                    <div className='row justify-content-between th-pointer pt-2'>
-                      <span className='th-red th-16 '>Delete</span>
+          {!isStudentDiary && (
+            <div className='col-1 text-right '>
+              <Popover
+                content={
+                  <>
+                    <div
+                      className='row justify-content-between th-pointer'
+                      onClick={() => editDiary(diary)}
+                    >
+                      <span className='th-green th-16'>Edit</span>
                     </div>
-                  </Popconfirm>
-                </>
-              }
-              trigger='click'
-              placement='bottomRight'
-            >
-              <MoreOutlined />
-            </Popover>
-          </div>
+
+                    <Popconfirm
+                      placement='bottomRight'
+                      title={'Are you sure you want to delete this diary?'}
+                      onConfirm={() => deleteDiary(diary?.diary_id)}
+                      okText='Yes'
+                      cancelText='No'
+                    >
+                      <div className='row justify-content-between th-pointer pt-2'>
+                        <span className='th-red th-16 '>Delete</span>
+                      </div>
+                    </Popconfirm>
+                  </>
+                }
+                trigger='click'
+                placement='bottomRight'
+              >
+                <MoreOutlined />
+              </Popover>
+            </div>
+          )}
         </div>
         <div className='row' onClick={showDrawer}>
-          <div className='col-12 p-1'>
-            <div className='row th-bg-grey py-1 px-2'>
-              <div className='col-12 px-0 th-10 th-truncate-1'>
-                <div className='th-fw-600 th-black-1'></div>Topic Name{' '}
-                <span className='th-black-2'>
-                  ({diary?.periods_data?.map((item) => item?.period_name).toString()})
-                </span>
-              </div>
-              <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
-                {diary?.periods_data
-                  ? diary?.periods_data[0].key_concept__topic_name
-                  : ''}
-              </div>
-              <div className='col-12 px-0 th-10'>
-                <div className='th-fw-600 th-black-1'></div>Key Concept{' '}
-              </div>
-              <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
-                {diary?.periods_data ? diary?.periods_data[0].chapter__chapter_name : ''}
+          {!_.isEmpty(diary?.periods_data) ? (
+            <div className='col-12 p-1'>
+              <div className='row th-bg-grey py-1 px-2'>
+                <div className='col-12 px-0 th-10 th-truncate-1'>
+                  <span className='th-fw-600 th-black-1'>Topic Name</span>
+                  <span className='th-black-2 ml-2 '>
+                    ({diary?.periods_data?.map((item) => item?.period_name).toString()})
+                  </span>
+                </div>
+                <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+                  {diary?.periods_data ? diary?.periods_data[0].topic_name : ''}
+                </div>
+                <div className='col-12 px-0 th-10'>
+                  <div className='th-fw-600 th-black-1'>Key Concept</div>
+                </div>
+                <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+                  {diary?.periods_data ? diary?.periods_data[0].chapter_name : ''}
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className='col-12 p-1'>
+              {diary?.hw_description ? (
+                <div className='row th-bg-grey pl-1'>
+                  <div className='col-12 pl-0 th-10'>
+                    <div className='th-fw-600 th-black-1'>Title</div>
+                  </div>
+                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-3'>
+                    {diary?.hw_description}
+                  </div>
+                  <div className='row align-items-center'>
+                    <div className='col-3 px-0 th-black-1 th-10'>Due Date</div>
+                    <div className='col-9 pl-0 th-fw-700'>
+                      {moment(diary?.hw_due_date).format('DD/MM/YYYY')}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className='row'>
+                  <div className='col-12 px-0 th-10'>
+                    <div className='th-fw-600 th-black-1'>Notes</div>
+                  </div>
+                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-5'>
+                    {diary?.teacher_report?.summary}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <div className='col-12 p-0 px-1'>
             <div className='row'>
               <div className='col-6 px-1 th-10'>
@@ -405,25 +441,12 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
                     maxLength={250}
                   />
                 </div>
-                {/* <div className='row align-items-center'>
-                  <span className='th-black-1 th-fw-600'>Due Date</span>
-                  <span className='th-br-4 p-1 th-bg-grey ml-2'>
-                    
-                    <DatePicker
-                      disabledDate={(current) =>
-                        current.isBefore(moment().subtract(1, 'day'))
-                      }
-                      allowClear={false}
-                      defaultValue={moment()}
-                      placement='bottomRight'
-                      onChange={(event, value) => handleSubmissionDate(value)}
-                      showToday={false}
-                      suffixIcon={<DownOutlined className='th-black-1' />}
-                      className='th-black-2 pl-0 th-date-picker'
-                      format={'DD/MM/YYYY'}
-                    />
-                  </span>
-                </div> */}
+                <div className='row py-2'>
+                  <div className='col-2 th-black-1 th-fw-600 pb-1'>Due Date</div>
+                  <div className=' col-12 th-black-1 th-fw-700 pb-1'>
+                    {moment(diary?.hw_due_date).format('DD/MM/YYYY')}
+                  </div>
+                </div>
                 <div className='row py-2'>
                   <div className='th-black-1 th-fw-600 pb-1'>Questions</div>
                   {questionList?.map((question, index) => (
@@ -491,22 +514,21 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
                           <div className='row'>
                             <div className='col-4 pr-0 th-fw-600'>Module :</div>
                             <div className='col-8 pl-0 text-truncate th-grey-1'>
-                              Module name
+                              {item?.module_name}
                             </div>
                           </div>
                           <div className='row'>
                             <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
                             <div className='col-8 pl-0 text-truncate th-grey-1'>
-                              {item?.chapter__chapter_name}
+                              {item?.chapter_name}
                             </div>
                           </div>
                           <div className='row'>
                             <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
                             <div className='col-8 pl-0 text-truncate th-grey-1'>
-                              {item?.key_concept__topic_name}
+                              {item?.topic_name}
                             </div>
                           </div>
-                          {/* <div className='row'> */}
                           <div className='row mt-2 px-2'>
                             <div
                               className='col-12 th-bg-grey'
@@ -660,19 +682,19 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
               <div className='row'>
                 <div className='col-4 pr-0 th-fw-600'>Module :</div>
                 <div className='col-8 pl-0 text-truncate th-grey-1'>
-                  {diary?.up_coming_period?.chapter__lt_module__lt_chapter_name}
+                  {diary?.up_coming_period?.module_name}
                 </div>
               </div>
               <div className='row'>
                 <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
                 <div className='col-8 pl-0 text-truncate th-grey-1'>
-                  {diary?.up_coming_period?.chapter__chapter_name}
+                  {diary?.up_coming_period?.chapter_name}
                 </div>
               </div>
               <div className='row'>
                 <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
                 <div className='col-8 pl-0 text-truncate th-grey-1'>
-                  {diary?.up_coming_period?.key_concept__topic_name}
+                  {diary?.up_coming_period?.topic_name}
                 </div>
               </div>
             </div>
@@ -680,31 +702,37 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
               <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Homework</div>
               <div className='col-12 px-0'>
                 <div className='row th-bg-blue-2 th-br-6'>
-                  <div className='row pt-1'>
-                    <div className='col-12 pr-0 th-black-1'>Title</div>
-                    <div className='col-12 px-3 '>
-                      <div className='th-bg-white p-1 th-br-6 th-truncate-2'>
-                        {diary?.hw_description}
+                  {diary?.teacher_report?.homework ? (
+                    <>
+                      <div className='row pt-1'>
+                        <div className='col-12 pr-0 th-black-1'>Title</div>
+                        <div className='col-12 px-3 '>
+                          <div className='th-bg-white p-1 th-br-6 th-truncate-2'>
+                            {diary?.hw_description}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className='row pt-1'>
-                    <div className='col-3 pr-0 th-black-1'>Due Date</div>
-                    <div className='col-9 pl-0 th-fw-700'>
-                      {moment(diary?.hw_due_date).format('DD/MM/YYYY')}
-                    </div>
-                  </div>
-                  <div class='row py-1 pb-2 justify-content-end'>
-                    <div class='col-4 text-center'>
-                      <div
-                        class='th-bg-primary th-white px-2 py-1 th-br-6 th-pointer'
-                        onClick={displayHomeworkDetails}
-                      >
-                        {' '}
-                        View More
+                      <div className='row pt-1'>
+                        <div className='col-3 pr-0 th-black-1'>Due Date</div>
+                        <div className='col-9 pl-0 th-fw-700'>
+                          {moment(diary?.hw_due_date).format('DD/MM/YYYY')}
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                      <div class='row py-1 pb-2 justify-content-end'>
+                        <div class='col-4 text-center'>
+                          <div
+                            class='th-bg-primary th-white px-2 py-1 th-br-6 th-pointer'
+                            onClick={displayHomeworkDetails}
+                          >
+                            {' '}
+                            View More
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div> No Homework Added</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -714,7 +742,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject }) => {
                 <div className='row th-bg-blue-1 th-br-6'>
                   <div className='row py-1'>
                     <div className='col-3 pr-0 th-black-1'>Description</div>
-                    <div className='col-9 pl-0'>&nbsp;</div>
+                    <div className='col-9 pl-0'>{diary?.teacher_report?.summary}</div>
                   </div>
                 </div>
               </div>

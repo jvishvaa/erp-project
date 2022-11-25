@@ -19,8 +19,8 @@ const TeacherDiaryReport = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const history = useHistory();
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [selectedSection, setSelectedSection] = useState();
   const [selectedTeacher, setSelectedTeacher] = useState();
   const [diaryType, setDiaryType] = useState();

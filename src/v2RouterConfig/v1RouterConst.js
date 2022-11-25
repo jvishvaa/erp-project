@@ -369,6 +369,8 @@ import CoursesView from 'containers/sure-learning/PrincipalDashboard/PrincipalCo
 import CourseEnroleModle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleModle';
 import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/academic/curriculamSubject';
 import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
+import CurriculumCompletionChapter from 'containers/dashboard/ownerDashboard/academic/chapterWise';
+import TeacherSubject from 'containers/dashboard/ownerDashboard/academic/teacherSubject';
 
 import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade';
 import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report';
@@ -418,6 +420,7 @@ import AllChaptersContent from 'containers/sure-learning/Initiate_Class/Chapter_
 import AcademicReport from 'containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
+import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject'
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
 import CategoryTable from 'containers/question-bank/category/category-table';
@@ -456,11 +459,11 @@ const V1Router = [
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
   </Route>,
-    <Route path='/post-activity-view'>
+  <Route path='/post-activity-view'>
     {({ match }) => <PostActivityView match={match} />}
   </Route>,
   <Route path='/create-post-activity'>
-      {({ match }) => <CreatePostActivity match={match} />}
+    {({ match }) => <CreatePostActivity match={match} />}
   </Route>,
   <Route exact path='/blog/templates'>
     {({ match }) => <AddTemplates match={match} />}
@@ -1448,22 +1451,22 @@ const V1Router = [
   <Route exact path='/blog/wall'>
     {({ match }) => <BlogWall match={match} />}
   </Route>,
-    <Route exact path='/blog/wall/redirect'>
+  <Route exact path='/blog/wall/redirect'>
     {({ match }) => <BlogWallRedirect match={match} />}
   </Route>,
-    <Route exact path='/blog/wall/central/redirect'>
+  <Route exact path='/blog/wall/central/redirect'>
     {({ match }) => <CentralBlogRedirection match={match} />}
   </Route>,
-   <Route exact path='/physical/activity'>
-   {({ match }) => <PhysicalActivity match={match} />}
- </Route>,
-    <Route exact path='/physical/activity/review'>
+  <Route exact path='/physical/activity'>
+    {({ match }) => <PhysicalActivity match={match} />}
+  </Route>,
+  <Route exact path='/physical/activity/review'>
     {({ match }) => <PhysicalActivityReview match={match} />}
   </Route>,
 
-      <Route exact path='/blog/publicspeaking'>
-      {({ match }) => <PublicSpeakingWall match={match} />}
-    </Route>,
+  <Route exact path='/blog/publicspeaking'>
+    {({ match }) => <PublicSpeakingWall match={match} />}
+  </Route>,
   <Route exact path='/blog/short'>
     {({ match }) => <AdminPublishBlogShort match={match} />}
   </Route>,
@@ -1611,8 +1614,23 @@ const V1Router = [
   <Route path='/curriculum-completion-subject/:branchId/:gradeId'>
     {({ match }) => <CurriculumCompletionSubject match={match} />}
   </Route>,
+  <Route path='/curriculum-completion-chapter/'>
+  {({ match }) => (
+    <CurriculumCompletionChapter match={match} />
+  )}
+</Route>,
+<Route path='/curriculum-completion-chapter-subject/'>
+  {({ match }) => (
+    <CurriculumChapterWiseSubject match={match} />
+  )}
+</Route>,
   <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
     {({ match }) => <CurriculumCompletionSection match={match} />}
+  </Route>,
+    <Route path='/curriculum-completion-teacher-subject/:branchId'>
+    {({ match }) => (
+      <TeacherSubject match={match} />
+    )}
   </Route>,
   <Route path='/sure-learning-trainee-courses'>
     {({ match }) => <CoursesView match={match} />}

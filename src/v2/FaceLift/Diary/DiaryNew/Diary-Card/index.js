@@ -72,7 +72,7 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
 
   const editDiary = (data) => {
     history.push({
-      pathname: '/create/daily-diary',
+      pathname: '/create/diary',
       state: {
         data: data,
         isDiaryEdit: true,

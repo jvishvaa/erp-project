@@ -1,34 +1,17 @@
 import React, { useState } from 'react';
 import '../index.css';
 import fileDownload from 'js-file-download';
-import {
-  FileUnknownOutlined,
-  PaperClipOutlined,
-  MoreOutlined,
-  CloseOutlined,
-  EyeFilled,
-} from '@ant-design/icons';
-import {
-  Badge,
-  Avatar,
-  message,
-  Space,
-  Drawer,
-  Popover,
-  Popconfirm,
-  Divider,
-} from 'antd';
+import { PaperClipOutlined, MoreOutlined, EyeFilled } from '@ant-design/icons';
+import { Badge, Avatar, message, Drawer, Popover, Popconfirm } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import { useHistory } from 'react-router-dom';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import moment from 'moment';
 import hwIcon from 'v2/Assets/dashboardIcons/diaryIcons/hwIcon.png';
 import { getFileIcon } from 'v2/getFileIcon';
 
-const GeneralDiaryCard = ({ diary, fetchDiaryList }) => {
+const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
-  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const showDrawer = () => {
@@ -84,27 +67,29 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList }) => {
           <div className='col-4 text-center px-0 py-1'>
             <span className={`th-bg-violet th-white th-br-6 p-1`}>General Diary</span>
           </div>
-          <div className='col-1 text-right '>
-            <Popover
-              content={
-                <Popconfirm
-                  placement='bottomRight'
-                  title={'Are you sure you want to delete this diary?'}
-                  onConfirm={() => deleteDiary(diary?.id)}
-                  okText='Yes'
-                  cancelText='No'
-                >
-                  <div className='row justify-content-between th-pointer pt-2'>
-                    <span className='th-red th-16 '>Delete</span>
-                  </div>
-                </Popconfirm>
-              }
-              trigger='click'
-              placement='bottomRight'
-            >
-              <MoreOutlined />
-            </Popover>
-          </div>
+          {!isStudentDiary && (
+            <div className='col-1 text-right '>
+              <Popover
+                content={
+                  <Popconfirm
+                    placement='bottomRight'
+                    title={'Are you sure you want to delete this diary?'}
+                    onConfirm={() => deleteDiary(diary?.id)}
+                    okText='Yes'
+                    cancelText='No'
+                  >
+                    <div className='row justify-content-between th-pointer pt-2'>
+                      <span className='th-red th-16 '>Delete</span>
+                    </div>
+                  </Popconfirm>
+                }
+                trigger='click'
+                placement='bottomRight'
+              >
+                <MoreOutlined />
+              </Popover>
+            </div>
+          )}
         </div>
         <div className='row' onClick={showDrawer}>
           <div className='col-12 p-1'>
@@ -175,7 +160,9 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList }) => {
                 {diary?.title}
               </div>
               <div className='th-fw-400 mt-1'>Created On:</div>
-              <div className='th-fw-400 mb-1'>21-11-2022, 12:56 pm</div>
+              <div className='th-fw-400 mb-1'>
+                {moment(diary?.created_at).format('DD/MM/YYYY HH:mm a')}
+              </div>
             </div>
           </div>
         }
