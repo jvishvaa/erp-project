@@ -269,8 +269,8 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             <div className='col-12 p-1'>
               <div className='row th-bg-grey py-1 px-2'>
                 <div className='col-12 px-0 th-10 th-truncate-1'>
-                  <div className='th-fw-600 th-black-1'>Topic Name</div>
-                  <span className='th-black-2'>
+                  <span className='th-fw-600 th-black-1'>Topic Name</span>
+                  <span className='th-black-2 ml-2 '>
                     ({diary?.periods_data?.map((item) => item?.period_name).toString()})
                   </span>
                 </div>
@@ -288,15 +288,15 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           ) : (
             <div className='col-12 p-1'>
               {diary?.hw_description ? (
-                <div className='row'>
-                  <div className='col-12 px-0 th-10'>
-                    <div className='th-fw-600 th-black-1'>Key Concept</div>
+                <div className='row th-bg-grey pl-1'>
+                  <div className='col-12 pl-0 th-10'>
+                    <div className='th-fw-600 th-black-1'>Title</div>
                   </div>
                   <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-3'>
                     {diary?.hw_description}
                   </div>
-                  <div className='row'>
-                    <div className='col-3 px-0 th-black-1'>Due Date</div>
+                  <div className='row align-items-center'>
+                    <div className='col-3 px-0 th-black-1 th-10'>Due Date</div>
                     <div className='col-9 pl-0 th-fw-700'>
                       {moment(diary?.hw_due_date).format('DD/MM/YYYY')}
                     </div>
