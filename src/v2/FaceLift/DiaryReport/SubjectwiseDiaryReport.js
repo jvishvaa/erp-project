@@ -23,8 +23,8 @@ const SubjectwiseDiaryReport = () => {
   );
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const history = useHistory();
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [subjectwiseReport, setSubjectwiseReport] = useState([]);
   const [subjectwiseStats, setSubjectwiseStats] = useState();

@@ -19,11 +19,11 @@ const CreateDiary = () => {
   return (
     <>
       <Layout>
-        <div className='row th-bg-white'>
+        <div className='row th-bg-white pt-2'>
           <div className='col-md-12 px-4'>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
-                className='th-grey'
+                className='th-grey th-pointer'
                 onClick={() => {
                   history.push('/diary/teacher');
                 }}

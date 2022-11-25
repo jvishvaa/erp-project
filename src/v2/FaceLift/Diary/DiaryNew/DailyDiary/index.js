@@ -32,7 +32,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
-import AsignHomework from '../../../../assets/images/hw-given.svg';
 import QuestionCard from 'components/question-card';
 import moment from 'moment';
 import cuid from 'cuid';
@@ -128,6 +127,7 @@ const DailyDiary = () => {
   const [currentPanel, setCurrentPanel] = useState(null);
 
   const [addedPeriods, setAddedPeriods] = useState([]);
+  const [upcomingPeriod, setUpcomingPeriod] = useState([]);
   const [isPeriodAdded, setIsPeriodAdded] = useState(false);
   const [clearTodaysTopic, setClearTodaysTopic] = useState(true);
   const [clearUpcomingPeriod, setClearUpcomingPeriod] = useState(false);
@@ -148,7 +148,6 @@ const DailyDiary = () => {
   };
 
   const formRef = createRef();
-  const drawerFormRef = createRef();
   const history = useHistory();
 
   let editData = '';
@@ -318,36 +317,33 @@ const DailyDiary = () => {
     if (addedPeriods.length > 0) {
       payload['period_added_ids'] = addedPeriods.map((item) => item.id).toString();
     }
-    // if (
-    //   payload?.teacher_report?.previous_class ||
-    //   payload?.teacher_report?.summary ||
-    //   payload?.teacher_report?.class_work ||
-    //   payload?.teacher_report?.tools_used ||
-    //   (showHomeworkForm && payload?.teacher_report?.homework) ||
-    //   assignedHomework?.length > 0
-    // ) {
-    axios
-      .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
-      .then((res) => {
-        if (res?.data?.status_code == 200) {
-          setLoading(false);
-          if (res?.data?.message === 'Daily Dairy created successfully') {
-            message.success('Daily Diary Created Succssfully');
-            history.push('/diary/teacher');
-          } else {
-            message.error('Daily Diary Already Exists');
+    if (
+      payload?.teacher_report?.summary ||
+      payload?.period_added_ids(showHomeworkForm && payload?.teacher_report?.homework) ||
+      assignedHomework?.length > 0
+    ) {
+      axios
+        .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            setLoading(false);
+            if (res?.data?.message === 'Daily Dairy created successfully') {
+              message.success('Daily Diary Created Succssfully');
+              history.push('/diary/teacher');
+            } else {
+              message.error('Daily Diary Already Exists');
+            }
           }
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        message.error(error?.message);
-      });
-    // } else {
-    //   message.error('Please Enter Details');
-    //   setLoading(false);
-    //   return;
-    // }
+        })
+        .catch((error) => {
+          setLoading(false);
+          message.error(error?.message);
+        });
+    } else {
+      message.error("Please enter either of Today's Topic, Homework or Notes");
+      setLoading(false);
+      return;
+    }
 
     // if (hwMappingID) {
     //   payload['hw_dairy_mapping_id'] = hwMappingID;
@@ -411,14 +407,18 @@ const DailyDiary = () => {
   });
 
   const handleChapter = (e) => {
-    drawerFormRef.current.setFieldsValue({
+    formRef.current.setFieldsValue({
       key_concept: null,
     });
-    setChapterID(e.value);
-    // setChapterName(e.children);
-    fetchKeyConceptListData({
-      chapter_id: e.value,
-    });
+    setKeyConceptDropdown([]);
+    setResourcesData([]);
+    if (e) {
+      setChapterID(e.value);
+      // setChapterName(e.children);
+      fetchKeyConceptListData({
+        chapter_id: e.value,
+      });
+    }
   };
   const handleKeyConcept = (e) => {
     if (e) {
@@ -468,10 +468,10 @@ const DailyDiary = () => {
   });
 
   const handleSubject = (e) => {
-    // drawerFormRef.current.setFieldsValue({
-    //   chapter: null,
-    //   key_concept: null,
-    // });
+    formRef.current.setFieldsValue({
+      chapter: null,
+      key_concept: null,
+    });
     setAddedPeriods([]);
     setResourcesData([]);
     setAssignedHomework();
@@ -814,7 +814,10 @@ const DailyDiary = () => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Diary') {
+            if (
+              item.child_name === 'Teacher Diary' ||
+              item.child_name === 'Student Diary'
+            ) {
               setModuleId(item.child_id);
             }
           });
@@ -824,7 +827,9 @@ const DailyDiary = () => {
   }, [window.location.pathname]);
 
   useEffect(() => {
+    console.log('llllll', moduleId, selectedBranch);
     if (moduleId && selectedBranch) {
+      console.log('llllll');
       fetchGradeData();
       fetchResourceYear();
     }
@@ -857,9 +862,9 @@ const DailyDiary = () => {
       }
       // setRecap(editData?.teacher_report?.previous_class);
       // setClasswork(editData?.teacher_report?.class_work);
-      // setSummary(editData?.teacher_report?.summary);
+      setSummary(editData?.teacher_report?.summary);
       // setTools(editData?.teacher_report?.tools_used);
-      // setHomework(editData?.teacher_report?.homework);
+      setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
       fetchHomeworkDetails({
         section_mapping: editData?.section_mapping_id,
@@ -971,9 +976,9 @@ const DailyDiary = () => {
                         <div className='col-6 px-0 th-black-2 th-fw-600 th-18'>
                           Today's Topic
                         </div>
-                        <div className='col-6 text-right pr-0 mr-2C'>
+                        <div className='col-6 text-right pr-0'>
                           <span
-                            className='th-12 px-1 th-primary py-1 th-pointer '
+                            className='th-12 px-1 th-primary py-1 th-pointer mr-3 th-br-6'
                             style={{ border: '1px solid #d9d9d9' }}
                             onClick={() =>
                               subjectID
@@ -985,7 +990,7 @@ const DailyDiary = () => {
                           </span>
                           {addedPeriods.length > 0 ? (
                             <span
-                              className='th-12 px-1 th-red py-1 th-pointer'
+                              className='th-12 px-1 th-red py-1 th-pointer th-br-6'
                               style={{ border: '1px solid red' }}
                               onClick={() =>
                                 setClearTodaysTopic((prevState) => !prevState)
@@ -1012,7 +1017,7 @@ const DailyDiary = () => {
                         style={{
                           border: '1px solid #d9d9d9',
                           boxShadow: '0px 0px 6px 0px #0000005E',
-                          height: 165,
+                          height: 170,
                           overflowY: 'auto',
                         }}
                       >
@@ -1059,15 +1064,35 @@ const DailyDiary = () => {
                                       <div className='col-6 pr-0 th-18'>
                                         {item?.period_name}
                                       </div>
-                                      <div className='col-6 pl-0 text-right'>
+                                      <div className='col-5 pl-0 text-right'>
                                         <div className='d-flex flex-column'>
                                           <div className='th-10 th-grey-1'>
                                             Last Updated on
                                           </div>
                                           <div className='th-10 th-black-1'>
-                                            21/11/2022, 12:33 pm
+                                            {moment(item?.created_at).format(
+                                              'DD/MM/YYYY HH:mm a'
+                                            )}
                                           </div>
                                         </div>
+                                        {console.log('addedPeriods', addedPeriods)}
+                                      </div>
+                                      <div
+                                        className='col-1 pr-0'
+                                        onClick={() => {
+                                          setIsPeriodAdded(false);
+                                          setCompletedPeriod(item);
+                                          openPeriodInfoModal();
+                                          if (addedPeriods.length == 1) {
+                                            setClearTodaysTopic(true);
+                                          }
+                                          const index = addedPeriods.indexOf(item);
+                                          const newList = addedPeriods.slice();
+                                          newList.splice(index, 1);
+                                          setAddedPeriods(newList);
+                                        }}
+                                      >
+                                        X
                                       </div>
                                     </div>
                                   }
@@ -1129,7 +1154,7 @@ const DailyDiary = () => {
                         </div>
                         <div className='col-sm-6 col-4 text-right pr-0'>
                           <span
-                            className='th-12 px-1 th-red py-1 th-pointer'
+                            className='th-12 px-1 th-red py-1 th-pointer th-br-6'
                             style={{
                               border: '1px solid red',
                             }}
@@ -1152,11 +1177,11 @@ const DailyDiary = () => {
                         </div>
                       </div>
                       <div
-                        className='row my-2 th-br-6'
+                        className='row mt-1 th-br-6'
                         style={{
                           border: '1px solid #d9d9d9',
                           boxShadow: '0px 0px 6px 0px #0000005E',
-                          height: '150px',
+                          height: '170px',
                         }}
                       >
                         {clearUpcomingPeriod ? (
@@ -1171,7 +1196,7 @@ const DailyDiary = () => {
                             >
                               <div className='col-12 text-center th-fw-500 th-black-2'>
                                 <PlusOutlined className='mr-3' />
-                                Select from Lesson plan
+                                Add Today's Topic to get Upcoming Period
                               </div>
                             </div>
                           </>
@@ -1189,7 +1214,9 @@ const DailyDiary = () => {
                                 className='row th-fw-600 align-items-center py-1 th-bg-pink'
                                 style={{ borderRadius: '6px 6px 0px 0px' }}
                               >
-                                <div className='col-6 pr-0 th-18'>Period : 3</div>
+                                <div className='col-6 pr-0 th-18'>
+                                  {upcomingPeriod?.period_name}
+                                </div>
                                 <div className='col-6 pl-0 text-right'>
                                   <div className='d-flex flex-column'>
                                     <div className='th-10 th-grey-1'>Last Updated on</div>
@@ -1201,15 +1228,21 @@ const DailyDiary = () => {
                               </div>
                               <div className='row pt-3'>
                                 <div className='col-4 pr-0 th-fw-600'>Module :</div>
-                                <div className='col-8 pl-0 th-grey-1'>Module name</div>
+                                <div className='col-8 pl-0 th-grey-1'>
+                                  {upcomingPeriod?.module_name}
+                                </div>
                               </div>
                               <div className='row py-1'>
                                 <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
-                                <div className='col-8 pl-0 th-grey-1'>Chapter name</div>
+                                <div className='col-8 pl-0 th-grey-1'>
+                                  {upcomingPeriod?.chapter_name}
+                                </div>
                               </div>
                               <div className='row pb-2'>
                                 <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
-                                <div className='col-8 pl-0 th-grey-1'>Concept name</div>
+                                <div className='col-8 pl-0 th-grey-1'>
+                                  {upcomingPeriod?.topic_name}
+                                </div>
                               </div>
                             </div>
                             <div className='col-12 text-right pb-1'>
@@ -1219,101 +1252,6 @@ const DailyDiary = () => {
                         )}
                       </div>
                     </div>
-                    {/* <div className='col-md-4 py-2'>
-                      <TextArea
-                        className='th-width-100 th-br-6'
-                        value={recap}
-                        onChange={(e) => setRecap(e.target.value)}
-                        placeholder='Recap of Previous Class'
-                        rows={4}
-                        style={{ resize: 'none' }}
-                      />
-                    </div> */}
-                    {/* <div className='col-md-4 py-2'>
-                      <TextArea
-                        className='th-width-100 th-br-6'
-                        value={classwork}
-                        onChange={(e) => setClasswork(e.target.value)}
-                        placeholder='Details of ClassWork'
-                        rows={4}
-                        style={{ resize: 'none' }}
-                      />
-                    </div> */}
-                    {/* <div className='col-md-4 py-2'>
-                      <TextArea
-                        className='th-width-100 th-br-6'
-                        value={summary}
-                        onChange={(e) => setSummary(e.target.value)}
-                        placeholder='Summary'
-                        rows={4}
-                        style={{ resize: 'none' }}
-                      />
-                    </div> */}
-
-                    {/* <div className='col-md-4 py-2'>
-                      <TextArea
-                        className='th-width-100 th-br-6'
-                        value={tools}
-                        onChange={(e) => setTools(e.target.value)}
-                        placeholder='Tools Used'
-                        rows={4}
-                        style={{ resize: 'none' }}
-                      />
-                    </div> */}
-                    {/* <div
-                      className='col-md-4 py-2 d-flex'
-                      style={{ position: 'relative' }}
-                    >
-                     
-                      {showIcon && !assignedHomework && (
-                        <div className='col-12 py-2'>
-                          <Checkbox
-                            checked={showHomeworkForm}
-                            onChange={() =>
-                              setShowHomeworkForm((prevState) => !prevState)
-                            }
-                          >
-                            Assign Homework
-                          </Checkbox>
-                        </div>
-                      )}
-
-                      {showIcon ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}
-                        >
-                          {assignedHomework && !homework ? (
-                            <div onClick={mapAssignedHomework} className='th-pointer'>
-                              <span>
-                                <InfoCircleFilled
-                                  className='th-primary'
-                                  style={{ fontSize: 20 }}
-                                />
-                              </span>
-                              <span className='ml-2 th-fw-500'>
-                                Homework Exists (click to map to diary)
-                              </span>
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div> */}
-                    {/* <div className='col-md-4 py-2'>
-                      {hwMappingID && homework ? (
-                        <>
-                          <span>
-                            <img src={AsignHomework} className='py-3' />
-                          </span>
-                          <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
-                            Homework Mapped to Diary
-                          </span>
-                        </>
-                      ) : null}
-                    </div> */}
-
                     <div className='col-12 py-2'>
                       <span className='th-grey th-14'>
                         Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
@@ -1425,13 +1363,11 @@ const DailyDiary = () => {
                     <div className='row align-items-center'>
                       <span className='th-black-1 th-fw-600'>Due Date</span>
                       <span className='th-br-4 p-1 th-bg-grey ml-2'>
-                        {/* <img src={calendarIcon} className='pl-2' /> */}
                         <DatePicker
                           disabledDate={(current) =>
                             current.isBefore(moment().subtract(1, 'day'))
                           }
                           allowClear={false}
-                          // defaultValue={moment()}
                           placeholder={submissionDate}
                           placement='bottomRight'
                           onChange={(event, value) => handleSubmissionDate(value)}
@@ -1491,10 +1427,9 @@ const DailyDiary = () => {
                 <div className='col-12 py-2'>
                   <TextArea
                     className='th-width-100 th-br-6'
-                    value={classwork}
-                    onChange={(e) => setClasswork(e.target.value)}
+                    value={summary}
+                    onChange={(e) => setSummary(e.target.value)}
                     placeholder='Write Something'
-                    // rows={4}
                     style={{ resize: 'none' }}
                   />
                 </div>
@@ -1547,7 +1482,7 @@ const DailyDiary = () => {
             </div>
             <div className='col-6 text-right'>{subjectName}</div>
           </div>
-          <Form id='filterDrawerForm' ref={drawerFormRef} layout={'horizontal'}>
+          <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row align-items-center'>
               <div className='col-3 th-primary th-fw-600 pr-0'>Chapter</div>
               <div className='col-9 pt-2'>
@@ -1661,91 +1596,11 @@ const DailyDiary = () => {
                           </div>
                         </div>
 
-                        <div className='col-9 col-md-10 text-truncate th-primary px-0'>
+                        <div className='col-9 text-truncate th-primary px-0'>
                           {item?.key_concept__topic_name}
                         </div>
                       </div>
-                      {/* <div className='row mt-2'>
-                        <div className='col-12 text-through pl-0'>
-                          <span className='th-grey'>Resources</span>
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          overflowY: 'scroll',
-                          overflowX: 'hidden',
-                          maxHeight: 160,
-                        }}
-                        className='th-question'
-                      >
-                        {item?.lp_files.map((files, i) =>
-                          files?.media_file?.map((each, index) => {
-                            if (
-                              (user_level == 13 &&
-                                files?.document_type == 'Lesson_Plan') ||
-                              (user_level == 13 &&
-                                files?.document_type == 'Teacher_Reading_Material')
-                            ) {
-                            } else {
-                              let fullName = each?.split(
-                                `${files?.document_type.toLowerCase()}/`
-                              )[1];
-                              let textIndex = fullName
-                                ?.split('_')
-                                .indexOf(fullName.split('_').find((item) => isNaN(item)));
-                              let displayName = fullName
-                                .split('_')
-                                .slice(textIndex)
-                                .join('_');
-                              let fileName = displayName ? displayName.split('.') : null;
-                              let file = fileName ? fileName[fileName?.length - 2] : '';
-                              let extension = fileName
-                                ? fileName[fileName?.length - 1]
-                                : '';
-                              return (
-                                <div
-                                  className='row mt-2 py-2 align-items-center'
-                                  style={{ border: '1px solid #d9d9d9' }}
-                                >
-                                  <div className='col-2'>
-                                    <img src={getFileIcon(extension)} />
-                                  </div>
-                                  <div className='col-10 px-0 th-pointer'>
-                                    <a
-                                      onClick={() => {
-                                        openPreview({
-                                          currentAttachmentIndex: 0,
-                                          attachmentsArray: [
-                                            {
-                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
-
-                                              name: fileName,
-                                              extension: '.' + extension,
-                                            },
-                                          ],
-                                        });
-                                      }}
-                                      rel='noopener noreferrer'
-                                      target='_blank'
-                                    >
-                                      <div className='row align-items-center'>
-                                        <div className='col-10 px-0'>
-                                          {files.document_type}_{file}
-                                        </div>
-                                        <div className='col-2'>
-                                          <EyeFilled />
-                                        </div>
-                                      </div>
-                                    </a>
-                                  </div>
-                                </div>
-                              );
-                            }
-                          })
-                        )}
-                      </div> */}
                       <hr className='mt-1' />
-
                       <div className='row mb-2 align-items-center'>
                         <div className='col-12 col-sm-6 th-black-2 pl-0'>
                           <div className='row'>
@@ -1762,7 +1617,12 @@ const DailyDiary = () => {
                           </div>
                           <div className='row th-black-2 '>
                             <div className='col-12 th-grey pl-0 th-12'>
-                              Last Updated {getTimeInterval(item.updated_at)}
+                              Last Updated{' '}
+                              {getTimeInterval(
+                                item?.completion_status?.filter(
+                                  (item) => item?.section_id === sectionMappingID
+                                )[0].completed_at
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1772,11 +1632,7 @@ const DailyDiary = () => {
                           )[0].is_complete == false && (
                             <div className='th-bg-green-2 px-2 py-1 th-br-6'>
                               <Checkbox
-                                // checked={completePeriod}
-                                onChange={() =>
-                                  // setShowHomeworkForm((prevState) => !prevState)
-                                  markPeriodComplete(item)
-                                }
+                                onChange={() => markPeriodComplete(item)}
                                 className='th-green th-fw-500'
                               >
                                 Mark Complete

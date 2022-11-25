@@ -455,11 +455,11 @@ const V1Router = [
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
   </Route>,
-    <Route path='/post-activity-view'>
+  <Route path='/post-activity-view'>
     {({ match }) => <PostActivityView match={match} />}
   </Route>,
   <Route path='/create-post-activity'>
-      {({ match }) => <CreatePostActivity match={match} />}
+    {({ match }) => <CreatePostActivity match={match} />}
   </Route>,
   <Route exact path='/blog/templates'>
     {({ match }) => <AddTemplates match={match} />}
@@ -1444,22 +1444,22 @@ const V1Router = [
   <Route exact path='/blog/wall'>
     {({ match }) => <BlogWall match={match} />}
   </Route>,
-    <Route exact path='/blog/wall/redirect'>
+  <Route exact path='/blog/wall/redirect'>
     {({ match }) => <BlogWallRedirect match={match} />}
   </Route>,
-    <Route exact path='/blog/wall/central/redirect'>
+  <Route exact path='/blog/wall/central/redirect'>
     {({ match }) => <CentralBlogRedirection match={match} />}
   </Route>,
-   <Route exact path='/physical/activity'>
-   {({ match }) => <PhysicalActivity match={match} />}
- </Route>,
-    <Route exact path='/physical/activity/review'>
+  <Route exact path='/physical/activity'>
+    {({ match }) => <PhysicalActivity match={match} />}
+  </Route>,
+  <Route exact path='/physical/activity/review'>
     {({ match }) => <PhysicalActivityReview match={match} />}
   </Route>,
 
-      <Route exact path='/blog/publicspeaking'>
-      {({ match }) => <PublicSpeakingWall match={match} />}
-    </Route>,
+  <Route exact path='/blog/publicspeaking'>
+    {({ match }) => <PublicSpeakingWall match={match} />}
+  </Route>,
   <Route exact path='/blog/short'>
     {({ match }) => <AdminPublishBlogShort match={match} />}
   </Route>,
