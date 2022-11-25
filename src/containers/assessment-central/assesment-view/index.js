@@ -67,7 +67,7 @@ const AssessmentView = () => {
 
 
   useEffect(() => {
-if(tabGradeId && tabSubjectId){
+if(tabGradeId && (tabSubjectId || erpCategory)){
   handlePeriodList(
     tabIsErpCentral,
     tabAcademic,
@@ -75,11 +75,11 @@ if(tabGradeId && tabSubjectId){
     tabGradeId,
     tabSubjectId,
     tabQpValue,
-    // erpCategory,
+    erpCategory,
     tabValue,
   );
 }
-  },[tabValue, tabIsErpCentral, page])
+  },[tabValue, tabIsErpCentral, page,erpCategory])
 
   const handleGetQuestionPapers = (newValue = 0, requestURL) => {
     setTabValue(newValue);
@@ -124,10 +124,10 @@ if(tabGradeId && tabSubjectId){
     grade = '',
     subject = '',
     qpValue,
-    // erpCategory = '',
+    erpCategory = '',
     newValue = 0,
   ) => {
-    if (!academic || branch?.length === 0 || !grade ||!subject) {
+    if (!academic || branch?.length === 0 || !grade ||(!subject && !erpCategory)) {
       setAlert('error', 'Select all the fields!');
       return;
     }
@@ -139,15 +139,18 @@ if(tabGradeId && tabSubjectId){
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
     // setTabIsErpCentral(isErpCentral);
-    // setErpCategory(erpCategory)
+    setErpCategory(erpCategory)
     const branchIds = branch.map((element) => element?.branch?.id) || [];
-    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&grade=${grade?.value}&subjects=${subject?.value}&page=${page}&page_size=${limit}&request_type=${tabIsErpCentral ? 2 : 1} `;
+    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&grade=${grade?.value}&page=${page}&page_size=${limit}&request_type=${tabIsErpCentral ? 2 : 1} `;
     if(qpValue) {
       requestURL += `&paper_level=${qpValue?.value}`
     }
-    // if (!subject && erpCategory) {
-    //   requestURL += `&category=${isErpCentral?.flag ? erpCategory?.central_category_id : erpCategory?.erp_category_id}`;
-    // }
+    if(subject || !erpCategory){
+      requestURL += `&subjects=${subject?.value}`
+    }
+    if (!subject && erpCategory) {
+      requestURL += `&category=${erpCategory?.value}`; //isErpCentral?.flag ? erpCategory?.central_category_id : erpCategory?.erp_category_id
+    }
     handleGetQuestionPapers(newValue, requestURL);
     let filterdata = {
       branch : branch,
@@ -175,8 +178,8 @@ if(tabGradeId && tabSubjectId){
 
   useEffect(() => {
     if (publishFlag)
-      handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue ); //erpCategory
-    if (tabAcademic && tabBranch && tabGradeId && tabSubjectId && tabQpValue && tabIsErpCentral)
+      handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue,erpCategory ); //
+    if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ) && tabQpValue && tabIsErpCentral)
       handlePeriodList(
         tabIsErpCentral,
         tabAcademic,
@@ -184,7 +187,7 @@ if(tabGradeId && tabSubjectId){
         tabGradeId,
         tabSubjectId,
         tabQpValue,
-        // erpCategory,
+        erpCategory,
         tabValue,
         
       );

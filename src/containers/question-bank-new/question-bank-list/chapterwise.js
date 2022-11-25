@@ -284,6 +284,7 @@ if(filters.questionId){
         // volume_id: 38,
         subject: subjectId,
         academic_session: selectedBranch?.id,
+        academic_year : selectedAcademicYear?.session_year
         // board: boardId,
       });
     }
