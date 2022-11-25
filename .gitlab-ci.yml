@@ -59,7 +59,6 @@ deploy_qa:
       - sudo systemctl restart nginx
      # - sudo service uwsgi stop
       - echo "Deploy to QA server"
-      - sudo npm install
       - sudo npm ci
       - export REACT_APP_UI_ENV=QA
       - grep home package.json || true
