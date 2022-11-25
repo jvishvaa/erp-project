@@ -207,7 +207,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Report Card Pipeline', Path: '/assessment/report-card-pipeline' },
     { name: 'Report Card Category', Path: '/assessment/category' },
     { name: 'Report Card Config', Path: '/assessment/report-config' },
-    { name: 'Question Bank', Path: '/question-bank' },
+    { name: 'Question Bank', Path: '/question-chapter-wise' },
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },

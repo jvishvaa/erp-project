@@ -193,7 +193,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
             variant='contained'
             onClick={() => {
               history.push(
-                `/question-bank?question=${questionId}&section=${section.name
+                `/question-chapter-wise?question=${questionId}&section=${section.name
                 }&isedit=${Number(location.pathname.slice(23))}`
               );
             }}

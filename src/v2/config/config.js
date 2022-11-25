@@ -63,7 +63,7 @@ const qa = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.qa.letseduvate.com',
     msReportsUrl: 'https://reports.qa.letseduvate.com',
-    msReportsUrlNew: 'https://qa.reports.letseduvate.com',
+    msReportsUrlNew: 'https://reports.qa.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
   },

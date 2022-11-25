@@ -21,6 +21,7 @@ export default function CenteredTabs({
   tabSubjectId,
   tabQpValue,
   setTabValue,
+  erpCategory,
   tabValue,
   setPage,
   setSelectedIndex,
@@ -38,6 +39,7 @@ export default function CenteredTabs({
       tabGradeId,
       tabSubjectId,
       tabQpValue,
+      erpCategory,
       newValue
     );
     setValue(newValue);

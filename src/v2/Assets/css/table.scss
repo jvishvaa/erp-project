@@ -7,7 +7,9 @@
 thead[class*='ant-table-thead'] th {
   background-color: #1b4ccb !important;
 }
-
+.th-inner-head thead[class*='ant-table-thead'] th {
+  background-color: #c9cbc5 !important;
+}
 .ant-table-tbody > tr > td {
   border-bottom: none !important;
 }

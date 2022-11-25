@@ -50,13 +50,26 @@ const OverviewCard = (props) => {
   const Redirections = (type) => {
     switch (type) {
       case 'Curriculum Completion':
-        return handleCurriculumCompletion(true);
+        return curriculamGradeRoute();
       case 'Academic Report':
         return handleTestScore();
       case 'Attendance Report':
         return handleCurriculumCompletion(false);
     }
   };
+
+  const curriculamGradeRoute =() => {
+    history.push({
+      pathname: `/curriculum-completion/${selectedBranch?.branch?.id}`,
+      state : {
+        branchId:selectedBranch?.branch?.id,
+        acad_sess_id : selectedBranch?.id,
+        branchName:selectedBranch?.branch?.branch_name,
+        acad_session_id:selectedBranch?.session_year?.id,
+        module_id:moduleId
+      }
+    })
+  }
 
   const handleCurriculumCompletion = (iscurriculam) => {
     history.push({
