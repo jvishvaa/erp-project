@@ -284,6 +284,7 @@ if(filters.questionId){
         // volume_id: 38,
         subject: subjectId,
         academic_session: selectedBranch?.id,
+        academic_year : selectedAcademicYear?.session_year
         // board: boardId,
       });
     }
@@ -345,6 +346,7 @@ if(filters.questionId){
       setSelectedChapter(record);
       fetchKeyConceptsData({
         chapter_id: record.chapter_id,
+        is_central : record?.is_central
       });
     }
 
@@ -362,7 +364,10 @@ if(filters.questionId){
       boardId : boardId,
       gradeName : gradeName,
       subjectName : subjectName,
-      subjectId : subjectId
+      subjectId : subjectId,
+      questionId :  questionId,
+      section :  section,
+      isEdit :  isEdit,
        
       // request_type : 1
     };

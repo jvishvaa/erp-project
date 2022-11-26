@@ -100,6 +100,14 @@ const AssessmentFilters = ({
       </Option>
     );
   });
+
+  const erpCategories = erpCategoryDropdown?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.erp_category_id}>
+        {each?.erp_category_name}
+      </Option>
+    );
+  });
   useEffect(() => {
     if(selectedBranch && moduleId){
       handleBranch('',[selectedBranch])
@@ -125,10 +133,10 @@ const getErpCategory = () => {
 }
 
 useEffect(() => {
-if(filterData?.grade && filterData?.subject){
+if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
   handleFilter()
 }
-},[filterData?.subject,qpValue])
+},[filterData?.subject,qpValue,filterData?.erp_category])
 
   // useEffect(() => {
   //   if (moduleId && selectedAcademicYear) {
@@ -256,14 +264,18 @@ if(filterData?.grade && filterData?.subject){
     // }
   };
   const handleerpCategory = (event, value) => {
-    setFilterData({ ...filterData, erp_category: '', grade:'',subject:'' });
+    setFilterData({ ...filterData, erp_category: '',subject:'' });
+    formRef.current.setFieldsValue({
+      subject: null,
+    });
     // setLoading(true);
-    setSubjectDropdown([]);
     setIsErpCategory(false)
     if (value) {
       setIsErpCategory(true)
-      setFilterData({ ...filterData, erp_category: value, grade:'',subject:'' });
-      setSubjectDropdown([]);
+      formRef.current.setFieldsValue({
+        subject: null,
+      });
+      setFilterData({ ...filterData, erp_category: value,subject:'' });
       // setLoading(false);
     } else {
       // setLoading(false);
@@ -279,6 +291,7 @@ if(filterData?.grade && filterData?.subject){
     });
     setGradeDropdown([]);
     setSubjectDropdown([]);
+    getErpCategory()
     if (value?.length > 0) {
       value =
         value.filter(({ id }) => id === 'all').length === 1
@@ -345,10 +358,16 @@ if(filterData?.grade && filterData?.subject){
   const handleSubject = (event, value) => {
     setFilterData({ ...filterData, subject: '' });
     // setQpValue('');
+    formRef.current.setFieldsValue({
+      erpCategory: null,
+    });
     setPeriodData([]);
     if (value) {
       setFilterData({ ...filterData, subject: value });
       // handleFilter()
+      formRef.current.setFieldsValue({
+        erpCategory: null,
+      });
     }
   };
 
@@ -365,14 +384,17 @@ if(filterData?.grade && filterData?.subject){
     //   setAlert('error', 'Select Branch!');
     //   return;
     // }
+    debugger
     if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
       return;
     }
-    if (!filterData?.subject) {
-      setAlert('error', 'Select Subject!');
+    if (!filterData?.subject && !filterData?.erp_category?.key) {
+      setAlert('error', 'Select Subject or erp category!');
       return;
     }
+
+
     // if (!qpValue) {
     //   setAlert('error', 'Select QP Level!');
     //   return;
@@ -389,7 +411,7 @@ if(filterData?.grade && filterData?.subject){
       filterData.grade,
       filterData.subject,
       qpValue,
-      // filterData?.erp_category,
+      filterData?.erp_category,
     );
   };
   const handleClearSubject = () => {
@@ -661,7 +683,32 @@ if(filterData?.grade && filterData?.subject){
                     </Select>
                   </Form.Item>
                 </div>
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                <div className='col-md-2 col-6 pl-0'>
+                    <div className='mb-2 text-left'>Erp Category</div>
+                    <Form.Item name='erpCategory'>
+                      <Select
+                        allowClear
+                        placeholder='Erp Category'
+                        showSearch
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e,value) => {
+                          handleerpCategory(e,value);
+                        }}
+                        
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={false}
+                      >
+                        {erpCategories}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                {!isErpCategory && <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
                   <div className='mb-2 text-left'>Subject</div>
                   <Form.Item name='subject'>
                     <Select
@@ -684,6 +731,7 @@ if(filterData?.grade && filterData?.subject){
                       onChange={(e, value) => {
                         handleSubject(e,value);
                       }}
+                      disabled = {isErpCategory}
                       onClear={handleClearSubject}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       bordered={false}
@@ -691,7 +739,7 @@ if(filterData?.grade && filterData?.subject){
                       {subjectOptions}
                     </Select>
                   </Form.Item>
-                </div>
+                </div>}
                 <div className='col-md-2 col-6 pl-0'>
                     <div className='mb-2 text-left'>Question Level</div>
                     <Form.Item name='questionlevel'>
@@ -717,8 +765,9 @@ if(filterData?.grade && filterData?.subject){
                       </Select>
                     </Form.Item>
                   </div>
+                  {isErpCategory && <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'></div>}
                 <div
-                  className='col-md-5 col-6 px-0'
+                  className='col-md-3 col-6 px-0'
                   style={{ display: 'flex', justifyContent: 'flex-end' }}
                 >
                   <Button

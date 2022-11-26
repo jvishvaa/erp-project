@@ -80,7 +80,7 @@ const QuestionBankFilters = ({
     branch: FilteredData?.academic_session,
     volume: '',
     grade: FilteredData?.grade,
-    subject: '',
+    subject: FilteredData?.subjectId,
     chapter: FilteredData?.chapter,
     quesType: '',
     topicId: FilteredData?.topic,
@@ -139,10 +139,10 @@ const QuestionBankFilters = ({
 
   useEffect(() => {
   //  if(filterData?.quesType || filterData?.question_category || filterData?.question_level || filterData?.erp_category){
-    handlePeriodList(
+  handlePeriodList(
       filterData?.quesType,
       filterData?.question_category,
-      filterData?.subject?.subject_id,
+      filterData?.subject,
       filterData?.question_level,
       filterData?.topicId,
       FilteredData?.academic_session,
@@ -152,6 +152,7 @@ const QuestionBankFilters = ({
       0,
       filterData?.erp_category,
     );
+
   //  }
       
       // setSelectedIndex(-1);

@@ -128,7 +128,7 @@ const QuestionView = ({ question, showHeader, index }) => {
       )}
       {expand && (
         <>
-          <div className={classes.questionHeader}>Question</div>
+          <div className={classes.questionHeader}>Question {index + 1}</div> 
           {/* <Divider className='secondary-divider' /> */}
           {questionType == 1 && (
             <div className='mcq-container'>
@@ -384,8 +384,9 @@ const QuestionView = ({ question, showHeader, index }) => {
                   {question.question_answer[0]?.options.map((obj, i) => (
                     <div className='option flex-space-between'>
                       {' '}
-                      <div className='matrix-column'>
-                        <div>{Object.keys(obj)[0] || ''}</div>
+                      <div className='matrix-column d-flex'>
+                        <div>{Object.keys(obj)[0] || ''}</div> {' : '}
+                        <div>{obj[Object.keys(obj)[0]].isChecked ? " True" : " False"}</div>
                       </div>
                     </div>
                   ))}

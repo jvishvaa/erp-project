@@ -117,7 +117,7 @@ const ViewMoreCard = ({
 
   return (
     // <Paper className={classes.rootViewMore}>
-    <Drawer title = {periodDataForView?.paper_name} zIndex={1300} width={'450px'} placement="right" onClose={onClose} open={open} visible={open}>
+    <Drawer title = {periodDataForView?.paper_name} zIndex={1300} width={'500px'} placement="right" onClose={onClose} open={open} visible={open}>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           {/* <div className='headerTitle'>{periodDataForView?.paper_name}</div> */}
@@ -183,12 +183,13 @@ const ViewMoreCard = ({
                     </Typography>
                   </AccordionSummary>
                   <div className='section-content'>
-                    {section.questions?.map((q) => (
+                    {section.questions?.map((q,i) => (
                       <div
                         className='question-detail-card-wrapper'
                         style={{ width: '100%' }}
                       >
-                        <QuestionDetailCard question={q} />
+                        <QuestionDetailCard question={q} index={i} />
+                        <hr/>
                       </div>
                     ))}
                   </div>
