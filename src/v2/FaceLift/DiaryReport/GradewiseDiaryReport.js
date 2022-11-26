@@ -49,7 +49,7 @@ const GradewiseDiaryReport = () => {
     if (expanded) {
       keys.push(record.grade_id);
       fetchSectionwiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         start_date: startDate,
         end_date: endDate,
@@ -166,7 +166,7 @@ const GradewiseDiaryReport = () => {
   useEffect(() => {
     if (startDate && endDate) {
       fetchGradewiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         start_date: startDate,
         end_date: endDate,

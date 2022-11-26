@@ -19,7 +19,6 @@ const DiaryMain = () => {
       .get(`${endpoints.doodle.checkDoodle}?config_key=diary_branches_new_flow`)
       .then((response) => {
         if (response?.data?.result) {
-          console.log('Status', response.data?.result);
           if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
             setShowNewDiary(true);
           } else {

@@ -21,10 +21,8 @@ import {
   CloseCircleOutlined,
   PlusOutlined,
   CaretRightOutlined,
-  EyeFilled,
   ReloadOutlined,
 } from '@ant-design/icons';
-import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import axiosInstance from 'axios';
 import endpoints from 'v2/config/endpoints';
@@ -36,7 +34,6 @@ import QuestionCard from 'components/question-card';
 import moment from 'moment';
 import cuid from 'cuid';
 import { addHomeWork } from 'redux/actions/teacherHomeworkActions';
-import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import tickIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/greenTick.svg';
 import deleteIcon from 'v2/Assets/dashboardIcons/diaryIcons/deleteRedIcon.svg';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
@@ -74,7 +71,6 @@ const DailyDiary = () => {
   const [sectionName, setSectionName] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [sectionID, setSectionID] = useState([]);
   const [sectionMappingID, setSectionMappingID] = useState([]);
   const [subjectID, setSubjectID] = useState();
@@ -127,6 +123,8 @@ const DailyDiary = () => {
   const [currentPanel, setCurrentPanel] = useState(null);
 
   const [addedPeriods, setAddedPeriods] = useState([]);
+  const [editAddedPeriods, setEditAddedPeriods] = useState([]);
+  const [editRemovedPeriods, setEditRemovedPeriods] = useState([]);
   const [upcomingPeriod, setUpcomingPeriod] = useState([]);
   const [isPeriodAdded, setIsPeriodAdded] = useState(false);
   const [clearTodaysTopic, setClearTodaysTopic] = useState(true);
@@ -247,6 +245,15 @@ const DailyDiary = () => {
       },
       dairy_type: 2,
     };
+    if (editAddedPeriods.length > 0) {
+      payload['added_period_ids'] = editAddedPeriods.map((item) => item.id).toString();
+    }
+    if (editRemovedPeriods.length > 0) {
+      payload['remove_period_ids'] = editRemovedPeriods.map((item) => item.id).toString();
+    }
+    // if (editData?.periods_data.length > 0) {
+    //   payload['remove_period_ids'] = editRemovedPeriods.map((item) => item.id).toString();
+    // }
     axios
       .put(
         `${endpoints?.dailyDiary?.updateDelete}${diaryID}/update-delete-dairy/`,
@@ -263,7 +270,7 @@ const DailyDiary = () => {
         message.error('Something went wrong');
       });
   };
-
+  console.log('addedPeriods', addedPeriods, editRemovedPeriods, editAddedPeriods);
   const handleSubmit = () => {
     if (showHomeworkForm && !homeworkCreated) {
       message.error('Please finish the homework first');
@@ -319,20 +326,21 @@ const DailyDiary = () => {
     }
     if (
       payload?.teacher_report?.summary ||
-      payload?.period_added_ids(showHomeworkForm && payload?.teacher_report?.homework) ||
+      payload?.period_added_ids ||
+      (showHomeworkForm && payload?.teacher_report?.homework) ||
       assignedHomework?.length > 0
     ) {
       axios
         .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
         .then((res) => {
           if (res?.data?.status_code == 200) {
-            setLoading(false);
             if (res?.data?.message === 'Daily Dairy created successfully') {
               message.success('Daily Diary Created Succssfully');
               history.push('/diary/teacher');
             } else {
               message.error('Daily Diary Already Exists');
             }
+            setLoading(false);
           }
         })
         .catch((error) => {
@@ -466,6 +474,18 @@ const DailyDiary = () => {
       </Option>
     );
   });
+  const fetchChapterDropdown = (params = {}) => {
+    axios
+      .get('/academic/diary/chapters/', { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setChapterDropdown(result?.data?.data);
+        }
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+      });
+  };
 
   const handleSubject = (e) => {
     formRef.current.setFieldsValue({
@@ -474,9 +494,9 @@ const DailyDiary = () => {
     });
     setAddedPeriods([]);
     setResourcesData([]);
+    setClearTodaysTopic(true);
     setAssignedHomework();
     setHomework('');
-    setShowIcon(false);
     setHomeworkCreated(false);
     setShowHomeworkForm(false);
     if (e) {
@@ -489,21 +509,24 @@ const DailyDiary = () => {
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
       });
-      const params = {
+      // const params = {
+
+      // };
+      fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: e.value,
         grade_id: gradeID,
-      };
-      axios
-        .get('/academic/diary/chapters/', { params: { ...params } })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            setChapterDropdown(result?.data?.data);
-          }
-        })
-        .catch((error) => {
-          message.error('error', error?.message);
-        });
+      });
+      // axios
+      //   .get('/academic/diary/chapters/', { params: { ...params } })
+      //   .then((result) => {
+      //     if (result?.data?.status_code == 200) {
+      //       setChapterDropdown(result?.data?.data);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     message.error('error', error?.message);
+      //   });
     }
   };
 
@@ -646,6 +669,7 @@ const DailyDiary = () => {
       mapAssignedHomework();
     }
   }, [assignedHomework]);
+  useEffect(() => {}, [subjectID]);
   useEffect(() => {
     if (addedPeriods.length > 0) {
       fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
@@ -795,6 +819,7 @@ const DailyDiary = () => {
       .then((res) => {
         if (res.data.status_code === 200) {
           message.success('Period Completed Successfully');
+          fetchLessonResourcesData(keyConceptID);
         }
       })
       .catch((error) => {
@@ -827,9 +852,7 @@ const DailyDiary = () => {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    console.log('llllll', moduleId, selectedBranch);
     if (moduleId && selectedBranch) {
-      console.log('llllll');
       fetchGradeData();
       fetchResourceYear();
     }
@@ -840,7 +863,7 @@ const DailyDiary = () => {
       let editData = history.location.state.data;
       let editSubject = history.location.state.subject;
       setIsDiaryEdit(history?.location?.state?.isDiaryEdit);
-      setDiaryID(history.location.state.data?.id);
+      setDiaryID(history.location.state.data?.diary_id);
       formRef.current.setFieldsValue({
         grade: editData?.grade_name,
         section: editData?.section_name,
@@ -871,6 +894,11 @@ const DailyDiary = () => {
         subject: editSubject?.subject_id,
         date: moment(editData?.created_at).format('YYYY-MM-DD'),
         // user_id: user_id,
+      });
+      fetchChapterDropdown({
+        branch_id: selectedBranch.branch.id,
+        subject_id: editSubject?.subject_id,
+        grade_id: editData?.grade_id,
       });
     }
   }, []);
@@ -960,7 +988,7 @@ const DailyDiary = () => {
             </div>
           </Form>
           {loading ? (
-            <div className='d-flex justify-content-center align-items-center h-50'>
+            <div className='d-flex justify-content-center align-items-center h-50 mb-3'>
               <Spin tip='Creating Diary...' size='large' />
             </div>
           ) : (
@@ -1075,7 +1103,6 @@ const DailyDiary = () => {
                                             )}
                                           </div>
                                         </div>
-                                        {console.log('addedPeriods', addedPeriods)}
                                       </div>
                                       <div
                                         className='col-1 pr-0'
@@ -1090,6 +1117,13 @@ const DailyDiary = () => {
                                           const newList = addedPeriods.slice();
                                           newList.splice(index, 1);
                                           setAddedPeriods(newList);
+                                          if (isDiaryEdit) {
+                                            if (!editData?.periods_data.includes(item))
+                                              setEditRemovedPeriods([
+                                                ...editRemovedPeriods,
+                                                item,
+                                              ]);
+                                          }
                                         }}
                                       >
                                         X
@@ -1107,20 +1141,22 @@ const DailyDiary = () => {
                                     }}
                                   >
                                     <div className='col-12 px-0'>
-                                      <div className='row pt-3'>
-                                        <div className='col-4 pr-0 th-fw-600'>
-                                          Module :
+                                      {boardFilterArr.includes(window.location.host) && (
+                                        <div className='row pt-3'>
+                                          <div className='col-4 pr-0 th-fw-600'>
+                                            Module :
+                                          </div>
+                                          <div className='col-8 pl-0 th-grey-1'>
+                                            {item?.chapter__lt_module__lt_module_name}
+                                          </div>
                                         </div>
-                                        <div className='col-8 pl-0 th-grey-1'>
-                                          {item?.module_name}
-                                        </div>
-                                      </div>
+                                      )}
                                       <div className='row py-1'>
                                         <div className='col-4 pr-0 th-fw-600'>
                                           Chapter Name :
                                         </div>
                                         <div className='col-8 pl-0 th-grey-1'>
-                                          {item?.chapter_name}
+                                          {item?.chapter__chapter_name}
                                         </div>
                                       </div>
                                       <div className='row pb-2'>
@@ -1128,7 +1164,7 @@ const DailyDiary = () => {
                                           Key Concept :
                                         </div>
                                         <div className='col-8 pl-0 th-grey-1'>
-                                          {item?.topic_name}
+                                          {item?.key_concept__topic_name}
                                         </div>
                                       </div>
                                     </div>
@@ -1672,11 +1708,18 @@ const DailyDiary = () => {
                                 <div
                                   className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
                                   onClick={() => {
-                                    setIsPeriodAdded(true);
-                                    setClearTodaysTopic(false);
-                                    setCompletedPeriod(item);
-                                    openPeriodInfoModal();
-                                    setAddedPeriods([...addedPeriods, item]);
+                                    if (!addedPeriods.includes(item)) {
+                                      setIsPeriodAdded(true);
+                                      setClearTodaysTopic(false);
+                                      setCompletedPeriod(item);
+                                      openPeriodInfoModal();
+                                      setAddedPeriods([...addedPeriods, item]);
+                                      if (isDiaryEdit) {
+                                        setEditAddedPeriods([...editAddedPeriods, item]);
+                                      }
+                                    } else {
+                                      message.warning('Period is already added to Diary');
+                                    }
                                   }}
                                 >
                                   Add to Diary
