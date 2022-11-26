@@ -53,7 +53,7 @@ const SubjectwiseDiaryReport = () => {
         session_year: selectedAcademicYear?.id,
         dairy_type: diaryType,
         grade_id: selectedSection?.grade_id,
-        section_id: selectedSection?.section_id,
+        section_mapping: selectedSection?.section_mapping,
         subject_id: record.subject_id,
         start_date: startDate,
         end_date: endDate,
@@ -172,10 +172,10 @@ const SubjectwiseDiaryReport = () => {
   useEffect(() => {
     if (startDate && endDate) {
       fetchSubjectwiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         grade_id: selectedSection?.grade_id,
-        section_id: selectedSection?.section_id,
+        section_mapping: selectedSection?.section_mapping,
         start_date: startDate,
         end_date: endDate,
       });
@@ -194,7 +194,7 @@ const SubjectwiseDiaryReport = () => {
   const columns = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>SUBJECTS</span>,
-      dataIndex: 'subject__subject_name',
+      dataIndex: 'subject_name',
       align: 'left',
       width: '30%',
       render: (data) => <span className='pl-4 th-black-1'>{data}</span>,

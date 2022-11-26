@@ -140,8 +140,11 @@ const ViewAssessments = ({ history, ...restProps }) => {
           responseType: 'blob',
         })
         .then((response) => {
-          const { headers = {}, message = 'Question paper not available', data = '' } =
-            response || {};
+          const {
+            headers = {},
+            message = 'Question paper not available',
+            data = '',
+          } = response || {};
           const contentType = headers['content-type'] || '';
           if (contentType === 'application/pdf') {
             handleDownloadPdf(data, testName);
@@ -268,13 +271,19 @@ const ViewAssessments = ({ history, ...restProps }) => {
           </Grid>
           {(user_level == 13 || user_level == 12) && isOrchids ? (
             <div
-              className='col-md-12 text-right th-pointer'
+              className='row justify-content-end th-pointer'
+              style={{ position: 'fixed', bottom: '5%', right: '2%' }}
               onClick={() => setShowGrievanceModal(true)}
             >
-              Issues with Assessment/ Marks?
-              <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
-                Raise your query
-              </span>
+              <div
+                className='th-bg-white px-2 py-1 th-br-6'
+                style={{ border: '1px solid #d9d9d9' }}
+              >
+                Issues with Assessment/ Marks? <br />
+                <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+                  Raise your query
+                </span>
+              </div>
             </div>
           ) : null}
           {showGrievanceModal && (

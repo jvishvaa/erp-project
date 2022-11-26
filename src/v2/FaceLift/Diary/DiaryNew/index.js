@@ -13,6 +13,11 @@ import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIco
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 
 const dateFormat = 'YYYY-MM-DD';
+const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
 const Diary = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -144,7 +149,7 @@ const Diary = () => {
             </div>
           )}
         </div>
-        {showTab == 1 && (
+        {showTab == 1 && !isStudentDiary && (
           <div className='row px-2'>
             {dailyDiaryData.length > 0 ? (
               <>
@@ -285,7 +290,7 @@ const Diary = () => {
             </TabPane>
           </Tabs>
         </div>
-        {user_level == 13 || user_level == 12 ? (
+        {(user_level == 13 || user_level == 12) && isOrchids ? (
           <div
             className='row justify-content-end th-pointer'
             style={{ position: 'fixed', bottom: '5%', right: '2%' }}

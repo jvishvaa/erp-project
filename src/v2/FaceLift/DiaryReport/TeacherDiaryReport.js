@@ -100,7 +100,7 @@ const TeacherDiaryReport = () => {
         grade_id: selectedSection?.grade_id,
         section_id: selectedSection?.section_id,
         subject_id: selectedTeacher?.subject_id,
-        teacher_erp: selectedTeacher?.erp_id,
+        teacher_id: selectedTeacher?.user_id,
         start_date: startDate,
         end_date: endDate,
       });

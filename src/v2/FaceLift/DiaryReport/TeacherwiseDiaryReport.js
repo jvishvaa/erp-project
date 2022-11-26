@@ -63,10 +63,11 @@ const TeacherwiseDiaryReport = () => {
   useEffect(() => {
     if (startDate && endDate) {
       fetchTeacherwiseReport({
-        session_year: selectedAcademicYear?.id,
+        // session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         diaryType,
         grade_id: selectedSection?.grade_id,
-        section_id: selectedSection?.section_id,
+        section_mapping: selectedSection?.section_mapping,
         start_date: startDate,
         end_date: endDate,
       });
