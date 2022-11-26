@@ -708,7 +708,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       </Select>
                     </Form.Item>
                   </div>
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                {!isErpCategory && <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
                   <div className='mb-2 text-left'>Subject</div>
                   <Form.Item name='subject'>
                     <Select
@@ -739,7 +739,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       {subjectOptions}
                     </Select>
                   </Form.Item>
-                </div>
+                </div>}
                 <div className='col-md-2 col-6 pl-0'>
                     <div className='mb-2 text-left'>Question Level</div>
                     <Form.Item name='questionlevel'>
@@ -765,6 +765,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       </Select>
                     </Form.Item>
                   </div>
+                  {isErpCategory && <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'></div>}
                 <div
                   className='col-md-3 col-6 px-0'
                   style={{ display: 'flex', justifyContent: 'flex-end' }}

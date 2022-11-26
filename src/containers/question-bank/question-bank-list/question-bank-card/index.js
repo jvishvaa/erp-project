@@ -229,6 +229,16 @@ const QuestionBankCard = ({
              inputProps={{ 'aria-label': 'primary checkbox' }}
              />
           : ''}
+          {showAddToQuestionPaper && period?.question_status === '2' ? 
+              <Checkbox
+              id={period?.id}
+              checked={period?.checked}
+              onChange={(e) => toggleCompleteQuestion(e,period,index)} 
+              name={period?.id}
+              size="small"
+             inputProps={{ 'aria-label': 'primary checkbox' }}
+             />
+          : ''}
           <Box>
              <Typography
               className={classes.title}
