@@ -364,7 +364,10 @@ if(filters.questionId){
       boardId : boardId,
       gradeName : gradeName,
       subjectName : subjectName,
-      subjectId : subjectId
+      subjectId : subjectId,
+      questionId :  questionId,
+      section :  section,
+      isEdit :  isEdit,
        
       // request_type : 1
     };

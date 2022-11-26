@@ -66,10 +66,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
   const [tabValue, setTabValue] = useState(0);
   const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const questionId = query.get('question');
-  const section = query.get('section');
-  const isEdit = query.get('isedit');
+  // const query = new URLSearchParams(location.search);
   const filterRef = useRef(null);
   const [clearFlag, setClearFlag] = useState(false);
   const [callFlag, setCallFlag] = useState(false);
@@ -87,6 +84,9 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [checkbox,setCheckbox] = useState(false);
   const [erpCategory , setErpCategory] = useState()
   const filtersDetails = location?.state?.params
+  const questionId = filtersDetails?.questionId	
+  const section = filtersDetails?.section;	
+  const isEdit = filtersDetails?.isEdit;
 
   const addQuestionToPaper = (question, questionId, section) => {
     initAddQuestionToSection(question, questionId, section);
@@ -140,7 +140,6 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     newValue = 0,
     erp_category,
   ) => {
-    console.log(subjMapId,'@@')
     setLoading(true);
     setPeriodData([]);
     setTabQueTypeId(quesTypeId);
@@ -458,6 +457,8 @@ setTabIsErpCentral((prev) => !prev)
     }
     console.log(selectedQuestion);
   }
+  console.log(questionId, section,'@@')
+
 
   const handleAdd = () => {
     let callRedux = selectedQuestion?.map((item , index) => {
@@ -755,6 +756,8 @@ setTabIsErpCentral((prev) => !prev)
                           showAddToQuestionPaper={questionId && section}
                           toggleComplete={toggleComplete}
                           isSelectAll={isSelectAll}
+                          toggleCompleteQuestion={toggleCompleteQuestion}	
+                          isSelectAllQuestion={isSelectAllQuestion}
                           redFlag={redFlag}
                           checkbox={checkbox}
                           periodData={periodData}
