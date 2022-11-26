@@ -201,7 +201,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
          className='assesment-scroll'
          style={{
            height: '90vh',
-           overflowX: 'scroll',
+           overflowX: 'hidden',
            overflowY: 'scroll',
          }}>
         {/* <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}> */}
@@ -242,7 +242,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
             tabIsErpCentral={tabIsErpCentral}
           /> */}
           <div className='row ml-2'>
-              <div className='col-md-1 col-6'>
+              {!tabIsErpCentral && <div className='col-md-1 col-6'>
               <Button
                   className={`${
                     tabValue == 0 ? 'th-button-active' : 'th-button'
@@ -253,7 +253,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
                 >
                   All
                 </Button>
-              </div>
+              </div>}
             <div className='col-md-5 d-flex'>
               <div className='col-md-4 col-6'>
                 <Button
@@ -290,6 +290,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
                 </Button>
               </div>}
             </div>
+            {tabIsErpCentral && <div className='col-md-1 col-6'></div>}
             <div className='col-md-2 d-flex' style={{marginLeft : '-2%'}}>
             {!tabIsErpCentral &&<div className='col-md-10 col-6'>
                 <Button

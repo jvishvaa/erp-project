@@ -235,8 +235,8 @@ const ViewMoreCard = ({
   return (
   <Drawer title= {resolveQuestionTypeName(periodDataForView.question_type) + '  (' + (getquestionLevel(parseInt(periodDataForView?.question_level)))  + ')'} zIndex={1300} width={'450px'} placement="right" onClose={onClose} open={open} visible={open} >
     {/* <Paper className={classes.rootViewMore}>  */}
-      <div className='row col-12'>
-        <div className='col-6'>
+      <div className='row col-12' style={{marginBottom:'5%' , fontWeight:'bold'}}>
+        <div className='col-6' style={{marginLeft:'-3%'}}>
             {getQuestionCategory(parseInt(periodDataForView.question_status))}
         </div>
         <div className='col-6 d-flex justify-content-end'>

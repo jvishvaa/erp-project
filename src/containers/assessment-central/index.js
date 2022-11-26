@@ -505,7 +505,18 @@ useEffect(() => {
       formik.setFieldValue('section', testFilterData?.section);
       formik.setFieldValue('group', testFilterData?.group);
       formik.setFieldValue('assesment_type', testFilterData?.assesment_type)
-      formik.setFieldValue('date', testFilterData?.date)
+      let date = [moment(testFilterData?.date[0]),moment(testFilterData?.date[1])]
+      formik.setFieldValue('date',date )
+      formRef.current.setFieldsValue({
+          status : testFilterData?.status,
+          branch : testFilterData?.branch,
+          grade : testFilterData?.grade,
+          subject : testFilterData?.subject,
+          group : testFilterData?.group,
+          section : testFilterData?.section,
+          assessmentType : testFilterData?.assesment_type,
+          date : date
+      })
       setBranchDropdown(testFilterDropdownList?.branch)
       setGrades(testFilterDropdownList?.grade)
       setSubjects(testFilterDropdownList?.subject)

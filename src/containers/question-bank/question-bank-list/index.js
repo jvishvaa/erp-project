@@ -63,7 +63,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [tabYearId, setTabYearId] = useState('');
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabChapterId, setTabChapterId] = useState('');
-  const [tabIsErpCentral, setTabIsErpCentral] = useState(false);
+  const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
   const [tabValue, setTabValue] = useState(0);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -140,6 +140,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     newValue = 0,
     erp_category,
   ) => {
+    console.log(subjMapId,'@@')
     setLoading(true);
     setPeriodData([]);
     setTabQueTypeId(quesTypeId);
@@ -216,10 +217,11 @@ if(filtersDetails){
   setTabGradeId(filtersDetails?.grade)
   setTabYearId(filtersDetails?.academic_session)
   setTabTopicId(filtersDetails?.topic)
+  setTabMapId(filtersDetails?.subjectId)
   handlePeriodList(
     tabQueTypeId,
     tabQueCatId,
-    tabMapId,
+    filtersDetails?.subjectId,
     tabQueLevel,
     filtersDetails?.topic,
     filtersDetails?.academic_session,
@@ -236,7 +238,7 @@ if(filtersDetails){
 
   useEffect(() => {
     if (
-      // tabMapId &&
+      tabMapId &&
       tabYearId &&
       tabGradeId && page
     ) {
@@ -471,7 +473,7 @@ setTabIsErpCentral((prev) => !prev)
           className='question-bank-scroll'
           style={{
             height: '90vh',
-            overflowX: 'scroll',
+            overflowX: 'hidden',
             overflowY: 'scroll',
           }}
         >
@@ -563,7 +565,7 @@ setTabIsErpCentral((prev) => !prev)
           >
             {/* <TabPanel setTabValue={setTabValue} tabValue={tabValue} setPage={setPage} /> */}
             <div className='row ml-2'>
-              <div className='col-md-1 col-6'>
+              {!tabIsErpCentral && <div className='col-md-1 col-6'>
                 <Button
                   className={`${
                     tabValue == 0 ? 'th-button-active' : 'th-button'
@@ -572,8 +574,8 @@ setTabIsErpCentral((prev) => !prev)
                 >
                   All
                 </Button>
-              </div>
-              <div className='col-md-2 col-6'>
+              </div>}
+              {!tabIsErpCentral && <div className='col-md-2 col-6'>
                 <Button
                   className={`${
                     tabValue == 1 ? 'th-button-active' : 'th-button'
@@ -582,7 +584,8 @@ setTabIsErpCentral((prev) => !prev)
                 >
                   Draft
                 </Button>
-              </div>
+              </div>}
+              
               <div className='col-md-2 col-6'>
                 <Button
                   className={`${
@@ -593,15 +596,16 @@ setTabIsErpCentral((prev) => !prev)
                   Published
                 </Button>
               </div>
+              {tabIsErpCentral && <div className='col-md-3 col-6'></div>}
               <div className='col-md-2 col-6'>
-                <Button
+                {!tabIsErpCentral && <Button
                   className={`${
                     tabValue == 3 ? 'th-button-active' : 'th-button'
                   } th-width-100 th-br-6 mt-2`}
                   onClick={() => setTabValue(3)}
                 >
                   For Review
-                </Button>
+                </Button>}
               </div>
               <div className='col-md-1 col-6'></div>
               <div className='col-md-2 col-6'>
