@@ -331,7 +331,7 @@ const QuestionBankCard = ({
                 variant='p'
                 component='p'
                 color='secondary'
-                // noWrap
+                noWrap
               >
                 {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
               </Typography>
@@ -341,7 +341,7 @@ const QuestionBankCard = ({
                 variant='p'
                 component='p'
                 color='secondary'
-                // noWrap
+                noWrap
               >
                 Question: {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
               </Typography>
