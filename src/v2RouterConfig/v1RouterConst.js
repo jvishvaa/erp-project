@@ -371,6 +371,7 @@ import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/aca
 import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
 import CurriculumCompletionChapter from 'containers/dashboard/ownerDashboard/academic/chapterWise';
 import TeacherSubject from 'containers/dashboard/ownerDashboard/academic/teacherSubject';
+import StudentSubject from 'containers/dashboard/ownerDashboard/academic/studentSubjectWise';
 
 import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade';
 import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report';
@@ -1369,6 +1370,11 @@ const V1Router = [
   <Route exact path='/event-category'>
     {({ match }) => <EventCategory match={match} />}
   </Route>,
+   <Route path='/curriculum-completion-student-subject/'>
+   {({ match }) => (
+     <StudentSubject match={match} />
+   )}
+ </Route>,
   <Route exact path='/publications'>
     {({ match }) => <Publications match={match} />}
   </Route>,

@@ -20,7 +20,7 @@ import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import { LeftOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { Button , Form , Select , message } from 'antd';
+import { Button, Form, Select, message } from 'antd';
 
 
 
@@ -186,7 +186,7 @@ const TeacherSubject = (props) => {
     teacherSubjectTable({
       acad_session: history?.location?.state?.acad_sess_id,
       session_year: history?.location?.state?.acad_session_id,
-      branch_id : history?.location?.state?.branchId,
+      branch_id: history?.location?.state?.branchId,
       central_gs_mappings: record?.central_gs_mappings.toString(),
       grade_id: record?.grade_id,
       sections_count: record?.section_count
@@ -223,37 +223,6 @@ const TeacherSubject = (props) => {
 
   const { acad_session_id, module_id, acad_sess_id } = history.location.state;
 
-  const handleCurrSubject = (gradeId, gradeName) => {
-    if (teacherView == true) {
-      history.push({
-        pathname: `/curriculum-completion-subject/${branchId}/${gradeId}`,
-        state: {
-          grade: gradeId,
-          gradeName: gradeName,
-          acad_session_id: acad_session_id,
-          acad_sess_id: acad_sess_id,
-          module_id: moduleId,
-          branchName: branchName,
-          selectedDate: dateToday,
-          teacherView: teacherView
-        },
-      });
-    } else {
-      history.push({
-        pathname: `/curriculum-completion-subject/${branchId}/${gradeId}`,
-        state: {
-          grade: gradeId,
-          gradeName: gradeName,
-          acad_session_id: acad_session_id,
-          acad_sess_id: acad_sess_id,
-          module_id: moduleId,
-          branchName: branchName,
-          selectedDate: dateToday,
-          teacherView: teacherView
-        },
-      });
-    }
-  };
 
 
 
@@ -281,21 +250,21 @@ const TeacherSubject = (props) => {
   };
 
   useEffect(() => {
-    if(volumeId == null) {
+    if (volumeId == null) {
       gradeTeacherTable({
         acad_session: history?.location?.state?.acad_sess_id,
         session_year: history?.location?.state?.acad_session_id,
-        branch_id : history?.location?.state?.branchId
+        branch_id: history?.location?.state?.branchId
       });
     } else {
       gradeTeacherTable({
         acad_session: history?.location?.state?.acad_sess_id,
         session_year: history?.location?.state?.acad_session_id,
-        branch_id : history?.location?.state?.branchId,
+        branch_id: history?.location?.state?.branchId,
         volume: volumeId
       });
     }
-  }, [acad_session_id , volumeId]);
+  }, [acad_session_id, volumeId]);
 
   const gradeTeacherTable = (params = {}) => {
     setLoading(true);
@@ -331,21 +300,21 @@ const TeacherSubject = (props) => {
       width: '15%',
       align: 'center',
       dataIndex: 'total_periods',
-      render: (data) => <span className='th-black-1 th-16'>{data}</span>,
+      render: (data) => <span className='th-black-1 th-16'>{data.toFixed(0)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS CONDUCTED</span>,
       dataIndex: 'completed_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data}</span>,
+      render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS PENDING</span>,
       dataIndex: 'pending_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data}</span>,
+      render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
@@ -354,7 +323,7 @@ const TeacherSubject = (props) => {
       align: 'center',
       render: (data) => <span className='th-green th-16'>{data} %</span>,
     },
-   
+
   ];
   const handleBack = () => {
     history.goBack();
@@ -362,14 +331,14 @@ const TeacherSubject = (props) => {
 
   const datagen = (data) => {
     console.log(data);
-    let sec_name = data.map((sec) => sec?.section_name)
+    let sec_name = data && data.map((sec) => sec?.section_name)
 
     console.log(JSON.stringify(sec_name));
     return <span className='th-green th-16'>{sec_name.toString()}</span>
   }
 
-  const expandedRowRender = (record , index) => {
-    console.log(record , 'rec');
+  const expandedRowRender = (record, index) => {
+    console.log(record, 'rec');
     const innerColumn = [
       {
         title: <span className='th-white '>Subject Name</span>,
@@ -434,7 +403,8 @@ const TeacherSubject = (props) => {
                   branchName: branchName,
                   selectedDate: dateToday,
                   teacherView: false,
-                  central_gs : row?.central_gs
+                  central_gs: row?.central_gs,
+                  branch_id: branchId
                 },
               })
             }
@@ -455,6 +425,28 @@ const TeacherSubject = (props) => {
         // showHeader={false}
         bordered={false}
         style={{ width: '100%' }}
+        onRow={(row, rowindex) => {
+          return {
+
+            onClick: (e) =>
+              history.push({
+                pathname: `/curriculum-completion-chapter/${branchId}/${record?.grade_id}`,
+                state: {
+                  grade: teacherData[index]?.grade_id,
+                  gradeName: history?.location?.state?.grade_name,
+                  subject_id: row?.subject_id,
+                  acad_session_id: acad_session_id,
+                  acad_sess_id: acad_sess_id,
+                  module_id: moduleId,
+                  branchName: branchName,
+                  selectedDate: dateToday,
+                  teacherView: false,
+                  central_gs: row?.central_gs,
+                  branch_id: branchId
+                },
+              })
+          }
+        }}
       />
     );
   };
@@ -508,41 +500,43 @@ const TeacherSubject = (props) => {
               </Form.Item>
             </div>
           </Grid>
-       
-            <div className='row '>
-              <div className='col-12'>
-                <Table
-                  className='th-table'
-                  rowClassName={(record, index) =>
-                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                  }
-                  loading={loading}
-                  columns={columns1}
-                  rowKey={(record) => record?.grade_id}
-                  expandable={{ expandedRowRender }}
-                  dataSource={teacherData}
-                  pagination={false}
-                  expandIconColumnIndex={6}
-                  expandedRowKeys={expandedRowKeys}
-                  onExpand={onTableRowExpand}
-                  expandIcon={({ expanded, onExpand, record }) =>
-                    expanded ? (
-                      <UpOutlined
-                        className='th-black-1 th-pointer'
-                        onClick={(e) => onExpand(record, e)}
-                      />
-                    ) : (
-                      <DownOutlined
-                        className='th-black-1 th-pointer'
-                        onClick={(e) => onExpand(record, e)}
-                      />
-                    )
-                  }
-                  scroll={{ x: 'max-content' }}
-                />
-              </div>
-           
+
+          <div className='row '>
+            <div className='col-12'>
+              <Table
+                className='th-table'
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                loading={loading}
+                columns={columns1}
+                rowKey={(record) => record?.grade_id}
+                expandable={{ expandedRowRender }}
+                dataSource={teacherData}
+                pagination={false}
+                expandIconColumnIndex={6}
+                expandedRowKeys={expandedRowKeys}
+                expandRowByClick={true}
+                onExpand={onTableRowExpand}
+                expandIcon={({ expanded, onExpand, record }) =>
+                  expanded ? (
+                    <UpOutlined
+                      className='th-black-1 th-pointer'
+                      onClick={(e) => onExpand(record, e)}
+                    />
+                  ) : (
+                    <DownOutlined
+                      className='th-black-1 th-pointer'
+                      onClick={(e) => onExpand(record, e)}
+                    />
+                  )
+                }
+
+                scroll={{ x: 'max-content' }}
+              />
             </div>
+
+          </div>
         </Grid>
 
         {loading && <Loader />}
