@@ -337,6 +337,8 @@ const DailyDiary = () => {
             if (res?.data?.message === 'Daily Dairy created successfully') {
               message.success('Daily Diary Created Succssfully');
               history.push('/diary/teacher');
+            } else if (res?.data?.message.includes('locked')) {
+              message.error(res?.data?.message);
             } else {
               message.error('Daily Diary Already Exists');
             }

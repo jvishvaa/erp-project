@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { Table, DatePicker, Breadcrumb, message, Select } from 'antd';
+import { Table, DatePicker, Breadcrumb, message } from 'antd';
 import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
 import CalendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
@@ -12,19 +12,14 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 const SubjectwiseDiaryReport = () => {
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const history = useHistory();
-  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [subjectwiseReport, setSubjectwiseReport] = useState([]);
   const [subjectwiseStats, setSubjectwiseStats] = useState();
@@ -50,7 +45,7 @@ const SubjectwiseDiaryReport = () => {
       setTableExpanded(true);
       keys.push(record.subject_id);
       fetchTeacherwiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         grade_id: selectedSection?.grade_id,
         section_mapping: selectedSection?.section_mapping,
@@ -63,7 +58,9 @@ const SubjectwiseDiaryReport = () => {
     setExpandedRowKeys(keys);
   };
   const fetchSubjectwiseReport = (params = {}) => {
+    setSubjectwiseReport([]);
     setLoading(true);
+    setExpandedRowKeys([]);
     axios
       .get(`${endpoints.diaryReport.subjectwiseReport}`, {
         params: { ...params },
@@ -170,7 +167,7 @@ const SubjectwiseDiaryReport = () => {
   };
 
   useEffect(() => {
-    if (startDate && endDate) {
+    if (startDate && endDate && diaryType) {
       fetchSubjectwiseReport({
         acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
@@ -229,7 +226,7 @@ const SubjectwiseDiaryReport = () => {
       <div className='row py-3 px-2'>
         <div className='col-md-8'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-16 th-pointer'>
               Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item
@@ -276,19 +273,19 @@ const SubjectwiseDiaryReport = () => {
         </div>
         <div className='row mt-3'>
           <div className='col-md-2 col-6 text-capitalize'>
-            {selectedSection?.grade_name}
+            <span className='th-fw-500'>{selectedSection?.grade_name}</span>
           </div>
           <div className='col-md-2 col-6 text-capitalize'>
-            <span className='th-bg-white'>{selectedSection?.section_name}</span>
+            <span className='th-fw-500'>{selectedSection?.section_name}</span>
           </div>
         </div>
         {subjectwiseStats && (
           <div className='row mt-3 th-black-2'>
             <div className='col-md-3'>
-              Total No. of Subjects :
+              Total No. of Subjects :{' '}
               <span className='th-primary'>{subjectwiseStats?.no_of_subjects}</span>
             </div>
-            <div className='col-md-3 pt-2 pt-md-0'>
+            <div className='col-md-3 pt-2 px-1 pt-md-0'>
               Total No. of Diaries Assigned :{' '}
               <span className='th-primary'>{subjectwiseStats?.dairy_count}</span>
             </div>
