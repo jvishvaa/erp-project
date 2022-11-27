@@ -22,9 +22,9 @@ import CreateAnnouncement from 'v2/FaceLift/Announcement/CreateAnnouncement/Crea
 import StudentDashboardNew from 'v2/FaceLift/StudentDashboard';
 import V1Router from './v1RouterConst';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
-import Diary from 'v2/FaceLift/Diary';
-import DailyDiary from 'v2/FaceLift/Diary/DailyDiary';
-import GeneralDiary from 'v2/FaceLift/Diary/GeneralDiary';
+import Diary from 'v2/FaceLift/Diary/DiaryOld';
+import DailyDiary from 'v2/FaceLift/Diary/DiaryOld/DailyDiary';
+import GeneralDiary from 'v2/FaceLift/Diary/DiaryOld/GeneralDiary';
 import GradeWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/GradeWiseAttendance';
 import SectionWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/SectionWiseAttendance';
 import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/ReportConfigTable';
@@ -41,8 +41,8 @@ import TeacherDiaryReport from 'v2/FaceLift/DiaryReport/TeacherDiaryReport';
 import TeacherwiseDiaryReport from 'v2/FaceLift/DiaryReport/TeacherwiseDiaryReport';
 import endpoints from 'config/endpoints';
 import axios from 'axios';
-import CreateDiary from 'v2/FaceLift/Diary/CreateDiary';
-
+import CreateDiary from 'v2/FaceLift/Diary/DiaryNew/CreateDiary';
+import DiaryMain from 'v2/FaceLift/Diary';
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -134,12 +134,15 @@ const V2Router = () => {
                           {({ match }) => <CreateAnnouncement match={match} />}
                         </Route>
                         <Route path='/diary/teacher'>
-                          {({ match }) => <Diary match={match} />}
+                          {({ match }) => <DiaryMain match={match} />}
                         </Route>
+                        {/* <Route path='/diary/teacher'>
+                          {({ match }) => <Diary match={match} />}
+                        </Route> */}
                         <Route path='/diary/student'>
-                          {({ match }) => <Diary match={match} />}
+                          {({ match }) => <DiaryMain match={match} />}
                         </Route>
-                        <Route path='/create-diary'>
+                        <Route path='/create/diary'>
                           {({ match }) => <CreateDiary match={match} />}
                         </Route>
                         <Route path='/create/daily-diary'>

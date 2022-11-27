@@ -14,6 +14,9 @@ const DiaryReport = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [diaryReportData, setDiaryReportData] = useState([]);
   const [loading, setLoading] = useState(false);
   let { user_level } = JSON.parse(localStorage.getItem('userDetails')) || '';
@@ -41,7 +44,7 @@ const DiaryReport = () => {
 
   useEffect(() => {
     if (selectedAcademicYear)
-      fetchDiaryReportData({ session_year: selectedAcademicYear?.id });
+      fetchDiaryReportData({ acad_session_id: selectedBranch?.id });
   }, []);
 
   return (
@@ -88,7 +91,7 @@ const DiaryReport = () => {
                             pathname: '/gradewise-diary-report',
                             state: {
                               startDate: moment()
-                                .subtract(7, 'days')
+                                .subtract(6, 'days')
                                 .format('YYYY-MM-DD'),
                               endDate: moment().format('YYYY-MM-DD'),
                             },

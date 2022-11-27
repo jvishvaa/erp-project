@@ -21,10 +21,8 @@ import {
   CloseCircleOutlined,
   PlusOutlined,
   CaretRightOutlined,
-  EyeFilled,
   ReloadOutlined,
 } from '@ant-design/icons';
-import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import axiosInstance from 'axios';
 import endpoints from 'v2/config/endpoints';
@@ -32,12 +30,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
-import AsignHomework from '../../../../assets/images/hw-given.svg';
 import QuestionCard from 'components/question-card';
 import moment from 'moment';
 import cuid from 'cuid';
 import { addHomeWork } from 'redux/actions/teacherHomeworkActions';
-import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import tickIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/greenTick.svg';
 import deleteIcon from 'v2/Assets/dashboardIcons/diaryIcons/deleteRedIcon.svg';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
@@ -75,7 +71,6 @@ const DailyDiary = () => {
   const [sectionName, setSectionName] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [sectionID, setSectionID] = useState([]);
   const [sectionMappingID, setSectionMappingID] = useState([]);
   const [subjectID, setSubjectID] = useState();
@@ -128,6 +123,9 @@ const DailyDiary = () => {
   const [currentPanel, setCurrentPanel] = useState(null);
 
   const [addedPeriods, setAddedPeriods] = useState([]);
+  const [editAddedPeriods, setEditAddedPeriods] = useState([]);
+  const [editRemovedPeriods, setEditRemovedPeriods] = useState([]);
+  const [upcomingPeriod, setUpcomingPeriod] = useState([]);
   const [isPeriodAdded, setIsPeriodAdded] = useState(false);
   const [clearTodaysTopic, setClearTodaysTopic] = useState(true);
   const [clearUpcomingPeriod, setClearUpcomingPeriod] = useState(false);
@@ -148,7 +146,6 @@ const DailyDiary = () => {
   };
 
   const formRef = createRef();
-  const drawerFormRef = createRef();
   const history = useHistory();
 
   let editData = '';
@@ -248,6 +245,15 @@ const DailyDiary = () => {
       },
       dairy_type: 2,
     };
+    if (editAddedPeriods.length > 0) {
+      payload['added_period_ids'] = editAddedPeriods.map((item) => item.id).toString();
+    }
+    if (editRemovedPeriods.length > 0) {
+      payload['remove_period_ids'] = editRemovedPeriods.map((item) => item.id).toString();
+    }
+    // if (editData?.periods_data.length > 0) {
+    //   payload['remove_period_ids'] = editRemovedPeriods.map((item) => item.id).toString();
+    // }
     axios
       .put(
         `${endpoints?.dailyDiary?.updateDelete}${diaryID}/update-delete-dairy/`,
@@ -264,7 +270,7 @@ const DailyDiary = () => {
         message.error('Something went wrong');
       });
   };
-
+  console.log('addedPeriods', addedPeriods, editRemovedPeriods, editAddedPeriods);
   const handleSubmit = () => {
     if (showHomeworkForm && !homeworkCreated) {
       message.error('Please finish the homework first');
@@ -318,36 +324,36 @@ const DailyDiary = () => {
     if (addedPeriods.length > 0) {
       payload['period_added_ids'] = addedPeriods.map((item) => item.id).toString();
     }
-    // if (
-    //   payload?.teacher_report?.previous_class ||
-    //   payload?.teacher_report?.summary ||
-    //   payload?.teacher_report?.class_work ||
-    //   payload?.teacher_report?.tools_used ||
-    //   (showHomeworkForm && payload?.teacher_report?.homework) ||
-    //   assignedHomework?.length > 0
-    // ) {
-    axios
-      .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
-      .then((res) => {
-        if (res?.data?.status_code == 200) {
-          setLoading(false);
-          if (res?.data?.message === 'Daily Dairy created successfully') {
-            message.success('Daily Diary Created Succssfully');
-            history.push('/diary/teacher');
-          } else {
-            message.error('Daily Diary Already Exists');
+    if (
+      payload?.teacher_report?.summary ||
+      payload?.period_added_ids ||
+      (showHomeworkForm && payload?.teacher_report?.homework) ||
+      assignedHomework?.length > 0
+    ) {
+      axios
+        .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            if (res?.data?.message === 'Daily Dairy created successfully') {
+              message.success('Daily Diary Created Succssfully');
+              history.push('/diary/teacher');
+            } else if (res?.data?.message.includes('locked')) {
+              message.error(res?.data?.message);
+            } else {
+              message.error('Daily Diary Already Exists');
+            }
+            setLoading(false);
           }
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        message.error(error?.message);
-      });
-    // } else {
-    //   message.error('Please Enter Details');
-    //   setLoading(false);
-    //   return;
-    // }
+        })
+        .catch((error) => {
+          setLoading(false);
+          message.error(error?.message);
+        });
+    } else {
+      message.error("Please enter either of Today's Topic, Homework or Notes");
+      setLoading(false);
+      return;
+    }
 
     // if (hwMappingID) {
     //   payload['hw_dairy_mapping_id'] = hwMappingID;
@@ -411,14 +417,18 @@ const DailyDiary = () => {
   });
 
   const handleChapter = (e) => {
-    drawerFormRef.current.setFieldsValue({
+    formRef.current.setFieldsValue({
       key_concept: null,
     });
-    setChapterID(e.value);
-    // setChapterName(e.children);
-    fetchKeyConceptListData({
-      chapter_id: e.value,
-    });
+    setKeyConceptDropdown([]);
+    setResourcesData([]);
+    if (e) {
+      setChapterID(e.value);
+      // setChapterName(e.children);
+      fetchKeyConceptListData({
+        chapter_id: e.value,
+      });
+    }
   };
   const handleKeyConcept = (e) => {
     if (e) {
@@ -466,17 +476,29 @@ const DailyDiary = () => {
       </Option>
     );
   });
+  const fetchChapterDropdown = (params = {}) => {
+    axios
+      .get('/academic/diary/chapters/', { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setChapterDropdown(result?.data?.data);
+        }
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+      });
+  };
 
   const handleSubject = (e) => {
-    // drawerFormRef.current.setFieldsValue({
-    //   chapter: null,
-    //   key_concept: null,
-    // });
+    formRef.current.setFieldsValue({
+      chapter: null,
+      key_concept: null,
+    });
     setAddedPeriods([]);
     setResourcesData([]);
+    setClearTodaysTopic(true);
     setAssignedHomework();
     setHomework('');
-    setShowIcon(false);
     setHomeworkCreated(false);
     setShowHomeworkForm(false);
     if (e) {
@@ -489,21 +511,24 @@ const DailyDiary = () => {
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
       });
-      const params = {
+      // const params = {
+
+      // };
+      fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: e.value,
         grade_id: gradeID,
-      };
-      axios
-        .get('/academic/diary/chapters/', { params: { ...params } })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            setChapterDropdown(result?.data?.data);
-          }
-        })
-        .catch((error) => {
-          message.error('error', error?.message);
-        });
+      });
+      // axios
+      //   .get('/academic/diary/chapters/', { params: { ...params } })
+      //   .then((result) => {
+      //     if (result?.data?.status_code == 200) {
+      //       setChapterDropdown(result?.data?.data);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     message.error('error', error?.message);
+      //   });
     }
   };
 
@@ -646,6 +671,7 @@ const DailyDiary = () => {
       mapAssignedHomework();
     }
   }, [assignedHomework]);
+  useEffect(() => {}, [subjectID]);
   useEffect(() => {
     if (addedPeriods.length > 0) {
       fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
@@ -795,6 +821,7 @@ const DailyDiary = () => {
       .then((res) => {
         if (res.data.status_code === 200) {
           message.success('Period Completed Successfully');
+          fetchLessonResourcesData(keyConceptID);
         }
       })
       .catch((error) => {
@@ -814,7 +841,10 @@ const DailyDiary = () => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Diary') {
+            if (
+              item.child_name === 'Teacher Diary' ||
+              item.child_name === 'Student Diary'
+            ) {
               setModuleId(item.child_id);
             }
           });
@@ -835,7 +865,7 @@ const DailyDiary = () => {
       let editData = history.location.state.data;
       let editSubject = history.location.state.subject;
       setIsDiaryEdit(history?.location?.state?.isDiaryEdit);
-      setDiaryID(history.location.state.data?.id);
+      setDiaryID(history.location.state.data?.diary_id);
       formRef.current.setFieldsValue({
         grade: editData?.grade_name,
         section: editData?.section_name,
@@ -857,15 +887,20 @@ const DailyDiary = () => {
       }
       // setRecap(editData?.teacher_report?.previous_class);
       // setClasswork(editData?.teacher_report?.class_work);
-      // setSummary(editData?.teacher_report?.summary);
+      setSummary(editData?.teacher_report?.summary);
       // setTools(editData?.teacher_report?.tools_used);
-      // setHomework(editData?.teacher_report?.homework);
+      setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
       fetchHomeworkDetails({
         section_mapping: editData?.section_mapping_id,
         subject: editSubject?.subject_id,
         date: moment(editData?.created_at).format('YYYY-MM-DD'),
         // user_id: user_id,
+      });
+      fetchChapterDropdown({
+        branch_id: selectedBranch.branch.id,
+        subject_id: editSubject?.subject_id,
+        grade_id: editData?.grade_id,
       });
     }
   }, []);
@@ -955,7 +990,7 @@ const DailyDiary = () => {
             </div>
           </Form>
           {loading ? (
-            <div className='d-flex justify-content-center align-items-center h-50'>
+            <div className='d-flex justify-content-center align-items-center h-50 mb-3'>
               <Spin tip='Creating Diary...' size='large' />
             </div>
           ) : (
@@ -971,9 +1006,9 @@ const DailyDiary = () => {
                         <div className='col-6 px-0 th-black-2 th-fw-600 th-18'>
                           Today's Topic
                         </div>
-                        <div className='col-6 text-right pr-0 mr-2C'>
+                        <div className='col-6 text-right pr-0'>
                           <span
-                            className='th-12 px-1 th-primary py-1 th-pointer '
+                            className='th-12 px-1 th-primary py-1 th-pointer mr-3 th-br-6'
                             style={{ border: '1px solid #d9d9d9' }}
                             onClick={() =>
                               subjectID
@@ -985,7 +1020,7 @@ const DailyDiary = () => {
                           </span>
                           {addedPeriods.length > 0 ? (
                             <span
-                              className='th-12 px-1 th-red py-1 th-pointer'
+                              className='th-12 px-1 th-red py-1 th-pointer th-br-6'
                               style={{ border: '1px solid red' }}
                               onClick={() =>
                                 setClearTodaysTopic((prevState) => !prevState)
@@ -1012,7 +1047,7 @@ const DailyDiary = () => {
                         style={{
                           border: '1px solid #d9d9d9',
                           boxShadow: '0px 0px 6px 0px #0000005E',
-                          height: 165,
+                          height: 170,
                           overflowY: 'auto',
                         }}
                       >
@@ -1059,15 +1094,41 @@ const DailyDiary = () => {
                                       <div className='col-6 pr-0 th-18'>
                                         {item?.period_name}
                                       </div>
-                                      <div className='col-6 pl-0 text-right'>
+                                      <div className='col-5 pl-0 text-right'>
                                         <div className='d-flex flex-column'>
                                           <div className='th-10 th-grey-1'>
                                             Last Updated on
                                           </div>
                                           <div className='th-10 th-black-1'>
-                                            21/11/2022, 12:33 pm
+                                            {moment(item?.created_at).format(
+                                              'DD/MM/YYYY HH:mm a'
+                                            )}
                                           </div>
                                         </div>
+                                      </div>
+                                      <div
+                                        className='col-1 pr-0'
+                                        onClick={() => {
+                                          setIsPeriodAdded(false);
+                                          setCompletedPeriod(item);
+                                          openPeriodInfoModal();
+                                          if (addedPeriods.length == 1) {
+                                            setClearTodaysTopic(true);
+                                          }
+                                          const index = addedPeriods.indexOf(item);
+                                          const newList = addedPeriods.slice();
+                                          newList.splice(index, 1);
+                                          setAddedPeriods(newList);
+                                          if (isDiaryEdit) {
+                                            if (!editData?.periods_data.includes(item))
+                                              setEditRemovedPeriods([
+                                                ...editRemovedPeriods,
+                                                item,
+                                              ]);
+                                          }
+                                        }}
+                                      >
+                                        X
                                       </div>
                                     </div>
                                   }
@@ -1082,20 +1143,22 @@ const DailyDiary = () => {
                                     }}
                                   >
                                     <div className='col-12 px-0'>
-                                      <div className='row pt-3'>
-                                        <div className='col-4 pr-0 th-fw-600'>
-                                          Module :
+                                      {boardFilterArr.includes(window.location.host) && (
+                                        <div className='row pt-3'>
+                                          <div className='col-4 pr-0 th-fw-600'>
+                                            Module :
+                                          </div>
+                                          <div className='col-8 pl-0 th-grey-1'>
+                                            {item?.chapter__lt_module__lt_module_name}
+                                          </div>
                                         </div>
-                                        <div className='col-8 pl-0 th-grey-1'>
-                                          {item?.module_name}
-                                        </div>
-                                      </div>
+                                      )}
                                       <div className='row py-1'>
                                         <div className='col-4 pr-0 th-fw-600'>
                                           Chapter Name :
                                         </div>
                                         <div className='col-8 pl-0 th-grey-1'>
-                                          {item?.chapter_name}
+                                          {item?.chapter__chapter_name}
                                         </div>
                                       </div>
                                       <div className='row pb-2'>
@@ -1103,7 +1166,7 @@ const DailyDiary = () => {
                                           Key Concept :
                                         </div>
                                         <div className='col-8 pl-0 th-grey-1'>
-                                          {item?.topic_name}
+                                          {item?.key_concept__topic_name}
                                         </div>
                                       </div>
                                     </div>
@@ -1129,7 +1192,7 @@ const DailyDiary = () => {
                         </div>
                         <div className='col-sm-6 col-4 text-right pr-0'>
                           <span
-                            className='th-12 px-1 th-red py-1 th-pointer'
+                            className='th-12 px-1 th-red py-1 th-pointer th-br-6'
                             style={{
                               border: '1px solid red',
                             }}
@@ -1152,11 +1215,11 @@ const DailyDiary = () => {
                         </div>
                       </div>
                       <div
-                        className='row my-2 th-br-6'
+                        className='row mt-1 th-br-6'
                         style={{
                           border: '1px solid #d9d9d9',
                           boxShadow: '0px 0px 6px 0px #0000005E',
-                          height: '150px',
+                          height: '170px',
                         }}
                       >
                         {clearUpcomingPeriod ? (
@@ -1171,7 +1234,7 @@ const DailyDiary = () => {
                             >
                               <div className='col-12 text-center th-fw-500 th-black-2'>
                                 <PlusOutlined className='mr-3' />
-                                Select from Lesson plan
+                                Add Today's Topic to get Upcoming Period
                               </div>
                             </div>
                           </>
@@ -1189,7 +1252,9 @@ const DailyDiary = () => {
                                 className='row th-fw-600 align-items-center py-1 th-bg-pink'
                                 style={{ borderRadius: '6px 6px 0px 0px' }}
                               >
-                                <div className='col-6 pr-0 th-18'>Period : 3</div>
+                                <div className='col-6 pr-0 th-18'>
+                                  {upcomingPeriod?.period_name}
+                                </div>
                                 <div className='col-6 pl-0 text-right'>
                                   <div className='d-flex flex-column'>
                                     <div className='th-10 th-grey-1'>Last Updated on</div>
@@ -1201,15 +1266,21 @@ const DailyDiary = () => {
                               </div>
                               <div className='row pt-3'>
                                 <div className='col-4 pr-0 th-fw-600'>Module :</div>
-                                <div className='col-8 pl-0 th-grey-1'>Module name</div>
+                                <div className='col-8 pl-0 th-grey-1'>
+                                  {upcomingPeriod?.module_name}
+                                </div>
                               </div>
                               <div className='row py-1'>
                                 <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
-                                <div className='col-8 pl-0 th-grey-1'>Chapter name</div>
+                                <div className='col-8 pl-0 th-grey-1'>
+                                  {upcomingPeriod?.chapter_name}
+                                </div>
                               </div>
                               <div className='row pb-2'>
                                 <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
-                                <div className='col-8 pl-0 th-grey-1'>Concept name</div>
+                                <div className='col-8 pl-0 th-grey-1'>
+                                  {upcomingPeriod?.topic_name}
+                                </div>
                               </div>
                             </div>
                             <div className='col-12 text-right pb-1'>
@@ -1219,101 +1290,6 @@ const DailyDiary = () => {
                         )}
                       </div>
                     </div>
-                    {/* <div className='col-md-4 py-2'>
-                      <TextArea
-                        className='th-width-100 th-br-6'
-                        value={recap}
-                        onChange={(e) => setRecap(e.target.value)}
-                        placeholder='Recap of Previous Class'
-                        rows={4}
-                        style={{ resize: 'none' }}
-                      />
-                    </div> */}
-                    {/* <div className='col-md-4 py-2'>
-                      <TextArea
-                        className='th-width-100 th-br-6'
-                        value={classwork}
-                        onChange={(e) => setClasswork(e.target.value)}
-                        placeholder='Details of ClassWork'
-                        rows={4}
-                        style={{ resize: 'none' }}
-                      />
-                    </div> */}
-                    {/* <div className='col-md-4 py-2'>
-                      <TextArea
-                        className='th-width-100 th-br-6'
-                        value={summary}
-                        onChange={(e) => setSummary(e.target.value)}
-                        placeholder='Summary'
-                        rows={4}
-                        style={{ resize: 'none' }}
-                      />
-                    </div> */}
-
-                    {/* <div className='col-md-4 py-2'>
-                      <TextArea
-                        className='th-width-100 th-br-6'
-                        value={tools}
-                        onChange={(e) => setTools(e.target.value)}
-                        placeholder='Tools Used'
-                        rows={4}
-                        style={{ resize: 'none' }}
-                      />
-                    </div> */}
-                    {/* <div
-                      className='col-md-4 py-2 d-flex'
-                      style={{ position: 'relative' }}
-                    >
-                     
-                      {showIcon && !assignedHomework && (
-                        <div className='col-12 py-2'>
-                          <Checkbox
-                            checked={showHomeworkForm}
-                            onChange={() =>
-                              setShowHomeworkForm((prevState) => !prevState)
-                            }
-                          >
-                            Assign Homework
-                          </Checkbox>
-                        </div>
-                      )}
-
-                      {showIcon ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}
-                        >
-                          {assignedHomework && !homework ? (
-                            <div onClick={mapAssignedHomework} className='th-pointer'>
-                              <span>
-                                <InfoCircleFilled
-                                  className='th-primary'
-                                  style={{ fontSize: 20 }}
-                                />
-                              </span>
-                              <span className='ml-2 th-fw-500'>
-                                Homework Exists (click to map to diary)
-                              </span>
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div> */}
-                    {/* <div className='col-md-4 py-2'>
-                      {hwMappingID && homework ? (
-                        <>
-                          <span>
-                            <img src={AsignHomework} className='py-3' />
-                          </span>
-                          <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
-                            Homework Mapped to Diary
-                          </span>
-                        </>
-                      ) : null}
-                    </div> */}
-
                     <div className='col-12 py-2'>
                       <span className='th-grey th-14'>
                         Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
@@ -1425,13 +1401,11 @@ const DailyDiary = () => {
                     <div className='row align-items-center'>
                       <span className='th-black-1 th-fw-600'>Due Date</span>
                       <span className='th-br-4 p-1 th-bg-grey ml-2'>
-                        {/* <img src={calendarIcon} className='pl-2' /> */}
                         <DatePicker
                           disabledDate={(current) =>
                             current.isBefore(moment().subtract(1, 'day'))
                           }
                           allowClear={false}
-                          // defaultValue={moment()}
                           placeholder={submissionDate}
                           placement='bottomRight'
                           onChange={(event, value) => handleSubmissionDate(value)}
@@ -1491,10 +1465,9 @@ const DailyDiary = () => {
                 <div className='col-12 py-2'>
                   <TextArea
                     className='th-width-100 th-br-6'
-                    value={classwork}
-                    onChange={(e) => setClasswork(e.target.value)}
+                    value={summary}
+                    onChange={(e) => setSummary(e.target.value)}
                     placeholder='Write Something'
-                    // rows={4}
                     style={{ resize: 'none' }}
                   />
                 </div>
@@ -1547,7 +1520,7 @@ const DailyDiary = () => {
             </div>
             <div className='col-6 text-right'>{subjectName}</div>
           </div>
-          <Form id='filterDrawerForm' ref={drawerFormRef} layout={'horizontal'}>
+          <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row align-items-center'>
               <div className='col-3 th-primary th-fw-600 pr-0'>Chapter</div>
               <div className='col-9 pt-2'>
@@ -1661,91 +1634,11 @@ const DailyDiary = () => {
                           </div>
                         </div>
 
-                        <div className='col-9 col-md-10 text-truncate th-primary px-0'>
+                        <div className='col-9 text-truncate th-primary px-0'>
                           {item?.key_concept__topic_name}
                         </div>
                       </div>
-                      {/* <div className='row mt-2'>
-                        <div className='col-12 text-through pl-0'>
-                          <span className='th-grey'>Resources</span>
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          overflowY: 'scroll',
-                          overflowX: 'hidden',
-                          maxHeight: 160,
-                        }}
-                        className='th-question'
-                      >
-                        {item?.lp_files.map((files, i) =>
-                          files?.media_file?.map((each, index) => {
-                            if (
-                              (user_level == 13 &&
-                                files?.document_type == 'Lesson_Plan') ||
-                              (user_level == 13 &&
-                                files?.document_type == 'Teacher_Reading_Material')
-                            ) {
-                            } else {
-                              let fullName = each?.split(
-                                `${files?.document_type.toLowerCase()}/`
-                              )[1];
-                              let textIndex = fullName
-                                ?.split('_')
-                                .indexOf(fullName.split('_').find((item) => isNaN(item)));
-                              let displayName = fullName
-                                .split('_')
-                                .slice(textIndex)
-                                .join('_');
-                              let fileName = displayName ? displayName.split('.') : null;
-                              let file = fileName ? fileName[fileName?.length - 2] : '';
-                              let extension = fileName
-                                ? fileName[fileName?.length - 1]
-                                : '';
-                              return (
-                                <div
-                                  className='row mt-2 py-2 align-items-center'
-                                  style={{ border: '1px solid #d9d9d9' }}
-                                >
-                                  <div className='col-2'>
-                                    <img src={getFileIcon(extension)} />
-                                  </div>
-                                  <div className='col-10 px-0 th-pointer'>
-                                    <a
-                                      onClick={() => {
-                                        openPreview({
-                                          currentAttachmentIndex: 0,
-                                          attachmentsArray: [
-                                            {
-                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
-
-                                              name: fileName,
-                                              extension: '.' + extension,
-                                            },
-                                          ],
-                                        });
-                                      }}
-                                      rel='noopener noreferrer'
-                                      target='_blank'
-                                    >
-                                      <div className='row align-items-center'>
-                                        <div className='col-10 px-0'>
-                                          {files.document_type}_{file}
-                                        </div>
-                                        <div className='col-2'>
-                                          <EyeFilled />
-                                        </div>
-                                      </div>
-                                    </a>
-                                  </div>
-                                </div>
-                              );
-                            }
-                          })
-                        )}
-                      </div> */}
                       <hr className='mt-1' />
-
                       <div className='row mb-2 align-items-center'>
                         <div className='col-12 col-sm-6 th-black-2 pl-0'>
                           <div className='row'>
@@ -1762,7 +1655,12 @@ const DailyDiary = () => {
                           </div>
                           <div className='row th-black-2 '>
                             <div className='col-12 th-grey pl-0 th-12'>
-                              Last Updated {getTimeInterval(item.updated_at)}
+                              Last Updated{' '}
+                              {getTimeInterval(
+                                item?.completion_status?.filter(
+                                  (item) => item?.section_id === sectionMappingID
+                                )[0].completed_at
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1772,11 +1670,7 @@ const DailyDiary = () => {
                           )[0].is_complete == false && (
                             <div className='th-bg-green-2 px-2 py-1 th-br-6'>
                               <Checkbox
-                                // checked={completePeriod}
-                                onChange={() =>
-                                  // setShowHomeworkForm((prevState) => !prevState)
-                                  markPeriodComplete(item)
-                                }
+                                onChange={() => markPeriodComplete(item)}
                                 className='th-green th-fw-500'
                               >
                                 Mark Complete
@@ -1816,11 +1710,18 @@ const DailyDiary = () => {
                                 <div
                                   className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
                                   onClick={() => {
-                                    setIsPeriodAdded(true);
-                                    setClearTodaysTopic(false);
-                                    setCompletedPeriod(item);
-                                    openPeriodInfoModal();
-                                    setAddedPeriods([...addedPeriods, item]);
+                                    if (!addedPeriods.includes(item)) {
+                                      setIsPeriodAdded(true);
+                                      setClearTodaysTopic(false);
+                                      setCompletedPeriod(item);
+                                      openPeriodInfoModal();
+                                      setAddedPeriods([...addedPeriods, item]);
+                                      if (isDiaryEdit) {
+                                        setEditAddedPeriods([...editAddedPeriods, item]);
+                                      }
+                                    } else {
+                                      message.warning('Period is already added to Diary');
+                                    }
                                   }}
                                 >
                                   Add to Diary

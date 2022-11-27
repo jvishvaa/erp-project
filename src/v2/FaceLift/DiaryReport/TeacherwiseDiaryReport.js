@@ -2,29 +2,23 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { Table, DatePicker, Breadcrumb, message, Select } from 'antd';
-import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
+import { Table, DatePicker, Breadcrumb, message } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import CalendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
-import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 const TeacherwiseDiaryReport = () => {
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const history = useHistory();
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [teacherwiseReport, setTeacherwiseReport] = useState([]);
   const [teacherwiseStats, setTeacherwiseStats] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -61,12 +55,12 @@ const TeacherwiseDiaryReport = () => {
   };
 
   useEffect(() => {
-    if (startDate && endDate) {
+    if (startDate && endDate && diaryType) {
       fetchTeacherwiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         diaryType,
         grade_id: selectedSection?.grade_id,
-        section_id: selectedSection?.section_id,
+        section_mapping: selectedSection?.section_mapping,
         start_date: startDate,
         end_date: endDate,
       });
@@ -111,10 +105,21 @@ const TeacherwiseDiaryReport = () => {
       <div className='row py-3 px-2'>
         <div className='col-md-8'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-16 th-pointer'>
               Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item className='th-grey th-16' href='/gradewise-diary-report'>
+            <Breadcrumb.Item
+              className='th-grey th-16 th-pointer'
+              onClick={() =>
+                history.push({
+                  pathname: '/gradewise-diary-report',
+                  state: {
+                    startDate,
+                    endDate,
+                  },
+                })
+              }
+            >
               General Diary Report
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1 th-16'>Teacher Report</Breadcrumb.Item>
@@ -145,15 +150,15 @@ const TeacherwiseDiaryReport = () => {
         </div>
         <div className='row mt-3'>
           <div className='col-md-2 col-6 text-capitalize'>
-            {selectedSection?.grade_name}
+            <span className='th-fw-500'>{selectedSection?.grade_name}</span>
           </div>
           <div className='col-md-2 col-6 text-capitalize'>
-            {selectedSection?.section_name}
+            <span className='th-fw-500'>{selectedSection?.section_name}</span>
           </div>
         </div>
         {teacherwiseStats && (
           <div className='row mt-3 th-black-2'>
-            <div className='col-md-3 pt-2 pt-md-0'>
+            <div className='col-md-3 pt-2 pt-md-0 pr-0'>
               Total No. of Diaries Assigned :{' '}
               <span className='th-primary'>{teacherwiseStats?.no_of_daires}</span>
             </div>

@@ -229,6 +229,16 @@ const QuestionBankCard = ({
              inputProps={{ 'aria-label': 'primary checkbox' }}
              />
           : ''}
+          {showAddToQuestionPaper && period?.question_status === '2' ? 
+              <Checkbox
+              id={period?.id}
+              checked={period?.checked}
+              onChange={(e) => toggleCompleteQuestion(e,period,index)} 
+              name={period?.id}
+              size="small"
+             inputProps={{ 'aria-label': 'primary checkbox' }}
+             />
+          : ''}
           <Box>
              <Typography
               className={classes.title}
@@ -331,7 +341,7 @@ const QuestionBankCard = ({
                 variant='p'
                 component='p'
                 color='secondary'
-                // noWrap
+                noWrap
               >
                 {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
               </Typography>
@@ -341,7 +351,7 @@ const QuestionBankCard = ({
                 variant='p'
                 component='p'
                 color='secondary'
-                // noWrap
+                noWrap
               >
                 Question: {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
               </Typography>

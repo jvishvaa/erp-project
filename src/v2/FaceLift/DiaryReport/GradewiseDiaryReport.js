@@ -15,16 +15,14 @@ const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const GradewiseDiaryReport = () => {
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const history = useHistory();
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(
+    moment().subtract(6, 'days').format('YYYY-MM-DD')
+  );
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [diaryType, setDiaryType] = useState(2);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [gradewiseDiaryData, setGradewiseDiaryData] = useState([]);
@@ -49,7 +47,7 @@ const GradewiseDiaryReport = () => {
     if (expanded) {
       keys.push(record.grade_id);
       fetchSectionwiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         start_date: startDate,
         end_date: endDate,
@@ -60,6 +58,8 @@ const GradewiseDiaryReport = () => {
     setExpandedRowKeys(keys);
   };
   const fetchGradewiseReport = (params = {}) => {
+    setGradewiseDiaryData([]);
+    setExpandedRowKeys([]);
     setLoading(true);
     axios
       .get(`${endpoints.diaryReport.gradewiseReport}`, {
@@ -166,7 +166,7 @@ const GradewiseDiaryReport = () => {
   useEffect(() => {
     if (startDate && endDate) {
       fetchGradewiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         start_date: startDate,
         end_date: endDate,
@@ -210,7 +210,7 @@ const GradewiseDiaryReport = () => {
       <div className='row py-3 px-2'>
         <div className='col-md-4'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-16 th-pointer'>
               Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1 th-16'>Diary Report</Breadcrumb.Item>
@@ -226,7 +226,7 @@ const GradewiseDiaryReport = () => {
                 return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}
               onChange={handleDiaryType}
-              className='w-50 text-left th-black-1 th-bg-white th-br-4'
+              className='w-50 text-left th-black-1 th-bg-white th-br-6'
               bordered={false}
             >
               <Option value='1'>General Diary</Option>
@@ -234,6 +234,7 @@ const GradewiseDiaryReport = () => {
             </Select>
           </div>
         </div>
+        {console.log('gradewiseDiaryData: ', gradewiseDiaryData)}
         <div className='col-md-4 mt-3 mt-sm-0 text-right'>
           <div>
             <RangePicker
@@ -266,7 +267,7 @@ const GradewiseDiaryReport = () => {
                 {gradewiseDiaryStats?.total_number_of_sections}
               </span>
             </div>
-            <div className='col-md-3 pt-2 pt-md-0'>
+            <div className='col-md-3 pt-2 px-1 pt-md-0'>
               Total No. of Diaries Assigned : &nbsp;
               <span className='th-primary'>{gradewiseDiaryStats?.total_diary_count}</span>
             </div>
