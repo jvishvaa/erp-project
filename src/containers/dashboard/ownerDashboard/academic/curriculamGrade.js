@@ -24,6 +24,7 @@ import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { Column } from '@ant-design/plots';
 import axios from 'axios';
+import { Switch  , Pagination} from 'antd';
 const { Option } = Select;
 
 const useStyles = makeStyles((theme) => ({
@@ -137,6 +138,8 @@ const CurriculumCompletion = (props) => {
   const [volumeId, setVolumeId] = useState([]);
   const [volumeName, setVolumeName] = useState('');
   const [teacherErp, setTeacherErp] = useState('')
+  const [ page , setPage ] = useState(1)
+
 
   const onTableRowExpand = (expanded, record) => {
     console.log(record);
@@ -157,11 +160,19 @@ const CurriculumCompletion = (props) => {
     setExpandedRowKeys(keys);
   };
 
-  const {
-    match: {
-      params: { branchId },
-    },
-  } = props;
+  // const {
+  //   match: {
+  //     params: { branchId },
+  //   },
+  // } = props;
+
+  const branchId = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch?.branch?.id
+  );
+
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch)
+
 
   useEffect(() => {
     fetchVolumeListData()
@@ -208,7 +219,7 @@ const CurriculumCompletion = (props) => {
 
   const { acad_session_id, module_id, acad_sess_id } = history.location.state;
 
-
+console.log(history.location.state);
 
 
   const teacherSubjectTable = (params = {}) => {
@@ -240,14 +251,14 @@ const CurriculumCompletion = (props) => {
       console.log(selectedAcademicYear);
       if (volumeId != null) {
         gradeListTable({
-          acad_session: acad_sess_id,
+          acad_session: selectedBranch?.id,
           session_year: selectedAcademicYear?.id,
           volume: volumeId,
           branch_id: branchId,
         });
       } else {
         gradeListTable({
-          acad_session: acad_sess_id,
+          acad_session: selectedBranch?.id,
           session_year: selectedAcademicYear?.id,
           branch_id: branchId,
         });
@@ -255,21 +266,23 @@ const CurriculumCompletion = (props) => {
     } else {
       if (volumeId != null) {
         gradeTeacherTable({
-          acad_session: acad_sess_id,
+          acad_session: selectedBranch?.id,
           session_year: selectedAcademicYear?.id,
           branch_id: branchId,
           volume: volumeId,
+          page: page
         });
       } else {
 
         gradeTeacherTable({
-          acad_session: acad_sess_id,
+          acad_session: selectedBranch?.id,
           branch_id: branchId,
           session_year: selectedAcademicYear?.id,
+          page: page
         });
       }
     }
-  }, [acad_session_id, volumeId, teacherView]);
+  }, [acad_session_id, volumeId, teacherView , page]);
 
   const gradeListTable = (params = {}) => {
     setLoading(true);
@@ -396,21 +409,21 @@ const CurriculumCompletion = (props) => {
       dataIndex: 'avg_conducted_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data.toFixed(2)}</span>,
+      render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS PENDING</span>,
       dataIndex: 'avg_pending_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data.toFixed(2)}</span>,
+      render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
       dataIndex: 'avg_completion_percentage',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data} %</span>,
+      render: (data) => <span className='th-green th-16'>{data.toFixed(2)} %</span>,
     },
 
   ];
@@ -507,10 +520,34 @@ const CurriculumCompletion = (props) => {
         dataSource={collapseData}
         rowKey={(record) => record?.id}
         pagination={false}
+        expandRowByClick={true}
         className='th-inner-head'
         // showHeader={false}
         bordered={false}
         style={{ width: '100%' }}
+        onRow={(row, rowindex) => {
+          return {
+
+            onClick: (e) =>
+              history.push({
+                pathname: `/curriculum-completion-chapter/${branchId}/${row?.grade_id}`,
+                state: {
+                  grade: row?.grade_id,
+                  gradeName: row?.grade_name,
+                  subject_id: row?.subject_id,
+                  acad_session_id: acad_session_id,
+                  acad_sess_id: acad_sess_id,
+                  module_id: moduleId,
+                  branchName: branchName,
+                  selectedDate: dateToday,
+                  teacherView: teacherView,
+                  teacher_id: teacherErp,
+                  branch_id: branchId,
+                  central_gs: row?.central_gs
+                },
+              })
+          }
+        }}
       />
     );
   };
@@ -539,6 +576,11 @@ const CurriculumCompletion = (props) => {
       });
   }
 
+  const handlePageChange = (page , pageSize) => {
+    console.log(page , pageSize);
+    setPage(page)
+  }
+
   return (
     <Layout>
       <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
@@ -555,7 +597,12 @@ const CurriculumCompletion = (props) => {
             </Breadcrumb>
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
-            <Button onClick={handleViewChange} className={clsx(classes.viewButton)} >{teacherView ? 'Grade View' : "Teacher's View"}</Button>
+            {/* <Button onClick={handleViewChange} className={clsx(classes.viewButton)} >{teacherView ? 'Grade View' : "Teacher's View"}</Button> */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '12%', fontSize: '16px', fontWeight: '600', margin: 'auto 0' }} >
+              <span>Grade View</span>
+              <Switch onChange={handleViewChange} />
+              <span>Teacher View</span>
+            </div>
             {/* <Button onClick={downloadReport} className={clsx(classes.viewButton)} >Download Report</Button> */}
             <div className='col-md-3 col-6 pl-md-1'>
               <div className='text-left pl-md-1'>Volume</div>
@@ -590,6 +637,9 @@ const CurriculumCompletion = (props) => {
               {data?.length > 0 ?
                 <>
                   <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                    <div style={{alignItems: 'center' , display: 'flex' , fontWeight: '600' , fontSize: '20px'}} >
+                    <p style={{transform: 'rotate(270deg'}}>Avg Completion</p>
+                    </div>
                     <div>
                       {console.log({ ...config })}
                       <Column {...config} onReady={(plot) => {
@@ -606,6 +656,7 @@ const CurriculumCompletion = (props) => {
                               branchName: branchName,
                               selectedDate: dateToday,
                               teacherView: teacherView,
+                              branch_id: branchId
                             },
                           })
                         })
@@ -636,9 +687,10 @@ const CurriculumCompletion = (props) => {
                     rowKey={(record) => record?.teacher_erp}
                     expandable={{ expandedRowRender }}
                     dataSource={teacherData?.data}
-                    pagination={{ total: teacherData?.total_pages }}
+                    pagination={false}
                     expandIconColumnIndex={6}
                     expandedRowKeys={expandedRowKeys}
+                    expandRowByClick={true}
                     onExpand={onTableRowExpand}
                     expandIcon={({ expanded, onExpand, record }) =>
                       expanded ? (
@@ -655,6 +707,7 @@ const CurriculumCompletion = (props) => {
                     }
                     scroll={{ x: 'max-content' }}
                   />
+                  <Pagination defaultCurrent={page} total={teacherData?.total_pages ? teacherData?.total_pages * 10 : 10} showSizeChanger	={false} onChange={handlePageChange} />
                 </div>
 
               </div>
