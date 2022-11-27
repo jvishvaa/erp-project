@@ -2,31 +2,28 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { Table, DatePicker, Breadcrumb, message, Select } from 'antd';
-import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
+import { Table, DatePicker, Breadcrumb, message } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import CalendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
-import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 const TeacherDiaryReport = () => {
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
   );
   const history = useHistory();
-  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [selectedSection, setSelectedSection] = useState();
   const [selectedTeacher, setSelectedTeacher] = useState();
   const [diaryType, setDiaryType] = useState();
   const [teacherDiaryStats, setTeacherDiaryStats] = useState();
   const [teacherDiaryData, setTeacherDiaryData] = useState([]);
-
   const [loading, setLoading] = useState(false);
 
   const handleDateChange = (value) => {
@@ -37,6 +34,7 @@ const TeacherDiaryReport = () => {
   };
 
   const fetchTeacherDiaryData = (params = {}) => {
+    setTeacherDiaryData([]);
     setLoading(true);
     axios
       .get(`${endpoints.diaryReport.teacherReport}`, {
@@ -90,15 +88,14 @@ const TeacherDiaryReport = () => {
       setEndDate(history.location.state.endDate);
       setDiaryType(history.location.state.diaryType);
     }
-  }, [window.location.pathname]);
-
+  }, []);
   useEffect(() => {
-    if (startDate && endDate) {
+    if (startDate && endDate && diaryType) {
       fetchTeacherDiaryData({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         diary_type: diaryType,
         grade_id: selectedSection?.grade_id,
-        section_id: selectedSection?.section_id,
+        section_mapping: selectedSection?.section_mapping,
         subject_id: selectedTeacher?.subject_id,
         teacher_id: selectedTeacher?.user_id,
         start_date: startDate,
@@ -112,13 +109,37 @@ const TeacherDiaryReport = () => {
       <div className='row py-3 px-2'>
         <div className='col-md-8'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-16 th-pointer'>
               Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item className='th-grey th-16' href='/gradewise-diary-report'>
+            <Breadcrumb.Item
+              className='th-grey th-16 th-pointer'
+              onClick={() =>
+                history.push({
+                  pathname: '/gradewise-diary-report',
+                  state: {
+                    startDate,
+                    endDate,
+                  },
+                })
+              }
+            >
               Diary Report
             </Breadcrumb.Item>
-            <Breadcrumb.Item className='th-grey th-16' onClick={() => history.goBack()}>
+            <Breadcrumb.Item
+              className='th-grey th-16'
+              onClick={() =>
+                history.push({
+                  pathname: '/subjectwise-diary-report',
+                  state: {
+                    diaryType,
+                    data: selectedSection,
+                    startDate,
+                    endDate,
+                  },
+                })
+              }
+            >
               Subjectwise Report
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1 th-16'>
@@ -138,7 +159,7 @@ const TeacherDiaryReport = () => {
               placement='bottomRight'
               showToday={false}
               suffixIcon={<DownOutlined />}
-              defaultValue={[moment(), moment()]}
+              value={[moment(startDate), moment(endDate)]}
               onChange={(value) => handleDateChange(value)}
               className='th-range-picker th-br-4'
               separator={'to'}
@@ -150,14 +171,14 @@ const TeacherDiaryReport = () => {
           </div>
         </div>
         <div className='row mt-3'>
-          <div className='col-2'>
-            <span className='th-bg-white'>{selectedSection?.grade_name}</span>
+          <div className='col-2 text-capitalize'>
+            <span className='th-fw-500'>{selectedSection?.grade_name}</span>
           </div>
           <div className='col-2'>
-            <span className='th-bg-white'>{selectedSection?.section_name}</span>
+            <span className='th-fw-500'>{selectedSection?.section_name}</span>
           </div>
           <div className='col-2'>
-            <span className='th-bg-white'>{selectedTeacher?.subject__subject_name}</span>
+            <span className='th-fw-500'>{selectedTeacher?.subject_name}</span>
           </div>
         </div>
         {teacherDiaryStats && (

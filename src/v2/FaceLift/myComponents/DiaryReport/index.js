@@ -91,7 +91,7 @@ const DiaryReport = () => {
                             pathname: '/gradewise-diary-report',
                             state: {
                               startDate: moment()
-                                .subtract(7, 'days')
+                                .subtract(6, 'days')
                                 .format('YYYY-MM-DD'),
                               endDate: moment().format('YYYY-MM-DD'),
                             },
