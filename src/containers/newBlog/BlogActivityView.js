@@ -400,42 +400,42 @@ const BlogActivityView = () => {
   const handleSearch = () => {
     if (showTab == 1) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         user_id: userId,
       });
     } else if (showTab == 2) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         publish_level: 'Intra Orchids Level',
         user_id: userId,
       });
     } else if (showTab == 3) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         publish_level: 'Branch Level',
         user_id: userId,
       })
     } else if (showTab == 4) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         publish_level: 'Grade Level',
         user_id: userId,
       })
     } else if (showTab == 5) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         is_best_blog: 'true',
         user_id: userId,
       })
     } else if (showTab == 6) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         publish_level: 'Section Level',
         user_id: userId,
       })
