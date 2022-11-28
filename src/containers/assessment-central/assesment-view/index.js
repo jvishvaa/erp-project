@@ -50,7 +50,7 @@ const AssessmentView = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [isFilter, setIsFilter] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(2);
   const [tabAcademic, setTabAcademic] = useState('');
   const [tabBranch, setTabBranch] = useState('');
   const [tabGradeId, setTabGradeId] = useState('');
@@ -80,6 +80,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
   );
 }
   },[tabValue, tabIsErpCentral, page,erpCategory])
+
 
   const handleGetQuestionPapers = (newValue = 0, requestURL) => {
     setTabValue(newValue);
@@ -174,7 +175,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
   };
   const changequestionFrom = (e) => {
     setTabIsErpCentral((prev) => !prev)
-      }
+    }
 
   useEffect(() => {
     if (publishFlag)
@@ -258,7 +259,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
               <div className='col-md-4 col-6'>
                 <Button
                   className={`${
-                    tabValue == 2 ? 'th-button-active' : 'th-button'
+                    (tabValue == 2 || tabIsErpCentral) ? 'th-button-active' : 'th-button'
                   } th-width-100 th-br-6 mt-2`}
                   onClick={() => {setTabValue(2) 
                     setPage(1)}}
