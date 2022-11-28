@@ -138,6 +138,13 @@ const TeacherSubject = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+
+  const branchId = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch?.branch?.id
+);
+const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [collapseData, setCollapseData] = useState([]);
 
@@ -184,9 +191,9 @@ const TeacherSubject = (props) => {
   const onTableRowExpand = (expanded, record) => {
     console.log(record);
     teacherSubjectTable({
-      acad_session: history?.location?.state?.acad_sess_id,
-      session_year: history?.location?.state?.acad_session_id,
-      branch_id: history?.location?.state?.branchId,
+      acad_session: acad_sess_id,
+      session_year: acad_session_id,
+      branch_id: branchId,
       central_gs_mappings: record?.central_gs_mappings.toString(),
       grade_id: record?.grade_id,
       sections_count: record?.section_count
@@ -200,11 +207,6 @@ const TeacherSubject = (props) => {
     setExpandedRowKeys(keys);
   };
 
-  const {
-    match: {
-      params: { branchId },
-    },
-  } = props;
 
   useEffect(() => {
     console.log(history?.location?.state, 'Mobile99999999')
@@ -221,9 +223,9 @@ const TeacherSubject = (props) => {
     fetchVolumeListData()
   }, [branchId, moduleId]);
 
-  const { acad_session_id, module_id, acad_sess_id } = history.location.state;
 
-
+  const acad_session_id = selectedAcademicYear?.id
+  const acad_sess_id = selectedBranch?.id
 
 
   const teacherSubjectTable = (params = {}) => {
@@ -254,13 +256,13 @@ const TeacherSubject = (props) => {
       gradeTeacherTable({
         acad_session: history?.location?.state?.acad_sess_id,
         session_year: history?.location?.state?.acad_session_id,
-        branch_id: history?.location?.state?.branchId
+        branch_id: branchId
       });
     } else {
       gradeTeacherTable({
         acad_session: history?.location?.state?.acad_sess_id,
         session_year: history?.location?.state?.acad_session_id,
-        branch_id: history?.location?.state?.branchId,
+        branch_id: branchId,
         volume: volumeId
       });
     }
@@ -269,7 +271,7 @@ const TeacherSubject = (props) => {
   const gradeTeacherTable = (params = {}) => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.ownerDashboard.gradeWiseReport}`, {
+      .get(`${endpoints.ownerDashboard.gradeWise}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
@@ -299,12 +301,12 @@ const TeacherSubject = (props) => {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS</span>,
       width: '15%',
       align: 'center',
-      dataIndex: 'total_periods',
+      dataIndex: 'total_periods_sum',
       render: (data) => <span className='th-black-1 th-16'>{data.toFixed(0)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS CONDUCTED</span>,
-      dataIndex: 'completed_periods',
+      dataIndex: 'completed_periods_sum',
       width: '15%',
       align: 'center',
       render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
@@ -318,7 +320,7 @@ const TeacherSubject = (props) => {
     },
     {
       title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
-      dataIndex: 'avg_completion_percentage',
+      dataIndex: 'avg',
       width: '15%',
       align: 'center',
       render: (data) => <span className='th-green th-16'>{data} %</span>,
@@ -366,13 +368,6 @@ const TeacherSubject = (props) => {
         dataIndex: 'total_periods',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-red th-16'>{data}</span>,
-      },
-      {
-        title: <span className='th-white '>Avg. Completion</span>,
-        dataIndex: 'avg_completion',
-        align: 'center',
-        width: '15%',
         render: (data) => <span className='th-green th-16'>{data}</span>,
       },
       {
@@ -382,6 +377,14 @@ const TeacherSubject = (props) => {
         width: '15%',
         render: (data) => <span className='th-red th-16'>{data}</span>,
       },
+      {
+        title: <span className='th-white '>Avg. Completion</span>,
+        dataIndex: 'avg_completion',
+        align: 'center',
+        width: '15%',
+        render: (data) => <span className='th-green th-16'>{data}%</span>,
+      },
+     
       {
         title: '',
         align: 'center',
@@ -432,7 +435,7 @@ const TeacherSubject = (props) => {
               history.push({
                 pathname: `/curriculum-completion-chapter/${branchId}/${record?.grade_id}`,
                 state: {
-                  grade: teacherData[index]?.grade_id,
+                  grade: record.grade_id,
                   gradeName: history?.location?.state?.grade_name,
                   subject_id: row?.subject_id,
                   acad_session_id: acad_session_id,
@@ -512,7 +515,7 @@ const TeacherSubject = (props) => {
                 columns={columns1}
                 rowKey={(record) => record?.grade_id}
                 expandable={{ expandedRowRender }}
-                dataSource={teacherData}
+                dataSource={teacherData?.data}
                 pagination={false}
                 expandIconColumnIndex={6}
                 expandedRowKeys={expandedRowKeys}

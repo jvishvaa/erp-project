@@ -155,7 +155,6 @@ const CurriculumCompletionChapter = (props) => {
       render: (data) => <span className='pl-md-4 th-black-1 th-16' style={{fontWeight: '600'}} >{data?.chapter_name}</span>,
       key: 'chapter',
       fixed: 'left',
-      onCell: (_, index) => (console.log(index)),
     },
 
   ]);
@@ -249,7 +248,6 @@ const CurriculumCompletionChapter = (props) => {
     }
   };
   const handleClearGrade = () => {
-    setGradeId('');
     setGradeName('');
   };
 
