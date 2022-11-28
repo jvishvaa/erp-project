@@ -550,11 +550,15 @@ const RatingCreate = () => {
                   S No.
                 </TableCell>
                 <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
+                <TableCell className={classes.tableCell}>Sub-Type Activity</TableCell>
                 <TableCell className={classes.tableCell}>Criteria Name</TableCell>
 
                 <TableCell className={classes.tableCell}>Rating </TableCell>
-
-                <TableCell className={classes.tableCell}>Score </TableCell>
+                  {search?.name == "Physical Activity" ? (
+                    ""
+                  ):(
+                    <TableCell className={classes.tableCell}>Score </TableCell>
+                  )}
               </TableRow>
             </TableHead>
             {activityCategory
@@ -571,6 +575,7 @@ const RatingCreate = () => {
                   >
                     <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                     <TableCell className={classes.tableCells}>{response.name}</TableCell>
+                    <TableCell className={classes.tableCells}>{response.sub_type ? response.sub_type : <b style={{color:'red'}}>NA</b>}</TableCell>
                     <TableCell className={classes.tableCells}>
                       {response?.grading_scheme.map((obj) => (
                         <div>{obj.name}</div>

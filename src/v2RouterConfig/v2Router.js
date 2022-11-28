@@ -39,6 +39,9 @@ import GradewiseDiaryReport from 'v2/FaceLift/DiaryReport/GradewiseDiaryReport';
 import SubjectwiseDiaryReport from 'v2/FaceLift/DiaryReport/SubjectwiseDiaryReport';
 import TeacherDiaryReport from 'v2/FaceLift/DiaryReport/TeacherDiaryReport';
 import TeacherwiseDiaryReport from 'v2/FaceLift/DiaryReport/TeacherwiseDiaryReport';
+import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
+import BlogActivityView from 'containers/newBlog/BlogActivityView';
+
 import endpoints from 'config/endpoints';
 import axios from 'axios';
 import CreateDiary from 'v2/FaceLift/Diary/DiaryNew/CreateDiary';
@@ -156,6 +159,12 @@ const V2Router = () => {
                         </Route>{' '}
                         <Route path='/rolewise-attendance'>
                           {({ match }) => <RoleWiseAttendance match={match} />}
+                        </Route>
+                        <Route path='/student/phycial/activity'>
+                          {({ match }) => <StudentSidePhysicalActivity match={match} />}
+                        </Route>
+                        <Route path='blog-activity-view'>
+                          {({ match }) => <BlogActivityView match={match} />}
                         </Route>
                         <Route path='/branchwise-attendance'>
                           {({ match }) => <BranchWiseAttendance match={match} />}

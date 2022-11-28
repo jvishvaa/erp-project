@@ -452,6 +452,7 @@ import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
 import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
 import PostActivityView from 'containers/newBlog/postActivityView';
 import CreatePostActivity from 'containers/newBlog/createPostActivity';
+import BlogActivityView from 'containers/newBlog/BlogActivityView';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -1768,6 +1769,9 @@ const V1Router = [
   <Route path='/virtual-school'>{({ match }) => <VirtualSchool match={match} />}</Route>,
   <Route path='/offline-student'>
     {({ match }) => <OfflineStudentAssessment match={match} />}
+  </Route>,
+    <Route path='/blog-activity-view'>
+    {({ match }) => <BlogActivityView match={match} />}
   </Route>,
   <Route path='/uploadOMR'>{({ match }) => <UploadOMR match={match} />}</Route>,
   <Route path='/student-mark'>{({ match }) => <StudentMark match={match} />}</Route>,

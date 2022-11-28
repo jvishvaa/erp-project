@@ -209,14 +209,22 @@ import axiosInstance from 'config/axios';
     const functionFilter =(sourceData,targetData) =>{
       setLoading(true)
       var finalData =[]
-      for(let i=0;i<sourceData.length; i++){
-        for(let j=0 ;j<targetData.length; j++){
-          if(sourceData[i].erp_id == targetData[j].erp_id){
-            finalData.push(sourceData[i])
+      sourceData.filter((item,i) => {
+        targetData.forEach((ele) =>{
+          if(ele?.erp_id !== item?.erp_id){
+            finalData.push(item)
           }
-        }
+        })
+      })
+
+      let dummyData = []
+      var res = sourceData.filter(item => !targetData.map(item2 => item2?.erp_id).includes(item?.erp_id))
+      // console.log(A.filter(a => !B.map(b=>b.id).includes(a.id)))
+      if(finalData == 0){
+        setTotalSubmitted(sourceData)
+      }else{
+        setTotalSubmitted(res)
       }
-      setTotalSubmitted(finalData)
       setLoading(false)
     }
 
@@ -240,7 +248,7 @@ import axiosInstance from 'config/axios';
     const ActivityManagement =(sourceData) =>{
           axios
             // .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${1}&grade_id=${2}&section_id=${1}&activity_id=${1784}`, {
-              .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${props.selectedBranch}&grade_id=${props.selectedGrade}&section_id=${props.setSubjectName}&activity_id=${ActivityId?.id}`, {
+              .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${props.selectedBranch}&grade_id=${props.selectedGrade}&section_id=${props.selectedSubject}&activity_id=${ActivityId?.id}`, {
               headers: {
                 'X-DTS-HOST': X_DTS_HOST,
               },
@@ -288,7 +296,7 @@ import axiosInstance from 'config/axios';
             temp['name'] = obj?.level.name;
             temp['remarks'] = obj?.remarks;
             temp['given_rating'] = obj?.given_rating;
-            // temp['level'] = obj?.level?.rating;
+            temp['level'] = obj?.level?.rating;
             temp['reviewer_id'] = user_id;
             array.push(temp);
           });
@@ -523,7 +531,7 @@ import axiosInstance from 'config/axios';
                     >
                       Name:{' '}
                       <span style={{ fontWeight: 'normal' }}>
-                        {data?.name}
+                        {data?.name ? data?.name : data?.student_name}
                       </span>
                     </div>
                     <div
@@ -582,7 +590,7 @@ import axiosInstance from 'config/axios';
                             key={index}
                             style={{ display: 'flex', justifyContent: 'space-between' }}
                           >
-                             {/* {obj.name}* */}
+                             {obj.name}*
                           </div>
                           ) : (
                           <div
@@ -590,7 +598,7 @@ import axiosInstance from 'config/axios';
                             style={{ display: 'flex', justifyContent: 'space-between',  marginBottom:'10px' }}
                           >
                             {' '}
-                            {/* {obj?.name} */}
+                            {obj?.name}<b>({obj?.level})</b>   
                           </div>
                           )}
                           {/* {obj} */}
@@ -622,7 +630,7 @@ import axiosInstance from 'config/axios';
                                 onChange={(event) => handleInputCreativity(event, index)}
                                 label={obj?.name}
                               /> */}
-
+                        
                                <Input 
                                     placeholder={obj?.name}
                                     onChange={(event) => handleInputCreativity(event, index)}
