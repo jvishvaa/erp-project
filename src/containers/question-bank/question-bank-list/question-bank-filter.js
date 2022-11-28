@@ -149,7 +149,7 @@ const QuestionBankFilters = ({
       filterData?.grade,
       filterData?.chapter,
       filterData?.is_erp_central,
-      0,
+      tabIsErpCentral ? 2 : 0,
       filterData?.erp_category,
     );
 
