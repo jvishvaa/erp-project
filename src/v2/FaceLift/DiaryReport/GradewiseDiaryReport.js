@@ -179,6 +179,9 @@ const GradewiseDiaryReport = () => {
       setStartDate(history.location.state.startDate);
       setEndDate(history.location.state.endDate);
     }
+    if (history.location.state.diaryType) {
+      setDiaryType(history.location.state.diaryType);
+    }
   }, [window.location.pathname]);
 
   const columns = [
@@ -213,7 +216,9 @@ const GradewiseDiaryReport = () => {
             <Breadcrumb.Item href='/dashboard' className='th-grey th-16 th-pointer'>
               Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item className='th-black-1 th-16'>Diary Report</Breadcrumb.Item>
+            <Breadcrumb.Item className='th-black-1 th-16'>
+              {diaryType == 1 ? 'General Diary Reprt ' : 'Daily Diary Report'}
+            </Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className='col-md-4 mt-3 mt-sm-0 text-right'>

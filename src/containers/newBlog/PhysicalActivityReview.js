@@ -41,7 +41,7 @@ import { NavigateNext as NavigateNextIcon } from '@material-ui/icons'
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Loader from 'components/loader/loader';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import {SearchOutlined,DownOutlined} from '@ant-design/icons'
+import { SearchOutlined, DownOutlined } from '@ant-design/icons'
 
 const DEFAULT_RATING = 0;
 
@@ -92,46 +92,46 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PhysicalActivityReview = () => {
-    const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
-    const formRef = createRef();
-    const classes = useStyles();
-    const history = useHistory();
-    const [value, setValue] = React.useState(0);
-    const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
-    const [selectedBranch, setSelectedBranch] = useState([]);
-    const [selectedGrade, setSelectedGrade] = useState([]);
-    const [branchList, setBranchList] = useState([]);
-    const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
-    let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
-    const newBranches = JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
-    const user_level = dataes?.user_level;
-    const [moduleId, setModuleId] = useState();
-    const [view, setView] = useState(false);
-    const [flag,setFlag] = useState(false);
-    const [gradeList, setGradeList] = useState([]);
-    const { setAlert } = useContext(AlertNotificationContext);
-    const [academicYear, setAcademicYear] = useState([]);
-    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-    const goBack = () => {
-        history.push('/blog/blogview');
-    };
-    const [title, setTitle] = useState('');
-    const [loading,setLoading] = useState(false)
-    const [boardId, setBoardId] = useState();
-    // const [boardListData, setBoardListData] = useState([]);
-    const {Option} = Select;
-    const [gradeId, setGradeId] = useState();
-    const [gradeName, setGradeName] = useState();
-    const [gradeData, setGradeData] = useState([]);
-    const [subjectData, setSubjectData] = useState([]);
-    const selectedAcademicYear = useSelector(
-      (state) => state.commonFilterReducer?.selectedYear
-    );
-    const [subjectId, setSubjectId] = useState();
-    const [subjectName, setSubjectName] = useState();
+  const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
+  const formRef = createRef();
+  const classes = useStyles();
+  const history = useHistory();
+  const [value, setValue] = React.useState(0);
+  const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [branchList, setBranchList] = useState([]);
+  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
+  const newBranches = JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
+  const user_level = dataes?.user_level;
+  const [moduleId, setModuleId] = useState();
+  const [view, setView] = useState(false);
+  const [flag, setFlag] = useState(false);
+  const [gradeList, setGradeList] = useState([]);
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [academicYear, setAcademicYear] = useState([]);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  const goBack = () => {
+    history.push('/blog/blogview');
+  };
+  const [title, setTitle] = useState('');
+  const [loading, setLoading] = useState(false)
+  const [boardId, setBoardId] = useState();
+  // const [boardListData, setBoardListData] = useState([]);
+  const { Option } = Select;
+  const [gradeId, setGradeId] = useState();
+  const [gradeName, setGradeName] = useState();
+  const [gradeData, setGradeData] = useState([]);
+  const [subjectData, setSubjectData] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const [subjectId, setSubjectId] = useState();
+  const [subjectName, setSubjectName] = useState();
   // console.log(history,"history")
   // useEffect(() => {
   //   if (history?.location?.pathname === '/blog/addreview') {
@@ -140,10 +140,10 @@ const PhysicalActivityReview = () => {
   //   }
   // }, [history]);
 
-  console.log(boardListData,'up')
+  console.log(boardListData, 'up')
 
 
-  
+
 
   // useEffect(() =>{
   //   if(moduleId){
@@ -160,7 +160,7 @@ const PhysicalActivityReview = () => {
   //       if(response?.data?.status_code === 200){
   //         setBranchList(response?.data?.result|| [])
   //         setLoading(false)
-  
+
   //       }
 
   //     })
@@ -177,7 +177,7 @@ const PhysicalActivityReview = () => {
         ) {
           item.child_module.forEach((item) => {
             if (
-              item.child_name === 'Blog Activity' 
+              item.child_name === 'Blog Activity'
               &&
               window.location.pathname === '/physical/activity/review'
             ) {
@@ -208,44 +208,44 @@ const PhysicalActivityReview = () => {
   //   }
   // }, []);
 
-// function callApi(api,key){
-//   setLoading(true)
-//   axiosInstance
-//     .get(api)
-//     .then((result) => {
-//       if(result.status === 200){
-//         if (key === 'academicYearList') {
-//           setAcademicYear(result?.data?.data || []);
-//           const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
-//           if (
-//             window.location.pathname !== '/erp-online-class-student-view' &&
-//             !viewMoreData?.academic
-//           )
-//             callApi(
-//               `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
-//               'branchList'
-//             );
-//         }
-//         if(key === 'branchList') {
-//           setBranchList(result?.data?.data?.results || [])
-//         }
-//         if(key === 'gradeList'){
-//           const gradeData = result?.data?.data || [];
-//           gradeData.unshift({
-//             grade_grade_name: 'Select All',
-//             grade_id:'all',
-//             id:'all',
-//           });
-//           setGradeList(gradeData);
-//         }
+  // function callApi(api,key){
+  //   setLoading(true)
+  //   axiosInstance
+  //     .get(api)
+  //     .then((result) => {
+  //       if(result.status === 200){
+  //         if (key === 'academicYearList') {
+  //           setAcademicYear(result?.data?.data || []);
+  //           const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
+  //           if (
+  //             window.location.pathname !== '/erp-online-class-student-view' &&
+  //             !viewMoreData?.academic
+  //           )
+  //             callApi(
+  //               `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+  //               'branchList'
+  //             );
+  //         }
+  //         if(key === 'branchList') {
+  //           setBranchList(result?.data?.data?.results || [])
+  //         }
+  //         if(key === 'gradeList'){
+  //           const gradeData = result?.data?.data || [];
+  //           gradeData.unshift({
+  //             grade_grade_name: 'Select All',
+  //             grade_id:'all',
+  //             id:'all',
+  //           });
+  //           setGradeList(gradeData);
+  //         }
 
-//       }
-//       setLoading(false)
-//     })
-// }
+  //       }
+  //       setLoading(false)
+  //     })
+  // }
 
   const fetchBranches = () => {
-    
+
     const transformedData = newBranches?.branches?.map((obj) => ({
       id: obj.id,
       branch_name: obj.name,
@@ -260,7 +260,7 @@ const PhysicalActivityReview = () => {
   useEffect(() => {
 
     fetchBranches();
-  },[])
+  }, [])
 
   const handleBranch = (event, value) => {
     setSelectedBranch([])
@@ -280,51 +280,57 @@ const PhysicalActivityReview = () => {
       //   }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
       //   'gradeList'
       // );
-      if(branchIds){
+      if (branchIds) {
         setLoading(true)
         axios
-        .get(`${endpoints.newBlog.activityGrade}?branch_ids=${branchIds}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
-        .then((response) =>{
-          console.log(response?.data?.result);
-          setGradeList(response?.data?.result)
-          setLoading(false)
-        })
-  
-      }
+          .get(`${endpoints.newBlog.activityGrade}?branch_ids=${branchIds}`,
+            {
+              headers: {
+                'X-DTS-HOST': X_DTS_HOST,
+              },
+            })
+          .then((response) => {
+            console.log(response?.data?.result);
+            setGradeList(response?.data?.result)
+            setLoading(false)
+          })
 
       }
-  
-   
+
+    }
+
+
   };
 
-//   const handleGrade =(event, value) =>{
-//     setSelectedGrade([])
-//     if(value){
-//       console.log(value,'hk 33')
-//       setSelectedGrade(value)
-//     }
-//   }
+  //   const handleGrade =(event, value) =>{
+  //     setSelectedGrade([])
+  //     if(value){
+  //       console.log(value,'hk 33')
+  //       setSelectedGrade(value)
+  //     }
+  //   }
 
-  const handleGoBack = () =>{
+  const handleGoBack = () => {
     history.goBack()
   }
 
-  const goSearch =() =>{
+  const goSearch = () => {
     setLoading(true)
-    if(boardId === undefined){
-      setAlert('error','Please Select Branch');
+    if (boardId === undefined) {
+      setAlert('error', 'Please Select Branch');
       setLoading(false)
       return
-    }else if(gradeId== undefined){
+    } else if (gradeId == undefined) {
       setAlert('error', 'Please Select Grade');
       setLoading(false)
       return
-    }else{
+    } else if(subjectId == undefined){
+      setAlert('error', 'Please Select Subject');
+      setLoading(false)
+      return
+    } 
+    
+    else {
       setFlag(true);
       setLoading(false)
     }
@@ -352,12 +358,12 @@ const PhysicalActivityReview = () => {
   });
 
 
-  const handleBoard = (e , value) => {
+  const handleBoard = (e, value) => {
     formRef.current.setFieldsValue({
       grade: null,
       subject: null
     })
-    if(value){
+    if (value) {
       setBoardId(value?.value);
 
     }
@@ -373,21 +379,21 @@ const PhysicalActivityReview = () => {
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
-    //   fetchSubjectData({
-    //     session_year: selectedAcademicYear?.id,
-    //     branch_id: selectedBranch?.branch?.id,
-    //     module_id: moduleId,
-    //     grade: item.value,
-    //   });
+      //   fetchSubjectData({
+      //     session_year: selectedAcademicYear?.id,
+      //     branch_id: selectedBranch?.branch?.id,
+      //     module_id: moduleId,
+      //     grade: item.value,
+      //   });
     }
   };
 
   useEffect(() => {
-    if(moduleId && boardId){
+    if (moduleId && boardId) {
 
       fetchGradeData()
     }
-  },[boardId])
+  }, [boardId])
 
   const fetchGradeData = () => {
     const params = {
@@ -401,8 +407,8 @@ const PhysicalActivityReview = () => {
         if (res?.data?.status_code === 200) {
           setGradeData(res?.data?.data);
           // if (user_level == 13) {
-            // setGradeId(res?.data?.data[0]?.grade_id);
-            setGradeName(res?.data?.data[0]?.grade__grade_name);
+          // setGradeId(res?.data?.data[0]?.grade_id);
+          setGradeName(res?.data?.data[0]?.grade__grade_name);
           // }
         }
       })
@@ -411,8 +417,8 @@ const PhysicalActivityReview = () => {
       });
   };
 
-  useEffect(() =>{
-    if(gradeId !== ""){
+  useEffect(() => {
+    if (gradeId !== "") {
       fetchSubjectData({
         session_year: selectedAcademicYear?.id,
         branch_id: boardId,
@@ -421,10 +427,10 @@ const PhysicalActivityReview = () => {
       });
 
     }
-  },[gradeId])
+  }, [gradeId])
 
   const fetchSubjectData = (params = {}) => {
-    if(gradeId){
+    if (gradeId) {
       axios
         .get(`${endpoints.academics.sections}`, {
           params: { ...params },
@@ -479,16 +485,16 @@ const PhysicalActivityReview = () => {
 
 
 
-  const erpData = () =>{
-    axios 
-      .get(`${endpoints.userManagement.getUserLevel}`,{
+  const erpData = () => {
+    axios
+      .get(`${endpoints.userManagement.getUserLevel}`, {
         headers: {
           'X-Api-Key': 'vikash@12345#1231',
         },
       })
       .then((res) => {
-        console.log(res,'PP')
-        
+        console.log(res, 'PP')
+
       })
   }
 
@@ -502,15 +508,15 @@ const PhysicalActivityReview = () => {
 
   return (
     <div>
-      {loading && <Loader/>}
+      {loading && <Loader />}
       <Layout>
-      <Grid
-        container
-        direction='row'
+        <Grid
+          container
+          direction='row'
         // style={{ paddingLeft: '22px', paddingRight: '10px' }}
-      >
-        <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
-          {/* <Breadcrumbs
+        >
+          <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
+            {/* <Breadcrumbs
             style={{width:'70vw'}}
             separator={<NavigateNextIcon fontSize='small' style={{color:'black'}} />}
             aria-label='breadcrumb'
@@ -521,27 +527,27 @@ const PhysicalActivityReview = () => {
             <Typography color='textPrimary' style={{fontSize:'18px', fontWeight:'bold'}}>Activity</Typography>
             <Typography color='textPrimary' style={{fontSize:'18px', fontWeight:'bold'}}>{ActivityId?.title}</Typography>
           </Breadcrumbs> */}
-          <div className='col-md-8' style={{zIndex:2, display: 'flex', alignItems:'center', padding:'0.5rem' }}>
-          <div>
-          <IconButton aria-label="back" onClick={handleGoBack}>
-           <KeyboardBackspaceIcon style={{fontSize:'20px', color:'black'}}/>
-          </IconButton>
-          </div>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                Physical Activities
-              </Breadcrumb.Item>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                Review
-              </Breadcrumb.Item>
-              <Breadcrumb.Item href='' className='th-grey th-16'>
-              {ActivityId?.title}
-              </Breadcrumb.Item>
-            </Breadcrumb>
+            <div className='col-md-8' style={{ zIndex: 2, display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+              <div>
+                <IconButton aria-label="back" onClick={handleGoBack}>
+                  <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
+                </IconButton>
+              </div>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+                  Physical Activities
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+                  Review
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href='' className='th-grey th-16'>
+                  {ActivityId?.title}
+                </Breadcrumb.Item>
+              </Breadcrumb>
 
-          </div>
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
         {/* <div style={{ marginLeft: '20px', cursor: 'pointer' }} onClick={goBack}>
           <div>
             {' '}
@@ -600,98 +606,98 @@ const PhysicalActivityReview = () => {
 
         {/* <Grid container spacing={2} style={{ padding: '20px' }}> */}
         {/* <Grid item md={4} xs={12}> */}
-        <div className='row' style={{padding:'0.5rem'}}>
-        <div className='col-12'>
-          <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-            <div className='row align-items-center'>
-              {/* {boardFilterArr.includes(window.location.host) && ( */}
+        <div className='row' style={{ padding: '0.5rem' }}>
+          <div className='col-12'>
+            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+              <div className='row align-items-center'>
+                {/* {boardFilterArr.includes(window.location.host) && ( */}
                 <div className='col-md-2 col-6 pl-0'>
                   <div className='mb-2 text-left'>Branch</div>
                   <Form.Item name='branch'>
                     <Select
-                        showSearch
-                        placeholder='Select Branch'
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                        placement='bottomRight'
-                        suffixIcon={<DownOutlined className='th-grey' />}
-                        dropdownMatchSelectWidth={false}
-                        onChange={(e,value) => handleBoard(e,value)}
-                        allowClear={true}
-                        onClear={handleClearBoard}
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                      >
-                        {branchOptions}
-                      </Select>
-                </Form.Item>
+                      showSearch
+                      placeholder='Select Branch'
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      placement='bottomRight'
+                      suffixIcon={<DownOutlined className='th-grey' />}
+                      dropdownMatchSelectWidth={false}
+                      onChange={(e, value) => handleBoard(e, value)}
+                      allowClear={true}
+                      onClear={handleClearBoard}
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                          0
+                        );
+                      }}
+                    >
+                      {branchOptions}
+                    </Select>
+                  </Form.Item>
                 </div>
-              {/* )} */}
-              <div className='col-md-2 col-6 px-0'>
-                <div className='mb-2 text-left'>Grade</div>
-                <Form.Item name='grade'>
-                  <Select
-                    allowClear
-                    placeholder='Select Name'
-                    showSearch
-                    disabled={user_level == 13}
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => {
-                      handleGrade(value);
-                    }}
-                    onClear={handleClearGrade}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={true}
-                  >
-                    {gradeOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                <div className='mb-2 text-left'>Section</div>
-                <Form.Item name='subject'>
-                  <Select
-                    placeholder='Select Section'
-                    showSearch
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => {
-                      handleSubject(value);
-                    }}
-                    onClear={handleClearSubject}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={true}
-                  >
-                    {subjectOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3' style={{display:'flex', alignItem:'center'}}>
-                <ButtonAnt type="primary" 
-                icon={<SearchOutlined />}
-                onClick={goSearch}
-                size={'medium'}>
+                {/* )} */}
+                <div className='col-md-2 col-6 px-0'>
+                  <div className='mb-2 text-left'>Grade</div>
+                  <Form.Item name='grade'>
+                    <Select
+                      allowClear
+                      placeholder='Select Name'
+                      showSearch
+                      disabled={user_level == 13}
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handleGrade(value);
+                      }}
+                      onClear={handleClearGrade}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={true}
+                    >
+                      {gradeOptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                  <div className='mb-2 text-left'>Section</div>
+                  <Form.Item name='subject'>
+                    <Select
+                      placeholder='Select Section'
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handleSubject(value);
+                      }}
+                      onClear={handleClearSubject}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={true}
+                    >
+                      {subjectOptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3' style={{ display: 'flex', alignItem: 'center' }}>
+                  <ButtonAnt type="primary"
+                    icon={<SearchOutlined />}
+                    onClick={goSearch}
+                    size={'medium'}>
                     Search
-                </ButtonAnt>
+                  </ButtonAnt>
+                </div>
               </div>
-            </div>
-          </Form>
-        </div>
+            </Form>
+          </div>
 
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -712,7 +718,7 @@ const PhysicalActivityReview = () => {
                     }}
                     className={value === 0 ? classes.tabsFont : classes.tabsFont1}
                   />
-                    {/* <Tab
+                  {/* <Tab
                     label='Not Submitted'
                     classes={{
                       selected: classes.selected1,
@@ -726,7 +732,7 @@ const PhysicalActivityReview = () => {
                     }}
                     className={value === 1 ? classes.tabsFont : classes.tabsFont1}
                   />
-                    {/* <Tab
+                  {/* <Tab
                         label='Shortlisted'
                         classes={{
                         selected: classes.selected1,
@@ -743,8 +749,8 @@ const PhysicalActivityReview = () => {
                     className={value === 4 ? classes.tabsFont : classes.tabsFont1}
                   />
                 } */}
-                  
-                
+
+
                 </Tabs>
               </Grid>
             </Grid>
@@ -758,10 +764,10 @@ const PhysicalActivityReview = () => {
             )}
           </div>
         </div>
-        {value == 0 && <PhysicalPendingReview  selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
+        {value == 0 && <PhysicalPendingReview selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
         {/* {value == 1 && <NotSubmitted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
 
-        {value == 1 && <PhysicalReviewed selectedBranch={boardId}  setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
+        {value == 1 && <PhysicalReviewed selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
         {/* {value == 3 && <Shortlisted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
         {/* {value == 4 && <Published selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
 

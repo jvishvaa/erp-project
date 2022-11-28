@@ -217,6 +217,9 @@ const CreatePostActivity = () => {
             setLoading(false)
             setAlert('error', 'Please Add Files')
             return;
+        } else if (!boardId) {
+            setLoading(false)
+            setAlert('error', 'Please Add Board')
         }
         else {
             const formData = new FormData();
@@ -225,6 +228,7 @@ const CreatePostActivity = () => {
             formData.append('file', assessmentReviewFile);
             formData.append('view_level', activityLevel);
             formData.append('user_id', user_id?.id);
+            formData.append('branch_id', boardId);
             axios
                 .post(`${endpoints.newBlog.postActivityCreateAPI}`, formData, {
                     headers: {
@@ -234,13 +238,13 @@ const CreatePostActivity = () => {
                 })
                 .then((response) => {
                     setAlert('success', 'Post Activity Successfully Created');
-                   
+
                     setAssessmentReviewFile('')
                     setActivityLevel('')
                     setActivityId('')
                     setDescription('');
                     setTitle('');
-                    history.push('/post-activity-view');
+                    history.push('/blog/wall');
                     setLoading(false);
                 });
 
@@ -268,168 +272,168 @@ const CreatePostActivity = () => {
     return (
         <React.Fragment>
             <div>
-                {loading && <Loader/>}
+                {loading && <Loader />}
 
-            <Layout>
-                <div className='row th-16 py-3 px-2'>
-                    <div className='col-md-8' style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}>
-                        <div>
-                            <IconButton aria-label="back" onClick={handleGoBack}>
-                                <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
-                            </IconButton>
+                <Layout>
+                    <div className='row th-16 py-3 px-2'>
+                        <div className='col-md-8' style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}>
+                            <div>
+                                <IconButton aria-label="back" onClick={handleGoBack}>
+                                    <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
+                                </IconButton>
+                            </div>
+                            <Breadcrumb separator='>'>
+                                <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+                                    Post Activities
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+                                    Create Post Activities
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
                         </div>
-                        <Breadcrumb separator='>'>
-                            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                                Post Activities
-                            </Breadcrumb.Item>
-                            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                                Create Post Activities
-                            </Breadcrumb.Item>
-                        </Breadcrumb>
-                    </div>
-                    <div className='row' style={{ marginTop: '20px' }}>
-                        <div className='col-12'>
-                            <Divider orientation="left" orientationMargin="0">
-                                Create Post Activities List
-                            </Divider>
-                        </div>
-                        <div className='col-12'>
-                            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-                                <div className='row align-items-center'>
-                                    {/* {boardFilterArr.includes(window.location.host) && ( */}
-                                    <div className='col-md-2 col-6 pl-0'>
-                                        <div className='mb-2 text-left'>Branch</div>
-                                        <Form.Item name='branch'>
-                                            <Select
-                                                showSearch
-                                                placeholder='Select Branch'
-                                                getPopupContainer={(trigger) => trigger.parentNode}
-                                                // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                                                className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                                                placement='bottomRight'
-                                                suffixIcon={<DownOutlined className='th-grey' />}
-                                                dropdownMatchSelectWidth={false}
-                                                onChange={(e, value) => handleBoard(e, value)}
-                                                allowClear={true}
-                                                onClear={handleClearBoard}
-                                                optionFilterProp='children'
-                                                filterOption={(input, options) => {
-                                                    return (
-                                                        options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                                                        0
-                                                    );
-                                                }}
-                                            >
-                                                {branchOptions}
-                                            </Select>
-                                        </Form.Item>
-                                    </div>
-                                    {/* )} */}
-                                    <div className='col-md-2 col-6 px-0'>
-                                        <div className='mb-2 text-left'>Activity Level</div>
-                                        <Form.Item name='level'>
-                                            <Select
-                                                allowClear
-                                                placeholder='Select Activity Level'
-                                                showSearch
-                                                // disabled={user_level == 13}
-                                                optionFilterProp='children'
-                                                filterOption={(input, options) => {
-                                                    return (
-                                                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                    );
-                                                }}
-                                                onChange={(e, value) => {
-                                                    handleActivityLevel(e, value);
-                                                }}
-                                                onClear={handleClearActivity}
-                                                className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                                                bordered={true}
-                                            >
-                                                {activityOptions}
-                                            </Select>
-                                        </Form.Item>
-                                    </div>
-                                    <div className='col-12'>
-                                        {/* <div className='row'> */}
-                                            {/* <div className='col-12'> */}
-
-                                                <div
-                                                    style={{
-                                                        border: '1px solid lightgrey',
-                                                        borderRadius: '5px',
-                                                        height: 'auto',
-                                                        marginTop: '20px',
+                        <div className='row' style={{ marginTop: '20px' }}>
+                            <div className='col-12'>
+                                <Divider orientation="left" orientationMargin="0">
+                                    Create Post Activities
+                                </Divider>
+                            </div>
+                            <div className='col-12'>
+                                <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+                                    <div className='row align-items-center'>
+                                        {/* {boardFilterArr.includes(window.location.host) && ( */}
+                                        <div className='col-md-2 col-6 pl-0'>
+                                            <div className='mb-2 text-left'>Branch</div>
+                                            <Form.Item name='branch'>
+                                                <Select
+                                                    showSearch
+                                                    placeholder='Select Branch'
+                                                    getPopupContainer={(trigger) => trigger.parentNode}
+                                                    // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                                                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                                                    placement='bottomRight'
+                                                    suffixIcon={<DownOutlined className='th-grey' />}
+                                                    dropdownMatchSelectWidth={false}
+                                                    onChange={(e, value) => handleBoard(e, value)}
+                                                    allowClear={true}
+                                                    onClear={handleClearBoard}
+                                                    optionFilterProp='children'
+                                                    filterOption={(input, options) => {
+                                                        return (
+                                                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                                                            0
+                                                        );
                                                     }}
                                                 >
-                                                    <div style={{ marginTop: '23px', marginLeft: '73px', display: 'flex' }}>
-                                                        Activity Details *: &nbsp;&nbsp;&nbsp;&nbsp;
-                                                        <TextField
-                                                            id='outlined-basic'
-                                                            size='small'
-                                                            fullWidth
-                                                            value={title}
-                                                            onChange={handleTitle}
-                                                            style={{ maxWidth: '80%' }}
-                                                            label='Title *'
-                                                            variant='outlined'
+                                                    {branchOptions}
+                                                </Select>
+                                            </Form.Item>
+                                        </div>
+                                        {/* )} */}
+                                        <div className='col-md-2 col-6 px-0'>
+                                            <div className='mb-2 text-left'>Activity Level</div>
+                                            <Form.Item name='level'>
+                                                <Select
+                                                    allowClear
+                                                    placeholder='Select Activity Level'
+                                                    showSearch
+                                                    // disabled={user_level == 13}
+                                                    optionFilterProp='children'
+                                                    filterOption={(input, options) => {
+                                                        return (
+                                                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                        );
+                                                    }}
+                                                    onChange={(e, value) => {
+                                                        handleActivityLevel(e, value);
+                                                    }}
+                                                    onClear={handleClearActivity}
+                                                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                                                    bordered={true}
+                                                >
+                                                    {activityOptions}
+                                                </Select>
+                                            </Form.Item>
+                                        </div>
+                                        <div className='col-12'>
+                                            {/* <div className='row'> */}
+                                            {/* <div className='col-12'> */}
+
+                                            <div
+                                                style={{
+                                                    border: '1px solid lightgrey',
+                                                    borderRadius: '5px',
+                                                    height: 'auto',
+                                                    marginTop: '20px',
+                                                }}
+                                            >
+                                                <div style={{ marginTop: '23px', marginLeft: '73px', display: 'flex' }}>
+                                                    Activity Details *: &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <TextField
+                                                        id='outlined-basic'
+                                                        size='small'
+                                                        fullWidth
+                                                        value={title}
+                                                        onChange={handleTitle}
+                                                        style={{ maxWidth: '80%' }}
+                                                        label='Title *'
+                                                        variant='outlined'
+                                                    />
+                                                </div>
+                                                <br />
+                                                <div
+                                                    style={{
+                                                        marginLeft: '13%',
+                                                        marginRight: '8%',
+                                                        marginBottom: '23px',
+                                                    }}
+                                                >
+                                                    <TextField
+                                                        label='Description/Instructions *'
+                                                        placeholder='Description/Instructions *'
+                                                        multiline
+                                                        value={description}
+                                                        onChange={handleDescription}
+                                                        fullWidth
+                                                        style={{ maxWidth: '97%' }}
+                                                        rows='8'
+                                                        variant='outlined'
+                                                    />
+                                                    <div className='col-12' style={{ display: 'flex', padding: '0.5rem 1rem' }}>
+                                                        <input type="file"
+                                                            accept=".jpeg, .png, .mp4"
+                                                            id="outlined-button-file"
+                                                            // onChange={(e) => handleUpload(e.target.files)}
+                                                            onChange={onFileChange}
+                                                            ref={fileRef}
                                                         />
                                                     </div>
-                                                    <br />
-                                                    <div
-                                                        style={{
-                                                            marginLeft: '13%',
-                                                            marginRight: '8%',
-                                                            marginBottom: '23px',
-                                                        }}
-                                                    >
-                                                        <TextField
-                                                            label='Description/Instructions *'
-                                                            placeholder='Description/Instructions *'
-                                                            multiline
-                                                            value={description}
-                                                            onChange={handleDescription}
-                                                            fullWidth
-                                                            style={{ maxWidth: '97%' }}
-                                                            rows='8'
-                                                            variant='outlined'
-                                                        />
-                                                        <div className='col-12' style={{ display: 'flex', padding: '0.5rem 1rem' }}>
-                                                            <input type="file"
-                                                                accept=".jpeg, .png, .mp4"
-                                                                id="outlined-button-file"
-                                                                // onChange={(e) => handleUpload(e.target.files)}
-                                                                onChange={onFileChange}
-                                                                ref={fileRef}
-                                                            />
-                                                        </div>
 
-                                                        <div className='col-12' style={{ display: 'flex', alignItem: 'center', padding: '0.5rem 1rem', justifyContent: 'center' }}>
-                                                            <Button type="primary"
-                                                                icon={<FileProtectOutlined />}
-                                                                // onClick={goSearch}
-                                                                onClick={dataPost}
-                                                                size={'medium'}>
-                                                                Submit
-                                                            </Button>
-                                                        </div>
+                                                    <div className='col-12' style={{ display: 'flex', alignItem: 'center', padding: '0.5rem 1rem', justifyContent: 'center' }}>
+                                                        <Button type="primary"
+                                                            icon={<FileProtectOutlined />}
+                                                            // onClick={goSearch}
+                                                            onClick={dataPost}
+                                                            size={'medium'}>
+                                                            Submit
+                                                        </Button>
                                                     </div>
                                                 </div>
+                                            </div>
 
                                             {/* </div> */}
 
-                                        {/* </div> */}
-                                    </div>
+                                            {/* </div> */}
+                                        </div>
 
-                                </div>
-                            </Form>
+                                    </div>
+                                </Form>
+                            </div>
+
                         </div>
 
                     </div>
 
-                </div>
-
-            </Layout>
+                </Layout>
 
             </div>
 
