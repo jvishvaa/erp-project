@@ -64,7 +64,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabChapterId, setTabChapterId] = useState('');
   const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(2);
   const location = useLocation();
   // const query = new URLSearchParams(location.search);
   const filterRef = useRef(null);
@@ -136,7 +136,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     yearId,
     gradeId,
     chapterObj,
-    isErpCentral = false,
+    isErpCentral = true,
     newValue = 0,
     erp_category,
   ) => {
@@ -245,6 +245,7 @@ if(filtersDetails){
       setIsSelectAllQuestion(false)
       setSelectedId([])
       setSelectedIndex(-1);
+    //  setTabValue(tabIsErpCentral ? 2 : tabValue)
       handlePeriodList(
         tabQueTypeId,
         tabQueCatId,
@@ -327,6 +328,11 @@ if(filtersDetails){
   }
 
   const changequestionFrom = (e) => {
+    if(e=='edu'){
+      setTabValue(2)
+    }else{
+      setTabValue(0)
+    }
 setTabIsErpCentral((prev) => !prev)
   }
 
