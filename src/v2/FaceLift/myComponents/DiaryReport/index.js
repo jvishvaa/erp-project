@@ -67,7 +67,7 @@ const DiaryReport = () => {
           <Spin tip='Loading...'></Spin>
         </div>
       ) : diaryReportData?.length > 0 ? (
-        <div className='my-1 p-2'>
+        <div className='mt-1 p-2'>
           <div className='th-custom-col-padding'>
             <div className='px-2'>
               <div className='row justify-content-between mb-1'>
@@ -84,20 +84,7 @@ const DiaryReport = () => {
                       className='th-bg-grey mb-2 th-br-6 text-capitalize'
                       style={{ cursor: 'pointer' }}
                     >
-                      <div
-                        className='row justify-content-between py-3 th-br-6 align-items-center'
-                        onClick={() =>
-                          history.push({
-                            pathname: '/gradewise-diary-report',
-                            state: {
-                              startDate: moment()
-                                .subtract(6, 'days')
-                                .format('YYYY-MM-DD'),
-                              endDate: moment().format('YYYY-MM-DD'),
-                            },
-                          })
-                        }
-                      >
+                      <div className='row justify-content-between py-3 th-br-6 align-items-center'>
                         <div className='col-6 th-black-1 th-14 th-fw-400 pr-0 text-truncate'>
                           <Tooltip
                             placement='top'
@@ -110,15 +97,31 @@ const DiaryReport = () => {
                         </div>
 
                         <div className='col-6 text-right pr-3 th-16 th-fw-600 th-green-1'>
-                          <span className='d-flex align-items-center justify-content-end pr-2 pr-md-1'>
+                          <span className='mr-4'>
                             {item?.dairy_count}
-                            <RightOutlined className='th-black-1 pl-3' />
+                            {/* <RightOutlined className='th-black-1 pl-3' /> */}
                           </span>
                         </div>
                       </div>
                     </div>
                   );
                 })}
+              </div>
+              <div className='row justify-content-end'>
+                <u
+                  className='th-primary'
+                  onClick={() =>
+                    history.push({
+                      pathname: '/gradewise-diary-report',
+                      state: {
+                        startDate: moment().subtract(6, 'days').format('YYYY-MM-DD'),
+                        endDate: moment().format('YYYY-MM-DD'),
+                      },
+                    })
+                  }
+                >
+                  View All &gt;
+                </u>
               </div>
             </div>
           </div>

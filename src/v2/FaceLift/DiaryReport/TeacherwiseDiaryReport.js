@@ -58,7 +58,7 @@ const TeacherwiseDiaryReport = () => {
     if (startDate && endDate && diaryType) {
       fetchTeacherwiseReport({
         acad_session_id: selectedBranch?.id,
-        diaryType,
+        dairy_type: diaryType,
         grade_id: selectedSection?.grade_id,
         section_mapping: selectedSection?.section_mapping,
         start_date: startDate,
@@ -116,6 +116,7 @@ const TeacherwiseDiaryReport = () => {
                   state: {
                     startDate,
                     endDate,
+                    diaryType,
                   },
                 })
               }
