@@ -128,6 +128,11 @@ const CurriculumCompletionChapter = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const branchId = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch?.branch?.id
+  );
+  const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const user_level = userDetails?.user_level
   const [colIndex, setColIndex] = useState("")
   const { Option } = Select;
   const [volumeListData, setVolumeListData] = useState([]);
@@ -136,15 +141,18 @@ const CurriculumCompletionChapter = (props) => {
   const [collapseData, setCollapseData] = useState([]);
   const [gradeId, setGradeId] = useState();
   const [gradeName, setGradeName] = useState('');
+  const [subjectId, setSubjectId] = useState();
+  const [subjectName, setSubjectName] = useState('');
   const [teacherData, setTeacherData] = React.useState([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  const [ gradeApiData , setGradeApiData ] = useState()
+  const [gradeApiData, setGradeApiData] = useState([])
+  const [subjectApiData, setSubjectApiData] = useState([])
   const [columns, setColumns] = useState([
     {
       title: <span className='th-white pl-4 th-fw-700 '>Chapters</span>,
-      width: 250,
+      width: 300,
       align: 'left',
-      render: (data) => <span className='pl-md-4 th-black-1 th-16'>{data?.chapter_name}</span>,
+      render: (data) => <span className='pl-md-4 th-black-1 th-16' style={{fontWeight: '600'}} >{data?.chapter_name}</span>,
       key: 'chapter',
       fixed: 'left',
     },
@@ -157,11 +165,11 @@ const CurriculumCompletionChapter = (props) => {
   const [innerColumn, setInnerColumn] = useState([
     {
       title: <span className='th-white pl-4 th-fw-700 '>Topic</span>,
-      width: 250,
-      align: 'center',
+      width: 300,
+      align: 'left',
       render: (data) => {
         console.log(data, 'dataa')
-        return <span className='pl-md-4 th-black-1 th-16'>{data?.topic_name}</span>
+        return <span className='pl-md-4 th-black-1 th-16' style={{fontWeight: '600'}} >{data?.topic_name}</span>
       },
       fixed: 'left',
     }
@@ -193,12 +201,12 @@ const CurriculumCompletionChapter = (props) => {
 
   const handlevolume = (e) => {
     console.log(e);
-    if(e?.value){
-    setVolumeId(e.value);
-    setVolumeName(e.children);
+    if (e?.value) {
+      setVolumeId(e.value);
+      setVolumeName(e.children);
     } else {
       setVolumeId('');
-    setVolumeName('');
+      setVolumeName('');
     }
   };
   const handleClearVolume = () => {
@@ -209,14 +217,16 @@ const CurriculumCompletionChapter = (props) => {
   // grade list
 
   const gradeData = () => {
+    if (history?.location?.state?.module_id && branchId) {
       axiosInstance
         .get(
-          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${history?.location?.state?.branch_id}&module_id=${history?.location?.state?.module_id}`
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${history?.location?.state?.module_id}`
         )
         .then((res) => {
           setGradeApiData(res?.data?.data);
         })
         .catch(() => { });
+    }
   };
 
   const gradeOptions = gradeApiData?.map((each) => {
@@ -229,17 +239,57 @@ const CurriculumCompletionChapter = (props) => {
 
   const handleGrade = (e) => {
     console.log(e);
-    if(e?.value){
-    setGradeId(e.value);
-    setGradeName(e.children);
+    if (e?.value) {
+      setGradeId(e.value);
+      setGradeName(e.children);
     } else {
       setGradeId('');
-    setGradeName('');
+      setGradeName('');
     }
   };
   const handleClearGrade = () => {
-    setGradeId('');
     setGradeName('');
+  };
+
+  useEffect(() => {
+    subjectData()
+  }, [gradeId])
+
+  // subject lsit
+  const subjectData = () => {
+    if (gradeId != null) {
+      axiosInstance
+        .get(
+          `${endpoints.assessmentErp.subjectList}?session_year=${selectedAcademicYear?.id}&grade=${gradeId}`
+        )
+        .then((res) => {
+          setSubjectApiData(res?.data?.result);
+        })
+        .catch(() => { });
+    }
+  };
+
+  const subjectOptions = subjectApiData?.length > 0 && subjectApiData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.subject_name}>
+        {each?.grade_name}
+      </Option>
+    );
+  });
+
+  const handleSubject = (e) => {
+    console.log(e);
+    if (e?.value) {
+      setSubjectId(e.value);
+      setSubjectName(e.children);
+    } else {
+      setSubjectId('');
+      setSubjectName('');
+    }
+  };
+  const handleClearSubject = () => {
+    setSubjectId('');
+    setSubjectName('');
   };
 
 
@@ -253,6 +303,7 @@ const CurriculumCompletionChapter = (props) => {
         chapter_id: record?.chapter_id,
         teacher_erp: teacherId,
         acad_session: history?.location?.state?.acad_sess_id,
+        subject_id: subjectId
       })
     } else {
       teacherSubjectTable({
@@ -261,6 +312,7 @@ const CurriculumCompletionChapter = (props) => {
         central_gs: history?.location?.state?.central_gs,
         chapter_id: record?.chapter_id,
         acad_session: history?.location?.state?.acad_sess_id,
+        subject_id: subjectId
       })
     }
     console.log(record);
@@ -307,50 +359,56 @@ const CurriculumCompletionChapter = (props) => {
     setTeacherView(history?.location?.state?.teacherView)
     setTeacherId(history?.location?.state?.teacher_id)
     setGradeId(history?.location?.state?.grade)
+    setSubjectId(history?.location?.state?.subject_id)
   }, [history]);
 
 
   useEffect(() => {
-    if(gradeId){
-    if (history?.location?.state?.teacherView) {
-      if (volumeId != null) {
-        gradeListTable({
-          grade_id: gradeId,
-          session_year: selectedAcademicYear?.id,
-          teacher_erp: history?.location?.state?.teacher_id,
-          acad_session: history?.location?.state?.acad_sess_id,
-          volume: volumeId,
-          central_gs: history?.location?.state?.central_gs,
-        });
+    if (gradeId) {
+      if (history?.location?.state?.teacherView) {
+        if (volumeId != null) {
+          gradeListTable({
+            grade_id: gradeId,
+            session_year: selectedAcademicYear?.id,
+            teacher_erp: history?.location?.state?.teacher_id,
+            acad_session: history?.location?.state?.acad_sess_id,
+            volume: volumeId,
+            central_gs: history?.location?.state?.central_gs,
+            subject_id: subjectId
+          });
+        } else {
+          gradeListTable({
+            grade_id: gradeId,
+            session_year: selectedAcademicYear?.id,
+            teacher_erp: history?.location?.state?.teacher_id,
+            acad_session: history?.location?.state?.acad_sess_id,
+            central_gs: history?.location?.state?.central_gs,
+            subject_id: subjectId
+          });
+        }
       } else {
-        gradeListTable({
-          grade_id: gradeId,
-          session_year: selectedAcademicYear?.id,
-          teacher_erp: history?.location?.state?.teacher_id,
-          acad_session: history?.location?.state?.acad_sess_id,
-          central_gs: history?.location?.state?.central_gs,
-        });
-      }
-    } else {
-      if (volumeId != null) {
-        gradeListTable({
-          grade_id: gradeId,
-          session_year: selectedAcademicYear?.id,
-          central_gs: history?.location?.state?.central_gs,
-          acad_session: history?.location?.state?.acad_sess_id,
-          volume: volumeId
-        });
-      } else {
-        gradeListTable({
-          grade_id: gradeId,
-          session_year: selectedAcademicYear?.id,
-          central_gs: history?.location?.state?.central_gs,
-          acad_session: history?.location?.state?.acad_sess_id,
-        });
+        if (volumeId != null) {
+          gradeListTable({
+            grade_id: gradeId,
+            session_year: selectedAcademicYear?.id,
+            central_gs: history?.location?.state?.central_gs,
+            acad_session: history?.location?.state?.acad_sess_id,
+            volume: volumeId,
+            subject_id: subjectId
+
+          });
+        } else {
+          gradeListTable({
+            grade_id: gradeId,
+            session_year: selectedAcademicYear?.id,
+            central_gs: history?.location?.state?.central_gs,
+            acad_session: history?.location?.state?.acad_sess_id,
+            subject_id: subjectId
+          });
+        }
       }
     }
-  }
-  }, [volumeId , gradeId]);
+  }, [volumeId, gradeId]);
 
   const gradeListTable = (params = {}) => {
     console.log(params);
@@ -390,9 +448,12 @@ const CurriculumCompletionChapter = (props) => {
         let newCol = {
           title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name}</span>,
           align: 'center',
-          width: 150,
+          width: 400,
           render: (data) => {
-            return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} className='pl-md-4 th-black-1 th-16' width={40} />
+            return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
+              '0%': '#108ee9',
+              '100%': '#87d068',
+            }} className='reportProgress' format={(percent) => `${percent}%`} width={60} />
           },
           key: 'section_name',
         }
@@ -414,11 +475,14 @@ const CurriculumCompletionChapter = (props) => {
         let newCol = {
           title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name}</span>,
           align: 'center',
-          width: 100,
+          width: 400,
           key: `${i?.section_name}`,
           render: (data) => {
             console.log(data, 'chapterper');
-            return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} className='pl-md-4 th-black-1 th-16' width={40} />
+            return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
+              '0%': '#108ee9',
+              '100%': '#87d068',
+            }} format={(percent) => `${percent}%`} className='reportProgressChild' width={60} />
           },
         }
         innerCol.push(newCol)
@@ -440,9 +504,9 @@ const CurriculumCompletionChapter = (props) => {
         dataSource={collapseData}
         rowKey={(record) => record?.topic_id}
         pagination={false}
-        className='th-inner-head'
+        className='th-inner-chapter'
         expandIconColumnIndex={innerColumn?.length}
-        bordered={false}
+        bordered
         style={{ width: '100%' }}
         scroll={{
           x: 1300,
@@ -459,7 +523,8 @@ const CurriculumCompletionChapter = (props) => {
       acad_session: history?.location?.state?.acad_sess_id,
       central_gs: history?.location?.state?.central_gs,
       export_as_excel: true,
-      volume: volumeId
+      volume: volumeId,
+      subject_id: history?.location?.state?.subject_id
     }
     axiosInstance
       .get(`${endpoints.ownerDashboard.chapterWise}`, {
@@ -483,6 +548,12 @@ const CurriculumCompletionChapter = (props) => {
       });
   }
 
+  const backSetting = () => {
+    if (teacherView) {
+      console.log(history.location.state);
+    }
+  }
+
   return (
     <Layout>
       <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
@@ -498,15 +569,77 @@ const CurriculumCompletionChapter = (props) => {
               >
                 Curriculum Completion
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1' onClick={() => history.goBack()} >{teacherView ? 'Teacher Wise' : 'Subject Wise'}</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1' onClick={() => backSetting()} >{teacherView ? 'Teacher Wise' : 'Subject Wise'}</Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1'>Chapter Wise</Breadcrumb.Item>
             </Breadcrumb>
           </Grid>
-          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
-            <div style={{width: '12%' , display: 'flex' , justifyContent: 'space-between' }} >
-            <Button onClick={handleBack} icon={<LeftOutlined />} className={clsx(classes.backButton)} >Back</Button>
-              <Button onClick={handleDownload}>Download Report</Button>
+          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-start' }} >
+            <div style={{ width: '12%', display: 'flex', justifyContent: 'space-between' }} >
+              <Button onClick={handleBack} icon={<LeftOutlined />} className={clsx(classes.backButton)} >Back</Button>
+              {user_level != 13 ?
+                <Button onClick={handleDownload}>Download Report</Button>
+                : ' '}
             </div>
+
+          </Grid>
+          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-start' }} >
+
+            <div className='col-md-3 col-6 pl-md-1'>
+              <div className='text-left pl-md-1'>Grade</div>
+              <Form.Item name='volume'>
+                <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  placeholder='Select Grade'
+                  showSearch
+                  allowClear
+                  defaultValue='All'
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => {
+                    handleGrade(value);
+                  }}
+                  onClear={handleClearGrade}
+                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                  bordered={false}
+                >
+
+                  {gradeOptions}
+                </Select>
+              </Form.Item>
+            </div>
+
+            <div className='col-md-3 col-6 pl-md-1'>
+              <div className='text-left pl-md-1'>Subject</div>
+              <Form.Item name='Subject'>
+                <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  placeholder='Select Subject'
+                  showSearch
+                  allowClear
+                  defaultValue='All'
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => {
+                    handleSubject(value);
+                  }}
+                  onClear={handleClearSubject}
+                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                  bordered={false}
+                >
+
+                  {subjectOptions}
+                </Select>
+              </Form.Item>
+            </div>
+
             <div className='col-md-3 col-6 pl-md-1'>
               <div className='text-left pl-md-1'>Volume</div>
               <Form.Item name='volume'>
@@ -535,37 +668,7 @@ const CurriculumCompletionChapter = (props) => {
               </Form.Item>
             </div>
           </Grid>
-          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
-           
-            <div className='col-md-3 col-6 pl-md-1'>
-              <div className='text-left pl-md-1'>Grade</div>
-              <Form.Item name='volume'>
-                <Select
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  placeholder='Select Grade'
-                  showSearch
-                  allowClear
-                  defaultValue='All'
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  onChange={(e, value) => {
-                    handleGrade(value);
-                  }}
-                  onClear={handleClearGrade}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  bordered={false}
-                >
-
-                  {gradeOptions}
-                </Select>
-              </Form.Item>
-            </div>
-          </Grid>
-          <div className='row mt-3'>
+          <div className='row mt-3' id='chapterTableScss' >
             <div className='col-12'>
               {console.log(columns, colIndex, 'mixed col')}
               <Table
@@ -581,6 +684,8 @@ const CurriculumCompletionChapter = (props) => {
                 pagination={false}
                 expandIconColumnIndex={columns?.length}
                 expandedRowKeys={expandedRowKeys}
+                expandRowByClick={true}
+                bordered
                 onExpand={onTableRowExpand}
                 expandIcon={({ expanded, onExpand, record }) =>
                   expanded ? (
@@ -598,7 +703,7 @@ const CurriculumCompletionChapter = (props) => {
                 size="middle"
                 scroll={{
                   x: 1300,
-                  y: 1100,
+                  y: 700,
                 }}
               />
             </div>

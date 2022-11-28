@@ -24,7 +24,7 @@ const CurriculumCompletion = () => {
   const fetchCurriculumData = (params = {}) => {
     setLoading(true);
     axios
-      .get(`${endpoints.teacherDashboard.curriculumCompletion}`, {
+      .get(`${endpoints.teacherDashboard.curriculumnWidget}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
@@ -43,8 +43,9 @@ const CurriculumCompletion = () => {
   };
 
   const getCurriculumData = () => {
-    if (selectedAcademicYear)
-      fetchCurriculumData({ session_year: selectedAcademicYear?.id });
+    if (selectedAcademicYear && selectedBranch){
+      fetchCurriculumData({ session_year: selectedAcademicYear?.id  , acad_session : selectedBranch?.id});
+    }
   };
 
   useEffect(() => {
@@ -97,7 +98,7 @@ const CurriculumCompletion = () => {
               </div>
               <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
                 {curriculumData?.map((item, i) => {
-                  let section = item.section_name.charAt(item.section_name.length - 1);
+                  let section = item?.section_name?.charAt(item?.section_name?.length - 1);
                   return (
                     <div
                       className='th-bg-grey mb-2 th-br-6'
@@ -145,7 +146,7 @@ const CurriculumCompletion = () => {
                           {item?.subject_name}
                         </div>
                         <div className='col-4 text-center th-16 th-fw-600 th-green-1 pr-0'>
-                          {item?.percentage_completion}%{' '}
+                          {item?.completion_percentage}%{' '}
                         </div>
                       </div>
                     </div>

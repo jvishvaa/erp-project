@@ -388,6 +388,7 @@ import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/aca
 import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
 import CurriculumCompletionChapter from 'containers/dashboard/ownerDashboard/academic/chapterWise';
 import TeacherSubject from 'containers/dashboard/ownerDashboard/academic/teacherSubject';
+import StudentSubject from 'containers/dashboard/ownerDashboard/academic/studentSubjectWise';
 
 import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade';
 import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report';
@@ -2028,6 +2029,11 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/curriculum-completion-teacher-subject/:branchId'>
                               {({ match }) => (
                                 <TeacherSubject match={match} />
+                              )}
+                            </Route>
+                            <Route path='/curriculum-completion-student-subject/'>
+                              {({ match }) => (
+                                <StudentSubject match={match} />
                               )}
                             </Route>
                             <Route path='/sure-learning-trainee-courses'>

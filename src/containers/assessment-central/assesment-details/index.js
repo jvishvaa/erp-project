@@ -44,7 +44,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
   } = test;
 
   const handleData = () => {
-    sessionStorage.removeItem('filterData')
+    sessionStorage.removeItem('/filterData')
     history.push({
       pathname: '/offline-student',
       state: {
@@ -493,7 +493,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                 </Grid> */}
                 <Grid item xs={12}  >
 
-                  {testType == 'Quiz' && test?.test_mode == 1 ?
+                  {/* {testType == 'Quiz' && test?.test_mode == 1 ?
                     <>
                       {testDate == null ?
                       <>
@@ -513,7 +513,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                         </Button>
                       }
                     </>
-                    : ''}
+                    : ''} */}
                 </Grid>
                 {enable && <Grid item xs={12} style={{marginTop:'5%'}}>
                   <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>

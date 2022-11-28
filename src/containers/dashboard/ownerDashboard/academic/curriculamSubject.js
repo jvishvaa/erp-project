@@ -365,9 +365,31 @@ const CurriculumCompletionSubject = (props) => {
                 columns={columns}
                 rowKey={(record) => record?.subject_id_id}
                 dataSource={tableData}
+                expandRowByClick={true}
                 pagination={false}
                 expandIconColumnIndex={6}
                 scroll={{ x: 'max-content' }}
+                onRow={(row, rowindex) => {
+                  return {
+        
+                    onClick: (e) =>
+                    history.push({
+                      pathname: `/curriculum-completion-chapter/${branchId}/${history?.location?.state?.grade}`,
+                      state: {
+                        grade: history?.location?.state?.grade,
+                        gradeName: row?.grade_name,
+                        subject_id: row?.subject_id_id,
+                        acad_session_id: acad_session_id,
+                        acad_sess_id: acad_sess_id,
+                        module_id: moduleId,
+                        branchName: branchName,
+                        selectedDate: dateToday,
+                        teacherView: teacherView,
+                        central_gs : row?.central_gs
+                      },
+                    })
+                  }
+                }}
               />
             </div>
        

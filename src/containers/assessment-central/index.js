@@ -972,6 +972,7 @@ useEffect(() => {
                         showToday={false}
                         suffixIcon={<DownOutlined />}
                         // defaultValue={[moment(), moment()]}
+                        value={formik?.values.date}
                         onChange={(value) => handleDateChange(value)}
                         className='th-range-picker th-br-4'
                         separator={'-'}

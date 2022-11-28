@@ -36,3 +36,23 @@
             background: #a7a7a7;
         }
     }
+    #chapterTableScss{
+
+        .ant-table{
+            margin: 0 !important;
+        }
+        // .ant-table-cell-fix-left{
+        //     background: none;
+        // }
+      .reportProgress{
+        font-size: 12px !important;
+        font-weight: 600;
+      }
+      .ant-progress-text{
+        font-size: 12px !important;
+        font-weight: 600;
+      }
+    //   .th-inner-chapter{
+    //     background-color: #dbdbdb;
+    //   }
+    }
