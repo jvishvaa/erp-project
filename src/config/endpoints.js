@@ -959,7 +959,7 @@ export default {
     physicalStudentReviewAPI: `${newBlogURL}/api/student_performance/`,
     postActivityListAPI : `${newBlogURL}/api/get_all_posts/`,
     postActivityViewMoreAPI: `${newBlogURL}/api/get_posts_details/`,
-    postActivityCreateAPI : `${newBlogURL}/api/wall_post_create/`
+    postActivityCreateAPI : `${newBlogURL}/api/wall_post_create/`,
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

@@ -478,7 +478,9 @@ const PhysicalReviewed = (props) => {
                             style={{ display: 'flex', justifyContent: 'space-between',  marginBottom:'10px' }}
                           >
                             {' '}
-                            {obj?.name}
+                            {/* <> */}
+                            {obj?.name}<b>({obj?.level})</b>
+                            {/* </> */}
                           </div>
                           )}
                           {/* {obj} */}
@@ -656,7 +658,7 @@ const PhysicalReviewed = (props) => {
               </Grid>
             </Grid>
           </div>
-        </Drawer>
+      </Drawer>
     </>
   );
 };
