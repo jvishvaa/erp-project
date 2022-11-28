@@ -453,6 +453,7 @@ import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
 import PostActivityView from 'containers/newBlog/postActivityView';
 import CreatePostActivity from 'containers/newBlog/createPostActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
+import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -542,6 +543,9 @@ const V1Router = [
   </Route>,
   <Route exact path='/assessment/category'>
     {({ match }) => <CategoryTable match={match} />}
+  </Route>,
+   <Route path='/student/phycial/activity'>
+    {({ match }) => <StudentSidePhysicalActivity match={match} />}
   </Route>,
   <Route exact path='/assessment/report-card'>
     {({ match }) => <StudentReportCard match={match} />}
