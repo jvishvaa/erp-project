@@ -78,7 +78,9 @@ const DailyDiary = () => {
   const [subjectID, setSubjectID] = useState();
   const [subjectName, setSubjectName] = useState();
   const [chapterID, setChapterID] = useState();
+  const [chapterName, setChapterName] = useState();
   const [keyConceptID, setKeyConceptID] = useState();
+  const [keyConceptName, setKeyConceptName] = useState();
   const [gsMappingID, setGSMappingID] = useState();
   const [recap, setRecap] = useState('');
   const [classwork, setClasswork] = useState('');
@@ -235,6 +237,8 @@ const DailyDiary = () => {
           for_diary: 1,
           key_concepts: Number(params.value.key_concept_id),
         });
+        setKeyConceptName(params.value.key_concept__topic_name);
+        setChapterName(params.value.chapter__chapter_name);
       } else {
         fetchLessonResourcesData({
           grade: gradeID,
@@ -455,6 +459,7 @@ const DailyDiary = () => {
     });
     setKeyConceptDropdown([]);
     setResourcesData([]);
+    setKeyConceptID();
     if (e) {
       setChapterID(e.value);
       // setChapterName(e.children);
@@ -467,6 +472,7 @@ const DailyDiary = () => {
     if (e) {
       setKeyConceptID(e.value);
       setGSMappingID(e.gsMappingId);
+      // setKeyConceptName(e.children);
       fetchLessonResourcesData({
         grade: gradeID,
         acad_session_id: selectedBranch?.id,
@@ -532,6 +538,8 @@ const DailyDiary = () => {
             setChapterID(result?.data?.data[0]?.chapter_id);
             setKeyConceptID(result?.data?.data[0]?.key_concept_id);
             setGSMappingID(result?.data?.data[0]?.chapter__grade_subject_mapping_id);
+            setChapterName(result?.data?.data[0]?.chapter__chapter_name);
+            setKeyConceptName(result?.data?.data[0]?.key_concept__topic_name);
           }
         }
       })
@@ -1604,7 +1612,13 @@ const DailyDiary = () => {
                     // disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleChapter(value)}
-                    placeholder='Chapter'
+                    placeholder={
+                      chapterID ? (
+                        <div className='th-black-2'>{chapterName}</div>
+                      ) : (
+                        'Select Chapter'
+                      )
+                    }
                     allowClear
                     showSearch
                     value={chapterID}
@@ -1628,7 +1642,13 @@ const DailyDiary = () => {
                     // disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleKeyConcept(value)}
-                    placeholder='Key Concept'
+                    placeholder={
+                      keyConceptID ? (
+                        <div className='th-black-2'>{keyConceptName}</div>
+                      ) : (
+                        'Select Key Concept'
+                      )
+                    }
                     allowClear
                     showSearch
                     optionFilterProp='children'

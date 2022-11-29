@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect , createRef } from 'react';
 import {
   Grid,
 
@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import Layout from '../../../Layout';
-import { Button , Form , Select , message } from 'antd';
+import { Button, Form, Select, message } from 'antd';
 import axios from 'axios';
 import clsx from 'clsx';
 import axiosInstance from 'config/axios';
@@ -133,6 +133,7 @@ const CurriculumCompletionSubject = (props) => {
   const [volumeId, setVolumeId] = useState([]);
   const [volumeName, setVolumeName] = useState('');
 
+  const formRef = createRef();
 
   const {
     match: {
@@ -148,7 +149,7 @@ const CurriculumCompletionSubject = (props) => {
     setBranchName(history?.location?.state?.branchName)
     setDateToday(history?.location?.state?.selectedDate)
     setTeacherView(history?.location?.state?.teacherView)
-    if(history?.location?.state?.volume != null){
+    if (history?.location?.state?.volume != null) {
       setVolumeId(history?.location?.state?.volume)
     }
     fetchVolumeListData()
@@ -161,18 +162,18 @@ const CurriculumCompletionSubject = (props) => {
 
   useEffect(() => {
     console.log(dateToday);
-    if (volumeId != null) {
+    if (volumeId != null || volumeId != undefined) {
       gradeListTable({
         grade_id: history?.location?.state?.grade,
         session_year: selectedAcademicYear?.id,
-        acad_session : acad_sess_id,
+        acad_session: acad_sess_id,
         volume: volumeId
       });
     } else {
       gradeListTable({
         grade_id: history?.location?.state?.grade,
         session_year: selectedAcademicYear?.id,
-        acad_session : acad_sess_id
+        acad_session: acad_sess_id
       });
     }
   }, [volumeId]);
@@ -218,20 +219,52 @@ const CurriculumCompletionSubject = (props) => {
   };
   const volumeOptions = volumeListData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option value={each.id}>
         {each?.volume_name}
       </Option>
     );
   });
 
   const handlevolume = (e) => {
-    setVolumeId(e.value);
-    setVolumeName(e.children);
+    if(e?.value){
+      setVolumeId(e?.value);
+      setVolumeName(e?.children);
+      formRef.current.setFieldsValue({
+        volume: e?.children,
+      });
+    }
   };
   const handleClearVolume = () => {
     setVolumeId('');
     setVolumeName('');
   };
+
+  useEffect(() => {
+    if(history?.location?.state?.volumeId){
+      setVolumeFilters()
+    }
+  },[volumeListData])
+
+  const setVolumeFilters = () => {
+    let volfind = volumeListData.filter(e => e?.id == history?.location?.state?.volumeId) || []
+    console.log(volfind);
+    const temp = []
+    const transform = volfind?.length > 0 && volfind.map((e) => {
+      const data = {
+        key : null  ,
+        value: e?.id,
+        children: e?.volume_name
+      }
+      temp.push(data)
+    })
+    console.log(temp , transform);
+    if(temp?.length > 0 ){
+      handlevolume(temp[0])
+      // setSelectedGrade(temp[0])
+    }
+  }
+
+
 
 
   const handleBack = () => {
@@ -294,7 +327,8 @@ const CurriculumCompletionSubject = (props) => {
                 branchName: branchName,
                 selectedDate: dateToday,
                 teacherView: teacherView,
-                central_gs : row?.central_gs
+                central_gs: row?.central_gs,
+                volumeId: volumeId
               },
             })
           }
@@ -326,7 +360,8 @@ const CurriculumCompletionSubject = (props) => {
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
             <Button onClick={handleBack} icon={<LeftOutlined />} className={clsx(classes.backButton)} >Back</Button>
-              <div className='col-md-3 col-6 pl-md-1'>
+            <Form ref={formRef} style={{display: 'flex', justifyContent: 'flex-end' , width: '40%'}} >
+            <div className='col-md-3 col-6 pl-md-1'>
               <div className='text-left pl-md-1'>Volume</div>
               <Form.Item name='volume'>
                 <Select
@@ -352,8 +387,9 @@ const CurriculumCompletionSubject = (props) => {
                 </Select>
               </Form.Item>
             </div>
+            </Form>
           </Grid>
-          
+
           <div className='row '>
             <div className='col-12'>
               <Table
@@ -371,28 +407,30 @@ const CurriculumCompletionSubject = (props) => {
                 scroll={{ x: 'max-content' }}
                 onRow={(row, rowindex) => {
                   return {
-        
+
                     onClick: (e) =>
-                    history.push({
-                      pathname: `/curriculum-completion-chapter/${branchId}/${history?.location?.state?.grade}`,
-                      state: {
-                        grade: history?.location?.state?.grade,
-                        gradeName: row?.grade_name,
-                        subject_id: row?.subject_id_id,
-                        acad_session_id: acad_session_id,
-                        acad_sess_id: acad_sess_id,
-                        module_id: moduleId,
-                        branchName: branchName,
-                        selectedDate: dateToday,
-                        teacherView: teacherView,
-                        central_gs : row?.central_gs
-                      },
-                    })
+                      history.push({
+                        pathname: `/curriculum-completion-chapter/${branchId}/${history?.location?.state?.grade}`,
+                        state: {
+                          grade: history?.location?.state?.grade,
+                          gradeName: row?.grade_name,
+                          subject_id: row?.subject_id_id,
+                          acad_session_id: acad_session_id,
+                          acad_sess_id: acad_sess_id,
+                          module_id: moduleId,
+                          branchName: branchName,
+                          selectedDate: dateToday,
+                          teacherView: teacherView,
+                          central_gs: row?.central_gs,
+                          volumeId: volumeId
+
+                        },
+                      })
                   }
                 }}
               />
             </div>
-       
+
           </div>
         </Grid>
       </div>

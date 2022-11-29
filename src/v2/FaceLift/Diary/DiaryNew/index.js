@@ -309,13 +309,13 @@ const Diary = () => {
         </div>
         {(user_level == 13 || user_level == 12) && isOrchids ? (
           <div
-            className='row justify-content-end th-pointer'
+            className='row justify-content-end'
             style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-            onClick={() => setShowGrievanceModal(true)}
           >
             <div
-              className='th-bg-white px-2 py-1 th-br-6'
+              className='th-bg-white px-2 py-1 th-br-6 th-pointer'
               style={{ border: '1px solid #d9d9d9' }}
+              onClick={() => setShowGrievanceModal(true)}
             >
               Having any issues with Diary ?<br />
               <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>

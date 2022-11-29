@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, createRef } from 'react';
 import {
   Grid,
 } from '@material-ui/core';
@@ -24,7 +24,7 @@ import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { Column } from '@ant-design/plots';
 import axios from 'axios';
-import { Switch  , Pagination} from 'antd';
+import { Switch, Pagination, Radio } from 'antd';
 const { Option } = Select;
 
 const useStyles = makeStyles((theme) => ({
@@ -127,7 +127,7 @@ const CurriculumCompletion = (props) => {
   const [acadeId, setAcadeId] = React.useState('');
   const [gradeApiData, setGradeApiData] = React.useState([]);
   const [branchName, setBranchName] = React.useState([]);
-  const [teacherView, setTeacherView] = useState(false)
+  const [teacherView, setTeacherView] = useState(1)
   const [dateToday, setDateToday] = useState(moment(new Date()).format('YYYY-MM-DD'));
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -138,8 +138,9 @@ const CurriculumCompletion = (props) => {
   const [volumeId, setVolumeId] = useState([]);
   const [volumeName, setVolumeName] = useState('');
   const [teacherErp, setTeacherErp] = useState('')
-  const [ page , setPage ] = useState(1)
+  const [page, setPage] = useState(1)
 
+  const formRef = createRef();
 
   const onTableRowExpand = (expanded, record) => {
     console.log(record);
@@ -192,6 +193,9 @@ const CurriculumCompletion = (props) => {
   const handleClearVolume = () => {
     setVolumeId(null);
     setVolumeName('');
+    formRef.current.setFieldsValue({
+      volume: 'All',
+    });
   };
   const volumeOptions = volumeListData?.map((each) => {
     return (
@@ -219,7 +223,7 @@ const CurriculumCompletion = (props) => {
 
   const { acad_session_id, module_id, acad_sess_id } = history.location.state;
 
-console.log(history.location.state);
+  console.log(history.location.state);
 
 
   const teacherSubjectTable = (params = {}) => {
@@ -247,7 +251,7 @@ console.log(history.location.state);
 
   useEffect(() => {
     console.log(dateToday);
-    if (teacherView == false) {
+    if (teacherView == 1) {
       console.log(selectedAcademicYear);
       if (volumeId != null) {
         gradeListTable({
@@ -282,7 +286,7 @@ console.log(history.location.state);
         });
       }
     }
-  }, [acad_session_id, volumeId, teacherView , page]);
+  }, [acad_session_id, volumeId, teacherView, page]);
 
   const gradeListTable = (params = {}) => {
     setLoading(true);
@@ -355,13 +359,15 @@ console.log(history.location.state);
     setData(newData)
   }
 
-  const handleViewChange = () => {
+  const handleViewChange = (e) => {
     setData([])
-    if (teacherView == false) {
-      setTeacherView(true)
-    } else {
-      setTeacherView(false)
-    }
+    console.log( e.target.value);
+    setTeacherView(e.target.value)
+    // if (teacherView == false) {
+    //   setTeacherView(true)
+    // } else {
+    //   setTeacherView(false)
+    // }
   }
 
 
@@ -461,17 +467,24 @@ console.log(history.location.state);
       },
       {
         title: <span className='th-white '>Total Periods Conducted</span>,
-        dataIndex: 'total_periods',
+        dataIndex: 'conducted_periods',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-red th-16'>{data}</span>,
+        render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
+      },
+      {
+        title: <span className='th-white '>Total Periods Pending</span>,
+        dataIndex: 'pending_periods',
+        align: 'center',
+        width: '15%',
+        render: (data) => <span className='th-red th-16'>{data.toFixed(0)}</span>,
       },
       {
         title: <span className='th-white '>Avg. Completion</span>,
         dataIndex: 'avg_completion',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-green th-16'>{data} %</span>,
+        render: (data) => <span className='th-green th-16'>{data.toFixed(2)} %</span>,
       },
       // {
       //   title: <span className='th-white '>Total Periods Pending</span>,
@@ -503,7 +516,9 @@ console.log(history.location.state);
                   teacherView: teacherView,
                   teacher_id: teacherErp,
                   branch_id: branchId,
-                  central_gs: row?.central_gs
+                  central_gs: row?.central_gs,
+                  volumeId : volumeId
+
                 },
               })
             }
@@ -543,7 +558,9 @@ console.log(history.location.state);
                   teacherView: teacherView,
                   teacher_id: teacherErp,
                   branch_id: branchId,
-                  central_gs: row?.central_gs
+                  central_gs: row?.central_gs,
+                  volumeId : volumeId
+
                 },
               })
           }
@@ -576,8 +593,8 @@ console.log(history.location.state);
       });
   }
 
-  const handlePageChange = (page , pageSize) => {
-    console.log(page , pageSize);
+  const handlePageChange = (page, pageSize) => {
+    console.log(page, pageSize);
     setPage(page)
   }
 
@@ -597,48 +614,55 @@ console.log(history.location.state);
             </Breadcrumb>
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
-            {/* <Button onClick={handleViewChange} className={clsx(classes.viewButton)} >{teacherView ? 'Grade View' : "Teacher's View"}</Button> */}
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '18%', fontSize: '16px', fontWeight: '600', margin: 'auto 0' }} >
-              <span>Grade View</span>
+              {/* <span>Grade View</span>
               <Switch onChange={handleViewChange} />
-              <span>Teacher View</span>
+              <span>Teacher View</span> */}
+              <Radio.Group onChange={handleViewChange} value={teacherView}>
+                <Radio value={1}>Grade View</Radio>
+                <Radio value={2}>Teacher View</Radio>
+              </Radio.Group>
+
             </div>
-            {/* <Button onClick={downloadReport} className={clsx(classes.viewButton)} >Download Report</Button> */}
-            <div className='col-md-3 col-6 pl-md-1'>
-              <div className='text-left pl-md-1'>Volume</div>
-              <Form.Item name='volume'>
-                <Select
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  placeholder='Select Volume'
-                  showSearch
-                  defaultValue='All'
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  onChange={(e, value) => {
-                    handlevolume(value);
-                  }}
-                  onClear={handleClearVolume}
-                  allowClear
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  bordered={false}
-                >
-                  {volumeOptions}
-                </Select>
-              </Form.Item>
+            <div style={{ width: '40%' }} >
+              <Form ref={formRef} style={{ display: 'flex', justifyContent: 'flex-end' }} >
+                <div className='col-md-3 col-6 pl-md-1'>
+                  <div className='text-left pl-md-1'>Volume</div>
+                  <Form.Item name='volume'>
+                    <Select
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      placeholder='Select Volume'
+                      showSearch
+                      defaultValue='All'
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handlevolume(value);
+                      }}
+                      onClear={handleClearVolume}
+                      allowClear
+                      className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                      bordered={false}
+                    >
+                      {volumeOptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+              </Form>
             </div>
           </Grid>
-          {!teacherView ?
+          {teacherView == 1 ?
             <div style={{ width: '100%', marginTop: '5%' }}>
 
               {data?.length > 0 ?
                 <>
                   <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                    <div style={{alignItems: 'center' , display: 'flex' , fontWeight: '600' , fontSize: '20px'}} >
-                    <p style={{transform: 'rotate(270deg'}}>Avg Completion</p>
+                    <div style={{ alignItems: 'center', display: 'flex', fontWeight: '600', fontSize: '20px' }} >
+                      <p style={{ transform: 'rotate(270deg' }}>Avg Completion Percentage</p>
                     </div>
                     <div>
                       {console.log({ ...config })}
@@ -656,7 +680,8 @@ console.log(history.location.state);
                               branchName: branchName,
                               selectedDate: dateToday,
                               teacherView: teacherView,
-                              branch_id: branchId
+                              branch_id: branchId,
+                              volumeId : volumeId
                             },
                           })
                         })
@@ -707,7 +732,7 @@ console.log(history.location.state);
                     }
                     scroll={{ x: 'max-content' }}
                   />
-                  <Pagination defaultCurrent={page} total={teacherData?.total_pages ? teacherData?.total_pages * 10 : 10} showSizeChanger	={false} onChange={handlePageChange} />
+                  <Pagination defaultCurrent={page} total={teacherData?.total_pages ? teacherData?.total_pages * 10 : 10} showSizeChanger={false} onChange={handlePageChange} />
                 </div>
 
               </div>
