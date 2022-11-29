@@ -320,7 +320,8 @@ if(filters.questionId){
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          setAnnualPlanData(result?.data?.result);
+          let filteredchapters = result?.data?.result?.filter((item) => item?.keyconcept !== null)
+          setAnnualPlanData(filteredchapters);
           // setYCPData(result?.data?.data?.lp_ycp_data);
           // setFiltered(false)
           setLoading(false);
