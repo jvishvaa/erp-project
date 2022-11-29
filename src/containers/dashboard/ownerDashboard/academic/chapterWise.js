@@ -446,7 +446,7 @@ const CurriculumCompletionChapter = (props) => {
       setColIndex(res[0]?.section_wise_completion?.length + 2)
       let transform = res[0]?.section_wise_completion.map((i, index) => {
         let newCol = {
-          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name}</span>,
+          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name.replace(/sec|section/gi, "SEC")}</span>,
           align: 'center',
           width: 400,
           render: (data) => {
@@ -473,7 +473,7 @@ const CurriculumCompletionChapter = (props) => {
       let innerCol = [...innerColumn]
       let transform = res?.length > 0 && res[0]?.section_wise_completion.map((i, index) => {
         let newCol = {
-          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name}</span>,
+          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name.replace(/sec|section/gi, "SEC")}</span>,
           align: 'center',
           width: 400,
           key: `${i?.section_name}`,

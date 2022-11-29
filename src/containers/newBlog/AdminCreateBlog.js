@@ -207,8 +207,10 @@ const AdminCreateBlog = () => {
     setSelectedBranch([])
     setSelectedGrade([])
     setSelectedSection([])
+    setIsPhysicalActivity(false)
     if (value) {
       setSubActivityName(value)
+      setIsPhysicalActivity(true)
       setSelectedSubActivityId(value?.id)
       setVisible(true)
       console.log(value)
@@ -503,6 +505,7 @@ const AdminCreateBlog = () => {
       return;
     }
 
+
     // if(!checked) {
     //   setLoading(false);
     //   setAlert('error','Please Select Templates')
@@ -515,7 +518,7 @@ const AdminCreateBlog = () => {
       formData.append('issue_date', null);
       formData.append('submission_date', startDate + hoursAndMinutes);
       formData.append('image', selectedFile);
-      formData.append('activity_type_id', selectedSubActivityId);
+      formData.append('activity_type_id', activityName?.id ? activityName?.id : selectedSubActivityId);
       // formData.append('sub-activity_type_id',selectedSubActivityId)
       formData.append('session_year', selectedAcademicYear.session_year);
       formData.append('created_at', startDate + hoursAndMinutes);

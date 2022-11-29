@@ -116,15 +116,12 @@ import axiosInstance from 'config/axios';
   ]
   
   const PhysicalPendingReview = (props) => {
-    console.log(props,'FF 1')
     const history = useHistory();
     const [value, setValue] = useState();
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
     const { setAlert } = useContext(AlertNotificationContext);
     const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
     const [inputList, setInputList] = useState([{ remarks: '', id: '', given_rating: '' }]);
-  
-    console.log(inputList, 'input');
     const [totalSubmitted, setTotalSubmitted] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
     const [limit, setLimit] = useState(9);
@@ -142,7 +139,6 @@ import axiosInstance from 'config/axios';
   
     const [values, setValues] = useState();
     const [loading,setLoading] = useState(false);
-    console.log(values, 'values');
     const [publish, setPublish] = useState(false);
     const createPublish = () => {
       setPublish(true);
@@ -183,16 +179,13 @@ import axiosInstance from 'config/axios';
   
     const [dataId, setDataId] = useState();
   
-    const handleInputCreativity = (event, index) => {
-      console.log(index, 'text');
-  
+    const handleInputCreativity = (event, index) => {  
       let arr = [...ratingReview];
       arr[index].remarks = event.target.value;
       setRatingReview(arr);
     };
     // const [starSet,setStarSet]
     const handleInputCreativityOne = (event, newValue, index) => {
-      console.log(index, newValue, 'event');
       let arr = [...ratingReview];
   
       arr[index].given_rating = Number(event.target.value);
@@ -230,7 +223,7 @@ import axiosInstance from 'config/axios';
 
     const erpAPI =()=>{
       axios
-      .get(`${endpoints.newBlog.erpDataStudentsAPI}?section_mapping_id=${props.setSubjectName}&subject_id=${props.selectedSubject}`,{
+      .get(`${endpoints.newBlog.erpDataStudentsAPI}?section_mapping_id=${props.setSubjectName}&subject_id=${95}`,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
