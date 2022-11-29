@@ -20,6 +20,7 @@ import {
   Popover,
   Popconfirm,
   Divider,
+  Tag,
 } from 'antd';
 import axios from 'v2/config/axios';
 import axiosInstance from 'axios';
@@ -44,7 +45,6 @@ let boardFilterArr = [
 ];
 
 const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
-  console.log('Diary', diary);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -242,7 +242,10 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             )}
           </div>
           <div className='col-4 text-right px-0 py-1'>
-            <span className='th-bg-primary th-10 th-white th-br-6 p-2'>Daily Diary</span>
+            {/* <span className='th-bg-primary th-10 th-white th-br-6 p-2'>Daily Diary</span> */}
+            <Tag color='geekblue' className='th-10 th-br-6'>
+              Daily Diary
+            </Tag>
           </div>
           {!isStudentDiary && (
             <div className='col-1 text-right '>
