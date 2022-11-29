@@ -140,6 +140,7 @@ const TableView = (props) => {
   };
   const closeshowInfoModal = () => {
     setShowInfoModal(false);
+    setCompleteSections([]);
   };
   const fetchGradeData = () => {
     const params = {
@@ -1072,7 +1073,7 @@ const TableView = (props) => {
               </div>
             </div>
             {nextPeriodDetails ? (
-              <div className='col-12 pt-2 th-16'>
+              <div className='col-12 pt-2 th-16 text-center'>
                 View Resources for Upcoming Class
                 <div className='col-12 pl-2 th-truncate'>
                   <div>

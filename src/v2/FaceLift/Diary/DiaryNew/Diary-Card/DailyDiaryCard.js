@@ -88,7 +88,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
   const fetchResourcesData = (id) => {
     setLoadingResources(true);
     axiosInstance
-      .get(`${endpoints.lessonPlan.resources}?lesson_plan_id=${id}`, {
+      .get(`${endpoints.diaryReport.resources}?lesson_plan_id=${id}`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -241,8 +241,8 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               </>
             )}
           </div>
-          <div className='col-4 text-center px-0 py-1'>
-            <span className={`th-bg-primary th-white th-br-6 p-1`}>Daily Diary</span>
+          <div className='col-4 text-right px-0 py-1'>
+            <span className='th-bg-primary th-10 th-white th-br-6 p-2'>Daily Diary</span>
           </div>
           {!isStudentDiary && (
             <div className='col-1 text-right '>
@@ -287,7 +287,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     ({diary?.periods_data?.map((item) => item?.period_name).toString()})
                   </span>
                 </div>
-                <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+                <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate th-16'>
                   {diary?.periods_data
                     ? diary?.periods_data[0].key_concept__topic_name
                     : ''}
@@ -295,7 +295,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 <div className='col-12 px-0 th-10'>
                   <div className='th-fw-600 th-black-1'>Key Concept</div>
                 </div>
-                <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+                <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate th-16'>
                   {diary?.periods_data
                     ? diary?.periods_data[0].chapter__chapter_name
                     : ''}
@@ -309,8 +309,8 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   <div className='col-12 pl-0 th-10'>
                     <div className='th-fw-600 th-black-1'>Title</div>
                   </div>
-                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-3'>
-                    {diary?.hw_description}
+                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-3 th-16'>
+                    {diary?.teacher_report?.homework}
                   </div>
                   <div className='row align-items-center'>
                     <div className='col-3 px-0 th-black-1 th-10'>Due Date</div>
@@ -324,7 +324,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   <div className='col-12 px-0 th-10'>
                     <div className='th-fw-600 th-black-1'>Notes</div>
                   </div>
-                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-5'>
+                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-5 th-16'>
                     {diary?.teacher_report?.summary}
                   </div>
                 </div>
@@ -335,7 +335,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             <div className='row'>
               <div className='col-6 px-1 th-10'>
                 <div className='row th-grey'></div>Created By
-                <div className='row th-black-2 th-16 th-fw-600'>
+                <div className='row th-black-2 th-14 th-fw-600'>
                   {diary?.teacher_name}
                 </div>
                 <div className='row px-0 th-12 th-grey'>
@@ -390,7 +390,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           !showHomeworkDrawer ? (
             <div className='row pr-1'>
               <div className='col-12 th-bg-yellow-2 th-br-6'>
-                <div className='row th-fw-700 th-black-1 py-1'>
+                <div className='row th-fw-700 th-black-1 py-2'>
                   <div className='col-3 px-0'>Subject : </div>
                   <div className='col-8 pl-0'>{subject?.subject_name} </div>
                   <div className='col-1 px-0 tex-right'>
@@ -446,6 +446,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     // onChange={(e) => setHomeworkTitle(e.target.value)}
                     placeholder='Enter Title'
                     maxLength={30}
+                    autoFocus={true}
                   />
                 </div>
                 <div className='row py-2'>
@@ -498,7 +499,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 }}
               >
                 {diary?.periods_data?.map((item, index) => (
-                  <div className='row px-1 th-diary-collapse'>
+                  <div className='row px-1 th-diary-collapse th-br-6'>
                     <Collapse
                       activeKey={currentPanel}
                       expandIconPosition='right'
@@ -579,101 +580,97 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                                       <div className='row justify-content-center my-2'>
                                         <Spin title='Loading...' />
                                       </div>
-                                    ) : !_.isEmpty(resourcesData) ? (
-                                      resourcesData
-                                        ?.map((each) => each?.media_file)
-                                        .flat().length > 0 ? (
-                                        <div
-                                          style={{
-                                            overflowY: 'scroll',
-                                            overflowX: 'hidden',
-                                            maxHeight: '40vh',
-                                          }}
-                                        >
-                                          {resourcesData?.map((files, i) => (
-                                            <>
-                                              {files?.media_file?.map((each, index) => {
-                                                if (
-                                                  (user_level == 13 &&
-                                                    files?.document_type ==
-                                                      'Lesson_Plan') ||
-                                                  (user_level == 13 &&
-                                                    files?.document_type ==
-                                                      'Teacher_Reading_Material')
-                                                ) {
-                                                } else {
-                                                  let fullName = each?.split(
-                                                    `${files?.document_type.toLowerCase()}/`
-                                                  )[1];
-                                                  let textIndex = fullName
-                                                    ?.split('_')
-                                                    .indexOf(
-                                                      fullName
-                                                        .split('_')
-                                                        .find((item) => isNaN(item))
-                                                    );
-                                                  let displayName = fullName
-                                                    .split('_')
-                                                    .slice(textIndex)
-                                                    .join('_');
-                                                  let fileName = displayName
-                                                    ? displayName.split('.')
-                                                    : null;
-                                                  let file = fileName
-                                                    ? fileName[fileName?.length - 2]
-                                                    : '';
-                                                  let extension = fileName
-                                                    ? fileName[fileName?.length - 1]
-                                                    : '';
-                                                  return (
-                                                    <div
-                                                      className='row mt-2 py-2 align-items-center'
-                                                      style={{
-                                                        border: '1px solid #d9d9d9',
-                                                      }}
-                                                    >
-                                                      <div className='col-2'>
-                                                        <img
-                                                          src={getFileIcon(extension)}
-                                                        />
-                                                      </div>
-                                                      <div className='col-10 px-0 th-pointer'>
-                                                        <a
-                                                          onClick={() => {
-                                                            openPreview({
-                                                              currentAttachmentIndex: 0,
-                                                              attachmentsArray: [
-                                                                {
-                                                                  src: `${endpoints.homework.resourcesFiles}/${each}`,
-
-                                                                  name: fileName,
-                                                                  extension:
-                                                                    '.' + extension,
-                                                                },
-                                                              ],
-                                                            });
-                                                          }}
-                                                          rel='noopener noreferrer'
-                                                          target='_blank'
-                                                        >
-                                                          <div className='row align-items-center'>
-                                                            <div className='col-10 px-0'>
-                                                              {files.document_type}_{file}
-                                                            </div>
-                                                            <div className='col-2'>
-                                                              <EyeFilled />
-                                                            </div>
-                                                          </div>
-                                                        </a>
-                                                      </div>
-                                                    </div>
+                                    ) : // !_.isEmpty(resourcesData) ? (
+                                    resourcesData?.map((each) => each?.media_file).flat()
+                                        .length > 0 ? (
+                                      <div
+                                        style={{
+                                          overflowY: 'scroll',
+                                          overflowX: 'hidden',
+                                          maxHeight: '40vh',
+                                        }}
+                                      >
+                                        {resourcesData?.map((files, i) => (
+                                          <>
+                                            {files?.media_file?.map((each, index) => {
+                                              if (
+                                                (user_level == 13 &&
+                                                  files?.document_type ==
+                                                    'Lesson_Plan') ||
+                                                (user_level == 13 &&
+                                                  files?.document_type ==
+                                                    'Teacher_Reading_Material')
+                                              ) {
+                                              } else {
+                                                let fullName = each?.split(
+                                                  `${files?.document_type.toLowerCase()}/`
+                                                )[1];
+                                                let textIndex = fullName
+                                                  ?.split('_')
+                                                  .indexOf(
+                                                    fullName
+                                                      .split('_')
+                                                      .find((item) => isNaN(item))
                                                   );
-                                                }
-                                              })}
-                                            </>
-                                          ))}
-                                        </div>
-                                      ) : null
+                                                let displayName = fullName
+                                                  .split('_')
+                                                  .slice(textIndex)
+                                                  .join('_');
+                                                let fileName = displayName
+                                                  ? displayName.split('.')
+                                                  : null;
+                                                let file = fileName
+                                                  ? fileName[fileName?.length - 2]
+                                                  : '';
+                                                let extension = fileName
+                                                  ? fileName[fileName?.length - 1]
+                                                  : '';
+                                                return (
+                                                  <div
+                                                    className='row mt-2 py-2 align-items-center'
+                                                    style={{
+                                                      border: '1px solid #d9d9d9',
+                                                    }}
+                                                  >
+                                                    <div className='col-2'>
+                                                      <img src={getFileIcon(extension)} />
+                                                    </div>
+                                                    <div className='col-10 px-0 th-pointer'>
+                                                      <a
+                                                        onClick={() => {
+                                                          openPreview({
+                                                            currentAttachmentIndex: 0,
+                                                            attachmentsArray: [
+                                                              {
+                                                                src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                                                name: fileName,
+                                                                extension:
+                                                                  '.' + extension,
+                                                              },
+                                                            ],
+                                                          });
+                                                        }}
+                                                        rel='noopener noreferrer'
+                                                        target='_blank'
+                                                      >
+                                                        <div className='row align-items-center'>
+                                                          <div className='col-10 px-0'>
+                                                            {files.document_type}_{file}
+                                                          </div>
+                                                          <div className='col-2'>
+                                                            <EyeFilled />
+                                                          </div>
+                                                        </div>
+                                                      </a>
+                                                    </div>
+                                                  </div>
+                                                );
+                                              }
+                                            })}
+                                          </>
+                                        ))}
+                                      </div>
                                     ) : (
                                       <div className='row'>
                                         <div className='col-12 text-center py-2'>
@@ -711,34 +708,49 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>
               Upcoming Period
             </div>
-            <div
-              className='th-bg-white shadom-sm pb-3 th-br-4'
-              style={{ border: '2px solid #d9d9d9' }}
-            >
-              <div className='row th-fw-600 pt-2'>
-                <div className='col-12 pr-0'>{diary?.up_coming_period?.period_name}</div>
-              </div>
-              {boardFilterArr.includes(window.location.host) && (
-                <div className='row'>
-                  <div className='col-4 pr-0 th-fw-600'>Module :</div>
-                  <div className='col-8 pl-0 text-truncate th-grey-1'>
-                    {diary?.up_coming_period?.chapter__lt_module__lt_module_name}
+
+            {!_.isEmpty(diary?.up_coming_period) ? (
+              <div
+                className='th-bg-white shadom-sm pb-3 th-br-4'
+                style={{ border: '2px solid #d9d9d9' }}
+              >
+                <div className='row th-fw-600 pt-2'>
+                  <div className='col-12 pr-0'>
+                    {diary?.up_coming_period?.period_name}
                   </div>
                 </div>
-              )}
-              <div className='row'>
-                <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
-                <div className='col-8 pl-0 text-truncate th-grey-1'>
-                  {diary?.up_coming_period?.chapter__chapter_name}
+                {boardFilterArr.includes(window.location.host) && (
+                  <div className='row'>
+                    <div className='col-4 pr-0 th-fw-600'>Module :</div>
+                    <div className='col-8 pl-0 text-truncate th-grey-1'>
+                      {diary?.up_coming_period?.chapter__lt_module__lt_module_name}
+                    </div>
+                  </div>
+                )}
+                <div className='row'>
+                  <div className='col-4 pr-0 th-fw-600'>Chapter Name :</div>
+                  <div className='col-8 pl-0 text-truncate th-grey-1'>
+                    {diary?.up_coming_period?.chapter__chapter_name}
+                  </div>
+                </div>
+                <div className='row'>
+                  <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
+                  <div className='col-8 pl-0 text-truncate th-grey-1'>
+                    {diary?.up_coming_period?.key_concept__topic_name}
+                  </div>
                 </div>
               </div>
-              <div className='row'>
-                <div className='col-4 pr-0 th-fw-600'>Key Concept :</div>
-                <div className='col-8 pl-0 text-truncate th-grey-1'>
-                  {diary?.up_coming_period?.key_concept__topic_name}
-                </div>
+            ) : (
+              <div
+                className='th-bg-white shadom-sm align-items-center th-br-4 row p-2'
+                style={{
+                  border: '2px solid #d9d9d9',
+                }}
+              >
+                No Upcoming Period added to diary
               </div>
-            </div>
+            )}
+
             <div className='row py-2'>
               <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Homework</div>
               <div className='col-12 px-1'>
@@ -749,7 +761,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                         <div className='col-12 pr-0 th-black-1'>Title</div>
                         <div className='col-12 px-3 '>
                           <div className='th-bg-white p-1 th-br-6 th-truncate-2'>
-                            {diary?.hw_description}
+                            {diary?.teacher_report?.homework}
                           </div>
                         </div>
                       </div>

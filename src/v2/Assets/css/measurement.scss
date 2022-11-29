@@ -31,6 +31,16 @@
 //   Width
 @for $i from 1 through 100 {
   .th-width-#{$i} {
-    width: percentage($number: $i)/100 !important;
+    width: percentage($number: $i) / 100 !important;
+  }
+}
+
+// Text-Truncate
+@for $i from 1 through 100 {
+  .th-truncate-#{$i} {
+    -webkit-line-clamp: $i;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }

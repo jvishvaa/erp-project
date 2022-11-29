@@ -41,6 +41,7 @@ import { AttachmentPreviewerContext } from 'components/attachment-previewer/atta
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { getFileIcon } from 'v2/getFileIcon';
 import _ from 'lodash';
+import concessionLastDate from 'containers/Finance/src/components/Finance/LastDateSettings/concessionLastDate';
 let boardFilterArr = [
   'orchids.letseduvate.com',
   'localhost:3000',
@@ -131,7 +132,6 @@ const DailyDiary = () => {
   const [clearTodaysTopic, setClearTodaysTopic] = useState(true);
   const [clearUpcomingPeriod, setClearUpcomingPeriod] = useState(true);
   const [addingUpcomingPeriod, setAddingUpcomingPeriod] = useState(true);
-  console.log('upcomingPeriod', upcomingPeriod);
 
   const questionModify = (questions) => {
     let arr = [];
@@ -218,11 +218,34 @@ const DailyDiary = () => {
     setAssignedHomeworkModal(false);
     setDeclined(true);
   };
-  const showDrawer = (data = false) => {
+  const showDrawer = (params = {}) => {
     setAddingUpcomingPeriod(false);
     setDrawerVisible(true);
-    if (data) {
+    if (params.data) {
       setAddingUpcomingPeriod(true);
+    }
+    if (keyConceptID) {
+      if (!_.isEmpty(params.value)) {
+        fetchLessonResourcesData({
+          grade: gradeID,
+          acad_session_id: selectedBranch?.id,
+          chapters: params.value.chapter_id,
+          subject: subjectID,
+          central_gs_id: Number(params.value.chapter__grade_subject_mapping_id),
+          for_diary: 1,
+          key_concepts: Number(params.value.key_concept_id),
+        });
+      } else {
+        fetchLessonResourcesData({
+          grade: gradeID,
+          acad_session_id: selectedBranch?.id,
+          chapters: chapterID,
+          subject: subjectID,
+          central_gs_id: Number(gsMappingID),
+          for_diary: 1,
+          key_concepts: Number(keyConceptID),
+        });
+      }
     }
   };
   const closeDrawer = () => {
@@ -435,9 +458,9 @@ const DailyDiary = () => {
     if (e) {
       setChapterID(e.value);
       // setChapterName(e.children);
-      fetchKeyConceptListData({
-        chapter_id: e.value,
-      });
+      // fetchKeyConceptListData({
+      //   chapter_id: e.value,
+      // });
     }
   };
   const handleKeyConcept = (e) => {
@@ -505,6 +528,10 @@ const DailyDiary = () => {
           if (!_.isEmpty(result?.data?.data)) {
             setClearTodaysTopic(false);
             setAddedPeriods(result?.data?.data);
+            setCurrentPanel(0);
+            setChapterID(result?.data?.data[0]?.chapter_id);
+            setKeyConceptID(result?.data?.data[0]?.key_concept_id);
+            setGSMappingID(result?.data?.data[0]?.chapter__grade_subject_mapping_id);
           }
         }
       })
@@ -535,25 +562,12 @@ const DailyDiary = () => {
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
       });
-      // const params = {
-
-      // };
       fetchTodaysTopic({ section_mapping: sectionMappingID, subject_id: e.value });
       fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: e.value,
         grade_id: gradeID,
       });
-      // axios
-      //   .get('/academic/diary/chapters/', { params: { ...params } })
-      //   .then((result) => {
-      //     if (result?.data?.status_code == 200) {
-      //       setChapterDropdown(result?.data?.data);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     message.error('error', error?.message);
-      //   });
     }
   };
 
@@ -696,7 +710,7 @@ const DailyDiary = () => {
       mapAssignedHomework();
     }
   }, [assignedHomework]);
-  // useEffect(() => {}, [subjectID]);
+
   useEffect(() => {
     if (addedPeriods.length > 0) {
       fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
@@ -731,6 +745,14 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
+
+  useEffect(() => {
+    if (chapterID) {
+      fetchKeyConceptListData({
+        chapter_id: chapterID,
+      });
+    }
+  }, [chapterID]);
 
   const handleAddHomeWork = async () => {
     if (!homeworkTitle) {
@@ -927,12 +949,13 @@ const DailyDiary = () => {
       // setTools(editData?.teacher_report?.tools_used);
       setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
-      fetchHomeworkDetails({
-        section_mapping: editData?.section_mapping_id,
-        subject: editSubject?.subject_id,
-        date: moment(editData?.created_at).format('YYYY-MM-DD'),
-        // user_id: user_id,
-      });
+      if (editData?.teacher_report?.homework)
+        fetchHomeworkDetails({
+          section_mapping: editData?.section_mapping_id,
+          subject: editSubject?.subject_id,
+          date: moment(editData?.created_at).format('YYYY-MM-DD'),
+          // user_id: user_id,
+        });
       fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: editSubject?.subject_id,
@@ -949,7 +972,6 @@ const DailyDiary = () => {
       setHomeworkInstructions(homeworkDetails?.description);
     }
   }, [homeworkDetails]);
-
   return (
     <div className='row th-bg-white'>
       <div className='row py-1'>
@@ -1043,18 +1065,20 @@ const DailyDiary = () => {
                           Today's Topic
                         </div>
                         <div className='col-6 text-right pr-0'>
-                          <span
-                            className='th-12 px-1 th-primary py-1 th-pointer mr-3 th-br-6'
-                            style={{ border: '1px solid #d9d9d9' }}
-                            onClick={() =>
-                              subjectID
-                                ? showDrawer()
-                                : message.error('Please select Subject first')
-                            }
-                          >
-                            Add More
-                          </span>
-                          {addedPeriods.length > 0 ? (
+                          {addedPeriods.length > 0 && (
+                            <span
+                              className='th-12 px-1 th-primary py-1 th-pointer mr-3 th-br-6'
+                              style={{ border: '1px solid #d9d9d9' }}
+                              onClick={() =>
+                                subjectID
+                                  ? showDrawer()
+                                  : message.error('Please select Subject first')
+                              }
+                            >
+                              Add More
+                            </span>
+                          )}
+                          {/* {addedPeriods.length > 0 ? (
                             <span
                               className='th-12 px-1 th-red py-1 th-pointer th-br-6'
                               style={{ border: '1px solid red' }}
@@ -1074,7 +1098,7 @@ const DailyDiary = () => {
                                 </>
                               )}
                             </span>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
 
@@ -1094,7 +1118,7 @@ const DailyDiary = () => {
                               : message.error('Please select Subject first')
                           }
                         >
-                          <div className='row align-items-center justify-content-center th-fw-500 th-black-2'>
+                          <div className='row align-items-center justify-content-center th-fw-500 th-black-2 th-pointer'>
                             <PlusOutlined className='mr-3' />
                             Select from Lesson plan
                           </div>
@@ -1274,11 +1298,11 @@ const DailyDiary = () => {
                               className='row h-100 align-items-center th-pointer'
                               onClick={() =>
                                 subjectID
-                                  ? showDrawer(true)
+                                  ? showDrawer({ data: true })
                                   : message.error('Please select Subject first')
                               }
                             >
-                              <div className='col-12 text-center th-fw-500 th-black-2'>
+                              <div className='col-12 text-center th-fw-500 th-black-2 th-pointer'>
                                 <PlusOutlined className='mr-3' />
                                 Add Today's Topic to get Upcoming Period
                               </div>
@@ -1289,7 +1313,7 @@ const DailyDiary = () => {
                             className='row th-pointer'
                             onClick={() => {
                               subjectID
-                                ? showDrawer()
+                                ? showDrawer({ data: true, value: upcomingPeriod })
                                 : message.error('Please select Subject first');
                             }}
                           >
@@ -1457,7 +1481,7 @@ const DailyDiary = () => {
                             }
                             allowClear={false}
                             placeholder={submissionDate}
-                            placement='bottomRight'
+                            placement='bottomLeft'
                             onChange={(event, value) => handleSubmissionDate(value)}
                             showToday={false}
                             suffixIcon={<DownOutlined className='th-black-1' />}
@@ -1583,6 +1607,7 @@ const DailyDiary = () => {
                     placeholder='Chapter'
                     allowClear
                     showSearch
+                    value={chapterID}
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
@@ -1698,22 +1723,26 @@ const DailyDiary = () => {
                               (item) => item?.section_id === sectionMappingID
                             )[0].is_complete === true ? (
                               <span>
-                                <span className='th-green th-fw-500'>Completed</span>
+                                <span className='th-green th-fw-500'> Completed</span>
                               </span>
                             ) : (
                               <span className='th-fw-500 th-red'> Not Completed</span>
                             )}
                           </div>
-                          <div className='row th-black-2 '>
-                            <div className='col-12 th-grey pl-0 th-12'>
-                              Last Updated{' '}
-                              {getTimeInterval(
-                                item?.completion_status?.filter(
-                                  (item) => item?.section_id === sectionMappingID
-                                )[0].completed_at
-                              )}
+                          {item?.completion_status?.filter(
+                            (item) => item?.section_id === sectionMappingID
+                          )[0].is_complete === true ? (
+                            <div className='row th-black-2 '>
+                              <div className='col-12 th-grey pl-0 th-12'>
+                                Last Updated{' '}
+                                {getTimeInterval(
+                                  item?.completion_status?.filter(
+                                    (item) => item?.section_id === sectionMappingID
+                                  )[0].completed_at
+                                )}
+                              </div>
                             </div>
-                          </div>
+                          ) : null}
                         </div>
                         <div className='col-12 col-sm-6 pl-0'>
                           {item?.completion_status?.filter(
@@ -1844,9 +1873,9 @@ const DailyDiary = () => {
 
           <div className='col-10 th-20'>
             {isPeriodAdded ? (
-              <span>'{completedPeriod.period_name}' added to Dairy Successfully</span>
+              <span>'{completedPeriod.period_name}' added to Diary Successfully</span>
             ) : (
-              <span>'{completedPeriod.period_name}' removed from Dairy</span>
+              <span>'{completedPeriod.period_name}' removed from Diary</span>
             )}
           </div>
         </div>
