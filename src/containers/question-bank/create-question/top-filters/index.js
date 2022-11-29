@@ -252,7 +252,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       setFilterData((prev) => ({ ...prev, subject: value, chapter: '', topic: ''}));
       axiosInstance
         .get(
-          `${endpoints.assessmentErp.chapterList}?subject_id=${value?.id}&subject=${value?.subject_id}&session_year=${filterData?.branch?.id}`
+          `${endpoints.assessmentErp.chapterList}?subject_id=${value?.id}&subject=${value?.subject_id}&session_year=${filterData?.branch?.id}&sch_grade_id=${filterData?.grade?.grade_id}&sch_sy_id=${filterData?.academic?.id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
