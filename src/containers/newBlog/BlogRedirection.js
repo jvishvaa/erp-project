@@ -121,7 +121,9 @@ const BlogWallRedirect = () => {
   const history = useHistory();
   const [periodData,setPeriodData] = useState([]);
   const [loading,setLoading]= useState(false);
-  const [subId,setSubId] = useState('')
+  const [subId,setSubId] = useState('');
+  const [blogSubId,setBlogSubId] = useState('');
+  const [publicSubId,setPublicSubId] = useState('');
 
   const handleBlogWriting = () => {
     history.push('/blog/studentview')
@@ -189,7 +191,7 @@ const BlogWallRedirect = () => {
         setLoading(false)
       })
       .catch((err) =>{
-        // debugger
+        
       })
   };
 
@@ -204,11 +206,15 @@ const BlogWallRedirect = () => {
         .then((result) => {
           const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
           setSubId(physicalData[0]?.id)
+          const blogActivityData = result?.data?.result.filter((item) => item?.name == "Blog Activity")
+          setBlogSubId(blogActivityData[0]?.id)
+          const publicActivityData = result?.data?.result.filter((item) => item?.name == "Public Speaking")
+          setPublicSubId(publicActivityData[0]?.id)
           setPeriodData(result?.data?.result)
-          localStorage.setItem(
-            'PhysicalActivityId',
-            JSON.stringify(physicalData[0]?.id)
-          );
+          // localStorage.setItem(
+          //   'PhysicalActivityId',
+          //   JSON.stringify(physicalData[0]?.id)
+          // );
           setLoading(false)
         })
         .catch((err) => {
@@ -235,10 +241,23 @@ const BlogWallRedirect = () => {
 
   const handleExplore = (data) => {
     if (data?.name == "Blog Activity") {
+      localStorage.setItem(
+        'BlogActivityId',
+        JSON.stringify(blogSubId)
+      );
       handleBlogWriting()
     } else if (data?.name === "Public Speaking") {
+      localStorage.setItem(
+        'PublicActivityId',
+        JSON.stringify(publicSubId)
+      );
       handlePublicSpeaking()
     } else if(data?.name === "Physical Activity") {
+      localStorage.setItem(
+        'PhysicalActivityId',
+        JSON.stringify(subId)
+      );
+
       handlePhysicalActivity()
     }
   }

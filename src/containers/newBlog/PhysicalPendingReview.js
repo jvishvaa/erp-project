@@ -223,7 +223,7 @@ import axiosInstance from 'config/axios';
 
     const erpAPI =()=>{
       axios
-      .get(`${endpoints.newBlog.erpDataStudentsAPI}?section_mapping_id=${props.setSubjectName}&subject_id=${95}`,{
+      .get(`${endpoints.newBlog.erpDataStudentsAPI}?section_mapping_id=${props.setSubjectName}`,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
