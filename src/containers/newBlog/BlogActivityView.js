@@ -27,7 +27,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Rating } from '@material-ui/lab';
 import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button } from 'antd';
@@ -130,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BlogWall = () => {
+const BlogActivityView = () => {
   const classes = useStyles();
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const user_level = data?.user_level;
@@ -140,7 +139,6 @@ const BlogWall = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
-  console.log(branch_update_user, 'dl')
 
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -402,89 +400,46 @@ const BlogWall = () => {
   const handleSearch = () => {
     if (showTab == 1) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         user_id: userId,
       });
-
-      fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
-        uer_id: userId,
-        is_limited: 'True',
-      })
     } else if (showTab == 2) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         publish_level: 'Intra Orchids Level',
         user_id: userId,
       });
-      fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
-        view_level: 'Intra Orchids Level',
-        user_id: userId,
-        is_limited: 'True',
-      })
     } else if (showTab == 3) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         publish_level: 'Branch Level',
         user_id: userId,
       })
-
-      fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
-        view_level: 'Branch Level',
-        user_id: userId,
-        is_limited: 'True',
-      })
-
     } else if (showTab == 4) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         publish_level: 'Grade Level',
         user_id: userId,
       })
-      fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
-        view_level: 'Grade Level',
-        user_id: userId,
-        is_limited: 'True',
-      })
     } else if (showTab == 5) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
-        is_best_blog: 'true',
-        user_id: userId,
-      })
-      fetchPostWall({
-        // page_size: 10,
+        // page_size: 5,
         // page: pageNumber,
         is_best_blog: 'true',
         user_id: userId,
-        is_limited: 'True',
       })
     } else if (showTab == 6) {
       fetchSchoolWall({
-        page_size: 5,
-        page: pageNumber,
+        // page_size: 5,
+        // page: pageNumber,
         publish_level: 'Section Level',
         user_id: userId,
       })
-      fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
-        view_level: 'Section Level',
-        user_id: userId,
-        is_limited: 'True',
-      })
+
     }
   }
 
@@ -613,6 +568,7 @@ const BlogWall = () => {
 
   const handleDateChange = (value) => {
     if (value) {
+      // debugger;
       setStartDate(moment(value[0]).format('YYYY-MM-DD'));
       setEndDate(moment(value[1]).format('YYYY-MM-DD'));
     }
@@ -626,380 +582,12 @@ const BlogWall = () => {
 
 
   const handleSeeMorePost = () => {
+    // if(data == "Post Activity"){
     history.push('/post-activity-view')
     return
   }
 
-  const handleSeeMoreBlog = () => {
-    history.push('/blog-activity-view')
-    return
-  }
 
-  const PostContent = () => {
-    return (
-      <>
-        <div className='row mb-2 mb-md-0 mt-5'>
-          {user_level == '13' || user_level == '10' ? (
-            ' '
-          ) : (
-            <div className='row' >
-              <Accordion style={{ width: '100vw' }}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography className={classes.heading}>Filters</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {/* <div className='row mb-2'> */}
-                  <div className='col-md-2 px-0 py-2 py-md-0'>
-                    <div className='mb-2 text-left'>Branch</div>
-                    <Select
-                      className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
-                      placement='bottomRight'
-                      mode='multiple'
-                      maxTagCount={3}
-                      showArrow={true}
-                      allowClear={true}
-                      bordered={true}
-                      suffixIcon={<DownOutlined className='th-primary' />}
-                      placeholder='Select Branches'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      // placeholder={
-                      //   <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
-                      // }
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, value) => handleBranchChange(value)}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                      }}
-                    >
-                      {branchOptions}
-                    </Select>
-
-                  </div>
-                  <div className='col-md-2 col-5 px-0 px-md-2'>
-                    <div className='mb-2 text-left'>Grade</div>
-                    <Select
-                      className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-                      bordered={true}
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      // value={selectedCategoryName}
-                      placement='bottomRight'
-                      placeholder='Select Grade'
-                      suffixIcon={<DownOutlined className='th-black-1' />}
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, val) => handleGradeChange(e, val)}
-                      allowClear
-
-                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                    >
-                      {gradeOptions}
-                    </Select>
-                  </div>{' '}
-                  <div className='col-md-2 col-5 px-0 px-md-2'>
-                    <div className='mb-2 text-left'>Blog List</div>
-                    <Select
-                      className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-                      bordered={true}
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      // value={selectedCategoryName}
-                      placement='bottomRight'
-                      placeholder='Select Blog List'
-                      suffixIcon={<DownOutlined className='th-black-1' />}
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, val) => handleBlogListChange(e, val)}
-                      allowClear
-
-                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                    >
-                      {blogListOptions}
-                    </Select>
-                  </div>{' '}
-                  <div className='col-md-3 col-7 px-2 th-br-4'>
-                    <div className='mb-2 text-left'>Date</div>
-                    <RangePicker
-                      allowClear={false}
-                      bordered={true}
-                      placement='bottomRight'
-                      showToday={false}
-                      suffixIcon={<DownOutlined />}
-                      // defaultValue={[moment(), moment()]}
-                      onChange={(value) => handleDateChange(value)}
-                      className='th-range-picker th-br-4'
-                      separator={'to'}
-                      format={'DD/MM/YYYY'}
-                    />
-                  </div>
-                  <div className='col-md-3 col-7 px-2 th-br-4'>
-                    <div className='mb-2 text-left' style={{ paddingTop: '22px' }}>{' '}</div>
-                    <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
-                      Search
-                    </Button>
-                  </div>
-
-
-                </AccordionDetails>
-              </Accordion>
-            </div>
-          )}
-        </div>
-        {loading ? (
-          ""
-          // <div className='d-flex justify-content-center align-items-center h-50'>
-          //   <Spin tip='Loading...' size='large' />
-          // </div>
-        ) :
-          postListCount > 0 ? (
-
-            <Grid container spacing={4} >
-              <Grid
-                className='col-12 mt-3 pt-2'
-              >
-                <Divider orientation="left" orientationMargin="0">
-                  Post List
-                </Divider>
-              </Grid>
-              <Grid
-                className='col-12 mt-3 pt-2'
-                style={{ display: 'flex', justifyContent: 'end', paddingRight: '50px' }}
-              >
-                <Button onClick={handleSeeMorePost}>
-                  View All
-                </Button>
-              </Grid>
-
-              <Grid
-                className='col-12 mt-3 pt-2'
-                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap' }}
-              >
-
-                {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
-                {postWallList.map((item) => {
-                  return (
-                    <Grid item xs={12} md={3}>
-                      <Card
-                        // className={classes.root}
-                        className='card-design'
-
-                      // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
-                      >
-                        <CardActionArea>
-                          <CardHeader
-                            avatar={
-                              <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-
-                              </Avatar>
-                            }
-                            title={item?.name}
-                            subheader={item?.description}
-                          // subheader={item?.grade?.name}
-                          />
-                          <div style={{ display: 'flex' }}>
-                            <div style={{ fontSize: '10px', color: 'blue', marginLeft: '72px', marginTop: '-15px' }}>
-                              {item?.view_level}
-                            </div>
-                            <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color: 'blue' }}>
-                              {moment(item?.created_at).format("MMM Do YY")}
-                            </div>
-                            {/* <div style={{ fontSize: '10px', color: 'blue', marginLeft: '72px', marginTop: '-15px' }}>
-                          {item?.view_level}
-                        </div> */}
-
-                          </div>
-                        </CardActionArea>
-                        <CardActionArea style={{ padding: '11px', display: 'flex' }}>
-                          {/* {console.log(item,'PP')} */}
-                          {item?.file_type == "video/mp4" ? (
-                            <CardMedia
-                              className={classes.media}
-                              style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                              component="video"
-                              // autoPlay 
-                              controls
-                              src={item?.template_path}
-                            />
-                          ) : (
-
-                            <CardMedia
-                              className={classes.media}
-                              image={item?.template_path}
-                              style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                              // alt="Dummy Image"
-                              title="Blog View"
-                            />
-                          )}
-                        </CardActionArea>
-                        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem' }}>
-
-                          {/* <StyledRating
-                          fontSize="small"
-                          style={{ fontSize: 18, width:'10vw',display:'flex', flexWrap:'wrap'}}
-                          precision={0.1}
-                          defaultValue={item?.given_rating}
-                          max={parseInt(item?.rating)}
-                          readOnly
-                        /> */}
-                          <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => viewMorePost(item)}
-                          >
-                            View
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-
-                  )
-
-                })}
-
-              </Grid>
-            </Grid>
-          )
-            : (
-              <div className='d-flex justify-content-center mt-5'>
-                <img src={NoDataIcon} />
-              </div>
-            )}
-        <Drawer
-          anchor='right'
-          maxWidth={maxWidth}
-          // open={view}
-          open={postView}
-          onClose={handleCloseViewMore}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <div style={{ width: '100%', marginTop: '72px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', }}>
-              <div style={{ fontSize: '24px', marginLeft: '15px' }}>
-                <strong>Preview</strong>
-              </div>
-              <div style={{ fontSize: '24px', cursor: 'pointer' }}>
-                <strong onClick={handleClose}> <CancelIcon /> </strong>
-              </div>
-
-            </div>
-            <Divider />
-
-            <Grid container direction='row' justifyContent='center'>
-              <Grid item>
-                <div
-                  style={{
-                    border: '1px solid #813032',
-                    width: '583px',
-                    background: 'white',
-                    height: 'auto',
-                  }}
-                >
-                  <div
-                    style={{
-                      background: 'white',
-                      width: '554px',
-                      marginLeft: '13px',
-                      marginTop: '5px',
-                    }}
-                  >
-                    <div>
-                      <img
-                        src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                        width='130'
-                        alt='image'
-                      />
-
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
-                      marginTop: '16px',
-                      height: 'auto',
-                    }}
-                  >
-                    <div
-                      style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px' }}
-                    >
-                      <span style={{ fontWeight: 'normal', fontSize: '18px', color: 'blue' }}>
-                        Title: {postPreviewData?.name}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        fontWeight: 'bold',
-                        paddingLeft: '10px'
-                      }}
-                    >
-                      <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
-                        Description: {postPreviewData?.description}
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
-                      height: 'auto',
-                      marginTop: '12px',
-                      marginBottom: '29px',
-                    }}
-                  >
-
-                    {postPreviewData?.file_type == "video/mp4" ? (
-                      <video width="500" height="600" controls >
-                        <source src={`${postPreviewData?.template_path}`} type="video/mp4" />
-                            Your browser does not support HTML video.}
-                      </video>
-
-                    ) : (
-                      <div
-                        style={{
-                          background: `url(${postPreviewData?.template_path})`,
-                          backgroundSize: "contain",
-                          position: "relative",
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
-                          backgroundColor: "rgba(244 245 247 / 25%)",
-                          height: "683px",
-                        }}
-
-                      >
-                      </div>
-
-                    )}
-                  </div>
-                  <div style={{ padding: '5px' }}>
-                  </div>
-                </div>
-              </Grid>
-            </Grid>
-          </div>
-        </Drawer>
-
-        {!loading && listCount > 0 && (
-          <div className='text-center'>
-            <Pagination
-              current={pageNumber}
-              hideOnSinglePage={true}
-              showSizeChanger={false}
-              onChange={(page) => {
-                setPageNumber(page);
-              }}
-              total={listCount}
-            />
-          </div>
-        )}
-
-      </>
-    );
-  };
   const TabContent = () => {
     return (
       <>
@@ -1015,14 +603,6 @@ const BlogWall = () => {
                 <Divider orientation="left" orientationMargin="0">
                   Blog List
                 </Divider>
-              </Grid>
-              <Grid
-                className='col-12 mt-3 pt-2'
-                style={{ display: 'flex', justifyContent: 'end' }}
-              >
-                <Button onClick={handleSeeMoreBlog}>
-                  View All
-                </Button>
               </Grid>
               <Grid
                 className='col-12 mt-3 pt-2'
@@ -1321,18 +901,11 @@ const BlogWall = () => {
               <Breadcrumb.Item className='th-black-1 th-16'>
                 School Wall
               </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16'>
+                Blog Activity
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          {user_level == '13' || user_level == '10' ? (
-            ''
-          ) : (
-            <div className='col-md-4' style={{ display: 'flex', justifyContent: 'end' }}>
-              <Button type="primary" icon={<FormOutlined />} size={'medium'} onClick={showModal}>
-                Create Post Activity
-              </Button>
-            </div>
-
-          )}
           <div className='col-md-12'>
             <img
               src={BlogWallImage}
@@ -1354,7 +927,6 @@ const BlogWall = () => {
                   <button className={showTab == 5 ? 'active' : ""} onClick={() => onChangeTab(5)} key={5} >Blogs Of The Month</button>
                 </div>
                 <div>
-                  {PostContent()}
                   {TabContent()}
                 </div>
               </div>
@@ -1365,4 +937,4 @@ const BlogWall = () => {
     </React.Fragment>
   );
 };
-export default BlogWall;
+export default BlogActivityView;

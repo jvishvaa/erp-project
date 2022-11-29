@@ -126,17 +126,17 @@ const useStyles = makeStyles((theme) => ({
     borderLeft: `3px solid ${theme.palette.primary.main}`,
     height: '45px',
   },
-tickSize:{
-  transform: "scale(2.0)",
-},
+  tickSize: {
+    transform: "scale(2.0)",
+  },
 }));
 
-const dummyRound =[
-  {id:1,round:1,name:'1'},
-  {id:2,round:2,name:'2'},
-  {id:3,round:3,name:'3'},
-  {id:4,round:4,name:'4'},
-  {id:5,round:5,name:'5'},
+const dummyRound = [
+  { id: 1, round: 1, name: '1' },
+  { id: 2, round: 2, name: '2' },
+  { id: 3, round: 3, name: '3' },
+  { id: 4, round: 4, name: '4' },
+  { id: 5, round: 5, name: '5' },
 ]
 
 const AdminCreateBlog = () => {
@@ -146,17 +146,18 @@ const AdminCreateBlog = () => {
   const token = data?.token;
   const user_level = data?.user_level;
   const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
+  const physicalId = localStorage?.getItem('PhysicalActivityId') ? JSON.parse(localStorage?.getItem('PhysicalActivityId')) : '';
   const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
   const [branchList, setBranchList] = useState([]);
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const { setAlert } = useContext(AlertNotificationContext);
-  const [loading,setLoading]= useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [assigned, setAssigned] = useState(false);
 
   const [sectionDropdown, setSectionDropdown] = useState([]);
-  const [roundDropdown,setRoundDropdown] = useState(dummyRound)
+  const [roundDropdown, setRoundDropdown] = useState(dummyRound)
 
   const [moduleId, setModuleId] = React.useState();
   const [month, setMonth] = React.useState('1');
@@ -165,7 +166,7 @@ const AdminCreateBlog = () => {
   const [sections, setSections] = useState([]);
   const [status, setStatus] = React.useState('');
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
-
+  const [subActivityListData, setSubActivityListData] = useState([])
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
@@ -181,15 +182,18 @@ const AdminCreateBlog = () => {
   const [startDate, setStartDate] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
   const [activityName, setActivityName] = useState([]);
-  const [changeText,setChangeText]=useState("");
-  const [visible,setVisible] = useState(false);
-  const [isPhysicalActivity,setIsPhysicalActivity] = useState(false);
+  const [changeText, setChangeText] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [isPhysicalActivity, setIsPhysicalActivity] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
+  const [subActivityName, setSubActivityName] = useState([])
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
     section: '',
   });
+  const [sudActId, setSubActId] = useState(physicalId);
+  const [selectedSubActivityId, setSelectedSubActivityId] = useState('')
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -198,6 +202,23 @@ const AdminCreateBlog = () => {
     setDesc(content);
   };
 
+  const handleSubActivity = (e, value) => {
+    setVisible(false)
+    setSelectedBranch([])
+    setSelectedGrade([])
+    setSelectedSection([])
+    setIsPhysicalActivity(false)
+    if (value) {
+      setSubActivityName(value)
+      setIsPhysicalActivity(true)
+      setSelectedSubActivityId(value?.id)
+      setVisible(true)
+      console.log(value)
+
+    }
+
+  }
+
   const handleChangeActivity = (e, value) => {
     setActivityName([])
     setSelectedBranch([])
@@ -205,10 +226,10 @@ const AdminCreateBlog = () => {
     setSelectedSection([])
     setIsPhysicalActivity(false)
     setVisible(false)
-    if(value){
+    if (value) {
       setVisible(true)
       setActivityName(value);
-      if(value?.name == "Physical Activity"){
+      if (value?.name == "Physical Activity") {
         setIsPhysicalActivity(true)
       }
     }
@@ -289,8 +310,25 @@ const AdminCreateBlog = () => {
       });
   };
 
+  useEffect(() => {
+    fetchSubActivityListData()
+  }, [])
+
+  const fetchSubActivityListData = () => {
+    axiosInstance
+      .get(`${endpoints.newBlog.subActivityListApi}?type_id=${sudActId}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((result) => {
+        setLoading(false)
+        setSubActivityListData(result?.data?.result)
+      })
+  }
+
   const fetchSections = (value) => {
-    if(value?.length !== 0){
+    if (value?.length !== 0) {
       const ids = value.map((el) => el.id) || [];
       setLoading(true)
       axiosInstance
@@ -352,10 +390,10 @@ const AdminCreateBlog = () => {
     }
   };
 
-  const handleRound =(e,value) => {
-    if(value){
+  const handleRound = (e, value) => {
+    if (value) {
       setSelectedRound(value)
-      setSelectedRoundID(value[0].id)
+      setSelectedRoundID(value?.id)
     }
   }
 
@@ -412,6 +450,7 @@ const AdminCreateBlog = () => {
     setActivityName([]);
     setDescription('');
     setTitle('');
+    setSelectedRound([])
     setStartDate('');
   };
   const formatdate = new Date();
@@ -429,55 +468,58 @@ const AdminCreateBlog = () => {
     const gradeIds = selectedGrade.map((obj) => obj?.id);
     const sectionIds = selectedSection.map((obj) => obj?.id);
     // setLoading(true);
-    if(!startDate){
+    if (!startDate) {
       setLoading(false)
       setAlert('error', 'Please Select The Date')
       return;
     }
-    if(activityName.length === 0){
+
+    if (activityName.length === 0 && physicalId == undefined) {
       setLoading(false)
       setAlert('error', 'Please Add Activity Name')
       return;
     }
-    if(branchIds?.length === 0){
+    if (branchIds?.length === 0) {
       setLoading(false)
       setAlert('error', 'Please Select Branch')
       return
     }
-    if(gradeIds?.length === 0) {
+    if (gradeIds?.length === 0) {
       setLoading(false)
       setAlert('error', 'Please Select Grade')
       return;
     }
-    if(sectionIds?.length === 0) {
+    if (sectionIds?.length === 0) {
       setLoading(false)
       setAlert('error', 'Please Select Section')
       return;
     }
-    if(title.length === 0){
+    if (title.length === 0) {
       setLoading(false)
       setAlert('error', 'Please Add Title')
       return;
     }
-    if(!description){
+    if (!description) {
       setLoading(false)
       setAlert('error', 'Please Add Description')
       return;
     }
+
 
     // if(!checked) {
     //   setLoading(false);
     //   setAlert('error','Please Select Templates')
     //   return;
     // }
-    else{
+    else {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
       formData.append('issue_date', null);
       formData.append('submission_date', startDate + hoursAndMinutes);
       formData.append('image', selectedFile);
-      formData.append('activity_type_id', activityName.id);
+      formData.append('activity_type_id', activityName?.id ? activityName?.id : selectedSubActivityId);
+      // formData.append('sub-activity_type_id',selectedSubActivityId)
       formData.append('session_year', selectedAcademicYear.session_year);
       formData.append('created_at', startDate + hoursAndMinutes);
       formData.append('created_by', user_id.id);
@@ -485,9 +527,9 @@ const AdminCreateBlog = () => {
       formData.append('grade_ids', gradeIds);
       formData.append('section_ids', sectionIds);
       formData.append('is_draft', false);
-      formData.append('template_type',"template");
-      formData.append('template_id',checked);
-      formData.append('round_count',selectedRoundID);
+      formData.append('template_type', "template");
+      formData.append('template_id', checked);
+      formData.append('round_count', selectedRoundID);
       axios
         .post(`${endpoints.newBlog.activityCreate}`, formData, {
           headers: {
@@ -506,22 +548,22 @@ const AdminCreateBlog = () => {
           setDescription('');
           setTitle('');
           setStartDate('');
-          if(activityName?.name == "Physical Activity"){
+          if (isPhysicalActivity == true) {
             history.push('/physical/activity')
             return
 
-          }else{
+          } else {
             history.push('/blog/blogview');
             return
           }
         });
 
     }
-    
+
 
   };
-  
-  const [typeText,setTypeText]= useState([{name:"text"},{name:"template"}])
+
+  const [typeText, setTypeText] = useState([{ name: "text" }, { name: "template" }])
 
   const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
@@ -583,10 +625,10 @@ const AdminCreateBlog = () => {
   const handleDescription = (event) => {
     setDescription(event.target.value);
   };
-  const [templates,setTemplates] =useState([]);
+  const [templates, setTemplates] = useState([]);
 
   const getTemplate = (data) => {
-    if(data){
+    if (data) {
       setLoading(true)
       axios
         .get(`${endpoints.newBlog.getTemplates}${data}/`, {
@@ -598,35 +640,35 @@ const AdminCreateBlog = () => {
           // console.log(response?.data?.result, 'session');
           setTemplates(response?.data?.result);
           setLoading(false)
-       
+
         });
 
     }
   };
 
-  useEffect(() =>{
+  useEffect(() => {
     getTemplate()
-  },[selectedBranch,activityName]);
+  }, [selectedBranch, activityName]);
 
   const [checked, setChecked] = React.useState("");
 
-  const handleChange = (event,value) => {
+  const handleChange = (event, value) => {
     // console.log(event.target.checked)
     // console.log(event,"event",value);
 
     setChecked(value);
   };
-//   const clickHandler = (e, item) => {
+  //   const clickHandler = (e, item) => {
 
-//     if (e.target.checked) {
-//         setList(prevState => [
-//             ...prevState,
-//             item
-//         ])
-//         const newInitialList = initialList.filter((list, index) => list.id !== item.id);
-//         setIinitialList(newInitialList)
-//     }
-// }
+  //     if (e.target.checked) {
+  //         setList(prevState => [
+  //             ...prevState,
+  //             item
+  //         ])
+  //         const newInitialList = initialList.filter((list, index) => list.id !== item.id);
+  //         setIinitialList(newInitialList)
+  //     }
+  // }
 
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
@@ -635,43 +677,51 @@ const AdminCreateBlog = () => {
     { width: 1200, itemsToShow: 4 }
   ];
 
-  const handleGoBack = () =>{
+  const handleGoBack = () => {
     history.goBack()
   }
-  
+
 
   return (
     <div>
 
-      {loading && <Loader/>}
-    <Layout>
-            {loading && <Loader />}
+      {loading && <Loader />}
+      <Layout>
+        {loading && <Loader />}
 
-      <Grid
-        container
-        direction='row'
-        style={{ paddingLeft: '22px', paddingRight: '10px' }}
-      > 
-      </Grid>
-      <div className='col-md-6' style={{zIndex:2, display: 'flex', alignItems:'center' }}>
-        <div>
-          <IconButton aria-label="back" onClick={handleGoBack}>
-           <KeyboardBackspaceIcon style={{fontSize:'20px', color:'black'}}/>
-          </IconButton>
+        <Grid
+          container
+          direction='row'
+          style={{ paddingLeft: '22px', paddingRight: '10px' }}
+        >
+        </Grid>
+        <div className='col-md-6' style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}>
+          <div>
+            <IconButton aria-label="back" onClick={handleGoBack}>
+              <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
+            </IconButton>
           </div>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-               Activity Management
-              </Breadcrumb.Item>
+          <Breadcrumb separator='>'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+              Activity Management
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href='' className='th-grey th-16'>
+              Activity
+            </Breadcrumb.Item>
+            {physicalId ? (
               <Breadcrumb.Item href='' className='th-grey th-16'>
-                Activity 
+                Create Physical Activity
               </Breadcrumb.Item>
+
+            ) : (
               <Breadcrumb.Item href='' className='th-grey th-16'>
-               Create Activity
+                Create Activity
               </Breadcrumb.Item>
-            </Breadcrumb>
+
+            )}
+          </Breadcrumb>
         </div>
-      {/* <div style={{    marginLeft:"15px", marginBottom: "18px",
+        {/* <div style={{    marginLeft:"15px", marginBottom: "18px",
     marginTop: "-14px", cursor: 'pointer' }} onClick={goBack}>
           <div>
             {' '}
@@ -681,170 +731,205 @@ const AdminCreateBlog = () => {
           </div>
         </div>       */}
         <div style={{ paddingLeft: '22px', paddingRight: '10px' }}>
-        <Button
-          variant='primary'
-          style={{ borderRadius: '1px', color: 'white' }}
-          disabled
-        >
-          Create Activity
-        </Button>
 
-        <Divider className={classes.dividerColor} />
-      </div>
-      <div
-        style={{
-          paddingLeft: '22px',
-          paddingRight: '10px',
-          paddingTop: '50px',
-          fontSize: '15px',
-        }}
-      >
+          {physicalId ? (
+            <Button
+              variant='primary'
+              style={{ borderRadius: '1px', color: 'white' }}
+              disabled
+            >
+              Create Physical Activity
+            </Button>
+
+          ) : (
+            <Button
+              variant='primary'
+              style={{ borderRadius: '1px', color: 'white' }}
+              disabled
+            >
+              Create Activity
+            </Button>
+
+          )}
+
+          <Divider className={classes.dividerColor} />
+        </div>
         <div
           style={{
-            marginLeft: '9px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginRight: '6px',
+            paddingLeft: '22px',
+            paddingRight: '10px',
+            paddingTop: '50px',
+            fontSize: '15px',
           }}
         >
-          <div style={{ display: 'flex' }}>
-            Activity Category * :
-            <Autocomplete
-              style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
-              size='small'
-              onChange={handleChangeActivity}
-              options={activityCategory || []}
-              value={activityName || []}
-              getOptionLabel={(option) => option?.name}
-              filterSelectedOptions
-              renderInput={(params) => <TextField {...params} variant='outlined' />}
-            />
-            {isPhysicalActivity ? (
-              <>
-              <div style={{marginLeft:'15px'}}>
-                Sub-Activity Type : <b style={{color:'blue'}}>{activityName?.sub_type}</b>
-              </div>
-              </>
-            ) : ""}
+          <div
+            style={{
+              marginLeft: '9px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginRight: '6px',
+            }}
+          >
+            <div style={{ display: 'flex' }}>
+
+              {physicalId ? (
+                <>
+                  Sub-Activity Category * :
+                  <Autocomplete
+                    style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
+                    size='small'
+                    // onChange={(e) => {handleSubActivity(e, value)}}
+                    onChange={handleSubActivity}
+                    options={subActivityListData || []}
+                    value={subActivityName || []}
+                    getOptionLabel={(option) => option?.sub_type}
+                    filterSelectedOptions
+                    renderInput={(params) => <TextField {...params} variant='outlined' />}
+                  />
+                </>
+
+              ) : (
+                <>
+                  Activity Category * :
+                  <Autocomplete
+                    style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
+                    size='small'
+                    onChange={handleChangeActivity}
+                    options={activityCategory || []}
+                    value={activityName || []}
+                    getOptionLabel={(option) => option?.name}
+                    filterSelectedOptions
+                    renderInput={(params) => <TextField {...params} variant='outlined' />}
+                  />
+
+                </>
+              )}
+
+            </div>
+            <div>
+              {' '}
+              Submission End Date *: &nbsp;&nbsp;&nbsp;
+              <TextField
+                required
+                size='small'
+                style={{ marginTop: '-6px' }}
+                onChange={(e) => handleStartDateChange(e.target.value)}
+                type='date'
+                value={startDate || ' '}
+                variant='outlined'
+              />
+            </div>
           </div>
-          <div>
-            {' '}
-            Submission End Date *: &nbsp;&nbsp;&nbsp;
-            <TextField
-              required
-              size='small'
-              style={{ marginTop: '-6px' }}
-              onChange={(e) => handleStartDateChange(e.target.value)}
-              type='date'
-              value={startDate || ' '}
-              variant='outlined'
-            />
-          </div>
-        </div>
-        {visible ? (
-        <Grid container spacing={2} style={{ marginTop: '23px' }}>
-          <Grid item md={6} xs={12}>
-            <Autocomplete
-              multiple
-              fullWidth
-              size='small'
-              limitTags={1}
-              // style={{ width: '82%', marginLeft: '4px' }}
-              options={branchList || []}
-              value={selectedBranch || []}
-              getOptionLabel={(option) => option?.name}
-              filterSelectedOptions
-              onChange={(event, value) => {
-                handleBranch(event, value);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  required
+          {visible ? (
+            <Grid container spacing={2} style={{ marginTop: '23px' }}>
+              <Grid item md={6} xs={12}>
+                <Autocomplete
+                  multiple
                   fullWidth
-                  variant='outlined'
-                  label='Branch'
+                  size='small'
+                  limitTags={1}
+                  // style={{ width: '82%', marginLeft: '4px' }}
+                  options={branchList || []}
+                  value={selectedBranch || []}
+                  getOptionLabel={(option) => option?.name}
+                  filterSelectedOptions
+                  onChange={(event, value) => {
+                    handleBranch(event, value);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      required
+                      fullWidth
+                      variant='outlined'
+                      label='Branch'
+                    />
+                  )}
                 />
-              )}
-            />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <Autocomplete
-              multiple
-              fullWidth
-              limitTags={1}
-              size='small'
-              className='filter-student meeting-form-input'
-              options={gradeList || []}
-              getOptionLabel={(option) => option?.name || ''}
-              filterSelectedOptions
-              value={selectedGrade || []}
-              onChange={(event, value) => {
-                handleGrade(event, value);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  required
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <Autocomplete
+                  multiple
                   fullWidth
-                  variant='outlined'
-                  label='Grade'
+                  limitTags={1}
+                  size='small'
+                  className='filter-student meeting-form-input'
+                  options={gradeList || []}
+                  getOptionLabel={(option) => option?.name || ''}
+                  filterSelectedOptions
+                  value={selectedGrade || []}
+                  onChange={(event, value) => {
+                    handleGrade(event, value);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      required
+                      fullWidth
+                      variant='outlined'
+                      label='Grade'
+                    />
+                  )}
                 />
-              )}
-            />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <Autocomplete
-              multiple
-              fullWidth
-              limitTags={1}
-              size='small'
-              className='filter-student meeting-form-input'
-              options={sectionDropdown || []}
-              getOptionLabel={(option) => option?.name || ''}
-              filterSelectedOptions
-              value={selectedSection || []}
-              onChange={(event, value) => {
-                handleSection(event, value);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  required
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <Autocomplete
+                  multiple
                   fullWidth
-                  variant='outlined'
-                  label='Section'
+                  limitTags={1}
+                  size='small'
+                  className='filter-student meeting-form-input'
+                  options={sectionDropdown || []}
+                  getOptionLabel={(option) => option?.name || ''}
+                  filterSelectedOptions
+                  value={selectedSection || []}
+                  onChange={(event, value) => {
+                    handleSection(event, value);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      required
+                      fullWidth
+                      variant='outlined'
+                      label='Section'
+                    />
+                  )}
                 />
+              </Grid>
+              {physicalId ? (
+                <Grid item md={6} xs={12}>
+                  <Autocomplete
+                    // multiple
+                    fullWidth
+                    // limitTags={1}
+                    size='small'
+                    className='filter-student meeting-form-input'
+                    options={roundDropdown || []}
+                    getOptionLabel={(option) => option?.name || ''}
+                    filterSelectedOptions
+                    value={selectedRound || []}
+                    onChange={(event, value) => {
+                      // handleSection(event, value);
+                      handleRound(event, value)
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        required
+                        fullWidth
+                        variant='outlined'
+                        label='Round'
+                      />
+                    )}
+                  />
+                </Grid>
+
+              ) : (
+                ''
               )}
-            />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <Autocomplete
-              multiple
-              fullWidth
-              limitTags={1}
-              size='small'
-              className='filter-student meeting-form-input'
-              options={roundDropdown || []}
-              getOptionLabel={(option) => option?.name || ''}
-              filterSelectedOptions
-              value={selectedRound || []}
-              onChange={(event, value) => {
-                // handleSection(event, value);
-                handleRound(event,value)
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  required
-                  fullWidth
-                  variant='outlined'
-                  label='Round'
-                />
-              )}
-            />
-          </Grid>
-          {/* <Grid item md={6} xs={12}>
+
+              {/* <Grid item md={6} xs={12}>
 
           <Autocomplete
               size='small'
@@ -859,69 +944,69 @@ const AdminCreateBlog = () => {
             />
                     </Grid> */}
 
-        </Grid>
+            </Grid>
 
-        ): ''}
-       
-      
-        <div
-          style={{
-            border: '1px solid lightgrey',
-            borderRadius: '5px',
-            height: 'auto',
-            marginTop: '20px',
-          }}
-        >
-          <div style={{ marginTop: '23px', marginLeft: '73px', display: 'flex' }}>
-            Activity Details *: &nbsp;&nbsp;&nbsp;&nbsp;
-            <TextField
-              id='outlined-basic'
-              size='small'
-              fullWidth
-              value={title}
-              onChange={handleTitle}
-              style={{ maxWidth: '80%' }}
-              label='Title *'
-              variant='outlined'
-            />
-          </div>
-          <br />
+          ) : ''}
+
+
           <div
             style={{
-              marginLeft: '13%',
-              marginRight: '8%',
-              marginBottom: '23px',
+              border: '1px solid lightgrey',
+              borderRadius: '5px',
+              height: 'auto',
+              marginTop: '20px',
             }}
           >
-            {/* <MyTinyEditor
+            <div style={{ marginTop: '23px', marginLeft: '73px', display: 'flex' }}>
+              Activity Details *: &nbsp;&nbsp;&nbsp;&nbsp;
+              <TextField
+                id='outlined-basic'
+                size='small'
+                fullWidth
+                value={title}
+                onChange={handleTitle}
+                style={{ maxWidth: '80%' }}
+                label='Title *'
+                variant='outlined'
+              />
+            </div>
+            <br />
+            <div
+              style={{
+                marginLeft: '13%',
+                marginRight: '8%',
+                marginBottom: '23px',
+              }}
+            >
+              {/* <MyTinyEditor
               handleEditorChange={handleEditorChange}
               placeholder='Description...'
               content='<img src="https://st.depositphotos.com/1015682/1248/i/600/depositphotos_12483210-stock-photo-elephant-with-large-tusks.jpg" />'
 
             /> */}
 
-            <TextField
-              label='Description/Instructions *'
-              placeholder='Description/Instructions *'
-              multiline
-              value={description}
-              onChange={handleDescription}
-              fullWidth
-              style={{ maxWidth: '97%' }}
-              rows='8'
-              variant='outlined'
-            />
+              <TextField
+                label='Description/Instructions *'
+                placeholder='Description/Instructions *'
+                multiline
+                value={description}
+                onChange={handleDescription}
+                fullWidth
+                style={{ maxWidth: '97%' }}
+                rows='8'
+                variant='outlined'
+              />
+            </div>
           </div>
-        </div>
-        <div
-          style={{
-            border: '1px solid lightgrey',
-            borderRadius: '5px',
-            height: 'auto',
-            marginTop: '20px',
-          }}
-        >
-          {/* <div
+          <div
+            style={{
+              border: '1px solid lightgrey',
+              borderRadius: '5px',
+              height: 'auto',
+              marginTop: '20px',
+            }}
+          >
+            {/* <div
             style={{
               textAlign: 'center',
               display: 'flex',
@@ -970,134 +1055,134 @@ const AdminCreateBlog = () => {
               </label>
             </div>
           </div> */}
-          {isPhysicalActivity ? (
-            ''
+            {isPhysicalActivity ? (
+              ''
 
-          ): (
-            <>
-            {selectedBranch?.length !== 0 && activityName?.length !== 0  ? (
-            <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
-          {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
+            ) : (
+              <>
+                {selectedBranch?.length !== 0 && activityName?.length !== 0 ? (
+                  <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
+                    {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
           <div style={{ height: "200px", color: "#fff" }}>this is slide 2</div>
           <div style={{ height: "200px", color: "#fff" }}>this is slide 3</div> */}
-          {templates?.map((obj,index)=>(
-          <div style={{display:'flex', alignItems:'center',flexDirection:'column'}}>
-          <img src={obj?.template_path} alt="images" style={{maxWidth:"34%"}}/> 
-          {/* <div> */}
-          <Checkbox
-          value={checked}
-          onChange={()=>handleChange(obj?.id,obj?.id)}
-          className={classes.tickSize}        
-          color="primary"
-          inputProps={{ 'aria-label': 'secondary checkbox' }}
-        />
-        <div>{obj?.title}</div>
-        {/* </div> */}
-        </div>))}
-            </Carousel>
-            ) : ''}
-            </>
-          )}
-        </div>
-        <div
-          style={{
-            marginTop: '60px',
-            marginLeft: '50px',
-
-            display: 'flex',
-          }}
-        >
-          <Button
-            variant='outlined'
-            className={classes.buttonColor}
-            size='medium'
-            onClick={goBack}
-          >
-            Back
-          </Button>{' '}
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button
-            variant='outlined'
-            className={classes.buttonColor}
-            size='medium'
-            onClick={PreviewBlog}
-          >
-            Preview
-          </Button>{' '}
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button
-            variant='outlined'
-            onClick={handleClear}
-            className={classes.buttonColor1}
-            size='medium'
-          >
-            Clear
-          </Button>{' '}
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button variant='contained' color='primary' disabled={user_level==11} onClick={dataPost}>
-            Create Activity
-          </Button>
-        </div>
-      </div>
-      <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-        <div style={{ width: '642px' }}>
+                    {templates?.map((obj, index) => (
+                      <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                        <img src={obj?.template_path} alt="images" style={{ maxWidth: "34%" }} />
+                        {/* <div> */}
+                        <Checkbox
+                          value={checked}
+                          onChange={() => handleChange(obj?.id, obj?.id)}
+                          className={classes.tickSize}
+                          color="primary"
+                          inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        />
+                        <div>{obj?.title}</div>
+                        {/* </div> */}
+                      </div>))}
+                  </Carousel>
+                ) : ''}
+              </>
+            )}
+          </div>
           <div
             style={{
+              marginTop: '60px',
+              marginLeft: '50px',
+
               display: 'flex',
-              justifyContent: 'space-between',
-              marginTop: '12px',
             }}
           >
-            <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-            <div style={{ marginTop: '21px', marginRight: '34px' }}>
-              <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
-            </div>
-          </div>
-
-          <div
-            style={{
-              border: '1px solid lightgray',
-              height: ' auto',
-              // width: '100%',
-              marginLeft: '16px',
-              marginRight: '32px',
-              borderRadius: '10px',
-              marginBottom: '9px',
-            }}
-          >
-            <div style={{ marginLeft: '23px', marginTop: '28px' }}>
-              <div style={{ fontSize: '15px', color: '#7F92A3' }}>
-                Title -{activityName.name}
-              </div>
-              <div style={{ fontSize: '21px' }}>{title}</div>
-              <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                Submission on -{startDate}
-              </div>
-              <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                Branch -&nbsp;<span style={{ color: 'black' }}>{branchname}</span>
-              </div>
-              <div style={{ fontSize: '10px', color: 'gray' }}>
-                Grade -&nbsp;<span style={{ color: 'black' }}>{gradename}</span>
-              </div>
-              <div style={{ fontSize: '10px', color: 'gray' }}>
-                Section -&nbsp;<span style={{ color: 'black' }}>{sectionname}</span>
-              </div>
-
-              <div style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}>
-                {/* word limit -300 */}
-              </div>
-              <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                Instructions
-              </div>
-              <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
-              <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                <img src={fileUrl} width='50%' />
-              </div>
-            </div>
+            <Button
+              variant='outlined'
+              className={classes.buttonColor}
+              size='medium'
+              onClick={goBack}
+            >
+              Back
+            </Button>{' '}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Button
+              variant='outlined'
+              className={classes.buttonColor}
+              size='medium'
+              onClick={PreviewBlog}
+            >
+              Preview
+            </Button>{' '}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Button
+              variant='outlined'
+              onClick={handleClear}
+              className={classes.buttonColor1}
+              size='medium'
+            >
+              Clear
+            </Button>{' '}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Button variant='contained' color='primary' disabled={user_level == 11} onClick={dataPost}>
+              Create Activity
+            </Button>
           </div>
         </div>
-      </Dialog>
-    </Layout>
+        <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
+          <div style={{ width: '642px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '12px',
+              }}
+            >
+              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
+              <div style={{ marginTop: '21px', marginRight: '34px' }}>
+                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
+              </div>
+            </div>
+
+            <div
+              style={{
+                border: '1px solid lightgray',
+                height: ' auto',
+                // width: '100%',
+                marginLeft: '16px',
+                marginRight: '32px',
+                borderRadius: '10px',
+                marginBottom: '9px',
+              }}
+            >
+              <div style={{ marginLeft: '23px', marginTop: '28px' }}>
+                <div style={{ fontSize: '15px', color: '#7F92A3' }}>
+                  Title -{activityName.name}
+                </div>
+                <div style={{ fontSize: '21px' }}>{title}</div>
+                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                  Submission on -{startDate}
+                </div>
+                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                  Branch -&nbsp;<span style={{ color: 'black' }}>{branchname}</span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Grade -&nbsp;<span style={{ color: 'black' }}>{gradename}</span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Section -&nbsp;<span style={{ color: 'black' }}>{sectionname}</span>
+                </div>
+
+                <div style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}>
+                  {/* word limit -300 */}
+                </div>
+                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                  Instructions
+                </div>
+                <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
+                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
+                  <img src={fileUrl} width='50%' />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </Layout>
 
     </div>
   );

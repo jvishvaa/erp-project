@@ -458,6 +458,8 @@ import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
 import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
 import PhysicalPendingReview from 'containers/newBlog/PhysicalPendingReview';
 import CreatePostActivity from 'containers/newBlog/createPostActivity';
+import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
+import BlogActivityView from 'containers/newBlog/BlogActivityView';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -535,6 +537,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route path='/communication/messagelog'>
                               {({ match }) => <MessageLog match={match} />}
+                            </Route>
+                            <Route path='/student/phycial/activity'>
+                              {({ match }) => <StudentSidePhysicalActivity match={match} />}
+                            </Route>
+                            <Route path='blog-activity-view'>
+                              {({ match }) => <BlogActivityView match={match} />}
                             </Route>
                             <Route path='/dashboard'>
                               {({ match }) => <Dashboard match={match} />}

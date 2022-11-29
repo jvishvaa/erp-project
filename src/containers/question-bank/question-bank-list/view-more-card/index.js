@@ -255,7 +255,7 @@ const ViewMoreCard = ({
               <a style={{ marginLeft: '5px', marginRight: '5px' }}>Edit Details</a>
             </div>
           )} */}
-          {periodDataForView?.is_central ? 'School Question' : 'Eduvate Question'} 
+          {periodDataForView?.is_central ? 'Eduvate Question' : 'School Question'} 
         </div>
       </div>
       {/* <div className='divider'><Divider/></div> */}

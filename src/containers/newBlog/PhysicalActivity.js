@@ -217,7 +217,7 @@ const PhysicalActivity = () => {
   const [loading,setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const physicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId'))
+  const physicalActivityId = localStorage.getItem('PhysicalActivityId') ? JSON.parse(localStorage.getItem('PhysicalActivityId')) : ''
   // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const [subjectData, setSubjectData] = useState([]);
   const token = dataes?.token;
@@ -823,6 +823,9 @@ const fetchSubActivityListData = () => {
               </Breadcrumb.Item>
             </Breadcrumb>
         </div>
+        {user_level == 11 || user_level == 8 ? (
+          ''
+        ) : (
         <div className='col-md-6' style={{zIndex:2, display: 'flex', alignItems:'center', justifyContent:'end' }}>
             <ButtonAnt type="primary" icon={<AppstoreAddOutlined />} 
             size={'large'}
@@ -831,6 +834,7 @@ const fetchSubActivityListData = () => {
               Create Physical Activity
             </ButtonAnt>
         </div>
+        )}
         <div className='row'>
         <div className='col-12'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>

@@ -1180,7 +1180,7 @@ const Layout = ({ children, history }) => {
         history.push('/sure-learning/assign-teacher');
         break;
       }
-      case 'Curriculumn Report': {
+      case 'Curriculum Completion': {
         history.push('/curriculum-completion-student-subject/');
         break;
       }

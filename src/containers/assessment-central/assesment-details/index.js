@@ -44,14 +44,12 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
   } = test;
 
   const handleData = () => {
-    sessionStorage.removeItem('/filterData')
-    history.push({
-      pathname: '/offline-student',
-      state: {
-        data: filterData,
-        test: test
-      }
-    })
+    sessionStorage.setItem('createfilterdata',JSON.stringify(filterData))
+    let state = {
+      // data: filterData,
+      test: test
+    }
+    history.push({pathname : '/offline-student',state})
   }
 
   useEffect(() => {
@@ -464,7 +462,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                   <div className='row mt-4'>
                   {filterData?.status?.children === "Completed"  && test?.test_mode == 2 &&
                     <div className='col-6-md'>
-                    <Button variant='contained' color='primary' onClick={handleData}>
+                    <Button variant='contained' color='primary' onClick={()=> handleData()}>
                       Upload Marks
                      </Button>
                     </div>}

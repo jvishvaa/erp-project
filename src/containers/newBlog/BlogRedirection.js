@@ -121,7 +121,8 @@ const BlogWallRedirect = () => {
   const history = useHistory();
   const [periodData,setPeriodData] = useState([]);
   const [loading,setLoading]= useState(false);
-  
+  const [subId,setSubId] = useState('')
+
   const handleBlogWriting = () => {
     history.push('/blog/studentview')
   }
@@ -186,7 +187,10 @@ const BlogWallRedirect = () => {
           JSON.stringify(response?.data?.result)
         );
         setLoading(false)
-      });
+      })
+      .catch((err) =>{
+        // debugger
+      })
   };
 
   const periodDataAPI = () => {
@@ -198,8 +202,14 @@ const BlogWallRedirect = () => {
           },
         })
         .then((result) => {
-          setLoading(false)
+          const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
+          setSubId(physicalData[0]?.id)
           setPeriodData(result?.data?.result)
+          localStorage.setItem(
+            'PhysicalActivityId',
+            JSON.stringify(physicalData[0]?.id)
+          );
+          setLoading(false)
         })
         .catch((err) => {
           setLoading(false)
@@ -212,13 +222,24 @@ const BlogWallRedirect = () => {
   },[])
 
 
+  const handlePhysicalActivity = () =>{
+    history.push({
+      pathname:'/student/phycial/activity',
+      state: {
+        subActiveId: subId,
+      }
+    })
+
+  }
+
 
   const handleExplore = (data) => {
     if (data?.name == "Blog Activity") {
       handleBlogWriting()
     } else if (data?.name === "Public Speaking") {
       handlePublicSpeaking()
-    } else {
+    } else if(data?.name === "Physical Activity") {
+      handlePhysicalActivity()
     }
   }
 

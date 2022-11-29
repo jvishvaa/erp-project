@@ -64,7 +64,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabChapterId, setTabChapterId] = useState('');
   const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(2);
   const location = useLocation();
   // const query = new URLSearchParams(location.search);
   const filterRef = useRef(null);
@@ -136,7 +136,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     yearId,
     gradeId,
     chapterObj,
-    isErpCentral = false,
+    isErpCentral = true,
     newValue = 0,
     erp_category,
   ) => {
@@ -155,7 +155,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setErpCategory(erp_category)
     let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${tabIsErpCentral? 2 : 1}`;  
-    if (subjMapId) {
+    if (subjMapId && !erp_category) {
       requestUrl += `&subject=${subjMapId}`;
     }
     if (newValue) {
@@ -245,6 +245,7 @@ if(filtersDetails){
       setIsSelectAllQuestion(false)
       setSelectedId([])
       setSelectedIndex(-1);
+    //  setTabValue(tabIsErpCentral ? 2 : tabValue)
       handlePeriodList(
         tabQueTypeId,
         tabQueCatId,
@@ -327,6 +328,11 @@ if(filtersDetails){
   }
 
   const changequestionFrom = (e) => {
+    if(e=='edu'){
+      setTabValue(2)
+    }else{
+      setTabValue(0)
+    }
 setTabIsErpCentral((prev) => !prev)
   }
 
@@ -639,7 +645,7 @@ setTabIsErpCentral((prev) => !prev)
                   <Grid item xs={3}>
                     <Button
                       style={{ margin: '0.5rem', width: '100%' }}
-                      className='th-button'
+                      className={(isSelectAll || selectedId.length > 0) ? 'th-button-active':'th-button'}
                       onClick={(e) => handlePublish()}
                       color='primary'
                       disabled={selectedId.length === 0 ? true : false}

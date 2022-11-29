@@ -239,10 +239,10 @@ const CentralBlogRedirection = () => {
           setPeriodData(result?.data?.result)
           const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
           setSubId(physicalData[0]?.id)
-          localStorage.setItem(
-            'PhysicalActivityId',
-            JSON.stringify(physicalData[0]?.id)
-          );
+          // localStorage.setItem(
+          //   'PhysicalActivityId',
+          //   JSON.stringify(physicalData[0]?.id)
+          // );
 
         })
         .catch((err) => {
@@ -264,9 +264,13 @@ const CentralBlogRedirection = () => {
       // handleBlogWriting()
       return
     } else if (dataLower === "public speaking") {
-        handlePublicSpeaking()
-        return
+        // handlePublicSpeaking()
+        // return
     } else if(dataLower === "physical activity") {
+      localStorage.setItem(
+        'PhysicalActivityId',
+        JSON.stringify(subId)
+      );
         handlePublicSpeaking()
         return
     }else if(dataLower === "art writting" || dataLower === "blog activity"){
@@ -286,6 +290,7 @@ const CentralBlogRedirection = () => {
   }
 
   useEffect(() =>{
+    localStorage.setItem('PhysicalActivityId', '');
     getActivitySession()
     ActvityLocalStorage()
   },[])
@@ -388,7 +393,7 @@ const CentralBlogRedirection = () => {
                       className='th-br-10 th-bg-grey dummy-background'
                     >
                       <div className='row p-3'>
-                        <div className='col-4 th-br-5'>
+                        <div className='col-4 th-br-5' style={{display:'flex', flexWrap:'wrap'}}>
                           <img
                             src={getSubjectIcon(each?.name)}
                             // src={getSubjectIcon((each?.subject_name).toLowerCase())}
