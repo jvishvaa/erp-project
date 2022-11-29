@@ -430,7 +430,7 @@ console.log(history.location.state);
 
   const datagen = (data) => {
     console.log(data);
-    let sec_name = data.map((sec) => sec?.section_name)
+    let sec_name = data.map((sec) => sec?.section_name.replace(/sec|section/gi, "SEC"))
 
     console.log(JSON.stringify(sec_name));
     return <span className='th-green th-16'>{sec_name.toString()}</span>
@@ -598,7 +598,7 @@ console.log(history.location.state);
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
             {/* <Button onClick={handleViewChange} className={clsx(classes.viewButton)} >{teacherView ? 'Grade View' : "Teacher's View"}</Button> */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '12%', fontSize: '16px', fontWeight: '600', margin: 'auto 0' }} >
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '18%', fontSize: '16px', fontWeight: '600', margin: 'auto 0' }} >
               <span>Grade View</span>
               <Switch onChange={handleViewChange} />
               <span>Teacher View</span>
