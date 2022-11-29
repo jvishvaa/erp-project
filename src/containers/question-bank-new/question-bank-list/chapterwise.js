@@ -284,7 +284,8 @@ if(filters.questionId){
         // volume_id: 38,
         subject: subjectId,
         academic_session: selectedBranch?.id,
-        academic_year : selectedAcademicYear?.session_year
+        academic_year : selectedAcademicYear?.session_year,
+        session_year : selectedAcademicYear?.id
         // board: boardId,
       });
     }
@@ -320,7 +321,8 @@ if(filters.questionId){
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          setAnnualPlanData(result?.data?.result);
+          let filteredchapters = result?.data?.result?.filter((item) => item?.keyconcept !== null)
+          setAnnualPlanData(filteredchapters);
           // setYCPData(result?.data?.data?.lp_ycp_data);
           // setFiltered(false)
           setLoading(false);

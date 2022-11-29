@@ -36,6 +36,7 @@ const Diary = () => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [showSubjectsCount, setShowSubjectsCount] = useState(10);
 
   const history = useHistory();
   const { TabPane } = Tabs;
@@ -167,7 +168,7 @@ const Diary = () => {
                     </div>
                   </>
                 )}
-                {dailyDiaryData?.map((item, i) => (
+                {dailyDiaryData?.slice(0, showSubjectsCount).map((item, i) => (
                   <div className='col-md-2 col-6'>
                     <Button
                       className={`${
@@ -181,6 +182,22 @@ const Diary = () => {
                     </Button>
                   </div>
                 ))}
+                {dailyDiaryData.length > 10 && (
+                  <div className='col-md-2 col-6'>
+                    <Button
+                      className='th-button th-width-100 th-br-6 mt-2'
+                      onClick={() => {
+                        if (showSubjectsCount == dailyDiaryData.length) {
+                          setShowSubjectsCount(10);
+                        } else {
+                          setShowSubjectsCount(dailyDiaryData.length);
+                        }
+                      }}
+                    >
+                      Show {showSubjectsCount == dailyDiaryData.length ? 'Less' : 'More'}
+                    </Button>
+                  </div>
+                )}
               </>
             ) : null}
           </div>
@@ -292,13 +309,13 @@ const Diary = () => {
         </div>
         {(user_level == 13 || user_level == 12) && isOrchids ? (
           <div
-            className='row justify-content-end th-pointer'
+            className='row justify-content-end'
             style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-            onClick={() => setShowGrievanceModal(true)}
           >
             <div
-              className='th-bg-white px-2 py-1 th-br-6'
+              className='th-bg-white px-2 py-1 th-br-6 th-pointer'
               style={{ border: '1px solid #d9d9d9' }}
+              onClick={() => setShowGrievanceModal(true)}
             >
               Having any issues with Diary ?<br />
               <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect , createRef} from 'react';
 import {
   Grid,
 } from '@material-ui/core';
@@ -131,6 +131,9 @@ const CurriculumCompletionChapter = (props) => {
   const branchId = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch?.branch?.id
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const user_level = userDetails?.user_level
   const [colIndex, setColIndex] = useState("")
@@ -149,7 +152,7 @@ const CurriculumCompletionChapter = (props) => {
   const [subjectApiData, setSubjectApiData] = useState([])
   const [columns, setColumns] = useState([
     {
-      title: <span className='th-white pl-4 th-fw-700 '>Chapters</span>,
+      title: <span className='th-white pl-4 th-fw-700 '>CHAPTERS</span>,
       width: 300,
       align: 'left',
       render: (data) => <span className='pl-md-4 th-black-1 th-16' style={{fontWeight: '600'}} >{data?.chapter_name}</span>,
@@ -158,17 +161,16 @@ const CurriculumCompletionChapter = (props) => {
     },
 
   ]);
-
-  console.log(history?.location.state);
+  const formRef = createRef();
+console.log(history?.location?.state , 'history');
 
 
   const [innerColumn, setInnerColumn] = useState([
     {
-      title: <span className='th-white pl-4 th-fw-700 '>Topic</span>,
+      title: <span className='th-white pl-4 th-fw-700 '>TOPICS</span>,
       width: 300,
       align: 'left',
       render: (data) => {
-        console.log(data, 'dataa')
         return <span className='pl-md-4 th-black-1 th-16' style={{fontWeight: '600'}} >{data?.topic_name}</span>
       },
       fixed: 'left',
@@ -193,7 +195,7 @@ const CurriculumCompletionChapter = (props) => {
   };
   const volumeOptions = volumeListData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option  value={each.id}>
         {each?.volume_name}
       </Option>
     );
@@ -204,6 +206,9 @@ const CurriculumCompletionChapter = (props) => {
     if (e?.value) {
       setVolumeId(e.value);
       setVolumeName(e.children);
+      formRef.current.setFieldsValue({
+        volume: e?.children,
+      });
     } else {
       setVolumeId('');
       setVolumeName('');
@@ -229,6 +234,80 @@ const CurriculumCompletionChapter = (props) => {
     }
   };
 
+  useEffect(() => {
+    setFilters()
+  },[gradeApiData])
+
+  useEffect(() => {
+    setSubjectFilters()
+  },[subjectApiData])
+
+  useEffect(() => {
+    if(history?.location?.state?.volumeId){
+      setVolumeFilters()
+    }
+  },[volumeListData])
+
+  const setFilters = () => {
+    let gradefind = gradeApiData.filter(e => e?.grade_id == history?.location?.state?.grade) || []
+    console.log(gradefind);
+    const temp = []
+    const transform = gradefind?.length > 0 && gradefind.map((e) => {
+      const data = {
+        key : e?.id,
+        value: e?.grade_id,
+        children: e?.grade_name
+      }
+      temp.push(data)
+    })
+    console.log(temp , transform);
+    if(temp?.length > 0 ){
+      handleGrade(temp[0])
+      // setSelectedGrade(temp[0])
+    }
+  }
+
+  const setSubjectFilters = () => {
+    let subfind = subjectApiData?.length > 0 && subjectApiData.filter(e => e?.subject_id == history?.location?.state?.subject_id) || []
+    console.log(subfind);
+    const temp = []
+    const transform = subfind?.length > 0 && subfind.map((e) => {
+      const data = {
+        key : e?.id,
+        value: e?.subject_id,
+        children: e?.subject_name
+      }
+      temp.push(data)
+    })
+    console.log(temp , transform);
+    if(temp?.length > 0 ){
+      handleSubject(temp[0])
+      // setSelectedGrade(temp[0])
+    }
+  }
+
+  const setVolumeFilters = () => {
+    let volfind = volumeListData.filter(e => e?.id == history?.location?.state?.volumeId) || []
+    console.log(volfind);
+    const temp = []
+    const transform = volfind?.length > 0 && volfind.map((e) => {
+      const data = {
+        key : null,
+        value: e?.id,
+        children: e?.volume_name
+      }
+      temp.push(data)
+    })
+    console.log(temp , transform);
+    if(temp?.length > 0 ){
+      handlevolume(temp[0])
+      // setSelectedGrade(temp[0])
+    }
+  }
+
+
+ 
+
   const gradeOptions = gradeApiData?.map((each) => {
     return (
       <Option key={each?.id} value={each.grade_id}>
@@ -242,12 +321,16 @@ const CurriculumCompletionChapter = (props) => {
     if (e?.value) {
       setGradeId(e.value);
       setGradeName(e.children);
+      formRef.current.setFieldsValue({
+        grade: e?.children,
+      });
     } else {
       setGradeId('');
       setGradeName('');
     }
   };
   const handleClearGrade = () => {
+    setGradeId('');
     setGradeName('');
   };
 
@@ -260,7 +343,7 @@ const CurriculumCompletionChapter = (props) => {
     if (gradeId != null) {
       axiosInstance
         .get(
-          `${endpoints.assessmentErp.subjectList}?session_year=${selectedAcademicYear?.id}&grade=${gradeId}`
+          `${endpoints.assessmentErp.subjectList}?session_year=${selectedBranch?.id}&grade=${gradeId}`
         )
         .then((res) => {
           setSubjectApiData(res?.data?.result);
@@ -271,8 +354,8 @@ const CurriculumCompletionChapter = (props) => {
 
   const subjectOptions = subjectApiData?.length > 0 && subjectApiData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.subject_name}>
-        {each?.grade_name}
+      <Option key={each?.id} value={each.subject_id}>
+        {each?.subject_name}
       </Option>
     );
   });
@@ -282,6 +365,9 @@ const CurriculumCompletionChapter = (props) => {
     if (e?.value) {
       setSubjectId(e.value);
       setSubjectName(e.children);
+      formRef.current.setFieldsValue({
+        Subject: e?.children,
+      });
     } else {
       setSubjectId('');
       setSubjectName('');
@@ -315,7 +401,6 @@ const CurriculumCompletionChapter = (props) => {
         subject_id: subjectId
       })
     }
-    console.log(record);
     const keys = [];
     if (expanded) {
       keys.push(record?.chapter_id);
@@ -333,7 +418,6 @@ const CurriculumCompletionChapter = (props) => {
         },
       })
       .then((res) => {
-        console.log(res);
         setCollapseData(res?.data?.result);
         transformDataInner(res?.data?.result)
         setLoading(false);
@@ -341,7 +425,6 @@ const CurriculumCompletionChapter = (props) => {
         // setStudentData(res.data.result);
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
       });
   };
@@ -350,7 +433,6 @@ const CurriculumCompletionChapter = (props) => {
 
 
   useEffect(() => {
-    console.log(history?.location?.state, 'Mobile99999999')
     fetchVolumeListData()
     gradeData()
     setModuleId(history?.location?.state?.module_id);
@@ -366,7 +448,7 @@ const CurriculumCompletionChapter = (props) => {
   useEffect(() => {
     if (gradeId) {
       if (history?.location?.state?.teacherView) {
-        if (volumeId != null) {
+        if (volumeId != null || volumeId != undefined ) {
           gradeListTable({
             grade_id: gradeId,
             session_year: selectedAcademicYear?.id,
@@ -387,7 +469,7 @@ const CurriculumCompletionChapter = (props) => {
           });
         }
       } else {
-        if (volumeId != null) {
+        if (volumeId != null || volumeId != undefined) {
           gradeListTable({
             grade_id: gradeId,
             session_year: selectedAcademicYear?.id,
@@ -408,10 +490,9 @@ const CurriculumCompletionChapter = (props) => {
         }
       }
     }
-  }, [volumeId, gradeId]);
+  }, [volumeId, gradeId , subjectId]);
 
   const gradeListTable = (params = {}) => {
-    console.log(params);
     setLoading(true);
     axiosInstance
       .get(`${endpoints.ownerDashboard.chapterWise}`, {
@@ -421,7 +502,6 @@ const CurriculumCompletionChapter = (props) => {
         },
       })
       .then((res) => {
-        console.log(res);
         setTableData(res?.data?.result);
         setLoading(false);
         transformData(res?.data?.result)
@@ -429,7 +509,6 @@ const CurriculumCompletionChapter = (props) => {
         // setStudentData(res.data.result);
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
       });
   };
@@ -437,16 +516,14 @@ const CurriculumCompletionChapter = (props) => {
   const transformData = (res) => {
     if (columns?.length > 1) {
       const head = ([x, ...xs]) => x;
-      console.log(head(columns))
       let col = [head(columns)]
     } else {
       let col = [...columns]
 
-      console.log(columns, 'columnss');
       setColIndex(res[0]?.section_wise_completion?.length + 2)
       let transform = res[0]?.section_wise_completion.map((i, index) => {
         let newCol = {
-          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name}</span>,
+          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name.replace(/sec|section/gi, "SEC")}</span>,
           align: 'center',
           width: 400,
           render: (data) => {
@@ -467,18 +544,16 @@ const CurriculumCompletionChapter = (props) => {
   const transformDataInner = (res) => {
     if (innerColumn?.length > 1) {
       const head = ([x, ...xs]) => x;
-      console.log(head(innerColumn))
       let innerCol = [head(innerColumn)]
     } else {
       let innerCol = [...innerColumn]
       let transform = res?.length > 0 && res[0]?.section_wise_completion.map((i, index) => {
         let newCol = {
-          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name}</span>,
+          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name.replace(/sec|section/gi, "SEC")}</span>,
           align: 'center',
           width: 400,
           key: `${i?.section_name}`,
           render: (data) => {
-            console.log(data, 'chapterper');
             return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
               '0%': '#108ee9',
               '100%': '#87d068',
@@ -486,7 +561,6 @@ const CurriculumCompletionChapter = (props) => {
           },
         }
         innerCol.push(newCol)
-        console.log(innerCol);
       })
       setInnerColumn(innerCol)
     }
@@ -496,7 +570,6 @@ const CurriculumCompletionChapter = (props) => {
     history.goBack();
   }
   const expandedRowRender = (record, index) => {
-    console.log(record, index);
 
     return (
       <Table
@@ -535,7 +608,6 @@ const CurriculumCompletionChapter = (props) => {
         },
       })
       .then((res) => {
-        console.log(res);
         const blob = new Blob([res.data], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
@@ -543,14 +615,12 @@ const CurriculumCompletionChapter = (props) => {
 
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
       });
   }
 
   const backSetting = () => {
     if (teacherView) {
-      console.log(history.location.state);
     }
   }
 
@@ -582,16 +652,16 @@ const CurriculumCompletionChapter = (props) => {
             </div>
 
           </Grid>
-          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-start' }} >
+          <Form ref={formRef} style={{ display: 'flex', justifyContent: 'flex-start' , width: '50%' }} >
 
             <div className='col-md-3 col-6 pl-md-1'>
               <div className='text-left pl-md-1'>Grade</div>
-              <Form.Item name='volume'>
+              <Form.Item name='grade'>
                 <Select
                   getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Grade'
                   showSearch
-                  allowClear
+                  // allowClear
                   defaultValue='All'
                   optionFilterProp='children'
                   filterOption={(input, options) => {
@@ -619,7 +689,7 @@ const CurriculumCompletionChapter = (props) => {
                   getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Subject'
                   showSearch
-                  allowClear
+                  // allowClear
                   defaultValue='All'
                   optionFilterProp='children'
                   filterOption={(input, options) => {
@@ -667,10 +737,9 @@ const CurriculumCompletionChapter = (props) => {
                 </Select>
               </Form.Item>
             </div>
-          </Grid>
+          </Form>
           <div className='row mt-3' id='chapterTableScss' >
             <div className='col-12'>
-              {console.log(columns, colIndex, 'mixed col')}
               <Table
                 className='th-table'
                 rowClassName={(record, index) =>
