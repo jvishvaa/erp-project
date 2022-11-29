@@ -180,34 +180,35 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     validateOnBlur: false,
   });
 
-useEffect(() => {
-  if(filtersData && moduleId){
-    handleBranch('',filtersData?.branch)
-      formik.setFieldValue('branch', filtersData?.branch);
-      // handleGrade('',filtersData?.grade)
-      // formik.setFieldValue('grade', filtersData?.grade);
-      // handleSubject()
-      formik.setFieldValue('status', filtersData?.status);
-      formik.setFieldValue('section', filtersData?.section);
-      formik.setFieldValue('group', filtersData?.group);
-      formik.setFieldValue('assesment_type', filtersData?.assesment_type);
-      formik.setFieldValue('date', filtersData?.date);
-      formRef.current.setFieldsValue({
-        branch : filtersData?.branch,
-        // grade : filtersData?.grade,
-        // subject : filtersData?.subject,
-        status : filtersData?.status,
-        assessmentType : filtersData?.assesment_type,
-        section : filtersData?.section,
-        date : filtersData?.date
+// useEffect(() => {
+//   if(filtersData && moduleId){
+//     debugger
+//     handleBranch('',filtersData?.branch)
+//       formik.setFieldValue('branch', filtersData?.branch);
+//       // handleGrade('',filtersData?.grade)
+//       // formik.setFieldValue('grade', filtersData?.grade);
+//       // handleSubject()
+//       formik.setFieldValue('status', filtersData?.status);
+//       formik.setFieldValue('section', filtersData?.section);
+//       formik.setFieldValue('group', filtersData?.group);
+//       formik.setFieldValue('assesment_type', filtersData?.assesment_type);
+//       formik.setFieldValue('date', filtersData?.date);
+//       formRef.current.setFieldsValue({
+//         branch : filtersData?.branch,
+//         // grade : filtersData?.grade,
+//         // subject : filtersData?.subject,
+//         status : filtersData?.status,
+//         assessmentType : filtersData?.assesment_type,
+//         section : filtersData?.section,
+//         date : filtersData?.date
 
 
-      })
-      // formik.setFieldValue('grade', filtersData?.grade);
+//       })
+//       // formik.setFieldValue('grade', filtersData?.grade);
      
-  }
+//   }
 
-},[filtersData, moduleId])
+// },[filtersData, moduleId])
 
 useEffect(() => {
   if(filtersData && formik.values.branch.length){
@@ -553,7 +554,7 @@ useEffect(() => {
     setGroupList([]);
     setGrades([])
     setSubjects([])
-    if (value.length > 0) {
+    if (value?.length > 0) {
       formik.setFieldValue('grade', []);
       formik.setFieldValue('subject', []);
       const branchIds = value?.map((element) => parseInt(element?.key)) || [];

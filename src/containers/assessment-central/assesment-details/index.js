@@ -352,16 +352,17 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
       <div>
         <div className='row'>
           <div className='col-md-10 d-flex ' style={{marginLeft : '-4%'}}>
-          Test Name : <p title= {testName} className='ml-2'>{testName.length >20 ? testName.slice(0,20) + '...' : testName}</p>
+          Test Name : <p title= {testName} className='ml-2'>{testName?.length >20 ? testName.slice(0,20) + '...' : testName}</p>
           </div>
         <div className='col-md-2 d-flex justify-content-end'>
           <Button color='primary' variant='contained' onClick={() => {
+            sessionStorage.setItem('createfilterdata',JSON.stringify(filterData))
             history.push({
               pathname :  '/create-assesment',
               state : {
                 isEdit : true,
                 data : test,
-                filterData : filterData
+                filterData : JSON.stringify(filterData)
               }
             })
           }} >

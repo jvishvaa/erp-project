@@ -365,13 +365,13 @@ handleGroup('',filteredgroup)
   }, [branch]);
 
   const handleSection = (e, value) => {
-    if (value.length) {
+    if (value?.length) {
       value =
-        value.filter(({ id }) => id === 'all').length === 1
+        value?.filter(({ id }) => id === 'all').length === 1
           ? [...sectionList].filter(({ id }) => id !== 'all')
           : value;
       setSelectedSectionData(value);
-      setSelectedSectionMappingId(value.map((i) => i.id));
+      setSelectedSectionMappingId(value?.map((i) => i.id));
     } else {
       setSelectedSectionData([]);
       setSelectedSectionMappingId([]);
@@ -494,7 +494,7 @@ handleGroup('',filteredgroup)
     });
     let testMarksArr = testMarks;
     qMap.forEach((value, key) => {
-      const totalQuestionMarks = value.reduce(
+      const totalQuestionMarks = value?.reduce(
         (acc, currValue) => {
           acc[0] += currValue.question_mark[0];
           acc[1] += currValue.question_mark[1];
@@ -647,7 +647,8 @@ handleGroup('',filteredgroup)
     history.push({
       pathname: '/assesment',
       state: {
-        filtersData: location?.state?.filterData,
+        filtersData: JSON.parse(location?.state?.filterData),
+        dataRestore:true
       },
     });
   };
@@ -767,11 +768,11 @@ handleGroup('',filteredgroup)
     setSelectedGroupId('');
     if (value?.length > 0) {
       value =
-        value.filter(({ id }) => id === 'all').length === 1
+        value?.filter(({ id }) => id === 'all').length === 1
           ? [...branchDropdown].filter(({ id }) => id !== 'all')
           : value;
-      const branchIds = value.map((element) => element?.id) || [];
-      const selectedbranch = value.map((element) => element?.branch?.id) || [];
+      const branchIds = value?.map((element) => element?.id) || [];
+      const selectedbranch = value?.map((element) => element?.branch?.id) || [];
       setBranchId(branchIds);
       setSelectedBranchId(selectedbranch);
       setBranch(value);
