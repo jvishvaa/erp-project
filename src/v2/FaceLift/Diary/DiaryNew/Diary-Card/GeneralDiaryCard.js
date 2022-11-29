@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../index.css';
 import fileDownload from 'js-file-download';
 import { PaperClipOutlined, MoreOutlined, EyeFilled } from '@ant-design/icons';
-import { Badge, Avatar, message, Drawer, Popover, Popconfirm } from 'antd';
+import { Badge, Avatar, message, Drawer, Popover, Popconfirm, Tag } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
@@ -65,9 +65,12 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
             </div>
           </div>
           <div className='col-4 text-right px-0 py-1'>
-            <span className='th-bg-primary th-10 th-white th-br-6 p-2'>
+            {/* <span className='th-bg-primary th-10 th-white th-br-6 p-2'>
               General Diary
-            </span>
+            </span> */}
+            <Tag color='blue' className='th-10 th-br-6'>
+              General Diary
+            </Tag>
           </div>
           {!isStudentDiary && (
             <div className='col-1 text-right '>
