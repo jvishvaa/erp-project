@@ -527,10 +527,10 @@ console.log(history?.location?.state , 'history');
           align: 'center',
           width: 400,
           render: (data) => {
-            return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
+            return <Tooltip title={handleTooltip(data , index)} ><Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
               '0%': '#108ee9',
               '100%': '#87d068',
-            }} className='reportProgress' format={(percent) => `${percent}%`} width={60} />
+            }} className='reportProgress' format={(percent) => `${percent}%`} width={60} /> </Tooltip>
           },
           key: 'section_name',
         }
@@ -540,6 +540,23 @@ console.log(history?.location?.state , 'history');
     }
 
   }
+
+  const handleTooltip = (data , i) => {
+    console.log(data , i);
+    return <div>
+      <strong>Completed : {` ${data?.section_wise_completion[i]?.completed_count}   `}</strong>
+      <strong>Pending : {data?.section_wise_completion[i]?.pending_count}</strong>
+    </div>
+  }
+
+  const handleTooltipTopic = (data , i) => {
+    console.log(data , i);
+    return <div>
+      <strong>Completed : {` ${data?.section_wise_completion[i]?.completed_count}   `}</strong>
+      <strong>Pending : {data?.section_wise_completion[i]?.pending_periods}</strong>
+    </div>
+  }
+
   let innerCol = [...innerColumn]
   const transformDataInner = (res) => {
     if (innerColumn?.length > 1) {
@@ -554,10 +571,10 @@ console.log(history?.location?.state , 'history');
           width: 400,
           key: `${i?.section_name}`,
           render: (data) => {
-            return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
+            return <Tooltip title={handleTooltipTopic(data , index)} ><Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
               '0%': '#108ee9',
               '100%': '#87d068',
-            }} format={(percent) => `${percent}%`} className='reportProgressChild' width={60} />
+            }} format={(percent) => `${percent}%`} className='reportProgressChild' width={60} /> </Tooltip>
           },
         }
         innerCol.push(newCol)
@@ -639,7 +656,7 @@ console.log(history?.location?.state , 'history');
               >
                 Curriculum Completion
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1' onClick={() => backSetting()} >{teacherView ? 'Teacher Wise' : 'Subject Wise'}</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1' onClick={() => backSetting()} >{teacherView == 2 ? 'Teacher Wise' : 'Subject Wise'}</Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1'>Chapter Wise</Breadcrumb.Item>
             </Breadcrumb>
           </Grid>
