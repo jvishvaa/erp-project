@@ -155,7 +155,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setErpCategory(erp_category)
     let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${tabIsErpCentral? 2 : 1}`;  
-    if (subjMapId) {
+    if (subjMapId && !erp_category) {
       requestUrl += `&subject=${subjMapId}`;
     }
     if (newValue) {
@@ -645,7 +645,7 @@ setTabIsErpCentral((prev) => !prev)
                   <Grid item xs={3}>
                     <Button
                       style={{ margin: '0.5rem', width: '100%' }}
-                      className='th-button'
+                      className={(isSelectAll || selectedId.length > 0) ? 'th-button-active':'th-button'}
                       onClick={(e) => handlePublish()}
                       color='primary'
                       disabled={selectedId.length === 0 ? true : false}
