@@ -350,8 +350,7 @@ const PendingReview = (props) => {
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                   <TableCell className={classes.tableCells}>
-                    {/* {response?.booked_user?.name} */}
-                    {response?.name}
+                    {response?.booked_user?.name}
                   </TableCell>
                   <TableCell className={classes.tableCells}>
                     {response?.booked_user?.username}

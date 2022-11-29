@@ -140,7 +140,6 @@ const PhysicalActivityReview = () => {
   //   }
   // }, [history]);
 
-  console.log(boardListData, 'up')
 
 
 
@@ -254,7 +253,6 @@ const PhysicalActivityReview = () => {
       branch_name: 'Select All',
       id: 'all',
     });
-    console.log(transformedData, 'branchdata');
     // setBranchList(transformedData);
   }
   useEffect(() => {
