@@ -610,7 +610,7 @@ const QuestionCard = ({
                         }
                       }}
                       label='Question'
-                      autoFocus
+                      autoFocus={!window.location.pathname.includes('/diary/')}
                       multiline
                       rows={4}
                       rowsMax={6}
@@ -835,6 +835,7 @@ const QuestionCard = ({
                   label='File Upload'
                   labelPlacement='start'
                   style={{ minWidth: '50px' }}
+                  disabled={window.location.pathname.includes('/diary/')}
                 />
 
                 {/* </Box> */}
@@ -843,7 +844,7 @@ const QuestionCard = ({
                 <Grid
                   item
                   xs={12}
-                  md={window.location.pathname.includes('/diary/') ? 6 : 3}
+                  md={window.location.pathname.includes('/diary/') ? 5 : 3}
                   className='question-ctrl-outer-container'
                 >
                   {/* <Box className='question-ctrl-inner-container max-attachments'> */}
@@ -893,6 +894,7 @@ const QuestionCard = ({
                     label='Pen tool'
                     labelPlacement='start'
                     style={{ minWidth: '50px' }}
+                    disabled={window.location.pathname.includes('/diary/')}
                   />
                 </div>
                 {/* </Box> */}

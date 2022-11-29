@@ -36,6 +36,7 @@ const Diary = () => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [showSubjectsCount, setShowSubjectsCount] = useState(10);
 
   const history = useHistory();
   const { TabPane } = Tabs;
@@ -167,7 +168,7 @@ const Diary = () => {
                     </div>
                   </>
                 )}
-                {dailyDiaryData?.map((item, i) => (
+                {dailyDiaryData?.slice(0, showSubjectsCount).map((item, i) => (
                   <div className='col-md-2 col-6'>
                     <Button
                       className={`${
@@ -181,6 +182,22 @@ const Diary = () => {
                     </Button>
                   </div>
                 ))}
+                {dailyDiaryData.length > 10 && (
+                  <div className='col-md-2 col-6'>
+                    <Button
+                      className='th-button th-width-100 th-br-6 mt-2'
+                      onClick={() => {
+                        if (showSubjectsCount == dailyDiaryData.length) {
+                          setShowSubjectsCount(10);
+                        } else {
+                          setShowSubjectsCount(dailyDiaryData.length);
+                        }
+                      }}
+                    >
+                      Show {showSubjectsCount == dailyDiaryData.length ? 'Less' : 'More'}
+                    </Button>
+                  </div>
+                )}
               </>
             ) : null}
           </div>

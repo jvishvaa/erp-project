@@ -82,7 +82,7 @@ const DiaryReport = () => {
                   return (
                     <div
                       className='th-bg-grey mb-2 th-br-6 text-capitalize'
-                      style={{ cursor: 'pointer' }}
+                      // style={{ cursor: 'pointer' }}
                     >
                       <div className='row justify-content-between py-3 th-br-6 align-items-center'>
                         <div className='col-6 th-black-1 th-14 th-fw-400 pr-0 text-truncate'>
@@ -109,7 +109,7 @@ const DiaryReport = () => {
               </div>
               <div className='row justify-content-end'>
                 <u
-                  className='th-primary'
+                  className='th-primary th-pointer'
                   onClick={() =>
                     history.push({
                       pathname: '/gradewise-diary-report',

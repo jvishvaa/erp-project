@@ -64,8 +64,10 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
               <span>Sec {diary?.section[0]?.section__section_name?.slice(-1)}</span>
             </div>
           </div>
-          <div className='col-4 text-center px-0 py-1'>
-            <span className={`th-bg-violet th-white th-br-6 p-1`}>General Diary</span>
+          <div className='col-4 text-right px-0 py-1'>
+            <span className='th-bg-primary th-10 th-white th-br-6 p-2'>
+              General Diary
+            </span>
           </div>
           {!isStudentDiary && (
             <div className='col-1 text-right '>
@@ -97,13 +99,13 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
               <div className='col-12 px-0 th-10'>
                 <div className='th-fw-600 th-black-1 '></div>Title
               </div>
-              <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+              <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate th-16'>
                 {diary?.title}
               </div>
               <div className='col-12 px-0 th-10'>
                 <div className='th-fw-600 th-black-1'></div>Description
               </div>
-              <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate'>
+              <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate th-16'>
                 {diary?.message}
               </div>
             </div>
@@ -112,7 +114,7 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
             <div className='row'>
               <div className='col-6 px-1 th-10'>
                 <div className='row th-grey'></div>Created By
-                <div className='row th-black-2 th-16 th-fw-600'>
+                <div className='row th-black-2 th-14 th-fw-600'>
                   {diary?.created_by?.first_name}&nbsp;{diary?.created_by?.last_name}
                 </div>
                 <div className='row px-0 th-12 th-grey'>
