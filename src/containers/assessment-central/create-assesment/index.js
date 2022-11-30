@@ -324,7 +324,7 @@ handleGroup('',filteredgroup)
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.academics.sectionsV2}?acad_session=${branchId}&grade=${gradeID}&is_central=${EditData?.question_paper_id == null ? true : false}`
+        `${'/erp_user/v2/sectionmappingnew/'}?acad_session=${branchId}&grade=${gradeID}&is_central=${EditData?.question_paper_id == null ? true : false}`
       )
       .then((res) => {
         if (res?.data?.status_code == 200) {
@@ -644,13 +644,20 @@ handleGroup('',filteredgroup)
   };
 
   const handleBack = () => {
-    history.push({
-      pathname: '/assesment',
-      state: {
-        filtersData: JSON.parse(location?.state?.filterData),
-        dataRestore:true
-      },
-    });
+    if(isEdit){
+      history.push({
+        pathname: '/assesment',
+        state: {
+          filtersData: JSON.parse(location?.state?.filterData),
+          dataRestore:true
+        },
+      });
+    }else{
+      history.push({
+        pathname: '/assesment',
+      });
+    }
+
   };
 
   const handleChangeTestMarks = (
@@ -1198,15 +1205,16 @@ handleGroup('',filteredgroup)
                           <>
                           {formik?.values?.test_type?.exam_name == 'Quiz'   ? '' :
                           <>
-                          {sectionToggle ? '' : 
-                            <Grid item xs={12} md={4} style={{display : 'flex' , justifyContent: 'center'}} >
+                          {sectionToggle ? '' : <>
+                            { !isEdit && <Grid item xs={12} md={4} style={{display : 'flex' , justifyContent: 'center'}} >
                               <Checkbox
                                 checked={sectionWiseTest}
                                 onChange={handleChangeSection}
                                 inputProps={{ 'aria-label': 'primary checkbox' }}
                               />
                               <p style={{display: 'flex' , alignItems: 'center', margin: '0px', fontSize: '17px'}}  >Section Wise</p>
-                            </Grid>
+                            </Grid>}
+                            </>
                           }
                           </>
                           }
