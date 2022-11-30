@@ -268,12 +268,17 @@ const CurriculumCompletionSubject = (props) => {
 
 
   const handleBack = () => {
-    history.goBack();
+    history.push({
+      pathname: `/curriculum-completion/${history?.location?.state?.branch_id}`,
+      state: {
+        ...history?.location?.state
+      },
+    })
   }
 
   const columns = [
     {
-      title: <span className='th-white pl-4 th-fw-700 '>Subject</span>,
+      title: <span className='th-white pl-4 th-fw-700 '>SUBJECT</span>,
       dataIndex: 'subject_name',
       width: '20%',
       align: 'left',
@@ -395,7 +400,7 @@ const CurriculumCompletionSubject = (props) => {
               <Table
                 className='th-table'
                 rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
                 }
                 loading={loading}
                 columns={columns}
