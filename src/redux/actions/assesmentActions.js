@@ -66,7 +66,6 @@ export const fetchAssesmentTests = async (
       url = `${ endpoints.assessmentErp.listAssessment
       }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&page=${page}&page_size=${pageSize}
       &has_sub_group=${hasGroup ? true : false}`
-
       if(date){
         const startDate = moment(date[0]).format('YYYY-MM-DD');
         const endDate = moment(date[1]).format('YYYY-MM-DD');
@@ -83,7 +82,7 @@ export const fetchAssesmentTests = async (
       if(!hasGroup && sectionFlag){
         url += `&section_mappings=${sectionMappingId}`
       }
-      if(hasGroup && groupFlag){
+      if(hasGroup && groupFlag && groupIds){
         url += `&group=${groupIds?.value}`
       }
       if (type === 'physical-test') {
