@@ -568,7 +568,7 @@ const StudentSidePhysicalActivity = () => {
 
                                     {/* <TableCell className={classes.tableCell}></TableCell> */}
                                     <TableCell className={classes.tableCell}>Submission Date</TableCell>
-                                    <TableCell className={classes.tableCell}>Reviewed By</TableCell>
+                                    {/* <TableCell className={classes.tableCell}>Reviewed By</TableCell> */}
                                     <TableCell className={classes.tableCell}>Overall Score</TableCell>
                                     <TableCell className={classes.tableCell}></TableCell>
 
@@ -588,7 +588,7 @@ const StudentSidePhysicalActivity = () => {
                                         <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                                         <TableCell className={classes.tableCells}>
                                             {' '}
-                                            {response?.template?.title}
+                                            {response?.activity_detail?.title}
                                             {/* {response?.name} */}
                                         </TableCell>
                                         <TableCell className={classes.tableCells}>
@@ -600,7 +600,7 @@ const StudentSidePhysicalActivity = () => {
                                             {' '}
                                             {response?.submitted_on?.substring(0, 10)}
                                         </TableCell>
-                                        <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell>
+                                        {/* <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell> */}
                                         <TableCell className={classes.tableCells}>
                                             {response?.user_reviews?.remarks}
                                         </TableCell>

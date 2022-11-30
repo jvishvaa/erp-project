@@ -197,6 +197,7 @@ const CentralBlogRedirection = () => {
   const history = useHistory();
   const [periodData,setPeriodData] = useState([]);
   const [subId,setSubId] = useState('')
+  const [blogSubId,setBlogSubId] = useState('')
   const [loading,setLoading]= useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [blogLoginId, setBlogLoginId] = useState('')
@@ -239,6 +240,8 @@ const CentralBlogRedirection = () => {
           setPeriodData(result?.data?.result)
           const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
           setSubId(physicalData[0]?.id)
+          const blogActivityData = result?.data?.result.filter((item) => item?.name == "Blog Activity")
+          setBlogSubId(blogActivityData[0]?.id)
           // localStorage.setItem(
           //   'PhysicalActivityId',
           //   JSON.stringify(physicalData[0]?.id)
@@ -256,7 +259,6 @@ const CentralBlogRedirection = () => {
   },[])
 
 
-  console.log(user_level,'ll')
 
   const handleExplore = (data) => {
     let dataLower = data?.name.toLowerCase()
@@ -274,6 +276,10 @@ const CentralBlogRedirection = () => {
         handlePublicSpeaking()
         return
     }else if(dataLower === "art writting" || dataLower === "blog activity"){
+      localStorage.setItem(
+        'BlogActivityId',
+        JSON.stringify(blogSubId)
+      );
       if(user_level === 2 || user_level === 8 || user_level === 11){
         handleBlogActivity()
         return
