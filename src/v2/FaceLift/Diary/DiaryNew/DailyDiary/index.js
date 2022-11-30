@@ -39,9 +39,7 @@ import deleteIcon from 'v2/Assets/dashboardIcons/diaryIcons/deleteRedIcon.svg';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import { getFileIcon } from 'v2/getFileIcon';
 import _ from 'lodash';
-import concessionLastDate from 'containers/Finance/src/components/Finance/LastDateSettings/concessionLastDate';
 let boardFilterArr = [
   'orchids.letseduvate.com',
   'localhost:3000',
@@ -59,7 +57,6 @@ const DailyDiary = () => {
   );
   const dispatch = useDispatch();
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [hwId, sethwId] = useState();
@@ -129,11 +126,11 @@ const DailyDiary = () => {
   const [addedPeriods, setAddedPeriods] = useState([]);
   const [editAddedPeriods, setEditAddedPeriods] = useState([]);
   const [editRemovedPeriods, setEditRemovedPeriods] = useState([]);
-  const [upcomingPeriod, setUpcomingPeriod] = useState([]);
+  const [upcomingPeriod, setUpcomingPeriod] = useState({});
   const [isPeriodAdded, setIsPeriodAdded] = useState(false);
   const [clearTodaysTopic, setClearTodaysTopic] = useState(true);
   const [clearUpcomingPeriod, setClearUpcomingPeriod] = useState(true);
-  const [addingUpcomingPeriod, setAddingUpcomingPeriod] = useState(true);
+  const [addingUpcomingPeriod, setAddingUpcomingPeriod] = useState(false);
 
   const questionModify = (questions) => {
     let arr = [];
@@ -288,6 +285,14 @@ const DailyDiary = () => {
     // if (editData?.periods_data.length > 0) {
     //   payload['remove_period_ids'] = editRemovedPeriods.map((item) => item.id).toString();
     // }
+    if (!_.isEmpty(upcomingPeriod) && !clearUpcomingPeriod) {
+      payload['upcoming_period_id'] = upcomingPeriod?.id;
+    } else {
+      payload['upcoming_period_id'] = null;
+    }
+    if (hwMappingID) {
+      payload['hw_dairy_mapping_id'] = hwMappingID;
+    }
     axios
       .put(
         `${endpoints?.dailyDiary?.updateDelete}${diaryID}/update-delete-dairy/`,
@@ -304,7 +309,6 @@ const DailyDiary = () => {
         message.error('Something went wrong');
       });
   };
-  console.log('addedPeriods', addedPeriods, editRemovedPeriods, editAddedPeriods);
   const handleSubmit = () => {
     if (showHomeworkForm && !homeworkCreated) {
       message.error('Please finish the homework first');
@@ -358,9 +362,9 @@ const DailyDiary = () => {
     if (addedPeriods.length > 0 && !clearTodaysTopic) {
       payload['period_added_ids'] = addedPeriods.map((item) => item.id).toString();
     }
-    // if (upcomingPeriod.length > 0) {
-    //   payload;
-    // }
+    if (!_.isEmpty(upcomingPeriod)) {
+      payload['upcoming_period_id'] = upcomingPeriod?.id;
+    }
     if (
       payload?.teacher_report?.summary ||
       payload?.period_added_ids ||
@@ -553,6 +557,10 @@ const DailyDiary = () => {
       chapter: null,
       key_concept: null,
     });
+    setChapterDropdown([]);
+    setChapterID();
+    setKeyConceptDropdown([]);
+    setKeyConceptID();
     setAddedPeriods([]);
     setResourcesData([]);
     setClearTodaysTopic(true);
@@ -694,18 +702,30 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
-  const fetchUpcomigPeriod = (data) => {
+  const fetchUpcomigPeriod = (periodID) => {
     axiosInstance
-      .get(`${endpoints?.dailyDiary?.upcomingPeriodData}?current_period_ids=${data}`, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
+      .get(
+        `${endpoints?.dailyDiary?.upcomingPeriodData}?current_period_ids=${periodID}`,
+        {
+          headers: {
+            'x-api-key': 'vikash@12345#1231',
+          },
+        }
+      )
       .then((response) => {
         if (response?.data?.status_code == 200) {
           if (response?.data?.result.length > 0) {
-            setClearUpcomingPeriod(false);
-            setUpcomingPeriod(response?.data?.result[0]);
+            if (
+              addedPeriods
+                ?.map((item) => item.id)
+                .includes(response?.data?.result[0]?.id) ||
+              response?.data?.result[0]?.id == 0
+            ) {
+              return;
+            } else {
+              setClearUpcomingPeriod(false);
+              setUpcomingPeriod(response?.data?.result[0]);
+            }
           }
         }
         setShowIcon(true);
@@ -723,8 +743,12 @@ const DailyDiary = () => {
     if (addedPeriods.length > 0) {
       fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
     } else {
-      setUpcomingPeriod([]);
+      setUpcomingPeriod({});
       setClearUpcomingPeriod(true);
+      setChapterID();
+      setChapterName();
+      setKeyConceptID();
+      setKeyConceptName();
     }
   }, [addedPeriods]);
 
@@ -839,6 +863,7 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
+
   const fetchResourceYear = () => {
     axiosInstance
       .get(`${endpoints.lessonPlan.academicYearList}`, {
@@ -950,6 +975,7 @@ const DailyDiary = () => {
       if (editData?.periods_data.length > 0) {
         setClearTodaysTopic(false);
         setAddedPeriods(editData?.periods_data);
+        setCurrentPanel(0);
       }
       // setRecap(editData?.teacher_report?.previous_class);
       // setClasswork(editData?.teacher_report?.class_work);
@@ -957,13 +983,18 @@ const DailyDiary = () => {
       // setTools(editData?.teacher_report?.tools_used);
       setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
-      if (editData?.teacher_report?.homework)
+      if (editData?.teacher_report?.homework) {
         fetchHomeworkDetails({
           section_mapping: editData?.section_mapping_id,
           subject: editSubject?.subject_id,
           date: moment(editData?.created_at).format('YYYY-MM-DD'),
-          // user_id: user_id,
         });
+        checkAssignedHomework({
+          section_mapping: editData?.section_mapping_id,
+          subject: editSubject?.subject_id,
+          date: moment(editData?.created_at).format('YYYY-MM-DD'),
+        });
+      }
       fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: editSubject?.subject_id,
@@ -980,6 +1011,15 @@ const DailyDiary = () => {
       setHomeworkInstructions(homeworkDetails?.description);
     }
   }, [homeworkDetails]);
+
+  useEffect(() => {
+    if (showPeriodInfoModal) {
+      setTimeout(() => {
+        closePeriodInfoModal();
+      }, 2000);
+      // closePeriodInfoModal();
+    }
+  }, [showPeriodInfoModal]);
   return (
     <div className='row th-bg-white'>
       <div className='row py-1'>
@@ -1195,7 +1235,11 @@ const DailyDiary = () => {
                                           newList.splice(index, 1);
                                           setAddedPeriods(newList);
                                           if (isDiaryEdit) {
-                                            if (!editData?.periods_data.includes(item))
+                                            if (
+                                              !editData?.periods_data
+                                                ?.map((item) => item.id)
+                                                .includes(item.id)
+                                            )
                                               setEditRemovedPeriods([
                                                 ...editRemovedPeriods,
                                                 item,
@@ -1272,21 +1316,25 @@ const DailyDiary = () => {
                               style={{
                                 border: '1px solid red',
                               }}
-                              onClick={() =>
-                                setClearUpcomingPeriod((prevState) => !prevState)
-                              }
+                              onClick={() => {
+                                setClearUpcomingPeriod((prevState) => !prevState);
+                                if (addedPeriods.length == 0) {
+                                  setClearTodaysTopic(true);
+                                }
+                                setUpcomingPeriod({});
+                              }}
                             >
-                              {clearUpcomingPeriod ? (
+                              {/* {clearUpcomingPeriod ? (
                                 <>
                                   <ReloadOutlined className='mr-2' />
                                   Redo
                                 </>
                               ) : (
-                                <>
-                                  <DeleteOutlined className='mr-2' />
-                                  Delete
-                                </>
-                              )}
+                                <> */}
+                              <DeleteOutlined className='mr-2' />
+                              Delete
+                              {/* </>
+                              )} */}
                             </span>
                           ) : null}
                         </div>
@@ -1781,23 +1829,69 @@ const DailyDiary = () => {
                       </div>
                       <div className='row th-black-2 mt-1 '>
                         <div className='col-12 th-primary pl-0 th-12'>
-                          <div className='row align-items-center th-bg-primary py-2 th-br-4'>
-                            <div className='col-8 th-white'>
-                              {addedPeriods.includes(item)
-                                ? 'Period Added to Diary'
-                                : 'Add this Period to Diary'}
-                            </div>
-                            <div className='col-4 pl-0 text-center th-fw-600'>
-                              {addedPeriods.includes(item) ? (
-                                <div
-                                  className='th-bg-white th-red py-1 px-2 th-br-6 th-pointer'
-                                  onClick={() => {
-                                    setIsPeriodAdded(false);
-                                    setCompletedPeriod(item);
-                                    openPeriodInfoModal();
-                                    if (addingUpcomingPeriod) {
-                                      setUpcomingPeriod([]);
-                                    } else {
+                          {addingUpcomingPeriod ? (
+                            addedPeriods
+                              .map((item) => item.id)
+                              .includes(item.id) ? null : (
+                              <div className='row align-items-center th-bg-primary py-2 th-br-4'>
+                                <div className='col-8 th-white'>
+                                  {upcomingPeriod.id == item.id
+                                    ? 'Period Added as Upcoming Period'
+                                    : 'Add this Period as Upcoming Period'}
+                                </div>
+
+                                <div className='col-4 pl-0 text-center th-fw-600'>
+                                  {upcomingPeriod.id == item.id ? (
+                                    <div
+                                      className='th-bg-white th-red py-1 px-2 th-br-6 th-pointer'
+                                      onClick={() => {
+                                        setIsPeriodAdded(false);
+                                        setCompletedPeriod(item);
+                                        openPeriodInfoModal();
+                                        setUpcomingPeriod({});
+                                      }}
+                                    >
+                                      Remove
+                                    </div>
+                                  ) : (
+                                    !addedPeriods
+                                      .map((item) => item.id)
+                                      .includes(item.id) && (
+                                      <div
+                                        className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
+                                        onClick={() => {
+                                          setIsPeriodAdded(true);
+                                          setCompletedPeriod(item);
+                                          openPeriodInfoModal();
+                                          setClearUpcomingPeriod(false);
+                                          setUpcomingPeriod(item);
+                                        }}
+                                      >
+                                        Add
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            )
+                          ) : (
+                            <div className='row align-items-center th-bg-primary py-2 th-br-4'>
+                              <div className='col-8 th-white'>
+                                {addedPeriods?.map((item) => item.id).includes(item.id)
+                                  ? 'Period Added to Diary'
+                                  : 'Add this Period to Diary'}
+                              </div>
+
+                              <div className='col-4 pl-0 text-center th-fw-600'>
+                                {addedPeriods
+                                  ?.map((item) => item.id)
+                                  .includes(item.id) ? (
+                                  <div
+                                    className='th-bg-white th-red py-1 px-2 th-br-6 th-pointer'
+                                    onClick={() => {
+                                      setIsPeriodAdded(false);
+                                      setCompletedPeriod(item);
+                                      openPeriodInfoModal();
                                       if (addedPeriods.length == 1) {
                                         setClearTodaysTopic(true);
                                       }
@@ -1805,39 +1899,41 @@ const DailyDiary = () => {
                                       const newList = addedPeriods.slice();
                                       newList.splice(index, 1);
                                       setAddedPeriods(newList);
-                                    }
-                                  }}
-                                >
-                                  Remove
-                                </div>
-                              ) : (
-                                <div
-                                  className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
-                                  onClick={() => {
-                                    if (!addedPeriods.includes(item)) {
-                                      setIsPeriodAdded(true);
-                                      setClearTodaysTopic(false);
-                                      setCompletedPeriod(item);
-                                      openPeriodInfoModal();
-                                      if (addingUpcomingPeriod) {
-                                        setClearUpcomingPeriod(false);
-                                        setUpcomingPeriod(item);
-                                      } else {
+                                    }}
+                                  >
+                                    Remove
+                                  </div>
+                                ) : (
+                                  <div
+                                    className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
+                                    onClick={() => {
+                                      if (
+                                        !addedPeriods
+                                          ?.map((item) => item.id)
+                                          .includes(item.id) ||
+                                        upcomingPeriod.id !== item.id
+                                      ) {
+                                        setIsPeriodAdded(true);
+                                        setClearTodaysTopic(false);
+                                        setCompletedPeriod(item);
+                                        openPeriodInfoModal();
                                         setAddedPeriods([...addedPeriods, item]);
+                                      } else {
+                                        message.warning(
+                                          "Period is already added to Today's Topic"
+                                        );
                                       }
-                                      if (isDiaryEdit) {
+                                      if (isDiaryEdit && !addingUpcomingPeriod) {
                                         setEditAddedPeriods([...editAddedPeriods, item]);
                                       }
-                                    } else {
-                                      message.warning('Period is already added to Diary');
-                                    }
-                                  }}
-                                >
-                                  Add to Diary
-                                </div>
-                              )}
+                                    }}
+                                  >
+                                    Add to Diary
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     </Panel>

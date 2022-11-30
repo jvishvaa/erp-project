@@ -233,13 +233,13 @@ const GradewiseDiaryReport = () => {
               onChange={handleDiaryType}
               className='w-50 text-left th-black-1 th-bg-white th-br-6'
               bordered={false}
+              value={diaryType.toString()}
             >
               <Option value='1'>General Diary</Option>
               <Option value='2'>Daily Dairy</Option>
             </Select>
           </div>
         </div>
-        {console.log('gradewiseDiaryData: ', gradewiseDiaryData)}
         <div className='col-md-4 mt-3 mt-sm-0 text-right'>
           <div>
             <RangePicker
@@ -265,7 +265,10 @@ const GradewiseDiaryReport = () => {
           </div>
         </div>
         {gradewiseDiaryStats && (
-          <div className='row mt-3 th-black-2'>
+          <div
+            className='row mt-3 mx-3 th-grey th-bg-white py-2 th-br-10'
+            style={{ border: '1px solid #d9d9d9' }}
+          >
             <div className='col-md-3'>
               Total No. of Sections :&nbsp;
               <span className='th-primary'>
