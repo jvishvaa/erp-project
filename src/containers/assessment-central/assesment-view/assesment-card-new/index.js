@@ -356,7 +356,7 @@ const AssessmentCard = ({
           {!periodColor && (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '100%' }}
+              style={{ color: 'white', width: '100%' , borderRadius:'6px' ,height:'32px' }}
               color='primary'
               size='small'
               onClick={handleViewMore}
