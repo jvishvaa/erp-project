@@ -438,12 +438,12 @@ if(filters.questionId){
           // <span className='th-black-1'>{data}</span>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
             {row?.eduvate_qp_count != 0 && <div //onClick={fetchQuestionCards(data)}
-              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '30%',color:'white' }}
+              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '20%',color:'white' , borderRadius:'15px' }}
             > 
               {row?.eduvate_qp_count}
             </div>}
             {row?.school_qp_count !=0 && <div
-              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '30%' ,color:'white'}}
+              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '20%' ,color:'white',borderRadius:'15px'}}
             >
              {row?.school_qp_count}
 
@@ -528,12 +528,12 @@ if(filters.questionId){
           // </div>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
             {(row?.eduvate_qp_count != 0 && row?.eduvate_qp_count != null) && <div
-              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '30%',color:'white' }}
+              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '20%',color:'white' ,borderRadius:'15px'}}
             >
               {row?.eduvate_qp_count}
             </div>}
             {(row?.school_qp_count != 0 && row?.school_qp_count != null) && <div
-              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '30%',color:'white' }}
+              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '20%',color:'white', borderRadius:'15px' }}
             >
               {row?.school_qp_count  === null ? 0 : row?.school_qp_count}
             </div>}
@@ -664,10 +664,9 @@ if(filters.questionId){
                         ? () => history.push(`/create-question-paper/${isEdit}`)
                         : () => history.push(`/create-question-paper?show-question-paper=true`)
                     }
-                    style={{width:'15%', marginRight:'6%'}}
                     shape="round"
-                    size={'small'}
-                    className='th-br-6'
+                    style={{marginLeft : '30%'}}
+                    className='th-br-6 w-30 th-fw-500'
                   >
                     Back
                   </Button>}
