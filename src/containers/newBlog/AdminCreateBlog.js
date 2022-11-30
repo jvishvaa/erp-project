@@ -1120,7 +1120,7 @@ const AdminCreateBlog = () => {
             </Button>{' '}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <Button variant='contained' color='primary' disabled={user_level == 11} onClick={dataPost}>
-              Create Activity
+              Submit
             </Button>
           </div>
         </div>
