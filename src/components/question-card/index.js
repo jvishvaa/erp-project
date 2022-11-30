@@ -610,7 +610,7 @@ const QuestionCard = ({
                         }
                       }}
                       label='Question'
-                      autoFocus={!window.location.pathname.includes('/diary/')}
+                      autoFocus={!window.location.pathname.includes('/diary')}
                       multiline
                       rows={4}
                       rowsMax={6}
@@ -857,6 +857,7 @@ const QuestionCard = ({
                       defaultValue={2}
                       onChange={(e) => setmaxAttachment(e.target.value)}
                       value={maxattachment}
+                      disabled={window.location.pathname.includes('/diary/')}
                     >
                       {Array.from({ length: 10 }, (_, index) => (
                         <option value={index + 1}>{index + 1}</option>

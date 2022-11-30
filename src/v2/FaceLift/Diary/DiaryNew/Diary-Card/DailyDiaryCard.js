@@ -442,25 +442,24 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 style={{ border: '1px solid black' }}
               >
                 <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1'>Title</div>
-                  <Input
-                    className='th-width-100 th-br-6'
-                    value={homeworkDetails?.homework_name}
-                    // onChange={(e) => setHomeworkTitle(e.target.value)}
-                    placeholder='Enter Title'
-                    maxLength={30}
-                    autoFocus={true}
-                  />
+                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>Title</div>
+                  <div
+                    className='th-black-1 col-12 px-1 th-br-6'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    {homeworkDetails?.homework_name}
+                  </div>
                 </div>
                 <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1'>Instructions</div>
-                  <Input
-                    className='th-width-100 th-br-6'
-                    value={homeworkDetails?.description}
-                    // onChange={(e) => setHomeworkInstructions(e.target.value)}
-                    placeholder='Enter Instructions'
-                    maxLength={250}
-                  />
+                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>
+                    Instructions
+                  </div>
+                  <div
+                    className='th-black-1 col-12 px-1 th-br-6'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    {homeworkDetails?.description}
+                  </div>
                 </div>
                 <div className='row py-2'>
                   <div className='col-3 px-0 th-black-1 th-fw-600 pb-1'>Due Date</div>
