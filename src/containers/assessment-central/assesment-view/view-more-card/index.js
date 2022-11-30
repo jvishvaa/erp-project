@@ -54,6 +54,7 @@ const ViewMoreCard = ({
   periodDataForView,
   setSelectedIndex,
   setPublishFlag,
+  tabValue
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const classes = useStyles();
@@ -196,7 +197,7 @@ const ViewMoreCard = ({
                 </Accordion>
               ))}
             </div>
-            <div style={{ display: 'flex', margin: '5px 15px 15px 5px' }}>
+            {tabValue !== 4 && <div style={{ display: 'flex', margin: '5px 15px 15px 5px' }}>
               {((periodDataForView?.is_verified || periodDataForView?.is_review) && (!periodDataForView?.is_central)) && (
                 <Button
                   style={{ margin: '0.5rem', color: 'white', width: '100%' }}
@@ -219,7 +220,7 @@ const ViewMoreCard = ({
                   PUBLISH
                 </Button>
               )}
-            </div>
+            </div>}
           </div>
 
           <div className='downloadAllText' />

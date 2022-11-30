@@ -487,7 +487,7 @@ setTabIsErpCentral((prev) => !prev)
           <div className='row col-6'>
             <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
               <Breadcrumb separator='>'>
-                <Breadcrumb.Item className='th-black-1 th-18'>Assessment</Breadcrumb.Item>
+                <Breadcrumb.Item onClick = {() => handleGoBack()} className='th-black-1 th-18 th-pointer'>Assessment</Breadcrumb.Item>
                 <Breadcrumb.Item className='th-black-1 th-18'>
                   Question Bank
                 </Breadcrumb.Item>
@@ -496,7 +496,7 @@ setTabIsErpCentral((prev) => !prev)
           </div>
           <div style={{background:'white'}}>
           {/* </BreadcrumbToggler> */}
-          <div className='col-12 mt-5 ml-1 mb-2 th-bg-white'>
+          <div className='col-12 mt-5 mb-2 th-bg-white' style={{marginLeft:'-5px'}}>
             <div className='row align-items-center d-flex p-2 ml-2'>
               <div className='col-md-2 col-6 pl-0'>
                 Grade : {filtersDetails?.gradeName}
@@ -509,7 +509,7 @@ setTabIsErpCentral((prev) => !prev)
               </div>
               <div className='col-md-3 col-6 pl-0'></div>
               <div className='col-md-2 col-6 pl-0 d-flex justify-content-end'>
-                <Button
+                {/* <Button
                   type='primary'
                   size='default'
                   shape='round'
@@ -519,15 +519,10 @@ setTabIsErpCentral((prev) => !prev)
                   style={{ width: '70%' }}
                 >
                   Back
-                </Button>
+                </Button> */}
               </div>
               <div className='hideShowFilterIcon'>
-                <IconButton onClick={() => setIsFilter(!isFilter)}>
-                  {/* {!isMobile && (
-            <div className='togglerTag'>
-              {isFilter ? 'Close Filter' : 'Expand Filter'}
-            </div>
-          )} */}
+                {/* <IconButton onClick={() => setIsFilter(!isFilter)}>
                   <SvgIcon
                     component={() => (
                       <img
@@ -536,7 +531,8 @@ setTabIsErpCentral((prev) => !prev)
                       />
                     )}
                   />
-                </IconButton>
+                </IconButton> */}
+                <p onClick={() => setIsFilter(!isFilter)} style={{color : 'blue' , cursor:'pointer' , borderBottom : '1px solid'}}> {isFilter ? 'Close' : 'More Filters'}</p>
               </div>
             </div>
 
@@ -581,7 +577,8 @@ setTabIsErpCentral((prev) => !prev)
                   All
                 </Button>
               </div>}
-              {!tabIsErpCentral && <div className='col-md-2 col-6'>
+              <div className='col-md-5 d-flex col-12 pl-0'>
+              {!tabIsErpCentral && <div className='col-md-4 col-4'>
                 <Button
                   className={`${
                     tabValue == 1 ? 'th-button-active' : 'th-button'
@@ -592,7 +589,7 @@ setTabIsErpCentral((prev) => !prev)
                 </Button>
               </div>}
               
-              <div className='col-md-2 col-6'>
+              <div className='col-md-4 col-4'>
                 <Button
                   className={`${
                     tabValue == 2 ? 'th-button-active' : 'th-button'
@@ -603,7 +600,7 @@ setTabIsErpCentral((prev) => !prev)
                 </Button>
               </div>
               {tabIsErpCentral && <div className='col-md-3 col-6'></div>}
-              <div className='col-md-2 col-6'>
+              <div className='col-md-4 col-4'>
                 {!tabIsErpCentral && <Button
                   className={`${
                     tabValue == 3 ? 'th-button-active' : 'th-button'
@@ -613,30 +610,34 @@ setTabIsErpCentral((prev) => !prev)
                   For Review
                 </Button>}
               </div>
-              <div className='col-md-1 col-6'></div>
-              <div className='col-md-2 col-6'>
+              </div>
+              <div className= {tabIsErpCentral ? 'col-md-3 col-6' : 'col-md-2 col-6'}  ></div>
+
+              <div className='col-md-2 col-6' >
                 <Button
                   className={`${ tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'
                   } th-width-100 th-br-6 mt-2`}
-                  style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
+                  // style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
                   onClick={() => changequestionFrom('edu')}
                 >
                   Eduvate Question
                 </Button>
+                {tabIsErpCentral && <hr className='my-1'/>}
                 </div>
                 {/* <div className='d-flex align-items-center'> 
                 <Switch onChange={changequestionFrom} checked={tabIsErpCentral}/>
                 </div> */}
-                <div className='col-md-2 col-6'> 
+                <div className='col-md-2 col-6 px-0'> 
                 <Button
                   className={`${
                     !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'}
                      th-width-100 th-br-6 mt-2`}
                   onClick={() => changequestionFrom('school')}
-                  style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
+                  // style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
                 >
                   School Question
                 </Button>
+                {!tabIsErpCentral && <hr/>}
                 </div>
             </div>
             {isVisible?.length > 0 && !questionId ?  (
