@@ -223,36 +223,39 @@ const DailyDiary = () => {
     if (params.data) {
       setAddingUpcomingPeriod(true);
     }
-    if (keyConceptID) {
-      if (!_.isEmpty(params.value)) {
-        fetchLessonResourcesData({
-          grade: gradeID,
-          acad_session_id: selectedBranch?.id,
-          chapters: params.value.chapter_id,
-          subject: subjectID,
-          central_gs_id: Number(params.value.chapter__grade_subject_mapping_id),
-          for_diary: 1,
-          key_concepts: Number(params.value.key_concept_id),
-        });
-        setKeyConceptName(params.value.key_concept__topic_name);
-        setChapterName(params.value.chapter__chapter_name);
-      } else {
-        fetchLessonResourcesData({
-          grade: gradeID,
-          acad_session_id: selectedBranch?.id,
-          chapters: chapterID,
-          subject: subjectID,
-          central_gs_id: Number(gsMappingID),
-          for_diary: 1,
-          key_concepts: Number(keyConceptID),
-        });
-      }
+    // if (keyConceptID) {
+    if (!_.isEmpty(params.value)) {
+      setChapterID(params.value.chapter_id);
+      setKeyConceptID(params.value.key_concept_id);
+      fetchLessonResourcesData({
+        grade: gradeID,
+        acad_session_id: selectedBranch?.id,
+        chapters: params.value.chapter_id,
+        subject: subjectID,
+        central_gs_id: Number(params.value.chapter__grade_subject_mapping_id),
+        for_diary: 1,
+        key_concepts: Number(params.value.key_concept_id),
+      });
+      setKeyConceptName(params.value.key_concept__topic_name);
+      setChapterName(params.value.chapter__chapter_name);
     }
+    //  else {
+    //   fetchLessonResourcesData({
+    //     grade: gradeID,
+    //     acad_session_id: selectedBranch?.id,
+    //     chapters: chapterID,
+    //     subject: subjectID,
+    //     central_gs_id: Number(gsMappingID),
+    //     for_diary: 1,
+    //     key_concepts: Number(keyConceptID),
+    //   });
+    // }
+    // }
   };
   const closeDrawer = () => {
     setDrawerVisible(false);
   };
-
+  console.log('ID2', chapterID, keyConceptID);
   const handleBack = () => {
     history.push('/diary/teacher');
   };
@@ -1257,7 +1260,7 @@ const DailyDiary = () => {
                                     className='row th-pointer'
                                     onClick={() => {
                                       subjectID
-                                        ? showDrawer()
+                                        ? showDrawer({ value: item })
                                         : message.error('Please select Subject first');
                                     }}
                                   >
@@ -1368,6 +1371,7 @@ const DailyDiary = () => {
                           <div
                             className='row th-pointer'
                             onClick={() => {
+                              // setKeyConceptID()
                               subjectID
                                 ? showDrawer({ data: true, value: upcomingPeriod })
                                 : message.error('Please select Subject first');

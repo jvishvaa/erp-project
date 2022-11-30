@@ -30,7 +30,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Rating } from '@material-ui/lab';
-import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button } from 'antd';
+import { Avatar as AvatarAnt, Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { Divider } from 'antd';
@@ -763,7 +763,7 @@ const BlogWall = () => {
               <Grid
                 className='col-12 mt-3 pt-2'
               >
-                <Divider orientation="left" orientationMargin="0" style={{padding:'0px',marginBelow:'0px', marginTop:'10px'}}>
+                <Divider orientation="left" orientationMargin="0" style={{ padding: '0px', marginBelow: '0px', marginTop: '10px' }}>
                   Post ({postWallList?.length})
                 </Divider>
               </Grid>
@@ -778,7 +778,7 @@ const BlogWall = () => {
 
               <Grid
                 className='col-12'
-                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', paddingButton:'15px'}}
+                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', paddingButton: '15px' }}
               >
 
                 {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
@@ -819,34 +819,34 @@ const BlogWall = () => {
                             <CardMedia
                               className={classes.media}
                               image={item?.template_path}
-                              style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%'}}
+                              style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
                               // alt="Dummy Image"
                               title="Blog View"
                             />
                           )}
                         </CardActionArea>
-                        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection:'column' }}>
-                            <div style={{display:'flex', width:'100%', paddingButton:'9px'}}>
-                              <div>
-                                <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                                </Avatar>
+                        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection: 'column' }}>
+                          <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
+                            <div>
+                              <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                              </Avatar>
+                            </div>
+                            <div style={{ padding: '0 0.5rem' }}>
+                              <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                                {item?.name}
                               </div>
-                              <div style={{padding:'0 0.5rem'}}>
-                                <div style={{fontWeight:600,fontSize:'16px'}}>
-                                  {item?.name}
-                                </div>
-                                <div style={{fontWeight:500,fontSize:'14px'}}>
-                                  {item?.view_level}
-                                </div>
+                              <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                                {item?.view_level}
                               </div>
                             </div>
-                            <Divider  style={{padding:"0px",margin:"0px"}}/>
-                            <div style={{width:'100%', padding:'5px', fontSize:'12px', fontWeight:500}}>
-                              <div>
+                          </div>
+                          <Divider style={{ padding: "0px", margin: "0px" }} />
+                          <div style={{ width: '100%', padding: '5px', fontSize: '12px', fontWeight: 500 }}>
+                            <div>
                               {moment(item?.created_at).format("MMM Do YY")}
-                              </div>
-
                             </div>
+
+                          </div>
                         </CardActions>
                       </Card>
                     </Grid>
@@ -872,7 +872,7 @@ const BlogWall = () => {
           aria-labelledby='alert-dialog-title'
           aria-describedby='alert-dialog-description'
         >
-          <div style={{ width: '100%', padding: '5px'}}>
+          <div style={{ width: '100%', padding: '5px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', }}>
               <div style={{ fontSize: '24px', marginLeft: '15px' }}>
                 <strong>Preview</strong>
@@ -1068,7 +1068,7 @@ const BlogWall = () => {
                           <CardMedia
                             className={classes.media}
                             image={item.template.template_path}
-                            style={{ border: '1px solid lightgray', borderRadius: '6px', width: 'auto' ,  height:'18vh'}}
+                            style={{ border: '1px solid lightgray', borderRadius: '6px', width: 'auto', height: '18vh' }}
                             // alt="Dummy Image"
                             title="Blog View"
                           />
@@ -1141,19 +1141,19 @@ const BlogWall = () => {
               </div>
 
             </div>
-            <Divider />
+            <Divider style={{ margin: 0 }} />
 
             <Grid container direction='row' justifyContent='center'>
               <Grid item>
                 <div
                   style={{
-                    border: '1px solid #813032',
+                    border: '1px solid black  ',
                     width: '583px',
                     background: 'white',
                     height: 'auto',
                   }}
                 >
-                  {/* <div
+                  <div
                     style={{
                       background: 'white',
                       width: '554px',
@@ -1168,36 +1168,6 @@ const BlogWall = () => {
                         alt='image'
                       />
 
-                    </div>
-                  </div> */}
-
-                  <div
-                    style={{
-                      background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
-                      marginTop: '16px',
-                      height: 'auto',
-                    }}
-                  >
-                    <div
-                      style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px' }}
-                    >
-                      <span style={{ fontWeight: 'normal', fontSize: '18px', color: 'blue' }}>
-                        Title: {previewData?.activity_detail?.title}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        fontWeight: 'bold',
-                        paddingLeft: '10px'
-                      }}
-                    >
-                      <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
-                        Description: {previewData?.activity_detail?.description}
-                      </span>
                     </div>
                   </div>
                   <div
@@ -1235,15 +1205,66 @@ const BlogWall = () => {
                 </div>
               </Grid>
               <Grid item>
-                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '20px', fontWeight: 'bold' }}>Review</div>
+                <div>
+                  <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
+                    <div style={{ padding: '5px' }}>
+                      <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                      </Avatar>
+                    </div>
+                    <div style={{ padding: '0 0.5rem' }}>
+                      <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                        {previewData?.name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                        {previewData?.branch?.name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '12px' }}>
+                        {previewData?.grade?.name}
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div
                   style={{
-                    border: '1px solid #707070',
+                    background: 'white',
+                    // marginLeft: '34px',
+                    marginTop: '15px',
+                    height: 'auto',
+
+                  }}
+                >
+                  <div
+                    style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
+                  >
+                    <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
+                      Title: {previewData?.activity_detail?.title}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      fontWeight: 'bold',
+                      paddingLeft: '10px',
+                      paddingBottom: '10px'
+                    }}
+                  >
+                    <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
+                      Description: {previewData?.activity_detail?.description}
+                    </span>
+                  </div>
+                </div>
+                <Divider />
+                <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '13px' }}>Review</div>
+                <div
+                  style={{
+                    border: '1px solid grey',
                     width: '295px',
                     height: 'auto',
                     marginLeft: '11px',
                     marginRight: '10px',
-                    borderRadius: '10px'
+                    borderRadius: '5px',
+                    background: '#f4f5f9'
                   }}
                 >
                   {ratingReview?.map((obj, index) => {
@@ -1269,9 +1290,6 @@ const BlogWall = () => {
                             defaultValue={obj?.given_rating}
                             precision={0.1}
                             max={parseInt(obj?.level)}
-                          // onChange={(event, newValue) =>
-                          //   handleInputCreativityOne(event, newValue, index)
-                          // }
                           />
                         </div>
                         <div>
@@ -1281,7 +1299,7 @@ const BlogWall = () => {
                             disabled
                             variant='outlined'
                             value={obj?.remarks}
-                            style={{ width: '264px' }}
+                            style={{ width: '264px', background: 'white' }}
                             onChange={(event) => handleInputCreativity(event, index)}
                           />
                         </div>
