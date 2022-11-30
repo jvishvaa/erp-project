@@ -278,7 +278,7 @@ const CurriculumCompletionSubject = (props) => {
 
   const columns = [
     {
-      title: <span className='th-white pl-4 th-fw-700 '>Subject</span>,
+      title: <span className='th-white pl-4 th-fw-700 '>SUBJECT</span>,
       dataIndex: 'subject_name',
       width: '20%',
       align: 'left',

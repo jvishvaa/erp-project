@@ -343,12 +343,12 @@ const CurriculumCompletion = (props) => {
     if (data?.length > 0) {
       data && data.map((ele) => {
         let pending = {
-          Pending: Math.round(ele?.pending_periods),
+          Total_Pending: Math.round(ele?.pending_periods),
           grade_name: ele?.grade_name,
           grade_id: ele?.grade_id,
           name: 'Pending',
           avg: ele?.avg,
-          Completed: Math.round(ele?.completed_periods_sum),
+          Total_Completed: Math.round(ele?.completed_periods_sum),
         }
         let completed = {
           periods: ele?.completed_periods_sum,
@@ -383,11 +383,11 @@ const CurriculumCompletion = (props) => {
     xField: 'grade_name',
     yField: 'avg',
     tooltip: {
-      fields: ['Completed', 'Pending'],
+      fields: ['Total_Completed', 'Total_Pending'],
     }
     ,
-    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 900 : window.innerWidth > 1400 ? 1200 : window.innerWidth > 1200 ? 1150 : 350,
-    height: window.innerHeight > 600 ? 700 : 200,
+    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 600 : window.innerWidth > 1400 ? 600 : window.innerWidth > 1200 ? 600 : 350,
+    height: window.innerHeight > 600 ? 400 : 200,
     minColumnWidth: 70,
     maxColumnWidth: 70,
     label: {
@@ -403,7 +403,7 @@ const CurriculumCompletion = (props) => {
 
   const columns1 = [
     {
-      title: <span className='th-white pl-4 th-fw-700 '>Teacher's Name</span>,
+      title: <span className='th-white pl-4 th-fw-700 '>TEACHER'S NAME</span>,
       dataIndex: 'teacher_name',
       width: '20%',
       align: 'left',
@@ -451,42 +451,42 @@ const CurriculumCompletion = (props) => {
   const expandedRowRender = (record) => {
     const innerColumn = [
       {
-        title: <span className='th-white '>Subject Name</span>,
+        title: <span className='th-white '>SUBJECT NAME</span>,
         dataIndex: 'subject_name',
         align: 'center',
         width: tableWidthCalculator(20) + '%',
         render: (data) => <span className='th-black-2 th-16'>{data}</span>,
       },
       {
-        title: <span className='th-white '>Grade</span>,
+        title: <span className='th-white '>GRADE</span>,
         align: 'center',
         width: '15%',
         dataIndex: 'grade_name',
         render: (data) => <span className='th-black-2 th-16'>{data}</span>,
       },
       {
-        title: <span className='th-white '>Section List</span>,
+        title: <span className='th-white '>SECTION LIST</span>,
         dataIndex: 'sections',
         align: 'center',
         width: '15%',
         render: (data) => datagen(data),
       },
       {
-        title: <span className='th-white '>Total Periods Conducted</span>,
+        title: <span className='th-white '>AVG. PERIODS CONDUCTED</span>,
         dataIndex: 'conducted_periods',
         align: 'center',
         width: '15%',
         render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
       },
       {
-        title: <span className='th-white '>Total Periods Pending</span>,
+        title: <span className='th-white '>AVG. PERIODS PENDING</span>,
         dataIndex: 'pending_periods',
         align: 'center',
         width: '15%',
         render: (data) => <span className='th-red th-16'>{data.toFixed(0)}</span>,
       },
       {
-        title: <span className='th-white '>Avg. Completion</span>,
+        title: <span className='th-white '>AVG COMPLETION</span>,
         dataIndex: 'avg_completion',
         align: 'center',
         width: '15%',
@@ -622,7 +622,7 @@ const CurriculumCompletion = (props) => {
             </Breadcrumb>
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }} >
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '18%', fontSize: '16px', fontWeight: '600', margin: 'auto 0' }} >
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '25%', fontSize: '16px', fontWeight: '600', margin: 'auto 0' }} >
               {/* <span>Grade View</span>
               <Switch onChange={handleViewChange} />
               <span>Teacher View</span> */}
@@ -668,7 +668,7 @@ const CurriculumCompletion = (props) => {
 
               {data?.length > 0 ?
                 <>
-                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '95%' }}>
                     <div style={{ alignItems: 'center', display: 'flex', fontWeight: '600', fontSize: '20px' }} >
                       <p style={{ transform: 'rotate(270deg' }}>Avg Completion %</p>
                     </div>
@@ -740,7 +740,7 @@ const CurriculumCompletion = (props) => {
                     }
                     scroll={{ x: 'max-content' }}
                   />
-                  <Pagination defaultCurrent={page} total={teacherData?.total_pages ? teacherData?.total_pages * 10 : 10} showSizeChanger={false} onChange={handlePageChange} />
+                  <Pagination defaultCurrent={page} total={teacherData?.total_pages ? teacherData?.total_pages * 10 : 10} showSizeChanger={false} onChange={handlePageChange} style={{display: 'flex' , justifyContent: 'center'}}  />
                 </div>
 
               </div>
