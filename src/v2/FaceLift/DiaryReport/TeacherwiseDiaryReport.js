@@ -149,20 +149,27 @@ const TeacherwiseDiaryReport = () => {
             <img src={CalendarIcon} />
           </div>
         </div>
-        <div className='row mt-3'>
-          <div className='col-md-2 col-6 text-capitalize'>
-            <span className='th-fw-500'>{selectedSection?.grade_name}</span>
-          </div>
-          <div className='col-md-2 col-6 text-capitalize'>
-            <span className='th-fw-500'>{selectedSection?.section_name}</span>
-          </div>
-        </div>
-        {teacherwiseStats && (
-          <div className='row mt-3 th-black-2'>
-            <div className='col-md-3 pt-2 pt-md-0 pr-0'>
-              Total No. of Diaries Assigned :{' '}
-              <span className='th-primary'>{teacherwiseStats?.no_of_daires}</span>
+        {!loading && (
+          <div
+            className='row mt-3 mx-3 th-bg-white th-br-10'
+            style={{ border: '1px solid #d9d9d9' }}
+          >
+            <div className='row py-2'>
+              <div className='col-3 text-capitalize th-fw-500 th-grey'>
+                Grade :{' '}
+                <span className='th-primary'>
+                  {selectedSection?.grade_name},{selectedSection?.section_name}
+                </span>
+              </div>
             </div>
+            {teacherwiseStats && (
+              <div className='row py-1 th-black-2'>
+                <div className='col-md-3 pt-2 pt-md-0 pr-0'>
+                  Total No. of Diaries Assigned :{' '}
+                  <span className='th-primary'>{teacherwiseStats?.no_of_daires}</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
         <div className='row mt-3'>

@@ -29,6 +29,7 @@ const SubjectwiseDiaryReport = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [diaryType, setDiaryType] = useState(null);
   const [tableExpanded, setTableExpanded] = useState(false);
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleDateChange = (value) => {
     if (value) {
@@ -197,11 +198,17 @@ const SubjectwiseDiaryReport = () => {
       render: (data) => <span className='pl-4 th-black-1'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>TOTAL TEACHERS</span>,
-      dataIndex: 'teacher_count',
+      title: (
+        <span className='th-white th-fw-700'>
+          {user_level == 11 ? null : 'TOTAL TEACHERS'}
+        </span>
+      ),
       align: 'center',
       width: '20%',
-      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+      render: (text, row) =>
+        user_level == 11 ? null : (
+          <span className='th-fw-400 th-black-1'>{row.teacher_count}</span>
+        ),
     },
     {
       title: (
@@ -271,24 +278,31 @@ const SubjectwiseDiaryReport = () => {
             <img src={CalendarIcon} />
           </div>
         </div>
-        <div className='row mt-3'>
-          <div className='col-md-2 col-6 text-capitalize'>
-            <span className='th-fw-500'>{selectedSection?.grade_name}</span>
-          </div>
-          <div className='col-md-2 col-6 text-capitalize'>
-            <span className='th-fw-500'>{selectedSection?.section_name}</span>
-          </div>
-        </div>
-        {subjectwiseStats && (
-          <div className='row mt-3 th-black-2'>
-            <div className='col-md-3'>
-              Total No. of Subjects :{' '}
-              <span className='th-primary'>{subjectwiseStats?.no_of_subjects}</span>
+        {!loading && (
+          <div
+            className='row mt-3 mx-3 th-bg-white th-br-10'
+            style={{ border: '1px solid #d9d9d9' }}
+          >
+            <div className='row py-2'>
+              <div className='col-3 text-capitalize th-fw-500 th-grey'>
+                Grade :{' '}
+                <span className='th-primary'>
+                  {selectedSection?.grade_name},{selectedSection?.section_name}
+                </span>
+              </div>
             </div>
-            <div className='col-md-3 pt-2 px-1 pt-md-0'>
-              Total No. of Diaries Assigned :{' '}
-              <span className='th-primary'>{subjectwiseStats?.dairy_count}</span>
-            </div>
+            {subjectwiseStats && (
+              <div className='row py-1'>
+                <div className='col-md-3 th-grey'>
+                  Total No. of Subjects :{' '}
+                  <span className='th-primary'>{subjectwiseStats?.no_of_subjects}</span>
+                </div>
+                <div className='col-md-3 pt-2 px-1 pt-md-0 th-grey'>
+                  Total No. of Diaries Assigned :{' '}
+                  <span className='th-primary'>{subjectwiseStats?.dairy_count}</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
         <div className='row mt-3'>

@@ -3,7 +3,7 @@ import React, { useContext, useState, useEffect , createRef} from 'react';
 import {
   Grid,
 } from '@material-ui/core';
-
+import { DownloadOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
 import { Button, Select, Menu, message, Tooltip, Form } from 'antd';
 import { makeStyles, FormControl } from '@material-ui/core';
@@ -152,7 +152,7 @@ const CurriculumCompletionChapter = (props) => {
   const [subjectApiData, setSubjectApiData] = useState([])
   const [columns, setColumns] = useState([
     {
-      title: <span className='th-white pl-4 th-fw-700 '>CHAPTERS</span>,
+      title: <span className='th-white pl-4 th-fw-700 '>CHAPTER</span>,
       width: 300,
       align: 'left',
       render: (data) => <span className='pl-md-4 th-black-1 th-16' style={{fontWeight: '600'}} >{data?.chapter_name}</span>,
@@ -167,7 +167,7 @@ console.log(history?.location?.state , 'history');
 
   const [innerColumn, setInnerColumn] = useState([
     {
-      title: <span className='th-white pl-4 th-fw-700 '>TOPICS</span>,
+      title: <span className='th-white pl-4 th-fw-700 '>TOPIC</span>,
       width: 300,
       align: 'left',
       render: (data) => {
@@ -513,6 +513,13 @@ console.log(history?.location?.state , 'history');
       });
   };
   // let col = [...columns]
+
+  const sectionNameCheck = (i) => {
+    const nameCheck = i?.section_name.split(" ")
+    const change = `SEC ${nameCheck[1]}`
+    console.log(nameCheck , change);
+    return change.toUpperCase()
+  }
   const transformData = (res) => {
     if (columns?.length > 1) {
       const head = ([x, ...xs]) => x;
@@ -523,14 +530,14 @@ console.log(history?.location?.state , 'history');
       setColIndex(res[0]?.section_wise_completion?.length + 2)
       let transform = res[0]?.section_wise_completion.map((i, index) => {
         let newCol = {
-          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name.replace(/sec|section/gi, "SEC")}</span>,
+          title: <span className='th-white pl-4 th-fw-700 '>{sectionNameCheck(i)}</span>,
           align: 'center',
           width: 400,
           render: (data) => {
-            return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
+            return <Tooltip title={handleTooltip(data , index)} placement="bottom" ><Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
               '0%': '#108ee9',
               '100%': '#87d068',
-            }} className='reportProgress' format={(percent) => `${percent}%`} width={60} />
+            }} className='reportProgress' format={(percent) => `${percent}%`} width={60} style={{marginLeft: '3%'}} /> </Tooltip>
           },
           key: 'section_name',
         }
@@ -540,6 +547,27 @@ console.log(history?.location?.state , 'history');
     }
 
   }
+
+  const handleTooltip = (data , i) => {
+    console.log(data , i);
+    return <div>
+      <div>
+      <strong>Completed : {` ${data?.section_wise_completion[i]?.completed_count}   `}</strong>
+      </div>
+      <div>
+      <strong>Pending : {data?.section_wise_completion[i]?.pending_count}</strong>
+      </div>
+    </div>
+  }
+
+  const handleTooltipTopic = (data , i) => {
+    console.log(data , i);
+    return <div>
+      <strong>Completed : {` ${data?.section_wise_completion[i]?.completed_count}   `}</strong>
+      <strong>Pending : {data?.section_wise_completion[i]?.pending_periods}</strong>
+    </div>
+  }
+
   let innerCol = [...innerColumn]
   const transformDataInner = (res) => {
     if (innerColumn?.length > 1) {
@@ -549,15 +577,15 @@ console.log(history?.location?.state , 'history');
       let innerCol = [...innerColumn]
       let transform = res?.length > 0 && res[0]?.section_wise_completion.map((i, index) => {
         let newCol = {
-          title: <span className='th-white pl-4 th-fw-700 '>{i?.section_name.replace(/sec|section/gi, "SEC")}</span>,
+          title: <span className='th-white pl-4 th-fw-700 '>{sectionNameCheck(i)}</span>,
           align: 'center',
           width: 400,
           key: `${i?.section_name}`,
           render: (data) => {
-            return <Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
+            return <Tooltip title={handleTooltipTopic(data , index)} placement="bottom" ><Progress type='circle' percent={data?.section_wise_completion[index]?.percentage_completion} strokeColor={{
               '0%': '#108ee9',
               '100%': '#87d068',
-            }} format={(percent) => `${percent}%`} className='reportProgressChild' width={60} />
+            }} format={(percent) => `${percent}%`} className='reportProgressChild' width={60} style={{marginLeft: '3%'}}/> </Tooltip>
           },
         }
         innerCol.push(newCol)
@@ -567,8 +595,21 @@ console.log(history?.location?.state , 'history');
   }
 
   const handleBack = () => {
-    history.goBack();
-  }
+    if(history?.location?.state?.teacherView == 2 ){
+      console.log(history?.location?.state.teacherView , 'teacher');
+      history.push({
+        pathname: `${history?.location?.state?.pathname}`,
+        state: {
+            ...history?.location?.state
+        },
+      })
+    } else {
+      history.goBack();
+    }
+    //  if( history?.location?.state?.teacherView == 1){
+    //     history.goBack();
+    //   }
+    }
   const expandedRowRender = (record, index) => {
 
     return (
@@ -579,11 +620,11 @@ console.log(history?.location?.state , 'history');
         pagination={false}
         className='th-inner-chapter'
         expandIconColumnIndex={innerColumn?.length}
-        bordered
+        // bordered
         style={{ width: '100%' }}
         scroll={{
           x: 1300,
-          y: 1100,
+          y: 700,
         }}
       />
     );
@@ -611,7 +652,7 @@ console.log(history?.location?.state , 'history');
         const blob = new Blob([res.data], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
-        FileSaver.saveAs(blob, 'curriculumn.xls');
+        FileSaver.saveAs(blob, 'curriculum completion.xls');
 
       })
       .catch((err) => {
@@ -625,8 +666,8 @@ console.log(history?.location?.state , 'history');
   }
 
   return (
-    <Layout>
-      <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
+    <Layout  >
+      <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }} className='chapterWise'>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Breadcrumb separator='>'>
@@ -639,20 +680,20 @@ console.log(history?.location?.state , 'history');
               >
                 Curriculum Completion
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1' onClick={() => backSetting()} >{teacherView ? 'Teacher Wise' : 'Subject Wise'}</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1' onClick={() => backSetting()} >{teacherView == 2 ? 'Teacher Wise' : 'Subject Wise'}</Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1'>Chapter Wise</Breadcrumb.Item>
             </Breadcrumb>
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-start' }} >
-            <div style={{ width: '12%', display: 'flex', justifyContent: 'space-between' }} >
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }} >
               <Button onClick={handleBack} icon={<LeftOutlined />} className={clsx(classes.backButton)} >Back</Button>
               {user_level != 13 ?
-                <Button onClick={handleDownload}>Download Report</Button>
+                <Button onClick={handleDownload} type="primary" icon={<DownloadOutlined />} className='ant-btn-primary chapterWiseHead' size='middle' >Download Report</Button>
                 : ' '}
             </div>
 
           </Grid>
-          <Form ref={formRef} style={{ display: 'flex', justifyContent: 'flex-start' , width: '50%' }} >
+          <Form ref={formRef} style={{ display: 'flex', justifyContent: 'flex-start' , width: '50%' , padding: '12px' }} >
 
             <div className='col-md-3 col-6 pl-md-1'>
               <div className='text-left pl-md-1'>Grade</div>
@@ -743,7 +784,7 @@ console.log(history?.location?.state , 'history');
               <Table
                 className='th-table'
                 rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
                 }
                 loading={loading}
                 columns={columns}
@@ -754,7 +795,7 @@ console.log(history?.location?.state , 'history');
                 expandIconColumnIndex={columns?.length}
                 expandedRowKeys={expandedRowKeys}
                 expandRowByClick={true}
-                bordered
+                // bordered
                 onExpand={onTableRowExpand}
                 expandIcon={({ expanded, onExpand, record }) =>
                   expanded ? (

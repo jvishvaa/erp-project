@@ -14,6 +14,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import moment from 'moment';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { Drawer } from 'antd';
@@ -377,15 +378,15 @@ const QuestionBankCard = ({
              variant='p'
              component='p'
              >
-              Created_on : 11/11/2022
+              Created_on : {moment(period?.created_at).format('L')}
             </Typography>
           </Box>
         </Grid>
-        <Grid item  sm = {4} xs={6} className={classes.textRight}>
+        <Grid item  sm = {periodColor ? 3 : 4} xs={6} className={classes.textRight}>
           {!periodColor ? (
             <Button
               variant='contained'
-              style={{ color: 'white',marginTop:'5%' ,width: '100%'}}
+              style={{ color: 'white',marginTop:'5%' ,width: '100%' , borderRadius:'5px'}}
               color='primary'
               size='small'
               onClick={handleViewMore}
@@ -395,7 +396,7 @@ const QuestionBankCard = ({
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%', width: '100%' }}
+              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%',borderRadius:'5px' }}
               color='primary'
               size='small'
               onClick={handleViewMore}

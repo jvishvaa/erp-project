@@ -395,19 +395,21 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               <div className='col-12 th-bg-yellow-2 th-br-6'>
                 <div className='row th-fw-700 th-black-1 py-2'>
                   <div className='col-3 px-0'>Subject : </div>
-                  <div className='col-8 pl-0'>{subject?.subject_name} </div>
+                  <div className='col-8 pl-0 text-truncate'>{subject?.subject_name} </div>
                   <div className='col-1 px-0 tex-right'>
                     <CloseOutlined onClick={closeDrawer} />
                   </div>
                 </div>
                 <div className='row th-fw-600 text-capitalize'>
-                  Grade: {diary?.grade_name.slice(-1)}
+                  Grade {diary?.grade_name.slice(-1)}
                   {diary?.section_name.slice(-1)}
                 </div>
                 <div className='row py-1'>
                   <div className='row'>
-                    <span className='th-black-2'>Created By : </span>{' '}
-                    <span className='th-fw-600'>{diary?.teacher_name}</span>
+                    <span className='th-black-2 col-3 px-0'>Created By : </span>{' '}
+                    <span className='th-fw-600 col-9 pl-0 text-truncate'>
+                      {diary?.teacher_name}
+                    </span>
                   </div>
                   <div className='row th-12 th-black-2'>
                     {moment(diary?.created_at).format('DD/MM/YYYY HH:mm a')}
@@ -442,25 +444,24 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 style={{ border: '1px solid black' }}
               >
                 <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1'>Title</div>
-                  <Input
-                    className='th-width-100 th-br-6'
-                    value={homeworkDetails?.homework_name}
-                    // onChange={(e) => setHomeworkTitle(e.target.value)}
-                    placeholder='Enter Title'
-                    maxLength={30}
-                    autoFocus={true}
-                  />
+                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>Title</div>
+                  <div
+                    className='th-black-1 col-12 px-1 th-br-6'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    {homeworkDetails?.homework_name}
+                  </div>
                 </div>
                 <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1'>Instructions</div>
-                  <Input
-                    className='th-width-100 th-br-6'
-                    value={homeworkDetails?.description}
-                    // onChange={(e) => setHomeworkInstructions(e.target.value)}
-                    placeholder='Enter Instructions'
-                    maxLength={250}
-                  />
+                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>
+                    Instructions
+                  </div>
+                  <div
+                    className='th-black-1 col-12 px-1 th-br-6'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    {homeworkDetails?.description}
+                  </div>
                 </div>
                 <div className='row py-2'>
                   <div className='col-3 px-0 th-black-1 th-fw-600 pb-1'>Due Date</div>

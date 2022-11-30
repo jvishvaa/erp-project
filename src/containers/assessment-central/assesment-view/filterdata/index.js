@@ -12,6 +12,7 @@ import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import { Form, Select } from 'antd';
 import { setFilter } from 'redux/actions';
+import { PlusOutlined } from '@ant-design/icons';
 // import './lesson.css';
 
 const { Option } = Select;
@@ -384,7 +385,6 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
     //   setAlert('error', 'Select Branch!');
     //   return;
     // }
-    debugger
     if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
       return;
@@ -650,13 +650,13 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
     //   </Grid>
     //   {isMobile && <Grid item xs={3} sm={0} />}
     // </Grid>
-    <div className='row'>
+    <div className='row th-bg-white'>
           <div className='col-12'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
                 {/* {boardFilterArr.includes(window.location.host) && ( */}
                 {/* )} */}
-                <div className='col-md-2 col-6 px-0'>
+                <div className='col-md-2 col-6 px-1'>
                   <div className='mb-2 text-left'>Grade</div>
                   <Form.Item name='grade'>
                     <Select
@@ -676,14 +676,14 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                         handleGrade(e,value);
                       }}
                       onClear={handleClearGrade}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-6'
                       bordered={false}
                     >
                       {gradeOptions}
                     </Select>
                   </Form.Item>
                 </div>
-                <div className='col-md-2 col-6 pl-0'>
+                <div className='col-md-2 col-6 px-2'>
                     <div className='mb-2 text-left'>Erp Category</div>
                     <Form.Item name='erpCategory'>
                       <Select
@@ -701,14 +701,14 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                           handleerpCategory(e,value);
                         }}
                         
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-6'
                         bordered={false}
                       >
                         {erpCategories}
                       </Select>
                     </Form.Item>
                   </div>
-                {!isErpCategory && <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                {!isErpCategory && <div className='col-md-2 col-6 px-2'>
                   <div className='mb-2 text-left'>Subject</div>
                   <Form.Item name='subject'>
                     <Select
@@ -733,14 +733,14 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       }}
                       disabled = {isErpCategory}
                       onClear={handleClearSubject}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-6'
                       bordered={false}
                     >
                       {subjectOptions}
                     </Select>
                   </Form.Item>
                 </div>}
-                <div className='col-md-2 col-6 pl-0'>
+                <div className='col-md-2 col-6 px-2'>
                     <div className='mb-2 text-left'>Question Level</div>
                     <Form.Item name='questionlevel'>
                       <Select
@@ -758,29 +758,31 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                           handleQpLevel(e,value);
                         }}
                         
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-6'
                         bordered={false}
                       >
                         {questionLeveloptions}
                       </Select>
                     </Form.Item>
                   </div>
-                  {isErpCategory && <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'></div>}
+                  {isErpCategory && <div className='col-md-2 col-6 px-2'></div>}
                 <div
-                  className='col-md-3 col-6 px-0'
-                  style={{ display: 'flex', justifyContent: 'flex-end' }}
+                  className='col-md-4 col-6 text-right pr-0'
                 >
-                  <Button
+                  <div className='row justify-content-end pr-1'> <Button
                     type='primary'
                     onClick={() => history.push('/create-question-paper')}
-                    style={{width:'30%'}}
                     shape="round"
                     variant='contained'
+                    size={'small'}
                     color='primary'
-                    className='th-br-6'
+                    className='th-br-6 th-width-48 th-fw-500'
                   >
-                    Create
-                  </Button>
+                    <PlusOutlined size='small' className='mr-2' />
+                    Create New
+                  
+                  </Button></div>
+                 
                 </div>
               </div>
             </Form>
