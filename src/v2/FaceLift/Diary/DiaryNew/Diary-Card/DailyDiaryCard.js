@@ -395,19 +395,21 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               <div className='col-12 th-bg-yellow-2 th-br-6'>
                 <div className='row th-fw-700 th-black-1 py-2'>
                   <div className='col-3 px-0'>Subject : </div>
-                  <div className='col-8 pl-0'>{subject?.subject_name} </div>
+                  <div className='col-8 pl-0 text-truncate'>{subject?.subject_name} </div>
                   <div className='col-1 px-0 tex-right'>
                     <CloseOutlined onClick={closeDrawer} />
                   </div>
                 </div>
                 <div className='row th-fw-600 text-capitalize'>
-                  Grade: {diary?.grade_name.slice(-1)}
+                  Grade {diary?.grade_name.slice(-1)}
                   {diary?.section_name.slice(-1)}
                 </div>
                 <div className='row py-1'>
                   <div className='row'>
-                    <span className='th-black-2'>Created By : </span>{' '}
-                    <span className='th-fw-600'>{diary?.teacher_name}</span>
+                    <span className='th-black-2 col-3 px-0'>Created By : </span>{' '}
+                    <span className='th-fw-600 col-9 pl-0 text-truncate'>
+                      {diary?.teacher_name}
+                    </span>
                   </div>
                   <div className='row th-12 th-black-2'>
                     {moment(diary?.created_at).format('DD/MM/YYYY HH:mm a')}

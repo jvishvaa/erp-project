@@ -127,7 +127,7 @@ const TeacherDiaryReport = () => {
               Diary Report
             </Breadcrumb.Item>
             <Breadcrumb.Item
-              className='th-grey th-16'
+              className='th-grey th-16 th-pointer'
               onClick={() =>
                 history.push({
                   pathname: '/subjectwise-diary-report',
@@ -170,23 +170,31 @@ const TeacherDiaryReport = () => {
             <img src={CalendarIcon} />
           </div>
         </div>
-        <div className='row mt-3'>
-          <div className='col-2 text-capitalize'>
-            <span className='th-fw-500'>{selectedSection?.grade_name}</span>
-          </div>
-          <div className='col-2'>
-            <span className='th-fw-500'>{selectedSection?.section_name}</span>
-          </div>
-          <div className='col-2'>
-            <span className='th-fw-500'>{selectedTeacher?.subject_name}</span>
-          </div>
-        </div>
-        {teacherDiaryStats && (
-          <div className='row mt-3'>
-            <div className='col-md-3 th-black-2'>
-              Total No. of Diaries Assigned :{' '}
-              <span className='th-primary'>{teacherDiaryStats?.no_of_daires}</span>
+        {!loading && (
+          <div
+            className='row mt-3 mx-3 th-bg-white th-br-10'
+            style={{ border: '1px solid #d9d9d9' }}
+          >
+            <div className='row py-2'>
+              <div className='col-3 text-capitalize th-fw-500 th-grey'>
+                Grade :{' '}
+                <span className='th-primary'>
+                  {selectedSection?.grade_name},{selectedSection?.section_name}
+                </span>
+              </div>
+              <div className='col-3 text-capitalize th-fw-500 th-grey pl-1'>
+                Subject :{' '}
+                <span className='th-primary'>{selectedTeacher?.subject_name}</span>
+              </div>
             </div>
+            {teacherDiaryStats && (
+              <div className='row py-1'>
+                <div className='col-md-3 th-grey'>
+                  Total No. of Diaries Assigned :{' '}
+                  <span className='th-primary'>{teacherDiaryStats?.no_of_daires}</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
         <div className='row mt-3'>
