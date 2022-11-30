@@ -693,6 +693,9 @@ useEffect(() => {
   };
 
   const uploadMarks = () => {
+    if (!file) {
+      setAlert('warning', 'Please select file');
+    }
     const data = new FormData();
     data.append('file', file);
     if (file) {
@@ -716,9 +719,6 @@ useEffect(() => {
           setFile(null);
         })
         .finally(() => setLoading(false));
-    }
-    if (!file) {
-      setAlert('warning', 'Please select file');
     }
   };
 
@@ -745,6 +745,10 @@ useEffect(() => {
   const handleSectionToggle = (event) => {
     setSectionToggle(event.target.checked);
     formik.setFieldValue('section', []);
+    formRef.current.setFieldsValue({
+      section : [],
+      group : ''
+    })
     formik.setFieldValue('group', '');
   };
 
@@ -1200,6 +1204,59 @@ useEffect(() => {
             Add Selected
           </Button>
         </div>}
+{(isSuperAdmin || isSuperuser) && !handleClose && (
+  <>
+  <div className='col-md-2 ml-2'>
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={bulkUpload}
+          onChange={() => setBulkUpload(!bulkUpload)}
+          name='checked'
+          color='primary'
+        />
+      }
+      label={<Typography color='secondary'>Upload Marks</Typography>}
+    />
+  </div>
+  {bulkUpload ? (
+    <div>
+      <Input
+        type='file'
+        inputRef={fileRef}
+        inputProps={{ accept: '.xlsx,.xls' }}
+        onChange={handleFileChange}
+      />
+      <div>Accepted Files : [.xlsx,.xls] files</div>
+      <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
+        <Box p={1}>
+          {`Download Format: `}
+          <a
+            style={{ cursor: 'pointer' }}
+            href='assets/download-format/Response.xlsx'
+            download='format.xlsx'
+          >
+            Download format
+          </a>
+        </Box>
+      </Box>
+    </div>
+  ) : (
+    <div></div>
+  )}
+   {bulkUpload && <div className='col-md-2'>
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={() => uploadMarks()}
+        className='th-button-active th-width-100 th-br-6 mt-2'
+      >
+        Upload
+      </Button>
+   </div>}
+</>
+)}
+
       </div>
 
       <div className='row mt-2 py-2'>
