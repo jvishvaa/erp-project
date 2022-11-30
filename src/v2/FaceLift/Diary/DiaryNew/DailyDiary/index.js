@@ -558,6 +558,10 @@ const DailyDiary = () => {
       chapter: null,
       key_concept: null,
     });
+    setChapterDropdown([]);
+    setChapterID();
+    setKeyConceptDropdown([]);
+    setKeyConceptID();
     setAddedPeriods([]);
     setResourcesData([]);
     setClearTodaysTopic(true);
@@ -857,6 +861,7 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
+
   const fetchResourceYear = () => {
     axiosInstance
       .get(`${endpoints.lessonPlan.academicYearList}`, {
@@ -1004,6 +1009,15 @@ const DailyDiary = () => {
       setHomeworkInstructions(homeworkDetails?.description);
     }
   }, [homeworkDetails]);
+
+  useEffect(() => {
+    if (showPeriodInfoModal) {
+      setTimeout(() => {
+        closePeriodInfoModal();
+      }, 2000);
+      // closePeriodInfoModal();
+    }
+  }, [showPeriodInfoModal]);
   return (
     <div className='row th-bg-white'>
       <div className='row py-1'>
