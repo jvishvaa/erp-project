@@ -118,6 +118,7 @@ const PendingReview = (props) => {
   const [totalPages, setTotalPages] = useState(0);
   const [view, setView] = useState(false);
   const {user_id} = JSON.parse(localStorage.getItem('ActivityManagementSession'))
+  const blogActivityId = localStorage.getItem('BlogActivityId') ?  JSON.parse(localStorage.getItem('BlogActivityId')) : {};
 
   const handleCloseViewMore = () => {
     setView(false);
@@ -340,7 +341,7 @@ const PendingReview = (props) => {
                 <TableCell className={classes.tableCell}>Actions</TableCell>
               </TableRow>
             </TableHead>
-            {totalSubmitted?.map((response, index) => (
+            {totalSubmitted && totalSubmitted?.map((response, index) => (
               <TableBody>
                 <TableRow
                   hover

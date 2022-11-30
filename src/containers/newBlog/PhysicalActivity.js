@@ -217,7 +217,7 @@ const PhysicalActivity = () => {
   const [loading,setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const physicalActivityId = localStorage.getItem('PhysicalActivityId') ? JSON.parse(localStorage.getItem('PhysicalActivityId')) : ''
+  const physicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId'))
   // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const [subjectData, setSubjectData] = useState([]);
   const token = dataes?.token;
@@ -743,7 +743,7 @@ const fetchSubActivityListData = () => {
     setSubActivityId('')
     
   }
-  const handleBoard = (e) => {
+  const handleBoard = (e,value) => {
     setBoardId(e);
   };
   const handleClearBoard = () => {
@@ -781,9 +781,9 @@ const fetchSubActivityListData = () => {
       </Option>
     );
   });
-  const branchOptions = boardListData?.map((each) => {
+const branchOptions = boardListData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option key={each?.branch?.id} value={each?.branch?.id}>
         {each?.branch?.branch_name}
       </Option>
     );
@@ -823,9 +823,6 @@ const fetchSubActivityListData = () => {
               </Breadcrumb.Item>
             </Breadcrumb>
         </div>
-        {user_level == 11 || user_level == 8 ? (
-          ''
-        ) : (
         <div className='col-md-6' style={{zIndex:2, display: 'flex', alignItems:'center', justifyContent:'end' }}>
             <ButtonAnt type="primary" icon={<AppstoreAddOutlined />} 
             size={'large'}
@@ -834,7 +831,6 @@ const fetchSubActivityListData = () => {
               Create Physical Activity
             </ButtonAnt>
         </div>
-        )}
         <div className='row'>
         <div className='col-12'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
@@ -878,7 +874,7 @@ const fetchSubActivityListData = () => {
                         placement='bottomRight'
                         suffixIcon={<DownOutlined className='th-grey' />}
                         dropdownMatchSelectWidth={false}
-                        onChange={(e) => handleBoard(e)}
+                        onChange={(e) => handleBoard(e,value)}
                         allowClear={true}
                         onClear={handleClearBoard}
                         optionFilterProp='children'
