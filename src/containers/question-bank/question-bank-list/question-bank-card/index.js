@@ -14,6 +14,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import moment from 'moment';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { Drawer } from 'antd';
@@ -377,7 +378,7 @@ const QuestionBankCard = ({
              variant='p'
              component='p'
              >
-              Created_on : 11/11/2022
+              Created_on : {moment(period?.created_at).format('L')}
             </Typography>
           </Box>
         </Grid>
