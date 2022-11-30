@@ -180,6 +180,11 @@ const CurriculumCompletion = (props) => {
     setModuleId(history?.location?.state?.module_id);
     setAcadeId(history?.location?.state?.acad_sess_id);
     setBranchName(history?.location?.state?.branchName)
+    if(history?.location?.state?.teacherView == 2) {
+      setTeacherView(2)
+    } else {
+      setTeacherView(1)
+    }
   }, [history]);
 
   const handlevolume = (e) => {
@@ -224,6 +229,7 @@ const CurriculumCompletion = (props) => {
   const { acad_session_id, module_id, acad_sess_id } = history.location.state;
 
   console.log(history.location.state);
+
 
 
   const teacherSubjectTable = (params = {}) => {
@@ -517,7 +523,8 @@ const CurriculumCompletion = (props) => {
                   teacher_id: teacherErp,
                   branch_id: branchId,
                   central_gs: row?.central_gs,
-                  volumeId : volumeId
+                  volumeId : volumeId,
+                  pathname: `${window.location.pathname}`
 
                 },
               })
@@ -559,7 +566,8 @@ const CurriculumCompletion = (props) => {
                   teacher_id: teacherErp,
                   branch_id: branchId,
                   central_gs: row?.central_gs,
-                  volumeId : volumeId
+                  volumeId : volumeId,
+                  pathname: `${window.location.pathname}`
 
                 },
               })
@@ -662,7 +670,7 @@ const CurriculumCompletion = (props) => {
                 <>
                   <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                     <div style={{ alignItems: 'center', display: 'flex', fontWeight: '600', fontSize: '20px' }} >
-                      <p style={{ transform: 'rotate(270deg' }}>Avg Completion Percentage</p>
+                      <p style={{ transform: 'rotate(270deg' }}>Avg Completion %</p>
                     </div>
                     <div>
                       {console.log({ ...config })}

@@ -3,7 +3,7 @@ import React, { useContext, useState, useEffect , createRef} from 'react';
 import {
   Grid,
 } from '@material-ui/core';
-
+import { DownloadOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
 import { Button, Select, Menu, message, Tooltip, Form } from 'antd';
 import { makeStyles, FormControl } from '@material-ui/core';
@@ -544,8 +544,12 @@ console.log(history?.location?.state , 'history');
   const handleTooltip = (data , i) => {
     console.log(data , i);
     return <div>
+      <div>
       <strong>Completed : {` ${data?.section_wise_completion[i]?.completed_count}   `}</strong>
+      </div>
+      <div>
       <strong>Pending : {data?.section_wise_completion[i]?.pending_count}</strong>
+      </div>
     </div>
   }
 
@@ -584,8 +588,19 @@ console.log(history?.location?.state , 'history');
   }
 
   const handleBack = () => {
-    history.goBack();
-  }
+    if(history?.location?.state?.teacherView == 2 ){
+      console.log(history?.location?.state.teacherView , 'teacher');
+      history.push({
+        pathname: `${history?.location?.state?.pathname}`,
+        state: {
+            ...history?.location?.state
+        },
+      })
+    }
+     if( history?.location?.state?.teacherView == 1){
+        history.goBack();
+      }
+    }
   const expandedRowRender = (record, index) => {
 
     return (
@@ -596,7 +611,7 @@ console.log(history?.location?.state , 'history');
         pagination={false}
         className='th-inner-chapter'
         expandIconColumnIndex={innerColumn?.length}
-        bordered
+        // bordered
         style={{ width: '100%' }}
         scroll={{
           x: 1300,
@@ -661,10 +676,10 @@ console.log(history?.location?.state , 'history');
             </Breadcrumb>
           </Grid>
           <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-start' }} >
-            <div style={{ width: '12%', display: 'flex', justifyContent: 'space-between' }} >
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }} >
               <Button onClick={handleBack} icon={<LeftOutlined />} className={clsx(classes.backButton)} >Back</Button>
               {user_level != 13 ?
-                <Button onClick={handleDownload}>Download Report</Button>
+                <Button onClick={handleDownload} type="primary" icon={<DownloadOutlined />} size='middle' >Download Report</Button>
                 : ' '}
             </div>
 
@@ -760,7 +775,7 @@ console.log(history?.location?.state , 'history');
               <Table
                 className='th-table'
                 rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
                 }
                 loading={loading}
                 columns={columns}
@@ -771,7 +786,7 @@ console.log(history?.location?.state , 'history');
                 expandIconColumnIndex={columns?.length}
                 expandedRowKeys={expandedRowKeys}
                 expandRowByClick={true}
-                bordered
+                // bordered
                 onExpand={onTableRowExpand}
                 expandIcon={({ expanded, onExpand, record }) =>
                   expanded ? (

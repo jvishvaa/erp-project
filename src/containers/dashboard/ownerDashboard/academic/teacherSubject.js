@@ -424,6 +424,7 @@ const selectedBranch = useSelector(
         dataSource={collapseData}
         rowKey={(record) => record?.subject_id}
         pagination={false}
+        rowClassName='th-pointer'
         className='th-inner-head'
         // showHeader={false}
         bordered={false}
@@ -509,7 +510,7 @@ const selectedBranch = useSelector(
               <Table
                 className='th-table'
                 rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
                 }
                 loading={loading}
                 columns={columns1}
