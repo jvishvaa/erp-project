@@ -114,6 +114,11 @@ const Published = (props) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const user_level = dataes?.user_level;
+  const [totalCount,setTotalCount] = useState(0);
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPages] = useState(0);
+  const [limit,setLimit] = useState(10);
+  const [isClicked, setIsClicked] = useState(false);
 
 
 
@@ -124,10 +129,10 @@ const Published = (props) => {
   },[props.selectedBranch,props.selectedGrade,props.flag])
 
   useEffect(() =>{
-    if(props.flag){
+    if(props.flag && currentPage){
       getTotalPublish();
     }
-  },[props.selectedBranch,props.selectedGrade, props.flag])
+  },[props.selectedBranch,props.selectedGrade, props.flag, currentPage])
 
 
   const getTotalPublish = () => {
@@ -137,7 +142,7 @@ const Published = (props) => {
       const gradeIds = props.selectedGrade?.id
 
       axios
-      .get(`${endpoints.newBlog.studentPublishApi}?activity_detail_id=${ActivityId?.id}&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}`, 
+      .get(`${endpoints.newBlog.studentPublishApi}?activity_detail_id=${ActivityId?.id}&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&page=${currentPage}&page_size=${limit}`, 
       {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
@@ -147,6 +152,11 @@ const Published = (props) => {
         props.setFlag(false);
         setAlert('success',response?.data?.message)
         setTotalPublish(response?.data?.result);
+        setCurrentPage(response.data?.page)
+        setTotalCount(response?.data?.total)
+        setLimit(Number(limit))
+        props.setFlag(false)
+        setAlert('success', response?.data?.message)
         setLoading(false);
 
       })
@@ -179,6 +189,11 @@ const Published = (props) => {
       setAlert('error',"Server Error")
     })
 
+  }
+
+  const handlePagination = (event, page) =>{
+    setIsClicked(true);
+    setCurrentPage(page);
   }
 
   return (
@@ -249,21 +264,21 @@ const Published = (props) => {
           </TableBody>
           ))}
         </Table>
-        {/* <TablePagination
+        <TablePagination
           component='div'
-          // count={totalCount}
-          // rowsPerPage={limit}
-          // page={Number(currentPage) - 1}
-          // onChangePage={(e, page) => {
-          // handlePagination(e, page + 1);
-          // }}
+          count={totalCount}
+          rowsPerPage={limit}
+          page={Number(currentPage) - 1}
+          onChangePage={(e, page) => {
+          handlePagination(e, page);
+          }}
           rowsPerPageOptions={false}
           className='table-pagination'
           classes={{
             spacer: classes.tablePaginationSpacer,
             toolbar: classes.tablePaginationToolbar,
           }}
-        /> */}
+        />
       </TableContainer>
 }
     </Paper>

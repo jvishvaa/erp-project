@@ -193,21 +193,25 @@ const OfflineStudentAssessment = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [branchList, setBranchList] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(
-    history?.location?.state?.data?.branch[0]
-  );
+
 
   const [selectedBranchId, setSelectedBranchIds] = useState([]);
   const [gradeList, setGradeList] = useState([]);
-  const [selectedGrade, setSelectedGrade] = useState(
-    history?.location?.state?.data?.grade
-  );
+
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
   const [bulkUpload, setBulkUpload] = useState(true);
   const [isLesson, setIsLesson] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const filterData = JSON.parse(sessionStorage.getItem('filterData')) || {};
+  const createFilterData = JSON.parse(sessionStorage.getItem('createfilterdata')) || {};
+  const [selectedBranch, setSelectedBranch] = useState(
+    createFilterData?.branch[0]
+  );
+  const [selectedGrade, setSelectedGrade] = useState(
+    createFilterData?.grade
+);
+
   const [isNewSeach, setIsNewSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [limit, setLimit] = useState('10');
@@ -223,6 +227,8 @@ const OfflineStudentAssessment = () => {
   const [uploadBranchOMR, setUploadBranchOMR] = useState('');
   const [filterClicked, setFilterClicked] = useState(false)
   const [checkBoxFlag, setCheckBoxFlag] = useState(false)
+
+  console.log(createFilterData,'@@')
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -257,10 +263,10 @@ const OfflineStudentAssessment = () => {
   };
 
   useEffect(() => {
-    if (history?.location?.state?.data?.branch?.length > 0) {
-      setBranchList(history?.location?.state?.data?.branch);
-      setGradeList(history?.location?.state?.data?.grade);
-      handleGrade(history?.location?.state?.data?.grade);
+    if (createFilterData?.branch?.length > 0) {
+      setBranchList(createFilterData?.branch);
+      setGradeList(createFilterData?.grade);
+      handleGrade(createFilterData?.grade);
       // enableOMR();
     }
   }, [moduleId]);
@@ -271,7 +277,7 @@ const OfflineStudentAssessment = () => {
   let filterBranch = '';
   const enableOMR = () => {
     filterBranch = branchList.filter((item) => {
-      return !branchOMR.includes(item?.id.toString());
+      return !branchOMR.includes(item?.value.toString());
     });
     setUploadBranchOMR(filterBranch);
     // setDisplayOMR(filterBranch?.length > 0 ? true : false )
@@ -306,17 +312,17 @@ const OfflineStudentAssessment = () => {
     setSelectedSection(null);
   };
   useEffect(() => {
-    handleGrade(history?.location?.state?.data?.grade);
+    handleGrade(createFilterData?.grade);
   }, [selectedBranch, moduleId]);
 
   const handleGrade = (value) => {
     if (moduleId) {
       console.log(value);
       let selectedId = [];
-      if (value?.id) {
+      if (value) {
         axiosInstance
           .get(
-            `erp_user/sectionmapping/?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
+            `erp_user/sectionmapping/?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.key}&grade_id=${value.value}&module_id=${moduleId}`
           )
           .then((result) => {
             setSectionList(result?.data?.data);
@@ -354,9 +360,9 @@ const OfflineStudentAssessment = () => {
     console.log(selectedGrade);
     // const secId = selectedSection.map((ele) => ele?.id)
     const payload = {
-      branchId: selectedBranch?.id,
-      gradeId: selectedGrade?.grade_id,
-      subjId: history?.location?.state?.data?.subject[0].subject_id,
+      branchId: selectedBranch?.value,
+      gradeId: selectedGrade?.value,
+      subjId: createFilterData.subject[0].value,
       testId: history?.location?.state?.test?.id,
       sectionId: selectedSection?.id,
       selectedSection: selectedSection,
@@ -364,7 +370,7 @@ const OfflineStudentAssessment = () => {
     sessionStorage.setItem('filterData', JSON.stringify(payload));
     axiosInstance
       .get(
-        `${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.id}&grade=${selectedGrade?.grade_id}&subject_id=${history?.location?.state?.data?.subject[0].subject_id}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${selectedSection?.id}`
+        `${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.value}&grade=${selectedGrade?.value}&subject_id=${createFilterData?.subject[0].value}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${selectedSection?.id}`
       )
       .then((result) => {
         console.log(result);
@@ -404,10 +410,10 @@ const OfflineStudentAssessment = () => {
         student: student,
         studentData: data,
         selectedSection: selectedSection,
-        branch: history?.location?.state?.data?.branch,
-        gradeList: history?.location?.state?.data?.grade,
-        grade: history?.location?.state?.data?.grade,
-        subject_id: history?.location?.state?.data?.subject[0].subject_id,
+        branch: createFilterData?.branch,
+        gradeList: createFilterData?.grade,
+        grade: createFilterData?.grade,
+        subject_id: createFilterData?.subject[0].subject_id,
         quesList: quesList,
       },
     });
@@ -477,6 +483,7 @@ const OfflineStudentAssessment = () => {
 
   const handleBack = () => {
     sessionStorage.removeItem('filterData');
+    sessionStorage.removeItem('createfilterdata')
     // history.goBack();
     history.push({ pathname: '/assesment', state: { dataRestore: true } })
   };
@@ -519,7 +526,7 @@ const OfflineStudentAssessment = () => {
                 className='dropdownIcon'
                 value={selectedBranch || []}
                 options={branchList || []}
-                getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                getOptionLabel={(option) => option?.children || ''}
                 // getOptionSelected={(option, value) =>
                 //     option?.branch?.id == value?.branch?.id
                 // }
@@ -545,7 +552,7 @@ const OfflineStudentAssessment = () => {
                 className='dropdownIcon'
                 value={selectedGrade || ''}
                 options={gradeList || ''}
-                getOptionLabel={(option) => option?.grade__grade_name || ''}
+                getOptionLabel={(option) => option?.children || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField

@@ -24,7 +24,7 @@ const CurriculumCompletion = () => {
   const fetchCurriculumData = (params = {}) => {
     setLoading(true);
     axios
-      .get(`${endpoints.teacherDashboard.curriculumCompletion}`, {
+      .get(`${endpoints.teacherDashboard.curriculumnWidget}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
@@ -43,8 +43,9 @@ const CurriculumCompletion = () => {
   };
 
   const getCurriculumData = () => {
-    if (selectedAcademicYear)
-      fetchCurriculumData({ session_year: selectedAcademicYear?.id });
+    if (selectedAcademicYear && selectedBranch){
+      fetchCurriculumData({ session_year: selectedAcademicYear?.id  , acad_session : selectedBranch?.id});
+    }
   };
 
   useEffect(() => {
@@ -97,7 +98,7 @@ const CurriculumCompletion = () => {
               </div>
               <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
                 {curriculumData?.map((item, i) => {
-                  let section = item.section_name.charAt(item.section_name.length - 1);
+                  let section = item?.section_name?.charAt(item?.section_name?.length - 1);
                   return (
                     <div
                       className='th-bg-grey mb-2 th-br-6'
@@ -106,13 +107,26 @@ const CurriculumCompletion = () => {
                       <div
                         className='row justify-content-between py-3 th-br-6 align-items-center'
                         onClick={() =>
+                          // history.push({
+                          //   pathname: '/curriculum-completion-branchWise',
+                          //   state: {
+                          //     branchData: [selectedBranch],
+                          //     module_id: moduleId,
+                          //     iscurriculam: true,
+                          //   },
+                          // })
                           history.push({
-                            pathname: '/curriculum-completion-branchWise',
+                            pathname: `/curriculum-completion-teacher-subject/${selectedBranch?.branch?.id}`,
                             state: {
-                              branchData: [selectedBranch],
+                              branchId: selectedBranch?.branch?.id,
+                              acad_sess_id: selectedBranch?.id,
+                              branchName: selectedBranch?.branch?.branch_name,
+                              acad_session_id: selectedBranch?.session_year?.id,
                               module_id: moduleId,
-                              iscurriculam: true,
-                            },
+                              central_gs_mapping: item?.central_gs_mapping,
+                              erp_gs_mapping: item?.erp_gs_mapping,
+                              grade_name: item?.grade_name,
+                            }
                           })
                         }
                       >
@@ -132,7 +146,7 @@ const CurriculumCompletion = () => {
                           {item?.subject_name}
                         </div>
                         <div className='col-4 text-center th-16 th-fw-600 th-green-1 pr-0'>
-                          {item?.percentage_completion}%{' '}
+                          {item?.completion_percentage}%{' '}
                         </div>
                       </div>
                     </div>
@@ -146,8 +160,9 @@ const CurriculumCompletion = () => {
         <div className='d-flex justify-content-center mt-5'>
           <img src={NoDataIcon} />
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 

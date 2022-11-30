@@ -14,8 +14,10 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import moment from 'moment';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import { Drawer } from 'antd';
 
 const QuestionBankCard = ({
   period,
@@ -30,10 +32,12 @@ const QuestionBankCard = ({
   showAddToQuestionPaper,
   periodColor,
   toggleComplete,
+  toggleCompleteQuestion,
   isSelectAll,
   redFlag,
   checkbox,
-  periodData
+  periodData,
+  questionId
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -121,6 +125,20 @@ const QuestionBankCard = ({
     }
   };
 
+
+  const getquestionLevel = (type) => {
+    switch (type) {
+      case 1:
+        return 'Easy';
+      case 2:
+        return 'Average';
+      case 3:
+        return 'Difficult';
+      default :
+        return '--'
+    }
+  };
+
   const questionType = (type) => {
     switch (type) {
       case 1:
@@ -202,7 +220,7 @@ const QuestionBankCard = ({
       <Grid container spacing={2}>
         <Grid item sm = {11} xs={8}>
           <Box style={{display:'flex', alignItems:'center'}}>
-            {period?.question_status === '3' ? 
+            {period?.question_status === '3' && !showAddToQuestionPaper ? 
               <Checkbox
               id={period?.id}
               checked={period?.checked}
@@ -212,27 +230,37 @@ const QuestionBankCard = ({
              inputProps={{ 'aria-label': 'primary checkbox' }}
              />
           : ''}
-          {period.question_type === 7 ? (
-              <Typography
-                className={classes.content}
-                variant='p'
-                component='p'
-                color='secondary'
-                // noWrap
-              >
-                {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
-              </Typography>
-          ) : (
-              <Typography
-                className={classes.content}
-                variant='p'
-                component='p'
-                color='secondary'
-                // noWrap
-              >
-                Question: {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
-              </Typography>
-          )}
+          {showAddToQuestionPaper && period?.question_status === '2' ? 
+              <Checkbox
+              id={period?.id}
+              checked={period?.checked}
+              onChange={(e) => toggleCompleteQuestion(e,period,index)} 
+              name={period?.id}
+              size="small"
+             inputProps={{ 'aria-label': 'primary checkbox' }}
+             />
+          : ''}
+          <Box>
+             <Typography
+              className={classes.title}
+              variant='p'
+              component='p'
+              color='primary'
+            >
+              {questionType(period?.question_type) }
+            </Typography>
+          </Box>
+          
+          <Grid md={2} xs={2} sm={2} style={{marginLeft:'1%'}}>
+             <Typography
+              // className={classes.title}
+              variant='p'
+              component='p'
+              // color='primary'
+            >
+              ({getquestionLevel(parseInt(period?.question_level)) })
+            </Typography>
+          </Grid>
           </Box>
         </Grid>
         {!period.is_central && (
@@ -308,6 +336,27 @@ const QuestionBankCard = ({
           </Grid>
         )}
         <Grid item xs={12} sm={12} >
+        {period.question_type === 7 ? (
+              <Typography
+                className={classes.content}
+                variant='p'
+                component='p'
+                color='secondary'
+                noWrap
+              >
+                {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
+              </Typography>
+          ) : (
+              <Typography
+                className={classes.content}
+                variant='p'
+                component='p'
+                color='secondary'
+                noWrap
+              >
+                Question: {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
+              </Typography>
+          )}
         </Grid>
         <Grid item sm = {8} xs={6} >
           <Box>
@@ -324,21 +373,20 @@ const QuestionBankCard = ({
             </Typography>
           </Box>
           <Box>
-             <Typography
-              className={classes.title}
-              variant='p'
-              component='p'
-              color='primary'
-            >
-              {questionType(period?.question_type) }
+            <Typography 
+            //  className={classes.title}
+             variant='p'
+             component='p'
+             >
+              Created_on : {moment(period?.created_at).format('L')}
             </Typography>
           </Box>
         </Grid>
-        <Grid item  sm = {4} xs={6} className={classes.textRight}>
+        <Grid item  sm = {periodColor ? 3 : 4} xs={6} className={classes.textRight}>
           {!periodColor ? (
             <Button
               variant='contained'
-              style={{ color: 'white',marginTop:'5%' ,width: '100%'}}
+              style={{ color: 'white',marginTop:'5%' ,width: '100%' , borderRadius:'5px'}}
               color='primary'
               size='small'
               onClick={handleViewMore}
@@ -348,7 +396,7 @@ const QuestionBankCard = ({
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%', width: '100%' }}
+              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%',borderRadius:'5px' }}
               color='primary'
               size='small'
               onClick={handleViewMore}

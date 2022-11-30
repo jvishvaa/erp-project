@@ -33,7 +33,8 @@ const AssessmentCard = ({
   setSelectedIndex,
   initAddQuestionPaperToTest,
   setPublishFlag,
-  tabIsErpCentral
+  tabIsErpCentral,
+  tabvalue,
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -110,10 +111,34 @@ const AssessmentCard = ({
       });
   };
 
+  const handleRestore = () => {
+    setPublishFlag(false);
+    const url = endpoints.assessmentErp?.publishQuestionPaper.replace(
+      '<question-paper-id>',
+      period?.id
+    );
+    axiosInstance
+      .put(url, {
+        is_delete : false,
+      })
+      .then((result) => {
+        if (result.data.status_code > 199 && result.data.status_code < 300) {
+          setAlert('success', result.data.message);
+          setPublishFlag(true);
+          setSelectedIndex(-1);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  }
+
   const handleViewMore = () => {
     setLoading(true);
     setPeriodDataForView({});
-    if (tabIsErpCentral.id == 1) {
+    if (!tabIsErpCentral) {
       const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
         '<question-paper-id>',
         period?.id
@@ -258,7 +283,7 @@ const AssessmentCard = ({
               </IconButton>
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
-                  {period.is_verified && (
+                  {period.is_verified && !period?.is_delete && (
                     <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '140px',marginLeft:'-100px' }}>
                       <span onClick={handleAssign} style={{ marginBottom: 10 }}>Assign Test</span>
                       <Divider />
@@ -271,7 +296,12 @@ const AssessmentCard = ({
                       }
                     </span>
                   )}
-                  {!period.is_verified && (
+                  {period?.is_delete && (
+                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '140px',marginLeft:'-100px' }}>
+                      <span onClick={handleRestore}>Restore</span>
+                    </span>
+                  )}
+                  {!period.is_verified && !period?.is_delete &&  (
                     <span className='tooltiptext' style={{ width: '160px',marginLeft:'-120px' }}>
                       <span onClick={handlePublish} style={{ marginBottom: 10 }}>Publish Paper</span>
                       <Divider />
@@ -326,7 +356,7 @@ const AssessmentCard = ({
           {!periodColor && (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '100%' }}
+              style={{ color: 'white', width: '100%' , borderRadius:'6px' ,height:'32px' }}
               color='primary'
               size='small'
               onClick={handleViewMore}

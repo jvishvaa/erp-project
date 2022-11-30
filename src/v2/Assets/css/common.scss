@@ -107,7 +107,30 @@ body {
 .th-bg-pink {
   background-color: #edecf8 !important;
 }
-
+.th-bg-blue-1 {
+  background-color: #d0e9f6 !important;
+}
+.th-bg-blue-2 {
+  background-color: #cfe2ff !important;
+}
+.th-bg-blue-3 {
+  background-color: #f2f6fe !important;
+}
+.th-bg-yellow-2 {
+  background: #f0f1e1 !important;
+}
+.th-bg-pink-2 {
+  background-color: #ffdddd !important;
+}
+.th-bg-pink-3 {
+  background-color: #d8d0f6 !important;
+}
+.th-bg-green-2 {
+  background-color: #dedede !important;
+}
+.th-bg-violet {
+  background-color: #9482da !important;
+}
 #th-select {
   background: #f8f8f8 !important;
   font-weight: 600;
@@ -318,7 +341,6 @@ body {
   color: #ffffff !important;
 }
 
-
 .th-upload-modal-grey-close .ant-modal-header {
   background-color: #1b4ccb !important;
   border-radius: 10px 10px 0px 0px !important;
@@ -328,7 +350,7 @@ body {
   font-weight: 500 !important;
 }
 .th-upload-modal-grey-close .ant-modal-close-x {
-  color: #868686 !important
+  color: #868686 !important;
 }
 
 .slick-next:before,
@@ -346,8 +368,8 @@ body {
 }
 svg {
   vertical-align: baseline !important;
-} 
+}
 .ant-btn-primary {
-    border-color: #1b4ccb;
-    background: #1b4ccb;
+  border-color: #1b4ccb;
+  background: #1b4ccb;
 }

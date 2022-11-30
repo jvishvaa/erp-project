@@ -258,6 +258,7 @@ const StudentSideBlog = () => {
   const [marksData,setMarksData] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [totalPublish, setTotalPublish] = useState([]);
+  const blogActivityId = localStorage.getItem('BlogActivityId') ?  JSON.parse(localStorage.getItem('BlogActivityId')) : {}
 
 
   const createPublish = () => {
@@ -404,7 +405,7 @@ const StudentSideBlog = () => {
     const UserData =  JSON.parse(localStorage.getItem('ActivityManagement')) || {};
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&user_id=${UserData.id}&is_draft=false&page_size=${12}&page=${page}`,
+        `${endpoints.newBlog.Assign}?section_ids=null&user_id=${UserData.id}&is_draft=false&page_size=${12}&page=${page}&activity_type=${blogActivityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -424,7 +425,7 @@ const StudentSideBlog = () => {
   };
 
   useEffect(() => {
-    ActvityLocalStorage();
+    // ActvityLocalStorage();
   }, []);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalReview, setTotalReview] = useState([]);
@@ -434,7 +435,7 @@ const StudentSideBlog = () => {
 
     axios
       .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id.id}&&activity_detail_id=null&is_reviewed=True`,
+        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id.id}&&activity_detail_id=null&is_reviewed=True&activity_type=${blogActivityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -453,7 +454,7 @@ const StudentSideBlog = () => {
 
     axios
       .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id.id}&&activity_detail_id=null&is_published=True`,
+        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id.id}&&activity_detail_id=null&is_published=True&activity_type=${blogActivityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -494,7 +495,7 @@ const StudentSideBlog = () => {
     const User_id = (await JSON.parse(localStorage.getItem('ActivityManagement'))) || {};
     axios
       .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id?.id}&&activity_detail_id=null&is_reviewed=False&is_submitted=True`,
+        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id?.id}&&activity_detail_id=null&is_reviewed=False&is_submitted=True&activity_type=${blogActivityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,

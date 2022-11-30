@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 // import { browserHistory } from 'react-router-dom'
 import ReactPlayer from 'react-player';
@@ -12,6 +12,7 @@ import endpoints from '../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
 import axios from 'axios';
+import { Drawer } from 'antd';
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
@@ -56,6 +57,7 @@ const ViewMoreCard = ({
   setCallFlag,
 }) => {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -93,6 +95,34 @@ const ViewMoreCard = ({
     }
   };
 
+  const getquestionLevel = (type) => {
+    switch (type) {
+      case 1:
+        return 'Easy';
+      case 2:
+        return 'Average';
+      case 3:
+        return 'Difficult';
+      default :
+        return '--'
+    }
+  };
+
+  const getQuestionCategory = (type) => {
+    switch (type) {
+      case 1:
+        return 'Knowledge';
+      case 2:
+        return 'Understanding';
+      case 3:
+        return 'Application';
+      case 4:
+        return 'Analyse' ;
+      default :
+        return '--'
+    }
+  };
+
   function extractContent(s) {
     const span = document.createElement('span');
     span.innerHTML = s;
@@ -100,6 +130,20 @@ const ViewMoreCard = ({
   }
   const handleEdit = () => {
     history.push(`/create-question/${viewMoreData?.parent?.id}`);
+  };
+
+  useEffect(() => {
+    showDrawer()
+  },[])
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+    setViewMore(false);
+    setSelectedIndex(-1);
   };
 
   const handlePublish = (obj) => {
@@ -186,29 +230,17 @@ const ViewMoreCard = ({
         .catch((error) => setAlert('error', error?.message));
     }
   };
+  console.log(periodDataForView,'@!')
 
   return (
-    <Paper className={classes.rootViewMore}>
-      <div className='viewMoreHeader'>
-        <div className='leftHeader'>
-          <div className='headerTitle'>
-            {resolveQuestionTypeName(periodDataForView.question_type)}
-            {/* {compData && compData.forEach */}
-          </div>
-
-          {/* { 
-                    Data?.map(p=> (
-                    <div className="headerTitle">
-                       {ReactHtmlParser(p.question )}
-                    </div> )
-                    
-                    )}  */}
-          <div className='headerContent'>
-            {/* {filterDataDown?.chapter?.chapter_name} */}
-          </div>
+  <Drawer title= {resolveQuestionTypeName(periodDataForView.question_type) + '  (' + (getquestionLevel(parseInt(periodDataForView?.question_level)))  + ')'} zIndex={1300} width={'450px'} placement="right" onClose={onClose} open={open} visible={open} >
+    {/* <Paper className={classes.rootViewMore}>  */}
+      <div className='row col-12' style={{marginBottom:'5%' , fontWeight:'bold'}}>
+        <div className='col-6' style={{marginLeft:'-3%'}}>
+            {getQuestionCategory(parseInt(periodDataForView.question_status))}
         </div>
-        <div className='rightHeader'>
-          <div className='headerTitle closeIcon'>
+        <div className='col-6 d-flex justify-content-end'>
+          {/* <div className='headerTitle closeIcon'>
             <IconButton
               onClick={() => {
                 setViewMore(false);
@@ -217,12 +249,13 @@ const ViewMoreCard = ({
             >
               <CloseIcon color='primary' />
             </IconButton>
-          </div>
-          {periodDataForView.is_central ? null : (
+          </div> */}
+          {/* {periodDataForView.is_central ? null : (
             <div className='headerContent' style={{ border: '1px solid black', borderRadius: '10px' }} onClick={handleEdit}>
               <a style={{ marginLeft: '5px', marginRight: '5px' }}>Edit Details</a>
             </div>
-          )}
+          )} */}
+          {periodDataForView?.is_central ? 'Eduvate Question' : 'School Question'} 
         </div>
       </div>
       {/* <div className='divider'><Divider/></div> */}
@@ -1626,7 +1659,16 @@ const ViewMoreCard = ({
           ) : null}
         </div>
       )}
-    </Paper>
+      {periodDataForView.is_central ? null : (
+          <div>
+            <Button 
+            onClick={handleEdit}
+            color='primary'
+            variant='contained'>Edit Details</Button>
+          </div>
+        )}
+    {/* </Paper> */}
+     </Drawer>
   );
 };
 

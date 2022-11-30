@@ -3,3 +3,13 @@
     height: 10px !important;
     background-color: rgb(82, 50, 50) !important;
   }
+
+  .highlightbtn {
+    opacity: 1;
+  }
+  
+  .nonHighlightbtn {
+  opacity: 0.4;
+  background: lightgrey;
+  border: none;
+  }

@@ -123,7 +123,7 @@ button.active {
 
 .card-design {
     transition: all 0.3s ease-out;
-    width: 20vw;
+    width: 21vw;
     border-radius: 15px;
     margin: 10px auto;
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
@@ -158,6 +158,17 @@ button.active {
     .blog-redirect-card {
         height: 22vh;
     }
+}
+
+
+.post-redirect-card {
+    height: 16jvh;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 7px;
+
 }
 
 

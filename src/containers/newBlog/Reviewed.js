@@ -186,7 +186,7 @@ const Reviewed = (props) => {
   
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=null&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&activity_detail_id=${ActivityId?.id}&is_reviewed=True`,
+          `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=null&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&activity_detail_id=${ActivityId?.id}&is_reviewed=True&page=${currentPage}&page_size${limit}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -196,7 +196,7 @@ const Reviewed = (props) => {
         .then((response) => {
           setTotalCount(response?.data?.count)
           setTotalPages(response?.data?.page_size)
-          setCurrentPage(response?.data?.page + 1)
+          setCurrentPage(response?.data?.page)
           setLimit(Number(limit))
           props.setFlag(false)
           setAlert('success', response?.data?.message)
@@ -227,7 +227,7 @@ const Reviewed = (props) => {
   },[props.selectedBranch, props.selectedGrade, props.flag])
 
   useEffect(() => {
-    if(props?.flag){
+    if(props?.flag && currentPage){
       getTotalSubmitted();
     }
   }, [props.selectedBranch, props.selectedGrade,props.flag, currentPage]);
@@ -343,7 +343,7 @@ const Reviewed = (props) => {
             rowsPerPage={limit}
             page={Number(currentPage) - 1}
             onChangePage={(e, page) => {
-            handlePagination(e, page + 1);
+            handlePagination(e, page);
             }}
             rowsPerPageOptions={false}
             className='table-pagination'

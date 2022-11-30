@@ -425,16 +425,23 @@ class ViewEbook extends Component {
                     </Grid>
                     {(user_level == 13 || user_level == 12) && isOrchids ? (
                       <div
-                        className='col-md-12 text-right th-pointer'
-                        onClick={() => this.setState({ showGrievanceModal: true })}
+                        className='row justify-content-end'
+                        style={{ position: 'fixed', bottom: '5%', right: '2%' }}
                       >
-                        Not able to see the Ebooks?
-                        <span
-                          className='th-primary pl-1'
-                          style={{ textDecoration: 'underline' }}
+                        <div
+                          className='th-bg-white px-2 py-1 th-br-6 th-pointer'
+                          style={{ border: '1px solid #d9d9d9' }}
+                          onClick={() => this.setState({ showGrievanceModal: true })}
                         >
-                          Raise your query
-                        </span>
+                          Having any issues with Ebook ?<br />
+                          <br />
+                          <span
+                            className='th-primary pl-1'
+                            style={{ textDecoration: 'underline' }}
+                          >
+                            Raise your query
+                          </span>
+                        </div>
                       </div>
                     ) : null}
                     {this.state.showGrievanceModal && (

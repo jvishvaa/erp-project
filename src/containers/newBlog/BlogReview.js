@@ -250,7 +250,6 @@ function callApi(api,key){
           },
         })
         .then((response) =>{
-          // debugger;
           console.log(response?.data?.result);
           setGradeList(response?.data?.result)
           setLoading(false)

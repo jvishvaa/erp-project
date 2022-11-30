@@ -57,6 +57,8 @@ import BookAppointment from './containers/BookAppointments/BookAppointment';
 import Appointments from './containers/BookAppointments/Appointments';
 import ResponderView from './containers/BookAppointments/ResponderView';
 import AssessmentForm from './containers/sure-learning/assessment_form/assessment_form';
+import Chapterwise from './containers/question-bank-new/question-bank-list/chapterwise'
+import PostActivityView from 'containers/newBlog/postActivityView';
 
 import {
   ViewAssessments,
@@ -99,6 +101,7 @@ import AdminCreateBlog from './containers/newBlog/AdminCreateBlog';
 import AdminPublishBlogShort from './containers/newBlog/Shortlisted';
 import BlogWall from 'containers/newBlog/BlogWall';
 import BlogWallRedirect from 'containers/newBlog/BlogRedirection';
+import CentralBlogRedirection from 'containers/newBlog/CentralBlogRedirection';
 import PublicSpeakingWall from 'containers/newBlog/PublicSpeaking';
 import StudentViewBlog from './containers/newBlog/StudentSideBlog';
 import NewEditBlog from './containers/newBlog/StudentBlog';
@@ -383,6 +386,9 @@ import CoursesView from 'containers/sure-learning/PrincipalDashboard/PrincipalCo
 import CourseEnroleModle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleModle';
 import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/academic/curriculamSubject';
 import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
+import CurriculumCompletionChapter from 'containers/dashboard/ownerDashboard/academic/chapterWise';
+import TeacherSubject from 'containers/dashboard/ownerDashboard/academic/teacherSubject';
+import StudentSubject from 'containers/dashboard/ownerDashboard/academic/studentSubjectWise';
 
 import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade';
 import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report';
@@ -431,6 +437,7 @@ import ResourcesFolderList from './containers/sure-learning/Resources_Folders/re
 import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
 import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
+import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject'
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
@@ -447,6 +454,12 @@ import OnboardingReport from 'containers/user-management/onboarding-report/onboa
 import AddTemplates from './containers/newBlog/addTemplates';
 import Gradingview from 'containers/assessment-central/grading-system/gradingview';
 import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
+import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
+import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
+import PhysicalPendingReview from 'containers/newBlog/PhysicalPendingReview';
+import CreatePostActivity from 'containers/newBlog/createPostActivity';
+import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
+import BlogActivityView from 'containers/newBlog/BlogActivityView';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -477,6 +490,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Switch>
                             <Route path='/userprofile'>
                               {({ match }) => <UserProfile match={match} />}
+                            </Route>
+                            <Route path='/post-activity-view'>
+                              {({ match }) => <PostActivityView match={match} />}
+                            </Route>
+                            <Route path='/create-post-activity'>
+                              {({ match }) => <CreatePostActivity match={match} />}
                             </Route>
                             <Route path='/profile'>
                               {({ match }) => <Profile match={match} />}
@@ -519,6 +538,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/communication/messagelog'>
                               {({ match }) => <MessageLog match={match} />}
                             </Route>
+                            <Route path='/student/phycial/activity'>
+                              {({ match }) => <StudentSidePhysicalActivity match={match} />}
+                            </Route>
+                            <Route path='blog-activity-view'>
+                              {({ match }) => <BlogActivityView match={match} />}
+                            </Route>
                             <Route path='/dashboard'>
                               {({ match }) => <Dashboard match={match} />}
                             </Route>
@@ -549,6 +574,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                         */}
                             <Route exact path='/question-bank'>
                               {({ match }) => <QuestionBankList match={match} />}
+                            </Route>
+                            <Route exact path='/question-chapter-wise'>
+                              {({ match }) => <Chapterwise match={match} />}
                             </Route>
                             <Route exact path='/create-question/:qId?'>
                               {({ match }) => <CreateQuestion match={match} />}
@@ -666,6 +694,18 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/blog/wall/redirect'>
                               {({ match }) => <BlogWallRedirect match={match} />}
                             </Route>
+                            <Route exact path='/physical/activity'>
+                              {({ match }) => <PhysicalActivity match={match} />}
+                            </Route>
+                            <Route exact path='/physical/activity/review'>
+                              {({ match }) => <PhysicalActivityReview match={match} />}
+                            </Route>
+                            <Route exact path='/blog/wall/central/redirect'>
+                              {({ match }) => <CentralBlogRedirection match={match} />}
+                            </Route>
+                            {/* <Route exact path="phsical/pending/review">
+                                {({match}) => <PhysicalPendingReview/>}
+                            </Route> */}
                             <Route exact path='/blog/publicspeaking'>
                               {({ match }) => <PublicSpeakingWall match={match} />}
                             </Route>
@@ -1978,9 +2018,30 @@ function App({ alert, isMsAPI, erpConfig }) {
                                 <CurriculumCompletionSubject match={match} />
                               )}
                             </Route>
+                            <Route path='/curriculum-completion-chapter/:branchId/:gradeId'>
+                              {({ match }) => (
+                                <CurriculumCompletionChapter match={match} />
+                              )}
+                            </Route>
+                            <Route path='/curriculum-completion-chapter-subject/'>
+                              {({ match }) => (
+                                <CurriculumChapterWiseSubject match={match} />
+                              )}
+                            </Route>
+
                             <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
                               {({ match }) => (
                                 <CurriculumCompletionSection match={match} />
+                              )}
+                            </Route>
+                            <Route path='/curriculum-completion-teacher-subject/:branchId'>
+                              {({ match }) => (
+                                <TeacherSubject match={match} />
+                              )}
+                            </Route>
+                            <Route path='/curriculum-completion-student-subject/'>
+                              {({ match }) => (
+                                <StudentSubject match={match} />
                               )}
                             </Route>
                             <Route path='/sure-learning-trainee-courses'>

@@ -386,35 +386,7 @@ const Appbar = ({ children, history, ...props }) => {
       });
     return result;
   };
-
-  const getActivitySession = () => {
-    // setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activitySessionLogin}`,
-        {},
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-            Authorization: `${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        // setActivityStorage(response.data.result);
-        localStorage.setItem(
-          'ActivityManagementSession',
-          JSON.stringify(response?.data?.result)
-        );
-        // setLoading(false)
-      });
-  };
-
-  useEffect(() =>{
-    getActivitySession()
-
-  },[])
-
+  
   const handleSwitchChange = (item) => {
     sessionStorage.removeItem('branch_list');
     sessionStorage.removeItem('selected_branch');

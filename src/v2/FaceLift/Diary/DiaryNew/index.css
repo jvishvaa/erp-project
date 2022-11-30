@@ -1,0 +1,40 @@
+.th-diaryDrawer .ant-drawer-body {
+  padding: 0px 10px !important;
+}
+.th-diaryDrawer .ant-drawer-header {
+  padding: 10px !important;
+  /* border-bottom: 2px solid #d9d9d9; */
+  /* margin-bottom: 10px; */
+  border-bottom:none !important;
+}
+.th-diary-radio .ant-radio-wrapper{
+  color: #1b4ccb !important;
+  border-radius: 4px !important;
+  padding: 5px 8px !important;
+}
+.th-diary-radio .ant-radio-wrapper-checked{
+  background-color: #1b4ccb !important;
+  color: #fff !important;
+}
+.th-diary-collapse .ant-collapse-header-text{
+  width: 100% !important;
+}
+.th-diary-collapse .ant-collapse-item {
+  border-bottom: 0px solid transparent !important;
+}
+.th-diary-collapse .ant-collapse-icon-position-end > .ant-collapse-item > .ant-collapse-header{
+  padding: 0px !important;
+}
+.th-diary-collapse .ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header{
+  padding-left: 0px !important;
+}
+
+.th-diary-collapse .ant-collapse-content > .ant-collapse-content-box{
+  padding: 0px !important;
+}
+.th-divider .ant-divider-horizontal.ant-divider-with-text::after {
+  transform: translateY(0%);
+}
+.th-divider .ant-divider-horizontal.ant-divider-with-text {
+  margin-bottom: 5px !important;
+}
