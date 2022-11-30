@@ -291,7 +291,7 @@ const selectedBranch = useSelector(
 
   const columns1 = [
     {
-      title: <span className='th-white pl-4 th-fw-700 '>Grade Name</span>,
+      title: <span className='th-white pl-4 th-fw-700 '>GRADE NAME</span>,
       dataIndex: 'grade_name',
       width: '20%',
       align: 'left',
@@ -343,7 +343,7 @@ const selectedBranch = useSelector(
     console.log(record, 'rec');
     const innerColumn = [
       {
-        title: <span className='th-white '>Subject Name</span>,
+        title: <span className='th-white '>SUBJECT NAME</span>,
         dataIndex: 'subject_name',
         align: 'center',
         width: tableWidthCalculator(20) + '%',
@@ -357,28 +357,28 @@ const selectedBranch = useSelector(
       //   render: (data) => <span className='th-black-2 th-16'>{data}</span>,
       // },
       {
-        title: <span className='th-white '>Section List</span>,
+        title: <span className='th-white '>SECTION LIST</span>,
         dataIndex: 'sections',
         align: 'center',
         width: '15%',
         render: (data) => datagen(data),
       },
       {
-        title: <span className='th-white '>Total Periods</span>,
+        title: <span className='th-white '>AVG. TOTAL PERIODS</span>,
         dataIndex: 'total_periods',
         align: 'center',
         width: '15%',
         render: (data) => <span className='th-green th-16'>{data}</span>,
       },
       {
-        title: <span className='th-white '>Total Periods Pending</span>,
+        title: <span className='th-white '>AVG. PERIODS PENDING</span>,
         dataIndex: 'pending_periods',
         align: 'center',
         width: '15%',
         render: (data) => <span className='th-red th-16'>{data}</span>,
       },
       {
-        title: <span className='th-white '>Avg. Completion</span>,
+        title: <span className='th-white '>AVG. COMPLETION</span>,
         dataIndex: 'avg_completion',
         align: 'center',
         width: '15%',
