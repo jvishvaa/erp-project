@@ -147,6 +147,7 @@ const CurriculumCompletionChapter = (props) => {
   const [subjectId, setSubjectId] = useState();
   const [subjectName, setSubjectName] = useState('');
   const [teacherData, setTeacherData] = React.useState([]);
+  const [ centralGSID , setCentralGSID ] = useState()
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [gradeApiData, setGradeApiData] = useState([])
   const [subjectApiData, setSubjectApiData] = useState([])
@@ -262,7 +263,7 @@ console.log(history?.location?.state , 'history');
     })
     console.log(temp , transform);
     if(temp?.length > 0 ){
-      handleGrade(temp[0])
+      handleGrade(temp[0] , 'auto')
       // setSelectedGrade(temp[0])
     }
   }
@@ -281,7 +282,7 @@ console.log(history?.location?.state , 'history');
     })
     console.log(temp , transform);
     if(temp?.length > 0 ){
-      handleSubject(temp[0])
+      handleSubject(temp[0] , 'auto' )
       // setSelectedGrade(temp[0])
     }
   }
@@ -316,7 +317,7 @@ console.log(history?.location?.state , 'history');
     );
   });
 
-  const handleGrade = (e) => {
+  const handleGrade = (e , str) => {
     console.log(e);
     if (e?.value) {
       setGradeId(e.value);
@@ -327,6 +328,9 @@ console.log(history?.location?.state , 'history');
     } else {
       setGradeId('');
       setGradeName('');
+    }
+    if(str != 'auto'){
+      setCentralGSID()
     }
   };
   const handleClearGrade = () => {
@@ -360,7 +364,7 @@ console.log(history?.location?.state , 'history');
     );
   });
 
-  const handleSubject = (e) => {
+  const handleSubject = (e , str) => {
     console.log(e);
     if (e?.value) {
       setSubjectId(e.value);
@@ -371,6 +375,9 @@ console.log(history?.location?.state , 'history');
     } else {
       setSubjectId('');
       setSubjectName('');
+    }
+    if(str != 'auto'){
+      setCentralGSID()
     }
   };
   const handleClearSubject = () => {
@@ -385,20 +392,22 @@ console.log(history?.location?.state , 'history');
       teacherSubjectTable({
         grade_id: gradeId,
         session_year: selectedAcademicYear?.id,
-        central_gs: history?.location?.state?.central_gs,
+        central_gs: record?.central_gs,
         chapter_id: record?.chapter_id,
         teacher_erp: teacherId,
         acad_session: history?.location?.state?.acad_sess_id,
-        subject_id: subjectId
+        subject_id: subjectId,
+        volume: volumeId
       })
     } else {
       teacherSubjectTable({
         grade_id: gradeId,
         session_year: selectedAcademicYear?.id,
-        central_gs: history?.location?.state?.central_gs,
+        central_gs: record?.central_gs,
         chapter_id: record?.chapter_id,
         acad_session: history?.location?.state?.acad_sess_id,
-        subject_id: subjectId
+        subject_id: subjectId,
+        volume: volumeId
       })
     }
     const keys = [];
@@ -426,6 +435,8 @@ console.log(history?.location?.state , 'history');
       })
       .catch((err) => {
         setLoading(false);
+        setCollapseData([]);
+
       });
   };
 
@@ -442,6 +453,7 @@ console.log(history?.location?.state , 'history');
     setTeacherId(history?.location?.state?.teacher_id)
     setGradeId(history?.location?.state?.grade)
     setSubjectId(history?.location?.state?.subject_id)
+    setCentralGSID(history?.location?.state?.central_gs)
   }, [history]);
 
 
@@ -455,7 +467,7 @@ console.log(history?.location?.state , 'history');
             teacher_erp: history?.location?.state?.teacher_id,
             acad_session: history?.location?.state?.acad_sess_id,
             volume: volumeId,
-            central_gs: history?.location?.state?.central_gs,
+            central_gs: centralGSID,
             subject_id: subjectId
           });
         } else {
@@ -464,7 +476,7 @@ console.log(history?.location?.state , 'history');
             session_year: selectedAcademicYear?.id,
             teacher_erp: history?.location?.state?.teacher_id,
             acad_session: history?.location?.state?.acad_sess_id,
-            central_gs: history?.location?.state?.central_gs,
+            central_gs: centralGSID,
             subject_id: subjectId
           });
         }
@@ -473,7 +485,7 @@ console.log(history?.location?.state , 'history');
           gradeListTable({
             grade_id: gradeId,
             session_year: selectedAcademicYear?.id,
-            central_gs: history?.location?.state?.central_gs,
+            central_gs: centralGSID,
             acad_session: history?.location?.state?.acad_sess_id,
             volume: volumeId,
             subject_id: subjectId
@@ -483,7 +495,7 @@ console.log(history?.location?.state , 'history');
           gradeListTable({
             grade_id: gradeId,
             session_year: selectedAcademicYear?.id,
-            central_gs: history?.location?.state?.central_gs,
+            central_gs: centralGSID,
             acad_session: history?.location?.state?.acad_sess_id,
             subject_id: subjectId
           });
@@ -494,6 +506,7 @@ console.log(history?.location?.state , 'history');
 
   const gradeListTable = (params = {}) => {
     setLoading(true);
+    setExpandedRowKeys([])
     axiosInstance
       .get(`${endpoints.ownerDashboard.chapterWise}`, {
         params: { ...params },
@@ -510,6 +523,7 @@ console.log(history?.location?.state , 'history');
       })
       .catch((err) => {
         setLoading(false);
+        setTableData([]);
       });
   };
   // let col = [...columns]
@@ -598,7 +612,7 @@ console.log(history?.location?.state , 'history');
     if(history?.location?.state?.teacherView == 2 ){
       console.log(history?.location?.state.teacherView , 'teacher');
       history.push({
-        pathname: `${history?.location?.state?.pathname}`,
+        pathname: `/curriculum-completion/${history?.location?.state?.branch_id}`,
         state: {
             ...history?.location?.state
         },
