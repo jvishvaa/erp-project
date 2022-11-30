@@ -21,6 +21,7 @@ import {
   RightOutlined,
   EyeFilled,
 } from '@ant-design/icons';
+import {  PlusOutlined} from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -437,12 +438,12 @@ if(filters.questionId){
           // <span className='th-black-1'>{data}</span>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
             {row?.eduvate_qp_count != 0 && <div //onClick={fetchQuestionCards(data)}
-              style={{ border: '1px solid #48F1FC', background: '#48F1FC', width: '40%' }}
+              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '30%',color:'white' }}
             > 
               {row?.eduvate_qp_count}
             </div>}
             {row?.school_qp_count !=0 && <div
-              style={{ border: '1px solid #CFBCF9', background: '#CFBCF9', width: '40%' }}
+              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '30%' ,color:'white'}}
             >
              {row?.school_qp_count}
 
@@ -523,16 +524,16 @@ if(filters.questionId){
       render: (text , row, index) => {
         return (
           // <div className='d-flex justify-content-center' >
-          // <div style={{ border: '1px solid #48F1FC', background: '#48F1FC', width:'45%' }}>{data}</div>
+          // <div style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width:'45%' }}>{data}</div>
           // </div>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
             {(row?.eduvate_qp_count != 0 && row?.eduvate_qp_count != null) && <div
-              style={{ border: '1px solid #48F1FC', background: '#48F1FC', width: '40%' }}
+              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '30%',color:'white' }}
             >
               {row?.eduvate_qp_count}
             </div>}
             {(row?.school_qp_count != 0 && row?.school_qp_count != null) && <div
-              style={{ border: '1px solid #CFBCF9', background: '#CFBCF9', width: '40%' }}
+              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '30%',color:'white' }}
             >
               {row?.school_qp_count  === null ? 0 : row?.school_qp_count}
             </div>}
@@ -555,7 +556,7 @@ if(filters.questionId){
             </Breadcrumb>
           </div>
         </div>
-        <div className='row'>
+        <div className='row th-bg-white py-2'>
           <div className='col-12'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
@@ -588,7 +589,7 @@ if(filters.questionId){
                   </div> */}
                 {/* )} */}
                 <div className='col-md-2 col-6 px-0 pl-0'>
-                  <div className='mb-2 text-left'>Grade</div>
+                  <div className='mb-2 text-left' style={{marginLeft : '4%'}}>Grade</div>
                   <Form.Item name='grade'>
                     <Select
                       allowClear
@@ -619,7 +620,7 @@ if(filters.questionId){
                   </Form.Item>
                 </div>
                 <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                  <div className='mb-2 text-left'>Subject</div>
+                  <div className='mb-2 text-left' style={{marginLeft : '4%'}}>Subject</div>
                   <Form.Item name='subject'>
                     <Select
                     allowClear
@@ -653,7 +654,7 @@ if(filters.questionId){
 
                 </div>
                 <div
-                  className='col-md-5 col-6 px-0'
+                  className='col-md-6 col-12 px-0'
                   style={{ display: 'flex', justifyContent: 'end' }}
                 >
                   {section && questionId && <Button
@@ -663,8 +664,9 @@ if(filters.questionId){
                         ? () => history.push(`/create-question-paper/${isEdit}`)
                         : () => history.push(`/create-question-paper?show-question-paper=true`)
                     }
-                    style={{width:'30%', marginRight:'7%'}}
+                    style={{width:'15%', marginRight:'6%'}}
                     shape="round"
+                    size={'small'}
                     className='th-br-6'
                   >
                     Back
@@ -673,48 +675,52 @@ if(filters.questionId){
                   <Button
                     type='primary'
                     onClick={() => history.push('/create-question')}
-                    style={{width:'30%'}}
+                    style={{marginRight:'2%' , marginBottom:'7%'}}
+                    // size={'small'}
                     shape="round"
-                    className='th-br-6'
+                    className='th-br-6 w-30 th-fw-500'
                   >
-                    Create
+                  <PlusOutlined size='small'/>
+                    Create New
                   </Button>
                 </div>
               </div>
             </Form>
           </div>
-          <div className='col-12' style={{ display: 'flex', justifyContent: 'flex-end' , marginBottom:'2%'}}>
+          <div className='col-12' style={{ display: 'flex', justifyContent: 'flex-end' , marginBottom:'1%'}}>
             <div
-              className='col-md-6 col-6 pl-0'
+              className='col-md-6 col-8 pl-0'
               style={{ display: 'flex', justifyContent: 'end' }}
             >
-              <div className='col-md-2 col-2 px-0'>Index :</div>
+              <div className='col-md-3 col-3 px-0'>Questions Index :</div>
               <div
-                className='col-md-3 col-3 px-0'
+                className='col-md-2 col-3 px-0'
                 style={{
-                  background: '#48F1FC',
-                  height: '35px',
+                  background: '#0DCFE0',
+                  height: '25px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderRadius: '5px',
+                  borderRadius: '15px',
                   marginRight: '32px',
+                  color:'white'
                 }}
               >
-                Eduvate Questions
+                Eduvate
               </div>
               <div
-                className='col-md-3 col-3 px-0'
+                className='col-md-2 col-3 px-0'
                 style={{
-                  background: '#CFBCF9',
-                  height: '35px',
+                  background: '#B83AF4',
+                  height: '25px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderRadius: '5px',
+                  borderRadius: '15px',
+                  color:'white'
                 }}
               >
-                School Questions
+                School
               </div>
             </div>
           </div>

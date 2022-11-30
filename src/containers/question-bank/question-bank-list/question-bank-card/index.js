@@ -382,11 +382,11 @@ const QuestionBankCard = ({
             </Typography>
           </Box>
         </Grid>
-        <Grid item  sm = {4} xs={6} className={classes.textRight}>
+        <Grid item  sm = {periodColor ? 3 : 4} xs={6} className={classes.textRight}>
           {!periodColor ? (
             <Button
               variant='contained'
-              style={{ color: 'white',marginTop:'5%' ,width: '100%'}}
+              style={{ color: 'white',marginTop:'5%' ,width: '100%' , borderRadius:'5px'}}
               color='primary'
               size='small'
               onClick={handleViewMore}
@@ -396,7 +396,7 @@ const QuestionBankCard = ({
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%', width: '100%' }}
+              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%',borderRadius:'5px' }}
               color='primary'
               size='small'
               onClick={handleViewMore}

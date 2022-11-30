@@ -216,6 +216,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
             </Breadcrumb>
           </div>
         </div>
+        <div className='th-bg-white py-2 mx-3'>
         {/* </BreadcrumbToggler> */}
         <div className={!isFilter ? 'showFilters' : 'hideFilters'}>
           <AssessmentFilters
@@ -255,7 +256,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
                   All
                 </Button>
               </div>}
-            <div className='col-md-5 d-flex'>
+            <div className='col-md-5 d-flex pl-0'>
               <div className='col-md-4 col-6'>
                 <Button
                   className={`${
@@ -306,8 +307,8 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
               </div>}
               <div className='col-md-2 col-6'></div>
               </div>
-              <div className='col-md-4 d-flex'>
-                <div className='col-md-1 col-6'></div>
+              <div className='col-md-4 pr-0'>
+                <div className='row justify-content-between'>
               
                 {/* <div className='d-flex align-items-center'> 
                 <Switch onChange={changequestionFrom} checked={tabIsErpCentral}/>
@@ -317,22 +318,25 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
                   className={`${
                     tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'}
                   } th-width-100 th-br-6 mt-2`}
-                  style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
+                  // style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
                   onClick={changequestionFrom}
                 >
                   Eduvate Question
                 </Button>
+                {tabIsErpCentral && <hr className='my-1 th-fw-700'/>}
                 </div>
-                <div className='col-md-6 col-12'> 
+                <div className='col-md-6 col-12 pr-0'> 
                 <Button
                   className={`${
-                    !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'}
+                    !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'}
                   } th-width-100 th-br-6 mt-2`}
                   onClick={changequestionFrom}
-                  style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
+                  // style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
                 >
                   School Question
                 </Button>
+                {!tabIsErpCentral && <hr className='my-1 th-fw-700'/>}
+                </div>
                 </div>
             </div>
         </div>
@@ -386,6 +390,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
                     filterDataDown={filterDataDown}
                     periodDataForView={periodDataForView}
                     setPublishFlag={setPublishFlag}
+                    tabValue = {tabValue}
                   />
                 </Grid>
               )}
@@ -431,6 +436,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
             </div>
           )}
         </Paper>
+        </div>
       </div>
       </Layout>
     </>

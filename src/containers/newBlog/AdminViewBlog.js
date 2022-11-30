@@ -178,6 +178,7 @@ const AdminViewBlog = () => {
   const [isClickedAssigned, setIsClickedAssigned] = useState(false);
   const [searchFlag,setSearchFlag] = useState(false)
   const [loading,setLoading] = useState(false);
+  const blogActivityId = localStorage.getItem('BlogActivityId') ?  JSON.parse(localStorage.getItem('BlogActivityId')) : {};
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -375,7 +376,7 @@ const AdminViewBlog = () => {
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
+        `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}&activity_type=${blogActivityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -402,7 +403,7 @@ const AdminViewBlog = () => {
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}`,
+        `${endpoints.newBlog.Assign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${blogActivityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
