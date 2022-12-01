@@ -84,7 +84,7 @@ const DailyDiary = () => {
   const [summary, setSummary] = useState('');
   const [tools, setTools] = useState('');
   const [homework, setHomework] = useState('');
-  // const [homeworkCreated, setHomeworkCreated] = useState(false);
+  const [periodID, setPeriodID] = useState();
   const [assignedHomework, setAssignedHomework] = useState('');
   const [assignedHomeworkModal, setAssignedHomeworkModal] = useState('');
   const [declined, setDeclined] = useState(false);
@@ -223,36 +223,40 @@ const DailyDiary = () => {
     if (params.data) {
       setAddingUpcomingPeriod(true);
     }
-    if (keyConceptID) {
-      if (!_.isEmpty(params.value)) {
-        fetchLessonResourcesData({
-          grade: gradeID,
-          acad_session_id: selectedBranch?.id,
-          chapters: params.value.chapter_id,
-          subject: subjectID,
-          central_gs_id: Number(params.value.chapter__grade_subject_mapping_id),
-          for_diary: 1,
-          key_concepts: Number(params.value.key_concept_id),
-        });
-        setKeyConceptName(params.value.key_concept__topic_name);
-        setChapterName(params.value.chapter__chapter_name);
-      } else {
-        fetchLessonResourcesData({
-          grade: gradeID,
-          acad_session_id: selectedBranch?.id,
-          chapters: chapterID,
-          subject: subjectID,
-          central_gs_id: Number(gsMappingID),
-          for_diary: 1,
-          key_concepts: Number(keyConceptID),
-        });
-      }
+    // if (keyConceptID) {
+    if (!_.isEmpty(params.value)) {
+      setPeriodID(params.value?.id);
+      setChapterID(params.value.chapter_id);
+      setKeyConceptID(params.value.key_concept_id);
+      fetchLessonResourcesData({
+        grade: gradeID,
+        acad_session_id: selectedBranch?.id,
+        chapters: params.value.chapter_id,
+        subject: subjectID,
+        central_gs_id: Number(params.value.chapter__grade_subject_mapping_id),
+        for_diary: 1,
+        key_concepts: Number(params.value.key_concept_id),
+      });
+      setKeyConceptName(params.value.key_concept__topic_name);
+      setChapterName(params.value.chapter__chapter_name);
     }
+    //  else {
+    //   fetchLessonResourcesData({
+    //     grade: gradeID,
+    //     acad_session_id: selectedBranch?.id,
+    //     chapters: chapterID,
+    //     subject: subjectID,
+    //     central_gs_id: Number(gsMappingID),
+    //     for_diary: 1,
+    //     key_concepts: Number(keyConceptID),
+    //   });
+    // }
+    // }
   };
   const closeDrawer = () => {
     setDrawerVisible(false);
   };
-
+  console.log('ID2', chapterID, keyConceptID, periodID);
   const handleBack = () => {
     history.push('/diary/teacher');
   };
@@ -376,7 +380,7 @@ const DailyDiary = () => {
         .then((res) => {
           if (res?.data?.status_code == 200) {
             if (res?.data?.message === 'Daily Dairy created successfully') {
-              message.success('Daily Diary Created Succssfully');
+              message.success('Daily Diary Created Successfully');
               history.push('/diary/teacher');
             } else if (res?.data?.message.includes('locked')) {
               message.error(res?.data?.message);
@@ -703,28 +707,28 @@ const DailyDiary = () => {
       .catch((error) => message.error('error', error?.message));
   };
   const fetchUpcomigPeriod = (periodID) => {
-    axiosInstance
-      .get(
-        `${endpoints?.dailyDiary?.upcomingPeriodData}?current_period_ids=${periodID}`,
-        {
-          headers: {
-            'x-api-key': 'vikash@12345#1231',
-          },
-        }
-      )
+    const params = {
+      current_period_ids: periodID,
+      section_mapping: sectionMappingID,
+      subject_id: subjectID,
+    };
+    axios
+      .get(`/academic/diary/upcoming-period/`, {
+        params: { ...params },
+      })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          if (response?.data?.result.length > 0) {
+          if (response?.data?.data.length > 0) {
             if (
               addedPeriods
                 ?.map((item) => item.id)
-                .includes(response?.data?.result[0]?.id) ||
-              response?.data?.result[0]?.id == 0
+                .includes(response?.data?.data[0]?.id) ||
+              response?.data?.data[0]?.id == 0
             ) {
               return;
             } else {
               setClearUpcomingPeriod(false);
-              setUpcomingPeriod(response?.data?.result[0]);
+              setUpcomingPeriod(response?.data?.data[0]);
             }
           }
         }
@@ -733,6 +737,7 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
+  console.log('Periods', upcomingPeriod, addedPeriods);
   useEffect(() => {
     if (assignedHomework) {
       mapAssignedHomework();
@@ -977,6 +982,10 @@ const DailyDiary = () => {
         setAddedPeriods(editData?.periods_data);
         setCurrentPanel(0);
       }
+      if (!_.isEmpty(editData?.up_coming_period)) {
+        setClearUpcomingPeriod(false);
+        setUpcomingPeriod(editData?.up_coming_period);
+      }
       // setRecap(editData?.teacher_report?.previous_class);
       // setClasswork(editData?.teacher_report?.class_work);
       setSummary(editData?.teacher_report?.summary);
@@ -1119,7 +1128,9 @@ const DailyDiary = () => {
                               style={{ border: '1px solid #d9d9d9' }}
                               onClick={() =>
                                 subjectID
-                                  ? showDrawer()
+                                  ? showDrawer({
+                                      value: addedPeriods[addedPeriods.length - 1],
+                                    })
                                   : message.error('Please select Subject first')
                               }
                             >
@@ -1210,16 +1221,23 @@ const DailyDiary = () => {
                                         {item?.period_name}
                                       </div>
                                       <div className='col-5 pl-0 text-right'>
-                                        <div className='d-flex flex-column'>
-                                          <div className='th-10 th-grey-1'>
-                                            Last Updated on
+                                        {item?.completion_status?.filter(
+                                          (item) => item?.section_id === sectionMappingID
+                                        )[0]?.is_complete === true ? (
+                                          <div className='d-flex flex-column'>
+                                            <div className='th-10 th-grey-1'>
+                                              Updated at
+                                            </div>
+                                            <div className='th-10 th-black-1'>
+                                              {moment(
+                                                item?.completion_status?.filter(
+                                                  (item) =>
+                                                    item?.section_id === sectionMappingID
+                                                )[0]?.completed_at
+                                              ).format('DD/MM/YYYY HH:mm a')}
+                                            </div>
                                           </div>
-                                          <div className='th-10 th-black-1'>
-                                            {moment(item?.created_at).format(
-                                              'DD/MM/YYYY HH:mm a'
-                                            )}
-                                          </div>
-                                        </div>
+                                        ) : null}
                                       </div>
                                       <div
                                         className='col-1 pr-0'
@@ -1257,7 +1275,7 @@ const DailyDiary = () => {
                                     className='row th-pointer'
                                     onClick={() => {
                                       subjectID
-                                        ? showDrawer()
+                                        ? showDrawer({ value: item })
                                         : message.error('Please select Subject first');
                                     }}
                                   >
@@ -1368,6 +1386,7 @@ const DailyDiary = () => {
                           <div
                             className='row th-pointer'
                             onClick={() => {
+                              // setKeyConceptID()
                               subjectID
                                 ? showDrawer({ data: true, value: upcomingPeriod })
                                 : message.error('Please select Subject first');
@@ -1382,12 +1401,21 @@ const DailyDiary = () => {
                                   {upcomingPeriod?.period_name}
                                 </div>
                                 <div className='col-6 pl-0 text-right'>
-                                  <div className='d-flex flex-column'>
-                                    <div className='th-10 th-grey-1'>Last Updated on</div>
-                                    <div className='th-10 th-black-1'>
-                                      21/11/2022, 12:33 pm
+                                  {upcomingPeriod?.completion_status?.filter(
+                                    (item) => item?.section_id === sectionMappingID
+                                  )[0]?.is_complete === true ? (
+                                    <div className='d-flex flex-column'>
+                                      <div className='th-10 th-grey-1'>Updated at</div>
+                                      <div className='th-10 th-black-1'>
+                                        {moment(
+                                          upcomingPeriod?.completion_status?.filter(
+                                            (item) =>
+                                              item?.section_id === sectionMappingID
+                                          )[0]?.completed_at
+                                        ).format('DD/MM/YYYY HH:mm a')}
+                                      </div>
                                     </div>
-                                  </div>
+                                  ) : null}
                                 </div>
                               </div>
                               {boardFilterArr.includes(window.location.host) && (
@@ -1481,7 +1509,7 @@ const DailyDiary = () => {
                         className='th-fw-600 th-black-1 px-2'
                         onClick={() => setShowHomeworkForm(true)}
                       >
-                        Existing Homework
+                        {isDiaryEdit ? 'Homework' : 'Existing Homework'}
                       </div>
                     ) : !showHomeworkForm ? (
                       <div
@@ -1661,7 +1689,7 @@ const DailyDiary = () => {
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleChapter(value)}
                     placeholder={
-                      chapterID ? (
+                      chapterName ? (
                         <div className='th-black-2'>{chapterName}</div>
                       ) : (
                         'Select Chapter'
@@ -1691,7 +1719,7 @@ const DailyDiary = () => {
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleKeyConcept(value)}
                     placeholder={
-                      keyConceptID ? (
+                      keyConceptName ? (
                         <div className='th-black-2'>{keyConceptName}</div>
                       ) : (
                         'Select Key Concept'
@@ -1718,228 +1746,233 @@ const DailyDiary = () => {
                 <Spin tip='Loading...' />
               </div>
             ) : resourcesData.length > 0 ? (
-              resourcesData.map((item, i) => (
-                <div className='row'>
-                  <Collapse
-                    activeKey={currentPeriodPanel}
-                    expandIconPosition='right'
-                    bordered={true}
-                    className='th-br-6 my-2 th-bg-grey th-width-100'
-                    style={{ border: '1px solid #d9d9d9' }}
-                    expandIcon={({ isActive }) => (
-                      <CaretRightOutlined rotate={isActive ? 90 : 0} />
-                    )}
-                    onChange={() => setCurrentPeriodPanel(i)}
-                  >
-                    <Panel
-                      collapsible={true}
-                      header={
-                        <div className='row'>
-                          <div className='th-black-1 px-0 col-12 pl-0'>
-                            <div className='row justify-content-between'>
-                              <span className='th-fw-500'>{item.period_name} </span>
+              resourcesData.map((item, i) => {
+                return (
+                  <div className='row'>
+                    <Collapse
+                      activeKey={currentPeriodPanel}
+                      expandIconPosition='right'
+                      bordered={true}
+                      className='th-br-6 my-2 th-bg-grey th-width-100'
+                      style={{ border: '1px solid #d9d9d9' }}
+                      expandIcon={({ isActive }) => (
+                        <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                      )}
+                      onChange={() => setCurrentPeriodPanel(i)}
+                    >
+                      <Panel
+                        collapsible={true}
+                        header={
+                          <div className='row'>
+                            <div className='th-black-1 px-0 col-12 pl-0'>
+                              <div className='row justify-content-between'>
+                                <span className='th-fw-500'>{item.period_name} </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      }
-                      key={i}
-                    >
-                      {boardFilterArr.includes(window.location.host) && (
-                        <div className='row mt-1 th-fw-600'>
+                        }
+                        key={i}
+                      >
+                        {boardFilterArr.includes(window.location.host) && (
+                          <div className='row mt-1 th-fw-600'>
+                            <div className='col-3 col-md-2 th-black-1 px-0'>
+                              <div className='row justify-content-between'>
+                                <span>Module</span>
+                                <span>:&nbsp;</span>
+                              </div>
+                            </div>
+
+                            <div className='col-9 col-md-10 text-truncate th-primary px-0'>
+                              {item?.chapter__lt_module__lt_module_name}
+                            </div>
+                          </div>
+                        )}
+                        <div className='row mt-2 th-fw-600'>
                           <div className='col-3 col-md-2 th-black-1 px-0'>
                             <div className='row justify-content-between'>
-                              <span>Module</span>
+                              <span>Chapter</span>
                               <span>:&nbsp;</span>
                             </div>
                           </div>
 
                           <div className='col-9 col-md-10 text-truncate th-primary px-0'>
-                            {item?.chapter__lt_module__lt_module_name}
+                            {item?.chapter__chapter_name}
                           </div>
                         </div>
-                      )}
-                      <div className='row mt-2 th-fw-600'>
-                        <div className='col-3 col-md-2 th-black-1 px-0'>
-                          <div className='row justify-content-between'>
-                            <span>Chapter</span>
-                            <span>:&nbsp;</span>
+                        <div className='row mt-2 th-fw-600'>
+                          <div className='col-3 th-black-1 px-0'>
+                            <div className='row justify-content-between'>
+                              <span>Key Concept</span>
+                              <span>:&nbsp;</span>
+                            </div>
                           </div>
-                        </div>
 
-                        <div className='col-9 col-md-10 text-truncate th-primary px-0'>
-                          {item?.chapter__chapter_name}
-                        </div>
-                      </div>
-                      <div className='row mt-2 th-fw-600'>
-                        <div className='col-3 th-black-1 px-0'>
-                          <div className='row justify-content-between'>
-                            <span>Key Concept</span>
-                            <span>:&nbsp;</span>
+                          <div className='col-9 text-truncate th-primary px-0'>
+                            {item?.key_concept__topic_name}
                           </div>
                         </div>
-
-                        <div className='col-9 text-truncate th-primary px-0'>
-                          {item?.key_concept__topic_name}
-                        </div>
-                      </div>
-                      <hr className='mt-1' />
-                      <div className='row mb-2 align-items-center'>
-                        <div className='col-12 col-sm-6 th-black-2 pl-0'>
-                          <div className='row'>
-                            Status :{' '}
+                        <hr className='mt-1' />
+                        <div className='row mb-2 align-items-center'>
+                          <div className='col-12 col-sm-6 th-black-2 pl-0'>
+                            <div className='row'>
+                              Status :{' '}
+                              {item?.completion_status?.filter(
+                                (item) => item?.section_id === sectionMappingID
+                              )[0].is_complete === true ? (
+                                <span>
+                                  <span className='th-green th-fw-500'> Completed</span>
+                                </span>
+                              ) : (
+                                <span className='th-fw-500 th-red'> Not Completed</span>
+                              )}
+                            </div>
                             {item?.completion_status?.filter(
                               (item) => item?.section_id === sectionMappingID
-                            )[0].is_complete === true ? (
-                              <span>
-                                <span className='th-green th-fw-500'> Completed</span>
-                              </span>
-                            ) : (
-                              <span className='th-fw-500 th-red'> Not Completed</span>
+                            )[0]?.is_complete === true ? (
+                              <div className='row th-black-2 '>
+                                <div className='col-12 th-grey pl-0 th-12'>
+                                  Updated at{' '}
+                                  {getTimeInterval(
+                                    item?.completion_status?.filter(
+                                      (item) => item?.section_id === sectionMappingID
+                                    )[0]?.completed_at
+                                  )}
+                                </div>
+                              </div>
+                            ) : null}
+                          </div>
+                          <div className='col-12 col-sm-6 pl-0'>
+                            {item?.completion_status?.filter(
+                              (item) => item?.section_id === sectionMappingID
+                            )[0].is_complete == false && (
+                              <div className='th-bg-green-2 px-2 py-1 th-br-6'>
+                                <Checkbox
+                                  onChange={() => markPeriodComplete(item)}
+                                  className='th-green th-fw-500'
+                                >
+                                  Mark Complete
+                                </Checkbox>
+                              </div>
                             )}
                           </div>
-                          {item?.completion_status?.filter(
-                            (item) => item?.section_id === sectionMappingID
-                          )[0].is_complete === true ? (
-                            <div className='row th-black-2 '>
-                              <div className='col-12 th-grey pl-0 th-12'>
-                                Last Updated{' '}
-                                {getTimeInterval(
-                                  item?.completion_status?.filter(
-                                    (item) => item?.section_id === sectionMappingID
-                                  )[0].completed_at
-                                )}
-                              </div>
-                            </div>
-                          ) : null}
                         </div>
-                        <div className='col-12 col-sm-6 pl-0'>
-                          {item?.completion_status?.filter(
-                            (item) => item?.section_id === sectionMappingID
-                          )[0].is_complete == false && (
-                            <div className='th-bg-green-2 px-2 py-1 th-br-6'>
-                              <Checkbox
-                                onChange={() => markPeriodComplete(item)}
-                                className='th-green th-fw-500'
-                              >
-                                Mark Complete
-                              </Checkbox>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className='row th-black-2 mt-1 '>
-                        <div className='col-12 th-primary pl-0 th-12'>
-                          {addingUpcomingPeriod ? (
-                            addedPeriods
-                              .map((item) => item.id)
-                              .includes(item.id) ? null : (
+                        <div className='row th-black-2 mt-1 '>
+                          <div className='col-12 th-primary pl-0 th-12'>
+                            {addingUpcomingPeriod ? (
+                              addedPeriods
+                                .map((item) => item.id)
+                                .includes(item.id) ? null : (
+                                <div className='row align-items-center th-bg-primary py-2 th-br-4'>
+                                  <div className='col-8 th-white'>
+                                    {upcomingPeriod.id == item.id
+                                      ? 'Period Added as Upcoming Period'
+                                      : 'Add this Period as Upcoming Period'}
+                                  </div>
+
+                                  <div className='col-4 pl-0 text-center th-fw-600'>
+                                    {upcomingPeriod.id == item.id ? (
+                                      <div
+                                        className='th-bg-white th-red py-1 px-2 th-br-6 th-pointer'
+                                        onClick={() => {
+                                          setIsPeriodAdded(false);
+                                          setCompletedPeriod(item);
+                                          openPeriodInfoModal();
+                                          setUpcomingPeriod({});
+                                        }}
+                                      >
+                                        Remove
+                                      </div>
+                                    ) : (
+                                      !addedPeriods
+                                        .map((item) => item.id)
+                                        .includes(item.id) && (
+                                        <div
+                                          className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
+                                          onClick={() => {
+                                            setIsPeriodAdded(true);
+                                            setCompletedPeriod(item);
+                                            openPeriodInfoModal();
+                                            setClearUpcomingPeriod(false);
+                                            setUpcomingPeriod(item);
+                                          }}
+                                        >
+                                          Add
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                              )
+                            ) : (
                               <div className='row align-items-center th-bg-primary py-2 th-br-4'>
                                 <div className='col-8 th-white'>
-                                  {upcomingPeriod.id == item.id
-                                    ? 'Period Added as Upcoming Period'
-                                    : 'Add this Period as Upcoming Period'}
+                                  {addedPeriods?.map((item) => item.id).includes(item.id)
+                                    ? 'Period Added to Diary'
+                                    : 'Add this Period to Diary'}
                                 </div>
 
                                 <div className='col-4 pl-0 text-center th-fw-600'>
-                                  {upcomingPeriod.id == item.id ? (
+                                  {addedPeriods
+                                    ?.map((item) => item.id)
+                                    .includes(item.id) ? (
                                     <div
                                       className='th-bg-white th-red py-1 px-2 th-br-6 th-pointer'
                                       onClick={() => {
                                         setIsPeriodAdded(false);
                                         setCompletedPeriod(item);
                                         openPeriodInfoModal();
-                                        setUpcomingPeriod({});
+                                        if (addedPeriods.length == 1) {
+                                          setClearTodaysTopic(true);
+                                        }
+                                        const index = addedPeriods.indexOf(item);
+                                        const newList = addedPeriods.slice();
+                                        newList.splice(index, 1);
+                                        setAddedPeriods(newList);
                                       }}
                                     >
                                       Remove
                                     </div>
                                   ) : (
-                                    !addedPeriods
-                                      .map((item) => item.id)
-                                      .includes(item.id) && (
-                                      <div
-                                        className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
-                                        onClick={() => {
+                                    <div
+                                      className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
+                                      onClick={() => {
+                                        if (
+                                          !addedPeriods
+                                            ?.map((item) => item.id)
+                                            .includes(item.id) ||
+                                          upcomingPeriod.id !== item.id
+                                        ) {
                                           setIsPeriodAdded(true);
+                                          setClearTodaysTopic(false);
                                           setCompletedPeriod(item);
                                           openPeriodInfoModal();
-                                          setClearUpcomingPeriod(false);
-                                          setUpcomingPeriod(item);
-                                        }}
-                                      >
-                                        Add
-                                      </div>
-                                    )
+                                          setAddedPeriods([...addedPeriods, item]);
+                                        } else {
+                                          message.warning(
+                                            "Period is already added to Today's Topic"
+                                          );
+                                        }
+                                        if (isDiaryEdit && !addingUpcomingPeriod) {
+                                          setEditAddedPeriods([
+                                            ...editAddedPeriods,
+                                            item,
+                                          ]);
+                                        }
+                                      }}
+                                    >
+                                      Add to Diary
+                                    </div>
                                   )}
                                 </div>
                               </div>
-                            )
-                          ) : (
-                            <div className='row align-items-center th-bg-primary py-2 th-br-4'>
-                              <div className='col-8 th-white'>
-                                {addedPeriods?.map((item) => item.id).includes(item.id)
-                                  ? 'Period Added to Diary'
-                                  : 'Add this Period to Diary'}
-                              </div>
-
-                              <div className='col-4 pl-0 text-center th-fw-600'>
-                                {addedPeriods
-                                  ?.map((item) => item.id)
-                                  .includes(item.id) ? (
-                                  <div
-                                    className='th-bg-white th-red py-1 px-2 th-br-6 th-pointer'
-                                    onClick={() => {
-                                      setIsPeriodAdded(false);
-                                      setCompletedPeriod(item);
-                                      openPeriodInfoModal();
-                                      if (addedPeriods.length == 1) {
-                                        setClearTodaysTopic(true);
-                                      }
-                                      const index = addedPeriods.indexOf(item);
-                                      const newList = addedPeriods.slice();
-                                      newList.splice(index, 1);
-                                      setAddedPeriods(newList);
-                                    }}
-                                  >
-                                    Remove
-                                  </div>
-                                ) : (
-                                  <div
-                                    className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
-                                    onClick={() => {
-                                      if (
-                                        !addedPeriods
-                                          ?.map((item) => item.id)
-                                          .includes(item.id) ||
-                                        upcomingPeriod.id !== item.id
-                                      ) {
-                                        setIsPeriodAdded(true);
-                                        setClearTodaysTopic(false);
-                                        setCompletedPeriod(item);
-                                        openPeriodInfoModal();
-                                        setAddedPeriods([...addedPeriods, item]);
-                                      } else {
-                                        message.warning(
-                                          "Period is already added to Today's Topic"
-                                        );
-                                      }
-                                      if (isDiaryEdit && !addingUpcomingPeriod) {
-                                        setEditAddedPeriods([...editAddedPeriods, item]);
-                                      }
-                                    }}
-                                  >
-                                    Add to Diary
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </Panel>
-                  </Collapse>
-                </div>
-              ))
+                      </Panel>
+                    </Collapse>
+                  </div>
+                );
+              })
             ) : (
               <div className='row justify-content-center mt-5'>
                 <img src={NoDataIcon} />

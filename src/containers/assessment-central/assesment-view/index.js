@@ -316,14 +316,14 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
                <div className='col-md-6 col-12'>
                 <Button
                   className={`${
-                    tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'}
+                    tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'}
                   } th-width-100 th-br-6 mt-2`}
                   // style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
                   onClick={changequestionFrom}
                 >
                   Eduvate Question
                 </Button>
-                {tabIsErpCentral && <hr className='my-1 th-fw-700'/>}
+                {tabIsErpCentral && <hr className='my-1 th-fw-700' style={{borderTop : '1px solid #1B4CCB'}}/>}
                 </div>
                 <div className='col-md-6 col-12 pr-0'> 
                 <Button
@@ -335,11 +335,12 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
                 >
                   School Question
                 </Button>
-                {!tabIsErpCentral && <hr className='my-1 th-fw-700'/>}
+                {!tabIsErpCentral && <hr className='my-1 th-fw-700' style={{borderTop : '1px solid #1B4CCB'}}/>}
                 </div>
                 </div>
             </div>
         </div>
+        <hr/>
 
         <Paper className={classes.root}>
           {periodData?.length > 0 ? (

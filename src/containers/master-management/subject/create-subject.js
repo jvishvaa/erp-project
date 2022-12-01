@@ -17,6 +17,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import 'containers/academicCalendar/fullcalendar/acadCalendar.scss';
+import '../master-management.css'
+
 
 const CreateSubject = ({ setLoading, handleGoBack, centralSubjects }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -228,7 +230,7 @@ const CreateSubject = ({ setLoading, handleGoBack, centralSubjects }) => {
           </form>
           : */}
         <div>
-          <Button style={{ minWidth: '5%', margin: '0 1%' }} onClick={handleGoBack}>Back</Button>
+          <Button style={{ minWidth: '5%', margin: '0 1%' }} className='eduvateGradeBack' onClick={handleGoBack}>Back</Button>
         </div>
         <div style={{ padding: '2%', width: '50%', margin: '0 auto' }} className='tableSubjectAdd'>
           

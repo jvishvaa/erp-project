@@ -59,7 +59,7 @@ const LessonPlanView = (props) => {
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
-                className='th-grey th-18 th-pointer'
+                className='th-grey th-16 th-pointer'
                 onClick={() => {
                   history.push({
                     pathname: isStudent
@@ -74,7 +74,7 @@ const LessonPlanView = (props) => {
               >
                 Lesson Plan
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-18'>
+              <Breadcrumb.Item className='th-black-1 th-16'>
                 {showTab == '1' ? 'Period View' : 'Annual Plan'}
               </Breadcrumb.Item>
             </Breadcrumb>

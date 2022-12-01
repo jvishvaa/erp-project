@@ -437,17 +437,22 @@ if(filters.questionId){
         render: (text , row , index) => {return (
           // <span className='th-black-1'>{data}</span>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
-            {row?.eduvate_qp_count != 0 && <div //onClick={fetchQuestionCards(data)}
-              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '30%',color:'white' }}
+            <div className='w-20'>
+            {row?.eduvate_qp_count != 0 ? <div //onClick={fetchQuestionCards(data)}
+              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '100%',color:'white' , borderRadius:'15px' }}
             > 
               {row?.eduvate_qp_count}
-            </div>}
-            {row?.school_qp_count !=0 && <div
-              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '30%' ,color:'white'}}
+            </div> : null}
+            </div>
+          <div className='w-20'>
+          {row?.school_qp_count !=0 ? <div
+              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '100%' ,color:'white',borderRadius:'15px'}}
             >
              {row?.school_qp_count}
 
-            </div>}
+            </div> : null}
+          </div>
+            
           </div>
         )}
       },
@@ -527,16 +532,19 @@ if(filters.questionId){
           // <div style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width:'45%' }}>{data}</div>
           // </div>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
-            {(row?.eduvate_qp_count != 0 && row?.eduvate_qp_count != null) && <div
-              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '30%',color:'white' }}
+            <div className='w-20'>{(row?.eduvate_qp_count != 0 && row?.eduvate_qp_count != null) ? <div
+            style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '100%',color:'white' ,borderRadius:'15px'}}
             >
               {row?.eduvate_qp_count}
-            </div>}
-            {(row?.school_qp_count != 0 && row?.school_qp_count != null) && <div
-              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '30%',color:'white' }}
+            </div>: null}</div>
+            <div className='w-20'>
+            {(row?.school_qp_count != 0 && row?.school_qp_count != null) ? <div
+            style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '100%',color:'white', borderRadius:'15px' }}
             >
               {row?.school_qp_count  === null ? 0 : row?.school_qp_count}
-            </div>}
+            </div> : null}
+            </div>
+            
           </div>
         );
       },
@@ -602,6 +610,7 @@ if(filters.questionId){
                       }
                       showSearch
                       disabled={user_level == 13}
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       optionFilterProp='children'
                       filterOption={(input, options) => {
                         return (
@@ -633,6 +642,7 @@ if(filters.questionId){
                       }
                       showSearch
                       optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       // defaultValue={subjectName}
                       filterOption={(input, options) => {
                         return (
@@ -664,10 +674,9 @@ if(filters.questionId){
                         ? () => history.push(`/create-question-paper/${isEdit}`)
                         : () => history.push(`/create-question-paper?show-question-paper=true`)
                     }
-                    style={{width:'15%', marginRight:'6%'}}
                     shape="round"
-                    size={'small'}
-                    className='th-br-6'
+                    style={{marginLeft : '30%'}}
+                    className='th-br-6 w-30 th-fw-500'
                   >
                     Back
                   </Button>}
@@ -675,7 +684,7 @@ if(filters.questionId){
                   <Button
                     type='primary'
                     onClick={() => history.push('/create-question')}
-                    style={{marginRight:'2%' , marginBottom:'7%'}}
+                    style={{marginRight:'2%'}}
                     // size={'small'}
                     shape="round"
                     className='th-br-6 w-30 th-fw-500'

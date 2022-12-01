@@ -324,7 +324,7 @@ handleGroup('',filteredgroup)
     setLoading(true);
     axiosInstance
       .get(
-        `${'/erp_user/v2/sectionmappingnew/'}?acad_session=${branchId}&grade=${gradeID}&is_central=${EditData?.question_paper_id == null ? true : false}`
+        `${'/erp_user/v2/newsectionmapping/'}?acad_session=${branchId}&grade=${gradeID}&is_central=${EditData?.question_paper_id == null ? true : false}`
       )
       .then((res) => {
         if (res?.data?.status_code == 200) {
@@ -630,15 +630,19 @@ handleGroup('',filteredgroup)
     }
 
     try {
+      setLoading(true)
       const { results = {} } = (await initCreateAssesment(reqObj)) || {};
       if (results?.status_code === 200) {
+        setLoading(false)
         setAlert('success', results?.message);
         resetForm();
         history.push('/assesment');
       } else {
+        setLoading(false)
         setAlert('error', results?.message);
       }
     } catch (e) {
+      setLoading(false)
       setAlert('error', 'Test creation failed');
     }
   };
