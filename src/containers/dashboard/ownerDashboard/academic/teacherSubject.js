@@ -180,8 +180,13 @@ const selectedBranch = useSelector(
   });
 
   const handlevolume = (e) => {
-    setVolumeId(e.value);
-    setVolumeName(e.children);
+    if (e?.value) {
+      setVolumeId(e.value);
+      setVolumeName(e.children);
+    } else {
+      setVolumeId('');
+      setVolumeName('');
+    }
   };
   const handleClearVolume = () => {
     setVolumeId('');
@@ -189,15 +194,27 @@ const selectedBranch = useSelector(
   };
 
   const onTableRowExpand = (expanded, record) => {
-    console.log(record);
+    console.log(record , volumeId );
+    if(volumeId != null || volumeId != undefined ){
     teacherSubjectTable({
       acad_session: acad_sess_id,
       session_year: acad_session_id,
       branch_id: branchId,
       central_gs_mappings: record?.central_gs_mappings.toString(),
       grade_id: record?.grade_id,
-      sections_count: record?.section_count
+      sections_count: record?.section_count,
+      volume: volumeId 
     })
+  } else {
+    teacherSubjectTable({
+      acad_session: acad_sess_id,
+      session_year: acad_session_id,
+      branch_id: branchId,
+      central_gs_mappings: record?.central_gs_mappings.toString(),
+      grade_id: record?.grade_id,
+      sections_count: record?.section_count,
+    })
+  }
     console.log(record);
     const keys = [];
     if (expanded) {
@@ -266,6 +283,7 @@ const selectedBranch = useSelector(
         volume: volumeId
       });
     }
+    setExpandedRowKeys([])
   }, [acad_session_id, volumeId]);
 
   const gradeTeacherTable = (params = {}) => {
@@ -336,7 +354,7 @@ const selectedBranch = useSelector(
     let sec_name = data && data.map((sec) => sec?.section_name)
 
     console.log(JSON.stringify(sec_name));
-    return <span className='th-green th-16'>{sec_name.toString()}</span>
+    return <span className='th-black th-16'>{sec_name.toString()}</span>
   }
 
   const expandedRowRender = (record, index) => {
