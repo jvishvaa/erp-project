@@ -1660,8 +1660,9 @@ const ViewMoreCard = ({
         </div>
       )}
       {periodDataForView.is_central ? null : (
-          <div>
+          <div style={{marginRight : '20px'}}>
             <Button 
+            style = {{width:'94%', float:'right'}}
             onClick={handleEdit}
             color='primary'
             variant='contained'>Edit Details</Button>
