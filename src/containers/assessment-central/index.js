@@ -978,15 +978,15 @@ useEffect(() => {
                     <Space direction='vertical' size={12}>
                       <RangePicker
                         allowClear={false}
-                        style={{width:'105%'}}
-                        bordered={false}
+                        style={{width:'105%', border:'none'}}
+                        bordered={true}
                         placement='bottomRight'
                         showToday={false}
                         suffixIcon={<DownOutlined />}
                         // defaultValue={[moment(), moment()]}
                         value={formik?.values.date}
                         onChange={(value) => handleDateChange(value)}
-                        className='th-range-picker th-br-4'
+                        className='th-range-picker th-br-4 th-bg-grey'
                         separator={'-'}
                         format={'DD/MM/YYYY'}
                         getPopupContainer={(trigger) => trigger.parentNode}
@@ -1217,7 +1217,7 @@ useEffect(() => {
             Add Selected
           </Button>
         </div>}
-{(isSuperAdmin || isSuperuser) && !handleClose && (
+{!handleClose && (
   <>
   <div className='col-md-2'>
     <FormControlLabel
@@ -1235,10 +1235,11 @@ useEffect(() => {
   <div className='col-md-5'>
     <div className = 'row'>
   {bulkUpload ? (
-    <div className='col-md-7'>
+    <div className='col-md-7 th-12'>
       <Input
         type='file'
         inputRef={fileRef}
+        className='th-18'
         inputProps={{ accept: '.xlsx,.xls' }}
         onChange={handleFileChange}
       />
