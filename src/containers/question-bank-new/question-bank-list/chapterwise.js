@@ -437,17 +437,22 @@ if(filters.questionId){
         render: (text , row , index) => {return (
           // <span className='th-black-1'>{data}</span>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
-            {row?.eduvate_qp_count != 0 && <div //onClick={fetchQuestionCards(data)}
-              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '20%',color:'white' , borderRadius:'15px' }}
+            <div className='w-20'>
+            {row?.eduvate_qp_count != 0 ? <div //onClick={fetchQuestionCards(data)}
+              style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color : '#3d69be' , borderRadius:'15px' }}
             > 
               {row?.eduvate_qp_count}
-            </div>}
-            {row?.school_qp_count !=0 && <div
-              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '20%' ,color:'white',borderRadius:'15px'}}
+            </div> : null}
+            </div>
+          <div className='w-20'>
+          {row?.school_qp_count !=0 ? <div
+              style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%' ,color:'#b33dbe',borderRadius:'15px'}}
             >
              {row?.school_qp_count}
 
-            </div>}
+            </div> : null}
+          </div>
+            
           </div>
         )}
       },
@@ -524,19 +529,22 @@ if(filters.questionId){
       render: (text , row, index) => {
         return (
           // <div className='d-flex justify-content-center' >
-          // <div style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width:'45%' }}>{data}</div>
+          // <div style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width:'45%' }}>{data}</div>
           // </div>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
-            {(row?.eduvate_qp_count != 0 && row?.eduvate_qp_count != null) && <div
-              style={{ border: '1px solid #0DCFE0', background: '#0DCFE0', width: '20%',color:'white' ,borderRadius:'15px'}}
+            <div className='w-20'>{(row?.eduvate_qp_count != 0 && row?.eduvate_qp_count != null) ? <div
+            style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%' , color : '#3d69be' ,borderRadius:'15px'}}
             >
               {row?.eduvate_qp_count}
-            </div>}
-            {(row?.school_qp_count != 0 && row?.school_qp_count != null) && <div
-              style={{ border: '1px solid #B83AF4', background: '#B83AF4', width: '20%',color:'white', borderRadius:'15px' }}
+            </div>: null}</div>
+            <div className='w-20'>
+            {(row?.school_qp_count != 0 && row?.school_qp_count != null) ? <div
+            style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%' , color : '#b33dbe', borderRadius:'15px' }}
             >
               {row?.school_qp_count  === null ? 0 : row?.school_qp_count}
-            </div>}
+            </div> : null}
+            </div>
+            
           </div>
         );
       },
@@ -602,6 +610,7 @@ if(filters.questionId){
                       }
                       showSearch
                       disabled={user_level == 13}
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       optionFilterProp='children'
                       filterOption={(input, options) => {
                         return (
@@ -633,6 +642,7 @@ if(filters.questionId){
                       }
                       showSearch
                       optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       // defaultValue={subjectName}
                       filterOption={(input, options) => {
                         return (
@@ -674,7 +684,7 @@ if(filters.questionId){
                   <Button
                     type='primary'
                     onClick={() => history.push('/create-question')}
-                    style={{marginRight:'2%' , marginBottom:'7%'}}
+                    style={{marginRight:'2%'}}
                     // size={'small'}
                     shape="round"
                     className='th-br-6 w-30 th-fw-500'
@@ -695,14 +705,14 @@ if(filters.questionId){
               <div
                 className='col-md-2 col-3 px-0'
                 style={{
-                  background: '#0DCFE0',
+                  background: '#Ecf2ff',
                   height: '25px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: '15px',
                   marginRight: '32px',
-                  color:'white'
+                  color:'#3d69be'
                 }}
               >
                 Eduvate
@@ -710,13 +720,13 @@ if(filters.questionId){
               <div
                 className='col-md-2 col-3 px-0'
                 style={{
-                  background: '#B83AF4',
+                  background: '#f0d8f2',
                   height: '25px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: '15px',
-                  color:'white'
+                  color:'#b33dbe'
                 }}
               >
                 School

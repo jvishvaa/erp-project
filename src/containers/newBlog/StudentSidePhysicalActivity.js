@@ -65,8 +65,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { PieChartOutlined, IdcardOutlined, DownOutlined, FileProtectOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { Breadcrumb, Button as ButtonAnt, Form, Select, message, Input } from 'antd';
+import { PieChartOutlined, IdcardOutlined, DownOutlined, FileProtectOutlined, CloseCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { Breadcrumb, Button as ButtonAnt, Form, Select, message, Input, Avatar } from 'antd';
 
 import {
     AppstoreAddOutlined,
@@ -525,6 +525,16 @@ const StudentSidePhysicalActivity = () => {
         }
     };
 
+    let dummyArr =[]
+    const filterRound =(data) => {
+        if(dummyArr.indexOf(data) !== -1){
+            return ""
+        }else{
+            dummyArr.push(data)
+            return data
+        }
+    }
+
 
     return (
         <div>
@@ -652,7 +662,7 @@ const StudentSidePhysicalActivity = () => {
                     aria-labelledby='alert-dialog-title'
                     aria-describedby='alert-dialog-description'
                 >
-                    <div style={{ width: '100%', marginTop: '72px' }}>
+                    <div style={{ width: '100%', padding: '10px' }}>
                         <div style={{ fontSize: '24px', marginLeft: '6px', display: 'flex', justifyContent: 'space-between' }}>
                             <strong>Preview</strong>
                             <strong onClick={handleCloseViewMore} style={{ cursor: 'pointer', marginRight: '10px' }} >
@@ -685,75 +695,82 @@ const StudentSidePhysicalActivity = () => {
                                                 width='130'
                                                 alt='image'
                                             />
-                                            <div>
-                                                <div style={{ fontWeight: 'bold' }}>
-                                                    ERP Id :
-                                                    <span style={{ fontWeight: 'normal' }}>
-                                                        {data?.booked_user?.username}{' '}
-                                                    </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem', alignItems:'center' }}>
+                                            <div style={{ padding: '5px' }}>
+                                                <Avatar size={40} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                                                </Avatar>
+                                            </div>
+                                            <div style={{ padding: '0 0.5rem' }}>
+                                                <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                                                    {data?.booked_user?.name}
                                                 </div>
-                                                <div style={{ fontWeight: 'bold' }}>
-                                                    Name :
-                                                    <span style={{ fontWeight: 'normal' }}>
-                                                        {data?.booked_user?.name}
-                                                    </span>
+                                                <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                                                    {data?.branch?.name}
+                                                </div>
+                                                <div style={{ fontWeight: 500, fontSize: '12px' }}>
+                                                    {data?.grade?.name}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                     <div
                                         style={{
-                                            background: 'white',
-                                            width: '502px',
-                                            marginLeft: '34px',
-                                            marginTop: '16px',
+                                            background: '#f9f9f9',
+                                            margin: '1rem 2rem',
+                                            padding: '0.5rem 1rem',
+                                            borderRadius: '5px',
+                                            // marginTop: '10px',
                                             height: 'auto',
+                                            border: '1px solid #dbdbdb',
+                                            width: '26vw',
+
                                         }}
                                     >
                                         <div
-                                            style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
+                                            style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
                                         >
-                                            Title:{' '}
-                                            <span style={{ fontWeight: 'normal' }}>
-                                                {data?.activity_detail?.title}
+                                            <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
+                                                Title: {data?.activity_detail?.title}
                                             </span>
                                         </div>
                                         <div
                                             style={{
-                                                paddingLeft: '30px',
-                                                paddingTop: '10px',
-                                                paddingBottom: '5px',
+                                                display: 'flex',
+                                                justifyContent: 'flex-start',
                                                 fontWeight: 'bold',
+                                                paddingLeft: '10px',
+                                                paddingBottom: '10px'
                                             }}
                                         >
-                                            Description:
-                                            <span style={{ fontWeight: 'normal' }}>
-                                                {data?.activity_detail?.description}
+                                            <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
+                                                Description: {data?.activity_detail?.description}
                                             </span>
                                         </div>
                                     </div>
+                                    <Divider />
+                                    <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '34px', paddingTop:'10px'}}>Review</div>
                                     <div
                                         style={{
-                                            background: 'white',
+
                                             width: '502px',
                                             marginLeft: '34px',
                                             height: 'auto',
                                             marginTop: '12px',
                                             marginBottom: '29px',
+                                            // border:'1px solid grey'
+                                            // border
                                         }}
                                     >
-                                        <div style={{ paddingTop: '12px' }}>
-
-                                            <Grid item>
-                                            </Grid>
-                                        </div>
                                         <div
                                             style={{
-                                                border: '1px solid #707070',
-                                                borderRadius: '10px',
+                                                border: '1px solid #d9d9d9',
+                                                borderRadius: '5px',
                                                 height: 'auto',
-                                                padding: '0.5rem'
+                                                padding: '0.5rem',
+                                                background: '#f4f5f9',
                                             }}
                                         >
                                             {ratingReview?.map((obj, index) => {
@@ -767,31 +784,19 @@ const StudentSidePhysicalActivity = () => {
                                                         }}
                                                     >
                                                         {obj?.name === 'Overall' ? (
-                                                            <div
-                                                                key={index}
-                                                                style={{ display: 'flex', justifyContent: 'space-between' }}
-                                                            >
-                                                                {obj.name}*
-                                                            </div>
+                                                            ""
                                                         ) : (
                                                             <div
                                                                 key={index}
                                                                 style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
                                                             >
                                                                 {' '}
-                                                                {/* <> */}
-                                                                {obj?.name}<b>({obj?.level})</b>
-                                                                {/* </> */}
+                                                                {obj?.name}<b style={{color:'#53bedd', fontSize:'12px'}}>{filterRound(obj?.level)}</b>
                                                             </div>
                                                         )}
                                                         {/* {obj} */}
                                                         {obj?.name == 'Overall' ? (
-                                                            <div>
-                                                                <Input placeholder="Mandatory"
-                                                                    //    onChange={(event) => handleInputCreativity(event, index)}
-                                                                    value={obj?.remarks}
-                                                                />
-                                                            </div>
+                                                            ""
                                                         ) : (
                                                             <div>
 
@@ -805,6 +810,32 @@ const StudentSidePhysicalActivity = () => {
                                                         )}
                                                     </div>
                                                 );
+                                            })}
+                                            {ratingReview?.map((obj, index) => {
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        style={{
+                                                            paddingLeft: '15px',
+                                                            paddingRight: '15px',
+                                                            paddingTop: '5px',
+                                                        }}
+                                                    >
+                                                        {obj?.name == "Overall" ? (
+                                                            <div>
+                                                                {obj?.name}
+                                                                <Input placeholder={obj?.name}
+                                                                    value={obj?.remarks}
+                                                                />
+                                                            </div>
+
+                                                        ) : (
+                                                            ""
+
+                                                        )}
+                                                    </div>
+
+                                                )
                                             })}
 
                                             <div
