@@ -12,8 +12,8 @@ import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-import {FileProtectOutlined, CloseCircleOutlined} from "@ant-design/icons";
-import {Button as ButtonAnt, Input} from "antd";
+import { FileProtectOutlined, CloseCircleOutlined, UserOutlined } from "@ant-design/icons";
+import { Button as ButtonAnt, Input, Avatar } from "antd";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Rating from '@material-ui/lab/Rating';
@@ -90,8 +90,8 @@ function createData(slno, name, grade, submissiondate, overallscore, actions) {
 }
 
 const dummyData = [
-    {id:1, name:'Hk', label:'kandkandk'},
-    {id:2, name:'raj', label:'kandkandk'},
+  { id: 1, name: 'Hk', label: 'kandkandk' },
+  { id: 2, name: 'raj', label: 'kandkandk' },
 ]
 
 const PhysicalReviewed = (props) => {
@@ -110,13 +110,13 @@ const PhysicalReviewed = (props) => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [submit, setSubmit] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
-  const [totalCount,setTotalCount] = useState(0);
-  const [currentPage,setCurrentPage] = useState(1)
-  const [totalPages,setTotalPages] = useState(0);
-  const [limit,setLimit] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(10);
   const [isClicked, setIsClicked] = useState(false);
-  const [buttonFlag,setButtonFlag] = useState(false);
-  const [loading,setLoading] = useState(false);
+  const [buttonFlag, setButtonFlag] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   let array = [];
   const getRatingView = (data) => {
@@ -176,11 +176,11 @@ const PhysicalReviewed = (props) => {
   };
 
   const getTotalSubmitted = () => {
-    if(props){
+    if (props) {
       setLoading(true)
       // const branchIds = props.selectedBranch.map((obj) => obj.id);
       // const gradeIds = props?.selectedGrade?.id
-  
+
       axios
         .get(
           `${endpoints.newBlog.studentSideApi}?&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&is_submitted=True&grade_id=${props.selectedGrade}&branch_ids=${props.selectedBranch}&section_ids=${props.selectedSubject}`,
@@ -200,51 +200,61 @@ const PhysicalReviewed = (props) => {
           setTotalSubmitted(response?.data?.result);
           setLoading(false)
         })
-        .catch((err) =>{
+        .catch((err) => {
           setLoading(false)
         })
-      
+
     }
   };
 
   const assignPage = (data) => {
-    if(data?.length !== 0){
+    if (data?.length !== 0) {
       setView(true);
-    //   setImageData(JSON?.parse(data?.template?.html_file))
+      //   setImageData(JSON?.parse(data?.template?.html_file))
       setData(data);
       setDataId(data?.id);
-  
+
       getRatingView(data?.id);
     }
   };
 
 
-  useEffect(()=>{
-    if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
+  useEffect(() => {
+    if (props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0) {
       // setTotalSubmitted([])
     }
 
-  },[props.selectedBranch, props.selectedGrade, props.flag])
+  }, [props.selectedBranch, props.selectedGrade, props.flag])
 
   useEffect(() => {
-    if(props?.flag){
+    if (props?.flag) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade,props.flag, currentPage]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
   const [view, setView] = useState(false);
   const [data, setData] = useState();
   const handleCloseViewMore = () => {
     setView(false);
   };
 
-  const handlePagination = (event, page) =>{
+  const handlePagination = (event, page) => {
     setIsClicked(true);
     setCurrentPage(page);
   }
 
+  let dummyArr =[]
+  const filterRound =(data) => {
+      if(dummyArr.indexOf(data) !== -1){
+          return ""
+      }else{
+          dummyArr.push(data)
+          return data
+      }
+  }
+
   return (
     <>
-    {loading && <Loader/>}
+      {loading && <Loader />}
       <Paper className={`${classes.root} common-table`} id='singleStudent'>
         <TableContainer
           className={`table table-shadow view_users_table ${classes.container}`}
@@ -275,7 +285,7 @@ const PhysicalReviewed = (props) => {
                   hover
                   role='checkbox'
                   tabIndex={-1}
-                  // key={`user_table_index${i}`}
+                // key={`user_table_index${i}`}
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                   <TableCell className={classes.tableCells}>
@@ -314,12 +324,12 @@ const PhysicalReviewed = (props) => {
                   </TableCell>
 
                   <TableCell className={classes.tableCells}>
-                    <ButtonAnt 
-                        type="primary" 
-                        icon={<FileProtectOutlined/>} 
-                        onClick={() => assignPage(response)}
-                        size={'medium'}>
-                        Check Review
+                    <ButtonAnt
+                      type="primary"
+                      icon={<FileProtectOutlined />}
+                      onClick={() => assignPage(response)}
+                      size={'medium'}>
+                      Check Review
                     </ButtonAnt>
                   </TableCell>
                 </TableRow>
@@ -345,276 +355,292 @@ const PhysicalReviewed = (props) => {
       </Paper>
 
       <Drawer
-          anchor='right'
-          maxWidth={maxWidth}
-          open={view}
-          onClose={handleCloseViewMore}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <div style={{ width: '100%', marginTop: '72px' }}>
-            <div style={{ fontSize: '24px', marginLeft:'6px', display:'flex', justifyContent:'space-between'}}>
-              <strong>Preview</strong>
-              <strong  onClick={handleCloseViewMore} style={{cursor:'pointer', marginRight:'10px'}} >
+        anchor='right'
+        maxWidth={maxWidth}
+        open={view}
+        onClose={handleCloseViewMore}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <div style={{ width: '100%', padding:'10px'}}>
+          <div style={{ fontSize: '24px', marginLeft: '6px', display: 'flex', justifyContent: 'space-between' }}>
+            <strong>Preview</strong>
+            <strong onClick={handleCloseViewMore} style={{ cursor: 'pointer', marginRight: '10px' }} >
               <CloseCircleOutlined />
-              </strong>
-            </div>
-            <Divider />
-  
-            <Grid container direction='row' justifyContent='center'>
-              <Grid item>
+            </strong>
+          </div>
+          <Divider />
+
+          <Grid container direction='row' justifyContent='center'>
+            <Grid item>
+              <div
+                style={{
+                  // border: '1px solid #813032',
+                  // width: '583px',
+                  background: 'white',
+                  height: 'auto',
+                }}
+              >
                 <div
                   style={{
-                    // border: '1px solid #813032',
-                    // width: '583px',
                     background: 'white',
+                    width: '554px',
+                    marginLeft: '13px',
+                    marginTop: '5px',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <img
+                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                      width='130'
+                      alt='image'
+                    />
+                    {/* <div>
+                      <div style={{ fontWeight: 'bold' }}>
+                        ERP Id :
+                        <span style={{ fontWeight: 'normal' }}>
+                          {data?.booked_user?.username}{' '}
+                        </span>
+                      </div>
+                      <div style={{ fontWeight: 'bold' }}>
+                        Name :
+                        <span style={{ fontWeight: 'normal' }}>
+                          {data?.booked_user?.name}
+                        </span>
+                      </div>
+                    </div> */}
+                  </div>
+                </div>
+
+                {/* <div
+                  style={{
+                    background: 'white',
+                    width: '502px',
+                    marginLeft: '34px',
+                    marginTop: '16px',
                     height: 'auto',
                   }}
                 >
                   <div
+                    style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
+                  >
+                    Title:{' '}
+                    <span style={{ fontWeight: 'normal' }}>
+                      {data?.activity_detail?.title}
+                    </span>
+                  </div>
+                  <div
                     style={{
-                      background: 'white',
-                      width: '554px',
-                      marginLeft: '13px',
-                      marginTop: '5px',
+                      paddingLeft: '30px',
+                      paddingTop: '10px',
+                      paddingBottom: '5px',
+                      fontWeight: 'bold',
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <img
-                        src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                        width='130'
-                        alt='image'
-                      />
-                      <div>
-                        <div style={{ fontWeight: 'bold' }}>
-                          ERP Id :
-                          <span style={{ fontWeight: 'normal' }}>
-                            {data?.booked_user?.username}{' '}
-                          </span>
-                        </div>
-                        <div style={{ fontWeight: 'bold' }}>
-                          Name :
-                          <span style={{ fontWeight: 'normal' }}>
-                            {data?.booked_user?.name}
-                          </span>
-                        </div>
+                    Description:
+                    <span style={{ fontWeight: 'normal' }}>
+                      {data?.activity_detail?.description}
+                    </span>
+                  </div>
+                </div> */}
+                <div>
+                  <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem', alignItems: 'center' }}>
+                    <div style={{ padding: '5px' }}>
+                      <Avatar size={50} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                      </Avatar>
+                    </div>
+                    <div style={{ padding: '0 0.5rem' }}>
+                      <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                        {data?.booked_user?.name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                        {data?.branch?.name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '12px' }}>
+                        {data?.grade?.name}
                       </div>
                     </div>
                   </div>
-  
+                </div>
+                <div
+                  style={{
+                    background: '#f9f9f9',
+                    margin: '1rem 2rem',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '5px',
+                    // marginTop: '10px',
+                    height: 'auto',
+                    border: '1px solid #dbdbdb',
+                    width: '26vw',
+
+                  }}
+                >
                   <div
-                    style={{
-                      background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
-                      marginTop: '16px',
-                      height: 'auto',
-                    }}
+                    style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
                   >
-                    <div
-                      style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
-                    >
-                      Title:{' '}
-                      <span style={{ fontWeight: 'normal' }}>
-                        {data?.activity_detail?.title}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        paddingLeft: '30px',
-                        paddingTop: '10px',
-                        paddingBottom: '5px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      Description:
-                      <span style={{ fontWeight: 'normal' }}>
-                        {data?.activity_detail?.description}
-                      </span>
-                    </div>
+                    <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
+                      Title: {data?.activity_detail?.title}
+                    </span>
                   </div>
                   <div
                     style={{
-                      background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
-                      height: 'auto',
-                      marginTop: '12px',
-                      marginBottom: '29px',
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      fontWeight: 'bold',
+                      paddingLeft: '10px',
+                      paddingBottom: '10px'
                     }}
                   >
-                    <div style={{paddingTop: '12px' }}>
+                    <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
+                      Description: {data?.activity_detail?.description}
+                    </span>
+                  </div>
+                </div>
+                <Divider />
+                <div
+                  style={{
+                    background: 'white',
+                    width: '502px',
+                    marginLeft: '34px',
+                    height: 'auto',
+                    marginTop: '12px',
+                    marginBottom: '29px',
+                  }}
+                >
+                  <div style={{ paddingTop: '12px' }}>
 
                     <Grid item>
-                {submit == false && (
-                  <div
-                    style={{
-                      border: '1px solid #707070',
-                      borderRadius:'10px',
-                      height: 'auto',
-                      padding:'0.5rem'
-                    }}
-                  >
-                    {ratingReview?.map((obj, index) => {
-                      return (
+                      {submit == false && (
                         <div
-                          key={index}
                           style={{
-                            paddingLeft: '15px',
-                            paddingRight: '15px',
-                            paddingTop: '5px',
+                            border: '1px solid #707070',
+                            borderRadius: '10px',
+                            height: 'auto',
+                            padding: '0.5rem'
                           }}
                         >
-                          {obj?.name === 'Overall' ? (
+                          {ratingReview?.map((obj, index) => {
+                            return (
                               <div
-                            key={index}
-                            style={{ display: 'flex', justifyContent: 'space-between' }}
-                          >
-                             {obj.name}*
-                          </div>
-                          ) : (
+                                key={index}
+                                style={{
+                                  paddingLeft: '15px',
+                                  paddingRight: '15px',
+                                  paddingTop: '5px',
+                                }}
+                              >
+                                {obj?.name === 'Overall' ? (
+                                  ""
+                                ) : (
+                                  <div
+                                    key={index}
+                                    style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
+                                  >
+                                    {' '}
+                                    {obj?.name}<b style={{color:'#53bedd', fontSize:'12px'}}>{filterRound(obj?.level)}</b>
+                                  </div>
+                                )}
+                                {obj?.name == 'Overall' ? (
+                                  ""
+                                ) : (
+                                  <div>
+                                    <Input
+                                      placeholder={obj?.name}
+                                      // onChange={(event) => handleInputCreativity(event, index)}
+                                      value={obj?.remarks}
+
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                          {ratingReview?.map((obj, index) => {
+                            return (
+                              <div
+                                key={index}
+                                style={{
+                                  paddingLeft: '15px',
+                                  paddingRight: '15px',
+                                  paddingTop: '5px',
+                                }}
+                              >
+                                {obj?.name == "Overall" ? (
+                                  <div>
+                                    {obj?.name}*
+                                    <Input placeholder={obj?.name}
+                                      value={obj?.remarks}
+                                    />
+                                  </div>
+
+                                ) : (
+                                  ""
+
+                                )}
+                              </div>
+
+                            )
+                          })}
                           <div
-                            key={index}
-                            style={{ display: 'flex', justifyContent: 'space-between',  marginBottom:'10px' }}
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              marginRight: '10px',
+                              marginLeft: '6px',
+                              marginBottom: '15px',
+                              marginTop: '32px',
+                            }}
                           >
-                            {' '}
-                            {/* <> */}
-                            {obj?.name}<b>({obj?.level})</b>
-                            {/* </> */}
                           </div>
-                          )}
-                          {/* {obj} */}
-                          {obj?.name == 'Overall' ? (
-                                                      <div>
-                                                      {/* <TextField
-                                                        id='outlined-basic'
-                                                        size='small'
-                                                        variant='outlined'
-                                                        value={obj?.remarks}
-                                                        style={{ width:'100%'}}
-                                                        onChange={(event) => handleInputCreativity(event, index)}
-                                                        label ="Mandatory"
-                                                      /> */}
-                                                      <Input placeholder="Mandatory" 
-                                                    //    onChange={(event) => handleInputCreativity(event, index)}
-                                                       value={obj?.remarks}
-                                                      />
-                                                    </div>
-                          ) : (
-                            <div>
-                              {/* <TextField
-                                id='outlined-basic'
-                                size='small'
-                                variant='outlined'
-                                value={obj?.remarks}
-                                style={{width:'100%'}}
-                                // style={{ width: '264px' }}
-                                onChange={(event) => handleInputCreativity(event, index)}
-                                label={obj?.name}
-                              /> */}
-
-                               <Input 
-                                    placeholder={obj?.name}
-                                    // onChange={(event) => handleInputCreativity(event, index)}
-                                    value={obj?.remarks}
-
-                                />
-                            </div>
-                          )}
                         </div>
-                      );
-                    })}
-                    {/* <div style={{display: "flex",
-      justifyContent: "space-between"}} >
-                      <div style={{paddingLeft:"13px"}}>
-                    Overall hi
-                    </div>
-                    <div style={{paddingRight:"13px"}}>
-                    <StyledRating
-                              name={`rating`}
-                              size='small'
-                              value={calculateOverallRating()}
-                              // max={obj?.rating}
-                              precision={0.1}
-                              readOnly
-                              // defaultValue={props.defaultValue}
-                              // onChange={(event, newValue) =>
-                              //   handleInputCreativityOne(event, newValue, index)
-                              // }
-                            />
-                            </div>
-                            </div> */}
-  
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        marginRight: '10px',
-                        marginLeft: '6px',
-                        marginBottom: '15px',
-                        marginTop: '32px',
-                      }}
-                    >
-                      {/* <ButtonAnt
-                        // variant='contained'
-                        // color='primary'
-                        type="primary"
-                        size='large'
-                        className={classes.buttonColor}
-                        onClick={() => submitReview()}
-                      >
-                        Submit Review
-                      </ButtonAnt> */}
-                    </div>
-                  </div>
-                )}
-  
-                {submit == true && (
-                  <div
-                    style={{
-                      border: '1px solid #707070',
-                      width: '318px',
-                      height: 'auto',
-                      marginLeft: '8px',
-                      marginRight: '4px',
-                    }}
-                  >
-                    <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                      {/* <ExpandMoreIcon onClick={expandMore} /> */}
-                    </div>
-                    <div
-                      style={{
-                        paddingLeft: '15px',
-                        paddingRight: '15px',
-                        paddingTop: '5px',
-                      }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        {' '}
-                        Overall
-                        {/* <RatingScale
+                      )}
+
+                      {submit == true && (
+                        <div
+                          style={{
+                            border: '1px solid #707070',
+                            width: '318px',
+                            height: 'auto',
+                            marginLeft: '8px',
+                            marginRight: '4px',
+                          }}
+                        >
+                          <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                            {/* <ExpandMoreIcon onClick={expandMore} /> */}
+                          </div>
+                          <div
+                            style={{
+                              paddingLeft: '15px',
+                              paddingRight: '15px',
+                              paddingTop: '5px',
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                              {' '}
+                              Overall
+                              {/* <RatingScale
                           name='simple-controlled'
                           defaultValue={DEFAULT_RATING}
                           onChange={(event, value) => {
                             setValue((prev) => ({ ...prev, rating: value }));
                           }}
                         /> */}
-                      </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          paddingBottom: '9px',
-                        }}
-                      >
-                        Review Submitted
-                      </div>
-                    </div>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                paddingBottom: '9px',
+                              }}
+                            >
+                              Review Submitted
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </Grid>
                   </div>
-                )}
-              </Grid>
-                    </div>
-                    {/* <div
+                  {/* <div
                       style={{
                         paddingLeft: '30px',
                         paddingTop: '12px',
@@ -623,41 +649,21 @@ const PhysicalReviewed = (props) => {
                     >
                       {ReactHtmlParser(data?.submitted_work?.html_text)}
                     </div> */}
-                  </div>
                 </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row-reverse',
-                    paddingTop: '9px',
-                  }}
-                >
-                  {' '}
-                  {/* <Button
-                    variant='outlined'
-                    size='medium'
-                    onClick={confirmassign}
-                    className={classes.buttonColor1}
-                    disabled
-                    startIcon={<BookmarksIcon style={{ color: 'grey' }} />}
-                  >
-                    Shortlist
-                  </Button>{' '} */}
-                  &nbsp;
-                  {/* <Button
-                    variant='contained'
-                    color='primary'
-                    disabled
-                    size='medium'
-                    className={classes.buttonColor}
-                    onClick={createPublish}
-                  >
-                    Published Blog{' '}
-                  </Button> */}
-                </div>
-              </Grid>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row-reverse',
+                  paddingTop: '9px',
+                }}
+              >
+                {' '}
+                &nbsp;
+              </div>
             </Grid>
-          </div>
+          </Grid>
+        </div>
       </Drawer>
     </>
   );

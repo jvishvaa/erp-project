@@ -769,7 +769,7 @@ const BlogWall = () => {
               </Grid>
               <Grid
                 className='col-12'
-                style={{ display: 'flex', justifyContent: 'end', paddingRight: '50px' }}
+                style={{ display: 'flex', justifyContent: 'end', paddingRight: '30px' }}
               >
                 <Button onClick={handleSeeMorePost}>
                   View All
@@ -778,7 +778,7 @@ const BlogWall = () => {
 
               <Grid
                 className='col-12'
-                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', paddingButton: '15px' }}
+                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', paddingButton: '30px' }}
               >
 
                 {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
@@ -955,7 +955,7 @@ const BlogWall = () => {
                     {postPreviewData?.file_type == "video/mp4" ? (
                       <video width="500" height="600" controls >
                         <source src={`${postPreviewData?.template_path}`} type="video/mp4" />
-                            Your browser does not support HTML video.}
+                            Your browser does not support HTML video.
                       </video>
 
                     ) : (
@@ -1018,7 +1018,7 @@ const BlogWall = () => {
               </Grid>
               <Grid
                 className='col-12'
-                style={{ display: 'flex', justifyContent: 'end' }}
+                style={{ display: 'flex', justifyContent: 'end', paddingRight:'24px' }}
               >
                 <Button onClick={handleSeeMoreBlog}>
                   View All
@@ -1026,7 +1026,7 @@ const BlogWall = () => {
               </Grid>
               <Grid
                 className='col-12 p-1'
-                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap' }}
+                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', paddingBottom:'30px' }}
               >
                 {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
                 {blogWallList.map((item) => {
@@ -1206,7 +1206,7 @@ const BlogWall = () => {
               </Grid>
               <Grid item>
                 <div>
-                  <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
+                  <div style={{ display: 'flex', width: '100%', padding:'0.5rem 1rem' }}>
                     <div style={{ padding: '5px' }}>
                       <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
                       </Avatar>
@@ -1226,10 +1226,13 @@ const BlogWall = () => {
                 </div>
                 <div
                   style={{
-                    background: 'white',
-                    // marginLeft: '34px',
-                    marginTop: '15px',
+                    background: '#f9f9f9',
+                    margin:'0.5rem 1rem',
+                    padding:'0.5rem 1rem',
+                    borderRadius:'5px',
+                    marginTop: '10px',
                     height: 'auto',
+                    border:'1px solid #dbdbdb'
 
                   }}
                 >

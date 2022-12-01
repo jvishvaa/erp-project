@@ -27,6 +27,8 @@ import RatingScale from './HoverRating';
 import ReactHtmlParser from 'react-html-parser';
 import Rating from '@material-ui/lab/Rating';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import { CloseCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar} from 'antd';
 
 import {
   TablePagination,
@@ -117,15 +119,15 @@ const PendingReview = (props) => {
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [view, setView] = useState(false);
-  const {user_id} = JSON.parse(localStorage.getItem('ActivityManagementSession'))
-  const blogActivityId = localStorage.getItem('BlogActivityId') ?  JSON.parse(localStorage.getItem('BlogActivityId')) : {};
+  const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession'))
+  const blogActivityId = localStorage.getItem('BlogActivityId') ? JSON.parse(localStorage.getItem('BlogActivityId')) : {};
 
   const handleCloseViewMore = () => {
     setView(false);
   };
 
   const [values, setValues] = useState();
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   console.log(values, 'values');
   const [publish, setPublish] = useState(false);
   const createPublish = () => {
@@ -142,12 +144,12 @@ const PendingReview = (props) => {
     // props.setValue(1)
     // setSubmit(true);
     let mandatory = ratingReview.filter((e) => e?.name === "Overall")
-    if(!mandatory[0].remarks){
-      setAlert('error','Overall Remarks Is Compulsory')
+    if (!mandatory[0].remarks) {
+      setAlert('error', 'Overall Remarks Is Compulsory')
       return
     }
     let body = ratingReview;
-    let overAllIndex =body.findIndex((each) => each?.name === "Overall")
+    let overAllIndex = body.findIndex((each) => each?.name === "Overall")
     body[overAllIndex].given_rating = calculateOverallRating()
     // let allRating = body.map((each) => each?.given_rating).slice(0,body?.length -1)
     setLoading(true)
@@ -212,35 +214,33 @@ const PendingReview = (props) => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
   const getTotalSubmitted = () => {
-      // if(props){
-        const branchIds = props?.selectedBranch?.map((obj) => obj?.id);
-        const gradeIds = props?.selectedGrade?.id;
-        setLoading(true)
-        axios
-          .get(
-            `${
-              endpoints.newBlog.studentSideApi
-            }?section_ids=null&&user_id=null&&activity_detail_id=${
-              ActivityId?.id
-            }&branch_ids=${branchIds == '' ? null : branchIds}&grade_id=${gradeIds}&is_reviewed=False&page=${currentPage}&page_size=${limit}`,
-            {
-              headers: {
-                'X-DTS-HOST': X_DTS_HOST,
-              },
-            }
-          )
-          .then((response) => {
-            props.setFlag(false);
-            setTotalCount(response?.data?.count);
-            setTotalPages(response?.data?.page_size);
-            setCurrentPage(response?.data?.page);
-            setLimit(Number(limit));
-            setAlert('success', response?.data?.message)
-            setTotalSubmitted(response?.data?.result);
-            setLoading(false);
-          });
+    // if(props){
+    const branchIds = props?.selectedBranch?.map((obj) => obj?.id);
+    const gradeIds = props?.selectedGrade?.id;
+    setLoading(true)
+    axios
+      .get(
+        `${endpoints.newBlog.studentSideApi
+        }?section_ids=null&&user_id=null&&activity_detail_id=${ActivityId?.id
+        }&branch_ids=${branchIds == '' ? null : branchIds}&grade_id=${gradeIds}&is_reviewed=False&page=${currentPage}&page_size=${limit}`,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((response) => {
+        props.setFlag(false);
+        setTotalCount(response?.data?.count);
+        setTotalPages(response?.data?.page_size);
+        setCurrentPage(response?.data?.page);
+        setLimit(Number(limit));
+        setAlert('success', response?.data?.message)
+        setTotalSubmitted(response?.data?.result);
+        setLoading(false);
+      });
 
-      // }    
+    // }    
   };
 
   const [ratingReview, setRatingReview] = useState([]);
@@ -274,7 +274,7 @@ const PendingReview = (props) => {
   const [data, setData] = useState();
 
   const assignPage = (data) => {
-    setView(true);  
+    setView(true);
     setData(data);
     // setBookingId(data?.id);
     getRatingView(data?.id);
@@ -284,17 +284,17 @@ const PendingReview = (props) => {
   // let counting = '5';
 
 
-  useEffect(()=>{
-    if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
+  useEffect(() => {
+    if (props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0) {
       setTotalSubmitted([])
     }
-  },[props.selectedBranch, props.selectedGrade, props.flag])
+  }, [props.selectedBranch, props.selectedGrade, props.flag])
 
   useEffect(() => {
-    if(props.flag){
+    if (props.flag) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade,props.flag, currentPage]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
 
   const classes = useStyles();
   const ReviewPage = () => {
@@ -303,18 +303,18 @@ const PendingReview = (props) => {
   const calculateOverallRating = () => {
     // const { ratingParameters } = this.state
     let average = 0
-    let ave=0
+    let ave = 0
     let aver;
     ratingReview.map(parameter => {
       average += parameter.given_rating
-      ave +=Number(parameter.rating)
-      aver=ave - Number("5");
-      console.log(average, "average", aver,"ave")
+      ave += Number(parameter.rating)
+      aver = ave - Number("5");
+      console.log(average, "average", aver, "ave")
     })
-    return (average / aver)*5 
+    return (average / aver) * 5
   }
 
-  const handlePagination = (event, page) =>{
+  const handlePagination = (event, page) => {
     setIsClicked(true);
     setCurrentPage(page);
   }
@@ -322,7 +322,7 @@ const PendingReview = (props) => {
 
   return (
     <>
-    {loading && <Loader/>}
+      {loading && <Loader />}
       <Paper className={`${classes.root} common-table`} id='singleStudent'>
         <TableContainer
           className={`table table-shadow view_users_table ${classes.container}`}
@@ -347,7 +347,7 @@ const PendingReview = (props) => {
                   hover
                   role='checkbox'
                   tabIndex={-1}
-                  // key={`user_table_index${i}`}
+                // key={`user_table_index${i}`}
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                   <TableCell className={classes.tableCells}>
@@ -380,7 +380,7 @@ const PendingReview = (props) => {
             rowsPerPage={limit}
             page={Number(currentPage) - 1}
             onChangePage={(e, page) => {
-            handlePagination(e, page + 1);
+              handlePagination(e, page + 1);
             }}
             rowsPerPageOptions={false}
             className='table-pagination'
@@ -399,10 +399,10 @@ const PendingReview = (props) => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <div style={{ width: '100%', marginTop: '72px' }}>
-          <div style={{ fontSize: '24px', marginLeft:'6px', display:'flex', justifyContent:'space-between' }}>
+        <div style={{ width: '100%', padding: '5px' }}>
+          <div style={{ fontSize: '24px', marginLeft: '6px', display: 'flex', justifyContent: 'space-between' }}>
             <strong>Preview</strong>
-            <strong  onClick={handleCloseViewMore} style={{cursor:'pointer', marginRight:'10px'}} > x </strong>
+            <strong onClick={handleCloseViewMore} style={{ cursor: 'pointer', marginRight: '10px' }} > <CloseCircleOutlined /></strong>
           </div>
           <Divider />
 
@@ -430,7 +430,7 @@ const PendingReview = (props) => {
                       width='130'
                       alt='image'
                     />
-                    <div>
+                    {/* <div>
                       <div style={{ fontWeight: 'bold' }}>
                         ERP Id :
                         <span style={{ fontWeight: 'normal' }}>
@@ -443,11 +443,11 @@ const PendingReview = (props) => {
                           {data?.booked_user?.name}
                         </span>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
-                <div
+                {/* <div
                   style={{
                     background: 'white',
                     width: '502px',
@@ -477,7 +477,7 @@ const PendingReview = (props) => {
                       {data?.activity_detail?.description}
                     </span>
                   </div>
-                </div>
+                </div> */}
                 <div
                   style={{
                     background: 'white',
@@ -488,7 +488,7 @@ const PendingReview = (props) => {
                     marginBottom: '29px',
                   }}
                 >
-                  <div style={{paddingTop: '12px' }}>
+                  <div style={{ paddingTop: '12px' }}>
                     <div
                       style={{
                         background: `url(${data?.template?.template_path})`,
@@ -553,19 +553,74 @@ const PendingReview = (props) => {
               </div>
             </Grid>
             <Grid item>
+              <div>
+                <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem' }}>
+                  <div style={{ padding: '5px' }}>
+                    <Avatar size={40} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                    </Avatar>
+                  </div>
+                  <div style={{ padding: '0 0.5rem' }}>
+                    <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                      {data?.booked_user?.name}
+                    </div>
+                    <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                    {data?.branch?.name}
+                    </div>
+                    <div style={{ fontWeight: 500, fontSize: '12px' }}>
+                    {data?.grade?.name}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+              style={{
+                    background: '#f9f9f9',
+                    margin:'0.5rem 1rem',
+                    padding:'0.5rem 1rem',
+                    borderRadius:'5px',
+                    marginTop: '10px',
+                    height: 'auto',
+                    border:'1px solid #dbdbdb'
+
+                  }}
+                >
+                  <div
+                    style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
+                  >
+                    <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
+                      Title: {data?.activity_detail?.title}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      fontWeight: 'bold',
+                      paddingLeft: '10px',
+                      paddingBottom: '10px'
+                    }}
+                  >
+                    <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
+                      Description: {data?.activity_detail?.description}
+                    </span>
+                  </div>
+                </div>
+                <Divider />
               {submit == false ? (
-                <div style={{ paddingLeft: '10px' }}>Add Review</div>
+                <div style={{ padding: '10px' }}>Add Review</div>
               ) : (
-                <div style={{ paddingLeft: '8px' }}>Edit Review</div>
+                <div style={{ padding: '10px' }}>Edit Review</div>
               )}
               {submit == false && (
                 <div
                   style={{
-                    border: '1px solid #707070',
+                    border: '1px solid grey',
                     width: '295px',
                     height: 'auto',
                     marginLeft: '11px',
                     marginRight: '10px',
+                    borderRadius: '5px',
+                    background: '#f4f5f9'
                   }}
                 >
                   {ratingReview?.map((obj, index) => {
@@ -579,53 +634,53 @@ const PendingReview = (props) => {
                         }}
                       >
                         {obj?.name === 'Overall' ? (
-                            <div
-                          key={index}
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
-                        >
-                           {obj.name}*
-                           {/* <div style={{paddingRight:"13px"}}> */}
-                           <StyledRating
-                            name={`rating`}
-                            size='small'
-                            value={calculateOverallRating()}
-                            max={obj?.rating}
-                            precision={0.1}
-                            readOnly
-                          />
-                        </div>
+                          <div
+                            key={index}
+                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                          >
+                            {obj.name}*
+                            {/* <div style={{paddingRight:"13px"}}> */}
+                            <StyledRating
+                              name={`rating`}
+                              size='small'
+                              value={calculateOverallRating()}
+                              max={obj?.rating}
+                              precision={0.1}
+                              readOnly
+                            />
+                          </div>
                         ) : (
-                        <div
-                          key={index}
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
-                        >
-                          {' '}
-                          {obj?.name}
-                          <StyledRating
-                            name={`rating${index}`}
-                            size='small'
-                            value={obj?.given_rating}
-                            max={obj?.rating}
-                            // defaultValue={props.defaultValue}
-                            onChange={(event, newValue) =>
-                              handleInputCreativityOne(event, newValue, index)
-                            }
-                          />
-                        </div>
+                          <div
+                            key={index}
+                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                          >
+                            {' '}
+                            {obj?.name}
+                            <StyledRating
+                              name={`rating${index}`}
+                              size='small'
+                              value={obj?.given_rating}
+                              max={obj?.rating}
+                              // defaultValue={props.defaultValue}
+                              onChange={(event, newValue) =>
+                                handleInputCreativityOne(event, newValue, index)
+                              }
+                            />
+                          </div>
                         )}
                         {/* {obj} */}
                         {obj?.name == 'Overall' ? (
-                                                    <div>
-                                                    <TextField
-                                                      id='outlined-basic'
-                                                      size='small'
-                                                      variant='outlined'
-                                                      value={obj?.remarks}
-                                                      style={{ width: '264px' }}
-                                                      onChange={(event) => handleInputCreativity(event, index)}
-                                                      label ="Mandatory"
-                                                    />
-                                                  </div>
+                          <div>
+                            <TextField
+                              id='outlined-basic'
+                              size='small'
+                              variant='outlined'
+                              value={obj?.remarks}
+                              style={{ width: '264px', background:'white'}}
+                              onChange={(event) => handleInputCreativity(event, index)}
+                              label="Mandatory"
+                            />
+                          </div>
                         ) : (
                           <div>
                             <TextField
@@ -633,7 +688,7 @@ const PendingReview = (props) => {
                               size='small'
                               variant='outlined'
                               value={obj?.remarks}
-                              style={{ width: '264px' }}
+                              style={{ width: '264px', background:'white' }}
                               onChange={(event) => handleInputCreativity(event, index)}
                               label="Optional"
                             />

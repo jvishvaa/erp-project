@@ -785,12 +785,12 @@ const BlogActivityView = () => {
               </Grid>
               <Grid item>
                 <div>
-                  <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
+                  <div style={{ display: 'flex', width: '100%', padding:'0.5rem 1rem' }}>
                     <div style={{ padding: '5px' }}>
                       <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
                       </Avatar>
                     </div>
-                    <div style={{ padding: '0 0.5rem' }}>
+                    <div style={{ padding: '0rem 0.5rem' }}>
                       <div style={{ fontWeight: 600, fontSize: '16px' }}>
                         {previewData?.name}
                       </div>
@@ -805,10 +805,13 @@ const BlogActivityView = () => {
                 </div>
                 <div
                   style={{
-                    background: 'white',
-                    // marginLeft: '34px',
-                    marginTop: '15px',
+                    background: '#f9f9f9',
+                    margin:'0.5rem 1rem',
+                    padding:'0.5rem 1rem',
+                    borderRadius:'5px',
+                    marginTop: '10px',
                     height: 'auto',
+                    border:'1px solid #dbdbdb'
 
                   }}
                 >
