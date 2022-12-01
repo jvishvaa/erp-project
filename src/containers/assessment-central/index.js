@@ -1217,7 +1217,7 @@ useEffect(() => {
             Add Selected
           </Button>
         </div>}
-{!handleClose && (
+{(isSuperAdmin || isSuperuser) && !handleClose && (
   <>
   <div className='col-md-2'>
     <FormControlLabel
