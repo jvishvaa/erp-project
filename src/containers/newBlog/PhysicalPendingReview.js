@@ -27,8 +27,8 @@ import RatingScale from './HoverRating';
 import ReactHtmlParser from 'react-html-parser';
 import Rating from '@material-ui/lab/Rating';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import { Button as ButtonAnt, Input } from 'antd';
-import { MonitorOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Button as ButtonAnt, Input , Avatar} from 'antd';
+import { MonitorOutlined, CloseCircleOutlined, UserOutlined} from '@ant-design/icons';
 
 import {
   TablePagination,
@@ -143,11 +143,6 @@ const PhysicalPendingReview = (props) => {
   const createPublish = () => {
     setPublish(true);
   };
-  // useEffect(() => {
-  //   setValues({
-  //     rating: DEFAULT_RATING,
-  //   });
-  // }, []);
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
     setView(false);
@@ -161,7 +156,6 @@ const PhysicalPendingReview = (props) => {
     let body = ratingReview;
     let overAllIndex = body.findIndex((each) => each?.name === "Overall")
     body[overAllIndex].given_rating = calculateOverallRating()
-    // let allRating = body.map((each) => each?.given_rating).slice(0,body?.length -1)
     setLoading(true)
     axios
       .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
@@ -173,6 +167,7 @@ const PhysicalPendingReview = (props) => {
         // props.setValue(1)
         setView(false)
         setLoading(false)
+        erpAPI()
         setAlert('success', ' Review Submitted Successfully');
       });
   };
@@ -184,7 +179,6 @@ const PhysicalPendingReview = (props) => {
     arr[index].remarks = event.target.value;
     setRatingReview(arr);
   };
-  // const [starSet,setStarSet]
   const handleInputCreativityOne = (event, newValue, index) => {
     let arr = [...ratingReview];
 
@@ -371,6 +365,16 @@ const PhysicalPendingReview = (props) => {
     setCurrentPage(page);
   }
 
+  let dummyArr = []
+  const filterRound = (data) => {
+    if (dummyArr.indexOf(data) !== -1) {
+      return ""
+    } else {
+      dummyArr.push(data)
+      return data
+    }
+  }
+
 
   return (
     <>
@@ -460,7 +464,7 @@ const PhysicalPendingReview = (props) => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <div style={{ width: '100%', marginTop: '72px' }}>
+        <div style={{ width: '100%', padding:'10px'}}>
           <div style={{ fontSize: '24px', marginLeft: '6px', display: 'flex', justifyContent: 'space-between' }}>
             <strong>Preview</strong>
             <strong onClick={handleCloseViewMore} style={{ cursor: 'pointer', marginRight: '10px' }} >
@@ -493,28 +497,14 @@ const PhysicalPendingReview = (props) => {
                       width='130'
                       alt='image'
                     />
-                    {/* <div>
-                        <div style={{ fontWeight: 'bold' }}>
-                          ERP Id :
-                          <span style={{ fontWeight: 'normal' }}>
-                            {data?.erp_id}{' '}
-                          </span>
-                        </div>
-                        <div style={{ fontWeight: 'bold' }}>
-                          Name :
-                          <span style={{ fontWeight: 'normal' }}>
-                            {data?.name}
-                          </span>
-                        </div>
-                      </div> */}
                   </div>
                 </div>
 
-                <div
+                {/* <div
                   style={{
                     background: 'white',
                     width: '502px',
-                    marginLeft: '34px',
+                    marginLeft: '12px',
                     marginTop: '16px',
                     height: 'auto',
                   }}
@@ -540,7 +530,25 @@ const PhysicalPendingReview = (props) => {
                       {data?.erp_id}
                     </span>
                   </div>
+                </div> */}
+                <div>
+                  <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem', alignItems:'center' }}>
+                    <div style={{ padding: '5px' }}>
+                      <Avatar size={40} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                      </Avatar>
+                    </div>
+                    <div style={{ padding: '0 0.5rem' }}>
+                      <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                        {data?.student_name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                        {data?.erp_id}
+                      </div>
+                    
+                    </div>
+                  </div>
                 </div>
+                <Divider />
                 <div
                   style={{
                     background: 'white',
@@ -555,7 +563,7 @@ const PhysicalPendingReview = (props) => {
 
                     <Grid item>
                       {submit == false ? (
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 600, color: 'blue', padding: '0.5rem 1rem' }}>Add Review</div>
+                        <div style={{ display: 'flex', alignItems: 'center', fontSize: '16px', fontWeight: 600, padding: '0.5rem 1rem' }}>Review</div>
                       ) : (
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 600, color: 'blue', padding: '0.5rem 1rem' }}>Edit Review</div>
                       )}
@@ -564,6 +572,7 @@ const PhysicalPendingReview = (props) => {
                           style={{
                             border: '1px solid gray',
                             borderRadius: '10px',
+                            background: '#f4f5f9',
                             height: 'auto',
                             padding: '0.5rem'
                           }}
@@ -579,12 +588,6 @@ const PhysicalPendingReview = (props) => {
                                 }}
                               >
                                 {obj?.name === 'Overall' ? (
-                                  //     <div
-                                  //   key={index}
-                                  //   style={{ display: 'flex', justifyContent: 'space-between' }}
-                                  // >
-                                  //    {obj.name}*
-                                  // </div>
                                   ""
                                 ) : (
                                   <div
@@ -592,33 +595,17 @@ const PhysicalPendingReview = (props) => {
                                     style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
                                   >
                                     {' '}
-                                    {obj?.name}<b>({obj?.level})</b>
+                                    {obj?.name}<b style={{ color: '#53bedd', fontSize:'12px'}}>{filterRound(obj?.level)}</b>
                                   </div>
                                 )}
                                 {/* {obj} */}
                                 {obj?.name == 'Overall' ? (
-                                  //   <div>
-                                  //     <Input placeholder={obj?.name}
-                                  //     onChange={(event) => handleInputCreativity(event, index)}
-                                  //     value={obj?.remarks}
-                                  //     />
-                                  //  </div>
                                   ""
 
                                 ) : (
                                   <div>
-                                    {/* <TextField
-                                id='outlined-basic'
-                                size='small'
-                                variant='outlined'
-                                value={obj?.remarks}
-                                style={{width:'100%'}}
-                                // style={{ width: '264px' }}
-                                onChange={(event) => handleInputCreativity(event, index)}
-                                label={obj?.name}
-                              /> */}
-
                                     <Input
+                                      style={{ background: 'white' }}
                                       placeholder={obj?.name}
                                       onChange={(event) => handleInputCreativity(event, index)}
                                       value={obj?.remarks}
@@ -631,54 +618,33 @@ const PhysicalPendingReview = (props) => {
                           })}
 
                           {ratingReview?.map((obj, index) => {
-                            return(
-                            <div
-                              key={index}
-                              style={{
-                                paddingLeft: '15px',
-                                paddingRight: '15px',
-                                paddingTop: '5px',
-                              }}
-                            >
-                              {obj?.name == "Overall" ? (
-                                <div>
-                                  {obj?.name}
-                                  <Input placeholder={obj?.name}
-                                    onChange={(event) => handleInputCreativity(event, index)}
-                                    value={obj?.remarks}
-                                  />
-                                </div>
+                            return (
+                              <div
+                                key={index}
+                                style={{
+                                  paddingLeft: '15px',
+                                  paddingRight: '15px',
+                                  paddingTop: '5px',
+                                }}
+                              >
+                                {obj?.name == "Overall" ? (
+                                  <div>
+                                    {obj?.name}*
+                                    <Input placeholder={obj?.name}
+                                      onChange={(event) => handleInputCreativity(event, index)}
+                                      value={obj?.remarks}
+                                    />
+                                  </div>
 
-                              ) : (
-                                ""
+                                ) : (
+                                  ""
 
-                              )}
-                            </div>
+                                )}
+                              </div>
 
                             )
 
                           })}
-
-                          {/* <div style={{display: "flex",
-      justifyContent: "space-between"}} >
-                      <div style={{paddingLeft:"13px"}}>
-                    Overall hi
-                    </div>
-                    <div style={{paddingRight:"13px"}}>
-                    <StyledRating
-                              name={`rating`}
-                              size='small'
-                              value={calculateOverallRating()}
-                              // max={obj?.rating}
-                              precision={0.1}
-                              readOnly
-                              // defaultValue={props.defaultValue}
-                              // onChange={(event, newValue) =>
-                              //   handleInputCreativityOne(event, newValue, index)
-                              // }
-                            />
-                            </div>
-                            </div> */}
 
                           <div
                             style={{
@@ -749,15 +715,6 @@ const PhysicalPendingReview = (props) => {
                       )}
                     </Grid>
                   </div>
-                  {/* <div
-                      style={{
-                        paddingLeft: '30px',
-                        paddingTop: '12px',
-                        paddingBottom: '6px',
-                      }}
-                    >
-                      {ReactHtmlParser(data?.submitted_work?.html_text)}
-                    </div> */}
                 </div>
               </div>
               <div
@@ -768,27 +725,7 @@ const PhysicalPendingReview = (props) => {
                 }}
               >
                 {' '}
-                {/* <Button
-                    variant='outlined'
-                    size='medium'
-                    onClick={confirmassign}
-                    className={classes.buttonColor1}
-                    disabled
-                    startIcon={<BookmarksIcon style={{ color: 'grey' }} />}
-                  >
-                    Shortlist
-                  </Button>{' '} */}
                 &nbsp;
-                {/* <Button
-                    variant='contained'
-                    color='primary'
-                    disabled
-                    size='medium'
-                    className={classes.buttonColor}
-                    onClick={createPublish}
-                  >
-                    Published Blog{' '}
-                  </Button> */}
               </div>
             </Grid>
           </Grid>

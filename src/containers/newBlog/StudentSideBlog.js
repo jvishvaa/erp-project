@@ -10,6 +10,7 @@ import Loader from 'components/loader/loader';
 
 // import Rating from '@material-ui/lab/Rating';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { UserOutlined } from '@ant-design/icons';
 
 import './styles.scss';
 
@@ -44,9 +45,9 @@ import { Rating } from '@material-ui/lab';
 import Pagination from '@material-ui/lab/Pagination';
 import Slide from '@material-ui/core/Slide';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
-import { Breadcrumb, Button as ButtonAnt } from 'antd';
+import { Breadcrumb, Button as ButtonAnt, Avatar } from 'antd';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const DEFAULT_RATING = 0;
 
@@ -89,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 240,
     objectFit: 'cover',
-    width:'45%'
+    width: '45%'
   },
   container: {
     maxHeight: '70vh',
@@ -178,7 +179,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   dialogue: {
-    width:'750px !important',
+    width: '750px !important',
 
   }
 }));
@@ -194,11 +195,11 @@ const columns = [
     width: '75%',
     align: 'left',
     render: (text, row) => {
-      return(
+      return (
         row.criterion
       )
 
-    } 
+    }
   },
   {
     title: <span className='th-white th-fw-600'>Remarks</span>,
@@ -208,7 +209,7 @@ const columns = [
     // key: 'total',
     // id: 2,
     render: (text, row) => (
-        row?.levels?.filter((item) => item.status == true )[0].name      
+      row?.levels?.filter((item) => item.status == true)[0].name
     )
   },
 ];
@@ -245,27 +246,27 @@ const StudentSideBlog = () => {
   const [publish, setPublish] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
   const [readMore, setReadMore] = useState(true)
-  const [flag,setFlag] = useState(false)
-  const [currentDate,setCurrentDate] =useState('')
-  const [userData , setUserData] = useState()
-  const [loading,setLoading] = useState(false);
-  const [page,setPage] = useState(1)
-  const [totalPage,setTotalPage] = useState(0);
+  const [flag, setFlag] = useState(false)
+  const [currentDate, setCurrentDate] = useState('')
+  const [userData, setUserData] = useState()
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(0);
   const [open, setOpen] = React.useState(false);
   const [totalPublicSpeaking, setTotalPublicSpeaking] = useState([]);
-  const [videoDetails,setVideoDetails] = useState([]);
-  const [videoData,setVideoData] = useState('')
-  const [marksData,setMarksData] = useState([]);
+  const [videoDetails, setVideoDetails] = useState([]);
+  const [videoData, setVideoData] = useState('')
+  const [marksData, setMarksData] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [totalPublish, setTotalPublish] = useState([]);
-  const blogActivityId = localStorage.getItem('BlogActivityId') ?  JSON.parse(localStorage.getItem('BlogActivityId')) : {}
+  const blogActivityId = localStorage.getItem('BlogActivityId') ? JSON.parse(localStorage.getItem('BlogActivityId')) : {}
 
 
   const createPublish = () => {
     setPublish(true);
   };
 
-  const handleGoBack = () =>{
+  const handleGoBack = () => {
     history.goBack()
   }
 
@@ -303,7 +304,7 @@ const StudentSideBlog = () => {
       .then((response) => {
         setLoading(false)
       })
-      .catch((err) =>{
+      .catch((err) => {
         setLoading(false)
       })
   };
@@ -395,14 +396,14 @@ const StudentSideBlog = () => {
   };
   const [assinged, setAssigned] = useState([]);
 
-  useEffect(() =>{
+  useEffect(() => {
     getAssinged()
-  },[page])
+  }, [page])
 
   const getAssinged = async () => {
     setLoading(true)
 
-    const UserData =  JSON.parse(localStorage.getItem('ActivityManagement')) || {};
+    const UserData = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
     axios
       .get(
         `${endpoints.newBlog.Assign}?section_ids=null&user_id=${UserData.id}&is_draft=false&page_size=${12}&page=${page}&activity_type=${blogActivityId}`,
@@ -414,13 +415,13 @@ const StudentSideBlog = () => {
       )
       .then((response) => {
         var today = new Date().toISOString();
-        const output = today?.slice(0,19);
+        const output = today?.slice(0, 19);
         setCurrentDate(output)
         setAssigned(response?.data?.result);
         setPage(response?.data?.page)
         setTotalPage(response?.data?.total)
         setLoading(false)
-        
+
       });
   };
 
@@ -487,7 +488,7 @@ const StudentSideBlog = () => {
         setLoading(false);
       });
   };
-  
+
 
   const getTotalSubmitted = async () => {
 
@@ -509,20 +510,20 @@ const StudentSideBlog = () => {
   };
 
   useEffect(() => {
-    if(userData)
-  getAssinged();
-  }, [value,userData]);
+    if (userData)
+      getAssinged();
+  }, [value, userData]);
   const [view, setView] = useState(false);
   const [previewData, setPreviewData] = useState();
-  const [imageData,setImageData] = useState('')
+  const [imageData, setImageData] = useState('')
   const viewMore = (data) => {
-    if(data?.template !== null){
+    if (data?.template !== null) {
       setView(true);
       setImageData(JSON.parse(data?.template?.html_file))
       setPreviewData(data);
       getRatingView(data?.id);
 
-    }else{
+    } else {
       setAlert('error', 'No Data Found')
     }
   };
@@ -543,7 +544,7 @@ const StudentSideBlog = () => {
   };
 
 
-  const handleClose =() => {
+  const handleClose = () => {
     setView(false);
   }
   const handlePagination = (event, page) => {
@@ -551,37 +552,37 @@ const StudentSideBlog = () => {
   };
 
   const handleClickOpen = (e) => {
-    if(e?.asset?.state == "processed"){  
+    if (e?.asset?.state == "processed") {
       let data = JSON.parse(e?.grading?.grade_scheme_markings)
       setMarksData(data)
-          axios
-            .get(
-              `${endpoints.newBlog.studentPSContentApi}?asset_id=${e?.asset?.id}`,
-              {
-                headers: {
-                  'X-DTS-HOST': X_DTS_HOST,
-                },
-              }
-            )
-            .then((response) => {
-              setVideoDetails(response?.data?.result)
-              setVideoData(response?.data?.result?.signed_URL)
-              setLoading(false);
-              setOpen(true);
-            });
-            return
-    }else if(e?.asset == null){
+      axios
+        .get(
+          `${endpoints.newBlog.studentPSContentApi}?asset_id=${e?.asset?.id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          setVideoDetails(response?.data?.result)
+          setVideoData(response?.data?.result?.signed_URL)
+          setLoading(false);
+          setOpen(true);
+        });
+      return
+    } else if (e?.asset == null) {
       setAlert('error', 'Student Not Yet Submitted !')
       return
 
-    }else {
+    } else {
       setAlert('error', 'Student Not Yet Submitted')
       return
 
     }
 
 
-   
+
   };
 
 
@@ -589,10 +590,10 @@ const StudentSideBlog = () => {
     setOpen(false);
   };
 
-  const dummyDataMarks =[
-    {name:'Maths', marks: '80'},
-    {name:'Physics', marks: '90'},
-    {name:'Science', marks: '85'}
+  const dummyDataMarks = [
+    { name: 'Maths', marks: '80' },
+    { name: 'Physics', marks: '90' },
+    { name: 'Science', marks: '85' }
   ]
 
   const createPushBlogWall = () => {
@@ -603,88 +604,88 @@ const StudentSideBlog = () => {
   return (
 
     <div>
-      {loading && <Loader/>}
-    <Layout>
-       <div className='layout-container-div ebookscroll' style={{
-        // background: 'white',
-        height: '90vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-      }}>
-      <Grid
-        container
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingLeft: '22px',
-          paddingRight: '15px',
-          paddingBottom: '15px',
-        }}
-      >
-        <Grid item xs={4} md={4} style={{display:'flex', alignItems:'center'}}>
+      {loading && <Loader />}
+      <Layout>
+        <div className='layout-container-div ebookscroll' style={{
+          // background: 'white',
+          height: '90vh',
+          overflowX: 'hidden',
+          overflowY: 'scroll',
+        }}>
+          <Grid
+            container
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              paddingLeft: '22px',
+              paddingRight: '15px',
+              paddingBottom: '15px',
+            }}
+          >
+            <Grid item xs={4} md={4} style={{ display: 'flex', alignItems: 'center' }}>
               <div>
                 <IconButton aria-label="back" onClick={handleGoBack}>
-                <KeyboardBackspaceIcon style={{fontSize:'20px', color:'black'}}/>
+                  <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
                 </IconButton>
               </div>
 
-           <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/blog/wall/redirect' className='th-grey th-16'>
-                My Blogs
-              </Breadcrumb.Item>
-              <Breadcrumb.Item href='' className='th-grey th-16'>
-               Blog Writing
-              </Breadcrumb.Item>
-            </Breadcrumb>
-        </Grid>
-      </Grid>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item href='/blog/wall/redirect' className='th-grey th-16'>
+                  My Blogs
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href='' className='th-grey th-16'>
+                  Blog Writing
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </Grid>
+          </Grid>
 
-      <Grid container>
-        <Grid item md={12} xs={12} style={{display:'flex', justifyContent:'end', marginRight:'30px'}}>
-        <Button
-            variant='contained'
-            style={{ backgroundColor: '#F7B519', padding:'0.5rem 1rem'}}
-            color='primary'
-            startIcon={<ForumIcon />}
-            onClick={createPushBlogWall}
-          >
-            School Wall
-          </Button>
-        </Grid>
-        <Grid item md={12} xs={12} className={classes.tabStatic}>
-          <Tabs
-            onChange={handleTab}
-            textColor='primary'
-            indicatorColor='primary'
-            // className={ classes.tabsFont}
-            value={value}
-          >
-            <Tab
-              label={`Assigned`}
-              classes={{
-                selected: classes.selected1,
-              }}
-              className={value === 0 ? classes.tabsFont : classes.tabsFont1}
-              onClick={getAssinged}
-            />
+          <Grid container>
+            <Grid item md={12} xs={12} style={{ display: 'flex', justifyContent: 'end', marginRight: '30px' }}>
+              <Button
+                variant='contained'
+                style={{ backgroundColor: '#F7B519', padding: '0.5rem 1rem' }}
+                color='primary'
+                startIcon={<ForumIcon />}
+                onClick={createPushBlogWall}
+              >
+                School Wall
+              </Button>
+            </Grid>
+            <Grid item md={12} xs={12} className={classes.tabStatic}>
+              <Tabs
+                onChange={handleTab}
+                textColor='primary'
+                indicatorColor='primary'
+                // className={ classes.tabsFont}
+                value={value}
+              >
+                <Tab
+                  label={`Assigned`}
+                  classes={{
+                    selected: classes.selected1,
+                  }}
+                  className={value === 0 ? classes.tabsFont : classes.tabsFont1}
+                  onClick={getAssinged}
+                />
 
-            <Tab
-              label='Total Submitted'
-              classes={{
-                selected: classes.selected2,
-              }}
-              className={value === 1 ? classes.tabsFont : classes.tabsFont1}
-              onClick={getTotalSubmitted}
-            />
-            <Tab
-              label='Reviewed'
-              classes={{
-                selected: classes.selected2,
-              }}
-              className={value === 2 ? classes.tabsFont : classes.tabsFont1}
-              onClick={getTotalReview}
-            />
-            {/* <Tab
+                <Tab
+                  label='Total Submitted'
+                  classes={{
+                    selected: classes.selected2,
+                  }}
+                  className={value === 1 ? classes.tabsFont : classes.tabsFont1}
+                  onClick={getTotalSubmitted}
+                />
+                <Tab
+                  label='Reviewed'
+                  classes={{
+                    selected: classes.selected2,
+                  }}
+                  className={value === 2 ? classes.tabsFont : classes.tabsFont1}
+                  onClick={getTotalReview}
+                />
+                {/* <Tab
               label='Public Speaking'
               classes={{
                 selected: classes.selected2,
@@ -692,559 +693,531 @@ const StudentSideBlog = () => {
               className={value === 3 ? classes.tabsFont : classes.tabsFont1}
               onClick ={getTotalPublicSpeaking}
             /> */}
-            <Tab
-              label='Published'
-              classes={{
-                selected: classes.selected2,
-              }}
-              className={value === 3 ? classes.tabsFont : classes.tabsFont1}
-              onClick={getTotalPublish}
-            />
+                <Tab
+                  label='Published'
+                  classes={{
+                    selected: classes.selected2,
+                  }}
+                  className={value === 3 ? classes.tabsFont : classes.tabsFont1}
+                  onClick={getTotalPublish}
+                />
 
-          </Tabs>
-          <Divider className={classes.dividerColor} />
-        </Grid>
-      </Grid>
-      {value == 0 && (
-        <>
-
-        <Grid
-          container
-          spacing={2}
-          style={{
-            paddingLeft: '20px',
-            paddingTop: '22px',
-            paddingBottom: '26px',
-            width: '100%',
-          }}
-        >
-          {assinged?.map((response) => (
-            <Grid item xs={12} md={3} sm={6}>
-              <Card className={classes.card}>
-                <CardActionArea
-                  style={{ paddingLeft: '10px', paddingRight:'10px', paddingTop: '5px', paddingBottom: '7px' }}
-                >
-                  <Typography
-                    style={{
-                      fontWeight: 'bold',
-                      color: '#036DE2',
-                      fontSize: '10px',
-                    }}
-                  >
-                    {response?.activity_type_name}
-                  </Typography>
-                  <Typography
-                    style={{ color: '#061B2E', fontWeight: 'bold', fontSize: '15px' }}
-                  >
-                  
-
-                      {response?.title}
-                  </Typography>
-                  <Typography
-                    style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
-                  >
-                    {/* word limit-300{' '} */}
-                  </Typography>
-                  <div
-                    color='textSecondary'
-                    component='p'
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
-                    {response && response?.issue_date == null ? (
-                      ''
-
-                    ) : (
-                    <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
-                      
-                      Assigned - {response?.issue_date?.substring(8,10)}
-                      {new Date(response?.issue_date)?.toLocaleString('en-us', {
-                        month: 'short',
-                      })}
-                      &nbsp;{response?.issue_date.substring(0, 4)}
-                    </div>
-
-                    )}
-                    <div
-                      style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
-                    >
-                      submission Date-{response?.created_at.substring(8, 10)}&nbsp;
-                      {new Date(response?.created_at).toLocaleString('en-us', {
-                        month: 'short',
-                      })}
-                      &nbsp;{response?.created_at.substring(0, 4)}
-                    </div>
-                  </div>
-                </CardActionArea>
-                <CardActionArea style={{ padding: '11px', display:'flex' }}>
-                  <CardMedia
-                    className={classes.media}
-                    style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                    image={response?.template?.template_path}
-                    title='Contemplative Reptile'
-                  />
-                </CardActionArea>
-                { moment(currentDate).diff(moment(response?.submission_date),'hours') > 24 ? (
-                  <div style={{display:'flex', justifyContent:'center', padding:'10px'}}>
-                        <ButtonAnt type="dashed" danger>
-                              Expired
-                        </ButtonAnt>
-                  </div>
-                ) : (
-                <CardActions style={{ textAlign: 'center', justifyContent: 'center' }}>
-                  <ButtonAnt
-                    onClick={() => EditActivity(response)}
-                    type="primary"
-                  >
-                    Start Writing
-                  </ButtonAnt>
-                </CardActions>
-                  
-                )}
-              </Card>
+              </Tabs>
+              <Divider className={classes.dividerColor} />
             </Grid>
-          ))}
-        </Grid>
-        <div style={{display:'flex', justifyContent:'center'}}>
-          <Pagination
-          onChange={handlePagination}
-          // count={totalPage}
-          count={Math.ceil(totalPage / 12)}
-          color='primary'
-          page={page}
-          // page={1}
-        />
-        </div>
-        
-        </>
+          </Grid>
+          {value == 0 && (
+            <>
 
-      )}
-
-      {value == 2  && (
-        <Grid
-          container
-          spacing={2}
-          style={{
-            paddingLeft: '20px',
-            paddingTop: '22px',
-            paddingBottom: '26px',
-            width: '100%',
-          }}
-        >
-          {totalReview?.map((response) => (
-            <Grid item xs={12} md={3} sm={6}>
-              <Card className={classes.card}>
-                <CardActionArea
-                  style={{ paddingLeft: '10px', paddingRight:'10px' ,paddingTop: '5px', paddingBottom: '7px' }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div>
-                      <Typography
-                        style={{
-                          fontWeight: 'bold',
-                          color: '#036DE2',
-
-                          fontSize: '13px',
-                        }}
-                      >
-                        {response?.activity_detail?.title}
-                      </Typography>
-                    </div>
-                    <div>
-                      <Tooltip title='View More'>
-                        <MoreVertIcon
-                          style={{ color: 'black', cursor: 'pointer' }}
-                          onClick={() => viewMore(response)}
-                        />
-                      </Tooltip>
-                    </div>
-                  </div>
-                  <Typography
-                    style={{
-                      color: '#061B2E',
-                      fontWeight: 'bold',
-                      fontSize: '13px',
-                      paddingLeft: '5px',
-                    }}
-                  >
-                    {ReactHtmlParser(response?.content?.html_text)}
-                  </Typography>
-                  <Typography
-                    style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
-                  >
-                    {/* word limit-300{' '} */}
-                  </Typography>
-                  <div
-                    color='textSecondary'
-                    component='p'
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
-                    <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
-                      Assigned-{response?.activity_detail?.issue_date?.slice(8, 10)}&nbsp;
-                      {new Date(
-                        response?.activity_detail?.issue_date
-                      ).toLocaleString('en-us', {
-                        month: 'short',
-                      })}
-                      &nbsp;{response?.activity_detail?.issue_date?.slice(0, 4)}
-                    </div>{' '}
-                    <div
-                      style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
-                    >
-                      submitted-
-                      {response?.submitted_on?.slice(8, 10)}&nbsp;
-                      {new Date(
-                        response?.submitted_on
-                      ).toLocaleString('en-us', {
-                        month: 'short',
-                      })}
-                      &nbsp;{response?.submitted_on?.slice(0, 4)}
-                    </div>
-                  </div>
-                </CardActionArea>
-                <CardActionArea style={{ padding: '11px', display:'flex'}} onClick={() => viewMore(response)}>
-                  <CardMedia
-                    className={classes.media}
-                    style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                    image={response?.template?.template_path}
-                    title='Contemplative Reptile'
-                  />
-                </CardActionArea>
-                <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div>
-                    <StyledRating 
-                    // rating= {response?.user_reviews?.given_rating}
-                    precision={0.1}
-                    defaultValue={response?.user_reviews?.given_rating}
-                    max={parseInt(response?.user_reviews?.level?.rating)}
-                    readOnly
-                    />
-                  </div>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-
-      {value == 1  && (
-        <Grid
-          container
-          spacing={2}
-          style={{
-            paddingLeft: '20px',
-            paddingTop: '22px',
-            paddingBottom: '26px',
-            width: '100%',
-          }}
-        >
-          {totalSubmitted?.map((response) => (
-            <Grid item xs={12} md={3} sm={6}>
-              <Card className={classes.card}>
-                <CardActionArea
-                  style={{ paddingLeft: '10px', paddingRight:'10px', paddingTop: '5px', paddingBottom: '7px' }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div>
-                      <Typography
-                        style={{
-                          fontWeight: 'bold',
-                          color: '#036DE2',
-
-                          fontSize: '13px',
-                        }}
-                      >
-                        {response?.activity_detail?.title}
-                      </Typography>
-                    </div>
-                    <div>
-                      <Tooltip title='View More'>
-                        <MoreVertIcon
-                          style={{ color: 'black', cursor: 'pointer' }}
-                          onClick={() => viewMore(response)}
-                        />
-                      </Tooltip>
-                    </div>
-                  </div>
-                  <Typography
-                    style={{
-                      color: '#061B2E',
-                      fontWeight: 'bold',
-                      fontSize: '13px',
-                      paddingLeft: '5px',
-                    }}
-                  >
-                   
-                    {ReactHtmlParser(response?.content?.html_text)}
-                  </Typography>
-                  <Typography
-                    style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
-                  >
-                  </Typography>
-                  <div
-                    color='textSecondary'
-                    component='p'
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
-                    <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
-                      Assigned-{response?.activity_detail?.issue_date?.slice(8, 10)}&nbsp;
-                      {new Date(
-                        response?.activity_detail?.issue_date
-                      ).toLocaleString('en-us', {
-                        month: 'short',
-                      })}
-                      &nbsp;{response?.activity_detail?.issue_date?.slice(0, 4)}
-                    </div>{' '}
-                    <div
-                      style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
-                    >
-                      submitted-
-                      {response?.submitted_on?.slice(8, 10)}&nbsp;
-                      {new Date(
-                        response?.submitted_on
-                      ).toLocaleString('en-us', {
-                        month: 'short',
-                      })}
-                      &nbsp;{response?.submitted_on?.slice(0, 4)}
-                    </div>
-                  </div>
-                </CardActionArea>
-                <CardActionArea style={{ padding: '11px', display:'flex' }} onClick={() => viewMore(response)}>
-                  <CardMedia
-                    className={classes.media}
-                    style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                    image={response?.template?.template_path}
-                    title='Contemplative Reptile'
-                  />
-                </CardActionArea>
-                <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-
-      {value == 3  && (
-        <Grid
-          container
-          spacing={2}
-          style={{
-            paddingLeft: '20px',
-            paddingTop: '22px',
-            paddingBottom: '26px',
-            width: '100%',
-          }}
-        >
-          {totalPublish?.map((response) => (
-
-            <Grid item xs={12} md={3} sm={6}>
-              <Card className={classes.card}>
-                <CardActionArea
-                  style={{ paddingLeft: '10px', paddingRight:'10px', paddingRight:'10px', paddingTop: '5px', paddingBottom: '7px' }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div>
-                      <Typography
-                        style={{
-                          fontWeight: 'bold',
-                          color: '#036DE2',
-
-                          fontSize: '13px',
-                        }}
-                      >
-                        {response?.activity_detail?.title}
-                      </Typography>
-                    </div>
-                    <div>
-                      <Tooltip title='View More'>
-                        <MoreVertIcon
-                          style={{ color: 'black', cursor: 'pointer' }}
-                          onClick={() => viewMore(response)}
-                        />
-                      </Tooltip>
-                    </div>
-                  </div>
-                  <Typography
-                    style={{
-                      color: '#061B2E',
-                      fontWeight: 'bold',
-                      fontSize: '13px',
-                      paddingLeft: '5px',
-                    }}
-                  >
-                    {/* {ReactHtmlParser(response?.content?.html_text)} */}
-                  </Typography>
-                  <Typography
-                    style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
-                  >
-                    {/* word limit-300{' '} */}
-                  </Typography>
-                  <div
-                    color='textSecondary'
-                    component='p'
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
-                    <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
-                      Assigned-{response?.activity_detail?.issue_date?.slice(8, 10)}&nbsp;
-                      {new Date(
-                        response?.activity_detail?.issue_date
-                      ).toLocaleString('en-us', {
-                        month: 'short',
-                      })}
-                      &nbsp;{response?.activity_detail?.issue_date?.slice(0, 4)}
-                    </div>{' '}
-                    
-                    <div
-                      style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
-                    >
-                      submitted-
-                      {response?.submitted_on?.slice(8, 10)}&nbsp;
-                      {new Date(
-                        response?.submitted_on
-                      ).toLocaleString('en-us', {
-                        month: 'short',
-                      })}
-                      &nbsp;{response?.submitted_on?.slice(0, 4)}
-                    </div>                    
-                  </div>
-                  <div style={{ whiteSpace: 'nowrap', fontSize: '10px',}}>
-                    {response?.publish_level}
-                  </div>
-                </CardActionArea>
-                <CardActionArea style={{ padding: '11px', display:'flex'}} onClick={() => viewMore(response)}>
-                  <CardMedia
-                    className={classes.media}
-                    style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                    image={response?.template?.template_path}
-                    title='Contemplative Reptile'
-                  />
-                </CardActionArea>
-                <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div>
-                    <StyledRating 
-                    rating= {response?.user_reviews?.given_rating}
-                    precision={0.1}
-                    defaultValue={response?.user_reviews?.given_rating}
-                    max={parseInt(response?.user_reviews?.level?.rating)}
-                    readOnly
-                    />
-                  </div>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-      
-
-      <Drawer
-        anchor='right'
-        maxWidth={maxWidth}
-        open={view}
-        onClose={handleCloseViewMore}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <div style={{ width: '100%', marginTop: '72px' }}>
-          <div style={{display:'flex', justifyContent:'space-between',}}>
-          <div style={{ fontSize: '24px' }}>
-            <strong>Preview</strong>
-          </div>
-          <div style={{ fontSize: '24px', cursor:'pointer' }}>
-            <strong onClick={handleClose}>X</strong>
-          </div>
-
-          </div>
-          <Divider />
-
-          <Grid container direction='row' justifyContent='center'>
-            <Grid item>
-              <div
+              <Grid
+                container
+                spacing={2}
                 style={{
-                  border: '1px solid #813032',
-                  width: '583px',
-                  background: 'white',
-                  height: 'auto',
+                  paddingLeft: '20px',
+                  paddingTop: '22px',
+                  paddingBottom: '26px',
+                  width: '100%',
                 }}
               >
-                <div
-                  style={{
-                    background: 'white',
-                    width: '554px',
-                    marginLeft: '13px',
-                    marginTop: '5px',
-                  }}
-                >
-                  <div>
-                    <img
-                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                      width='130'
-                      alt='image'
-                    />
-                    
-                  </div>
+                {assinged?.map((response) => (
+                  <Grid item xs={12} md={3} sm={6}>
+                    <Card className={classes.card}>
+                      <CardActionArea
+                        style={{ paddingLeft: '10px', paddingRight: '10px', paddingTop: '5px', paddingBottom: '7px' }}
+                      >
+                        <Typography
+                          style={{
+                            fontWeight: 'bold',
+                            color: '#036DE2',
+                            fontSize: '10px',
+                          }}
+                        >
+                          {response?.activity_type_name}
+                        </Typography>
+                        <Typography
+                          style={{ color: '#061B2E', fontWeight: 'bold', fontSize: '15px' }}
+                        >
+
+
+                          {response?.title}
+                        </Typography>
+                        <Typography
+                          style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
+                        >
+                          {/* word limit-300{' '} */}
+                        </Typography>
+                        <div
+                          color='textSecondary'
+                          component='p'
+                          style={{ display: 'flex', justifyContent: 'space-between' }}
+                        >
+                          {response && response?.issue_date == null ? (
+                            ''
+
+                          ) : (
+                            <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
+
+                              Assigned - {response?.issue_date?.substring(8, 10)}
+                              {new Date(response?.issue_date)?.toLocaleString('en-us', {
+                                month: 'short',
+                              })}
+                              &nbsp;{response?.issue_date.substring(0, 4)}
+                            </div>
+
+                          )}
+                          <div
+                            style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
+                          >
+                            submission Date-{response?.created_at.substring(8, 10)}&nbsp;
+                            {new Date(response?.created_at).toLocaleString('en-us', {
+                              month: 'short',
+                            })}
+                            &nbsp;{response?.created_at.substring(0, 4)}
+                          </div>
+                        </div>
+                      </CardActionArea>
+                      <CardActionArea style={{ padding: '11px', display: 'flex' }}>
+                        <CardMedia
+                          className={classes.media}
+                          style={{ border: '1px solid lightgray', borderRadius: '6px' }}
+                          image={response?.template?.template_path}
+                          title='Contemplative Reptile'
+                        />
+                      </CardActionArea>
+                      {moment(currentDate).diff(moment(response?.submission_date), 'hours') > 24 ? (
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                          <ButtonAnt type="dashed" danger>
+                            Expired
+                          </ButtonAnt>
+                        </div>
+                      ) : (
+                        <CardActions style={{ textAlign: 'center', justifyContent: 'center' }}>
+                          <ButtonAnt
+                            onClick={() => EditActivity(response)}
+                            type="primary"
+                          >
+                            Start Writing
+                          </ButtonAnt>
+                        </CardActions>
+
+                      )}
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Pagination
+                  onChange={handlePagination}
+                  // count={totalPage}
+                  count={Math.ceil(totalPage / 12)}
+                  color='primary'
+                  page={page}
+                // page={1}
+                />
+              </div>
+
+            </>
+
+          )}
+
+          {value == 2 && (
+            <Grid
+              container
+              spacing={2}
+              style={{
+                paddingLeft: '20px',
+                paddingTop: '22px',
+                paddingBottom: '26px',
+                width: '100%',
+              }}
+            >
+              {totalReview?.map((response) => (
+                <Grid item xs={12} md={3} sm={6}>
+                  <Card className={classes.card}>
+                    <CardActionArea
+                      style={{ paddingLeft: '10px', paddingRight: '10px', paddingTop: '5px', paddingBottom: '7px' }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div>
+                          <Typography
+                            style={{
+                              fontWeight: 'bold',
+                              color: '#036DE2',
+
+                              fontSize: '13px',
+                            }}
+                          >
+                            {response?.activity_detail?.title}
+                          </Typography>
+                        </div>
+                        <div>
+                          <Tooltip title='View More'>
+                            <MoreVertIcon
+                              style={{ color: 'black', cursor: 'pointer' }}
+                              onClick={() => viewMore(response)}
+                            />
+                          </Tooltip>
+                        </div>
+                      </div>
+                      <Typography
+                        style={{
+                          color: '#061B2E',
+                          fontWeight: 'bold',
+                          fontSize: '13px',
+                          paddingLeft: '5px',
+                        }}
+                      >
+                        {ReactHtmlParser(response?.content?.html_text)}
+                      </Typography>
+                      <Typography
+                        style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
+                      >
+                        {/* word limit-300{' '} */}
+                      </Typography>
+                      <div
+                        color='textSecondary'
+                        component='p'
+                        style={{ display: 'flex', justifyContent: 'space-between' }}
+                      >
+                        <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
+                          Assigned-{response?.activity_detail?.issue_date?.slice(8, 10)}&nbsp;
+                          {new Date(
+                            response?.activity_detail?.issue_date
+                          ).toLocaleString('en-us', {
+                            month: 'short',
+                          })}
+                          &nbsp;{response?.activity_detail?.issue_date?.slice(0, 4)}
+                        </div>{' '}
+                        <div
+                          style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
+                        >
+                          submitted-
+                          {response?.submitted_on?.slice(8, 10)}&nbsp;
+                          {new Date(
+                            response?.submitted_on
+                          ).toLocaleString('en-us', {
+                            month: 'short',
+                          })}
+                          &nbsp;{response?.submitted_on?.slice(0, 4)}
+                        </div>
+                      </div>
+                    </CardActionArea>
+                    <CardActionArea style={{ padding: '11px', display: 'flex' }} onClick={() => viewMore(response)}>
+                      <CardMedia
+                        className={classes.media}
+                        style={{ border: '1px solid lightgray', borderRadius: '6px' }}
+                        image={response?.template?.template_path}
+                        title='Contemplative Reptile'
+                      />
+                    </CardActionArea>
+                    <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <div>
+                        <StyledRating
+                          // rating= {response?.user_reviews?.given_rating}
+                          precision={0.1}
+                          defaultValue={response?.user_reviews?.given_rating}
+                          max={parseInt(response?.user_reviews?.level?.rating)}
+                          readOnly
+                        />
+                      </div>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+
+          {value == 1 && (
+            <Grid
+              container
+              spacing={2}
+              style={{
+                paddingLeft: '20px',
+                paddingTop: '22px',
+                paddingBottom: '26px',
+                width: '100%',
+              }}
+            >
+              {totalSubmitted?.map((response) => (
+                <Grid item xs={12} md={3} sm={6}>
+                  <Card className={classes.card}>
+                    <CardActionArea
+                      style={{ paddingLeft: '10px', paddingRight: '10px', paddingTop: '5px', paddingBottom: '7px' }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div>
+                          <Typography
+                            style={{
+                              fontWeight: 'bold',
+                              color: '#036DE2',
+
+                              fontSize: '13px',
+                            }}
+                          >
+                            {response?.activity_detail?.title}
+                          </Typography>
+                        </div>
+                        <div>
+                          <Tooltip title='View More'>
+                            <MoreVertIcon
+                              style={{ color: 'black', cursor: 'pointer' }}
+                              onClick={() => viewMore(response)}
+                            />
+                          </Tooltip>
+                        </div>
+                      </div>
+                      <Typography
+                        style={{
+                          color: '#061B2E',
+                          fontWeight: 'bold',
+                          fontSize: '13px',
+                          paddingLeft: '5px',
+                        }}
+                      >
+
+                        {ReactHtmlParser(response?.content?.html_text)}
+                      </Typography>
+                      <Typography
+                        style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
+                      >
+                      </Typography>
+                      <div
+                        color='textSecondary'
+                        component='p'
+                        style={{ display: 'flex', justifyContent: 'space-between' }}
+                      >
+                        <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
+                          Assigned-{response?.activity_detail?.issue_date?.slice(8, 10)}&nbsp;
+                          {new Date(
+                            response?.activity_detail?.issue_date
+                          ).toLocaleString('en-us', {
+                            month: 'short',
+                          })}
+                          &nbsp;{response?.activity_detail?.issue_date?.slice(0, 4)}
+                        </div>{' '}
+                        <div
+                          style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
+                        >
+                          submitted-
+                          {response?.submitted_on?.slice(8, 10)}&nbsp;
+                          {new Date(
+                            response?.submitted_on
+                          ).toLocaleString('en-us', {
+                            month: 'short',
+                          })}
+                          &nbsp;{response?.submitted_on?.slice(0, 4)}
+                        </div>
+                      </div>
+                    </CardActionArea>
+                    <CardActionArea style={{ padding: '11px', display: 'flex' }} onClick={() => viewMore(response)}>
+                      <CardMedia
+                        className={classes.media}
+                        style={{ border: '1px solid lightgray', borderRadius: '6px' }}
+                        image={response?.template?.template_path}
+                        title='Contemplative Reptile'
+                      />
+                    </CardActionArea>
+                    <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+
+          {value == 3 && (
+            <Grid
+              container
+              spacing={2}
+              style={{
+                paddingLeft: '20px',
+                paddingTop: '22px',
+                paddingBottom: '26px',
+                width: '100%',
+              }}
+            >
+              {totalPublish?.map((response) => (
+
+                <Grid item xs={12} md={3} sm={6}>
+                  <Card className={classes.card}>
+                    <CardActionArea
+                      style={{ paddingLeft: '10px', paddingRight: '10px', paddingRight: '10px', paddingTop: '5px', paddingBottom: '7px' }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div>
+                          <Typography
+                            style={{
+                              fontWeight: 'bold',
+                              color: '#036DE2',
+
+                              fontSize: '13px',
+                            }}
+                          >
+                            {response?.activity_detail?.title}
+                          </Typography>
+                        </div>
+                        <div>
+                          <Tooltip title='View More'>
+                            <MoreVertIcon
+                              style={{ color: 'black', cursor: 'pointer' }}
+                              onClick={() => viewMore(response)}
+                            />
+                          </Tooltip>
+                        </div>
+                      </div>
+                      <Typography
+                        style={{
+                          color: '#061B2E',
+                          fontWeight: 'bold',
+                          fontSize: '13px',
+                          paddingLeft: '5px',
+                        }}
+                      >
+                        {/* {ReactHtmlParser(response?.content?.html_text)} */}
+                      </Typography>
+                      <Typography
+                        style={{ fontSize: '12px', paddingTop: '6px', color: '#536476' }}
+                      >
+                        {/* word limit-300{' '} */}
+                      </Typography>
+                      <div
+                        color='textSecondary'
+                        component='p'
+                        style={{ display: 'flex', justifyContent: 'space-between' }}
+                      >
+                        <div style={{ whiteSpace: 'nowrap', fontSize: '10px' }}>
+                          Assigned-{response?.activity_detail?.issue_date?.slice(8, 10)}&nbsp;
+                          {new Date(
+                            response?.activity_detail?.issue_date
+                          ).toLocaleString('en-us', {
+                            month: 'short',
+                          })}
+                          &nbsp;{response?.activity_detail?.issue_date?.slice(0, 4)}
+                        </div>{' '}
+
+                        <div
+                          style={{ whiteSpace: 'nowrap', fontSize: '10px', color: '#1B4CCB' }}
+                        >
+                          submitted-
+                          {response?.submitted_on?.slice(8, 10)}&nbsp;
+                          {new Date(
+                            response?.submitted_on
+                          ).toLocaleString('en-us', {
+                            month: 'short',
+                          })}
+                          &nbsp;{response?.submitted_on?.slice(0, 4)}
+                        </div>
+                      </div>
+                      <div style={{ whiteSpace: 'nowrap', fontSize: '10px', }}>
+                        {response?.publish_level}
+                      </div>
+                    </CardActionArea>
+                    <CardActionArea style={{ padding: '11px', display: 'flex' }} onClick={() => viewMore(response)}>
+                      <CardMedia
+                        className={classes.media}
+                        style={{ border: '1px solid lightgray', borderRadius: '6px' }}
+                        image={response?.template?.template_path}
+                        title='Contemplative Reptile'
+                      />
+                    </CardActionArea>
+                    <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <div>
+                        <StyledRating
+                          rating={response?.user_reviews?.given_rating}
+                          precision={0.1}
+                          defaultValue={response?.user_reviews?.given_rating}
+                          max={parseInt(response?.user_reviews?.level?.rating)}
+                          readOnly
+                        />
+                      </div>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+
+
+          <Drawer
+            anchor='right'
+            maxWidth={maxWidth}
+            open={view}
+            onClose={handleCloseViewMore}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <div style={{ width: '100%', padding: '5px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', }}>
+                <div style={{ fontSize: '24px' }}>
+                  <strong>Preview</strong>
+                </div>
+                <div style={{ fontSize: '24px', cursor: 'pointer' }}>
+                  <strong onClick={handleClose}> <CancelIcon /> </strong>
                 </div>
 
-                <div
-                  style={{
-                    background: 'white',
-                    width: '502px',
-                    marginLeft: '34px',
-                    marginTop: '16px',
-                    height: 'auto',
-                  }}
-                >
-                  <div
-                    style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
-                  >
-                    <span style={{ fontWeight: 'normal' }}>
-                      Title: {previewData?.activity_detail?.title}
-                    </span>
-                  </div>
+              </div>
+              <Divider />
+
+              <Grid container direction='row' justifyContent='center'>
+                <Grid item>
                   <div
                     style={{
-                      paddingLeft: '30px',
-                      paddingTop: '10px',
-                      paddingBottom: '5px',
-                      fontWeight: 'bold',
+                      border: '1px solid #813032',
+                      width: '583px',
+                      background: 'white',
+                      height: 'auto',
                     }}
                   >
-                    <span style={{ fontWeight: 'normal' }}>
-                      Description: {previewData?.activity_detail?.description}
-                    </span>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    background: 'white',
-                    width: '502px',
-                    marginLeft: '34px',
-                    height: 'auto',
-                    marginTop: '12px',
-                    marginBottom: '29px',
-                  }}
-                >
-                  <div style={{padding: '5px'}}>
-                  <div
-        style={{
-          background: `url(${previewData?.template?.template_path})`,
-          backgroundSize: "contain",
-          position: "relative",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundColor: "rgba(244 245 247 / 25%)",
-    height: "683px",
-        }}
+                    <div
+                      style={{
+                        background: 'white',
+                        width: '554px',
+                        marginLeft: '13px',
+                        marginTop: '5px',
+                      }}
+                    >
+                      <div>
+                        <img
+                          src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                          width='130'
+                          alt='image'
+                        />
 
-      >
-        <div className="certificate-text-center certificate-input-box" style={{top:`calc(279px + ${imageData[0]?.x_cordinate.concat('px')})`, left:`calc(232px + ${imageData[0]?.y_cordinate.concat('px')})`}}>
-          <textarea className="certificate-box" style={{width:`${imageData[0]?.width}px`,
-    height:`${imageData[0]?.height}px`,top:`${imageData[0]?.x_cordinate}px`, left: `${imageData[0]?.y_cordinate}px`}} value={previewData?.submitted_work?.html_text} placeholder="type text here..." />
-         
-        </div>
-      </div>
-                  </div>
-                  {/* <div
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        background: 'white',
+                        width: '502px',
+                        marginLeft: '34px',
+                        height: 'auto',
+                        marginTop: '12px',
+                        marginBottom: '29px',
+                      }}
+                    >
+                      <div style={{ padding: '5px' }}>
+                        <div
+                          style={{
+                            background: `url(${previewData?.template?.template_path})`,
+                            backgroundSize: "contain",
+                            position: "relative",
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundColor: "rgba(244 245 247 / 25%)",
+                            height: "683px",
+                          }}
+
+                        >
+                          <div className="certificate-text-center certificate-input-box" style={{ top: `calc(279px + ${imageData[0]?.x_cordinate.concat('px')})`, left: `calc(232px + ${imageData[0]?.y_cordinate.concat('px')})` }}>
+                            <textarea className="certificate-box" style={{
+                              width: `${imageData[0]?.width}px`,
+                              height: `${imageData[0]?.height}px`, top: `${imageData[0]?.x_cordinate}px`, left: `${imageData[0]?.y_cordinate}px`
+                            }} value={previewData?.submitted_work?.html_text} placeholder="type text here..." />
+
+                          </div>
+                        </div>
+                      </div>
+                      {/* <div
                     style={{
                       paddingLeft: '30px',
                       paddingTop: '12px',
@@ -1253,132 +1226,188 @@ const StudentSideBlog = () => {
                   >
                     {ReactHtmlParser(previewData?.submitted_work?.html_text)}
                   </div> */}
-                </div>
-              </div>
-            </Grid>
-            <Grid item>
-              {submit == false ? (
-                <div style={{ paddingLeft: '10px' }}>Review</div>
-              ) : (
-                <div style={{ paddingLeft: '8px' }}>Edit Review</div>
-              )}
-              {submit == false && (
-                <div
+                    </div>
+                  </div>
+                </Grid>
+                <Grid item>
+                  {console.log(previewData, 'PPT')}
+                  <div>
+                    <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem' }}>
+                      <div style={{ padding: '5px' }}>
+                        <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                        </Avatar>
+                      </div>
+                      <div style={{ padding: '0 0.5rem' }}>
+                        <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                          {previewData?.booked_user?.name}
+                        </div>
+                        <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                          {previewData?.branch?.name}
+                        </div>
+                        <div style={{ fontWeight: 500, fontSize: '12px' }}>
+                          {previewData?.grade?.name}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
                   style={{
-                    border: '1px solid #707070',
-                    width: '295px',
+                    background: '#f9f9f9',
+                    margin:'0.5rem 1rem',
+                    padding:'0.5rem 1rem',
+                    borderRadius:'5px',
+                    marginTop: '10px',
                     height: 'auto',
-                    marginLeft: '11px',
-                    marginRight: '10px',
+                    border:'1px solid #dbdbdb'
+
                   }}
                 >
-                  {ratingReview?.map((obj, index) => {
-                    return (
+                  <div
+                    style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
+                  >
+                    <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
+                      Title: {previewData?.activity_detail?.title}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      fontWeight: 'bold',
+                      paddingLeft: '10px',
+                      paddingBottom: '10px'
+                    }}
+                  >
+                    <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
+                      Description: {previewData?.activity_detail?.description}
+                    </span>
+                  </div>
+                </div>
+                <Divider />
+                  {submit == false ? (
+                    <div style={{ padding: '10px', fontSize:'16px', fontWeight: 500}}>Review</div>
+                  ) : (
+                    <div style={{ padding: '10px', fontSize:'16px', fontWeight: 500 }}>Edit Review</div>
+                  )}
+                  {submit == false && (
+                    <div
+                      style={{
+                        border: '1px solid grey',
+                        width: '295px',
+                        height: 'auto',
+                        marginLeft: '11px',
+                        marginRight: '10px',
+                        borderRadius: '5px',
+                        background: '#f4f5f9'
+                      }}
+                    >
+                      {ratingReview?.map((obj, index) => {
+                        return (
+                          <div
+                            key={index}
+                            style={{
+                              paddingLeft: '15px',
+                              paddingRight: '15px',
+                              paddingTop: '5px',
+                            }}
+                          >
+                            <div
+                              key={index}
+                              style={{ display: 'flex', justifyContent: 'space-between' }}
+                            >
+                              {' '}
+                              {obj?.name}
+                              <StyledRating
+                                name={`rating${index}`}
+                                size='small'
+                                readOnly
+                                // rating={obj?.given_rating}
+                                defaultValue={obj?.given_rating}
+                                precision={0.1}
+                                max={parseInt(obj?.level)}
+                                onChange={(event, newValue) =>
+                                  handleInputCreativityOne(event, newValue, index)
+                                }
+                              />
+                            </div>
+                            {/* {obj} */}
+                            <div>
+                              <TextField
+                                id='outlined-basic'
+                                size='small'
+                                disabled
+                                variant='outlined'
+                                value={obj?.remarks}
+                                style={{ width: '264px', background:'white' }}
+                                onChange={(event) => handleInputCreativity(event, index)}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+
                       <div
-                        key={index}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          marginRight: '10px',
+                          marginLeft: '6px',
+                          marginBottom: '15px',
+                          marginTop: '32px',
+                        }}
+                      ></div>
+                    </div>
+                  )}
+
+                  {submit == true && (
+                    <div
+                      style={{
+                        border: '1px solid #707070',
+                        width: '318px',
+                        height: 'auto',
+                        marginLeft: '8px',
+                        marginRight: '4px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                        <ExpandMoreIcon onClick={expandMore} />
+                      </div>
+                      <div
                         style={{
                           paddingLeft: '15px',
                           paddingRight: '15px',
                           paddingTop: '5px',
                         }}
                       >
-                        <div
-                          key={index}
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
-                        >
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           {' '}
-                          {obj?.name}
-                          <StyledRating
-                            name={`rating${index}`}
-                            size='small'
-                            readOnly
-                            // rating={obj?.given_rating}
-                            defaultValue={obj?.given_rating}
-                            precision={0.1}
-                            max={parseInt(obj?.level)}
-                            onChange={(event, newValue) =>
-                              handleInputCreativityOne(event, newValue, index)
-                            }
+                          Overall
+                          <RatingScale
+                            name='simple-controlled'
+                            defaultValue={DEFAULT_RATING}
+                            onChange={(event, value) => {
+                              setValues((prev) => ({ ...prev, rating: value }));
+                            }}
                           />
                         </div>
-                        {/* {obj} */}
-                        <div>
-                          <TextField
-                            id='outlined-basic'
-                            size='small'
-                            disabled
-                            variant='outlined'
-                            value={obj?.remarks}
-                            style={{ width: '264px' }}
-                            onChange={(event) => handleInputCreativity(event, index)}
-                          />
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            paddingBottom: '9px',
+                          }}
+                        >
+                          Review Submitted
                         </div>
                       </div>
-                    );
-                  })}
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginRight: '10px',
-                      marginLeft: '6px',
-                      marginBottom: '15px',
-                      marginTop: '32px',
-                    }}
-                  ></div>
-                </div>
-              )}
-
-              {submit == true && (
-                <div
-                  style={{
-                    border: '1px solid #707070',
-                    width: '318px',
-                    height: 'auto',
-                    marginLeft: '8px',
-                    marginRight: '4px',
-                  }}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                    <ExpandMoreIcon onClick={expandMore} />
-                  </div>
-                  <div
-                    style={{
-                      paddingLeft: '15px',
-                      paddingRight: '15px',
-                      paddingTop: '5px',
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      {' '}
-                      Overall
-                      <RatingScale
-                        name='simple-controlled'
-                        defaultValue={DEFAULT_RATING}
-                        onChange={(event, value) => {
-                          setValues((prev) => ({ ...prev, rating: value }));
-                        }}
-                      />
                     </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        paddingBottom: '9px',
-                      }}
-                    >
-                      Review Submitted
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Grid>
-          </Grid>
+                  )}
+                </Grid>
+              </Grid>
+            </div>
+          </Drawer>
         </div>
-      </Drawer>
-      </div>
-    </Layout>
+      </Layout>
 
     </div>
   );
