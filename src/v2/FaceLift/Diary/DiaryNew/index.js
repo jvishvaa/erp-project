@@ -49,6 +49,7 @@ const Diary = () => {
   };
 
   const fetchDailyDiaryList = () => {
+    setDailyDiaryData([]);
     setLoading(true);
     axios
       .get(`/academic/new/dialy-diary-messages/?date=${date}&diary_type=2`)
@@ -116,221 +117,233 @@ const Diary = () => {
   };
   return (
     <Layout>
-      <div className='row th-bg-white pt-2'>
+      <div className='row pt-2'>
         <div className='col-12 px-md-4'>
           <Breadcrumb separator='>'>
             <Breadcrumb.Item className='th-grey'>Diary</Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1'>View Diary</Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <div className='row p-2 '>
-          <div className='col-md-2'>
-            <DatePicker
-              className='th-br-6 th-date-picker w-100'
-              disabledDate={(current) => current.isAfter(moment())}
-              allowClear={false}
-              placement='bottomRight'
-              defaultValue={moment()}
-              showToday={false}
-              onChange={handleDateChange}
-              format={'DD/MM/YYYY'}
-            />
-          </div>
-          {!isStudentDiary && (
-            <div className='col-md-2'>
-              <Button
-                type='primary'
-                className='th-br-6 th-bg-primary th-pointer th-white'
-                onClick={() => history.push('/create/diary')}
-                block
-              >
-                <PlusOutlined className='ml-2' />
-                Create Diary
-              </Button>
-            </div>
-          )}
-        </div>
-        {showTab == 1 && !isStudentDiary && (
-          <div className='row px-2'>
-            {dailyDiaryData.length > 0 ? (
-              <>
-                {dailyDiaryData.length > 1 && (
-                  <>
-                    <div className='col-md-2 col-6'>
-                      <Button
-                        className={`${
-                          selectedSubject == '' ? 'th-button-active' : 'th-button'
-                        } th-width-100 th-br-6 mt-2`}
-                        onClick={() => setSelectedSubject('')}
-                      >
-                        All Subjects
-                      </Button>
-                    </div>
-                  </>
-                )}
-                {dailyDiaryData?.slice(0, showSubjectsCount).map((item, i) => (
-                  <div className='col-md-2 col-6'>
-                    <Button
-                      className={`${
-                        item?.subject_id == selectedSubject
-                          ? 'th-button-active'
-                          : 'th-button'
-                      } th-width-100 th-br-6 mt-2`}
-                      onClick={() => setSelectedSubject(item?.subject_id)}
-                    >
-                      {item?.subject_name}
-                    </Button>
-                  </div>
-                ))}
-                {dailyDiaryData.length > 10 && (
-                  <div className='col-md-2 col-6'>
-                    <Button
-                      className='th-button th-width-100 th-br-6 mt-2'
-                      onClick={() => {
-                        if (showSubjectsCount == dailyDiaryData.length) {
-                          setShowSubjectsCount(10);
-                        } else {
-                          setShowSubjectsCount(dailyDiaryData.length);
-                        }
-                      }}
-                    >
-                      Show {showSubjectsCount == dailyDiaryData.length ? 'Less' : 'More'}
-                    </Button>
-                  </div>
-                )}
-              </>
-            ) : null}
-          </div>
-        )}
-        <div className='row px-3 py-3'>
-          <Tabs activeKey={showTab} onChange={onTabChange} className='th-width-100 px-3'>
-            <TabPane tab='Daily Diary' key='1' className='th-pointer'>
-              <div className='row th-bg-white'>
-                {loading ? (
-                  <div className='th-width-100 text-center mt-5'>
-                    <Spin tip='Loading...'></Spin>
-                  </div>
-                ) : dailyDiaryData.length > 0 ? (
-                  <div
-                    className='col-12 px-0'
-                    style={{ maxHeight: 400, overflowY: 'scroll' }}
+        <div className='col-12 py-2'>
+          <div className='row th-bg-white py-2'>
+            <div className='row p-2 '>
+              <div className='col-md-2'>
+                <DatePicker
+                  className='th-br-6 th-date-picker w-100'
+                  disabledDate={(current) => current.isAfter(moment())}
+                  allowClear={false}
+                  placement='bottomRight'
+                  defaultValue={moment()}
+                  showToday={false}
+                  onChange={handleDateChange}
+                  format={'DD/MM/YYYY'}
+                />
+              </div>
+              {!isStudentDiary && (
+                <div className='col-md-2'>
+                  <Button
+                    type='primary'
+                    className='th-br-6 th-bg-primary th-pointer th-white'
+                    onClick={() => history.push('/create/diary')}
+                    block
                   >
-                    {isStudentDiary ? (
+                    <PlusOutlined className='ml-2' />
+                    Create Diary
+                  </Button>
+                </div>
+              )}
+            </div>
+            {showTab == 1 && !isStudentDiary && (
+              <div className='row px-2'>
+                {dailyDiaryData.length > 0 ? (
+                  <>
+                    {dailyDiaryData.length > 1 && (
+                      <>
+                        <div className='col-md-2 col-6'>
+                          <Button
+                            className={`${
+                              selectedSubject == '' ? 'th-button-active' : 'th-button'
+                            } th-width-100 th-br-6 mt-2`}
+                            onClick={() => setSelectedSubject('')}
+                          >
+                            All Subjects
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                    {dailyDiaryData?.slice(0, showSubjectsCount).map((item, i) => (
+                      <div className='col-md-2 col-6'>
+                        <Button
+                          className={`${
+                            item?.subject_id == selectedSubject
+                              ? 'th-button-active'
+                              : 'th-button'
+                          } th-width-100 th-br-6 mt-2`}
+                          onClick={() => setSelectedSubject(item?.subject_id)}
+                        >
+                          {item?.subject_name}
+                        </Button>
+                      </div>
+                    ))}
+                    {dailyDiaryData.length > 10 && (
+                      <div className='col-md-2 col-6'>
+                        <Button
+                          className='th-button th-width-100 th-br-6 mt-2'
+                          onClick={() => {
+                            if (showSubjectsCount == dailyDiaryData.length) {
+                              setShowSubjectsCount(10);
+                            } else {
+                              setShowSubjectsCount(dailyDiaryData.length);
+                            }
+                          }}
+                        >
+                          Show{' '}
+                          {showSubjectsCount == dailyDiaryData.length ? 'Less' : 'More'}
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                ) : null}
+              </div>
+            )}
+            <div className='row px-2 py-3'>
+              <Tabs
+                activeKey={showTab}
+                onChange={onTabChange}
+                className='th-width-100 px-3'
+              >
+                <TabPane tab='Daily Diary' key='1' className='th-pointer'>
+                  <div className='row th-bg-white'>
+                    {loading ? (
+                      <div className='th-width-100 text-center mt-5'>
+                        <Spin tip='Loading...'></Spin>
+                      </div>
+                    ) : dailyDiaryData.length > 0 ? (
                       <div
-                        className='row px-0'
-                        // style={{ maxHeight: 400, overflowY: 'scroll' }}
+                        className='col-12 px-0'
+                        style={{ maxHeight: 400, overflowY: 'scroll' }}
                       >
-                        {dailyDiaryData.map((each) =>
-                          each?.grade_data?.map((item) => {
-                            return (
-                              <div className='col-md-4 mb-2 pl-0'>
-                                <DailyDiaryCard
-                                  diary={item}
-                                  subject={each}
-                                  isStudentDiary={true}
-                                  fetchDiaryList={fetchDailyDiaryList}
-                                />
-                              </div>
-                            );
-                          })
+                        {isStudentDiary ? (
+                          <div
+                            className='row px-0'
+                            // style={{ maxHeight: 400, overflowY: 'scroll' }}
+                          >
+                            {dailyDiaryData.map((each) =>
+                              each?.grade_data?.map((item) => {
+                                return (
+                                  <div className='col-md-4 mb-2 pl-0'>
+                                    <DailyDiaryCard
+                                      diary={item}
+                                      subject={each}
+                                      isStudentDiary={true}
+                                      fetchDiaryList={fetchDailyDiaryList}
+                                    />
+                                  </div>
+                                );
+                              })
+                            )}
+                          </div>
+                        ) : (
+                          <>
+                            {dailyDiaryData
+                              ?.filter((item) => {
+                                if (selectedSubject) {
+                                  return item?.subject_id == selectedSubject;
+                                } else {
+                                  return item;
+                                }
+                              })
+                              .map((each) => {
+                                return (
+                                  <div className='row px-0 th-black-1 th-divider'>
+                                    <Divider
+                                      className=''
+                                      orientation='left'
+                                      orientationMargin='0'
+                                    >
+                                      <span className='th-fw-700 th-22'>
+                                        {each?.subject_name}
+                                      </span>
+                                    </Divider>
+                                    {each?.grade_data?.map((item) => {
+                                      return (
+                                        <div className='col-md-4 mb-2 pl-0'>
+                                          <DailyDiaryCard
+                                            diary={item}
+                                            subject={each}
+                                            fetchDiaryList={fetchDailyDiaryList}
+                                          />
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              })}
+                          </>
                         )}
                       </div>
                     ) : (
-                      <>
-                        {dailyDiaryData
-                          ?.filter((item) => {
-                            if (selectedSubject) {
-                              return item?.subject_id == selectedSubject;
-                            } else {
-                              return item;
-                            }
-                          })
-                          .map((each) => {
-                            return (
-                              <div className='row px-0 th-black-1 th-divider'>
-                                <Divider
-                                  className=''
-                                  orientation='left'
-                                  orientationMargin='0'
-                                >
-                                  <span className='th-fw-700 th-22'>
-                                    {each?.subject_name}
-                                  </span>
-                                </Divider>
-                                {each?.grade_data?.map((item) => {
-                                  return (
-                                    <div className='col-md-4 mb-2 pl-0'>
-                                      <DailyDiaryCard
-                                        diary={item}
-                                        subject={each}
-                                        fetchDiaryList={fetchDailyDiaryList}
-                                      />
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
-                          })}
-                      </>
+                      <div className='row justify-content-center pt-5'>
+                        <img src={NoDataIcon} />
+                      </div>
                     )}
                   </div>
-                ) : (
-                  <div className='row justify-content-center pt-5'>
-                    <img src={NoDataIcon} />
+                </TabPane>
+                <TabPane tab='General Diary' key='2' className='th-pointer'>
+                  <div className='row'>
+                    {loading ? (
+                      <div className='th-width-100 text-center mt-5'>
+                        <Spin tip='Loading...'></Spin>
+                      </div>
+                    ) : generalDiaryList.length > 0 ? (
+                      generalDiaryList.map((diary, i) => (
+                        <div className='col-md-4 mb-2 pl-0'>
+                          <GeneralDiaryCard
+                            diary={diary}
+                            showTab={showTab}
+                            isStudentDiary={isStudentDiary}
+                            fetchDiaryList={fetchGeneralDiaryList}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className='row justify-content-center pt-5'>
+                        <img src={NoDataIcon} />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </TabPane>
-            <TabPane tab='General Diary' key='2' className='th-pointer'>
-              <div className='row'>
-                {loading ? (
-                  <div className='th-width-100 text-center mt-5'>
-                    <Spin tip='Loading...'></Spin>
-                  </div>
-                ) : generalDiaryList.length > 0 ? (
-                  generalDiaryList.map((diary, i) => (
-                    <div className='col-md-4 mb-2 pl-0'>
-                      <GeneralDiaryCard
-                        diary={diary}
-                        showTab={showTab}
-                        isStudentDiary={isStudentDiary}
-                        fetchDiaryList={fetchGeneralDiaryList}
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <div className='row justify-content-center pt-5'>
-                    <img src={NoDataIcon} />
-                  </div>
-                )}
-              </div>
-            </TabPane>
-          </Tabs>
-        </div>
-        {(user_level == 13 || user_level == 12) && isOrchids ? (
-          <div
-            className='row justify-content-end'
-            style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-          >
-            <div
-              className='th-bg-white px-2 py-1 th-br-6 th-pointer'
-              style={{ border: '1px solid #d9d9d9' }}
-              onClick={() => setShowGrievanceModal(true)}
-            >
-              Having any issues with Diary ?<br />
-              <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
-                Raise your query
-              </span>
+                </TabPane>
+              </Tabs>
             </div>
+            {(user_level == 13 || user_level == 12) && isOrchids ? (
+              <div
+                className='row justify-content-end'
+                style={{ position: 'fixed', bottom: '5%', right: '2%' }}
+              >
+                <div
+                  className='th-bg-white px-2 py-1 th-br-6 th-pointer'
+                  style={{ border: '1px solid #d9d9d9' }}
+                  onClick={() => setShowGrievanceModal(true)}
+                >
+                  Having any issues with Diary ?<br />
+                  <span
+                    className='th-primary pl-1'
+                    style={{ textDecoration: 'underline' }}
+                  >
+                    Raise your query
+                  </span>
+                </div>
+              </div>
+            ) : null}
+            {showGrievanceModal && (
+              <GrievanceModal
+                title={'Dairy Related Query'}
+                showGrievanceModal={showGrievanceModal}
+                handleClose={handleCloseGrievanceModal}
+              />
+            )}
           </div>
-        ) : null}
-        {showGrievanceModal && (
-          <GrievanceModal
-            title={'Dairy Related Query'}
-            showGrievanceModal={showGrievanceModal}
-            handleClose={handleCloseGrievanceModal}
-          />
-        )}
+        </div>
       </div>
     </Layout>
   );
