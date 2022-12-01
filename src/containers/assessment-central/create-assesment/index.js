@@ -630,15 +630,19 @@ handleGroup('',filteredgroup)
     }
 
     try {
+      setLoading(true)
       const { results = {} } = (await initCreateAssesment(reqObj)) || {};
       if (results?.status_code === 200) {
+        setLoading(false)
         setAlert('success', results?.message);
         resetForm();
         history.push('/assesment');
       } else {
+        setLoading(false)
         setAlert('error', results?.message);
       }
     } catch (e) {
+      setLoading(false)
       setAlert('error', 'Test creation failed');
     }
   };

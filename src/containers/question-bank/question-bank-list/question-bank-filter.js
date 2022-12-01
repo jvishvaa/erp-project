@@ -779,6 +779,7 @@ const QuestionBankFilters = ({
                           handleQuestionLevel(e);
                         }}
                         onClear={Clearquestionlevel}
+                        getPopupContainer={(trigger) => trigger.parentNode}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={false}
                       >
@@ -796,6 +797,7 @@ const QuestionBankFilters = ({
                       showSearch
                       // disabled={user_level == 13}
                       optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       filterOption={(input, options) => {
                         return (
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -819,6 +821,7 @@ const QuestionBankFilters = ({
                     allowClear
                       placeholder='Question Type'
                       showSearch
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       optionFilterProp='children'
                       filterOption={(input, options) => {
                         return (
@@ -844,6 +847,7 @@ const QuestionBankFilters = ({
                       showSearch
                       // disabled={user_level == 13}
                       optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       filterOption={(input, options) => {
                         return (
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
