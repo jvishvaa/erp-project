@@ -6,6 +6,7 @@ import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { Divider, Radio, Table } from 'antd';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import '../master-management.css'
 
 const CreateGrade = ({ setLoading, handleGoBack, centralGrades }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -21,7 +22,7 @@ const CreateGrade = ({ setLoading, handleGoBack, centralGrades }) => {
 
   const columns = [
     {
-      title: <span style={{fontSize: '20px' , fontWeight: 600}} className='th-white '>Grade Name</span>,
+      title: <span style={{fontSize: '20px' , fontWeight: 600}} className='th-white '>Eduvate Grade Name</span>,
       dataIndex: 'grade_name',
       render: (text) => <span className='th-black-2 th-16'>{text}</span>,
       key: 'id',
@@ -196,7 +197,7 @@ const CreateGrade = ({ setLoading, handleGoBack, centralGrades }) => {
         </Grid>
       </form> */}
       <div>
-      <Button style={{minWidth: '5%' , margin: '0 1%' }} onClick={handleGoBack}>Back</Button>
+      <Button style={{minWidth: '5%' , margin: '0 1%'}} onClick={handleGoBack} className='eduvateGradeBack' >Back</Button>
       </div>
       <div style={{padding: '2%' , width: '50%', margin: '0 auto'}} className='tableSubjectAdd'>
         <div style={{marginBottom: '1%'}} >

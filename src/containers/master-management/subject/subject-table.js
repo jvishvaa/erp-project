@@ -336,17 +336,15 @@ const SubjectTable = () => {
                       {subjects.map((subject, index) => {
                         return (
                           <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                            <TableCell className={classes.tableCell} style={{display: 'flex' , justifyContent: 'center'}}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', width: '20%' }} >
-                                <span style={{ display: 'flex', alignItems: 'center', minWidth: '100px' }}>{subject?.subject_name}</span>
+                            <TableCell className={classes.tableCell} >
+                                <span >{subject?.subject_name}</span>
                                 <IconButton
                                   onClick={(e) => handleEditSubject(subject)}
                                   title='Edit Subject'
-                                  style={{ marginLeft: '10%' }}
+                                  style={{ float: 'right' , padding: '0px' }}
                                 >
                                   <EditOutlinedIcon />
                                 </IconButton>
-                              </div>
                               {/* {subject?.subject_name} */}
                             </TableCell>
                             <TableCell className={classes.tableCell}>

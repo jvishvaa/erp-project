@@ -17,6 +17,7 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if(file != undefined){
     setLoading(true);
     const request = new FormData();
     request.append('branch_name',branchName)
@@ -46,6 +47,10 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
         setLoading(false);
         setAlert('error', error.response.data.message || error.response.data.msg);
       });
+    } else {
+      setAlert('error', "Please Select File");
+
+    }
   };
 
   return (

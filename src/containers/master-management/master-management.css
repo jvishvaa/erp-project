@@ -53,3 +53,6 @@
 .switchLabel .MuiTypography-body1 {
   font-weight: 600 !important;
 }
+.eduvateGradeBack:hover{
+  background: #1B4CCB !important;
+}
