@@ -38,3 +38,8 @@
 .th-divider .ant-divider-horizontal.ant-divider-with-text {
   margin-bottom: 5px !important;
 }
+.th-diary-badge .ant-avatar-lg{
+  height: 30px !important;
+  width: 30px !important;
+  line-height: 30px !important;
+}

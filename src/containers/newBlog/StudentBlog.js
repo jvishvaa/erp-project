@@ -160,9 +160,15 @@ const todayDate = moment();
           }
         )
         .then((response) => {
-          setAlert('success', 'Activity Submitted Successfully');
-          history.push('/blog/studentview');
+          if(response?.data?.status_code == 400){
+            setAlert('error', response?.data?.message);
+            history.push('/blog/studentview');
+            return
+          }else{
+            setAlert('success', response?.data?.message);
+            history.push('/blog/studentview');
 
+          }
         })
 
   }

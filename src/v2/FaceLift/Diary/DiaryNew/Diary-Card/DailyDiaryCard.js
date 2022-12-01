@@ -247,8 +247,8 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               Daily Diary
             </Tag>
           </div>
-          {!isStudentDiary && (
-            <div className='col-1 text-right '>
+          {user_id == diary?.teacher_id && (
+            <div className='col-1 text-right pl-0'>
               <Popover
                 content={
                   <>
@@ -312,7 +312,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   <div className='col-12 pl-0 th-10'>
                     <div className='th-fw-600 th-black-1'>Title</div>
                   </div>
-                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-3 th-16'>
+                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-2 th-16'>
                     {diary?.teacher_report?.homework}
                   </div>
                   <div className='row align-items-center'>
@@ -327,7 +327,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   <div className='col-12 px-0 th-10'>
                     <div className='th-fw-600 th-black-1'>Notes</div>
                   </div>
-                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-5 th-16'>
+                  <div className='col-12 px-0 th-fw-500 th-black-2 th-truncate-2 th-16'>
                     {diary?.teacher_report?.summary}
                   </div>
                 </div>
@@ -349,22 +349,22 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               <div className='col-6 px-2 pb-1'>
                 <div className={`row justify-content-end align-items-end h-100`}>
                   <div
-                    className={`d-flex align-items-end th-bg-grey th-12 p-0 ${
-                      diary?.hw_description ? 'mr-2' : 'mr-0'
+                    className={`d-flex align-items-end th-bg-grey th-12 p-0  ${
+                      diary?.hw_description ? 'mr-2' : 'mr-1'
                     }`}
                   >
                     <span>
-                      <img src={hwIcon} height={35} />
+                      <img src={hwIcon} height={30} />
                     </span>
                     {!diary?.hw_description && (
-                      <span className='th-red px-2 th-fw-500'>
+                      <span className='th-red px-2 th-lh-10 py-1 th-fw-500'>
                         Homework <br />
                         not assigned
                       </span>
                     )}
                   </div>
 
-                  <div>
+                  <div className='th-diary-badge'>
                     <Badge
                       count={diary?.documents.length > 0 ? diary?.documents.length : 0}
                       color='green'

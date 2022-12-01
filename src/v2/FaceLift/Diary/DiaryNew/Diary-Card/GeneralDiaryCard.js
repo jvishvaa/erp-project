@@ -12,6 +12,7 @@ import { getFileIcon } from 'v2/getFileIcon';
 
 const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
+  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const showDrawer = () => {
@@ -72,8 +73,8 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
               General Diary
             </Tag>
           </div>
-          {!isStudentDiary && (
-            <div className='col-1 text-right '>
+          {user_id == diary?.created_by?.id && (
+            <div className='col-1 text-right pl-0'>
               <Popover
                 content={
                   <Popconfirm
@@ -127,18 +128,7 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
 
               <div className='col-6 px-2 pb-1'>
                 <div className={`row justify-content-end align-items-end h-100`}>
-                  {diary?.diary_type == 2 && (
-                    <div className='d-flex align-items-end th-bg-grey th-12 p-0'>
-                      <span>
-                        <img src={hwIcon} height={35} />
-                      </span>
-                      <span className='th-red px-2 th-fw-500'>
-                        Homework <br />
-                        not assigned
-                      </span>
-                    </div>
-                  )}
-                  <div>
+                  <div className='th-diary-badge'>
                     <Badge count={diary?.documents.length} size='small'>
                       <Avatar
                         shape='square'
