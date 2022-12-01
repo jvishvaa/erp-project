@@ -842,11 +842,12 @@ useEffect(() => {
           </Breadcrumb>
         </div>
       </div>
+      <div className='th-bg-white py-0 mx-3'>
       <div className='row'>
-        <div className='col-12 py-3 ml-2'>
+        <div className='col-12 py-3'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row align-items-center'>
-            <div className='col-md-2 col-6 pr-0 px-0 pl-0'>
+            <div className='col-md-2 col-6 pl-0'>
                   <div className='mb-2 text-left'>Status</div>
                   <Form.Item name='status'>
                     <Select
@@ -861,6 +862,7 @@ useEffect(() => {
                       }
                       showSearch
                       optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       // defaultValue={subjectName}
                       filterOption={(input, options) => {
                         return (
@@ -878,7 +880,7 @@ useEffect(() => {
                     </Select>
                   </Form.Item>
                 </div>
-              <div className='col-md-2 col-6 pl-0'>
+              <div className='col-md-2 col-6'>
                 <div className='mb-2 text-left'>Branch</div>
                 <Form.Item name='branch'>
                   <Select
@@ -886,7 +888,11 @@ useEffect(() => {
                     placeholder= 'Select Branch'                   
                     mode='multiple'
                     showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     optionFilterProp='children'
+                    maxTagCount={2}
+                    showArrow={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
                     filterOption={(input, options) => {
                       return (
                         options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -896,7 +902,6 @@ useEffect(() => {
                     onChange={(e, value) => {
                       handleBranch(e, value);
                     }}
-                    getPopupContainer={node => node.parentNode}
                     // onClear={handleClearBoard}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={false}
@@ -905,12 +910,13 @@ useEffect(() => {
                   </Select>
                 </Form.Item>
               </div>
-              <div className='col-md-2 col-6 px-0'>
+              <div className='col-md-2 col-6'>
                 <div className='mb-2 text-left'>Grade</div>
                 <Form.Item name='grade'>
                   <Select
                     allowClear
                     placeholder={'Select Grade'}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     showSearch
                     optionFilterProp='children'
                     filterOption={(input, options) => {
@@ -921,8 +927,6 @@ useEffect(() => {
                     onChange={(e, value) => {
                       handleGrade(e, value);
                     }}
-                    getPopupContainer={node => node.parentNode}
-
                     // onClear={handleClearGrade}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={false}
@@ -931,12 +935,16 @@ useEffect(() => {
                   </Select>
                 </Form.Item>
               </div>
-              <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+              <div className='col-md-2 col-6'>
                 <div className='mb-2 text-left'>Subject</div>
                 <Form.Item name='subject'>
                   <Select
                     allowClear
                     mode='multiple'
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    maxTagCount={2}
+                    showArrow={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
                     placeholder={
                       // subjectName ? (
                       //   <span className='th-black-1'>{subjectName}</span>
@@ -947,7 +955,6 @@ useEffect(() => {
                     }
                     showSearch
                     optionFilterProp='children'
-                    getPopupContainer={node => node.parentNode}
                     // defaultValue={subjectName}
                     filterOption={(input, options) => {
                       return (
@@ -982,13 +989,15 @@ useEffect(() => {
                         className='th-range-picker th-br-4'
                         separator={'-'}
                         format={'DD/MM/YYYY'}
+                        getPopupContainer={(trigger) => trigger.parentNode}
                       />
                     </Space>
+                    
                   </Form.Item>
                 </div>
-              <div className='col-md-2 d-flex mt-2'>
+              <div className='col-md-2 d-flex mt-2 pr-1'>
               {!handleClose && <div
-                className='col-md-8 col-6 px-0'
+                className='col-md-5 col-6 ml-2'
                 style={{ display: 'flex', justifyContent: 'center' }}
               >
                  <Button
@@ -996,13 +1005,13 @@ useEffect(() => {
                   onClick={() => history.push('/create-assesment?clear=true')}
                   // style={{ width: '30%' }}
                   // shape='round'
-                  className='th-br-6 th-button'
+                  className='th-br-6 th-button-active ml-3'
                 >
                   Create
                 </Button>
 
               </div>}
-              {handleClose && <div
+              {/* {handleClose && <div
                 className='col-md-8 col-6 px-0'
                 style={{ display: 'flex', justifyContent: 'center' }}
               >
@@ -1018,9 +1027,9 @@ useEffect(() => {
                   Back
                 </Button>
 
-              </div>}
-              <div className='hideShowFilterIcon' style={{ marginTop: '-4%' }}>
-                <IconButton onClick={() => setShowfilter(!showFilter)}>
+              </div>} */}
+              <div className='col-md-7 hideShowFilterIcon text-right pr-0'>
+                {/* <IconButton onClick={() => setShowfilter(!showFilter)}>
                   <SvgIcon
                     component={() => (
                       <img
@@ -1029,7 +1038,11 @@ useEffect(() => {
                       />
                     )}
                   />
-                </IconButton>
+                </IconButton> */}
+                {showFilter && <span onClick={() => setShowfilter(!showFilter)} style={{color : 'blue' , cursor:'pointer' , borderBottom : '1px solid'}}>Close</span>}
+                {!showFilter && <span onClick={() => setShowfilter(!showFilter)} style={{color : 'blue' , cursor:'pointer' , borderBottom : '1px solid'}}> More Filters</span>}
+
+                
               </div>
               </div>
             </div>
@@ -1064,7 +1077,7 @@ useEffect(() => {
                     </Select>
                   </Form.Item>
                 </div>
-                <div className='col-md-2 col-6 px-0 d-flex'>
+                <div className='col-md-2 col-6 d-flex'>
                   <Typography className='d-flex align-items-center'>Section</Typography>
                   <div className='d-flex align-items-center'>
                     <Switch onChange={handleSectionToggle} checked={sectionToggle} />
@@ -1206,7 +1219,7 @@ useEffect(() => {
         </div>}
 {(isSuperAdmin || isSuperuser) && !handleClose && (
   <>
-  <div className='col-md-2 ml-2'>
+  <div className='col-md-2'>
     <FormControlLabel
       control={
         <Checkbox
@@ -1219,8 +1232,10 @@ useEffect(() => {
       label={<Typography color='secondary'>Upload Marks</Typography>}
     />
   </div>
+  <div className='col-md-5'>
+    <div className = 'row'>
   {bulkUpload ? (
-    <div>
+    <div className='col-md-7'>
       <Input
         type='file'
         inputRef={fileRef}
@@ -1244,7 +1259,7 @@ useEffect(() => {
   ) : (
     <div></div>
   )}
-   {bulkUpload && <div className='col-md-2'>
+   {bulkUpload && <div className='col-md-5'>
       <Button
         variant='contained'
         color='primary'
@@ -1254,11 +1269,13 @@ useEffect(() => {
         Upload
       </Button>
    </div>}
+   </div>
+   </div>
 </>
 )}
 
       </div>
-
+<hr/>
       <div className='row mt-2 py-2'>
         {results.length === 0 ? (
           <div className='row justify-content-center my-5'>
@@ -1303,6 +1320,7 @@ useEffect(() => {
             )}
           </div>
         )}
+      </div>
       </div>
       <div className='pagination-container d-flex justify-content-center'>
           <Pagination

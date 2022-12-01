@@ -667,6 +667,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       }
                       showSearch
                       optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       filterOption={(input, options) => {
                         return (
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -689,6 +690,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       <Select
                         allowClear
                         placeholder='Erp Category'
+                        getPopupContainer={(trigger) => trigger.parentNode}
                         showSearch
                         optionFilterProp='children'
                         filterOption={(input, options) => {
@@ -721,6 +723,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       }
                       // value={filterData?.subject}
                       showSearch
+                      getPopupContainer={(trigger) => trigger.parentNode}
                       optionFilterProp='children'
                       // defaultValue={subjectName}
                       filterOption={(input, options) => {
@@ -746,6 +749,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       <Select
                         allowClear
                         placeholder='Question Level'
+                        getPopupContainer={(trigger) => trigger.parentNode}
                         showSearch
                         optionFilterProp='children'
                         filterOption={(input, options) => {

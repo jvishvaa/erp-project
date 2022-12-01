@@ -386,7 +386,7 @@ const QuestionBankCard = ({
           {!periodColor ? (
             <Button
               variant='contained'
-              style={{ color: 'white',marginTop:'5%' ,width: '100%' , borderRadius:'5px'}}
+              style={{ color: 'white',marginTop:'5%' ,width: '100%' , borderRadius:'5px',height:'30px'}}
               color='primary'
               size='small'
               onClick={handleViewMore}
@@ -396,7 +396,7 @@ const QuestionBankCard = ({
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%',borderRadius:'5px' }}
+              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%',borderRadius:'5px',height:'30px' }}
               color='primary'
               size='small'
               onClick={handleViewMore}
