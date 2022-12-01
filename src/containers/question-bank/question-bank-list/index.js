@@ -521,7 +521,7 @@ setTabIsErpCentral((prev) => !prev)
                   Back
                 </Button> */}
               </div>
-              <div className='hideShowFilterIcon'>
+              <div className='col-md-1 hideShowFilterIcon text-right pr-0'>
                 {/* <IconButton onClick={() => setIsFilter(!isFilter)}>
                   <SvgIcon
                     component={() => (
@@ -532,7 +532,9 @@ setTabIsErpCentral((prev) => !prev)
                     )}
                   />
                 </IconButton> */}
-                <p onClick={() => setIsFilter(!isFilter)} style={{color : 'blue' , cursor:'pointer' , borderBottom : '1px solid'}}> {isFilter ? 'Close' : 'More Filters'}</p>
+                {isFilter && <span onClick={() => setIsFilter(!isFilter)} style={{color : 'blue' , cursor:'pointer',borderBottom : '1px solid' }}> Close</span>}
+                {!isFilter && <span onClick={() => setIsFilter(!isFilter)} style={{color : 'blue' , cursor:'pointer',borderBottom : '1px solid' }}> More Filters</span>}
+
               </div>
             </div>
 
@@ -615,29 +617,25 @@ setTabIsErpCentral((prev) => !prev)
 
               <div className='col-md-2 col-6' >
                 <Button
-                  className={`${ tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'
+                  className={`${ tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'
                   } th-width-100 th-br-6 mt-2`}
                   // style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
                   onClick={() => changequestionFrom('edu')}
                 >
                   Eduvate Question
                 </Button>
-                {tabIsErpCentral && <hr className='my-1'/>}
+                {tabIsErpCentral && <hr className='my-1' style={{borderTop : '1px solid #1B4CCB'}}/>}
                 </div>
-                {/* <div className='d-flex align-items-center'> 
-                <Switch onChange={changequestionFrom} checked={tabIsErpCentral}/>
-                </div> */}
-                <div className='col-md-2 col-6 px-0'> 
+                <div className='col-md-2 col-6'> 
                 <Button
                   className={`${
-                    !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn'}
+                    !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'}
                      th-width-100 th-br-6 mt-2`}
                   onClick={() => changequestionFrom('school')}
-                  // style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
                 >
                   School Question
                 </Button>
-                {!tabIsErpCentral && <hr/>}
+                {!tabIsErpCentral && <hr className='my-1' style={{borderTop : '1px solid #1B4CCB'}}/>}
                 </div>
             </div>
             {isVisible?.length > 0 && !questionId ?  (
@@ -713,6 +711,8 @@ setTabIsErpCentral((prev) => !prev)
               ): ''}
     
           </Grid>
+          <hr/>
+
           <Grid
             container
             style={
