@@ -65,12 +65,12 @@ const DailyDiary = () => {
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [keyConceptDropdown, setKeyConceptDropdown] = useState([]);
-  const [gradeID, setGradeID] = useState([]);
+  const [gradeID, setGradeID] = useState();
   const [gradeName, setGradeName] = useState();
   const [sectionName, setSectionName] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const [sectionID, setSectionID] = useState([]);
+  const [sectionID, setSectionID] = useState();
   const [sectionMappingID, setSectionMappingID] = useState([]);
   const [subjectID, setSubjectID] = useState();
   const [subjectName, setSubjectName] = useState();
@@ -746,7 +746,12 @@ const DailyDiary = () => {
 
   useEffect(() => {
     if (addedPeriods.length > 0) {
-      fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
+      if (isDiaryEdit && !_.isEmpty(editData?.up_coming_period)) {
+        fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
+      } else {
+        fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
+      }
+      setCurrentPanel(0);
     } else {
       setUpcomingPeriod({});
       setClearUpcomingPeriod(true);
