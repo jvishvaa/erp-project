@@ -490,9 +490,9 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                     </>
                     : ''}
                 </Grid> */}
-                <Grid item xs={12}  >
+                <Grid item xs={12} className={testType == 'Quiz' ? 'mt-4' : '' }>
 
-                  {/* {testType == 'Quiz' && test?.test_mode == 1 ?
+                  {testType == 'Quiz' && test?.test_mode == 1 ?
                     <>
                       {testDate == null ?
                       <>
@@ -512,7 +512,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                         </Button>
                       }
                     </>
-                    : ''} */}
+                    : ''}
                 </Grid>
                 {enable && <Grid item xs={12} style={{marginTop:'5%'}}>
                   <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
