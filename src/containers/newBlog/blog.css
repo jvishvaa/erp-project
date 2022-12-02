@@ -4,18 +4,19 @@
     padding: 0.5rem 1rem;
     border: none;
     background: white;
-    color: rgb(65,98,168);
+    color: rgb(65, 98, 168);
     border-radius: 2rem;
-    border: 2px solid rgb(65,98,168);
+    border: 2px solid rgb(65, 98, 168);
     font-weight: bold;
     cursor: pointer;
     margin-top: 2rem;
     font-size: 14px;
 
 }
+
 button.active {
-    background:rgb(65,98,168);
-    color:white;
+    background: rgb(65, 98, 168);
+    color: white;
 }
 
 
@@ -27,15 +28,17 @@ button.active {
     background: linear-gradient(315deg, #ffffff 0%, #d7e1ec 74%);
 
 }
+
 .dummy-background {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    
+
 }
 
 .dummy-background:hover {
     box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
     transition: all 0.3s ease-out;
 }
+
 .body {
     /* border:1px solid black; */
     border-radius: 20px;
@@ -49,6 +52,7 @@ button.active {
     /* align-items: center; */
     background: linear-gradient(315deg, #ffffff 0%, #d7e1ec 74%);
 }
+
 .wrapper .button {
     display: inline-block;
     height: 85px;
@@ -60,12 +64,13 @@ button.active {
     background: #fff;
     border-radius: 50px;
     cursor: pointer;
-    box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-out;
 
-    
+
 
 }
+
 .wrapper .button .icon {
     display: inline-block;
     height: 85px;
@@ -86,6 +91,7 @@ button.active {
     background: #4267B2;
     color: #fff;
 }
+
 .wrapper .button:nth-child(2):hover .icon {
     background: #E1306C;
     color: #fff;
@@ -94,6 +100,7 @@ button.active {
 .wrapper .button:nth-child(1) span {
     color: #4267B2;
 }
+
 .wrapper .button:nth-child(2) span {
     color: #E1306C;
 }
@@ -105,9 +112,11 @@ button.active {
     line-height: 60px;
     transition: all 0.3s ease-out;
 }
-.wrapper .button:hover .icon i{
+
+.wrapper .button:hover .icon i {
     color: #fff;
 }
+
 .wrapper .button:hover {
     width: 260px;
 }
@@ -115,7 +124,7 @@ button.active {
 .wrapper .button span {
     font-size: 20px;
     font-weight: 500;
-    line-height:  60px;
+    line-height: 60px;
     margin-left: 10px;
     transition: all 0.3s ease-out;
 
@@ -123,12 +132,12 @@ button.active {
 
 .card-design {
     transition: all 0.3s ease-out;
-    width: 21vw;
+    /* width: 21vw; */
     border-radius: 15px;
     margin: 10px auto;
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 
-    
+
 }
 
 .card-design:hover {
@@ -137,10 +146,10 @@ button.active {
 
 }
 
-@media screen and (max-width: 1300px){
+@media screen and (max-width: 1300px) {
     .card-design {
         /* width: calc(100% + 10px); */
-        width: 24vw;
+        /* width: 24vw; */
     }
 }
 
@@ -154,7 +163,7 @@ button.active {
 
 }
 
-@media screen and (max-width: 1500px){
+@media screen and (max-width: 1500px) {
     .blog-redirect-card {
         height: 22vh;
     }
@@ -170,6 +179,3 @@ button.active {
     border-radius: 7px;
 
 }
-
-
-

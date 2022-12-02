@@ -132,7 +132,7 @@ const Diary = () => {
                   className='th-br-6 th-date-picker w-100'
                   disabledDate={(current) => current.isAfter(moment())}
                   allowClear={false}
-                  placement='bottomRight'
+                  // placement='bottomRight'
                   defaultValue={moment()}
                   showToday={false}
                   onChange={handleDateChange}

@@ -314,7 +314,7 @@ const PeriodView = () => {
                     <Button
                       className={`${
                         item?.id == subject?.id ? 'th-button-active' : 'th-button'
-                      } th-width-100 th-br-6 mt-2`}
+                      } th-width-100 th-br-6 mt-2 text-truncate`}
                       onClick={() => setSubject(item)}
                     >
                       {item?.subject_name}
@@ -346,7 +346,7 @@ const PeriodView = () => {
                               item?.subject_id == selectedSubject
                                 ? 'th-button-active'
                                 : 'th-button'
-                            } th-width-100 th-br-6 mt-2`}
+                            } th-width-100 th-br-6 mt-2 text-truncate`}
                             onClick={() => setSelectedSubject(item?.subject_id)}
                           >
                             {item?.subject_name}

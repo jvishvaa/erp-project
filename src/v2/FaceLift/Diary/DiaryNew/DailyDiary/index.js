@@ -65,12 +65,12 @@ const DailyDiary = () => {
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [keyConceptDropdown, setKeyConceptDropdown] = useState([]);
-  const [gradeID, setGradeID] = useState([]);
+  const [gradeID, setGradeID] = useState();
   const [gradeName, setGradeName] = useState();
   const [sectionName, setSectionName] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const [sectionID, setSectionID] = useState([]);
+  const [sectionID, setSectionID] = useState();
   const [sectionMappingID, setSectionMappingID] = useState([]);
   const [subjectID, setSubjectID] = useState();
   const [subjectName, setSubjectName] = useState();
@@ -256,12 +256,11 @@ const DailyDiary = () => {
   const closeDrawer = () => {
     setDrawerVisible(false);
   };
-  console.log('ID2', chapterID, keyConceptID, periodID);
   const handleBack = () => {
     history.push('/diary/teacher');
   };
   const handleSubmissionDate = (value) => {
-    setSubmissionDate(value);
+    setSubmissionDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
   };
 
   const handleEdit = () => {
@@ -737,7 +736,6 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
-  console.log('Periods', upcomingPeriod, addedPeriods);
   useEffect(() => {
     if (assignedHomework) {
       mapAssignedHomework();
@@ -746,7 +744,12 @@ const DailyDiary = () => {
 
   useEffect(() => {
     if (addedPeriods.length > 0) {
-      fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
+      if (isDiaryEdit && !_.isEmpty(editData?.up_coming_period)) {
+        fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
+      } else {
+        fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
+      }
+      setCurrentPanel(0);
     } else {
       setUpcomingPeriod({});
       setClearUpcomingPeriod(true);
@@ -774,7 +777,9 @@ const DailyDiary = () => {
               if (result?.data?.status_code == 200) {
                 setHomeworkDetails(result?.data?.data);
                 setShowHomeworkForm(true);
-                setHomeworkCreated(true);
+                if (!isDiaryEdit) {
+                  setHomeworkCreated(true);
+                }
               }
             })
             .catch((error) => message.error('error', error?.message));
@@ -955,7 +960,6 @@ const DailyDiary = () => {
       fetchResourceYear();
     }
   }, [moduleId]);
-
   useEffect(() => {
     if (history?.location?.state?.data) {
       let editData = history.location.state.data;
@@ -993,6 +997,7 @@ const DailyDiary = () => {
       setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
       if (editData?.teacher_report?.homework) {
+        setHomeworkCreated(false);
         fetchHomeworkDetails({
           section_mapping: editData?.section_mapping_id,
           subject: editSubject?.subject_id,
@@ -1509,7 +1514,7 @@ const DailyDiary = () => {
                         className='th-fw-600 th-black-1 px-2'
                         onClick={() => setShowHomeworkForm(true)}
                       >
-                        {isDiaryEdit ? 'Homework' : 'Existing Homework'}
+                        Homework
                       </div>
                     ) : !showHomeworkForm ? (
                       <div
