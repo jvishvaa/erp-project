@@ -1585,7 +1585,7 @@ const DailyDiary = () => {
                           <QuestionCard
                             key={question.id}
                             question={question}
-                            isEdit={isDiaryEdit}
+                            isEdit={isDiaryEdit || questionEdit}
                             index={index}
                             addNewQuestion={addNewQuestion}
                             handleChange={handleChange}
