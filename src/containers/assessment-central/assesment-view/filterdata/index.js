@@ -25,7 +25,8 @@ const AssessmentFilters = ({
   setViewMoreData,
   setFilterDataDown,
   setSelectedIndex,
-  setClearFlag
+  setClearFlag,
+  setPage
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -265,6 +266,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
     // }
   };
   const handleerpCategory = (event, value) => {
+    setPage(1)
     setFilterData({ ...filterData, erp_category: '',subject:'' });
     formRef.current.setFieldsValue({
       subject: null,
@@ -318,6 +320,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
   };
 
   const handleGrade = (event, value) => {
+    setPage(1)
     formRef.current.setFieldsValue({
       subject: null,
       // board: null,
@@ -357,6 +360,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
   }
 
   const handleSubject = (event, value) => {
+    setPage(1)
     setFilterData({ ...filterData, subject: '' });
     // setQpValue('');
     formRef.current.setFieldsValue({
@@ -372,8 +376,8 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
     }
   };
 
-  console.log(filterData,'@filter')
   const handleQpLevel = (event, value) => {
+    setPage(1)
     setPeriodData([]);
     if (value) {
       setQpValue(value);

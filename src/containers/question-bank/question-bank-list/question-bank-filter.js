@@ -90,6 +90,12 @@ const QuestionBankFilters = ({
     erp_category : ''
   });
 
+  // useEffect(()=>{
+  //   setFilterData((pre)=>({...pre,is_erp_central: tabIsErpCentral}))
+  // },[])
+
+  console.log(tabIsErpCentral,'@@filter')
+  console.log(filterData,'@filterData')
   const question_level_options = [
     { value: 1, Question_level: 'Easy' },
     { value: 2, Question_level: 'Average' },
@@ -405,6 +411,7 @@ const QuestionBankFilters = ({
     }
   };
   const handleerpCategory = (value) => {
+    setPage(1)
     setFilterData({ ...filterData, erp_category: '',  });
     setLoading(true);
     setFlag(false)
@@ -417,6 +424,7 @@ const QuestionBankFilters = ({
     }
   };
   const handleQuestionLevel = (value) => {
+    setPage(1)
     setFilterData({
       ...filterData,
       question_level: '',
@@ -432,6 +440,7 @@ const QuestionBankFilters = ({
     }
   };
   const handleQuestionType = ( value) => {
+    setPage(1)
     setFilterData({ ...filterData, quesType: '' });
     setPeriodData([]);
     setPeriodData([]);
