@@ -327,21 +327,21 @@ const selectedBranch = useSelector(
       dataIndex: 'completed_periods_sum',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
+      render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PERIODS PENDING</span>,
       dataIndex: 'pending_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
+      render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>AVG. COMPLETION</span>,
       dataIndex: 'avg',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data} %</span>,
+      render: (data) => <span className='th-green th-16'>{data.toFixed(2)} %</span>,
     },
 
   ];

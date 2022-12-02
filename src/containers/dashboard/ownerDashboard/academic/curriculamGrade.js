@@ -296,7 +296,7 @@ const CurriculumCompletion = (props) => {
 
   const gradeListTable = (params = {}) => {
     setLoading(true);
-
+    setExpandedRowKeys([])
     axiosInstance
       .get(`${endpoints.ownerDashboard.gradeWise}`, {
         params: { ...params },
@@ -384,8 +384,10 @@ const CurriculumCompletion = (props) => {
     yField: 'avg',
     tooltip: {
       fields: ['Total_Completed', 'Total_Pending'],
-    }
-    ,
+    },
+    columnStyle: {
+      cursor: 'pointer'
+    },
     width: window.innerWidth > 600 && window.innerWidth < 1400 ? 600 : window.innerWidth > 1400 ? 600 : window.innerWidth > 1200 ? 600 : 350,
     height: window.innerHeight > 600 ? 400 : 200,
     minColumnWidth: 70,
@@ -421,14 +423,14 @@ const CurriculumCompletion = (props) => {
       dataIndex: 'avg_conducted_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
+      render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>AVG PERIODS PENDING</span>,
       dataIndex: 'avg_pending_periods',
       width: '15%',
       align: 'center',
-      render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
+      render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>AVG COMPLETION</span>,
@@ -476,14 +478,14 @@ const CurriculumCompletion = (props) => {
         dataIndex: 'conducted_periods',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-green th-16'>{data.toFixed(0)}</span>,
+        render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
       },
       {
         title: <span className='th-white '>AVG PERIODS PENDING</span>,
         dataIndex: 'pending_periods',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-red th-16'>{data.toFixed(0)}</span>,
+        render: (data) => <span className='th-red th-16'>{Math.floor(data)}</span>,
       },
       {
         title: <span className='th-white '>AVG COMPLETION</span>,
@@ -544,6 +546,7 @@ const CurriculumCompletion = (props) => {
         pagination={false}
         expandRowByClick={true}
         className='th-inner-head'
+        rowClassName='th-pointer'
         // showHeader={false}
         bordered={false}
         style={{ width: '100%' }}
@@ -713,7 +716,7 @@ const CurriculumCompletion = (props) => {
                   <Table
                     className='th-table'
                     rowClassName={(record, index) =>
-                      index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                      index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
                     }
                     loading={loading}
                     columns={columns1}
