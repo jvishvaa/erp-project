@@ -79,7 +79,23 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
     tabValue,
   );
 }
-  },[tabValue, tabIsErpCentral, page,erpCategory])
+  },[tabValue, tabIsErpCentral,erpCategory])
+
+  useEffect(() => {
+    if(tabGradeId && (tabSubjectId || erpCategory) && page > 1){
+      
+      handlePeriodList(
+        tabIsErpCentral,
+        tabAcademic,
+        tabBranch,
+        tabGradeId,
+        tabSubjectId,
+        tabQpValue,
+        erpCategory,
+        tabValue,
+      );
+    }
+      },[page])
 
 
   const handleGetQuestionPapers = (newValue = 0, requestURL) => {
@@ -139,6 +155,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
     setTabGradeId(grade);
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
+    console.log(qpValue,tabQpValue ,'@@')
     // setTabIsErpCentral(isErpCentral);
     setErpCategory(erpCategory)
     const branchIds = branch.map((element) => element?.branch?.id) || [];
@@ -174,13 +191,14 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
     sessionStorage.setItem('filter',JSON.stringify(filterdata));
   };
   const changequestionFrom = (e) => {
+    setPage(1)
     setTabIsErpCentral((prev) => !prev)
     }
 
   useEffect(() => {
-    if (publishFlag)
-      handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue,erpCategory ); //
-    if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ) && tabQpValue && tabIsErpCentral)
+    // if (publishFlag)
+      // handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue,erpCategory ); //
+    if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ) && tabQpValue && tabIsErpCentral && page > 1)
       handlePeriodList(
         tabIsErpCentral,
         tabAcademic,
@@ -192,7 +210,23 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
         tabValue,
         
       );
-  }, [publishFlag, page]);
+  }, [page]);
+
+  useEffect(() => {
+if(publishFlag){
+  if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ) && tabQpValue && tabIsErpCentral)
+  handlePeriodList(
+    tabIsErpCentral,
+    tabAcademic,
+    tabBranch,
+    tabGradeId,
+    tabSubjectId,
+    tabQpValue,
+    erpCategory,
+    tabValue,
+  );
+
+}},[publishFlag])
 
   return (
     <>
@@ -227,6 +261,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
             setViewMoreData={setViewMoreData}
             setFilterDataDown={setFilterDataDown}
             setSelectedIndex={setSelectedIndex}
+            setPage = {setPage}
           />
         </div>
           {/* <TabPanel

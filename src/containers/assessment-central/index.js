@@ -333,6 +333,8 @@ useEffect(() => {
     const subjectIds = subject.map((item) => item?.value);
     const sectionMappingIds = section;
     const groupIds = group;
+    sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
+    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList, isSectionToggle: sectionToggle }))
     try {
       setFetchingTests(true);
       const { results, totalPages } = await fetchAssesmentTests(
@@ -464,10 +466,10 @@ useEffect(() => {
 
   const handleFilterAssessment = () => {
     checkDelPermission();
-    // if (!formik?.values?.status) {
-    //   setAlert('error', 'Select Status');
-    //   return;
-    // }
+    if (!formik?.values?.status) {
+      setAlert('error', 'Select Status');
+      return;
+    }
     // if (!formik?.values?.academic) {
     //   setAlert('error', 'Select Academic Year');
     //   return;

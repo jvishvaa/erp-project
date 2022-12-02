@@ -136,7 +136,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     yearId,
     gradeId,
     chapterObj,
-    isErpCentral = true,
+    isErpCentral,
     newValue = 0,
     erp_category,
   ) => {
@@ -333,7 +333,9 @@ if(filtersDetails){
     }else{
       setTabValue(0)
     }
-setTabIsErpCentral((prev) => !prev)
+    setTabIsErpCentral((prev) => !prev)
+    setPage(1)
+    
   }
 
   const handleGoBack = () => {
@@ -574,7 +576,10 @@ setTabIsErpCentral((prev) => !prev)
                   className={`${
                     tabValue == 0 ? 'th-button-active' : 'th-button'
                   } th-width-100 th-br-6 mt-2`}
-                  onClick={() => setTabValue(0)}
+                  onClick={() => {
+                    setTabValue(0)
+                    setPage(1)
+                  }}
                 >
                   All
                 </Button>
@@ -585,7 +590,9 @@ setTabIsErpCentral((prev) => !prev)
                   className={`${
                     tabValue == 1 ? 'th-button-active' : 'th-button'
                   } th-width-100 th-br-6 mt-2`}
-                  onClick={() => setTabValue(1)}
+                  onClick={() => {setTabValue(1)
+                    setPage(1)
+                  }}
                 >
                   Draft
                 </Button>
@@ -596,7 +603,9 @@ setTabIsErpCentral((prev) => !prev)
                   className={`${
                     tabValue == 2 ? 'th-button-active' : 'th-button'
                   } th-width-100 th-br-6 mt-2`}
-                  onClick={() => setTabValue(2)}
+                  onClick={() => {setTabValue(2)
+                    setPage(1)
+                  }}
                 >
                   Published
                 </Button>
@@ -607,7 +616,9 @@ setTabIsErpCentral((prev) => !prev)
                   className={`${
                     tabValue == 3 ? 'th-button-active' : 'th-button'
                   } th-width-100 th-br-6 mt-2`}
-                  onClick={() => setTabValue(3)}
+                  onClick={() => {setTabValue(3)
+                    setPage(1)
+                  }}
                 >
                   For Review
                 </Button>}

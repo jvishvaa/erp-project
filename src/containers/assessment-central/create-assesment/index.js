@@ -206,8 +206,9 @@ handleGroup('',filteredgroup)
   },[isEdit,assesmentTypes.length])
 
   useEffect(() => {
-    setInstructions(EditData?.instructions);
     initChangeTestFormFields('testInstructions', EditData?.instructions);
+    setInstructions(EditData?.instructions);
+    onInstructionsChange(EditData?.instructions)
   },[EditData,branchId])
 
   useEffect(() => {
@@ -318,6 +319,22 @@ handleGroup('',filteredgroup)
       })
       .finally((e) => setLoading(false));
   };
+
+  const onInstructionsChange = (value) => {
+    const WORDS = value.split(' ');
+
+    const MAX_WORDS = WORDS.length;
+    const MAX_LENGTH = 500;
+    if (MAX_WORDS <= MAX_LENGTH) {
+      setInstructions(value);
+      initChangeTestFormFields('testInstructions', value);
+    } else {
+      // editor.setContent(value);
+      setInstructions(instructions);
+      setAlert('error', 'Maximum word limit reached!');
+    }
+    // setInstructions(value);
+  }
 
 
   const getEditSection = (gradeID) => {
@@ -1258,21 +1275,7 @@ handleGroup('',filteredgroup)
               setTestId(value);
               initChangeTestFormFields('testId', value);
             }}
-            onInstructionsChange={(value) => {
-              const WORDS = value.split(' ');
-
-              const MAX_WORDS = WORDS.length;
-              const MAX_LENGTH = 500;
-              if (MAX_WORDS <= MAX_LENGTH) {
-                setInstructions(value);
-                initChangeTestFormFields('testInstructions', value);
-              } else {
-                // editor.setContent(value);
-                setInstructions(instructions);
-                setAlert('error', 'Maximum word limit reached!');
-              }
-              // setInstructions(value);
-            }}
+            onInstructionsChange = {onInstructionsChange}
             onTestDateChange={(value) => {
               var comDate = moment().format().slice(0,16)
               if(moment(value).isAfter(comDate)){
