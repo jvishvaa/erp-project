@@ -394,8 +394,10 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             <div className='row pr-1'>
               <div className='col-12 th-bg-yellow-2 th-br-6'>
                 <div className='row th-fw-700 th-black-1 py-2'>
-                  <div className='col-3 px-0'>Subject : </div>
-                  <div className='col-8 pl-0 text-truncate'>{subject?.subject_name} </div>
+                  <div className='col-11 px-0 text-truncate'>
+                    Subject : {subject?.subject_name}
+                  </div>
+
                   <div className='col-1 px-0 tex-right'>
                     <CloseOutlined onClick={closeDrawer} />
                   </div>
