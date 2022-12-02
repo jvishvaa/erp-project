@@ -142,6 +142,7 @@ if(isEdit && EditData){
     initChangeTestFormFields('testDate', EditData?.test_date);
     initChangeTestFormFields('testDuration', EditData?.test_duration);
     initChangeTestFormFields('totalMarks', EditData?.total_mark);
+    initChangeTestFormFields('testInstructions', EditData?.instructions);
     // setTestMarks(EditData?.test_name);
     // initAddQuestionPaperToTest({
     //   is_central : EditData?.central_qp_id !== null ? true : false
@@ -208,8 +209,10 @@ handleGroup('',filteredgroup)
   useEffect(() => {
     initChangeTestFormFields('testInstructions', EditData?.instructions);
     setInstructions(EditData?.instructions);
-    onInstructionsChange(EditData?.instructions)
   },[EditData,branchId])
+
+  // console.log(instructions , '@@')
+  // console.log(EditData?.instructions,'@@E')
 
   useEffect(() => {
     if(sectionList.length && isEdit){
@@ -319,22 +322,6 @@ handleGroup('',filteredgroup)
       })
       .finally((e) => setLoading(false));
   };
-
-  const onInstructionsChange = (value) => {
-    const WORDS = value.split(' ');
-
-    const MAX_WORDS = WORDS.length;
-    const MAX_LENGTH = 500;
-    if (MAX_WORDS <= MAX_LENGTH) {
-      setInstructions(value);
-      initChangeTestFormFields('testInstructions', value);
-    } else {
-      // editor.setContent(value);
-      setInstructions(instructions);
-      setAlert('error', 'Maximum word limit reached!');
-    }
-    // setInstructions(value);
-  }
 
 
   const getEditSection = (gradeID) => {
@@ -666,6 +653,7 @@ handleGroup('',filteredgroup)
 
   const handleBack = () => {
     if(isEdit){
+      // initChangeTestFormFields('testInstructions', '');
       history.push({
         pathname: '/assesment',
         state: {
@@ -1275,7 +1263,21 @@ handleGroup('',filteredgroup)
               setTestId(value);
               initChangeTestFormFields('testId', value);
             }}
-            onInstructionsChange = {onInstructionsChange}
+            onInstructionsChange = { (value) => {
+              const WORDS = value.split(' ');
+          
+              const MAX_WORDS = WORDS.length;
+              const MAX_LENGTH = 500;
+              if (MAX_WORDS <= MAX_LENGTH) {
+                setInstructions(value);
+                initChangeTestFormFields('testInstructions', value);
+              } else {
+                // editor.setContent(value);
+                setInstructions(instructions);
+                setAlert('error', 'Maximum word limit reached!');
+              }
+              // setInstructions(value);
+            }}
             onTestDateChange={(value) => {
               var comDate = moment().format().slice(0,16)
               if(moment(value).isAfter(comDate)){
