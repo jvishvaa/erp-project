@@ -169,7 +169,7 @@ const GeneralDiary = () => {
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('General Diary Created Succssfully');
+          message.success('General Diary Created Successfully');
           history.push('/diary/teacher');
         }
       })
