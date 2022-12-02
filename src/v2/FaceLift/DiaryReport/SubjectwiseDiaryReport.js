@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { Table, DatePicker, Breadcrumb, message, Select } from 'antd';
+import { Table, DatePicker, Breadcrumb, message } from 'antd';
 import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
 import CalendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
@@ -12,16 +12,11 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 const SubjectwiseDiaryReport = () => {
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const history = useHistory();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
@@ -34,6 +29,7 @@ const SubjectwiseDiaryReport = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [diaryType, setDiaryType] = useState(null);
   const [tableExpanded, setTableExpanded] = useState(false);
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleDateChange = (value) => {
     if (value) {
@@ -50,10 +46,10 @@ const SubjectwiseDiaryReport = () => {
       setTableExpanded(true);
       keys.push(record.subject_id);
       fetchTeacherwiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         grade_id: selectedSection?.grade_id,
-        section_id: selectedSection?.section_id,
+        section_mapping: selectedSection?.section_mapping,
         subject_id: record.subject_id,
         start_date: startDate,
         end_date: endDate,
@@ -63,7 +59,9 @@ const SubjectwiseDiaryReport = () => {
     setExpandedRowKeys(keys);
   };
   const fetchSubjectwiseReport = (params = {}) => {
+    setSubjectwiseReport([]);
     setLoading(true);
+    setExpandedRowKeys([]);
     axios
       .get(`${endpoints.diaryReport.subjectwiseReport}`, {
         params: { ...params },
@@ -170,12 +168,12 @@ const SubjectwiseDiaryReport = () => {
   };
 
   useEffect(() => {
-    if (startDate && endDate) {
+    if (startDate && endDate && diaryType) {
       fetchSubjectwiseReport({
-        session_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         grade_id: selectedSection?.grade_id,
-        section_id: selectedSection?.section_id,
+        section_mapping: selectedSection?.section_mapping,
         start_date: startDate,
         end_date: endDate,
       });
@@ -194,17 +192,23 @@ const SubjectwiseDiaryReport = () => {
   const columns = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>SUBJECTS</span>,
-      dataIndex: 'subject__subject_name',
+      dataIndex: 'subject_name',
       align: 'left',
       width: '30%',
       render: (data) => <span className='pl-4 th-black-1'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>TOTAL TEACHERS</span>,
-      dataIndex: 'teacher_count',
+      title: (
+        <span className='th-white th-fw-700'>
+          {user_level == 11 ? null : 'TOTAL TEACHERS'}
+        </span>
+      ),
       align: 'center',
       width: '20%',
-      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+      render: (text, row) =>
+        user_level == 11 ? null : (
+          <span className='th-fw-400 th-black-1'>{row.teacher_count}</span>
+        ),
     },
     {
       title: (
@@ -229,7 +233,7 @@ const SubjectwiseDiaryReport = () => {
       <div className='row py-3 px-2'>
         <div className='col-md-8'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-16 th-pointer'>
               Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item
@@ -274,24 +278,31 @@ const SubjectwiseDiaryReport = () => {
             <img src={CalendarIcon} />
           </div>
         </div>
-        <div className='row mt-3'>
-          <div className='col-md-2 col-6 text-capitalize'>
-            {selectedSection?.grade_name}
-          </div>
-          <div className='col-md-2 col-6 text-capitalize'>
-            <span className='th-bg-white'>{selectedSection?.section_name}</span>
-          </div>
-        </div>
-        {subjectwiseStats && (
-          <div className='row mt-3 th-black-2'>
-            <div className='col-md-3'>
-              Total No. of Subjects :
-              <span className='th-primary'>{subjectwiseStats?.no_of_subjects}</span>
+        {!loading && (
+          <div
+            className='row mt-3 mx-3 th-bg-white th-br-10'
+            style={{ border: '1px solid #d9d9d9' }}
+          >
+            <div className='row py-2'>
+              <div className='col-3 text-capitalize th-fw-500 th-grey'>
+                Grade :{' '}
+                <span className='th-primary'>
+                  {selectedSection?.grade_name},{selectedSection?.section_name}
+                </span>
+              </div>
             </div>
-            <div className='col-md-3 pt-2 pt-md-0'>
-              Total No. of Diaries Assigned :{' '}
-              <span className='th-primary'>{subjectwiseStats?.dairy_count}</span>
-            </div>
+            {subjectwiseStats && (
+              <div className='row py-1'>
+                <div className='col-md-3 th-grey'>
+                  Total No. of Subjects :{' '}
+                  <span className='th-primary'>{subjectwiseStats?.no_of_subjects}</span>
+                </div>
+                <div className='col-md-3 pt-2 px-1 pt-md-0 th-grey'>
+                  Total No. of Diaries Assigned :{' '}
+                  <span className='th-primary'>{subjectwiseStats?.dairy_count}</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
         <div className='row mt-3'>

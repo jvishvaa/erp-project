@@ -392,6 +392,7 @@ const PeriodListView = () => {
                   volume: volumeId,
                   central_gs_id: centralGSID,
                 });
+                setCompleteSections([]);
                 setShowInfoModal(true);
                 if (!_.isEmpty(res.data.result)) {
                   setNextPeriodDetails(res.data.result);

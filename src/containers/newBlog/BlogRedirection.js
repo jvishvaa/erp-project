@@ -11,6 +11,8 @@ import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
+// import axios from 'v2/config/axios';
+import axios from 'axios';
 import endpoints from '../../config/endpoints';
 import { Rating } from '@material-ui/lab';
 import { Breadcrumb, Tabs, Button, Divider } from 'antd';
@@ -119,8 +121,9 @@ const BlogWallRedirect = () => {
   const history = useHistory();
   const [periodData,setPeriodData] = useState([]);
   const [loading,setLoading]= useState(false);
-
-
+  const [subId,setSubId] = useState('');
+  const [blogSubId,setBlogSubId] = useState('');
+  const [publicSubId,setPublicSubId] = useState('');
 
   const handleBlogWriting = () => {
     history.push('/blog/studentview')
@@ -130,17 +133,89 @@ const BlogWallRedirect = () => {
     history.push('/blog/publicspeaking')
   }
 
+
+  useEffect(() =>{
+    getActivitySession()
+    ActvityLocalStorage()
+  },[])
+
+  const getActivitySession = () =>{
+    setLoading(true)
+    axios
+    .post(`${endpoints.newBlog.activitySessionLogin}`,
+    {},
+      {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+          Authorization:`${token}`,
+        },
+      }
+    )
+    .then((response) => {
+      // setBlogLoginId(response?.data?.result)
+      localStorage.setItem(
+        'ActivityManagementSession',
+        JSON.stringify(response?.data?.result)
+      );
+
+      setLoading(false)
+      
+    })
+    .catch((err) =>{
+
+      console.log(err)
+    }
+    )
+  }
+
+  const ActvityLocalStorage = () => {
+    setLoading(true)
+    axios
+      .post(
+        `${endpoints.newBlog.activityWebLogin}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((response) => {
+        // getActivitySession();
+
+        localStorage.setItem(
+          'ActivityManagement',
+          JSON.stringify(response?.data?.result)
+        );
+        setLoading(false)
+      })
+      .catch((err) =>{
+        
+      })
+  };
+
   const periodDataAPI = () => {
       setLoading(true)
       axiosInstance
-        .get(`${endpoints.newBlog.blogRedirectApi}`, {
+        .get(`${endpoints.newBlog.blogRedirectApi}?type=student`, {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
         })
         .then((result) => {
-          setLoading(false)
+          const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
+          setSubId(physicalData[0]?.id)
+          const blogActivityData = result?.data?.result.filter((item) => item?.name == "Blog Activity")
+          setBlogSubId(blogActivityData[0]?.id)
+          const publicActivityData = result?.data?.result.filter((item) => item?.name == "Public Speaking")
+          setPublicSubId(publicActivityData[0]?.id)
           setPeriodData(result?.data?.result)
+          // localStorage.setItem(
+          //   'PhysicalActivityId',
+          //   JSON.stringify(physicalData[0]?.id)
+          // );
+          setLoading(false)
         })
         .catch((err) => {
           setLoading(false)
@@ -153,23 +228,47 @@ const BlogWallRedirect = () => {
   },[])
 
 
+  const handlePhysicalActivity = () =>{
+    history.push({
+      pathname:'/student/phycial/activity',
+      state: {
+        subActiveId: subId,
+      }
+    })
+
+  }
+
 
   const handleExplore = (data) => {
-    if (data?.name == "Blog Wall" || data?.name == "Blog Writing") {
+    if (data?.name == "Blog Activity") {
+      localStorage.setItem(
+        'BlogActivityId',
+        JSON.stringify(blogSubId)
+      );
       handleBlogWriting()
     } else if (data?.name === "Public Speaking") {
+      localStorage.setItem(
+        'PublicActivityId',
+        JSON.stringify(publicSubId)
+      );
       handlePublicSpeaking()
-    } else {
+    } else if(data?.name === "Physical Activity") {
+      localStorage.setItem(
+        'PhysicalActivityId',
+        JSON.stringify(subId)
+      );
+
+      handlePhysicalActivity()
     }
   }
 
   const getSubjectIcon = (value) => {
     switch(value) {
-      case 'Blog Writing' :
+      case 'Blog Activity' :
         return image2;
       case 'Public Speaking' : 
         return image1;
-      case 'blogger list' :
+      case 'Physical Activity' :
         return image2;
       case 'actiivtytype' : 
         return image1;

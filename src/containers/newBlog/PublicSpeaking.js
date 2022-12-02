@@ -1,13 +1,5 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import DeleteIcon from '@material-ui/icons/Delete';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
 import RatingScale from './RatingScale';
 import Loader from 'components/loader/loader';
 
@@ -21,13 +13,8 @@ import {
   Divider,
   TextField,
   Button,
-  SvgIcon,
   makeStyles,
-  Typography,
   Grid,
-  Breadcrumbs,
-  MenuItem,
-  TextareaAutosize,
   Paper,
   TableCell,
   TableBody,
@@ -36,56 +23,26 @@ import {
   TableContainer,
   Table,
   Drawer,
-  TablePagination,
-  InputAdornment,
-  Tooltip,
 } from '@material-ui/core';
 import {
   Table as TableAnt,
   Breadcrumb as Breadcrumb
 } from 'antd';
-import Modal from '@material-ui/core/Modal';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import SearchIcon from '@material-ui/icons/Search';
 
 import Layout from 'containers/Layout';
-import Close from '@material-ui/icons/Close';
-import DoneIcon from '@material-ui/icons/Done';
 
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Box from '@material-ui/core/Box';
-import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import ForumIcon from '@material-ui/icons/Forum';
+import { withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import './images.css';
 
 import './styles.scss';
 
-import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddIcon from '@material-ui/icons/Add';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
-import ReactHtmlParser from 'react-html-parser';
 import moment from 'moment';
 import { Rating } from '@material-ui/lab';
-import Pagination from '@material-ui/lab/Pagination';
-import Slide from '@material-ui/core/Slide';
-import DialogActions from '@material-ui/core/DialogActions';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
@@ -93,7 +50,7 @@ import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 const DEFAULT_RATING = 0;
 
-const StyledRating = withStyles((theme) => ({
+const StyledRating = withStyles(() => ({
   iconFilled: {
     color: '#E1C71D',
   },
@@ -226,9 +183,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 
 const columns = [
@@ -258,16 +212,10 @@ const columns = [
 
 const PublicSpeakingWall = () => {
   const classes = useStyles();
-  const themeContext = useTheme();
   const history = useHistory();
   const User_id = JSON.parse(localStorage.getItem('ActivityManagementSession'))?.user_id;
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
-  const user_level = data?.user_level;
-  // const User_id  = JSON.parse(localStorage?.getItem('ActivityManagement')) || {};
-  // console.log(data,"User_id")
-  // const User_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
-
   const [moduleId, setModuleId] = useState();
   const [month, setMonth] = useState('1');
   const [status, setStatus] = useState('');
@@ -304,9 +252,6 @@ const PublicSpeakingWall = () => {
   const [totalPublish, setTotalPublish] = useState([]);
 
 
-  const createPublish = () => {
-    setPublish(true);
-  };
   // useEffect(() => {
   //   setValues({
   //     rating: DEFAULT_RATING,
@@ -320,33 +265,6 @@ const PublicSpeakingWall = () => {
   }
   const [submit, setSubmit] = useState(false);
 
-  const submitReview = () => {
-    setLoading(true)
-    setSubmit(true);
-    console.log(ratingReview, 'ratingReview');
-    setSubmit(true);
-    let body = {
-      user_reviews: ratingReview,
-    };
-
-    axios
-      .post(
-        `https://activities-revamp.dev-k8.letseduvate.com/api/review_student_activity/`,
-        body,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-        setLoading(false)
-      })
-      .catch((err) =>{
-        setLoading(false)
-      })
-  };
 
   let array = [];
   const getRatingView = (data) => {
@@ -361,7 +279,7 @@ const PublicSpeakingWall = () => {
         }
       )
       .then((response) => {
-        response.data.map((obj, index) => {
+        response.data.map((obj) => {
           let temp = {};
           temp['id'] = obj?.id;
           temp['name'] = obj?.level.name;
@@ -373,20 +291,12 @@ const PublicSpeakingWall = () => {
         setRatingReview(array);
         setLoading(false)
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false)
       })
   };
   const expandMore = () => {
     setSubmit(false);
-  };
-  const EditActivity = (response) => {
-    history.push({
-      pathname: '/blog/activityedit',
-      state: {
-        response,
-      },
-    });
   };
   const getActivitySession = () => {
     setLoading(true)
@@ -466,78 +376,18 @@ const PublicSpeakingWall = () => {
   };
 
   useEffect(() => {
-    ActvityLocalStorage();
+    // ActvityLocalStorage();
   }, []);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalReview, setTotalReview] = useState([]);
-  const getTotalReview = async () => {
-    setLoading(true)
 
-    axios
-      .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_reviewed=True`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalReview(response?.data?.result);
-        setLoading(false);
-      });
-  };
-
-  const getTotalPublish = async () => {
-    setLoading(true)
-
-    axios
-      .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_published=True`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        debugger;
-        setTotalPublish(response?.data?.result)
-        // setTotalReview(response?.data?.result);
-        setLoading(false);
-      });
-  };
 
 
   const getTotalPublicSpeaking = async () => {
-    if(User_id){
-      setLoading(true)
-      axios
-        .get(
-          `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response, 'response');
-          setTotalPublicSpeaking(response?.data?.result)
-          setLoading(false);
-        });
-    }
-  };
-  
-
-  const getTotalSubmitted = async () => {
-
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_reviewed=False&is_submitted=True`,
+        `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -546,10 +396,12 @@ const PublicSpeakingWall = () => {
       )
       .then((response) => {
         console.log(response, 'response');
-        setTotalSubmitted(response?.data?.result);
-        setLoading(false)
+        setTotalPublicSpeaking(response?.data?.result)
+        setLoading(false);
       });
   };
+  
+
 
   useEffect(() => {
     if(userData)
@@ -558,13 +410,6 @@ const PublicSpeakingWall = () => {
   const [view, setView] = useState(false);
   const [previewData, setPreviewData] = useState();
   const [imageData,setImageData] = useState('')
-  const viewMore = (data) => {
-    console.log(data,'krishna 1')
-    setView(true);
-    setImageData(JSON.parse(data?.template?.html_file))
-    setPreviewData(data);
-    getRatingView(data?.id);
-  };
   const handleCloseViewMore = () => {
     setView(false);
   };
@@ -587,9 +432,6 @@ const PublicSpeakingWall = () => {
   const handleClose =() => {
     setView(false);
   }
-  const handlePagination = (event, page) => {
-    setPage(page);
-  };
 
   const handleClickOpen = (e) => {
     if(e?.asset?.state == "processed"){  
@@ -635,15 +477,7 @@ const PublicSpeakingWall = () => {
     setOpen(false);
   };
 
-  const dummyDataMarks =[
-    {name:'Maths', marks: '80'},
-    {name:'Physics', marks: '90'},
-    {name:'Science', marks: '85'}
-  ]
 
-  const createPushBlogWall = () => {
-    history.push('/blog/wall');
-  };
 
 
   return (
@@ -921,15 +755,6 @@ const PublicSpeakingWall = () => {
              
         </div>
                     </div>
-                    {/* <div
-                      style={{
-                        paddingLeft: '30px',
-                        paddingTop: '12px',
-                        paddingBottom: '6px',
-                      }}
-                    >
-                      {ReactHtmlParser(previewData?.submitted_work?.html_text)}
-                    </div> */}
                   </div>
                 </div>
               </Grid>
@@ -938,7 +763,7 @@ const PublicSpeakingWall = () => {
                   <div style={{display:'flex', justifyContent:'center'}}>
                   <span style={{fontSize:'20px',marginBottom: '15px'}}> Student Marks </span>
                   </div>
-                  <div style={{width:'20vw'}}>
+                  <div>
                   <div className='col-12' style={{padding:'10px'}}>
                       <TableAnt
                         className='th-table'
@@ -953,26 +778,6 @@ const PublicSpeakingWall = () => {
                         scroll={{ x: 'max-content' }}
                       />
                     </div>
-                    {/* {marksData?.levels?.map((obj,index) => {
-                      return (
-                        <div 
-                          key={index}
-                          style={{paddingLeft: '15px',paddingRight: '15px',paddingTop: '5px', margin:'10px'}}
-                          >
-                        <div
-                          key={index}
-                          style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          {' '}
-                         <span>
-                          Categories : <b> {obj?.name}</b>
-                          </span> 
-                        </div>
-                        <span>
-                          Remarks : <b>{obj?.marks}</b>
-                        </span>
-                        </div>
-                      )
-                    })} */}
                   </div>
 
                 </div>
@@ -1092,15 +897,6 @@ const PublicSpeakingWall = () => {
         </div>
       </div>
                   </div>
-                  {/* <div
-                    style={{
-                      paddingLeft: '30px',
-                      paddingTop: '12px',
-                      paddingBottom: '6px',
-                    }}
-                  >
-                    {ReactHtmlParser(previewData?.submitted_work?.html_text)}
-                  </div> */}
                 </div>
               </div>
             </Grid>

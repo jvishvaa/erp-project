@@ -62,6 +62,7 @@ export default {
     staffAttandance: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-wise-stats/`,
     staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
     staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
+    gradeWise: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-wise-data/`,
   },
   teacherDashboard: {
     todaysAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/attendance-today/`,
@@ -70,6 +71,7 @@ export default {
     curriculumCompletion: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-subject-sectionwise-report/`,
     classworkReport: `${msReportsUrl}/api/reports/v1/classwork-stats/`,
     homeworkReport: `${msReportsUrl}/api/reports/v1/homework-stats/`,
+    curriculumnWidget : `${msReportsUrl}/api/acad_performance/grade-subject-wise-curriculum-completion-widget/`
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
@@ -90,6 +92,9 @@ export default {
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,
+  },
+  userManagement: {
+    getUserLevel: '/erp_user/level_list/',
   },
   profile: {
     getUserStatus: '/erp_user/user-information/',
@@ -120,6 +125,7 @@ export default {
     removeFile: '/academic/delete-file/',
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
+    upcomingPeriodData: `${baseURLCentral}/lesson_plan/v2/upcoming-period-data/`,
   },
 
   diaryReport: {
@@ -129,6 +135,7 @@ export default {
     subjectwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/view/`,
     subjectTeacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/view/`,
     teacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/data/view/`,
+    resources: `${baseURLCentral}/lesson_plan/lesson/`,
   },
   lessonPlan: {
     subjects: 'academic/v2/lesson-plan-subjects/',

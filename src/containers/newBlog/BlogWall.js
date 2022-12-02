@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  Divider,
+  // Divider,
   TextField,
   makeStyles,
   Grid,
@@ -30,15 +30,16 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Rating } from '@material-ui/lab';
-import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button } from 'antd';
+import { Avatar as AvatarAnt, Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-
+import { Divider } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
-import { DownOutlined, CheckOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined, CheckOutlined, SearchOutlined, FormOutlined } from '@ant-design/icons';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { UserOutlined } from '@ant-design/icons';
+import BlogWallImage from "../../assets/images/ssss.jpg";
 import './blog.css';
 
 const drawerWidth = 350;
@@ -83,6 +84,11 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
   },
   media: {
+    height: 240,
+    objectFit: 'cover',
+    width: '45%'
+  },
+  mediaBlog: {
     height: 240,
     objectFit: 'cover',
     width: '45%'
@@ -133,7 +139,6 @@ const BlogWall = () => {
   const classes = useStyles();
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const user_level = data?.user_level;
-  console.log(user_level,'gl')
   const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
   const selectedBranch = useSelector(
@@ -169,6 +174,7 @@ const BlogWall = () => {
   const [visible, setVisible] = useState(false);
   const [showTab, setShowTab] = useState('1');
   const [view, setView] = useState(false);
+  const [postView, setPostView] = useState(false);
   const [expanded, setExpanded] = React.useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   const [filterData, setFilterData] = useState({
@@ -189,6 +195,7 @@ const BlogWall = () => {
   const userId = JSON.parse(localStorage.getItem('ActivityManagementSession'))?.user_id;
   const [categories, setCategories] = useState([]);
   const [listCount, setListCount] = useState('');
+  const [postListCount, setPostListCount] = useState('')
   const [pageNumber, setPageNumber] = useState(1);
   const [blogWallList, setBlogWallList] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -200,9 +207,10 @@ const BlogWall = () => {
   const [ratingReview, setRatingReview] = useState([]);
   const [expandFilter, setExpandFilter] = useState(true);
   const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const [postWallList, setPostWallList] = useState([])
+  const [postPreviewData, setPostPreviewData] = useState('');
   // const user_level = userData?.user_level;
 
-  console.log(userId,'pp')
 
 
 
@@ -318,9 +326,39 @@ const BlogWall = () => {
   const handleBlogListChange = (e, value) => {
     if (e) {
       setSelectedBlogListId(value?.value)
-    }else{
+    } else {
       setSelectedBlogListId('')
     }
+  }
+
+
+  const fetchPostWall = (params = {}) => {
+    setLoading(true)
+    axios
+      .get(`${endpoints.newBlog.postActivityListAPI}`, {
+        params: {
+          ...params,
+          ...(startDate ? { start_date: startDate } : {}),
+          ...(endDate ? { end_date: endDate } : {}),
+          ...(branchIds ? { branch_ids: branchIds } : {}),
+          ...(selectedBlogListId ? { activity_detail_id: selectedBlogListId } : {}),
+          ...(selectedGradeId ? { grade_ids: selectedGradeId } : {})
+
+        },
+
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+
+        }
+      })
+      .then((response) => {
+        setPostWallList(response?.data?.result)
+        setPostListCount(response?.data?.result?.length)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
 
@@ -352,14 +390,14 @@ const BlogWall = () => {
         setLoading(false)
       })
   }
-  const handleGoBack = () =>{
+  const handleGoBack = () => {
     history.goBack()
   }
 
 
   useEffect(() => {
     blogListApiCall()
-  }, [branchIds,selectedGradeId])
+  }, [branchIds, selectedGradeId])
 
 
   useEffect(() => {
@@ -369,45 +407,88 @@ const BlogWall = () => {
   const handleSearch = () => {
     if (showTab == 1) {
       fetchSchoolWall({
-        page_size: 10,
+        page_size: 4,
         page: pageNumber,
         user_id: userId,
       });
+
+      fetchPostWall({
+        // page_size: 10,
+        // page: pageNumber,
+        uer_id: userId,
+        is_limited: 'True',
+      })
     } else if (showTab == 2) {
       fetchSchoolWall({
-        page_size: 10,
+        page_size: 4,
         page: pageNumber,
         publish_level: 'Intra Orchids Level',
         user_id: userId,
       });
+      fetchPostWall({
+        // page_size: 10,
+        // page: pageNumber,
+        view_level: 'Intra Orchids Level',
+        user_id: userId,
+        is_limited: 'True',
+      })
     } else if (showTab == 3) {
       fetchSchoolWall({
-        page_size: 10,
+        page_size: 4,
         page: pageNumber,
         publish_level: 'Branch Level',
         user_id: userId,
       })
 
+      fetchPostWall({
+        // page_size: 10,
+        // page: pageNumber,
+        view_level: 'Branch Level',
+        user_id: userId,
+        is_limited: 'True',
+      })
+
     } else if (showTab == 4) {
       fetchSchoolWall({
-        page_size: 10,
+        page_size: 4,
         page: pageNumber,
         publish_level: 'Grade Level',
         user_id: userId,
       })
+      fetchPostWall({
+        // page_size: 10,
+        // page: pageNumber,
+        view_level: 'Grade Level',
+        user_id: userId,
+        is_limited: 'True',
+      })
     } else if (showTab == 5) {
       fetchSchoolWall({
-        page_size: 10,
+        page_size: 4,
         page: pageNumber,
         is_best_blog: 'true',
         user_id: userId,
       })
-    }  else if(showTab == 6){
-          fetchSchoolWall({
-          page_size: 10,
-          page: pageNumber,
-          publish_level: 'Section Level',
-          user_id: userId,
+      fetchPostWall({
+        // page_size: 10,
+        // page: pageNumber,
+        is_best_blog: 'true',
+        user_id: userId,
+        is_limited: 'True',
+      })
+    } else if (showTab == 6) {
+      fetchSchoolWall({
+        page_size: 4,
+        page: pageNumber,
+        publish_level: 'Section Level',
+        user_id: userId,
+      })
+      fetchPostWall({
+        // page_size: 10,
+        // page: pageNumber,
+        view_level: 'Section Level',
+        user_id: userId,
+        is_limited: 'True',
       })
     }
   }
@@ -415,6 +496,7 @@ const BlogWall = () => {
 
   const handleClose = () => {
     setView(false);
+    setPostView(false)
 
   }
 
@@ -424,6 +506,29 @@ const BlogWall = () => {
     setPreviewData(data)
     getRatingView(data?.booking_id)
   };
+
+
+  const getViewCard = (data) => {
+    setLoading(true)
+    axios
+      .get(`${endpoints.newBlog.postActivityViewMoreAPI}${data}/`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        setLoading(false)
+
+      })
+
+  }
+
+  const viewMorePost = (data) => {
+    setPostView(true);
+    setPostPreviewData(data)
+    getViewCard(data?.id)
+
+  }
 
 
 
@@ -455,6 +560,12 @@ const BlogWall = () => {
         });
 
     }
+  };
+
+  const showModal = () => {
+    history.push(
+      `/create-post-activity`
+    );
   };
 
   useEffect(() => {
@@ -507,7 +618,6 @@ const BlogWall = () => {
 
   const handleDateChange = (value) => {
     if (value) {
-      // debugger;
       setStartDate(moment(value[0]).format('YYYY-MM-DD'));
       setEndDate(moment(value[1]).format('YYYY-MM-DD'));
     }
@@ -520,19 +630,30 @@ const BlogWall = () => {
   };
 
 
-  const TabContent = () => {
+  const handleSeeMorePost = () => {
+    history.push('/post-activity-view')
+    return
+  }
+
+  const handleSeeMoreBlog = () => {
+    history.push('/blog-activity-view')
+    return
+  }
+
+  const PostContent = () => {
     return (
       <>
-        <div className='row mb-2 mb-md-0 mt-5'>
-            {user_level == '13' || user_level == '10' ? (
+        <div className='row mb-md-0 mt-3'>
+          {user_level == '13' || user_level == '10' ? (
             ' '
-            ) : (
+          ) : (
             <div className='row' >
               <Accordion style={{ width: '100vw' }}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                   id="panel1a-header"
+                  style={{ height: '7vh' }}
                 >
                   <Typography className={classes.heading}>Filters</Typography>
                 </AccordionSummary>
@@ -540,30 +661,30 @@ const BlogWall = () => {
                   {/* <div className='row mb-2'> */}
                   <div className='col-md-2 px-0 py-2 py-md-0'>
                     <div className='mb-2 text-left'>Branch</div>
-                      <Select
-                        className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
-                        placement='bottomRight'
-                        mode='multiple'
-                        maxTagCount={3}
-                        showArrow={true}
-                        allowClear={true}
-                        bordered={true}
-                        suffixIcon={<DownOutlined className='th-primary' />}
-                        placeholder='Select Branches'
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        // placeholder={
-                        //   <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
-                        // }
-                        dropdownMatchSelectWidth={false}
-                        onChange={(e, value) => handleBranchChange(value)}
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                        }}
-                      >
-                        {branchOptions}
-                      </Select>
-      
+                    <Select
+                      className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
+                      placement='bottomRight'
+                      mode='multiple'
+                      maxTagCount={3}
+                      showArrow={true}
+                      allowClear={true}
+                      bordered={true}
+                      suffixIcon={<DownOutlined className='th-primary' />}
+                      placeholder='Select Branches'
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      // placeholder={
+                      //   <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
+                      // }
+                      dropdownMatchSelectWidth={false}
+                      onChange={(e, value) => handleBranchChange(value)}
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                      }}
+                    >
+                      {branchOptions}
+                    </Select>
+
                   </div>
                   <div className='col-md-2 col-5 px-0 px-md-2'>
                     <div className='mb-2 text-left'>Grade</div>
@@ -629,8 +750,275 @@ const BlogWall = () => {
                 </AccordionDetails>
               </Accordion>
             </div>
-            )}
+          )}
         </div>
+        {loading ? (
+          ""
+          // <div className='d-flex justify-content-center align-items-center h-50'>
+          //   <Spin tip='Loading...' size='large' />
+          // </div>
+        ) :
+          postListCount > 0 ? (
+
+            <Grid container spacing={2} >
+              <Grid className='col-12 mt-4' style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0 }}>
+                <Grid
+                  className='col-6'
+                >
+                  <b style={{ color: '#1b4ccb' }}>Post</b>
+                </Grid>
+                <Grid
+                  className='col-6'
+                  style={{ display: 'flex', justifyContent: 'end' }}
+                >
+                  <Button onClick={handleSeeMorePost}>
+                    View All
+                  </Button>
+                </Grid>
+
+              </Grid>
+
+              <Grid
+                className='col-12'
+                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', padding: 0, paddingBottom: '30px' }}
+              >
+
+                {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
+                <Grid container spacing={4} xs={12}>
+                  {postWallList.map((item) => {
+                    return (
+
+                      <Grid item xs={12} md={3}>
+                        <Card
+                          // className={classes.root}
+                          onClick={() => viewMorePost(item)}
+                          className='card-design'
+
+                        // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
+                        >
+                          <CardActionArea>
+                            {/* <CardHeader
+                            avatar={
+                              <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+
+                              </Avatar>
+                            }
+                            title={item?.name}
+                            subheader={item?.description}
+                          // subheader={item?.grade?.name}
+                          /> */}
+                          </CardActionArea>
+                          <CardActionArea style={{ padding: '8px' }}>
+                            {item?.file_type == "video/mp4" ? (
+                              <CardMedia
+                                className={classes.media}
+                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
+                                component="video"
+                                // autoPlay 
+                                controls
+                                src={item?.template_path}
+                              />
+                            ) : (
+
+                              <CardMedia
+                                className={classes.media}
+                                image={item?.template_path}
+                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
+                                // alt="Dummy Image"
+                                title="Blog View"
+                              />
+                            )}
+                          </CardActionArea>
+                          <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection: 'column' }}>
+                            <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
+                              <div>
+                                <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                                </Avatar>
+                              </div>
+                              <div style={{ padding: '0 0.5rem' }}>
+                                <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                                  {item?.name}
+                                </div>
+                                <div style={{ fontWeight: 500, fontSize: '14px', color: 'grey' }}>
+                                  {item?.view_level}
+                                </div>
+                              </div>
+                            </div>
+                            <Divider style={{ padding: "0px", margin: "0px" }} />
+                            <div style={{ width: '100%', padding: '5px', fontSize: '12px', fontWeight: 500 }}>
+                              <div>
+                                {moment(item?.created_at).format("MMM Do YY")}
+                              </div>
+
+                            </div>
+                          </CardActions>
+                        </Card>
+                      </Grid>
+
+                    )
+
+                  })}
+                </Grid>
+
+              </Grid>
+            </Grid>
+          )
+            : (
+              <div className='d-flex justify-content-center mt-5'>
+                <img src={NoDataIcon} />
+              </div>
+            )}
+        <Drawer
+          anchor='right'
+          maxWidth={maxWidth}
+          // open={view}
+          open={postView}
+          onClose={handleCloseViewMore}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <div style={{ width: '100%', padding: '5px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', }}>
+              <div style={{ fontSize: '24px', marginLeft: '15px' }}>
+                <strong>Preview</strong>
+              </div>
+              <div style={{ fontSize: '24px', cursor: 'pointer' }}>
+                <strong onClick={handleClose}> <CancelIcon /> </strong>
+              </div>
+
+            </div>
+            <Divider style={{ margin: '5px' }} />
+
+            <Grid container direction='row' justifyContent='center'>
+              <Grid item>
+                <div
+                  style={{
+                    border: '1px solid #813032',
+                    // width: '583px',
+                    width: '100%',
+                    background: 'white',
+                    // height: 'auto',
+                    height: '90vh',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '5px'
+                  }}
+                >
+                  {/* <div
+                    style={{
+                      background: 'white',
+                      width: '554px',
+                      marginLeft: '13px',
+                      marginTop: '5px',
+                    }}
+                  >
+                    <div>
+                      <img
+                        src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                        width='130'
+                        alt='image'
+                      />
+
+                    </div>
+                  </div> */}
+
+                  <div
+                    style={{
+                      background: 'white',
+                      width: '502px',
+                      // marginLeft: '34px',
+                      marginTop: '16px',
+                      height: 'auto',
+                      marginBottom: '20px'
+                    }}
+                  >
+                    <div
+                      style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px' }}
+                    >
+                      <span style={{ fontWeight: 'normal', fontSize: '18px', color: 'blue' }}>
+                        Title: {postPreviewData?.name}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        fontWeight: 'bold',
+                        paddingLeft: '10px'
+                      }}
+                    >
+                      <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
+                        Description: {postPreviewData?.description}
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      background: 'white',
+                      width: '100%',
+                      // marginLeft: '34px',
+                      height: 'auto',
+                      marginTop: '12px',
+                      // marginBottom: '29px',
+                    }}
+                  >
+
+                    {postPreviewData?.file_type == "video/mp4" ? (
+                      <video
+                        width="100%"
+                        height="300"
+                        controls
+                      >
+                        <source src={`${postPreviewData?.template_path}`} type="video/mp4" />
+                        Your browser does not support HTML video.
+                      </video>
+
+                    ) : (
+                      <div
+                        style={{
+                          backgroundImage: `url(${postPreviewData?.template_path})`,
+                          backgroundSize: "cover",
+                          position: "relative",
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "center",
+                          backgroundColor: "rgba(244 245 247 / 25%)",
+                          width: '100%',
+                          height: '60vh',
+                          borderRadius: '5px'
+                        }}
+
+                      >
+                      </div>
+
+                    )}
+                  </div>
+                  <div style={{ padding: '5px' }}>
+                  </div>
+                </div>
+              </Grid>
+            </Grid>
+          </div>
+        </Drawer>
+
+        {!loading && listCount > 0 && (
+          <div className='text-center'>
+            <Pagination
+              current={pageNumber}
+              hideOnSinglePage={true}
+              showSizeChanger={false}
+              onChange={(page) => {
+                setPageNumber(page);
+              }}
+              total={listCount}
+            />
+          </div>
+        )}
+
+      </>
+    );
+  };
+  const TabContent = () => {
+    return (
+      <>
         {loading ? (
           <div className='d-flex justify-content-center align-items-center h-50'>
             <Spin tip='Loading...' size='large' />
@@ -638,79 +1026,99 @@ const BlogWall = () => {
         ) :
           listCount > 0 ? (
 
-            <Grid container spacing={4} >
-              <Grid
-                className='col-12 mt-3 pt-2'
-                style={{ height: '90vh', overflowY: 'scroll', display: 'flex', flexWrap: 'wrap' }}
-              >
-
-                {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
-                {blogWallList.map((item) => {
-                  return (
-                    <Grid item xs={12} md={3}>
-                      <Card 
-                      // className={classes.root}
-                      className='card-design'
-
-                      // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
-                      >
-                        <CardActionArea>
-                          <CardHeader
-                            avatar={
-                              <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-
-                              </Avatar>
-                            }
-                            title={item?.name}
-                            subheader={item?.branch?.name}
-                          // subheader={item?.grade?.name}
-                          />
-                          <div style={{display:'flex'}}>
-                          <div style={{ fontSize: '10px', color: 'blue', marginLeft: '72px', marginTop: '-15px' }}>
-                            {item?.grade?.name}
-                          </div>
-                          <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color:'blue' }}>
-                              {item?.publish_level}
-                          </div>
-                          </div>
-                          <div style={{display:'flex'}}>
-                          <div style={{ fontSize: '10px', marginLeft: '72px',color:'blue' }}>
-                              {moment(item?.created_at).format("MMM Do YY")}
-                          </div>
-                          </div>
-                        </CardActionArea>
-                        <CardActionArea style={{ padding: '11px', display: 'flex' }}>
-                          <CardMedia
-                            className={classes.media}
-                            image={item.template.template_path}
-                            style={{ border: '1px solid lightgray', borderRadius: '6px' }}
-                            // alt="Dummy Image"
-                            title="Blog View"
-                          />
-                        </CardActionArea>
-                        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'space-between' }}>
-
-                          <StyledRating
-                            fontSize="small"
-                            style={{ fontSize: 18, width:'10vw',display:'flex', flexWrap:'wrap'}}
-                            precision={0.1}
-                            defaultValue={item?.given_rating}
-                            max={parseInt(item?.rating)}
-                            readOnly
-                          />
-                          <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => viewMore(item)}>
-                            View More
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-
-                  )
-
-                })}
-
+            <Grid container spacing={2} >
+              <Grid className='col-12 mt-4' style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0 }}>
+                <Grid className='col-6'>
+                  <b style={{ color: '#1b4ccb' }}> Blog</b>
+                </Grid>
+                <Grid
+                  className='col-6'
+                  style={{ display: 'flex', justifyContent: 'end' }}
+                >
+                  <Button onClick={handleSeeMoreBlog}>
+                    View All
+                  </Button>
+                </Grid>
               </Grid>
+              <Grid
+                className='col-12'
+                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', padding: '0px', paddingButton: '30px' }}
+              >
+                {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
+                <Grid container spacing={4} xs={12}>
+                  {blogWallList.map((item) => {
+                    return (
+                      <Grid item xs={12} md={3}>
+                        <Card
+                          // className={classes.root}
+                          onClick={() => viewMore(item)}
+                          className='card-design'
 
+                        // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
+                        >
+                          <CardActionArea>
+                            <CardHeader
+                              avatar={
+                                <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+
+                                </Avatar>
+                              }
+                              title={<span style={{ fontWeight: 600, fontSize: '16px' }}>{item?.name}</span>}
+                              subheader={<span style={{ fontSize: '14px', fontWeight: 500 }}>{item?.branch?.name}</span>}
+                            // subheader={item?.grade?.name}
+                            />
+                            <div style={{ display: 'flex' }}>
+                              <div style={{ fontSize: '12px', color: '#09A4D4', marginLeft: '72px', marginTop: '-15px' }}>
+                                {item?.grade?.name}
+                              </div>
+                              {/* <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color: 'blue' }}>
+                              {item?.publish_level}
+                            </div> */}
+                            </div>
+                            {/* <div style={{ display: 'flex' }}>
+                            <div style={{ fontSize: '10px', marginLeft: '72px', color: 'blue' }}>
+                              {moment(item?.created_at).format("MMM Do YY")}
+                            </div>
+                          </div> */}
+                          </CardActionArea>
+                          <CardActionArea style={{ padding: '11px' }}>
+                            <CardMedia
+                              className={classes.media}
+                              image={item.template.template_path}
+                              style={{ border: '1px solid lightgray', borderRadius: '6px', width: 'auto', height: '18vh' }}
+                              // alt="Dummy Image"
+                              title="Blog View"
+                            />
+                          </CardActionArea>
+                          <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <div style={{ fontSize: '12px' }}>
+                              {item?.publish_level}{' '}
+                            </div>
+                            <div style={{ fontSize: '12px' }}>
+                              {moment(item?.created_at).format("MMM Do YY")}
+                            </div>
+
+                            <StyledRating
+                              fontSize="small"
+                              style={{ fontSize: 18, width: '6vw', display: 'flex', flexWrap: 'wrap' }}
+                              precision={0.1}
+                              defaultValue={item?.given_rating}
+                              max={parseInt(item?.rating)}
+                              readOnly
+                            />
+                            {/* <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => viewMore(item)}>
+                            View
+                          </Button> */}
+                          </CardActions>
+                        </Card>
+                      </Grid>
+
+                    )
+
+                  })}
+
+                </Grid>
+              </Grid>
             </Grid>
           )
             : (
@@ -741,7 +1149,7 @@ const BlogWall = () => {
           aria-labelledby='alert-dialog-title'
           aria-describedby='alert-dialog-description'
         >
-          <div style={{ width: '100%', marginTop: '72px' }}>
+          <div style={{ width: '100%', padding: '10px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', }}>
               <div style={{ fontSize: '24px', marginLeft: '15px' }}>
                 <strong>Preview</strong>
@@ -751,13 +1159,13 @@ const BlogWall = () => {
               </div>
 
             </div>
-            <Divider />
+            <Divider style={{ margin: 0 }} />
 
             <Grid container direction='row' justifyContent='center'>
               <Grid item>
                 <div
                   style={{
-                    border: '1px solid #813032',
+                    border: '1px solid black  ',
                     width: '583px',
                     background: 'white',
                     height: 'auto',
@@ -778,36 +1186,6 @@ const BlogWall = () => {
                         alt='image'
                       />
 
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
-                      marginTop: '16px',
-                      height: 'auto',
-                    }}
-                  >
-                    <div
-                      style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px' }}
-                    >
-                      <span style={{ fontWeight: 'normal', fontSize: '18px', color: 'blue' }}>
-                        Title: {previewData?.activity_detail?.title}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        fontWeight: 'bold',
-                        paddingLeft: '10px'
-                      }}
-                    >
-                      <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
-                        Description: {previewData?.activity_detail?.description}
-                      </span>
                     </div>
                   </div>
                   <div
@@ -845,15 +1223,69 @@ const BlogWall = () => {
                 </div>
               </Grid>
               <Grid item>
-                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '20px', fontWeight: 'bold' }}>Review</div>
+                <div>
+                  <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem' }}>
+                    <div style={{ padding: '5px' }}>
+                      <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                      </Avatar>
+                    </div>
+                    <div style={{ padding: '0 0.5rem' }}>
+                      <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                        {previewData?.name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                        {previewData?.branch?.name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '12px' }}>
+                        {previewData?.grade?.name}
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div
                   style={{
-                    border: '1px solid #707070',
+                    background: '#f9f9f9',
+                    margin: '0.5rem 1rem',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '5px',
+                    marginTop: '10px',
+                    height: 'auto',
+                    border: '1px solid #dbdbdb'
+
+                  }}
+                >
+                  <div
+                    style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
+                  >
+                    <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
+                      Title: {previewData?.activity_detail?.title}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      fontWeight: 'bold',
+                      paddingLeft: '10px',
+                      paddingBottom: '10px'
+                    }}
+                  >
+                    <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
+                      Description: {previewData?.activity_detail?.description}
+                    </span>
+                  </div>
+                </div>
+                <Divider />
+                <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '13px' }}>Review</div>
+                <div
+                  style={{
+                    border: '1px solid grey',
                     width: '295px',
                     height: 'auto',
                     marginLeft: '11px',
                     marginRight: '10px',
-                    borderRadius: '10px'
+                    borderRadius: '5px',
+                    background: '#f4f5f9'
                   }}
                 >
                   {ratingReview?.map((obj, index) => {
@@ -879,9 +1311,6 @@ const BlogWall = () => {
                             defaultValue={obj?.given_rating}
                             precision={0.1}
                             max={parseInt(obj?.level)}
-                          // onChange={(event, newValue) =>
-                          //   handleInputCreativityOne(event, newValue, index)
-                          // }
                           />
                         </div>
                         <div>
@@ -891,7 +1320,7 @@ const BlogWall = () => {
                             disabled
                             variant='outlined'
                             value={obj?.remarks}
-                            style={{ width: '264px' }}
+                            style={{ width: '264px', background: 'white' }}
                             onChange={(event) => handleInputCreativity(event, index)}
                           />
                         </div>
@@ -922,12 +1351,12 @@ const BlogWall = () => {
       <Layout>
         {''}
         <div className='row th-16 py-3 px-2'>
-          <div className='col-md-8' style={{ zIndex: 2, display:'flex',alignItems:'center' }}>
-          <div>
-          <IconButton aria-label="back" onClick={handleGoBack}>
-           <KeyboardBackspaceIcon style={{fontSize:'20px', color:'black'}}/>
-          </IconButton>
-          </div>
+          <div className='col-md-8' style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}>
+            <div>
+              <IconButton aria-label="back" onClick={handleGoBack}>
+                <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
+              </IconButton>
+            </div>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Activity Management
@@ -939,6 +1368,24 @@ const BlogWall = () => {
                 School Wall
               </Breadcrumb.Item>
             </Breadcrumb>
+          </div>
+          {user_level == '13' || user_level == '10' ? (
+            ''
+          ) : (
+            <div className='col-md-4' style={{ display: 'flex', justifyContent: 'end' }}>
+              <Button type="primary" icon={<FormOutlined />} size={'medium'} onClick={showModal}>
+                Create Post Activity
+              </Button>
+            </div>
+
+          )}
+          <div className='col-md-12'>
+            <img
+              src={BlogWallImage}
+              alt="icon"
+              className='post-redirect-card'
+
+            />
           </div>
 
           <div className='row' style={{ marginTop: '20px' }}>
@@ -952,8 +1399,8 @@ const BlogWall = () => {
                   <button className={showTab == 6 ? 'active' : ""} onClick={() => onChangeTab(6)} key={6} >Section Level</button>
                   <button className={showTab == 5 ? 'active' : ""} onClick={() => onChangeTab(5)} key={5} >Blogs Of The Month</button>
                 </div>
-
                 <div>
+                  {PostContent()}
                   {TabContent()}
                 </div>
               </div>

@@ -20,8 +20,12 @@ import {
 import { AlertNotificationContext } from "../../../context-api/alert-context/alert-state";
 import ConfirmModal from "./confirm-modal";
 import Badge from "@material-ui/core/Badge";
+import RestoreModal from './restore-model'
+import axiosInstance from "config/axios";
+import endpoints from "config/endpoints";
 
 const menuOptions = ["Delete"];
+const restoreOption = ["Restore"];
 
 const ITEM_HEIGHT = 48;
 
@@ -43,13 +47,13 @@ const AssesmentCard = ({
   const themeContext = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [restoreModel , setOpenRestoreModal] = useState(false)
   const menuOpen = Boolean(anchorEl);
   const { setAlert } = useContext(AlertNotificationContext);
   const [openModal, setOpenModal] = useState(false);
   const [open, setOpen] = useState(false);
   const isSuper =
     JSON.parse(localStorage.getItem("userDetails"))?.is_superuser || {};
-    console.log(checkDel);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -70,6 +74,28 @@ const AssesmentCard = ({
     }
     handleMenuClose();
   };
+
+  const handleRestored = async testId => {
+    axiosInstance.patch(
+      `${endpoints.assessmentErp.deleteAssessmentTest}${testId}/test/`, {
+        is_delete : false,
+      }
+    ).then((results) => {
+      if (results?.data?.status_code === 200) {
+        setAlert("success", results?.data?.message);
+        filterResults(1); // 1 is the current page no.
+      } else {
+        setAlert("error", results?.response?.data?.message);
+      }
+    }).catch((error) => {
+      setAlert("error", error?.response?.data?.message);
+
+    })
+   
+    handleMenuClose();
+  };
+
+
 
   const toggleComplete = (e) => {
     // if (disabled && !addedId.includes(value.id)) {
@@ -98,8 +124,8 @@ const AssesmentCard = ({
 
 
   return (
-    <div className={`assesment-card ${isSelected ? "selected" : ""}`}>
-      <div className="card-header">
+    <div className={`assesment-card`}>
+      {/* <div className="card-header">
         <div style={{ display: "flex", justifyContent: "flex-start" }}>
           <div className={value?.test_mode == 1 ? "greenDot" : "redDot"}></div>
           <p className={`${isSelected ? "selected" : "header"}`}>
@@ -108,16 +134,11 @@ const AssesmentCard = ({
         </div>
         {handleClose &&
           value.subject_count == 1 &&
-
-          // <Tooltip title={isdisable && !addedId.includes(value.id) ? 'Multiple tests cannot be selected with same subject.' : ''}>
           <Checkbox
             checked={addedId.includes(value.id)}
             onChange={e => toggleComplete(e)}
-            // title={isdisable && !addedId.includes(value.id) ? 'Multiple tests cannot be selected with same subject.' : ''}
             name="allSelect"
-          // disabled={isdisable && !addedId.includes(value.id)}
           />
-          // </Tooltip>
         }
         {checkDel == true ? (
           <div className="menu">
@@ -196,20 +217,128 @@ const AssesmentCard = ({
         ) : (
           ""
         )}
+      </div> */}
+      <div className="assessment-name row">
+      {handleClose &&
+          value.subject_count == 1 &&
+          <Checkbox
+            checked={addedId.includes(value.id)}
+            onChange={e => toggleComplete(e)}
+            name="allSelect"
+          />
+        }
+        <div className = 'd-flex align-items-center' style={{marginLeft : '2%', whiteSpace: 'nowrap' , overflow: 'hidden' , textOverflow: 'ellipsis',}}>{value?.test_name?.length > 20 ? `${value?.test_name.slice(0,20)}...` : value?.test_name}</div>
+        
+          <div className="col menu d-flex justify-content-end">
+            <div className="d-flex align-items-center justify-content-center">{`${value?.test_mode == 1 ? "(Online)" : "(Offline)"}`}</div>
+            {checkDel == true ? (     
+              <>      
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={handleMenuOpen}
+            >
+              <MoreHorizIcon color="primary" />
+            </IconButton>
+
+            <Popover
+              id=""
+              open={menuOpen}
+              anchorEl={anchorEl}
+              onClose={handleMenuClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              className="assesment-card-popup-menu"
+              PaperProps={{
+                style: {
+                  maxHeight: ITEM_HEIGHT * 4.5,
+                  width: "12ch",
+                  border: `1px solid ${themeContext.palette.primary.main}`,
+                  boxShadow: 0,
+                  "&::before": {
+                    content: "",
+                    position: "absolute",
+                    right: "50%",
+                    top: "-6px",
+                    backgroundColor: "#ffffff",
+                    width: "10px",
+                    height: "10px",
+                    transform: "rotate(45deg)",
+                    border: "1px solid #ff6b6b",
+                    borderBottom: 0,
+                    borderRight: 0,
+                    zIndex: 10,
+                  },
+                },
+              }}
+            >
+              {activeTab !== 'deleted' && menuOptions.map(option => (
+                <MenuItem
+                  className="assesment-card-popup-menu-item"
+                  key={option}
+                  selected={option === "Pyxis"}
+                  // onClick={(e) => handleDelete(value?.id)}
+                  onClick={e => {
+                    setOpenModal(true);
+                  }}
+                  style={{
+                    color: themeContext.palette.primary.main,
+                  }}
+                >
+                  {option}
+                </MenuItem>
+              ))}
+              {activeTab === 'deleted' && <MenuItem
+                  className="assesment-card-popup-menu-item"
+                  // key={""}
+                  // selected={"Pyxis"}
+                  // onClick={(e) => handleDelete(value?.id)}
+                  onClick={e => {
+                    setOpenRestoreModal(true);
+                  }}
+                  style={{
+                    color: themeContext.palette.primary.main,
+                  }}
+                >
+                  {"Restore"}
+                </MenuItem>}
+              {openModal && (
+                <ConfirmModal
+                  submit={e => handleDelete(value?.id)}
+                  openModal={openModal}
+                  setOpenModal={setOpenModal}
+                />
+              )}
+              {restoreModel && (
+                <RestoreModal
+                  submit={e => handleRestored(value?.id)}
+                  openModal={restoreModel}
+                  setOpenModal={setOpenRestoreModal}
+                />
+              )}
+            </Popover>
+            </>
+            ) : ''}
+          </div>
+        
       </div>
       <div className="assessment-name">
-        <p style={{ marginLeft: "10px" }}>{value.test_name}</p>
-      </div>
-      <div className="assessment-name">
-          <p className="idPara" style={{ marginLeft: "10px" , fontSize: '14px' }} >{`Test Id: ${value?.test_id}`}</p>
+          <p className="idPara" style={{ marginLeft: "10px" , fontSize: '14px'}} >{`Test Id: ${value?.test_id}`}</p>
         </div>
       <div className="grade-details">
-        <div style={{ maxWidth: '50%'}} >
+        <div style={{ maxWidth: '60%'}} >
           <div>
             <Tooltip title={getSection()}>
           <p style={{ marginLeft: "10px", whiteSpace: 'nowrap' , overflow: 'hidden' , textOverflow: 'ellipsis' , fontSize: '15px' }}>
             {
-              `${value.question_paper__grade_name || value.grade_name} ${getSection()}`
+              `${getSection()}`
               // ${value.question_paper_subject_name && value.question_paper_subject_name?.join(', ')}`
             }
           </p>
@@ -218,7 +347,7 @@ const AssesmentCard = ({
           {/* <p className='completed'>Completed -30.12.2020</p> */}
           {value.test_date != null ? 
           <p className="scheduled" style={{ marginLeft: "10px"  }}>
-            {`Scheduled on - ${moment(value.test_date).format("DD-MM-YYYY")}`}
+            {`Created On - ${moment(value.test_date).format("DD-MM-YYYY")}`}
             {", "}
             {value?.test_date?.slice(11, 16)}
           </p>
@@ -227,7 +356,7 @@ const AssesmentCard = ({
         <div className="btn-container">
           {!isSelected && (
             <Button
-              style={{ width: "100%", color: "white" }}
+              style={{ width: "100%", color: "white", height:'30px', borderRadius:'6px' , marginTop:'10%' }}
               variant="contained"
               color="primary"
               onClick={() => {

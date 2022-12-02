@@ -24,6 +24,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import './styles.scss';
 import QuestionDetailCard from '../question-detail-card.js';
 import ENVCONFIG from '../../../../config/config';
+import axiosInstance from 'config/axios';
 
 const useStyles = makeStyles((theme) => ({
   questionsheader: {
@@ -63,6 +64,7 @@ const AssesmentTest = ({
   onTestDurationChange,
   onTotalMarksChange,
   testName,
+  isEdit,
   testId,
   testDuration,
   testDate,
@@ -75,7 +77,8 @@ const AssesmentTest = ({
   selectedSectionData,
   sectionDate,
   values,
-  sectionWiseTest
+  sectionWiseTest,
+  updateTest
 }) => {
   const classes = useStyles()
   const [minimize, setMinimize] = useState(false);
@@ -215,7 +218,7 @@ const AssesmentTest = ({
                             variant='outlined'
                             type='datetime-local'
                             size='small'
-                            inputProps={{ min: minDateTime.toISOString().slice(0, 16) }}
+                            // inputProps={{ min: minDateTime.toISOString().slice(0, 16) }}
                             className='date-time-picker bg-white'
                           id='test-section'
                             value={testDate}
@@ -322,9 +325,9 @@ const AssesmentTest = ({
                               variant='outlined'
                               type='datetime-local'
                               size='small'
-                              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
-                              className='date-time-picker-section'
-                              value={values?.val?.length > 0 && values?.val[i] != undefined ? values?.val[i]?.test_date : ''}
+                              // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+                              className='date-time-picker bg-white'
+                              value={values?.val?.length > 0 ? values?.val[i]?.test_date : ''}
                               color='primary'
                               style={{ width: isMobile ? '50%' : '100%' , marginLeft: '10px' }}
                               onChange={(e) => {
@@ -418,7 +421,7 @@ const AssesmentTest = ({
                 />
               )}
             </div>
-            <div className='questions-container'>
+            {!isEdit && <div className='questions-container'>
               <div
                 style={{
                   display: 'flex',
@@ -491,7 +494,7 @@ const AssesmentTest = ({
                           </div>
                         </div>
 
-                        <div className='section-content'>
+                         <div className='section-content'>
                           <div>Total Questions: {section.questions.length} </div>
                           {section.questions.map((q) => (
                             <div className='question-detail-card-wrapper' style={{ width: '100%' }}>
@@ -527,7 +530,18 @@ const AssesmentTest = ({
                   </Button>
                 </div>
               </div>
-            </div>
+            </div>}
+            {isEdit && <div className='submit-btn-conntainer mv-20'>
+                  <Button
+                    variant='contained'
+                    className=''
+                    style={{ borderRadius: '10px' }}
+                    color='primary'
+                    onClick={(e) => updateTest()}
+                  >
+                    Update
+                  </Button>
+                </div>}
           </>
         )}
       </div>

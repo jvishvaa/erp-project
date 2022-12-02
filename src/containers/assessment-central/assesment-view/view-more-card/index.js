@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect , useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { IconButton, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -14,6 +14,7 @@ import QuestionDetailCard from '../question-details-card';
 import './styles.scss';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import { Drawer } from 'antd';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,17 +54,39 @@ const ViewMoreCard = ({
   periodDataForView,
   setSelectedIndex,
   setPublishFlag,
+  tabValue
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
   const history = useHistory();
   const [expanded, setExpanded] = React.useState(false);
   const handleChange = (index) => (event, isExpanded) => {
     setExpanded(isExpanded ? index : false);
   };
 
+  useEffect(() => {
+    showDrawer()
+  },[])
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+    setViewMore(false);
+    setSelectedIndex(-1);
+  };
+
   const handleOpenEdit = () => {
-    history.push(`/create-question-paper/${periodDataForView?.id}`);
+    history.push({ 
+      pathname : `/create-question-paper/${periodDataForView?.id}`,
+      state:{
+        isEdit : true
+      }
+  }
+    );
   };
 
   const handlePublish = (isPublish = true) => {
@@ -94,35 +117,19 @@ const ViewMoreCard = ({
   };
 
   return (
-    <Paper className={classes.rootViewMore}>
+    // <Paper className={classes.rootViewMore}>
+    <Drawer title = {periodDataForView?.paper_name} zIndex={1300} width={'500px'} placement="right" onClose={onClose} open={open} visible={open}>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
-          <div className='headerTitle'>{periodDataForView?.paper_name}</div>
-          <div className='headerContent'>
+          {/* <div className='headerTitle'>{periodDataForView?.paper_name}</div> */}
+          <div className='row'>
+            <div className='col-md-6 d-flex justify-content-center headerContent'>
             {periodDataForView?.is_draft ? 'Draft' : null}
             {periodDataForView?.is_review ? 'Review' : null}
             {periodDataForView?.is_verified ? 'Published' : null}
-          </div>
-          <div style={{ display: 'flex' }}>
-            <h6>Created on - </h6>
-            <span>
-              {periodDataForView?.created_at?.substring(0, 10)}
-            </span>
-          </div>
-        </div>
-        <div className='rightHeader'>
-          <div className='headerTitle closeIcon'>
-            <IconButton
-              onClick={() => {
-                setViewMore(false);
-                setSelectedIndex(-1);
-              }}
-            >
-              <CloseIcon color='primary' />
-            </IconButton>
-          </div>
-
-          {!periodDataForView?.is_central && (
+            </div>
+            <div className='d-flex col-md-6 justify-content-end'>
+            {!periodDataForView?.is_central && (
             <Button
               size='small'
               className={classes.margin}
@@ -133,6 +140,26 @@ const ViewMoreCard = ({
               Edit
             </Button>
           )}
+          </div>
+          </div>
+          {/* <div style={{ display: 'flex' }}>
+            <h6>Created on - </h6>
+            <span>
+              {periodDataForView?.created_at?.substring(0, 10)}
+            </span>
+          </div> */}
+        </div>
+        <div className='rightHeader'>
+          {/* <div className='headerTitle closeIcon'>
+            <IconButton
+              onClick={() => {
+                setViewMore(false);
+                setSelectedIndex(-1);
+              }}
+            >
+              <CloseIcon color='primary' />
+            </IconButton>
+          </div> */}
         </div>
       </div>
       <div className={classes.resourceBulkDownload}>
@@ -157,19 +184,20 @@ const ViewMoreCard = ({
                     </Typography>
                   </AccordionSummary>
                   <div className='section-content'>
-                    {section.questions?.map((q) => (
+                    {section.questions?.map((q,i) => (
                       <div
                         className='question-detail-card-wrapper'
                         style={{ width: '100%' }}
                       >
-                        <QuestionDetailCard question={q} />
+                        <QuestionDetailCard question={q} index={i} />
+                        <hr/>
                       </div>
                     ))}
                   </div>
                 </Accordion>
               ))}
             </div>
-            <div style={{ display: 'flex', margin: '5px 15px 15px 5px' }}>
+            {tabValue !== 4 && <div style={{ display: 'flex', margin: '5px 15px 15px 5px' }}>
               {((periodDataForView?.is_verified || periodDataForView?.is_review) && (!periodDataForView?.is_central)) && (
                 <Button
                   style={{ margin: '0.5rem', color: 'white', width: '100%' }}
@@ -192,13 +220,14 @@ const ViewMoreCard = ({
                   PUBLISH
                 </Button>
               )}
-            </div>
+            </div>}
           </div>
 
           <div className='downloadAllText' />
         </div>
       </div>
-    </Paper >
+    {/* </Paper > */}
+    </Drawer>
   );
 };
 

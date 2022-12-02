@@ -36,3 +36,34 @@
             background: #a7a7a7;
         }
     }
+    #chapterTableScss{
+        min-height: 300px;
+        .ant-table{
+            margin: 0 !important;
+        }
+        // .ant-table-cell-fix-left{
+        //     background: none;
+        // }
+      .reportProgress{
+        font-size: 12px !important;
+        font-weight: 600;
+      }
+      .ant-progress-text{
+        font-size: 12px !important;
+        font-weight: 600;
+      }
+    //   .th-inner-chapter{
+    //     background-color: #dbdbdb;
+    //   }
+    .ant-table-wrapper{
+        border: 0px;
+    }
+    .ant-table-cell-row-hover{
+        background: #fafafa !important;
+    }
+    }
+    .chapterWise{
+        .chapterWiseHead:hover{
+            background: #1b4ccb;
+        }
+    }

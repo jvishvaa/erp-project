@@ -369,6 +369,9 @@ import CoursesView from 'containers/sure-learning/PrincipalDashboard/PrincipalCo
 import CourseEnroleModle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleModle';
 import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/academic/curriculamSubject';
 import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
+import CurriculumCompletionChapter from 'containers/dashboard/ownerDashboard/academic/chapterWise';
+import TeacherSubject from 'containers/dashboard/ownerDashboard/academic/teacherSubject';
+import StudentSubject from 'containers/dashboard/ownerDashboard/academic/studentSubjectWise';
 
 import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade';
 import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report';
@@ -418,6 +421,7 @@ import AllChaptersContent from 'containers/sure-learning/Initiate_Class/Chapter_
 import AcademicReport from 'containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
+import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject'
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
 import CategoryTable from 'containers/question-bank/category/category-table';
@@ -430,6 +434,7 @@ import AdminCreateBlog from '../containers/newBlog/AdminCreateBlog';
 import AdminPublishBlogShort from '../containers/newBlog/Shortlisted';
 import BlogWall from 'containers/newBlog/BlogWall';
 import BlogWallRedirect from 'containers/newBlog/BlogRedirection';
+import CentralBlogRedirection from 'containers/newBlog/CentralBlogRedirection';
 import PublicSpeakingWall from 'containers/newBlog/PublicSpeaking';
 import StudentViewBlog from '../containers/newBlog/StudentSideBlog';
 import NewEditBlog from '../containers/newBlog/StudentBlog';
@@ -442,6 +447,13 @@ import Gradingview from 'containers/assessment-central/grading-system/gradingvie
 import GradingCreate from 'containers/assessment-central/grading-system/gradingCreate';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 import AddTemplates from 'containers/newBlog/addTemplates';
+import Chapterwise from 'containers/question-bank-new/question-bank-list/chapterwise';
+import PhysicalActivity from 'containers/newBlog/PhysicalActivity';
+import PhysicalActivityReview from 'containers/newBlog/PhysicalActivityReview';
+import PostActivityView from 'containers/newBlog/postActivityView';
+import CreatePostActivity from 'containers/newBlog/createPostActivity';
+import BlogActivityView from 'containers/newBlog/BlogActivityView';
+import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -449,6 +461,12 @@ const V1Router = [
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
+  </Route>,
+  <Route path='/post-activity-view'>
+    {({ match }) => <PostActivityView match={match} />}
+  </Route>,
+  <Route path='/create-post-activity'>
+    {({ match }) => <CreatePostActivity match={match} />}
   </Route>,
   <Route exact path='/blog/templates'>
     {({ match }) => <AddTemplates match={match} />}
@@ -495,6 +513,9 @@ const V1Router = [
   <Route exact path='/question-bank'>
     {({ match }) => <QuestionBankList match={match} />}
   </Route>,
+  <Route exact path='/question-chapter-wise'>
+  {({ match }) => <Chapterwise match={match} />}
+  </Route>,
   <Route exact path='/create-question/:qId?'>
     {({ match }) => <CreateQuestion match={match} />}
   </Route>,
@@ -522,6 +543,9 @@ const V1Router = [
   </Route>,
   <Route exact path='/assessment/category'>
     {({ match }) => <CategoryTable match={match} />}
+  </Route>,
+   <Route path='/student/phycial/activity'>
+    {({ match }) => <StudentSidePhysicalActivity match={match} />}
   </Route>,
   <Route exact path='/assessment/report-card'>
     {({ match }) => <StudentReportCard match={match} />}
@@ -1351,6 +1375,11 @@ const V1Router = [
   <Route exact path='/event-category'>
     {({ match }) => <EventCategory match={match} />}
   </Route>,
+   <Route path='/curriculum-completion-student-subject/'>
+   {({ match }) => (
+     <StudentSubject match={match} />
+   )}
+ </Route>,
   <Route exact path='/publications'>
     {({ match }) => <Publications match={match} />}
   </Route>,
@@ -1433,12 +1462,22 @@ const V1Router = [
   <Route exact path='/blog/wall'>
     {({ match }) => <BlogWall match={match} />}
   </Route>,
-    <Route exact path='/blog/wall/redirect'>
+  <Route exact path='/blog/wall/redirect'>
     {({ match }) => <BlogWallRedirect match={match} />}
   </Route>,
-      <Route exact path='/blog/publicspeaking'>
-      {({ match }) => <PublicSpeakingWall match={match} />}
-    </Route>,
+  <Route exact path='/blog/wall/central/redirect'>
+    {({ match }) => <CentralBlogRedirection match={match} />}
+  </Route>,
+  <Route exact path='/physical/activity'>
+    {({ match }) => <PhysicalActivity match={match} />}
+  </Route>,
+  <Route exact path='/physical/activity/review'>
+    {({ match }) => <PhysicalActivityReview match={match} />}
+  </Route>,
+
+  <Route exact path='/blog/publicspeaking'>
+    {({ match }) => <PublicSpeakingWall match={match} />}
+  </Route>,
   <Route exact path='/blog/short'>
     {({ match }) => <AdminPublishBlogShort match={match} />}
   </Route>,
@@ -1586,8 +1625,23 @@ const V1Router = [
   <Route path='/curriculum-completion-subject/:branchId/:gradeId'>
     {({ match }) => <CurriculumCompletionSubject match={match} />}
   </Route>,
+  <Route path='/curriculum-completion-chapter/'>
+  {({ match }) => (
+    <CurriculumCompletionChapter match={match} />
+  )}
+</Route>,
+<Route path='/curriculum-completion-chapter-subject/'>
+  {({ match }) => (
+    <CurriculumChapterWiseSubject match={match} />
+  )}
+</Route>,
   <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
     {({ match }) => <CurriculumCompletionSection match={match} />}
+  </Route>,
+    <Route path='/curriculum-completion-teacher-subject/:branchId'>
+    {({ match }) => (
+      <TeacherSubject match={match} />
+    )}
   </Route>,
   <Route path='/sure-learning-trainee-courses'>
     {({ match }) => <CoursesView match={match} />}
@@ -1719,6 +1773,9 @@ const V1Router = [
   <Route path='/virtual-school'>{({ match }) => <VirtualSchool match={match} />}</Route>,
   <Route path='/offline-student'>
     {({ match }) => <OfflineStudentAssessment match={match} />}
+  </Route>,
+    <Route path='/blog-activity-view'>
+    {({ match }) => <BlogActivityView match={match} />}
   </Route>,
   <Route path='/uploadOMR'>{({ match }) => <UploadOMR match={match} />}</Route>,
   <Route path='/student-mark'>{({ match }) => <StudentMark match={match} />}</Route>,
