@@ -266,6 +266,7 @@ class ViewEbook extends Component {
 
     const domainTobeSent = subDomain;
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
+    const filterAcadYear = `${acad ? `&session_year=${acad?.session_year}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     let filterGrade;
     if (customGrade) {
@@ -291,12 +292,12 @@ class ViewEbook extends Component {
           endpoints.ebook.ebook
         }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
           tabValue + 1
-        }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+        }${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
       }
     } else if (tabValue === 2) {
       urlPath = `${
         endpoints.ebook.ebook
-      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
     axiosInstance
       .get(urlPath, {
