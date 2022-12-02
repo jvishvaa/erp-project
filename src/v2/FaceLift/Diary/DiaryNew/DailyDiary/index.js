@@ -256,12 +256,11 @@ const DailyDiary = () => {
   const closeDrawer = () => {
     setDrawerVisible(false);
   };
-  console.log('ID2', chapterID, keyConceptID, periodID);
   const handleBack = () => {
     history.push('/diary/teacher');
   };
   const handleSubmissionDate = (value) => {
-    setSubmissionDate(value);
+    setSubmissionDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
   };
 
   const handleEdit = () => {
@@ -737,7 +736,6 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
-  console.log('Periods', upcomingPeriod, addedPeriods);
   useEffect(() => {
     if (assignedHomework) {
       mapAssignedHomework();
@@ -779,7 +777,9 @@ const DailyDiary = () => {
               if (result?.data?.status_code == 200) {
                 setHomeworkDetails(result?.data?.data);
                 setShowHomeworkForm(true);
-                setHomeworkCreated(true);
+                if (!isDiaryEdit) {
+                  setHomeworkCreated(true);
+                }
               }
             })
             .catch((error) => message.error('error', error?.message));
@@ -960,7 +960,6 @@ const DailyDiary = () => {
       fetchResourceYear();
     }
   }, [moduleId]);
-
   useEffect(() => {
     if (history?.location?.state?.data) {
       let editData = history.location.state.data;
@@ -998,6 +997,7 @@ const DailyDiary = () => {
       setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
       if (editData?.teacher_report?.homework) {
+        setHomeworkCreated(false);
         fetchHomeworkDetails({
           section_mapping: editData?.section_mapping_id,
           subject: editSubject?.subject_id,
@@ -1514,7 +1514,7 @@ const DailyDiary = () => {
                         className='th-fw-600 th-black-1 px-2'
                         onClick={() => setShowHomeworkForm(true)}
                       >
-                        {isDiaryEdit ? 'Homework' : 'Existing Homework'}
+                        Homework
                       </div>
                     ) : !showHomeworkForm ? (
                       <div
@@ -1585,7 +1585,7 @@ const DailyDiary = () => {
                           <QuestionCard
                             key={question.id}
                             question={question}
-                            isEdit={isDiaryEdit || questionEdit}
+                            isEdit={isDiaryEdit}
                             index={index}
                             addNewQuestion={addNewQuestion}
                             handleChange={handleChange}
