@@ -400,7 +400,7 @@ const CurriculumCompletion = (props) => {
     columnStyle: {
       cursor: 'pointer'
     },
-    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 600 : window.innerWidth > 1400 ? 600 : window.innerWidth > 1200 ? 600 : 350,
+    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 900 : window.innerWidth > 1400 ? 1200 : window.innerWidth > 1200 ? 1150 : 350,
     height: window.innerHeight > 600 ? 400 : 200,
     minColumnWidth: 70,
     maxColumnWidth: 70,
