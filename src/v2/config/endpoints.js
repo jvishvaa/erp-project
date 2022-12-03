@@ -93,7 +93,7 @@ export default {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,
   },
-  userManagement: {
+  userManagementBlog: {
     getUserLevel: '/erp_user/level_list/',
   },
   profile: {
