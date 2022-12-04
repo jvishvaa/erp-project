@@ -400,7 +400,7 @@ const CurriculumCompletion = (props) => {
     columnStyle: {
       cursor: 'pointer'
     },
-    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 600 : window.innerWidth > 1400 ? 600 : window.innerWidth > 1200 ? 600 : 350,
+    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 1200 : window.innerWidth > 1400 ? 1300 : window.innerWidth > 1200 ? 1350 : 350,
     height: window.innerHeight > 600 ? 400 : 200,
     minColumnWidth: 70,
     maxColumnWidth: 70,
@@ -712,7 +712,7 @@ const CurriculumCompletion = (props) => {
                       } />
                     </div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%', fontSize: '20px', fontWeight: 600, margin: '2% 0' }}>Grades</div>
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%', fontSize: '20px', fontWeight: 600, margin: '2% 0' }}>Grade</div>
                 </>
                 :
                 <div style={{ display: 'flex', justifyContent: 'center', fontSize: '40px', margin: '5% 0' }} >

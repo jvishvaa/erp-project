@@ -300,14 +300,6 @@ const PhysicalActivityReview = () => {
 
   };
 
-  //   const handleGrade =(event, value) =>{
-  //     setSelectedGrade([])
-  //     if(value){
-  //       console.log(value,'hk 33')
-  //       setSelectedGrade(value)
-  //     }
-  //   }
-
   const handleGoBack = () => {
     history.goBack()
   }
@@ -485,7 +477,7 @@ const PhysicalActivityReview = () => {
 
   const erpData = () => {
     axios
-      .get(`${endpoints.userManagement.getUserLevel}`, {
+      .get(`${endpoints.userManagementBlog.getUserLevel}`, {
         headers: {
           'X-Api-Key': 'vikash@12345#1231',
         },
