@@ -63,7 +63,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [tabYearId, setTabYearId] = useState('');
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabChapterId, setTabChapterId] = useState('');
-  const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
+  const [tabIsErpCentral, setTabIsErpCentral] = useState();
+  const [firstrender , setfirstRender] = useState(true)
   const [tabValue, setTabValue] = useState(2);
   const location = useLocation();
   // const query = new URLSearchParams(location.search);
@@ -98,6 +99,33 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     });
   };
 
+  useEffect(() => {
+    if(firstrender){
+      setTabIsErpCentral(true)
+      if(filtersDetails){
+        setTabChapterId(filtersDetails?.chapter)
+        setTabGradeId(filtersDetails?.grade)
+        setTabYearId(filtersDetails?.academic_session)
+        setTabTopicId(filtersDetails?.topic)
+        setTabMapId(filtersDetails?.subjectId)
+        handlePeriodList(
+          tabQueTypeId,
+          tabQueCatId,
+          filtersDetails?.subjectId,
+          tabQueLevel,
+          filtersDetails?.topic,
+          filtersDetails?.academic_session,
+          filtersDetails?.grade,
+          filtersDetails?.chapter,
+          true,
+          tabValue,
+          erpCategory
+        )
+      }
+      setfirstRender(false)
+    }
+  },[])
+
   const handleAddQuestionToQuestionPaper = (question) => {
     console.log(question);
     const questionIds = [];
@@ -122,6 +150,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     }
   };
 
+
+
   const handlePagination = (event, page) => {
     setPage(page);
     setSelectedIndex(-1);
@@ -141,6 +171,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     erp_category,
   ) => {
     setLoading(true);
+    console.log(isErpCentral,'@@')
     setPeriodData([]);
     setTabQueTypeId(quesTypeId);
     setTabQueCatId(quesCatId);
@@ -154,7 +185,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabValue(newValue);
     setErpCategory(erp_category)
     let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
-    requestUrl += `&request_type=${tabIsErpCentral? 2 : 1}`;  
+    requestUrl += `&request_type=${isErpCentral? 2 : 1}`;  
     if (subjMapId && !erp_category) {
       requestUrl += `&subject=${subjMapId}`;
     }
@@ -177,7 +208,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
       requestUrl += `&topic=${topicId}`;
     }
     if (erp_category) {
-      requestUrl += `&category=${erp_category}`;
+      requestUrl += `&category=${tabIsErpCentral ? erp_category?.central_category_id : erp_category?.erp_category_id}`;
     }
     setFilter(false)
     axiosInstance
@@ -210,36 +241,12 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
       });
   };
 
-useEffect(() => {
-if(filtersDetails){
-  setTabChapterId(filtersDetails?.chapter)
-  setTabGradeId(filtersDetails?.grade)
-  setTabYearId(filtersDetails?.academic_session)
-  setTabTopicId(filtersDetails?.topic)
-  setTabMapId(filtersDetails?.subjectId)
-  handlePeriodList(
-    tabQueTypeId,
-    tabQueCatId,
-    filtersDetails?.subjectId,
-    tabQueLevel,
-    filtersDetails?.topic,
-    filtersDetails?.academic_session,
-    filtersDetails?.grade,
-    filtersDetails?.chapter,
-    tabIsErpCentral,
-    tabValue,
-    erpCategory
-  )
-}
-
-},[filtersDetails])
-
 
   useEffect(() => {
     if (
       tabMapId &&
       tabYearId &&
-      tabGradeId && page
+      tabGradeId && !firstrender
     ) {
       setIsSelectAll(false)
       setIsSelectAllQuestion(false)
@@ -260,7 +267,30 @@ if(filtersDetails){
         erpCategory
       );
     }
-  }, [page, tabValue, callFlag, tabIsErpCentral ]);
+  }, [tabValue, callFlag, tabIsErpCentral ]);
+
+  useEffect(() => {
+    if (page > 1) {
+      setIsSelectAll(false)
+      setIsSelectAllQuestion(false)
+      setSelectedId([])
+      setSelectedIndex(-1);
+    //  setTabValue(tabIsErpCentral ? 2 : tabValue)
+      handlePeriodList(
+        tabQueTypeId,
+        tabQueCatId,
+        tabMapId,
+        tabQueLevel,
+        tabTopicId,
+        tabYearId,
+        tabGradeId,
+        tabChapterId,
+        tabIsErpCentral,
+        tabValue,
+        erpCategory
+      );
+    }
+  }, [page]);
 
   useEffect(() => {
     if(clearFlag === true){

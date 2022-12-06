@@ -90,12 +90,6 @@ const QuestionBankFilters = ({
     erp_category : ''
   });
 
-  // useEffect(()=>{
-  //   setFilterData((pre)=>({...pre,is_erp_central: tabIsErpCentral}))
-  // },[])
-
-  console.log(tabIsErpCentral,'@@filter')
-  console.log(filterData,'@filterData')
   const question_level_options = [
     { value: 1, Question_level: 'Easy' },
     { value: 2, Question_level: 'Average' },
@@ -154,15 +148,15 @@ const QuestionBankFilters = ({
       FilteredData?.academic_session,
       filterData?.grade,
       filterData?.chapter,
-      filterData?.is_erp_central,
+      tabIsErpCentral,
       tabIsErpCentral ? 2 : 0,
-      filterData?.erp_category,
+      filterData?.erp_category
     );
 
   //  }
       
       // setSelectedIndex(-1);
-  },[filterData])
+  },[filterData?.erp_category , filterData?.question_level,filterData?.question_category,filterData?.quesType])
 
   // const erpCategorys = erpCategoryDropdown?.map((each) => {
   //   return (
@@ -416,8 +410,9 @@ const QuestionBankFilters = ({
     setLoading(true);
     setFlag(false)
     if (value) {
+      let erpCategory = erpCategoryDropdown?.filter((item) => item.erp_category_id === value)
       setFlag(true)
-      setFilterData({ ...filterData, erp_category: value });
+      setFilterData({ ...filterData, erp_category: erpCategory[0] });
       setLoading(false);
     } else {
       setLoading(false);
