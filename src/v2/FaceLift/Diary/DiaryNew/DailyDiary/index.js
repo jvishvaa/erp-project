@@ -1929,7 +1929,9 @@ const DailyDiary = () => {
                                         if (addedPeriods.length == 1) {
                                           setClearTodaysTopic(true);
                                         }
-                                        const index = addedPeriods.indexOf(item);
+                                        const index = addedPeriods
+                                          .map((item) => item.id)
+                                          .indexOf(item.id);
                                         const newList = addedPeriods.slice();
                                         newList.splice(index, 1);
                                         setAddedPeriods(newList);

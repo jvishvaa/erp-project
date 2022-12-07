@@ -365,6 +365,8 @@ const DailyDiary = () => {
         session_year: selectedBranch.branch.id,
         subject_id: e.id,
         subject: e.value,
+        sch_grade_id: gradeID,
+        sch_sy_id: selectedAcademicYear?.id,
       };
       axios
         .get(`${endpoints.academics.chapter}`, { params: { ...params } })
