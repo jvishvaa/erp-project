@@ -405,7 +405,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
       axiosInstance
         .get(
-          `${endpoints.questionBank.chapterList}?subject_id=${value?.ids}&subject=${value?.id}&session_year=${filterData?.branch?.id}`
+          `${endpoints.questionBank.chapterList}?subject_id=${value?.ids}&subject=${value?.id}&session_year=${filterData?.branch?.id}&sch_grade_id=${filterData?.grade?.id}&sch_sy_id=${filterData?.year?.id}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
