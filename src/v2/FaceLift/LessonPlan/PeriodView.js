@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createRef, Fragment } from 'react';
-import { Select, Form, message, Drawer, Spin, Divider, Button } from 'antd';
+import { Select, Form, message, Tooltip, Spin, Divider, Button } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
@@ -274,7 +274,6 @@ const PeriodView = () => {
       });
     }
   }, [subject]);
-  console.log('loading', loading, subject, !subject);
   return (
     <div className='row'>
       {boardFilterArr.includes(window.location.host) && (
@@ -326,7 +325,7 @@ const PeriodView = () => {
                       } th-width-100 th-br-6 mt-2 text-truncate th-pointer`}
                       onClick={() => setSubject(item)}
                     >
-                      <span className='text-truncate'>{item?.subject_name}</span>
+                      <span>{item?.subject_name}</span>
                     </Button>
                   </div>
                 ))
@@ -422,7 +421,7 @@ const PeriodView = () => {
                                         className='row p-3 th-bg-pink align-items-center th-black-1'
                                         style={{ borderRadius: '20px 20px 0 0' }}
                                       >
-                                        <div className='col-8 pl-0'>
+                                        <div className='col-8 pl-0 text-truncate'>
                                           <img
                                             src={getSubjectIcon(
                                               (each?.subject_name).toLowerCase()
@@ -430,12 +429,22 @@ const PeriodView = () => {
                                             height='30'
                                             className='mb-1'
                                           />
-                                          <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                                            {item?.grade_name}
-                                          </span>
+                                          <Tooltip
+                                            placement='topLeft'
+                                            title={item?.grade_name}
+                                          >
+                                            <span className='th-18 th-fw-700 ml-2 text-capitalize'>
+                                              {item?.grade_name}
+                                            </span>
+                                          </Tooltip>
                                         </div>
-                                        <div className='col-4 px-0 th-16 text-right th-fw-700'>
-                                          {each?.subject_name}
+                                        <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
+                                          <Tooltip
+                                            placement='topRight'
+                                            title={each?.subject_name}
+                                          >
+                                            {each?.subject_name}
+                                          </Tooltip>
                                         </div>
                                       </div>
 
@@ -588,18 +597,22 @@ const PeriodView = () => {
                           className='row p-3 th-bg-pink align-items-center th-black-1'
                           style={{ borderRadius: '20px 20px 0 0' }}
                         >
-                          <div className='col-8 pl-0'>
+                          <div className='col-8 pl-0 text-truncate'>
                             <img
                               src={getSubjectIcon((each?.subject_name).toLowerCase())}
                               height='30'
                               className='mb-1'
                             />
-                            <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                              {each?.subject_name}
-                            </span>
+                            <Tooltip placement='topLeft' title={each?.subject_name}>
+                              <span className='th-18 th-fw-700 ml-2 text-capitalize'>
+                                {each?.subject_name}
+                              </span>
+                            </Tooltip>
                           </div>
                           <div className='col-4 px-0 th-16 text-right th-fw-700 text-capitalize'>
-                            {item?.grade_name}
+                            <Tooltip placement='topLeft' title={item?.grade_name}>
+                              {item?.grade_name}
+                            </Tooltip>
                           </div>
                         </div>
                         <div className='row pl-3 pt-4'>
@@ -673,7 +686,7 @@ const PeriodView = () => {
                           </div>
                           <div className='col-5 text-right th-fw-600 pt-2 pb-1'>
                             <div
-                              className='th-button p-2 th-bg-grey badge th-fw-500 th-br-10 th-pointer'
+                              className='badge p-2 th-br-10 th-bg-pink th-pointer '
                               onClick={() =>
                                 history.push({
                                   pathname: window.location.pathname.includes(
