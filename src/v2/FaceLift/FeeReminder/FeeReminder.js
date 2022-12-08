@@ -19,7 +19,7 @@ const FeeReminder = () => {
     if (branchId && sessionYear) {
       fetchUserStatus();
     }
-  });
+  }, []);
 
   const handleClose = () => {
     history.push({ pathname: '/dashboard' });

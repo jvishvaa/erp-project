@@ -749,7 +749,7 @@ const DailyDiary = () => {
       } else {
         fetchUpcomigPeriod(addedPeriods[addedPeriods.length - 1].id);
       }
-      setCurrentPanel(0);
+      setCurrentPanel(addedPeriods.length - 1);
     } else {
       setUpcomingPeriod({});
       setClearUpcomingPeriod(true);
