@@ -71,7 +71,7 @@ export default {
     curriculumCompletion: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-subject-sectionwise-report/`,
     classworkReport: `${msReportsUrl}/api/reports/v1/classwork-stats/`,
     homeworkReport: `${msReportsUrl}/api/reports/v1/homework-stats/`,
-    curriculumnWidget : `${msReportsUrl}/api/acad_performance/grade-subject-wise-curriculum-completion-widget/`
+    curriculumnWidget: `${msReportsUrl}/api/acad_performance/grade-subject-wise-curriculum-completion-widget/`,
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
@@ -139,6 +139,7 @@ export default {
   },
   lessonPlan: {
     subjects: 'academic/v2/lesson-plan-subjects/',
+    allSubjects: 'academic/v3/lesson-plan-subjects/',
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     chapterList: 'academic/central-chapters-list-v3/',
