@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createRef, Fragment } from 'react';
-import { Select, Form, message, Drawer, Spin, Divider, Button } from 'antd';
+import { Select, Form, message, Tooltip, Spin, Divider, Button } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
@@ -39,6 +39,7 @@ const PeriodView = () => {
   const [centralAcademicYearID, setCentralAcademicYearID] = useState();
   const [subjectData, setSubjectData] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [showSubjectCount, setShowSubjectCount] = useState(11);
   const [subject, setSubject] = useState('');
   let isStudent = window.location.pathname.includes('student-view');
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -198,6 +199,7 @@ const PeriodView = () => {
       .then((res) => {
         if (res?.data?.status === 200) {
           setPeriodData(res?.data?.data);
+          setSelectedSubject(res?.data?.data[0]?.subject_id);
           setLoading(false);
         } else {
           setLoading(false);
@@ -229,10 +231,16 @@ const PeriodView = () => {
         params: { ...params },
       })
       .then((res) => {
-        if (res.data.status_code === 200) {
-          setSubjectData(res.data.result);
+        if (res?.data?.status_code === 200) {
+          if (res?.data?.result.length > 0) {
+            setSubjectData(res?.data?.result);
+            setSubject(res?.data?.result[0]);
+          } else {
+            setLoading(false);
+          }
+        } else {
+          setLoading(false);
         }
-        setLoading(false);
       })
       .catch((error) => {
         message.error(error.message);
@@ -253,19 +261,19 @@ const PeriodView = () => {
           board_id: boardId,
         });
       } else {
-        if (subjectData.length == 0) fetchSubjectData();
+        fetchSubjectData();
       }
     }
   }, [boardId]);
   useEffect(() => {
-    if (subject)
+    if (subject) {
       fetchPeriodData({
         acad_session_id: selectedBranch?.id,
         board_id: boardId,
         subject_id: subject?.id,
       });
+    }
   }, [subject]);
-
   return (
     <div className='row'>
       {boardFilterArr.includes(window.location.host) && (
@@ -309,68 +317,86 @@ const PeriodView = () => {
         ) : !isStudent ? (
           <>
             {user_level !== 11
-              ? subjectData?.map((item, i) => (
+              ? subjectData?.slice(0, showSubjectCount).map((item, i) => (
                   <div className='col-md-2 col-6'>
                     <Button
                       className={`${
                         item?.id == subject?.id ? 'th-button-active' : 'th-button'
-                      } th-width-100 th-br-6 mt-2 text-truncate`}
+                      } th-width-100 th-br-6 mt-2 text-truncate th-pointer`}
                       onClick={() => setSubject(item)}
                     >
-                      {item?.subject_name}
+                      <span>{item?.subject_name}</span>
                     </Button>
                   </div>
                 ))
               : ''}
+            {subjectData.length > 11 && (
+              <div className='col-md-2 col-6 th-pointer'>
+                <Button
+                  className='th-button th-width-100 th-br-6 mt-2 text-truncate'
+                  onClick={() => {
+                    showSubjectCount == subjectData.length
+                      ? setShowSubjectCount(11)
+                      : setShowSubjectCount(subjectData.length);
+                  }}
+                >
+                  Show {showSubjectCount == subjectData.length ? 'Less' : 'All'}
+                </Button>
+              </div>
+            )}
 
-            <div className='row'>
-              {periodData.length > 0 ? (
-                <>
-                  {periodData.length > 1 && (
-                    <>
-                      <div className='col-md-2 col-6'>
-                        <Button
-                          className={`${
-                            selectedSubject == '' ? 'th-button-active' : 'th-button'
-                          } th-width-100 th-br-6 mt-2`}
-                          onClick={() => setSelectedSubject('')}
-                        >
-                          All Subjects
-                        </Button>
-                      </div>
-
-                      {periodData?.map((item, i) => (
-                        <div className='col-md-2 col-6'>
-                          <Button
-                            className={`${
-                              item?.subject_id == selectedSubject
-                                ? 'th-button-active'
-                                : 'th-button'
-                            } th-width-100 th-br-6 mt-2 text-truncate`}
-                            onClick={() => setSelectedSubject(item?.subject_id)}
-                          >
-                            {item?.subject_name}
-                          </Button>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                  {loading ? (
-                    <div className='row justify-content-center py-3 mt-5'>
-                      <Spin title='Loading...' />
-                    </div>
-                  ) : (
+            {loading ? (
+              <div className='row justify-content-center py-3 mt-5'>
+                <Spin title='Loading...' />
+              </div>
+            ) : (
+              <div className='row'>
+                {periodData.length > 0 ? (
+                  <>
+                    {periodData.length > 1 && (
+                      <>
+                        {periodData?.slice(0, showSubjectCount).map((item, i) => (
+                          <div className='col-md-2 col-6'>
+                            <Button
+                              className={`${
+                                item?.subject_id == selectedSubject
+                                  ? 'th-button-active'
+                                  : 'th-button'
+                              } th-width-100 th-br-6 mt-2 text-truncate`}
+                              onClick={() => setSelectedSubject(item?.subject_id)}
+                            >
+                              {item?.subject_name}
+                            </Button>
+                          </div>
+                        ))}
+                        {periodData.length > 11 && (
+                          <div className='col-md-2 col-6 th-pointer'>
+                            <Button
+                              className='th-button th-width-100 th-br-6 mt-2 text-truncate'
+                              onClick={() => {
+                                showSubjectCount == periodData.length
+                                  ? setShowSubjectCount(11)
+                                  : setShowSubjectCount(periodData.length);
+                              }}
+                            >
+                              Show{' '}
+                              {showSubjectCount == periodData.length ? 'Less' : 'All'}
+                            </Button>
+                          </div>
+                        )}
+                      </>
+                    )}
                     <div
                       className='col-12 mt-3'
                       style={{ maxHeight: 400, overflowY: 'scroll' }}
                     >
                       {periodData
                         ?.filter((item) => {
-                          if (selectedSubject) {
-                            return item?.subject_id == selectedSubject;
-                          } else {
-                            return item;
-                          }
+                          // if (selectedSubject) {
+                          return item?.subject_id == selectedSubject;
+                          //   } else {
+                          //     return item;
+                          //   }
                         })
                         .map((each) => {
                           return (
@@ -395,7 +421,7 @@ const PeriodView = () => {
                                         className='row p-3 th-bg-pink align-items-center th-black-1'
                                         style={{ borderRadius: '20px 20px 0 0' }}
                                       >
-                                        <div className='col-8 pl-0'>
+                                        <div className='col-8 pl-0 text-truncate'>
                                           <img
                                             src={getSubjectIcon(
                                               (each?.subject_name).toLowerCase()
@@ -403,12 +429,22 @@ const PeriodView = () => {
                                             height='30'
                                             className='mb-1'
                                           />
-                                          <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                                            {item?.grade_name}
-                                          </span>
+                                          <Tooltip
+                                            placement='topLeft'
+                                            title={item?.grade_name}
+                                          >
+                                            <span className='th-18 th-fw-700 ml-2 text-capitalize'>
+                                              {item?.grade_name}
+                                            </span>
+                                          </Tooltip>
                                         </div>
-                                        <div className='col-4 px-0 th-16 text-right th-fw-700'>
-                                          {each?.subject_name}
+                                        <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
+                                          <Tooltip
+                                            placement='topRight'
+                                            title={each?.subject_name}
+                                          >
+                                            {each?.subject_name}
+                                          </Tooltip>
                                         </div>
                                       </div>
 
@@ -455,7 +491,7 @@ const PeriodView = () => {
                                                 className='th-grey'
                                                 style={{
                                                   fontStyle: 'italic',
-                                                  lineHeight: '10px',
+                                                  lineHeight: '15px',
                                                 }}
                                               >
                                                 {item?.next_chapter_name}
@@ -537,14 +573,14 @@ const PeriodView = () => {
                           );
                         })}
                     </div>
-                  )}
-                </>
-              ) : (
-                <div className='row justify-content-center my-5'>
-                  <img src={NoDataIcon} />
-                </div>
-              )}
-            </div>
+                  </>
+                ) : (
+                  <div className='row justify-content-center my-5'>
+                    <img src={NoDataIcon} />
+                  </div>
+                )}
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -561,18 +597,22 @@ const PeriodView = () => {
                           className='row p-3 th-bg-pink align-items-center th-black-1'
                           style={{ borderRadius: '20px 20px 0 0' }}
                         >
-                          <div className='col-8 pl-0'>
+                          <div className='col-8 pl-0 text-truncate'>
                             <img
                               src={getSubjectIcon((each?.subject_name).toLowerCase())}
                               height='30'
                               className='mb-1'
                             />
-                            <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                              {each?.subject_name}
-                            </span>
+                            <Tooltip placement='topLeft' title={each?.subject_name}>
+                              <span className='th-18 th-fw-700 ml-2 text-capitalize'>
+                                {each?.subject_name}
+                              </span>
+                            </Tooltip>
                           </div>
                           <div className='col-4 px-0 th-16 text-right th-fw-700 text-capitalize'>
-                            {item?.grade_name}
+                            <Tooltip placement='topLeft' title={item?.grade_name}>
+                              {item?.grade_name}
+                            </Tooltip>
                           </div>
                         </div>
                         <div className='row pl-3 pt-4'>
@@ -612,7 +652,7 @@ const PeriodView = () => {
                                   className='th-grey'
                                   style={{
                                     fontStyle: 'italic',
-                                    lineHeight: '10px',
+                                    lineHeight: '15px',
                                   }}
                                 >
                                   {item?.next_chapter_name}
@@ -646,7 +686,7 @@ const PeriodView = () => {
                           </div>
                           <div className='col-5 text-right th-fw-600 pt-2 pb-1'>
                             <div
-                              className='th-button p-2 th-bg-grey badge th-fw-500 th-br-10 th-pointer'
+                              className='badge p-2 th-br-10 th-bg-pink th-pointer '
                               onClick={() =>
                                 history.push({
                                   pathname: window.location.pathname.includes(
