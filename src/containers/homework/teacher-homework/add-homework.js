@@ -367,6 +367,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     fullWidth
                     value={dateValue}
                     onChange={handleDateChange}
+                    minDate={new Date()}
                     // className='dropdown'
                     style={{ width: '100%' }}
                     KeyboardButtonProps={{
