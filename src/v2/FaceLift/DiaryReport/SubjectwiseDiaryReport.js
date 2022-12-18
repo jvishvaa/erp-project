@@ -172,7 +172,7 @@ const SubjectwiseDiaryReport = () => {
         align: 'center',
         width: '20%',
         render: (text, row) =>
-          row?.reason_details.reason_id !== null ? (
+          user_level == 11 ? null : row?.reason_details.reason_id !== null ? (
             <div className='text-truncate'>{row?.reason_details?.reason}</div>
           ) : (
             <Button

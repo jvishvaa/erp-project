@@ -282,8 +282,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       });
       fetchAssessmentData({
         section_mapping: diary?.section_mapping_id,
-        subject_id: 6,
-        // subject_id: subject?.subject_id,
+        subject_id: subject?.subject_id,
         date: moment(diary?.created_at).format('YYYY-MM-DD'),
       });
     }
