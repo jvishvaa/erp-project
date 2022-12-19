@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Radio, Breadcrumb } from 'antd';
+import { Radio, Breadcrumb, Checkbox } from 'antd';
 import DailyDiary from '../DailyDiary';
 import GeneralDiary from '../GeneralDiary';
 import Layout from 'containers/Layout';
@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom';
 
 const CreateDiary = () => {
   const [diaryType, setDiaryType] = useState(2);
+  const [isSubstituteClass, setIsSubstituteClass] = useState(false);
   const history = useHistory();
   const handleDiaryType = () => {
     if (diaryType == 1) {
@@ -15,6 +16,9 @@ const CreateDiary = () => {
     } else {
       setDiaryType(1);
     }
+  };
+  const handleSubstituteCheck = (e) => {
+    setIsSubstituteClass(e.target.checked);
   };
   return (
     <>
@@ -45,10 +49,27 @@ const CreateDiary = () => {
                     <Radio value={1}>General Diary</Radio>
                   </Radio.Group>
                 </div>
+                {diaryType == 2 && (
+                  <div
+                    className='px-2 py-2 ml-2 th-br-4'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    <Checkbox
+                      onChange={handleSubstituteCheck}
+                      checked={isSubstituteClass}
+                    >
+                      Substitute Class
+                    </Checkbox>
+                  </div>
+                )}
               </div>
 
               <div className='row'>
-                {diaryType == 2 ? <DailyDiary /> : <GeneralDiary />}
+                {diaryType == 2 ? (
+                  <DailyDiary isSubstituteClass={isSubstituteClass} />
+                ) : (
+                  <GeneralDiary />
+                )}
               </div>
             </div>
           </div>

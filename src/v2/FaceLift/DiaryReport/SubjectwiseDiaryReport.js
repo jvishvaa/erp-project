@@ -1,43 +1,90 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { Table, DatePicker, Breadcrumb, message } from 'antd';
-import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
-import CalendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
+import {
+  Table,
+  DatePicker,
+  Breadcrumb,
+  message,
+  Button,
+  Input,
+  Form,
+  Switch,
+  Modal,
+} from 'antd';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
-
-const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 
 const SubjectwiseDiaryReport = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const history = useHistory();
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const formRef = useRef();
+  const [date, setDate] = useState();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [subjectwiseReport, setSubjectwiseReport] = useState([]);
   const [subjectwiseStats, setSubjectwiseStats] = useState();
+  const [description, setDescription] = useState('');
+  const [isClassCancelled, setIsClassCancelled] = useState(false);
   const [teacherwiseReport, setTeacherwiseReport] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingInner, setLoadingInner] = useState(false);
   const [selectedSection, setSelectedSection] = useState(null);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [diaryType, setDiaryType] = useState(null);
+  const [subjectID, setSubjectID] = useState(null);
   const [tableExpanded, setTableExpanded] = useState(false);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
+  const handleSubmit = () => {
+    let payload = {
+      date,
+      teacher_id: selectedTeacher?.user_id,
+      subject: subjectID,
+      section_mapping_id: selectedSection?.section_mapping,
+      is_class_cancled: isClassCancelled,
+    };
+    if (!isClassCancelled) {
+      payload['data'] = description;
+    }
+    axios
+      .post(`academic/diary/reason/create/`, payload)
+      .then((res) => {
+        if (res.data.status_code === 201) {
+          message.success('Reason mentioned successfully');
+          handleCloseFeedbackeModal();
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  const handleCancellationCheck = (event) => {
+    setIsClassCancelled(event);
+    setDescription('');
+  };
   const handleDateChange = (value) => {
     if (value) {
-      setStartDate(moment(value[0]).format('YYYY-MM-DD'));
-      setEndDate(moment(value[1]).format('YYYY-MM-DD'));
+      setDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
     }
   };
-
+  const handleCloseFeedbackeModal = () => {
+    setShowFeedbackModal(false);
+    fetchTeacherwiseReport({
+      acad_session_id: selectedBranch?.id,
+      section_mapping: selectedSection?.section_mapping,
+      subject_id: subjectID,
+      date,
+    });
+  };
   const onTableRowExpand = (expanded, record) => {
     setTableExpanded(false);
     const keys = [];
@@ -45,14 +92,12 @@ const SubjectwiseDiaryReport = () => {
     if (expanded) {
       setTableExpanded(true);
       keys.push(record.subject_id);
+      setSubjectID(record.subject_id);
       fetchTeacherwiseReport({
         acad_session_id: selectedBranch?.id,
-        dairy_type: diaryType,
-        grade_id: selectedSection?.grade_id,
         section_mapping: selectedSection?.section_mapping,
         subject_id: record.subject_id,
-        start_date: startDate,
-        end_date: endDate,
+        date,
       });
     }
 
@@ -102,37 +147,50 @@ const SubjectwiseDiaryReport = () => {
         setLoadingInner(false);
       });
   };
-
   const expandedRowRender = (record) => {
     const innerColumn = [
       {
         dataIndex: 'subject__subject_name',
         align: 'center',
-        width: tableWidthCalculator(30) + '%',
+        width: tableWidthCalculator(40) + '%',
         render: (data) => <span className='th-black-2'>{data}</span>,
-      },
-      {
-        align: 'center',
-        width: '20%',
-        // render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
         dataIndex: 'name',
         align: 'center',
-        width: '30%',
-        render: (data) => <span className='th-black-2'>{data}</span>,
-      },
-      {
-        dataIndex: 'dairy_count',
-        align: 'center',
         width: '20%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
+        dataIndex: 'created_at',
+        align: 'center',
+        width: '20%',
+        render: (data) => <span className='th-black-2'>{data > 0 ? data : null}</span>,
+      },
+      {
+        dataIndex: 'reason',
+        align: 'center',
+        width: '20%',
+        render: (text, row) =>
+          user_level == 11 ? null : row?.reason_details.reason_id !== null ? (
+            <div className='text-truncate'>{row?.reason_details?.reason}</div>
+          ) : (
+            <Button
+              className='th-black-2 th-button-active th-br-6 th-pointer'
+              onClick={() => {
+                setSelectedTeacher(row);
+                setShowFeedbackModal(true);
+              }}
+            >
+              Feedback
+            </Button>
+          ),
+      },
+
+      {
         title: 'icon',
         align: 'center',
         width: '5%',
-        render: () => <RightOutlined className='th-grey th-pointer' />,
       },
     ];
 
@@ -140,51 +198,30 @@ const SubjectwiseDiaryReport = () => {
       <Table
         columns={innerColumn}
         dataSource={teacherwiseReport}
-        // rowKey={(record) => record?.id}
         pagination={false}
         loading={loadingInner}
         showHeader={false}
         bordered={false}
         style={{ width: '100%' }}
         rowClassName={(record, index) => 'th-pointer th-row'}
-        onRow={(row, rowIndex) => {
-          return {
-            onClick: (event) => {
-              history.push({
-                pathname: '/teacher-diary-report',
-                state: {
-                  data: row,
-                  selectedSection,
-                  diaryType,
-                  startDate,
-                  endDate,
-                },
-              });
-            },
-          };
-        }}
       />
     );
   };
 
   useEffect(() => {
-    if (startDate && endDate && diaryType) {
+    if (date)
       fetchSubjectwiseReport({
         acad_session_id: selectedBranch?.id,
-        dairy_type: diaryType,
         grade_id: selectedSection?.grade_id,
         section_mapping: selectedSection?.section_mapping,
-        start_date: startDate,
-        end_date: endDate,
+        date,
       });
-    }
-  }, [startDate, endDate, diaryType]);
+  }, [date]);
 
   useEffect(() => {
     if (history.location.state) {
       setSelectedSection(history.location.state.data);
-      setStartDate(history.location.state.startDate);
-      setEndDate(history.location.state.endDate);
+      setDate(history.location.state.date);
       setDiaryType(history.location.state.diaryType);
     }
   }, [window.location.pathname]);
@@ -194,7 +231,7 @@ const SubjectwiseDiaryReport = () => {
       title: <span className='th-white pl-4 th-fw-700 '>SUBJECTS</span>,
       dataIndex: 'subject_name',
       align: 'left',
-      width: '30%',
+      width: '20%',
       render: (data) => <span className='pl-4 th-black-1'>{data}</span>,
     },
     {
@@ -207,7 +244,7 @@ const SubjectwiseDiaryReport = () => {
       width: '20%',
       render: (text, row) =>
         user_level == 11 ? null : (
-          <span className='th-fw-400 th-black-1'>{row.teacher_count}</span>
+          <span className='th-fw-400 th-black-1'>{row?.teacher_count}</span>
         ),
     },
     {
@@ -217,11 +254,18 @@ const SubjectwiseDiaryReport = () => {
         </span>
       ),
       align: 'center',
-      width: '30%',
+      width: '20%',
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL ASSIGNED</span>,
-      dataIndex: 'dairy_count',
+      dataIndex: 'diary_count',
+      align: 'center',
+      width: '20%',
+      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>TOTAL PENDING</span>,
+      dataIndex: 'pending_diaries',
       align: 'center',
       width: '20%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
@@ -242,8 +286,8 @@ const SubjectwiseDiaryReport = () => {
                 history.push({
                   pathname: '/gradewise-diary-report',
                   state: {
-                    startDate,
-                    endDate,
+                    date,
+                    diaryType,
                   },
                 })
               }
@@ -256,27 +300,18 @@ const SubjectwiseDiaryReport = () => {
           </Breadcrumb>
         </div>
         <div className='col-md-4 mt-3 mt-sm-0 text-right'>
-          <div>
-            <RangePicker
-              disabledDate={(current) => {
-                let customDate = moment().format('YYYY-MM-DD');
-                return current && current > moment(customDate, 'YYYY-MM-DD');
-              }}
-              allowClear={false}
-              bordered={false}
-              placement='bottomRight'
-              showToday={false}
-              suffixIcon={<DownOutlined />}
-              value={[moment(startDate), moment(endDate)]}
-              onChange={(value) => handleDateChange(value)}
-              className='th-range-picker th-br-4'
-              separator={'to'}
-              format={'DD/MM/YYYY'}
-            />
-          </div>
-          <div className='th-date-range'>
-            <img src={CalendarIcon} />
-          </div>
+          <DatePicker
+            disabledDate={(current) => current.isAfter(moment())}
+            allowClear={false}
+            value={moment(date)}
+            placement='bottomLeft'
+            onChange={(event, value) => handleDateChange(value)}
+            showToday={false}
+            bordered={false}
+            suffixIcon={<DownOutlined className='th-black-1' />}
+            className='th-black-2 pl-0 th-date-picker th-br-6'
+            format={'DD/MM/YYYY'}
+          />
         </div>
         {!loading && (
           <div
@@ -299,7 +334,13 @@ const SubjectwiseDiaryReport = () => {
                 </div>
                 <div className='col-md-3 pt-2 px-1 pt-md-0 th-grey'>
                   Total No. of Diaries Assigned :{' '}
-                  <span className='th-primary'>{subjectwiseStats?.dairy_count}</span>
+                  <span className='th-primary'>{subjectwiseStats?.diary_count}</span>
+                </div>
+                <div className='col-md-3 pt-2 px-1 pt-md-0 th-grey'>
+                  Total No. of Diaries Pending :{' '}
+                  <span className='th-primary'>
+                    {subjectwiseStats?.pernding_diaries_count}
+                  </span>
                 </div>
               </div>
             )}
@@ -335,10 +376,66 @@ const SubjectwiseDiaryReport = () => {
                   />
                 )
               }
-              scroll={{ x: 'max-content', y: 600 }}
+              scroll={{ x: subjectwiseReport.length > 0 ? 'max-content' : null, y: 600 }}
             />
           </div>
         </div>
+        {showFeedbackModal && (
+          <Modal
+            title={'Feedback for Pending Diary'}
+            visible={showFeedbackModal}
+            onCancel={handleCloseFeedbackeModal}
+            className='th-upload-modal'
+            centered
+            footer={[
+              <>
+                <Button
+                  className='text-center th-br-10 th-bg-grey th-black-2'
+                  onClick={handleCloseFeedbackeModal}
+                >
+                  Close
+                </Button>
+
+                <Button
+                  htmlType='submit'
+                  className='text-center th-br-10 th-bg-primary th-white'
+                  onClick={handleSubmit}
+                >
+                  <strong>Submit</strong>
+                </Button>
+              </>,
+            ]}
+          >
+            <Form id='reasonForm' layout='vertical' ref={formRef}>
+              <div className='row px-2 pt-2'>
+                <div className='col-12'>
+                  <Form.Item name='class_cancelled'>
+                    <span className='mr-2'>Was the Class cancelled?</span>
+                    <Switch
+                      checkedChildren='Yes'
+                      unCheckedChildren='No'
+                      onChange={handleCancellationCheck}
+                    />
+                  </Form.Item>
+                </div>
+                <div className='col-12'>
+                  <Form.Item
+                    name='description'
+                    label='Reason'
+                    rules={[{ required: true, message: 'Please Add Description' }]}
+                  >
+                    <TextArea
+                      rows={5}
+                      disabled={isClassCancelled}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder='Enter Reason'
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+            </Form>
+          </Modal>
+        )}
       </div>
     </Layout>
   );

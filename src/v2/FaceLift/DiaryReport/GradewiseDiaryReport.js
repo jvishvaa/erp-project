@@ -4,14 +4,12 @@ import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { Table, DatePicker, Breadcrumb, message, Select } from 'antd';
 import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
-import CalendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const GradewiseDiaryReport = () => {
@@ -19,10 +17,7 @@ const GradewiseDiaryReport = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const history = useHistory();
-  const [startDate, setStartDate] = useState(
-    moment().subtract(6, 'days').format('YYYY-MM-DD')
-  );
-  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
   const [diaryType, setDiaryType] = useState(2);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [gradewiseDiaryData, setGradewiseDiaryData] = useState([]);
@@ -33,8 +28,7 @@ const GradewiseDiaryReport = () => {
 
   const handleDateChange = (value) => {
     if (value) {
-      setStartDate(moment(value[0]).format('YYYY-MM-DD'));
-      setEndDate(moment(value[1]).format('YYYY-MM-DD'));
+      setDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
     }
   };
 
@@ -48,9 +42,8 @@ const GradewiseDiaryReport = () => {
       keys.push(record.grade_id);
       fetchSectionwiseReport({
         acad_session_id: selectedBranch?.id,
-        dairy_type: diaryType,
-        start_date: startDate,
-        end_date: endDate,
+        diary_type: diaryType,
+        date: date,
         grade_id: record.grade_id,
       });
     }
@@ -103,7 +96,39 @@ const GradewiseDiaryReport = () => {
   };
 
   const expandedRowRender = (record) => {
-    const innerColumn = [
+    const innerdailyColumn = [
+      {
+        dataIndex: 'sections_count',
+        align: 'center',
+        width: '25%',
+        render: (data) => <span className='th-black-2'>{data}</span>,
+      },
+      {
+        dataIndex: 'section_name',
+        align: 'center',
+        width: tableWidthCalculator(25) + '%',
+        render: (data) => <span className='th-black-2'>{data}</span>,
+      },
+      {
+        dataIndex: 'diary_count',
+        align: 'center',
+        width: '25%',
+        render: (data) => <span className='th-black-2'>{data}</span>,
+      },
+      {
+        dataIndex: 'pending_diaries',
+        align: 'center',
+        width: '20%',
+        render: (data) => <span className='th-black-2'>{data}</span>,
+      },
+      {
+        title: 'icon',
+        align: 'center',
+        width: '5%',
+        render: () => <RightOutlined className='th-grey th-pointer' />,
+      },
+    ];
+    const innerGeneralColumns = [
       {
         dataIndex: 'section_name',
         align: 'center',
@@ -117,7 +142,7 @@ const GradewiseDiaryReport = () => {
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
-        dataIndex: 'dairy_count',
+        dataIndex: 'diary_count',
         align: 'center',
         width: '35%',
         render: (data) => <span className='th-black-2'>{data}</span>,
@@ -129,10 +154,9 @@ const GradewiseDiaryReport = () => {
         render: () => <RightOutlined className='th-grey th-pointer' />,
       },
     ];
-
     return (
       <Table
-        columns={innerColumn}
+        columns={diaryType == 2 ? innerdailyColumn : innerGeneralColumns}
         dataSource={sectionwiseDiaryData}
         rowKey={(record) => record?.id}
         pagination={false}
@@ -152,8 +176,7 @@ const GradewiseDiaryReport = () => {
                 state: {
                   diaryType,
                   data: row,
-                  startDate,
-                  endDate,
+                  date,
                 },
               });
             },
@@ -164,27 +187,24 @@ const GradewiseDiaryReport = () => {
   };
 
   useEffect(() => {
-    if (startDate && endDate) {
+    if (date) {
       fetchGradewiseReport({
         acad_session_id: selectedBranch?.id,
-        dairy_type: diaryType,
-        start_date: startDate,
-        end_date: endDate,
+        diary_type: diaryType,
+        date: date,
       });
     }
-  }, [startDate, endDate, diaryType]);
+  }, [date, diaryType]);
 
   useEffect(() => {
     if (history.location.state) {
-      setStartDate(history.location.state.startDate);
-      setEndDate(history.location.state.endDate);
-    }
-    if (history.location.state.diaryType) {
-      setDiaryType(history.location.state.diaryType);
+      if (history.location.state?.diaryType)
+        setDiaryType(history.location.state?.diaryType);
+      setDate(history.location.state?.date);
     }
   }, [window.location.pathname]);
 
-  const columns = [
+  const generalDiaryColumns = [
     {
       title: <span className='th-white pl-md-5 th-fw-700 '>GRADE</span>,
       dataIndex: 'grade_name',
@@ -201,9 +221,40 @@ const GradewiseDiaryReport = () => {
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL ASSIGNED</span>,
-      dataIndex: 'dairy_count',
+      dataIndex: 'diary_count',
       align: 'center',
       width: '35%',
+      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+    },
+  ];
+
+  const dailyDiarycolumns = [
+    {
+      title: <span className='th-white pl-md-5 th-fw-700 '>GRADE</span>,
+      dataIndex: 'grade_name',
+      align: 'left',
+      width: '25%',
+      render: (data) => <span className='pl-md-5 th-black-1'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>TOTAL SECTIONS</span>,
+      dataIndex: 'section_count',
+      align: 'center',
+      width: '25%',
+      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>TOTAL ASSIGNED</span>,
+      dataIndex: 'diary_count',
+      align: 'center',
+      width: '25%',
+      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>TOTAL PENDING</span>,
+      dataIndex: 'pending_diaries',
+      align: 'center',
+      width: '20%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
   ];
@@ -217,7 +268,7 @@ const GradewiseDiaryReport = () => {
               Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1 th-16'>
-              {diaryType == 1 ? 'General Diary Reprt ' : 'Daily Diary Report'}
+              {diaryType == 1 ? 'General Diary Report ' : 'Daily Diary Report'}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -241,28 +292,18 @@ const GradewiseDiaryReport = () => {
           </div>
         </div>
         <div className='col-md-4 mt-3 mt-sm-0 text-right'>
-          <div>
-            <RangePicker
-              disabledDate={(current) => {
-                let customDate = moment().format('YYYY-MM-DD');
-                return current && current > moment(customDate, 'YYYY-MM-DD');
-              }}
-              allowClear={false}
-              bordered={false}
-              placement='bottomRight'
-              showToday={false}
-              suffixIcon={<DownOutlined />}
-              // defaultValue={[moment(), moment()]}
-              value={[moment(startDate), moment(endDate)]}
-              onChange={(value) => handleDateChange(value)}
-              className='th-range-picker th-br-4'
-              separator={'to'}
-              format={'DD/MM/YYYY'}
-            />
-          </div>
-          <div className='th-date-range'>
-            <img src={CalendarIcon} />
-          </div>
+          <DatePicker
+            disabledDate={(current) => current.isAfter(moment())}
+            allowClear={false}
+            value={moment(date)}
+            placement='bottomLeft'
+            onChange={(event, value) => handleDateChange(value)}
+            showToday={false}
+            bordered={false}
+            suffixIcon={<DownOutlined className='th-black-1' />}
+            className='th-black-2 pl-0 th-date-picker th-br-6'
+            format={'DD/MM/YYYY'}
+          />
         </div>
         {gradewiseDiaryStats && (
           <div
@@ -279,6 +320,14 @@ const GradewiseDiaryReport = () => {
               Total No. of Diaries Assigned : &nbsp;
               <span className='th-primary'>{gradewiseDiaryStats?.total_diary_count}</span>
             </div>
+            {diaryType == 2 && (
+              <div className='col-md-3 pt-2 px-1 pt-md-0'>
+                Total No. of Diaries Pending : &nbsp;
+                <span className='th-primary'>
+                  {gradewiseDiaryStats?.total_number_of_pending_diaries}
+                </span>
+              </div>
+            )}
           </div>
         )}
         <div className='row mt-3'>
@@ -289,7 +338,7 @@ const GradewiseDiaryReport = () => {
                 `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
               }
               loading={loading}
-              columns={columns}
+              columns={diaryType == 2 ? dailyDiarycolumns : generalDiaryColumns}
               expandRowByClick={true}
               rowKey={(record) => record?.grade_id}
               expandable={{ expandedRowRender }}
@@ -311,7 +360,7 @@ const GradewiseDiaryReport = () => {
                   />
                 )
               }
-              scroll={{ x: 'max-content', y: 600 }}
+              scroll={{ x: gradewiseDiaryData.length > 0 ? 'max-content' : null, y: 600 }}
             />
           </div>
         </div>

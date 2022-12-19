@@ -155,7 +155,7 @@ const Diary = () => {
             </div>
             {showTab == 1 && !isStudentDiary && (
               <div className='row px-2'>
-                {dailyDiaryData.length > 0 ? (
+                {dailyDiaryData.length > 1 ? (
                   <>
                     {dailyDiaryData.length > 1 && (
                       <>
@@ -211,6 +211,23 @@ const Diary = () => {
                 activeKey={showTab}
                 onChange={onTabChange}
                 className='th-width-100 px-3'
+                tabBarExtraContent={
+                  showTab == 1 && !isStudentDiary ? (
+                    <Button
+                      className='th-button-active th-br-6'
+                      onClick={() =>
+                        history.push({
+                          pathname: '/gradewise-diary-report',
+                          state: {
+                            date,
+                          },
+                        })
+                      }
+                    >
+                      Pending Report
+                    </Button>
+                  ) : null
+                }
               >
                 <TabPane tab='Daily Diary' key='1' className='th-pointer'>
                   <div className='row th-bg-white'>
@@ -337,7 +354,7 @@ const Diary = () => {
             ) : null}
             {showGrievanceModal && (
               <GrievanceModal
-                title={'Dairy Related Query'}
+                title={'Diary Related Query'}
                 showGrievanceModal={showGrievanceModal}
                 handleClose={handleCloseGrievanceModal}
               />
