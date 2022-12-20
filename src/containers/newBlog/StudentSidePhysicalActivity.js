@@ -719,13 +719,16 @@ const StudentSidePhysicalActivity = () => {
                                     <div
                                         style={{
                                             background: '#f9f9f9',
-                                            margin: '1rem 2rem',
+                                            // margin: '1rem 2rem',
                                             padding: '0.5rem 1rem',
                                             borderRadius: '5px',
                                             // marginTop: '10px',
                                             height: 'auto',
                                             border: '1px solid #dbdbdb',
-                                            width: '26vw',
+                                            width: '36vw',
+                                            overflowY:'auto',
+                                            maxHeight:'16vh',
+                                            margin:'auto'
 
                                         }}
                                     >
@@ -750,7 +753,7 @@ const StudentSidePhysicalActivity = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <Divider />
+                                    <Divider  style={{margin:'1.5rem 0.5rem'}}/>
                                     <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '34px', paddingTop:'10px'}}>Review</div>
                                     <div
                                         style={{

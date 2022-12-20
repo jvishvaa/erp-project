@@ -580,7 +580,10 @@ const PendingReview = (props) => {
                     borderRadius:'5px',
                     marginTop: '10px',
                     height: 'auto',
-                    border:'1px solid #dbdbdb'
+                    border:'1px solid #dbdbdb',
+                    width:'21vw',
+                    overflowY:'auto',
+                    maxHeight:'16vh'
 
                   }}
                 >
