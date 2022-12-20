@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { Card, Divider, Tag, Button, Pagination } from 'antd';
+import { LeftOutlined, EditOutlined, ClearOutlined, CloseSquareOutlined, UndoOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Auth from './auth';
 
@@ -26,15 +28,20 @@ const ViewBook = (props) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
+  // let host = window.location.host;
+  // let origin = window.location.origin;
+  let host = '29a9-65-0-144-93.ngrok.io';
+  let origin = 'https://29a9-65-0-144-93.ngrok.io';
+
   const { bookId, chapterId, bookUid, localStorageName, environment, type } = props;
   let bookPath = `${environment}/${type}/`;
   let bookUrl = `${bookUid}/index.html#/reader/`;
-  let localStoreName = `note_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
-  let bookmarksLocalStoreName = `bookmark_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
-  let highlightsLocalstoreName = `hlight_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
+  let localStoreName = `note_${host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
+  let bookmarksLocalStoreName = `bookmark_${host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
+  let highlightsLocalstoreName = `hlight_${host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
 
   console.log(
-    `${window.location.origin}/qbox/${endpoints.ibook.createStudentNotes}`,
+    `${origin}/qbox/${endpoints.ibook.createStudentNotes}`,
     'checkEndPoint'
   );
   const dispatch = useDispatch();
@@ -79,10 +86,10 @@ const ViewBook = (props) => {
           const { id } = role_details || {};
           const { token } = new Auth().isAuthenticated() || {};
           console.log(
-            `${window.location.origin}/qbox/${endpoints.ibook.createStudentNotes}`,
+            `${origin}/qbox/${endpoints.ibook.createStudentNotes}`,
             'checkEndPoint'
           );
-          const url = `${window.location.origin}/qbox/${endpoints.ibook.createStudentNotes}`;
+          const url = `${origin}/qbox/${endpoints.ibook.createStudentNotes}`;
           const formData = new FormData();
           formData.append('student', role_details.erp_user_id);
           formData.append('book', bookId);
@@ -131,10 +138,10 @@ const ViewBook = (props) => {
               const { role_details } = new Auth().isAuthenticated() || {};
               const { token } = new Auth().isAuthenticated() || {};
               console.log(
-                `${window.location.origin}/qbox/${endpoints.ibook.studentBookmarks}`,
+                `${origin}/qbox/${endpoints.ibook.studentBookmarks}`,
                 'checkEndPoint'
               );
-              const url = `${window.location.origin}/qbox/${endpoints.ibook.studentBookmarks}`;
+              const url = `${origin}/qbox/${endpoints.ibook.studentBookmarks}`;
               const formData = new FormData();
               formData.append('student', role_details.erp_user_id);
               formData.append('book', bookId);
@@ -179,10 +186,10 @@ const ViewBook = (props) => {
               const { role_details } = new Auth().isAuthenticated() || {};
               const { token } = new Auth().isAuthenticated() || {};
               console.log(
-                `${window.location.origin}/qbox/${endpoints.ibook.deleteBookmark}`,
+                `${origin}/qbox/${endpoints.ibook.deleteBookmark}`,
                 'checkEndPoint'
               );
-              const url = `${window.location.origin}/qbox/${endpoints.ibook.deleteBookmark}`;
+              const url = `${origin}/qbox/${endpoints.ibook.deleteBookmark}`;
               const formData = new FormData();
               formData.append('student', role_details.erp_user_id);
               formData.append('book', bookId);
@@ -232,10 +239,10 @@ const ViewBook = (props) => {
               const { role_details } = new Auth().isAuthenticated() || {};
               const { token } = new Auth().isAuthenticated() || {};
               console.log(
-                `${window.location.origin}/qbox/${endpoints.ibook.studentBooksHighlight}`,
+                `${origin}/qbox/${endpoints.ibook.studentBooksHighlight}`,
                 'checkEndPoint'
               );
-              const url = `${window.location.origin}/qbox/${endpoints.ibook.studentBooksHighlight}`;
+              const url = `${origin}/qbox/${endpoints.ibook.studentBooksHighlight}`;
               const formData = new FormData();
               formData.append('student', role_details.erp_user_id);
               formData.append('book', bookId);
@@ -279,10 +286,10 @@ const ViewBook = (props) => {
               const { role_details } = new Auth().isAuthenticated() || {};
               const { token } = new Auth().isAuthenticated() || {};
               console.log(
-                `${window.location.origin}/qbox/${endpoints.ibook.deleteHighlight}`,
+                `${origin}/qbox/${endpoints.ibook.deleteHighlight}`,
                 'checkEndPoint'
               );
-              const url = `${window.location.origin}/qbox/${endpoints.ibook.deleteHighlight}`;
+              const url = `${origin}/qbox/${endpoints.ibook.deleteHighlight}`;
               const formData = new FormData();
               formData.append('student', role_details.erp_user_id);
               formData.append('book', bookId);
@@ -315,10 +322,10 @@ const ViewBook = (props) => {
       const { role_details } = new Auth().isAuthenticated() || {};
       const { token } = new Auth().isAuthenticated() || {};
       console.log(
-        `${window.location.origin}/qbox/${endpoints.ibook.listStudentNotes}`,
+        `${origin}/qbox/${endpoints.ibook.listStudentNotes}`,
         'checkEndPoint'
       );
-      const url = `${window.location.origin}/qbox/${endpoints.ibook.listStudentNotes}?book=${bookId}&student=${role_details.erp_user_id}`;
+      const url = `${origin}/qbox/${endpoints.ibook.listStudentNotes}?book=${bookId}&student=${role_details.erp_user_id}`;
       const result = await axios.get(url);
       console.log({ result });
       localStorage.removeItem(localStoreName);
@@ -350,10 +357,10 @@ const ViewBook = (props) => {
       const { role_details } = new Auth().isAuthenticated() || {};
       const { token } = new Auth().isAuthenticated() || {};
       console.log(
-        `${window.location.origin}/qbox/${endpoints.ibook.listBooksBookmarks}`,
+        `${origin}/qbox/${endpoints.ibook.listBooksBookmarks}`,
         'checkEndPoint'
       );
-      const url = `${window.location.origin}/qbox/${endpoints.ibook.listBooksBookmarks}?book=${bookId}&student=${role_details.erp_user_id}`;
+      const url = `${origin}/qbox/${endpoints.ibook.listBooksBookmarks}?book=${bookId}&student=${role_details.erp_user_id}`;
       const result = await axios.get(url);
       localStorage.removeItem(bookmarksLocalStoreName);
       if (result.status === 200) {
@@ -381,10 +388,10 @@ const ViewBook = (props) => {
       const { role_details } = new Auth().isAuthenticated() || {};
       const { token } = new Auth().isAuthenticated() || {};
       console.log(
-        `${window.location.origin}/qbox/${endpoints.ibook.listBooksHighlight}`,
+        `${origin}/qbox/${endpoints.ibook.listBooksHighlight}`,
         'checkEndPoint'
       );
-      const url = `${window.location.origin}/qbox/${endpoints.ibook.listBooksHighlight}?book=${bookId}&student=${role_details.erp_user_id}`;
+      const url = `${origin}/qbox/${endpoints.ibook.listBooksHighlight}?book=${bookId}&student=${role_details.erp_user_id}`;
       const result = await axios.get(url);
       localStorage.removeItem(highlightsLocalstoreName);
       if (result.status === 200) {
@@ -414,15 +421,8 @@ const ViewBook = (props) => {
 
   return (
     <>
-      {console.log(
-        'Dynamic url',
-        `${window.location.origin}/ibook-static/${bookPath}${bookUrl}${chapterId}?vi=0`
-      )}
-      {console.log(
-        'hard coded for dev',
-        `https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}${chapterId}?vi=0`
-      )}
-      <div style={{}}>
+   
+      <div >
         <iframe
           src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}`}
           id='bookReader'

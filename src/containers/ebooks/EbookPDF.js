@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
-import { Grid, makeStyles, AppBar, IconButton, Tooltip } from '@material-ui/core';
+import { Grid, makeStyles, } from '@material-ui/core';
 import { ArrowBack, ArrowForward, ZoomOutMap, Undo, Close } from '@material-ui/icons';
-import CreateIcon from '@material-ui/icons/Create';
+import { LeftOutlined, EditOutlined, ClearOutlined, CloseSquareOutlined, UndoOutlined } from '@ant-design/icons';
+import { Button, Select, Menu, message, Tooltip, Form } from 'antd';
+import clsx from 'clsx';
+import { Pagination } from 'antd';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import ClearIcon from '../../components/icon/ClearIcon';
 import './canvas.css';
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -141,7 +143,7 @@ const EbookPdf = (props) => {
       const AnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}`;
       axiosInstance
         .post(AnnotateURL, data1)
-        .then((res) => {})
+        .then((res) => { })
         .catch((error) => {
           console.log(error);
         });
@@ -170,12 +172,12 @@ const EbookPdf = (props) => {
       axiosInstance
         .get(`${imgUrl}`)
         .then((res) => {
-          setLoading(false);
           setBookPage(res.data.ebook_image);
           setTotalPages(res.data.total_page);
+          setLoading(false);
           const canvas = document.getElementById(`drawing-${page}`);
           const pageCanvas = document.getElementById('canvastyleview');
-          console.log(pageCanvas, pageCanvas.width, pageCanvas.height);
+          console.log(pageCanvas, pageCanvas.width, pageCanvas.height, res);
           canvas.width = width;
           canvas.height = height;
           const context = canvas.getContext('2d');
@@ -242,7 +244,7 @@ const EbookPdf = (props) => {
     const deleteAnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
     axiosInstance
       .delete(deleteAnnotateURL)
-      .then((res) => {})
+      .then((res) => { })
       .catch((error) => {
         console.log(error);
       });
@@ -263,95 +265,61 @@ const EbookPdf = (props) => {
     setHeight(img.offsetHeight);
   };
 
+  const handlePage = (e) => {
+    console.log(e);
+    setPage(e)
+  }
+
   return (
     <Grid>
       <div style={{ height: '300px' }}>
         {hover ? (
           ''
         ) : (
-          <AppBar>
-            <div className={classes.root}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} sm={4} md={4}>
-                  <IconButton
-                    color='inherit'
-                    aria-label='Close'
-                    style={{ color: 'white' }}
-                  >
-                    <Close onClick={handleClose} style={{ color: 'white' }} />
-                    &nbsp;&nbsp;
-                    <span onClick={handleClose} style={{ fontSize: '17px' }}>
-                      Close
-                    </span>
-                  </IconButton>
-                </Grid>
-                <Grid item xs={4} sm={4} md={4}>
-                  <div className='subject-name'>
-                    <h2 style={{ 'text-transform': 'capitalize' }}>{props.name}</h2>
-                  </div>
-                </Grid>
-                <Grid item xs={4} sm={4} md={4}>
-                  <ul className='tools__annotate'>
-                    <li>
-                      <IconButton
-                        size='small'
-                        style={{
-                          background: mode === 'pen' ? 'white' : '',
-                        }}
-                        onClick={() => setMode('pen')}
-                        title='pen'
-                      >
-                        <CreateIcon
-                          style={{
-                            fontSize: '25px',
-                            color: mode === 'pen' ? '' : 'white',
-                          }}
-                        />
-                      </IconButton>
-                    </li>
-                    <li>
-                      <IconButton
-                        size='small'
-                        style={{
-                          background: mode === 'eraser' ? 'white' : '',
-                        }}
-                        onClick={() => setMode('eraser')}
-                        title='eraser'
-                      >
-                        <ClearIcon
-                          color={mode === 'pen' ? 'white' : ''}
-                          style={{ fontSize: '20px' }}
-                        />
-                      </IconButton>
-                    </li>
-                    &nbsp; &nbsp;
-                    <li>
-                      <input
-                        type='range'
-                        className='js-line-range'
-                        min='3'
-                        max='72'
-                        value='1'
-                      />
-                      <Tooltip
-                        title='Undo'
-                        arrow
-                        style={{ color: 'white', cursor: 'pointer' }}
-                      >
-                        <Undo id='clear' onClick={deleteAnnotateData} />
-                      </Tooltip>
-                    </li>
-                    &nbsp; &nbsp;
-                    <li>
-                      <Tooltip title='Marker' arrow style={{ color: 'white' }}>
-                        <input type='color' className='js-color-picker color-picker' />
-                      </Tooltip>
-                    </li>
-                  </ul>
-                </Grid>
-              </Grid>
+          <div className={classes.root} id='pdfviewhead' >
+            <div style={{ display: 'flex', justifyContent: 'space-between', background: '#e7e7e7' }} >
+              <div style={{ width: '15%', display: 'flex', justifyContent: 'space-around' }}>
+                <Button onClick={() => setMode('pen')} shape="circle" icon={<EditOutlined />} className={clsx(classes.backButton)} style={{
+                  fontSize: '25px',
+                  color: mode === 'pen' ? '#40a9ff' : 'black',
+                  borderColor: mode === 'pen' ? '#40a9ff' : 'black',
+                }} />
+                <Button onClick={() => setMode('eraser')} shape="circle" icon={<ClearOutlined />} className={clsx(classes.backButton)} style={{
+                  fontSize: '25px',
+                  color: mode === 'eraser' ? '#40a9ff' : 'black',
+                  borderColor: mode === 'eraser' ? '#40a9ff' : 'black',
+                }} />
+                <input
+                  type='range'
+                  className='js-line-range'
+                  min='3'
+                  max='72'
+                  value='1'
+                />
+                {/* <Tooltip
+                  title='Undo'
+                  arrow
+                  style={{ color: 'white', cursor: 'pointer' }}
+                > */}
+                {/* <Undo id='clear' onClick={deleteAnnotateData} /> */}
+                <Button onClick={deleteAnnotateData} id='clear' shape="circle" icon={<UndoOutlined />} className={clsx(classes.backButton)} style={{
+                  fontSize: '25px',
+                  // color: '#40a9ff',
+                  // borderColor: '#40a9ff',
+                }} />
+                {/* </Tooltip> */}
+                <Tooltip title='Marker' arrow style={{ color: 'white' }}>
+                  <input type='color' className='js-color-picker color-picker' />
+                </Tooltip>
+              </div>
+              <div>
+                <Button icon={<CloseSquareOutlined />} onClick={() => props.goBackFunction()} >Close</Button>
+              </div>
             </div>
-          </AppBar>
+            <div className='subject-name'>
+              <h2 style={{ 'text-transform': 'capitalize', color: 'black' }}>{props.name}</h2>
+            </div>
+          </div>
         )}
         <div id='background__pdf'>
           {loading ? (
@@ -372,7 +340,7 @@ const EbookPdf = (props) => {
                   cursor: 'pointer',
                   transition: 'all 0.3s ease 0s',
                   transform: isZoomed ? 'scale(1.5,1.5)' : 'scale(1,1)',
-                  height: '100vh',
+                  height: '70vh',
                 }}
               />
             </div>
@@ -402,7 +370,13 @@ const EbookPdf = (props) => {
         {hover ? (
           ''
         ) : (
-          <div className={classes.pagercoustom}>
+          <>
+            {console.log(totalPages)}
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <span>Page</span>
+              <Pagination simple showSizeChanger={false} defaultCurrent={page} total={totalPages} defaultPageSize={1} onChange={handlePage} size='default'  />
+            </div>
+            {/* <div className={classes.pagercoustom}>
             <Grid container spacing={2}>
               <Grid item xs={4} sm={4} md={4}>
                 <ArrowBack
@@ -413,10 +387,10 @@ const EbookPdf = (props) => {
                     page === 1
                       ? ''
                       : () => {
-                          if (page > 1) {
-                            setPage(page - 1);
-                          }
+                        if (page > 1) {
+                          setPage(page - 1);
                         }
+                      }
                   }
                 >
                   previous
@@ -457,15 +431,16 @@ const EbookPdf = (props) => {
                     page === totalPages
                       ? ''
                       : () => {
-                          setPage(page + 1);
-                        }
+                        setPage(page + 1);
+                      }
                   }
                 >
                   Next
                 </ArrowForward>
               </Grid>
             </Grid>
-          </div>
+          </div> */}
+          </>
         )}
       </div>
     </Grid>
