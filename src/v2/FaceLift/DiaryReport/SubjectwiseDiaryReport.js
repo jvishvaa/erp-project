@@ -12,13 +12,17 @@ import {
   Form,
   Switch,
   Modal,
+  Tag,
+  Tooltip,
 } from 'antd';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, EditOutlined } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
+import _ from 'lodash';
+
 const { TextArea } = Input;
 
 const SubjectwiseDiaryReport = () => {
@@ -42,9 +46,12 @@ const SubjectwiseDiaryReport = () => {
   const [diaryType, setDiaryType] = useState(null);
   const [subjectID, setSubjectID] = useState(null);
   const [tableExpanded, setTableExpanded] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
+  const [reasonId, setReasonId] = useState(null);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleSubmit = () => {
+    setRequestSent(true);
     let payload = {
       date,
       teacher_id: selectedTeacher?.user_id,
@@ -55,17 +62,33 @@ const SubjectwiseDiaryReport = () => {
     if (!isClassCancelled) {
       payload['data'] = description;
     }
-    axios
-      .post(`academic/diary/reason/create/`, payload)
-      .then((res) => {
-        if (res.data.status_code === 201) {
-          message.success('Reason mentioned successfully');
-          handleCloseFeedbackeModal();
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
+    if (reasonId) {
+      payload['id'] = reasonId;
+      axios
+        .put(`academic/diary/reason/update/`, payload)
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            message.success('Reason updated successfully');
+            setReasonId(null);
+            handleCloseFeedbackeModal();
+          }
+        })
+        .catch((error) => {
+          message.error(error.message);
+        });
+    } else {
+      axios
+        .post(`academic/diary/reason/create/`, payload)
+        .then((res) => {
+          if (res.data.status_code === 201) {
+            message.success('Reason mentioned successfully');
+            handleCloseFeedbackeModal();
+          }
+        })
+        .catch((error) => {
+          message.error(error.message);
+        });
+    }
   };
   const handleCancellationCheck = (event) => {
     setIsClassCancelled(event);
@@ -78,6 +101,7 @@ const SubjectwiseDiaryReport = () => {
   };
   const handleCloseFeedbackeModal = () => {
     setShowFeedbackModal(false);
+    setRequestSent(false);
     fetchTeacherwiseReport({
       acad_session_id: selectedBranch?.id,
       section_mapping: selectedSection?.section_mapping,
@@ -105,6 +129,7 @@ const SubjectwiseDiaryReport = () => {
   };
   const fetchSubjectwiseReport = (params = {}) => {
     setSubjectwiseReport([]);
+    setSubjectwiseStats();
     setLoading(true);
     setExpandedRowKeys([]);
     axios
@@ -152,7 +177,7 @@ const SubjectwiseDiaryReport = () => {
       {
         dataIndex: 'subject__subject_name',
         align: 'center',
-        width: tableWidthCalculator(40) + '%',
+        width: tableWidthCalculator(20) + '%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
@@ -164,17 +189,60 @@ const SubjectwiseDiaryReport = () => {
       {
         dataIndex: 'created_at',
         align: 'center',
-        width: '20%',
-        render: (data) => <span className='th-black-2'>{data > 0 ? data : null}</span>,
+        width: '30%',
+        render: (data) => (
+          <span className='th-black-2'>
+            {data !== 0 ? moment(data).format('hh:MM a') : null}
+          </span>
+        ),
       },
       {
         dataIndex: 'reason',
         align: 'center',
-        width: '20%',
+        width: '30%',
+
         render: (text, row) =>
-          user_level == 11 ? null : row?.reason_details.reason_id !== null ? (
-            <div className='text-truncate'>{row?.reason_details?.reason}</div>
-          ) : (
+          !_.isEmpty(row?.reason_details) ? (
+            <div className='d-flex justify-content-center'>
+              <div className='text-truncate' style={{ maxWidth: 200 }}>
+                {row?.reason_details?.is_class_cancelled ? (
+                  'Class Cancelled'
+                ) : (
+                  <Tooltip
+                    placement='bottomLeft'
+                    title={<span className=''>{row?.reason_details?.reason}</span>}
+                    trigger='hover'
+                    className='th-pointer'
+                    zIndex={2000}
+                  >
+                    <span className=''>{row?.reason_details?.reason}</span>
+                  </Tooltip>
+                )}
+              </div>
+              {user_level !== 11 && (
+                <div>
+                  <Tag
+                    icon={<EditOutlined />}
+                    color='geekblue'
+                    className='th-pointer th-br-6 ml-2'
+                    onClick={() => {
+                      setSelectedTeacher(row);
+                      setShowFeedbackModal(true);
+                      setReasonId(row?.reason_details?.reason_id);
+                      setTimeout(() => {
+                        formRef.current.setFieldsValue({
+                          description: row?.reason_details?.reason,
+                        });
+                      }, 100);
+                      setIsClassCancelled(row?.reason_details?.is_class_cancelled);
+                    }}
+                  >
+                    Edit
+                  </Tag>
+                </div>
+              )}
+            </div>
+          ) : user_level == 11 || row?.created_at !== 0 ? null : (
             <Button
               className='th-black-2 th-button-active th-br-6 th-pointer'
               onClick={() => {
@@ -248,29 +316,22 @@ const SubjectwiseDiaryReport = () => {
         ),
     },
     {
-      title: (
-        <span className='th-white th-fw-700'>
-          {tableExpanded ? "TEACHER'S NAME" : null}
-        </span>
-      ),
-      align: 'center',
-      width: '20%',
-    },
-    {
       title: <span className='th-white th-fw-700'>TOTAL ASSIGNED</span>,
       dataIndex: 'diary_count',
       align: 'center',
-      width: '20%',
+      width: '30%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PENDING</span>,
       dataIndex: 'pending_diaries',
       align: 'center',
-      width: '20%',
+      width: '30%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
   ];
+
+  console.log('Description', description);
 
   return (
     <Layout>
@@ -327,7 +388,7 @@ const SubjectwiseDiaryReport = () => {
               </div>
             </div>
             {subjectwiseStats && (
-              <div className='row py-1'>
+              <div className='row row pb-2 pt-1'>
                 <div className='col-md-3 th-grey'>
                   Total No. of Subjects :{' '}
                   <span className='th-primary'>{subjectwiseStats?.no_of_subjects}</span>
@@ -391,17 +452,22 @@ const SubjectwiseDiaryReport = () => {
               <>
                 <Button
                   className='text-center th-br-10 th-bg-grey th-black-2'
-                  onClick={handleCloseFeedbackeModal}
+                  onClick={() => {
+                    formRef.current.setFieldsValue({ description: null });
+                    setDescription('');
+                  }}
                 >
-                  Close
+                  Clear
                 </Button>
 
                 <Button
-                  htmlType='submit'
                   className='text-center th-br-10 th-bg-primary th-white'
                   onClick={handleSubmit}
+                  form='reasonForm'
+                  htmlType='submit'
+                  disabled={requestSent}
                 >
-                  <strong>Submit</strong>
+                  <strong>{reasonId ? 'Update' : 'Submit'}</strong>
                 </Button>
               </>,
             ]}
@@ -414,6 +480,7 @@ const SubjectwiseDiaryReport = () => {
                     <Switch
                       checkedChildren='Yes'
                       unCheckedChildren='No'
+                      checked={isClassCancelled}
                       onChange={handleCancellationCheck}
                     />
                   </Form.Item>
@@ -422,13 +489,21 @@ const SubjectwiseDiaryReport = () => {
                   <Form.Item
                     name='description'
                     label='Reason'
-                    rules={[{ required: true, message: 'Please Add Description' }]}
+                    rules={[
+                      {
+                        required: isClassCancelled ? false : true,
+                        message: 'Please Add Description',
+                      },
+                    ]}
                   >
                     <TextArea
                       rows={5}
                       disabled={isClassCancelled}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder='Enter Reason'
+                      maxLength={150}
+                      showCount={true}
+                      // value={description}
                     />
                   </Form.Item>
                 </div>

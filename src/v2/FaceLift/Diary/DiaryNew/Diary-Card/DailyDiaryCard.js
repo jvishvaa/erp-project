@@ -118,6 +118,19 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             </div>
           </div>
         )}
+        {item?.exam_status == 'ongoing' && user_level == 13 && (
+          <div className='col-12 text-right'>
+            <div
+              className='badge p-2 th-bg-primary th-white th-br-6 th-pointer'
+              style={{
+                border: '1px solid #d9d9d9',
+              }}
+              onClick={() => history.push('/assessment/?page=1&status=0')}
+            >
+              Take Test
+            </div>
+          </div>
+        )}
       </div>
     ));
   };
@@ -131,6 +144,8 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
     // setShowHomeworkDrawer(false);
     setShowTab(1);
     setCurrentPeriodId(null);
+    setTodaysAssessment([]);
+    setUpcomingAssessment([]);
   };
   const displayHomeworkDetails = () => {
     // setShowHomeworkDrawer(true);
@@ -294,7 +309,9 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         style={{ border: '1px solid #d9d9d9', height: 200 }}
       >
         <div
-          className={`row th-bg-blue-1 align-items-center py-1`}
+          className={`row ${
+            diary?.substitute ? 'th-bg-blue-3' : 'th-bg-blue-1'
+          } align-items-center py-1`}
           style={{ borderRadius: '6px 6px 0px 0px' }}
         >
           <div className='col-7 pl-2'>
@@ -314,7 +331,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           <div className='col-4 text-right px-0 py-1'>
             {/* <span className='th-bg-primary th-10 th-white th-br-6 p-2'>Daily Diary</span> */}
             <Tag color='geekblue' className='th-10 th-br-6'>
-              Daily Diary
+              {diary?.substitute ? 'Substitute Dairy' : 'Daily Diary'}
             </Tag>
           </div>
           {user_id == diary?.teacher_id && (
@@ -908,7 +925,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   className='col-12 py-2 px-1 th-bg-grey th-br-6'
                   style={{
                     border: '2px solid #d9d9d9',
-                    height: '30vh',
+                    maxHeight: '30vh',
                     overflowY: 'auto',
                   }}
                 >

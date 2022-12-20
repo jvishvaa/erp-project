@@ -52,6 +52,7 @@ const GradewiseDiaryReport = () => {
   };
   const fetchGradewiseReport = (params = {}) => {
     setGradewiseDiaryData([]);
+    setGradewiseDiaryStats();
     setExpandedRowKeys([]);
     setLoading(true);
     axios

@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 
-const GeneralDiary = () => {
+const GeneralDiary = ({ isSubstituteClass }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -114,7 +114,9 @@ const GeneralDiary = () => {
       module_id: moduleId,
     };
     axios
-      .get(`${endpoints.academics.grades}`, { params })
+      .get(`${endpoints.academics.grades}`, {
+        params: { ...params, ...(isSubstituteClass ? { is_substitue_teacher: 1 } : {}) },
+      })
       .then((result) => {
         if (result?.data?.status_code == 200) {
           setGradeDropdown(result?.data?.data);
