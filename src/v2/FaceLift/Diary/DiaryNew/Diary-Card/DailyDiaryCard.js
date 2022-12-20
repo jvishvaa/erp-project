@@ -12,7 +12,7 @@ import {
 import {
   Badge,
   Spin,
-  Input,
+  Button,
   Avatar,
   message,
   Collapse,
@@ -34,6 +34,7 @@ import QuestionCard from 'components/question-card';
 import cuid from 'cuid';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
+import toddlerGroup from '../../../../../assets/images/toddler-group.svg';
 
 const { Panel } = Collapse;
 let boardFilterArr = [
@@ -65,13 +66,74 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       penTool: false,
     },
   ]);
-  const [showHomeworkDrawer, setShowHomeworkDrawer] = useState(false);
+  const [showTab, setShowTab] = useState(1);
   const [currentPanel, setCurrentPanel] = useState(0);
   const [currentPeriodId, setCurrentPeriodId] = useState(null);
   const [showResources, setShowResources] = useState(false);
+  const [showUpcomingResources, setShowUpcomingResources] = useState(false);
   const [resourcesData, setResourcesData] = useState(false);
   const [loadingResources, setLoadingResources] = useState(false);
+  const [todaysAssessment, setTodaysAssessment] = useState([]);
+  const [upcomingAssessment, setUpcomingAssessment] = useState([]);
+  const [currentAssessment, setCurrentAssessment] = useState([]);
   const history = useHistory();
+
+  const showAssessmentData = (data) => {
+    return data.map((item) => (
+      <div className='row th-bg-white th-br-6 py-2 th-fw-500 mb-2'>
+        <div className='col-6 th-12'>
+          Status of Exam :&nbsp;
+          <span
+            className={`${
+              item?.exam_status == 'completed' ? 'th-green' : 'th-primary'
+            } text-capitalize`}
+          >
+            {' '}
+            {item?.exam_status}
+          </span>
+        </div>
+        <div className='col-6 text-right th-12'>
+          Scheduled At :&nbsp;
+          <span className='th-grey'>
+            {moment(item?.test_date).format('DD/MM/YYYY hh:mm a')}
+          </span>
+        </div>
+        <div className='col-12 pt-2 text-truncate'>
+          <span className='th-fw-600 th-black-1'>Test Name :&nbsp; </span>
+          <span className='th-fw-600 th-grey '>{item?.test_name}</span>
+        </div>
+        {item?.exam_status == 'completed' && user_level == 13 && (
+          <div className='col-12 text-right'>
+            <div
+              className='badge p-2 th-bg-white th-br-6 th-pointer'
+              style={{
+                border: '1px solid #d9d9d9',
+              }}
+              onClick={() => {
+                setShowTab(3);
+                setCurrentAssessment(item);
+              }}
+            >
+              View &gt;
+            </div>
+          </div>
+        )}
+        {item?.exam_status == 'ongoing' && user_level == 13 && (
+          <div className='col-12 text-right'>
+            <div
+              className='badge p-2 th-bg-primary th-white th-br-6 th-pointer'
+              style={{
+                border: '1px solid #d9d9d9',
+              }}
+              onClick={() => history.push('/assessment/?page=1&status=0')}
+            >
+              Take Test
+            </div>
+          </div>
+        )}
+      </div>
+    ));
+  };
 
   const showDrawer = () => {
     setDrawerVisible(true);
@@ -79,11 +141,15 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
 
   const closeDrawer = () => {
     setDrawerVisible(false);
-    setShowHomeworkDrawer(false);
+    // setShowHomeworkDrawer(false);
+    setShowTab(1);
     setCurrentPeriodId(null);
+    setTodaysAssessment([]);
+    setUpcomingAssessment([]);
   };
   const displayHomeworkDetails = () => {
-    setShowHomeworkDrawer(true);
+    // setShowHomeworkDrawer(true);
+    setShowTab(2);
   };
   const fetchResourcesData = (id) => {
     setLoadingResources(true);
@@ -209,13 +275,32 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       ...prevState.slice(index + 1),
     ]);
   };
+  const fetchAssessmentData = (params = {}) => {
+    axios
+      .get(`/academic/diary/assessment/`, {
+        params: { ...params },
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setTodaysAssessment(response?.data?.result?.today_assessment);
+          setUpcomingAssessment(response?.data?.result?.upcoming_assessment);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
   useEffect(() => {
-    if (drawerVisible)
+    if (drawerVisible) {
       fetchHomeworkDetails({
         section_mapping: diary?.section_mapping_id,
         subject: subject?.subject_id,
         date: moment(diary?.created_at).format('YYYY-MM-DD'),
       });
+      fetchAssessmentData({
+        section_mapping: diary?.section_mapping_id,
+        subject_id: subject?.subject_id,
+        date: moment(diary?.created_at).format('YYYY-MM-DD'),
+      });
+    }
   }, [drawerVisible]);
   return (
     <>
@@ -224,7 +309,9 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         style={{ border: '1px solid #d9d9d9', height: 200 }}
       >
         <div
-          className={`row th-bg-blue-1 align-items-center py-1`}
+          className={`row ${
+            diary?.substitute ? 'th-bg-blue-3' : 'th-bg-blue-1'
+          } align-items-center py-1`}
           style={{ borderRadius: '6px 6px 0px 0px' }}
         >
           <div className='col-7 pl-2'>
@@ -244,7 +331,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           <div className='col-4 text-right px-0 py-1'>
             {/* <span className='th-bg-primary th-10 th-white th-br-6 p-2'>Daily Diary</span> */}
             <Tag color='geekblue' className='th-10 th-br-6'>
-              Daily Diary
+              {diary?.substitute ? 'Substitute Dairy' : 'Daily Diary'}
             </Tag>
           </div>
           {user_id == diary?.teacher_id && (
@@ -390,7 +477,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         className='th-diaryDrawer'
         zIndex={1300}
         title={
-          !showHomeworkDrawer ? (
+          showTab == 1 ? (
             <div className='row pr-1'>
               <div className='col-12 th-bg-yellow-2 th-br-6'>
                 <div className='row th-fw-700 th-black-1 py-2'>
@@ -425,9 +512,10 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 <div className='row th-fw-700 align-items-center py-1'>
                   <ArrowLeftOutlined
                     className='mr-3'
-                    onClick={() => setShowHomeworkDrawer(false)}
+                    onClick={() => setShowTab(1)}
+                    // onClick={() => setShowHomeworkDrawer(false)}
                   />
-                  <span> Homework</span>
+                  <span> {showTab == 2 ? 'Homework' : 'Assessment'}</span>
                 </div>
               </div>
             </div>
@@ -435,69 +523,16 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         }
         onClose={closeDrawer}
         visible={drawerVisible}
+        // visible={true}
         closable={false}
         width={window.innerWidth < 768 ? '90vw' : '450px'}
       >
-        {showHomeworkDrawer ? (
-          <>
-            <div className='row px-3 mt-3'>
-              <div
-                className='col-12 py-2 px-3 th-br-6'
-                style={{ border: '1px solid black' }}
-              >
-                <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>Title</div>
-                  <div
-                    className='th-black-1 col-12 px-1 th-br-6'
-                    style={{ border: '1px solid #d9d9d9' }}
-                  >
-                    {homeworkDetails?.homework_name}
-                  </div>
-                </div>
-                <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>
-                    Instructions
-                  </div>
-                  <div
-                    className='th-black-1 col-12 px-1 th-br-6'
-                    style={{ border: '1px solid #d9d9d9' }}
-                  >
-                    {homeworkDetails?.description}
-                  </div>
-                </div>
-                <div className='row py-2'>
-                  <div className='col-3 px-0 th-black-1 th-fw-600 pb-1'>Due Date</div>
-                  <div className='col-9 th-black-1 pl-0 th-fw-700 pb-1'>
-                    {moment(diary?.hw_due_date).format('DD/MM/YYYY')}
-                  </div>
-                </div>
-                <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1'>Questions</div>
-                  {questionList?.map((question, index) => (
-                    <QuestionCard
-                      key={question.id}
-                      question={question}
-                      isEdit={true}
-                      index={index}
-                      addNewQuestion={addNewQuestion}
-                      handleChange={handleChange}
-                      removeQuestion={removeQuestion}
-                      sessionYear={selectedAcademicYear?.id}
-                      branch={selectedBranch?.branch?.id}
-                      grade={diary?.grade_id}
-                      subject={subject?.subject_id}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
+        {showTab == 1 && (
           <>
             <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Today's Topic</div>
             {!_.isEmpty(diary?.periods_data) ? (
               <div
-                className='th-bg-white shadom-sm pb-3 th-br-4'
+                className='th-bg-grey shadom-sm pb-3 th-br-4'
                 style={{
                   border: '2px solid #d9d9d9',
                   maxHeight: '30vh',
@@ -565,6 +600,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                                   className='row justify-content-between py-2 th-pointer'
                                   onClick={() => {
                                     setShowResources((prevState) => !prevState);
+                                    setShowUpcomingResources(false);
                                     if (currentPeriodId !== item?.id) {
                                       setCurrentPeriodId(item?.id);
                                       fetchResourcesData(item?.id);
@@ -592,7 +628,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                                       <div
                                         style={{
                                           overflowY: 'scroll',
-                                          overflowX: 'hidden',
+                                          width: '100%',
                                           maxHeight: '40vh',
                                         }}
                                       >
@@ -745,6 +781,132 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     {diary?.up_coming_period?.key_concept__topic_name}
                   </div>
                 </div>
+                <div className='row mt-2 px-2'>
+                  <div
+                    className='col-12 th-bg-grey'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    <div
+                      className='row justify-content-between py-2 th-pointer'
+                      onClick={() => {
+                        setShowUpcomingResources((prevState) => !prevState);
+                        setShowResources(false);
+                        fetchResourcesData(diary?.up_coming_period?.id);
+                      }}
+                    >
+                      <div className='th-fw-600 th-black-2'>Resources</div>
+                      <div>
+                        <CaretRightOutlined
+                          style={{
+                            transform: showUpcomingResources ? `rotate(90deg)` : null,
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {showUpcomingResources && (
+                      <div className='row'>
+                        {loadingResources ? (
+                          <div className='row justify-content-center my-2'>
+                            <Spin title='Loading...' />
+                          </div>
+                        ) : // !_.isEmpty(resourcesData) ? (
+                        resourcesData?.map((each) => each?.media_file).flat().length >
+                          0 ? (
+                          <div
+                            style={{
+                              overflowY: 'scroll',
+                              maxHeight: '40vh',
+                              width: '100%',
+                            }}
+                          >
+                            {resourcesData?.map((files, i) => (
+                              <>
+                                {files?.media_file?.map((each, index) => {
+                                  if (
+                                    (user_level == 13 &&
+                                      files?.document_type == 'Lesson_Plan') ||
+                                    (user_level == 13 &&
+                                      files?.document_type == 'Teacher_Reading_Material')
+                                  ) {
+                                  } else {
+                                    let fullName = each?.split(
+                                      `${files?.document_type.toLowerCase()}/`
+                                    )[1];
+                                    let textIndex = fullName
+                                      ?.split('_')
+                                      .indexOf(
+                                        fullName.split('_').find((item) => isNaN(item))
+                                      );
+                                    let displayName = fullName
+                                      .split('_')
+                                      .slice(textIndex)
+                                      .join('_');
+                                    let fileName = displayName
+                                      ? displayName.split('.')
+                                      : null;
+                                    let file = fileName
+                                      ? fileName[fileName?.length - 2]
+                                      : '';
+                                    let extension = fileName
+                                      ? fileName[fileName?.length - 1]
+                                      : '';
+                                    return (
+                                      <div
+                                        className='row mt-2 py-2 align-items-center'
+                                        style={{
+                                          border: '1px solid #d9d9d9',
+                                        }}
+                                      >
+                                        <div className='col-2'>
+                                          <img src={getFileIcon(extension)} />
+                                        </div>
+                                        <div className='col-10 px-0 th-pointer'>
+                                          <a
+                                            onClick={() => {
+                                              openPreview({
+                                                currentAttachmentIndex: 0,
+                                                attachmentsArray: [
+                                                  {
+                                                    src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                                    name: fileName,
+                                                    extension: '.' + extension,
+                                                  },
+                                                ],
+                                              });
+                                            }}
+                                            rel='noopener noreferrer'
+                                            target='_blank'
+                                          >
+                                            <div className='row align-items-center'>
+                                              <div className='col-10 px-0'>
+                                                {files.document_type}_{file}
+                                              </div>
+                                              <div className='col-2'>
+                                                <EyeFilled />
+                                              </div>
+                                            </div>
+                                          </a>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                })}
+                              </>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className='row'>
+                            <div className='col-12 text-center py-2'>
+                              {' '}
+                              No Resources Available
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             ) : (
               <div
@@ -756,7 +918,22 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 No Upcoming Period added to diary
               </div>
             )}
-
+            {(todaysAssessment.length > 0 || upcomingAssessment.length > 0) && (
+              <div className='row py-2'>
+                <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Assessment</div>
+                <div
+                  className='col-12 py-2 px-1 th-bg-grey th-br-6'
+                  style={{
+                    border: '2px solid #d9d9d9',
+                    maxHeight: '30vh',
+                    overflowY: 'auto',
+                  }}
+                >
+                  {showAssessmentData(todaysAssessment)}
+                  {showAssessmentData(upcomingAssessment)}
+                </div>
+              </div>
+            )}
             <div className='row py-2'>
               <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Homework</div>
               <div className='col-12 px-1'>
@@ -875,6 +1052,189 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                       );
                     })}
                   </div>
+                </div>
+              </>
+            )}
+          </>
+        )}
+        {showTab == 2 && (
+          <>
+            <div className='row px-3 mt-3'>
+              <div
+                className='col-12 py-2 px-3 th-br-6'
+                style={{ border: '1px solid black' }}
+              >
+                <div className='row py-2'>
+                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>Title</div>
+                  <div
+                    className='th-black-1 col-12 px-1 th-br-6'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    {homeworkDetails?.homework_name}
+                  </div>
+                </div>
+                <div className='row py-2'>
+                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>
+                    Instructions
+                  </div>
+                  <div
+                    className='th-black-1 col-12 px-1 th-br-6'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    {homeworkDetails?.description}
+                  </div>
+                </div>
+                <div className='row py-2'>
+                  <div className='col-3 px-0 th-black-1 th-fw-600 pb-1'>Due Date</div>
+                  <div className='col-9 th-black-1 pl-0 th-fw-700 pb-1'>
+                    {moment(diary?.hw_due_date).format('DD/MM/YYYY')}
+                  </div>
+                </div>
+                <div className='row py-2'>
+                  <div className='th-black-1 th-fw-600 pb-1'>Questions</div>
+                  {questionList?.map((question, index) => (
+                    <QuestionCard
+                      key={question.id}
+                      question={question}
+                      isEdit={true}
+                      index={index}
+                      addNewQuestion={addNewQuestion}
+                      handleChange={handleChange}
+                      removeQuestion={removeQuestion}
+                      sessionYear={selectedAcademicYear?.id}
+                      branch={selectedBranch?.branch?.id}
+                      grade={diary?.grade_id}
+                      subject={subject?.subject_id}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+        {showTab == 3 && (
+          <>
+            <div className='row pb-2'>
+              <div className='col-12 py-2 px-1 th-bg-blue-1 th-br-6'>
+                <div className='row th-br-6 py-2 th-fw-500 align-items-center'>
+                  <div className='col-6 th-12'>
+                    <div className='th-bg-white th-br-6 p-1 th-br-6'>
+                      Status of Exam :&nbsp;
+                      <span className='th-green text-capitalize'>
+                        {currentAssessment?.exam_status}
+                      </span>
+                    </div>
+                  </div>
+                  <div className='col-6 text-right th-12'>
+                    Scheduled At :&nbsp;
+                    <span className='th-grey'>
+                      {moment(currentAssessment?.test_date).format('DD/MM/YYYY hh:mm a')}
+                    </span>
+                  </div>
+                  <div className='col-12 pt-2 text-truncate'>
+                    <span className='th-fw-600 th-black-1 th-12'>Test Name :&nbsp; </span>
+                    <span className='th-fw-600 th-grey '>
+                      {currentAssessment?.test_name}
+                    </span>
+                  </div>
+                  <div className='col-12'>
+                    <Divider className='my-1' />
+                  </div>
+                  <div className='col-12 th-black-2 th-12'>
+                    Status :{' '}
+                    <span className='th-green th-14'>
+                      {currentAssessment?.attempted_questions !== null
+                        ? 'Attempted'
+                        : 'Not Attempted'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {currentAssessment?.attempted_questions !== null && (
+              <>
+                <div className='row py-2 th-bg-pink th-br-6'>
+                  <div className='row flex-column align-items-center py-2'>
+                    <div
+                      className='py-2 px-3'
+                      style={{
+                        border: '2px solid rgb(0, 0, 0)',
+                        borderBottom: 'none',
+                        borderRadius: '6px 6px 0px 0px',
+                      }}
+                    >
+                      {currentAssessment?.userresponse__total_mark}
+                    </div>
+                    <div
+                      className='th-white py-2 px-3 th-br-6'
+                      style={{ backgroundColor: '#000000' }}
+                    >
+                      Out of {currentAssessment?.total_mark}
+                    </div>
+                  </div>
+                  <div className='row align-items-center pt-2 pb-3'>
+                    <div className='col-8 text-center pr-0'>
+                      <div className='row py-0 mt-2  th-bg-primary th-fw-500 th-br-6'>
+                        <div className='col-9 px-0 th-white py-1'>Correct</div>
+                        <div
+                          className='col-3 px-0 th-bg-white py-1'
+                          style={{ borderRadius: '0px 6px 6px 0px' }}
+                        >
+                          {currentAssessment?.userresponse__correct_answer}
+                        </div>
+                      </div>
+                      <div className='row py-0 mt-2 th-bg-primary th-fw-500 th-br-6'>
+                        <div className='col-9 px-0 py-1 th-white '>Wrong</div>
+                        <div
+                          className='col-3 px-0 py-1 th-bg-white'
+                          style={{ borderRadius: '0px 6px 6px 0px' }}
+                        >
+                          {currentAssessment?.userresponse__wrong_answer}
+                        </div>
+                      </div>
+                      <div className='row py-0 mt-2 th-bg-primary th-fw-500 th-br-6'>
+                        <div className='col-9 px-0 py-1 th-white '>No.of Questions</div>
+                        <div
+                          className='col-3 px-0 py-1 th-bg-white'
+                          style={{ borderRadius: '0px 6px 6px 0px' }}
+                        >
+                          {currentAssessment?.userresponse__total_question}
+                        </div>
+                      </div>
+                      <div className='row py-0 mt-2 th-bg-primary th-fw-500 th-br-6'>
+                        <div className='col-9 px-0 py-1 th-white '>
+                          Questions Attempted
+                        </div>
+                        <div
+                          className='col-3 px-0 py-1 th-bg-white'
+                          style={{ borderRadius: '0px 6px 6px 0px' }}
+                        >
+                          {currentAssessment?.attempted_questions}
+                        </div>
+                      </div>
+                      {/* <div className='row py-0 mt-2 th-bg-primary th-fw-500 th-br-6'>
+                    <div className='col-9 px-0 py-1 th-white '>Sub Questions</div>
+                    <div
+                      className='col-3 px-0 py-1 th-bg-white'
+                      style={{ borderRadius: '0px 6px 6px 0px' }}
+                    >
+                      {currentAssessment?.userresponse__correct_answer}
+                    </div>
+                  </div> */}
+                    </div>
+                    <div className='col-4 px-0  text-center'>
+                      <img src={toddlerGroup} width='120px' />
+                    </div>
+                  </div>
+                </div>
+                <div className='row justify-content-end p-2'>
+                  <Button
+                    className='th-button-active th-br-6 th-pointer'
+                    onClick={() => history.push('/assessment/?page=1&status=1')}
+                  >
+                    {' '}
+                    View Details &gt;
+                  </Button>
                 </div>
               </>
             )}

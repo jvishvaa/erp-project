@@ -200,7 +200,7 @@ const AnnouncementList = () => {
                 allowClear={true}
                 bordered={false}
                 placement='bottomRight'
-                placeholder={'Till Date'}
+                placeholder={'Select Date'}
                 onChange={(value) => handleDateChange(value)}
                 showToday={false}
                 suffixIcon={<DownOutlined className='th-black-1' />}

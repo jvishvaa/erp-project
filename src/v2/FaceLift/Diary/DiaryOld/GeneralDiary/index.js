@@ -169,8 +169,12 @@ const GeneralDiary = () => {
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('General Diary Created Succssfully');
-          history.push('/diary/teacher');
+          if (res?.data?.message.includes('successfully')) {
+            message.success('General Diary Created Successfully');
+            history.push('/diary/teacher');
+          } else {
+            message.error(res?.data?.message);
+          }
         }
       })
       .catch((error) => {
@@ -399,16 +403,13 @@ const GeneralDiary = () => {
                       <div className='col-md-10 col-8'>
                         <div className='row'>
                           {uploadedFiles?.map((item, index) => {
-                            const fullName = item?.split('_')[
-                              item?.split('_').length - 1
-                            ];
+                            const fullName =
+                              item?.split('_')[item?.split('_').length - 1];
 
-                            const fileName = fullName.split('.')[
-                              fullName?.split('.').length - 2
-                            ];
-                            const extension = fullName.split('.')[
-                              fullName?.split('.').length - 1
-                            ];
+                            const fileName =
+                              fullName.split('.')[fullName?.split('.').length - 2];
+                            const extension =
+                              fullName.split('.')[fullName?.split('.').length - 1];
 
                             return (
                               <div className='th-br-15  col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>

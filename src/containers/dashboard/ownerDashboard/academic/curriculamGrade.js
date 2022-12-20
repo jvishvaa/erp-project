@@ -145,13 +145,24 @@ const CurriculumCompletion = (props) => {
   const onTableRowExpand = (expanded, record) => {
     console.log(record);
     setTeacherErp(record?.teacher_erp_id)
-    teacherSubjectTable({
-      session_year: selectedAcademicYear?.id,
-      teacher_erp_id: record?.teacher_erp_id,
-      acad_session: acad_sess_id,
-      central_gs: record?.central_gs.toString(),
-      branch_id: branchId
-    })
+    if (volumeId != null) {
+      teacherSubjectTable({
+        session_year: selectedAcademicYear?.id,
+        teacher_erp_id: record?.teacher_erp_id,
+        acad_session: acad_sess_id,
+        central_gs: record?.central_gs.toString(),
+        branch_id: branchId,
+        volume: volumeId,
+      })
+    } else {
+      teacherSubjectTable({
+        session_year: selectedAcademicYear?.id,
+        teacher_erp_id: record?.teacher_erp_id,
+        acad_session: acad_sess_id,
+        central_gs: record?.central_gs.toString(),
+        branch_id: branchId
+      })
+    }
     console.log(record);
     const keys = [];
     if (expanded) {
@@ -180,7 +191,7 @@ const CurriculumCompletion = (props) => {
     setModuleId(history?.location?.state?.module_id);
     setAcadeId(history?.location?.state?.acad_sess_id);
     setBranchName(history?.location?.state?.branchName)
-    if(history?.location?.state?.teacherView == 2) {
+    if (history?.location?.state?.teacherView == 2) {
       setTeacherView(2)
     } else {
       setTeacherView(1)
@@ -320,6 +331,7 @@ const CurriculumCompletion = (props) => {
 
   const gradeTeacherTable = (params = {}) => {
     setLoading(true);
+    setExpandedRowKeys([])
     axiosInstance
       .get(`${endpoints.ownerDashboard.teacherWise}`, {
         params: { ...params },
@@ -367,7 +379,7 @@ const CurriculumCompletion = (props) => {
 
   const handleViewChange = (e) => {
     setData([])
-    console.log( e.target.value);
+    console.log(e.target.value);
     setTeacherView(e.target.value)
     // if (teacherView == false) {
     //   setTeacherView(true)
@@ -388,7 +400,7 @@ const CurriculumCompletion = (props) => {
     columnStyle: {
       cursor: 'pointer'
     },
-    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 600 : window.innerWidth > 1400 ? 600 : window.innerWidth > 1200 ? 600 : 350,
+    width: window.innerWidth > 600 && window.innerWidth < 1400 ? 1200 : window.innerWidth > 1400 ? 1300 : window.innerWidth > 1200 ? 1350 : 350,
     height: window.innerHeight > 600 ? 400 : 200,
     minColumnWidth: 70,
     maxColumnWidth: 70,
@@ -407,35 +419,35 @@ const CurriculumCompletion = (props) => {
     {
       title: <span className='th-white pl-4 th-fw-700 '>TEACHER'S NAME</span>,
       dataIndex: 'teacher_name',
-      width: '20%',
+      width: '30%',
       align: 'left',
       render: (data) => <span className='pl-md-4 th-black-1 th-16'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>AVG TOTAL PERIODS</span>,
-      width: '15%',
+      title: <span className='th-white th-fw-700'>TOTAL PERIODS</span>,
+      width: '30%',
       align: 'center',
       dataIndex: 'total_periods',
-      render: (data) => <span className='th-black-1 th-16'>{data}</span>,
+      render: (data) => <span className='th-black-1 th-16'>{data.toFixed(0)}</span>,
     },
-    {
-      title: <span className='th-white th-fw-700'>AVG PERIODS CONDUCTED</span>,
-      dataIndex: 'avg_conducted_periods',
-      width: '15%',
-      align: 'center',
-      render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
-    },
-    {
-      title: <span className='th-white th-fw-700'>AVG PERIODS PENDING</span>,
-      dataIndex: 'avg_pending_periods',
-      width: '15%',
-      align: 'center',
-      render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>AVG PERIODS CONDUCTED</span>,
+    //   dataIndex: 'avg_conducted_periods',
+    //   width: '15%',
+    //   align: 'center',
+    //   render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
+    // },
+    // {
+    //   title: <span className='th-white th-fw-700'>AVG PERIODS PENDING</span>,
+    //   dataIndex: 'avg_pending_periods',
+    //   width: '15%',
+    //   align: 'center',
+    //   render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
+    // },
     {
       title: <span className='th-white th-fw-700'>AVG COMPLETION</span>,
       dataIndex: 'avg_completion_percentage',
-      width: '15%',
+      width: '30%',
       align: 'center',
       render: (data) => <span className='th-green th-16'>{data.toFixed(2)} %</span>,
     },
@@ -478,14 +490,14 @@ const CurriculumCompletion = (props) => {
         dataIndex: 'conducted_periods',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-green th-16'>{Math.floor(data)}</span>,
+        render: (data) => <span className='th-green th-16'>{data.toFixed(1)}</span>,
       },
       {
         title: <span className='th-white '>AVG PERIODS PENDING</span>,
         dataIndex: 'pending_periods',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-red th-16'>{Math.floor(data)}</span>,
+        render: (data) => <span className='th-red th-16'>{data.toFixed(1)}</span>,
       },
       {
         title: <span className='th-white '>AVG COMPLETION</span>,
@@ -525,7 +537,7 @@ const CurriculumCompletion = (props) => {
                   teacher_id: teacherErp,
                   branch_id: branchId,
                   central_gs: row?.central_gs,
-                  volumeId : volumeId,
+                  volumeId: volumeId,
                   pathname: `${window.location.pathname}`
 
                 },
@@ -569,7 +581,7 @@ const CurriculumCompletion = (props) => {
                   teacher_id: teacherErp,
                   branch_id: branchId,
                   central_gs: row?.central_gs,
-                  volumeId : volumeId,
+                  volumeId: volumeId,
                   pathname: `${window.location.pathname}`
 
                 },
@@ -692,7 +704,7 @@ const CurriculumCompletion = (props) => {
                               selectedDate: dateToday,
                               teacherView: teacherView,
                               branch_id: branchId,
-                              volumeId : volumeId
+                              volumeId: volumeId
                             },
                           })
                         })
@@ -700,7 +712,7 @@ const CurriculumCompletion = (props) => {
                       } />
                     </div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%', fontSize: '20px', fontWeight: 600, margin: '2% 0' }}>Grades</div>
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%', fontSize: '20px', fontWeight: 600, margin: '2% 0' }}>Grade</div>
                 </>
                 :
                 <div style={{ display: 'flex', justifyContent: 'center', fontSize: '40px', margin: '5% 0' }} >
@@ -743,7 +755,7 @@ const CurriculumCompletion = (props) => {
                     }
                     scroll={{ x: 'max-content' }}
                   />
-                  <Pagination defaultCurrent={page} total={teacherData?.total_pages ? teacherData?.total_pages * 10 : 10} showSizeChanger={false} onChange={handlePageChange} style={{display: 'flex' , justifyContent: 'center'}}  />
+                  <Pagination defaultCurrent={page} total={teacherData?.total_pages ? teacherData?.total_pages * 10 : 10} showSizeChanger={false} onChange={handlePageChange} style={{ display: 'flex', justifyContent: 'center' }} />
                 </div>
 
               </div>
