@@ -114,6 +114,7 @@ export default {
   },
   generalDiary: {
     diaryList: '/academic/general-dairy-messages/',
+    diaryListv2: '/academic/v2/general-dairy-messages/',
   },
   dailyDiary: {
     createDiary: '/academic/create-dairy/',

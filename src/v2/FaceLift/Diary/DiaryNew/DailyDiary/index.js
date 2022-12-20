@@ -549,6 +549,8 @@ const DailyDiary = ({ isSubstituteClass }) => {
       subject: null,
       chapter: null,
     });
+    setSubjectDropdown([]);
+    setSubjectID([]);
     if (each) {
       setSectionID(each?.value);
       setSectionMappingID(each?.mappingId);
@@ -586,6 +588,10 @@ const DailyDiary = ({ isSubstituteClass }) => {
       subject: null,
     });
     setSectionDropdown([]);
+    setSectionMappingID();
+    setSectionID();
+    setSubjectDropdown([]);
+    setSubjectID([]);
     if (e) {
       setGradeID(e.value);
       setGradeName(e.children);
@@ -760,7 +766,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
       message.error('Please fill Homework Instructions');
       return;
     }
-    if (!questionList[0].question) {
+    if (!questionList[0]?.question) {
       message.error('Please add questions');
       return;
     }
@@ -990,6 +996,11 @@ const DailyDiary = ({ isSubstituteClass }) => {
         subject_id: editSubject?.subject_id,
         grade_id: editData?.grade_id,
       });
+      fetchAssessmentData({
+        section_mapping: editData?.section_mapping_id,
+        subject_id: editSubject?.subject_id,
+        date: moment(editData?.created_at).format('YYYY-MM-DD'),
+      });
     }
   }, []);
 
@@ -1057,7 +1068,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
           penTool: false,
         },
       ]);
-      setSubmissionDate();
+      // setSubmissionDate();
       setHomeworkTitle();
       setHomeworkInstructions();
     }
@@ -1853,7 +1864,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
                               Status :{' '}
                               {item?.completion_status?.filter(
                                 (item) => item?.section_id === sectionMappingID
-                              )[0].is_complete === true ? (
+                              )[0]?.is_complete === true ? (
                                 <span>
                                   <span className='th-green th-fw-500'> Completed</span>
                                 </span>
@@ -1879,7 +1890,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
                           <div className='col-12 col-sm-6 pl-0'>
                             {item?.completion_status?.filter(
                               (item) => item?.section_id === sectionMappingID
-                            )[0].is_complete == false && (
+                            )[0]?.is_complete == false && (
                               <div className='th-bg-green-2 px-2 py-1 th-br-6'>
                                 <Checkbox
                                   onChange={() => markPeriodComplete(item)}
@@ -1895,17 +1906,17 @@ const DailyDiary = ({ isSubstituteClass }) => {
                           <div className='col-12 th-primary pl-0 th-12'>
                             {addingUpcomingPeriod ? (
                               addedPeriods
-                                .map((item) => item.id)
-                                .includes(item.id) ? null : (
+                                .map((item) => item?.id)
+                                .includes(item?.id) ? null : (
                                 <div className='row align-items-center th-bg-primary py-2 th-br-4'>
                                   <div className='col-8 th-white'>
-                                    {upcomingPeriod.id == item.id
+                                    {upcomingPeriod?.id == item?.id
                                       ? 'Period Added as Upcoming Period'
                                       : 'Add this Period as Upcoming Period'}
                                   </div>
 
                                   <div className='col-4 pl-0 text-center th-fw-600'>
-                                    {upcomingPeriod.id == item.id ? (
+                                    {upcomingPeriod?.id == item?.id ? (
                                       <div
                                         className='th-bg-white th-red py-1 px-2 th-br-6 th-pointer'
                                         onClick={() => {
@@ -1919,8 +1930,8 @@ const DailyDiary = ({ isSubstituteClass }) => {
                                       </div>
                                     ) : (
                                       !addedPeriods
-                                        .map((item) => item.id)
-                                        .includes(item.id) && (
+                                        .map((item) => item?.id)
+                                        .includes(item?.id) && (
                                         <div
                                           className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
                                           onClick={() => {
