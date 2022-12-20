@@ -608,77 +608,79 @@ const BlogActivityView = () => {
                 className='col-12 mt-3 pt-2'
                 style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap' }}
               >
-                {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
-                {blogWallList.map((item) => {
-                  return (
-                    <Grid item xs={12} md={3}>
-                      <Card
-                      onClick={() => viewMore(item)}
-                        // className={classes.root}
-                        className='card-design'
+                <Grid container spacing={3} xs={12}>
+                  {blogWallList.map((item) => {
+                    return (
+                      <Grid item xs={12} md={3}>
+                        <Card
+                        onClick={() => viewMore(item)}
+                          // className={classes.root}
+                          className='card-design'
 
-                      // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
-                      >
-                        <CardActionArea>
-                          <CardHeader
-                            avatar={
-                              <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                        // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
+                        >
+                          <CardActionArea>
+                            <CardHeader
+                              avatar={
+                                <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
 
-                              </Avatar>
-                            }
-                            title={<span style={{fontWeight: 600, fontSize:'16px'}}>{item?.name}</span>}
-                            subheader={<span style={{fontSize:'14px', fontWeight: 500}}> {item?.branch?.name}</span>}
-                          // subheader={item?.grade?.name}
-                          />
-                          <div style={{ display: 'flex' }}>
-                            <div style={{ fontSize: '12px', color: '#09A4D4', marginLeft: '72px', marginTop: '-15px' }}>
-                              {item?.grade?.name}
+                                </Avatar>
+                              }
+                              title={<span style={{fontWeight: 600, fontSize:'16px'}}>{item?.name}</span>}
+                              subheader={<span style={{fontSize:'14px', fontWeight: 500}}> {item?.branch?.name}</span>}
+                            // subheader={item?.grade?.name}
+                            />
+                            <div style={{ display: 'flex' }}>
+                              <div style={{ fontSize: '12px', color: '#09A4D4', marginLeft: '72px', marginTop: '-15px' }}>
+                                {item?.grade?.name}
+                              </div>
+                              {/* <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color: 'blue' }}>
+                                {item?.publish_level}
+                              </div> */}
                             </div>
-                            {/* <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color: 'blue' }}>
-                              {item?.publish_level}
+                            {/* <div style={{ display: 'flex' }}>
+                              <div style={{ fontSize: '10px', marginLeft: '72px', color: 'blue' }}>
+                                {moment(item?.created_at).format("MMM Do YY")}
+                              </div>
                             </div> */}
-                          </div>
-                          {/* <div style={{ display: 'flex' }}>
-                            <div style={{ fontSize: '10px', marginLeft: '72px', color: 'blue' }}>
+                          </CardActionArea>
+                          <CardActionArea style={{ padding: '11px'}}>
+                            <CardMedia
+                              className={classes.media}
+                              image={item.template.template_path}
+                              style={{ border: '1px solid lightgray', borderRadius: '6px', width:'auto', height:'18vh' }}
+                              // alt="Dummy Image"
+                              title="Blog View"
+                            />
+                          </CardActionArea>
+                          <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <div style={{ fontSize: '12px'}}>
+                              {item?.publish_level}
+                            </div>
+                            <div style={{ fontSize: '12px' }}>
                               {moment(item?.created_at).format("MMM Do YY")}
                             </div>
-                          </div> */}
-                        </CardActionArea>
-                        <CardActionArea style={{ padding: '11px'}}>
-                          <CardMedia
-                            className={classes.media}
-                            image={item.template.template_path}
-                            style={{ border: '1px solid lightgray', borderRadius: '6px', width:'auto', height:'18vh' }}
-                            // alt="Dummy Image"
-                            title="Blog View"
-                          />
-                        </CardActionArea>
-                        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <div style={{ fontSize: '12px'}}>
-                            {item?.publish_level}
-                          </div>
-                          <div style={{ fontSize: '12px' }}>
-                            {moment(item?.created_at).format("MMM Do YY")}
-                          </div>
 
-                          <StyledRating
-                            fontSize="small"
-                            style={{ fontSize: 18, width: '10vw', display: 'flex', flexWrap: 'wrap' }}
-                            precision={0.1}
-                            defaultValue={item?.given_rating}
-                            max={parseInt(item?.rating)}
-                            readOnly
-                          />
-                          {/* <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => viewMore(item)}>
-                            View
-                          </Button> */}
-                        </CardActions>
-                      </Card>
-                    </Grid>
+                            <StyledRating
+                              fontSize="small"
+                              style={{ fontSize: 18, width: '10vw', display: 'flex', flexWrap: 'wrap' }}
+                              precision={0.1}
+                              defaultValue={item?.given_rating}
+                              max={parseInt(item?.rating)}
+                              readOnly
+                            />
+                            {/* <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => viewMore(item)}>
+                              View
+                            </Button> */}
+                          </CardActions>
+                        </Card>
+                      </Grid>
 
-                  )
+                    )
 
-                })}
+                  })}
+
+                </Grid>
 
               </Grid>
             </Grid>
@@ -811,7 +813,10 @@ const BlogActivityView = () => {
                     borderRadius:'5px',
                     marginTop: '10px',
                     height: 'auto',
-                    border:'1px solid #dbdbdb'
+                    border:'1px solid #dbdbdb',
+                    width:'21vw',
+                    overflowY:'auto',
+                    maxHeight:'16vh'
 
                   }}
                 >
@@ -837,14 +842,15 @@ const BlogActivityView = () => {
                   </div>
                 </div>
                 <Divider />
-                <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '13px' }}>Review</div>
+                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '17px'}}>Review</div>
                 <div
                   style={{
                     border: '1px solid grey',
                     width: '295px',
                     height: 'auto',
-                    marginLeft: '11px',
-                    marginRight: '10px',
+                    // marginLeft: '11px',
+                    // marginRight: '10px',
+                    margin:'auto',
                     borderRadius: '5px',
                     background: '#f4f5f9'
                   }}
