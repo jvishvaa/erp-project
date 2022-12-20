@@ -28,10 +28,10 @@ const ViewBook = (props) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  // let host = window.location.host;
+  let host = window.location.host;
   // let origin = window.location.origin;
-  let host = '29a9-65-0-144-93.ngrok.io';
-  let origin = 'https://29a9-65-0-144-93.ngrok.io';
+  // let host = '29a9-65-0-144-93.ngrok.io';
+  let origin = window.location.origin;
 
   const { bookId, chapterId, bookUid, localStorageName, environment, type } = props;
   let bookPath = `${environment}/${type}/`;
