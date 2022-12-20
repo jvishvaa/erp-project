@@ -25,6 +25,18 @@ export default {
   userManagement: {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
   },
+  newEbook: {
+    ebookGrade : '/academic/ebook_mapped_grades_v1/',
+    ebookSubject : '/academic/ebook_mapped_subjects/',
+    ebookList: `/academic/v1/ebook_school_wise_filter/`,
+    ebookDefault: `/academic/v1/ebook_school_wise_default/`,
+    ebookClose: '/academic/v1/ebook_user/'
+  },
+  newibook:{
+    ibookList: '/academic/v1/ibook_school_wise_filter/',
+    ibookDefault :'/academic/v1/ibook_school_wise_default/',
+
+  },
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',
