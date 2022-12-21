@@ -104,6 +104,10 @@ export default {
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
   },
+  doodle: {
+    checkDoodle: `/assessment/check-sys-config/`,
+    // fetchDoodle: `/erp_user/fetch-doodle/`,
+  },
 
   communication: {
     roles: '/erp_user/roles/',

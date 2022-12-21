@@ -164,7 +164,7 @@ if(value){
         questions: [],
         instruction:'',
         mandatory_questions : 1,
-        test_Marks : []
+        test_marks : []
       },
     ];
     const question = { id: cuid(), sections: sectionArray };
