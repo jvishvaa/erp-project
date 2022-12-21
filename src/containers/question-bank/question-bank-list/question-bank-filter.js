@@ -148,15 +148,15 @@ const QuestionBankFilters = ({
       FilteredData?.academic_session,
       filterData?.grade,
       filterData?.chapter,
-      tabIsErpCentral,
+      filterData?.is_erp_central,
       tabIsErpCentral ? 2 : 0,
-      filterData?.erp_category
+      filterData?.erp_category,
     );
 
   //  }
       
       // setSelectedIndex(-1);
-  },[filterData?.erp_category , filterData?.question_level,filterData?.question_category,filterData?.quesType])
+  },[filterData])
 
   // const erpCategorys = erpCategoryDropdown?.map((each) => {
   //   return (
@@ -410,9 +410,8 @@ const QuestionBankFilters = ({
     setLoading(true);
     setFlag(false)
     if (value) {
-      let erpCategory = erpCategoryDropdown?.filter((item) => item.erp_category_id === value)
       setFlag(true)
-      setFilterData({ ...filterData, erp_category: erpCategory[0] });
+      setFilterData({ ...filterData, erp_category: value });
       setLoading(false);
     } else {
       setLoading(false);

@@ -17,6 +17,8 @@ import {
   Button,
   SvgIcon,
   Switch,
+  FormGroup,
+  makeStyles
 } from '@material-ui/core';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
@@ -46,12 +48,33 @@ import Checkbox from '@material-ui/core/Checkbox';
 import './styles.scss';
 import AssesmentTest from './assesment-test';
 import { addQuestionPaperToTest } from '../../../redux/actions';
+import QuestionDetailCard from './question-detail-card.js';
 
 
 const testTypes = [
   { id: 1, name: 'Online' },
   { id: 2, name: 'Offline' },
 ];
+
+const useStyles = makeStyles((theme) => ({
+  questionsheader: {
+    color: theme.palette.primary.main,
+    fontSize: "1.2rem"
+  },
+  formfieldheader: {
+    color: theme.palette.primary.main,
+    fontSize: "1.2rem",
+    margin: "1rem 0",
+  },
+  label: {
+    color: theme.palette.secondary.main,
+    marginLeft: "1rem",
+    fontSize: "1.1rem",
+    width: "50%",
+  }
+}))
+
+
 
 const CreateAssesment = ({
   initSetFilter,
@@ -74,6 +97,7 @@ const CreateAssesment = ({
 }) => {
   const [CentralFilter, setCentralFilter] = useState(false);
   const [flag, setFlag] = useState(false);
+  const classes = useStyles()
   const [branch, setBranch] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [branchId, setBranchId] = useState([]);
@@ -180,6 +204,19 @@ if(isEdit && branchDropdown.length){
 }
   },[isEdit,branchDropdown])
 
+
+  useEffect(() => {
+    let paperwise = false
+    let test_mark = []
+      let data = selectedQuestionPaper?.section?.forEach((sec) => {
+       let d =  sec?.test_Marks?.forEach((item) => {
+      test_mark.push(item)
+    })
+    })
+    setChecked(paperwise)
+    setTestMarks(test_mark)
+  },[selectedQuestionPaper])
+
   useEffect(() => {
 if(isEdit && groupList.length && EditData?.group_id !== null){
   let filteredgroup = groupList.filter((item) => item?.id === EditData?.group_id)
@@ -199,7 +236,7 @@ handleGroup('',filteredgroup)
       let assessmentType =  assesmentTypes?.filter((item) =>item?.exam_name == EditData?.test_type__exam_name)
 
       formik.setFieldValue('test_type', assessmentType[0]);
-      if(assessmentType[0]?.exam_name == 'Quiz'){
+      if(assessmentType[0]?.exam_name == 'Quiz' || assessmentType[0]?.exam_name == 'Practice Test' || assessmentType[0]?.exam_name == 'Open Test'){
         setSectionWiseTest(false)
       }
     }
@@ -260,6 +297,10 @@ handleGroup('',filteredgroup)
   const getAssesmentTypes = async () => {
     try {
       const data = await fetchAssesmentTypes();
+      let asstypes = data.filter((item) => item?.exam_name !== 'Open Test' && item?.exam_name !== 'Practice Test')
+      if(formik?.values?.test_mode?.name === 'Online'){
+        setAssesmentTypes(asstypes)
+      }
       setAssesmentTypes(data);
       formik.setFieldValue('test_type', data);
     } catch (e) { }
@@ -270,7 +311,6 @@ handleGroup('',filteredgroup)
   //   }
   //   getAssesmentTypes();
   // }, [moduleId]);
-
   useEffect(() => {
     if ((selectedQuestionPaper?.is_central || EditData?.central_qp_id != null) && moduleId) {
       setCentralFilter(true);
@@ -532,6 +572,7 @@ handleGroup('',filteredgroup)
         mark_type: '1',
         child_mark: [],
         is_central: null,
+        ques_type : 2
       };
 
       const parentIndex = testMarksArr.findIndex((q) => q.question_id === key);
@@ -602,15 +643,13 @@ handleGroup('',filteredgroup)
       is_central: selectedQuestionPaper['is_central'],
     };
 
-    if (formik.values.test_type?.exam_name != 'Quiz' && sectionWiseTest == false) {
+    if ((formik?.values?.test_type?.exam_name != 'Quiz' && formik?.values?.test_type?.exam_name != 'Practice Test' && formik?.values?.test_type?.exam_name != 'Open Test') && sectionWiseTest == false) {
       reqObj = { ...reqObj, test_date: testDate };
     }
 
-    // if (formik.values.test_type?.exam_name != 'Quiz' ) {
-    //   if(sectionWiseTest != true){
-    //     reqObj = { ...reqObj, test_id: testId };
-    //   }
-    // }
+    if ((formik?.values?.test_type?.exam_name != 'Quiz' && formik?.values?.test_type?.exam_name != 'Practice Test' && formik?.values?.test_type?.exam_name != 'Open Test')) {
+      reqObj = { ...reqObj, test_id: testId };
+    }
 
     if (!paperchecked) {
       reqObj = { ...reqObj, test_mark: testMarksArr };
@@ -953,7 +992,109 @@ handleGroup('',filteredgroup)
           childComponentName='Create Test'
           isAcademicYearVisible={true}
         />
-        <div className='content-container'>
+
+
+
+<div className='create-container'>
+<div className='questions-paper-container'>
+
+{!isEdit && <div className='questions-container'>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+                className='questions-header-container'
+              >
+                <div className={classes.questionsheader}>QUESTIONS </div>
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    history.push(`/assessment-question`);
+                  }}
+                  color='primary'
+                  className='mv-20'
+                  style={{ color: 'white', margin: '1rem', borderRadius: '10px' }}
+                >
+                  ADD QUESTION PAPER
+                </Button>
+              </div>
+              <div className='divider-container'>
+                <Divider color='secondary' />
+              </div>
+
+              <div className='questions-content'>
+                <div
+                  className='question-header-row'
+                  style={{ justifyContent: 'flex-end' }}
+                >
+                  {/* <div className='info-section'>
+                <p>Question paper 1</p>
+                <div className='dividerVertical'></div>
+                <p>Online</p>
+                <div className='dividerVertical'></div>
+                <p>Created on 02.02.2021</p>
+              </div> */}
+                  <div className='action-section'>
+                    <FormGroup>
+                      {/* <FormLabel>Parent marks</FormLabel>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            size='small'
+                            onChange={onMarksAssignModeChange}
+                            color='primary'
+                            checked={marksAssignMode}
+                          />
+                        }
+                      />
+                      <FormLabel>Child marks</FormLabel> */}
+                    </FormGroup>
+                  </div>
+                </div>
+                <div className='question-container'>
+                  <div className='sections-container'>
+                    {questionPaperDetails?.map((section) => (
+                      <div className='section-container'>
+                        <div className='section-header'>
+                          <div className='left'>
+                            <div className='checkbox'>
+                              <Checkbox
+                                checked
+                                onChange={() => { }}
+                                inputProps={{ 'aria-label': 'primary checkbox' }}
+                                color='primary'
+                              />
+                            </div>
+                            <div className='section-name'>{`SECTION ${section.name}`}</div>
+                          </div>
+                        </div>
+
+                         <div className='section-content'>
+                          <div>Total Questions: {section.questions.length} </div>
+                          {section.questions.map((q) => (
+                            <div className='question-detail-card-wrapper' style={{ width: '100%' }}>
+                              <QuestionDetailCard
+                                createdAt={q?.created_at}
+                                question={q}
+                                expanded={marksAssignMode}
+                                onChangeMarks={handleChangeTestMarks}
+                                testMarks={testMarks}
+                                paperchecked={paperchecked}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>}
+
+
+<div className='content-container'>
           <Accordion
             className='collapsible-section'
             square
@@ -961,7 +1102,7 @@ handleGroup('',filteredgroup)
             onChange={() => { }}
           >
             <AccordionSummary>
-              <div className='header mv-20'>
+              {/* <div className='header mv-20'>
                 {!expandFilter ? (
                   <IconButton
                     onClick={() => {
@@ -997,7 +1138,7 @@ handleGroup('',filteredgroup)
                     <FilterListIcon color='secondary' />
                   </IconButton>
                 )}
-              </div>
+              </div> */}
             </AccordionSummary>
             <AccordionDetails>
               <div className='form-grid-container'>
@@ -1037,7 +1178,7 @@ handleGroup('',filteredgroup)
                             onChange={(e, value) => {
                               console.log(value)
                               formik.setFieldValue('test_type', value);
-                              if(value?.exam_name == 'Quiz'){
+                              if(value?.exam_name == 'Quiz' || value?.exam_name == 'Practice Test' ||value?.exam_name == 'Open Test'){
                                 setSectionWiseTest(false)
                               }
                             }}
@@ -1132,7 +1273,7 @@ handleGroup('',filteredgroup)
                           </Grid>
                         } */}
                       </Grid>
-                      {(selectedQuestionPaper || isEdit) && (
+                      {(isEdit) && (
                         <Grid container alignItems='center' style={{ marginTop: 15 }}>
                           <Grid
                             container
@@ -1212,7 +1353,7 @@ handleGroup('',filteredgroup)
                           )}
                           {selectedSectionData?.length > 0 && formik?.values?.test_type != '' ? 
                           <>
-                          {formik?.values?.test_type?.exam_name == 'Quiz'   ? '' :
+                          {(formik?.values?.test_type?.exam_name == 'Quiz' || formik?.values?.test_type?.exam_name == 'Practice Test' || formik?.values?.test_type?.exam_name == 'Open Test')   ? '' :
                           <>
                           {sectionToggle ? '' : <>
                             { !isEdit && <Grid item xs={12} md={4} style={{display : 'flex' , justifyContent: 'center'}} >
@@ -1238,9 +1379,9 @@ handleGroup('',filteredgroup)
             </AccordionDetails>
           </Accordion>
 
-          <div className='divider-container'>
-            <Divider />
-          </div>
+        </div>
+
+
           <AssesmentTest
             questionPaper={questionPaperDetails}
             onMarksAssignModeChange={handleMarksAssignModeChange}
@@ -1304,7 +1445,38 @@ handleGroup('',filteredgroup)
             sectionWiseTest={sectionWiseTest}
             updateTest = {updateTest}
           />
-        </div>
+          <div className='divider-container'>
+            <Divider />
+          </div>
+          
+          </div>
+          </div>
+        {isEdit ? (<div className='submit-btn-conntainer mv-20'>
+                  <Button
+                    variant='contained'
+                    className=''
+                    style={{ borderRadius: '10px' }}
+                    color='primary'
+                    onClick={(e) => updateTest()}
+                  >
+                    Update
+                  </Button>
+                </div>) : (<div className='submit-btn-conntainer mv-20'>
+                  <Button
+                    variant='contained'
+                    className=''
+                    style={{ borderRadius: '10px' }}
+                    color='primary'
+                    onClick={handleCreateAssesmentTest}
+                    disabled={
+                      !testDuration ||
+                      !testName ||
+                      !instructions
+                    }
+                  >
+                    Submit
+                  </Button>
+                </div>)}
       </div>
     </Layout>
   );
