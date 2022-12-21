@@ -785,10 +785,13 @@ const DailyDiary = ({ isSubstituteClass }) => {
         return qObj;
       }),
     };
-
     try {
       const response = await dispatch(
-        addHomeWork(reqObj, homeworkMapped, assignedHomework[0]?.id)
+        addHomeWork(
+          reqObj,
+          homeworkMapped,
+          assignedHomework ? assignedHomework[0]?.id : null
+        )
       );
       message.success('Homework added');
       // setShowHomeworkForm(false);
@@ -1642,28 +1645,32 @@ const DailyDiary = ({ isSubstituteClass }) => {
                   </div>
                 )}
 
-                {(todaysAssessment.length > 0 || upcomingAssessment.length > 0) && (
-                  <div
-                    className='row mx-3 th-br-6 mt-3'
-                    style={{ border: '1px solid #d9d9d9' }}
-                  >
+                {(todaysAssessment.length > 0 || upcomingAssessment.length > 0) &&
+                  subjectID && (
                     <div
-                      className='col-12 th-bg-blue-1 px-1'
-                      style={{ borderRadius: '6px 6px 0px 0px' }}
+                      className='row mx-3 th-br-6 mt-3'
+                      style={{ border: '1px solid #d9d9d9' }}
                     >
-                      <div className='row py-1 align-items-center'>
-                        <img src={AssessmentIcon} className='mr-2 mb-1' />{' '}
-                        <span className='th-fw-500'>Assessment</span>
+                      <div
+                        className='col-12 th-bg-blue-1 px-1'
+                        style={{ borderRadius: '6px 6px 0px 0px' }}
+                      >
+                        <div className='row py-1 align-items-center'>
+                          <img src={AssessmentIcon} className='mr-2 mb-1' />{' '}
+                          <span className='th-fw-500'>Assessment</span>
+                        </div>
+                      </div>
+                      <div
+                        className='row py-1'
+                        style={{ maxHeight: '25vh', overflowY: 'scroll' }}
+                      >
+                        {todaysAssessment.length > 0 &&
+                          showAssessmentData(todaysAssessment)}
+                        {upcomingAssessment.length > 0 &&
+                          showAssessmentData(upcomingAssessment)}
                       </div>
                     </div>
-                    <div className='row py-1'>
-                      {todaysAssessment.length > 0 &&
-                        showAssessmentData(todaysAssessment)}
-                      {upcomingAssessment.length > 0 &&
-                        showAssessmentData(upcomingAssessment)}
-                    </div>
-                  </div>
-                )}
+                  )}
                 <div className='row py-2'>
                   <div className='col-3 th-black-2'>Note (Optional)</div>
                   <div className='col-12 py-2'>
