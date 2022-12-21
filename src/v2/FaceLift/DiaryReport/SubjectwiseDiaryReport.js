@@ -51,7 +51,6 @@ const SubjectwiseDiaryReport = () => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleSubmit = () => {
-    setRequestSent(true);
     let payload = {
       date,
       teacher_id: selectedTeacher?.user_id,
@@ -62,6 +61,12 @@ const SubjectwiseDiaryReport = () => {
     if (!isClassCancelled) {
       payload['data'] = description;
     }
+    if (!isClassCancelled) {
+      if (!description) {
+        return;
+      }
+    }
+    setRequestSent(true);
     if (reasonId) {
       payload['id'] = reasonId;
       axios
@@ -70,7 +75,13 @@ const SubjectwiseDiaryReport = () => {
           if (res.data.status_code === 200) {
             message.success('Reason updated successfully');
             setReasonId(null);
-            handleCloseFeedbackeModal();
+            handleCloseFeedbackModal();
+            fetchTeacherwiseReport({
+              acad_session_id: selectedBranch?.id,
+              section_mapping: selectedSection?.section_mapping,
+              subject_id: subjectID,
+              date,
+            });
           }
         })
         .catch((error) => {
@@ -82,7 +93,13 @@ const SubjectwiseDiaryReport = () => {
         .then((res) => {
           if (res.data.status_code === 201) {
             message.success('Reason mentioned successfully');
-            handleCloseFeedbackeModal();
+            handleCloseFeedbackModal();
+            fetchTeacherwiseReport({
+              acad_session_id: selectedBranch?.id,
+              section_mapping: selectedSection?.section_mapping,
+              subject_id: subjectID,
+              date,
+            });
           }
         })
         .catch((error) => {
@@ -99,15 +116,9 @@ const SubjectwiseDiaryReport = () => {
       setDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
     }
   };
-  const handleCloseFeedbackeModal = () => {
+  const handleCloseFeedbackModal = () => {
     setShowFeedbackModal(false);
     setRequestSent(false);
-    fetchTeacherwiseReport({
-      acad_session_id: selectedBranch?.id,
-      section_mapping: selectedSection?.section_mapping,
-      subject_id: subjectID,
-      date,
-    });
   };
   const onTableRowExpand = (expanded, record) => {
     setTableExpanded(false);
@@ -445,7 +456,7 @@ const SubjectwiseDiaryReport = () => {
           <Modal
             title={'Feedback for Pending Diary'}
             visible={showFeedbackModal}
-            onCancel={handleCloseFeedbackeModal}
+            onCancel={handleCloseFeedbackModal}
             className='th-upload-modal'
             centered
             footer={[
