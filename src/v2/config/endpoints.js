@@ -25,6 +25,18 @@ export default {
   userManagement: {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
   },
+  newEbook: {
+    ebookGrade : '/academic/ebook_mapped_grades_v1/',
+    ebookSubject : '/academic/ebook_mapped_subjects/',
+    ebookList: `/academic/v1/ebook_school_wise_filter/`,
+    ebookDefault: `/academic/v1/ebook_school_wise_default/`,
+    ebookClose: '/academic/v1/ebook_user/'
+  },
+  newibook:{
+    ibookList: '/academic/v1/ibook_school_wise_filter/',
+    ibookDefault :'/academic/v1/ibook_school_wise_default/',
+
+  },
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',
@@ -71,7 +83,7 @@ export default {
     curriculumCompletion: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-subject-sectionwise-report/`,
     classworkReport: `${msReportsUrl}/api/reports/v1/classwork-stats/`,
     homeworkReport: `${msReportsUrl}/api/reports/v1/homework-stats/`,
-    curriculumnWidget : `${msReportsUrl}/api/acad_performance/grade-subject-wise-curriculum-completion-widget/`
+    curriculumnWidget: `${msReportsUrl}/api/acad_performance/grade-subject-wise-curriculum-completion-widget/`,
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
@@ -93,7 +105,7 @@ export default {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,
   },
-  userManagement: {
+  userManagementBlog: {
     getUserLevel: '/erp_user/level_list/',
   },
   profile: {
@@ -114,6 +126,7 @@ export default {
   },
   generalDiary: {
     diaryList: '/academic/general-dairy-messages/',
+    diaryListv2: '/academic/v2/general-dairy-messages/',
   },
   dailyDiary: {
     createDiary: '/academic/create-dairy/',
@@ -139,6 +152,7 @@ export default {
   },
   lessonPlan: {
     subjects: 'academic/v2/lesson-plan-subjects/',
+    allSubjects: 'academic/v3/lesson-plan-subjects/',
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     chapterList: 'academic/central-chapters-list-v3/',

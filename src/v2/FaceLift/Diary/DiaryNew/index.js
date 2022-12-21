@@ -75,7 +75,7 @@ const Diary = () => {
       branch: selectedBranch?.branch?.id,
     };
     axios
-      .get(`${endpoints.generalDiary.diaryList}`, { params })
+      .get(`${endpoints.generalDiary.diaryListv2}`, { params })
       .then((response) => {
         if (response?.data?.status_code == 200) {
           setGeneralDiaryList(response?.data?.result?.results);
@@ -144,7 +144,14 @@ const Diary = () => {
                   <Button
                     type='primary'
                     className='th-br-6 th-bg-primary th-pointer th-white'
-                    onClick={() => history.push('/create/diary')}
+                    onClick={() =>
+                      history.push({
+                        pathname: '/create/diary',
+                        state: {
+                          isSubstituteClass: false,
+                        },
+                      })
+                    }
                     block
                   >
                     <PlusOutlined className='ml-2' />
@@ -152,10 +159,31 @@ const Diary = () => {
                   </Button>
                 </div>
               )}
+              <div className='col-md-8 text-right'>
+                <div className='row justify-content-end'>
+                  {!isStudentDiary && (
+                    <div className='col-md-4 pr-0'>
+                      <div
+                        className='th-br-6 th-primary th-pointer'
+                        onClick={() =>
+                          history.push({
+                            pathname: '/create/diary',
+                            state: {
+                              isSubstituteClass: true,
+                            },
+                          })
+                        }
+                      >
+                        <u>Create Substitute Diary</u>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
             {showTab == 1 && !isStudentDiary && (
               <div className='row px-2'>
-                {dailyDiaryData.length > 0 ? (
+                {dailyDiaryData.length > 1 ? (
                   <>
                     {dailyDiaryData.length > 1 && (
                       <>
@@ -211,6 +239,23 @@ const Diary = () => {
                 activeKey={showTab}
                 onChange={onTabChange}
                 className='th-width-100 px-3'
+                tabBarExtraContent={
+                  showTab == 1 && !isStudentDiary ? (
+                    <Button
+                      className='th-button-active th-br-6'
+                      onClick={() =>
+                        history.push({
+                          pathname: '/gradewise-diary-report',
+                          state: {
+                            date,
+                          },
+                        })
+                      }
+                    >
+                      Pending Report
+                    </Button>
+                  ) : null
+                }
               >
                 <TabPane tab='Daily Diary' key='1' className='th-pointer'>
                   <div className='row th-bg-white'>
@@ -337,7 +382,7 @@ const Diary = () => {
             ) : null}
             {showGrievanceModal && (
               <GrievanceModal
-                title={'Dairy Related Query'}
+                title={'Diary Related Query'}
                 showGrievanceModal={showGrievanceModal}
                 handleClose={handleCloseGrievanceModal}
               />

@@ -643,7 +643,7 @@ const BlogWall = () => {
   const PostContent = () => {
     return (
       <>
-        <div className='row mb-2 mb-md-0 mt-5'>
+        <div className='row mb-md-0 mt-3'>
           {user_level == '13' || user_level == '10' ? (
             ' '
           ) : (
@@ -653,6 +653,7 @@ const BlogWall = () => {
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                   id="panel1a-header"
+                  style={{ height: '7vh' }}
                 >
                   <Typography className={classes.heading}>Filters</Typography>
                 </AccordionSummary>
@@ -759,41 +760,44 @@ const BlogWall = () => {
         ) :
           postListCount > 0 ? (
 
-            <Grid container spacing={4} >
-              <Grid
-                className='col-12 mt-3 pt-2'
-              >
-                <Divider orientation="left" orientationMargin="0" style={{ padding: '0px', marginBelow: '0px', marginTop: '10px' }}>
-                  Post ({postWallList?.length})
-                </Divider>
-              </Grid>
-              <Grid
-                className='col-12'
-                style={{ display: 'flex', justifyContent: 'end', paddingRight: '30px' }}
-              >
-                <Button onClick={handleSeeMorePost}>
-                  View All
-                </Button>
+            <Grid container spacing={2} >
+              <Grid className='col-12 mt-4' style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0 }}>
+                <Grid
+                  className='col-6'
+                >
+                  <b style={{ color: '#1b4ccb' }}>Post</b>
+                </Grid>
+                <Grid
+                  className='col-6'
+                  style={{ display: 'flex', justifyContent: 'end' }}
+                >
+                  <Button onClick={handleSeeMorePost}>
+                    View All
+                  </Button>
+                </Grid>
+
               </Grid>
 
               <Grid
                 className='col-12'
-                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', paddingButton: '30px' }}
+                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', padding: 0, paddingBottom: '30px' }}
               >
 
                 {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
-                {postWallList.map((item) => {
-                  return (
-                    <Grid item xs={12} md={3}>
-                      <Card
-                        // className={classes.root}
-                        onClick={() => viewMorePost(item)}
-                        className='card-design'
+                <Grid container spacing={4} xs={12}>
+                  {postWallList.map((item) => {
+                    return (
 
-                      // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
-                      >
-                        <CardActionArea>
-                          {/* <CardHeader
+                      <Grid item xs={12} md={3}>
+                        <Card
+                          // className={classes.root}
+                          onClick={() => viewMorePost(item)}
+                          className='card-design'
+
+                        // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
+                        >
+                          <CardActionArea>
+                            {/* <CardHeader
                             avatar={
                               <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
 
@@ -803,57 +807,58 @@ const BlogWall = () => {
                             subheader={item?.description}
                           // subheader={item?.grade?.name}
                           /> */}
-                        </CardActionArea>
-                        <CardActionArea style={{ padding: '8px' }}>
-                          {item?.file_type == "video/mp4" ? (
-                            <CardMedia
-                              className={classes.media}
-                              style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
-                              component="video"
-                              // autoPlay 
-                              controls
-                              src={item?.template_path}
-                            />
-                          ) : (
+                          </CardActionArea>
+                          <CardActionArea style={{ padding: '8px' }}>
+                            {item?.file_type == "video/mp4" ? (
+                              <CardMedia
+                                className={classes.media}
+                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
+                                component="video"
+                                // autoPlay 
+                                controls
+                                src={item?.template_path}
+                              />
+                            ) : (
 
-                            <CardMedia
-                              className={classes.media}
-                              image={item?.template_path}
-                              style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
-                              // alt="Dummy Image"
-                              title="Blog View"
-                            />
-                          )}
-                        </CardActionArea>
-                        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection: 'column' }}>
-                          <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
-                            <div>
-                              <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                              </Avatar>
-                            </div>
-                            <div style={{ padding: '0 0.5rem' }}>
-                              <div style={{ fontWeight: 600, fontSize: '16px' }}>
-                                {item?.name}
+                              <CardMedia
+                                className={classes.media}
+                                image={item?.template_path}
+                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
+                                // alt="Dummy Image"
+                                title="Blog View"
+                              />
+                            )}
+                          </CardActionArea>
+                          <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection: 'column' }}>
+                            <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
+                              <div>
+                                <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                                </Avatar>
                               </div>
-                              <div style={{ fontWeight: 500, fontSize: '14px' }}>
-                                {item?.view_level}
+                              <div style={{ padding: '0 0.5rem' }}>
+                                <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                                  {item?.name}
+                                </div>
+                                <div style={{ fontWeight: 500, fontSize: '14px', color: 'grey' }}>
+                                  {item?.view_level}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <Divider style={{ padding: "0px", margin: "0px" }} />
-                          <div style={{ width: '100%', padding: '5px', fontSize: '12px', fontWeight: 500 }}>
-                            <div>
-                              {moment(item?.created_at).format("MMM Do YY")}
+                            <Divider style={{ padding: "0px", margin: "0px" }} />
+                            <div style={{ width: '100%', padding: '5px', fontSize: '12px', fontWeight: 500 }}>
+                              <div>
+                                {moment(item?.created_at).format("MMM Do YY")}
+                              </div>
+
                             </div>
+                          </CardActions>
+                        </Card>
+                      </Grid>
 
-                          </div>
-                        </CardActions>
-                      </Card>
-                    </Grid>
+                    )
 
-                  )
-
-                })}
+                  })}
+                </Grid>
 
               </Grid>
             </Grid>
@@ -882,16 +887,20 @@ const BlogWall = () => {
               </div>
 
             </div>
-            <Divider />
+            <Divider style={{ margin: '5px' }} />
 
             <Grid container direction='row' justifyContent='center'>
               <Grid item>
                 <div
                   style={{
                     border: '1px solid #813032',
-                    width: '583px',
+                    // width: '583px',
+                    width: '100%',
                     background: 'white',
-                    height: 'auto',
+                    // height: 'auto',
+                    height: '90vh',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '5px'
                   }}
                 >
                   {/* <div
@@ -916,9 +925,10 @@ const BlogWall = () => {
                     style={{
                       background: 'white',
                       width: '502px',
-                      marginLeft: '34px',
+                      // marginLeft: '34px',
                       marginTop: '16px',
                       height: 'auto',
+                      marginBottom: '20px',
                     }}
                   >
                     <div
@@ -933,7 +943,11 @@ const BlogWall = () => {
                         display: 'flex',
                         justifyContent: 'flex-start',
                         fontWeight: 'bold',
-                        paddingLeft: '10px'
+                        paddingLeft: '10px',
+                        border: '1px solid #dbdbdb',
+                        width: 'auto',
+                        overflowY: 'auto',
+                        maxHeight: '16vh'
                       }}
                     >
                       <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
@@ -944,30 +958,36 @@ const BlogWall = () => {
                   <div
                     style={{
                       background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
+                      width: '100%',
+                      // marginLeft: '34px',
                       height: 'auto',
                       marginTop: '12px',
-                      marginBottom: '29px',
+                      // marginBottom: '29px',
                     }}
                   >
 
                     {postPreviewData?.file_type == "video/mp4" ? (
-                      <video width="500" height="600" controls >
+                      <video
+                        width="100%"
+                        height="300"
+                        controls
+                      >
                         <source src={`${postPreviewData?.template_path}`} type="video/mp4" />
-                            Your browser does not support HTML video.
+                        Your browser does not support HTML video.
                       </video>
 
                     ) : (
                       <div
                         style={{
-                          background: `url(${postPreviewData?.template_path})`,
-                          backgroundSize: "contain",
+                          backgroundImage: `url(${postPreviewData?.template_path})`,
+                          backgroundSize: "cover",
                           position: "relative",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "center",
                           backgroundColor: "rgba(244 245 247 / 25%)",
-                          height: "683px",
+                          width: '100%',
+                          height: '60vh',
+                          borderRadius: '5px'
                         }}
 
                       >
@@ -1010,96 +1030,98 @@ const BlogWall = () => {
         ) :
           listCount > 0 ? (
 
-            <Grid container spacing={4} >
-              <Grid className='col-12 mt-3 pt-2'>
-                <Divider orientation="left" orientationMargin="0">
-                  Blog ({blogWallList?.length})
-                </Divider>
+            <Grid container spacing={2} >
+              <Grid className='col-12 mt-4' style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0 }}>
+                <Grid className='col-6'>
+                  <b style={{ color: '#1b4ccb' }}> Blog</b>
+                </Grid>
+                <Grid
+                  className='col-6'
+                  style={{ display: 'flex', justifyContent: 'end' }}
+                >
+                  <Button onClick={handleSeeMoreBlog}>
+                    View All
+                  </Button>
+                </Grid>
               </Grid>
               <Grid
                 className='col-12'
-                style={{ display: 'flex', justifyContent: 'end', paddingRight:'24px' }}
-              >
-                <Button onClick={handleSeeMoreBlog}>
-                  View All
-                </Button>
-              </Grid>
-              <Grid
-                className='col-12 p-1'
-                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', paddingBottom:'30px' }}
+                style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', padding: '0px', paddingButton: '30px' }}
               >
                 {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
-                {blogWallList.map((item) => {
-                  return (
-                    <Grid item xs={12} md={3}>
-                      <Card
-                        // className={classes.root}
-                        onClick={() => viewMore(item)}
-                        className='card-design'
+                <Grid container spacing={4} xs={12}>
+                  {blogWallList.map((item) => {
+                    return (
+                      <Grid item xs={12} md={3}>
+                        <Card
+                          // className={classes.root}
+                          onClick={() => viewMore(item)}
+                          className='card-design'
 
-                      // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
-                      >
-                        <CardActionArea>
-                          <CardHeader
-                            avatar={
-                              <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                        // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
+                        >
+                          <CardActionArea>
+                            <CardHeader
+                              avatar={
+                                <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
 
-                              </Avatar>
-                            }
-                            title={<span style={{ fontWeight: 600, fontSize: '16px' }}>{item?.name}</span>}
-                            subheader={<span style={{ fontSize: '14px', fontWeight: 500 }}>{item?.branch?.name}</span>}
-                          // subheader={item?.grade?.name}
-                          />
-                          <div style={{ display: 'flex' }}>
-                            <div style={{ fontSize: '12px', color: '#09A4D4', marginLeft: '72px', marginTop: '-15px' }}>
-                              {item?.grade?.name}
-                            </div>
-                            {/* <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color: 'blue' }}>
+                                </Avatar>
+                              }
+                              title={<span style={{ fontWeight: 600, fontSize: '16px' }}>{item?.name}</span>}
+                              subheader={<span style={{ fontSize: '14px', fontWeight: 500 }}>{item?.branch?.name}</span>}
+                            // subheader={item?.grade?.name}
+                            />
+                            <div style={{ display: 'flex' }}>
+                              <div style={{ fontSize: '12px', color: '#09A4D4', marginLeft: '72px', marginTop: '-15px' }}>
+                                {item?.grade?.name}
+                              </div>
+                              {/* <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color: 'blue' }}>
                               {item?.publish_level}
                             </div> */}
-                          </div>
-                          {/* <div style={{ display: 'flex' }}>
+                            </div>
+                            {/* <div style={{ display: 'flex' }}>
                             <div style={{ fontSize: '10px', marginLeft: '72px', color: 'blue' }}>
                               {moment(item?.created_at).format("MMM Do YY")}
                             </div>
                           </div> */}
-                        </CardActionArea>
-                        <CardActionArea style={{ padding: '11px' }}>
-                          <CardMedia
-                            className={classes.media}
-                            image={item.template.template_path}
-                            style={{ border: '1px solid lightgray', borderRadius: '6px', width: 'auto', height: '18vh' }}
-                            // alt="Dummy Image"
-                            title="Blog View"
-                          />
-                        </CardActionArea>
-                        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <div style={{ fontSize: '12px' }}>
-                            {item?.publish_level}
-                          </div>
-                          <div style={{ fontSize: '12px' }}>
-                            {moment(item?.created_at).format("MMM Do YY")}
-                          </div>
+                          </CardActionArea>
+                          <CardActionArea style={{ padding: '11px' }}>
+                            <CardMedia
+                              className={classes.media}
+                              image={item.template.template_path}
+                              style={{ border: '1px solid lightgray', borderRadius: '6px', width: 'auto', height: '18vh' }}
+                              // alt="Dummy Image"
+                              title="Blog View"
+                            />
+                          </CardActionArea>
+                          <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <div style={{ fontSize: '12px' }}>
+                              {item?.publish_level}{' '}
+                            </div>
+                            <div style={{ fontSize: '12px' }}>
+                              {moment(item?.created_at).format("MMM Do YY")}
+                            </div>
 
-                          <StyledRating
-                            fontSize="small"
-                            style={{ fontSize: 18, width: '10vw', display: 'flex', flexWrap: 'wrap' }}
-                            precision={0.1}
-                            defaultValue={item?.given_rating}
-                            max={parseInt(item?.rating)}
-                            readOnly
-                          />
-                          {/* <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => viewMore(item)}>
+                            <StyledRating
+                              fontSize="small"
+                              style={{ fontSize: 18, width: '6vw', display: 'flex', flexWrap: 'wrap' }}
+                              precision={0.1}
+                              defaultValue={item?.given_rating}
+                              max={parseInt(item?.rating)}
+                              readOnly
+                            />
+                            {/* <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => viewMore(item)}>
                             View
                           </Button> */}
-                        </CardActions>
-                      </Card>
-                    </Grid>
+                          </CardActions>
+                        </Card>
+                      </Grid>
 
-                  )
+                    )
 
-                })}
+                  })}
 
+                </Grid>
               </Grid>
             </Grid>
           )
@@ -1206,7 +1228,7 @@ const BlogWall = () => {
               </Grid>
               <Grid item>
                 <div>
-                  <div style={{ display: 'flex', width: '100%', padding:'0.5rem 1rem' }}>
+                  <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem' }}>
                     <div style={{ padding: '5px' }}>
                       <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
                       </Avatar>
@@ -1227,12 +1249,15 @@ const BlogWall = () => {
                 <div
                   style={{
                     background: '#f9f9f9',
-                    margin:'0.5rem 1rem',
-                    padding:'0.5rem 1rem',
-                    borderRadius:'5px',
+                    margin: '0.5rem 1rem',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '5px',
                     marginTop: '10px',
                     height: 'auto',
-                    border:'1px solid #dbdbdb'
+                    border: '1px solid #dbdbdb',
+                    width: '21vw',
+                    overflowY: 'auto',
+                    maxHeight: '16vh'
 
                   }}
                 >
@@ -1258,14 +1283,15 @@ const BlogWall = () => {
                   </div>
                 </div>
                 <Divider />
-                <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '13px' }}>Review</div>
+                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '17px' }}>Review</div>
                 <div
                   style={{
                     border: '1px solid grey',
                     width: '295px',
                     height: 'auto',
-                    marginLeft: '11px',
-                    marginRight: '10px',
+                    // marginLeft: '11px',
+                    // marginRight: '10px',
+                    margin: 'auto',
                     borderRadius: '5px',
                     background: '#f4f5f9'
                   }}

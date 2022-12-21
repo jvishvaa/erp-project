@@ -294,7 +294,7 @@ const TopicTable = () => {
       //setFilterData({ ...filterData, chapter: ''});
       axiosInstance
         .get(
-          `${endpoints.masterManagement.chapter}?session_year=${filterData.year.id}&subject=${value.subject__id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.chapter}?session_year=${filterData.year.id}&subject=${value.subject__id}&module_id=${moduleId}&grade=${filterData.grade.grade_id}`
         )
         .then((res) => {
           if (res.data.status_code === 200) {

@@ -763,7 +763,7 @@ const PublicSpeakingWall = () => {
                   <div style={{display:'flex', justifyContent:'center'}}>
                   <span style={{fontSize:'20px',marginBottom: '15px'}}> Student Marks </span>
                   </div>
-                  <div style={{width:'20vw'}}>
+                  <div>
                   <div className='col-12' style={{padding:'10px'}}>
                       <TableAnt
                         className='th-table'

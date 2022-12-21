@@ -415,7 +415,7 @@ const GeneralDairyList = () => {
           ) : null}
           {showGrievanceModal && (
             <GrievanceModal
-              title={'Dairy Related Query'}
+              title={'Diary Related Query'}
               showGrievanceModal={showGrievanceModal}
               handleClose={handleCloseGrievanceModal}
             />
