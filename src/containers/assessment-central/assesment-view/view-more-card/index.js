@@ -81,9 +81,10 @@ const ViewMoreCard = ({
 
   const handleOpenEdit = () => {
     history.push({ 
-      pathname : `/create-question-paper/${periodDataForView?.id}`,
+      pathname : `/createquestionpaper/`,
       state:{
-        isEdit : true
+        isEdit : true,
+        paperId : periodDataForView?.id
       }
   }
     );

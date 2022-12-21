@@ -128,6 +128,12 @@ export default {
     diaryList: '/academic/general-dairy-messages/',
     diaryListv2: '/academic/v2/general-dairy-messages/',
   },
+  createQuestionApis: {
+    // topicList: `${baseURLCentral}/assessment/topic/`,
+    topicList: `${baseURLCentral}/assessment/topics-list/`,
+    questionType: `${baseURLCentral}/assessment/question_type/`,
+    createQuestion: `${baseURLCentral}/assessment/create-question/`,
+  },
   dailyDiary: {
     createDiary: '/academic/create-dairy/',
     branches: '/academic/chapters/',
