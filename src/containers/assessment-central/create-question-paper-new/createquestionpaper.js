@@ -39,7 +39,7 @@ const CreatequestionPaper = () => {
   const [editFilters , setEditFilters] = useState(false)
   const {sectionCounts,Grade,erpCategory} = history?.location?.state;
   const [questionPaperWise , setQuestionPaperWise] = useState(true)
-  const [qp_wise_marks , setQp_wise_Marks] = useState('')
+  const [qp_wise_marks , setQp_wise_Marks] = useState(0)
   const [max_Marks,setMaxMarks] = useState(0)
   const { refresh = false , isEdit, paperId} = history.location?.state || {};
 
@@ -230,7 +230,7 @@ console.log(formik.values.grade,'grade')
 
 const handlequesType = () => {
   setQuestionPaperWise((prev) => !prev) 
-  setQp_wise_Marks('')
+  setQp_wise_Marks(0)
 }
 
   const handleerpCategory = (value) => {
@@ -427,6 +427,7 @@ const handlequesType = () => {
   };
 
   const handleCreateQuestionPaper = async (isDraft) => {
+    debugger
     try {
       if(max_Marks === 0){
         return setAlert('error','Please Enter Maximum Marks')

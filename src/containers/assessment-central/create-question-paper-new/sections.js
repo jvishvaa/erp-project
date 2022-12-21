@@ -143,6 +143,10 @@ const Sections = ({ question, section, questionId, onDelete, onDeleteQuestion,gr
         marks += parseInt(item?.question_mark[0])
   } )
 
+  useEffect(() => {
+    handleOptionalQuestion(section?.questions?.length,'')
+  },[section?.questions?.length])
+
   const handleAddQuestion = () => {
     setDrawerOpen(true);
   };
