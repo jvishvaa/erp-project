@@ -503,7 +503,10 @@ const Reviewed = (props) => {
                     borderRadius:'5px',
                     marginTop: '10px',
                     height: 'auto',
-                    border:'1px solid #dbdbdb'
+                    border:'1px solid #dbdbdb',
+                    width:'21vw',
+                    overflowY:'auto',
+                    maxHeight:'16vh'
 
                   }}
                 >
@@ -541,8 +544,9 @@ const Reviewed = (props) => {
                     border: '1px solid grey',
                     width: '295px',
                     height: 'auto',
-                    marginLeft: '11px',
-                    marginRight: '10px',
+                    // marginLeft: '11px',
+                    // marginRight: '10px',
+                    margin:'auto',
                     background: '#f4f5f9',
                     borderRadius:'5px'
                   }}

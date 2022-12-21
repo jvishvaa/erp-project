@@ -395,6 +395,7 @@ export default {
     AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
     getCentralGrade: '/academic/ebook_grade_wise_filter/',
+    ebookClose: '/academic/v1/ebook_user/'
   },
   ibook: {
     // studentBook: '/academic/student-books-list/',

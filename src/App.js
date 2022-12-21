@@ -460,6 +460,7 @@ import PhysicalPendingReview from 'containers/newBlog/PhysicalPendingReview';
 import CreatePostActivity from 'containers/newBlog/createPostActivity';
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
+import NewEbookView from 'containers/ebooks/NewEbook';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -2217,6 +2218,13 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/lesson-plan/student-view/list-view'>
                               {({ match }) => <LessonPlan match={match} />}
                             </Route>
+
+                            {/* ebook v2 */}
+
+                            <Route path='/lesson-plan/ebook-View/'>
+                              {({ match }) => <NewEbookView match={match} />}
+                            </Route>
+
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
                             </Route>

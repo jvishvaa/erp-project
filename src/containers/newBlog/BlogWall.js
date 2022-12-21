@@ -928,7 +928,7 @@ const BlogWall = () => {
                       // marginLeft: '34px',
                       marginTop: '16px',
                       height: 'auto',
-                      marginBottom: '20px'
+                      marginBottom: '20px',
                     }}
                   >
                     <div
@@ -943,7 +943,11 @@ const BlogWall = () => {
                         display: 'flex',
                         justifyContent: 'flex-start',
                         fontWeight: 'bold',
-                        paddingLeft: '10px'
+                        paddingLeft: '10px',
+                        border: '1px solid #dbdbdb',
+                        width: 'auto',
+                        overflowY: 'auto',
+                        maxHeight: '16vh'
                       }}
                     >
                       <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
@@ -1250,7 +1254,10 @@ const BlogWall = () => {
                     borderRadius: '5px',
                     marginTop: '10px',
                     height: 'auto',
-                    border: '1px solid #dbdbdb'
+                    border: '1px solid #dbdbdb',
+                    width: '21vw',
+                    overflowY: 'auto',
+                    maxHeight: '16vh'
 
                   }}
                 >
@@ -1276,14 +1283,15 @@ const BlogWall = () => {
                   </div>
                 </div>
                 <Divider />
-                <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '13px' }}>Review</div>
+                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '17px' }}>Review</div>
                 <div
                   style={{
                     border: '1px solid grey',
                     width: '295px',
                     height: 'auto',
-                    marginLeft: '11px',
-                    marginRight: '10px',
+                    // marginLeft: '11px',
+                    // marginRight: '10px',
+                    margin: 'auto',
                     borderRadius: '5px',
                     background: '#f4f5f9'
                   }}
