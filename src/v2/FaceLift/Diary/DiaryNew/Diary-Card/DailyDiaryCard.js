@@ -1125,16 +1125,26 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                       </span>
                     </div>
                   </div>
-                  <div className='col-6 text-right th-12'>
-                    Scheduled At :&nbsp;
-                    <span className='th-grey'>
-                      {moment(currentAssessment?.test_date).format('DD/MM/YYYY hh:mm a')}
-                    </span>
-                  </div>
-                  <div className='col-12 pt-2 text-truncate'>
-                    <span className='th-fw-600 th-black-1 th-12'>Test Name :&nbsp; </span>
+                  {currentAssessment?.attempted_questions !== null && (
+                    <div className='col-6 pl-0 text-right th-10'>
+                      Appeared on :&nbsp;
+                      <span className='th-grey'>
+                        {moment(currentAssessment?.test_date).format(
+                          'DD/MM/YYYY hh:mm a'
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  <div className='col-12 pb-1 pt-2 text-truncate'>
+                    <span className='th-fw-400 th-black-1 th-12'>Test Name :&nbsp; </span>
                     <span className='th-fw-600 th-grey '>
                       {currentAssessment?.test_name}
+                    </span>
+                  </div>
+                  <div className='col-12 th-12'>
+                    <span className='th-fw-400 th-black-1'>Scheduled At :&nbsp;</span>
+                    <span className='th-grey'>
+                      {moment(currentAssessment?.test_date).format('DD/MM/YYYY hh:mm a')}
                     </span>
                   </div>
                   <div className='col-12'>
@@ -1142,11 +1152,11 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   </div>
                   <div className='col-12 th-black-2 th-12'>
                     Status :{' '}
-                    <span className='th-green th-14'>
-                      {currentAssessment?.attempted_questions !== null
-                        ? 'Attempted'
-                        : 'Not Attempted'}
-                    </span>
+                    {currentAssessment?.attempted_questions !== null ? (
+                      <span className='th-green th-14'>Attempted</span>
+                    ) : (
+                      <span className='th-red th-14'> Not Attempted</span>
+                    )}
                   </div>
                 </div>
               </div>
