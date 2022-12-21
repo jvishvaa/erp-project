@@ -29,7 +29,7 @@ import { useLocation } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
-import { PlusOutlined } from '@ant-design/icons';
+import { DeleteFilled, PlusOutlined } from '@ant-design/icons';
 import { AutoComplete, Button, Checkbox, Drawer, Input, Select } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import QuestionCard from './questionCard';
@@ -128,7 +128,7 @@ const menuOptions = ['Remove'];
 const { Option } = Select;
 
 
-const Sections = ({ question, section, questionId, onDelete, onDeleteQuestion,grade,erpCategory,questionPaperWise }) => {
+const Sections = ({ question, section, questionId, onDelete, onDeleteQuestion,grade,erpCategory,questionPaperWise,deleteOneSection }) => {
   let history = useHistory();
 
   const themeContext = useTheme();
@@ -139,7 +139,7 @@ const Sections = ({ question, section, questionId, onDelete, onDeleteQuestion,gr
   const dispatch = useDispatch();
   let marks = 0 
   const [ isOptionalQues , setisOptionalQues] = useState(false)
-  const sectionMarks = section?.test_Marks.forEach((item) => {
+  const sectionMarks = section?.test_marks.forEach((item) => {
         marks += parseInt(item?.question_mark[0])
   } )
 
@@ -217,235 +217,6 @@ setisOptionalQues(e.target.checked)
   }
 
   return (
-    // <div className='section-container'>
-    //   <div className='section-header'>
-    //     <div className='left'>
-    //       <div className='checkbox'>
-    //         <Checkbox
-    //           checked={true}
-    //           onChange={() => { }}
-    //           inputProps={{ 'aria-label': 'primary checkbox' }}
-    //           color='primary'
-    //         />
-    //       </div>
-    //       <div className='section-name'>{section.name}</div>
-    //     </div>
-    //     <div className='right'>
-    //       <Button
-    //         style={{ color: 'white' }}
-    //         color='primary'
-    //         size='medium'
-    //         variant='contained'
-    //         onClick={() => {
-    //           history.push(
-    //             `/question-chapter-wise?question=${questionId}&section=${section.name
-    //             }&isedit=${Number(location.pathname.slice(23))}`
-    //           );
-    //         }}
-    //       >
-    //         Add Question
-    //       </Button>
-    //       <IconButton onClick={handleMenuOpen}>
-    //         <MoreVertIcon color='primary' />
-    //       </IconButton>
-    //       <Popover
-    //         id=''
-    //         open={menuOpen}
-    //         anchorEl={anchorEl}
-    //         onClose={handleMenuClose}
-    //         anchorOrigin={{
-    //           vertical: 'bottom',
-    //           horizontal: 'center',
-    //         }}
-    //         transformOrigin={{
-    //           vertical: 'top',
-    //           horizontal: 'center',
-    //         }}
-    //         className='assesment-card-popup-menu'
-    //         PaperProps={{
-    //           style: {
-    //             maxHeight: ITEM_HEIGHT * 4.5,
-    //             width: '20ch',
-    //             border: `1px solid ${themeContext.palette.primary.main}`,
-    //             boxShadow: 0,
-    //             '&::before': {
-    //               content: '',
-    //               position: 'absolute',
-    //               right: '50%',
-    //               top: '-6px',
-    //               backgroundColor: '#ffffff',
-    //               width: '10px',
-    //               height: '10px',
-    //               transform: 'rotate(45deg)',
-    //               border: '1px solid #ff6b6b',
-    //               borderBottom: 0,
-    //               borderRight: 0,
-    //               zIndex: 10,
-    //             },
-    //           },
-    //         }}
-    //       >
-    //         {menuOptions.map((option) => (
-    //           <MenuItem
-    //             className='assesment-card-popup-menu-item'
-    //             key={option}
-    //             selected={option === 'Pyxis'}
-    //             onClick={handleDelete}
-    //             // onClick={DiaClickOpen}
-    //             style={{
-    //               color: themeContext.palette.primary.main,
-    //             }}
-    //           >
-    //             {option}
-    //           </MenuItem>
-    //         ))}
-    //         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
-    //           <DialogTitle id='draggable-dialog-title'>Delete Question</DialogTitle>
-    //           <DialogContent>
-    //             <DialogContentText>
-    //               Are you sure you want to remove this section ?
-    //             </DialogContentText>
-    //           </DialogContent>
-    //           <DialogActions>
-    //             <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
-    //               Cancel
-    //             </Button>
-    //             <Button
-    //               color='primary'
-    //               variant='contained'
-    //               style={{ color: 'white' }}
-    //               onClick={handleDeleteConfirm}
-    //             >
-    //               Confirm
-    //             </Button>
-    //           </DialogActions>
-    //         </Dialog>
-    //       </Popover>
-    //     </div>
-    //   </div>
-    //   <div className='section-content'>
-    //     <div>Total Questions: {section?.questions?.length}</div>
-    //     {section?.questions.map((q, index) => (
-    //       <div className='selected-question-card' key={index} style={{ width: '100%' }}>
-    //         <div className='selected-question-card-header'>
-    //           <div className='header-name'>
-    //             {resolveQuestionTypeName(q.question_type)}
-    //           </div>
-    //           <div className='icon'>
-    //             <IconButton onClick={handleMenuOpen}>
-    //               <MoreHorizIcon color='primary' />
-    //             </IconButton>
-    //             <Popover
-    //               id=''
-    //               open={menuOpen}
-    //               anchorEl={anchorEl}
-    //               onClose={handleMenuClose}
-    //               anchorOrigin={{
-    //                 vertical: 'bottom',
-    //                 horizontal: 'center',
-    //               }}
-    //               transformOrigin={{
-    //                 vertical: 'top',
-    //                 horizontal: 'center',
-    //               }}
-    //               className='assesment-card-popup-menu'
-    //               PaperProps={{
-    //                 style: {
-    //                   maxHeight: ITEM_HEIGHT * 4.5,
-    //                   width: '20ch',
-    //                   border: `1px solid ${themeContext.palette.primary.main}`,
-    //                   boxShadow: 0,
-    //                   '&::before': {
-    //                     content: '',
-    //                     position: 'absolute',
-    //                     right: '50%',
-    //                     top: '-6px',
-    //                     backgroundColor: '#ffffff',
-    //                     width: '10px',
-    //                     height: '10px',
-    //                     transform: 'rotate(45deg)',
-    //                     border: '1px solid #ff6b6b',
-    //                     borderBottom: 0,
-    //                     borderRight: 0,
-    //                     zIndex: 10,
-    //                   },
-    //                 },
-    //               }}
-    //             >
-    //               {menuOptions.map((option) => (
-    //                 <MenuItem
-    //                   className='assesment-card-popup-menu-item'
-    //                   key={option}
-    //                   selected={option === 'Pyxis'}
-    //                   onClick={(e) => handleDeleteQuestion(q, index)}
-    //                   style={{
-    //                     color: themeContext.palette.primary.main,
-    //                   }}
-    //                 >
-    //                   {option}
-    //                 </MenuItem>
-    //               ))}
-    //             </Popover>
-    //           </div>
-    //         </div>
-    //         {/* <div>Question : {ReactHtmlParser(q?.question_answer[0]?.question)}</div> */}
-    //         <div style={{ display: 'flex' }}> Question : {extractContent(q?.question_answer[0]?.question)}
-    //           <span style={{ marginLeft: '5px' }}>
-    //             {q?.question_answer[0]?.question
-    //               ?.split('"')
-    //               .filter((str) => str.startsWith('https'))?.length > 0 && (
-    //                 <a
-    //                   onClick={() => {
-    //                     openPreview({
-    //                       currentAttachmentIndex: 0,
-    //                       attachmentsArray: (() => {
-    //                         let newArray = q?.question_answer[0]?.question?.split('"');
-    //                         let filtered = newArray.filter((str) => str.startsWith('https'));
-    //                         const images = filtered || {};
-    //                         const attachmentsArray = [];
-    //                         images.forEach((image) => {
-    //                           const attachmentObj = {
-    //                             src: image,
-    //                             name: `${image}`.split('.').slice(0, -1).join('.'),
-    //                             extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-    //                           };
-    //                           attachmentsArray.push(attachmentObj);
-    //                         });
-    //                         return attachmentsArray;
-    //                       })(),
-    //                     });
-    //                   }}
-    //                 >
-    //                   <SvgIcon
-    //                     component={() => <VisibilityIcon style={{ cursor: 'pointer' }} />}
-    //                   />
-    //                 </a>
-    //               )}
-    //           </span>
-    //         </div>
-    //         <div className='content'>
-    //           <div className='left'>
-    //             <div style={{ fontWeight: 550, fontSize: '1rem' }}>Online</div>
-    //             <div> {q.is_published ? 'Draft' : 'Published'}</div>
-    //           </div>
-    //           <div className='right'>
-    //             <div className='created'>
-    //               <div>Created on</div>
-    //               <div style={{ fontWeight: 550, fontSize: '1rem' }}>
-    //                 {`${moment(q.test_date).format('DD-MM-YYYY')}`}
-    //               </div>
-    //             </div>
-    //             {/* <div>
-    //               <Button variant='contained' color='primary'>
-    //                 VIEW MORE
-    //               </Button>
-    //             </div> */}
-    //           </div>
-    //         </div>
-    //       </div>
-    //     ))}
-    //   </div>
-    // </div>
     <>
       <div className='row col-md-12 mt-3'>
         <div className='th-fw-900 col-md-7'>Section {section?.name}</div>
@@ -483,7 +254,7 @@ setisOptionalQues(e.target.checked)
         <hr />
         {/* {section?.questions.map((ques) => ( */}
         {section?.questions?.map((ques, i) =>(
-          <QuestionCard ques={ques} index={i} handleDeleteQuestion = {handleDeleteQuestion} testMark = {section?.test_Marks} questionPaperWise = {questionPaperWise}/>
+          <QuestionCard ques={ques} index={i} handleDeleteQuestion = {handleDeleteQuestion} testMark = {section?.test_marks} questionPaperWise = {questionPaperWise}/>
         ))}
         <div>
           <hr />
@@ -497,8 +268,8 @@ setisOptionalQues(e.target.checked)
         </div>
       </div>
       <hr />
-      <div className='mr-5 row justify-content-end'>
-        <div className='d-flex my-2' style={{ border: '1px solid #e8e8e9' }}>
+      <div className=' row justify-content-end'>
+        <div className='mr-3 d-flex my-2' style={{ border: '1px solid #e8e8e9' }}>
           <Checkbox className='ml-2' style={{ color: '#2ecf87' }} onChange={isoptionalQues}>
             Set for Optional Questions
           </Checkbox>
@@ -528,6 +299,9 @@ setisOptionalQues(e.target.checked)
             ))}
         
          </Select>
+        </div>
+        <div style={{display:'flex' , marginRight:'1%', alignItems : 'center'}}>
+            <DeleteFilled style={{color:'blue',fontSize:'large'}} onClick={() => deleteOneSection(questionId,section?.id)}/>
         </div>
       </div>
 

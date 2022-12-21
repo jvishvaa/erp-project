@@ -3,7 +3,7 @@ import { Divider } from '@material-ui/core';
 import Sections from './sections';
 
 
-const Question = ({ question, onDeleteSection, onDeleteQuestion , erpCategory , grade,questionPaperWise}) => {
+const Question = ({ question, onDeleteSection, onDeleteQuestion , erpCategory , grade,questionPaperWise,deleteOneSection}) => {
   return (
     <>
       {/* <div className='question-container'>
@@ -19,6 +19,7 @@ const Question = ({ question, onDeleteSection, onDeleteQuestion , erpCategory , 
                 onDelete={onDeleteSection}
                 onDeleteQuestion={onDeleteQuestion}
                 questionPaperWise={questionPaperWise}
+                deleteOneSection={deleteOneSection}
               />
             );
           })}

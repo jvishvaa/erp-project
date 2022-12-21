@@ -54,7 +54,7 @@ const QuestionBankDrawer = ({drawerOpen, onClose, section, questionId , grade , 
     const [totalCount, setTotalCount] = useState(0);
     const [tabIsErpCentral , setTabIsErpCentral] = useState(true)
     console.log(section,'section')
-    const [testMarks , SettestMarks] = useState(section?.test_Marks)
+    const [testMarks , SettestMarks] = useState(section?.test_marks)
     const [marksselection , setSelectionMarks] = useState([])
 
 

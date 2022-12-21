@@ -15,6 +15,9 @@ import './styles.scss';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import { Drawer } from 'antd';
+import axios from 'v2/config/axios';
+import { message, Spin } from 'antd';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +68,34 @@ const ViewMoreCard = ({
     setExpanded(isExpanded ? index : false);
   };
 
+  const [showNewAsses, setShowNewAsses] = useState(false);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const fetchquesPaperStatus = () => {
+    // setLoading(true);
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=asmt_enhancement`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setShowNewAsses(true);
+          } else {
+            setShowNewAsses(false);
+          }
+        }
+        // setLoading(false);
+      })
+      .catch((error) => {
+        // setLoading(false);
+        message.error('error', error?.message);
+      });
+  };
+
+  useEffect(() => {
+    fetchquesPaperStatus()
+  },[selectedBranch])
+
   useEffect(() => {
     showDrawer()
   },[])
@@ -80,15 +111,30 @@ const ViewMoreCard = ({
   };
 
   const handleOpenEdit = () => {
+    
+      if(showNewAsses){
+        history.push({ 
+          pathname : `/createquestionpaper/`,
+          state:{
+            isEdit : true,
+            paperId : periodDataForView?.id
+          }
+      }
+        )
+      }else{
+
     history.push({ 
-      pathname : `/createquestionpaper/`,
+      pathname : `/create-question-paper/${periodDataForView?.id}`,
       state:{
-        isEdit : true,
-        paperId : periodDataForView?.id
+        isEdit : true
       }
   }
-    );
+    )
+}
+    
   };
+ 
+
 
   const handlePublish = (isPublish = true) => {
     setPublishFlag(false);

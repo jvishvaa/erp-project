@@ -462,7 +462,8 @@ import CreatePostActivity from 'containers/newBlog/createPostActivity';
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
 import NewEbookView from 'containers/ebooks/NewEbook';
-import CreatequestionPaper from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
+import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
+import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -584,12 +585,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/create-question/:qId?'>
                               {({ match }) => <CreateQuestion match={match} />}
                             </Route>
-                            {/* <Route exact path='/create-question-paper/:id?'>
-                              {({ match }) => <CreateQuestionPaper match={match} />}
-                            </Route> */}
                             <Route exact path='/create-question-paper/:id?'>
-                              {({ match }) => <Filters match={match} />}
+                              {({ match }) => <QuestionPaperConfig match={match} />}
                             </Route>
+                            {/* <Route exact path='/create-question-paper/:id?'>
+                              {({ match }) => <Filters match={match} />}
+                            </Route> */}
                             {/* <Route exact path='/edit-question-paper/:id'>
                             {({ match }) => <EditQuestionPaper match={match} />}
                           </Route> */}
@@ -597,7 +598,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                               {({ match }) => <AssessmentView match={match} />}
                             </Route>
                             <Route exact path='/createquestionpaper'>
-                              {({ match }) => <CreatequestionPaper match={match} />}
+                              {({ match }) => <CreatequestionPaperNew match={match} />}
                             </Route>
 
                             <Route path='/create-assesment'>

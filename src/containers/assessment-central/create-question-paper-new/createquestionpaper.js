@@ -17,7 +17,7 @@ import Question from './questions';
 
 const { Option } = Select;
 
-const CreatequestionPaper = () => {
+const CreatequestionPaperNew = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const location = useLocation();
@@ -82,7 +82,7 @@ const CreatequestionPaper = () => {
           questions: questionList,
           instruction:section?.instruction, 
           mandatory_questions : section?.mandatory_fields,
-          test_Marks : section?.test_Marks
+          test_marks : section?.test_marks
         },
       ];
       const sectionObject = { id: sectionId, sections: sectionArray };
@@ -103,7 +103,8 @@ const CreatequestionPaper = () => {
         if (result.data.status_code === 200) {
           dispatch(setFilter('questionPaperName', result.data.result.paper_name));
           formik.setFieldValue('questionPaperName', result.data.result.paper_name);
-          setQuestionPaperWise(result?.data?.result?.is_question_wise)
+          setQuestionPaperWise(!result?.data?.result?.is_question_wise)
+          setMaxMarks(result?.data?.result?.total_mark)
           if(result?.data?.result?.is_question_wise){
             setQp_wise_Marks(result?.data?.result?.total_mark)
           }
@@ -283,6 +284,10 @@ const handlequesType = () => {
     })
   };
 
+  const deleteOneSection = (questionId , sectionId) => {
+    dispatch(deleteSection(questionId, sectionId))
+  }
+
   const handleEditQuestionPaper = async (isDraft) => {
     
     console.log(isDraft);
@@ -299,7 +304,7 @@ const handlequesType = () => {
       const subjects = []
       sections.forEach((q) => {
         q.sections.forEach((sec) => {
-          const sectionObj = { [sec.name]: [], discription: sec.name,mandatory_questions:sec?.mandatory_questions ,instruction:sec?.instruction ,test_Marks:sec?.test_Marks};
+          const sectionObj = { [sec.name]: [], discription: sec.name,mandatory_questions:sec?.mandatory_questions ,instruction:sec?.instruction ,test_marks:sec?.test_marks};
           sec.questions.forEach((question) => {
             if(question?.is_central){
               grade_subject_mapping.push(question?.grade_subject_mapping)
@@ -427,7 +432,6 @@ const handlequesType = () => {
   };
 
   const handleCreateQuestionPaper = async (isDraft) => {
-    debugger
     try {
       if(max_Marks === 0){
         return setAlert('error','Please Enter Maximum Marks')
@@ -450,9 +454,9 @@ const handlequesType = () => {
       let totalMark = 0
       sections.forEach((q) => {
         q.sections.forEach((sec) => {
-            const sectionObj = { [sec.name]: [], discription: sec.name,mandatory_questions:sec?.mandatory_questions ,instruction:sec?.instruction ,test_Marks:sec?.test_Marks};
+            const sectionObj = { [sec.name]: [], discription: sec.name,mandatory_questions:sec?.mandatory_questions ,instruction:sec?.instruction ,test_marks:sec?.test_marks};
             if(!questionPaperWise){
-              let marks = sec.test_Marks?.forEach((item) => {
+              let marks = sec.test_marks?.forEach((item) => {
                 totalMark += parseInt(item?.question_mark[0])
               })
             }
@@ -494,7 +498,7 @@ const handlequesType = () => {
         is_review: isDraft ? 'False' : 'True',
         is_draft: isDraft ? 'True' : 'False',
         total_mark : qp_wise_marks,
-        is_question_wise : questionPaperWise ? 'True' : 'False',
+        is_question_wise : !questionPaperWise ? 'True' : 'False',
         
       };
       let filterdata = {
@@ -768,6 +772,7 @@ const handlequesType = () => {
                onDeleteSection={handleDeleteSection}
                onDeleteQuestion={handleDeleteQuestion}
                questionPaperWise={questionPaperWise}
+               deleteOneSection = {deleteOneSection}
               />
             </div>
           ))}
@@ -807,4 +812,4 @@ const handlequesType = () => {
   );
 };
 
-export default CreatequestionPaper;
+export default CreatequestionPaperNew;

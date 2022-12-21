@@ -31,7 +31,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         const index = questionsList.findIndex((q) => q.id === action.questionId);
         const { sections } = questionsList[index];
         const sectionIndex = sections?.findIndex((sec) => sec.name === action.section);
-        sections[sectionIndex].test_Marks = action.data;
+        sections[sectionIndex].test_marks = action.data;
         questionsList[index].sections = sections;
         return { ...state, questions: questionsList };
       }
