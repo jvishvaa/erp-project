@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import {
     Grid,
-    Card,
-    Button,
     Typography,
     SvgIcon,
     Dialog,
@@ -18,6 +16,8 @@ import EbookPdf from 'containers/ebooks/EbookPDF';
 import {
     EyeFilled,
 } from '@ant-design/icons';
+import { Card, Divider, Tag, Button, Pagination, Empty } from 'antd';
+
 
 const LightTooltip = withStyles((theme) => ({
     tooltip: {
@@ -110,27 +110,20 @@ const EbookList = (props) => {
 
     return (
         <div className={classes.root} style={{minHeight: '300px'}} >
-            {data.length > 0 ? (
-                <div style={{width: '80%' , margin: '0 auto'}}>
-                    {data?.length > 0 && (
-                        data?.map((item, i) => (
-                            <div style={{display: 'flex' , justifyContent: 'space-between'}} >
-                                <span>{i + 1}. {item?.ebook_name}</span>
-                                <div className='ml-3'>
-                                    <EyeFilled
-                                        className='th-primary'
-                                        fontSize={20}
-                                        style={{ verticalAlign: 'inherit' }}
-                                        onClick={() => handleClickOpen(item)}
-                                    />
+                   {data?.length > 0 && data.map((item, index) => (
+                            <>
+                                <div className='ebookCard' style={{ margin: '1%' }} >
+                                    <div style={{ margin: '3%' , display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' }}>
+                                        <img alt="example" src={item?.ebook_thumbnail} style={{ width: '100px', height: '100px', padding: '1%' }} />
+                                        <span>{item?.ebook_name}</span>
+                                        <Button icon={<EyeFilled />} onClick={() => handleClickOpen(item)} />
+
+                                    </div>
+                                    <Divider style={{margin: '0px'}}/>
                                 </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-            ) : (
-                ''
-            )}
+
+                            </>
+                        ))}
 
             <Dialog
                 fullScreen
