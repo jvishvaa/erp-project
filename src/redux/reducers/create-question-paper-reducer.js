@@ -9,7 +9,7 @@ const INITIAL_STATE = {
   selectedSubject: [],
   selectedLevel: '',
   questionPaperName: '',
-  isFetched: false,
+  isFetched: false, 
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -25,6 +25,38 @@ export default function reducer(state = INITIAL_STATE, action) {
       sections[sectionIndex].questions.push(action.data);
       questionsList[index].sections = sections;
       return { ...state, questions: questionsList };
+
+      case createQuestionPaperActions.ADD_MARKS_TO_SECTION:{
+        const questionsList = JSON.parse(JSON.stringify(state.questions));
+        const index = questionsList.findIndex((q) => q.id === action.questionId);
+        const { sections } = questionsList[index];
+        const sectionIndex = sections?.findIndex((sec) => sec.name === action.section);
+        sections[sectionIndex].test_Marks = action.data;
+        questionsList[index].sections = sections;
+        return { ...state, questions: questionsList };
+      }
+      
+      case createQuestionPaperActions.ADD_OPTIONAL_QUESTION:{
+        const questionsList = JSON.parse(JSON.stringify(state.questions));
+        const index = questionsList.findIndex((q) => q.id === action.questionId);
+        const { sections } = questionsList[index];
+        const sectionIndex = sections?.findIndex((sec) => sec.name === action.section);
+        sections[sectionIndex].mandatory_questions = action.data;
+        questionsList[index].sections = sections;
+        return { ...state, questions: questionsList };
+      }
+      
+
+
+      case createQuestionPaperActions.ADD_INSTRUCTION_TO_SECTION:{
+      const questions = JSON.parse(JSON.stringify(state.questions));
+      const index = questions.findIndex((q) => q.id === action.questionId);
+      const { sections } = questions[index];
+      const sectionindex = sections?.findIndex((sec) => sec.name === action.section);
+      sections[sectionindex].instruction = action.data;
+      questions[index].sections = sections;
+      return { ...state, questions: questions };
+      }
 
     case createQuestionPaperActions.SET_FILTER: {
       return { ...state, [action.filter]: action.data };

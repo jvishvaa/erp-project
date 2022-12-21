@@ -90,12 +90,6 @@ const QuestionBankFilters = ({
     erp_category : ''
   });
 
-  // useEffect(()=>{
-  //   setFilterData((pre)=>({...pre,is_erp_central: tabIsErpCentral}))
-  // },[])
-
-  console.log(tabIsErpCentral,'@@filter')
-  console.log(filterData,'@filterData')
   const question_level_options = [
     { value: 1, Question_level: 'Easy' },
     { value: 2, Question_level: 'Average' },
