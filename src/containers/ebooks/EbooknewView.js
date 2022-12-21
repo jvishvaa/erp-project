@@ -62,6 +62,10 @@ const EbookView = (props) => {
   const [total, setTotal] = useState()
   const [ recently , setRecently ] = useState(false)
 
+  const env = window.location.host
+  const domain = window.location.host.split('.')
+  let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids'  : domain[0]
+
   const fetchVolumeData = () => {
 
     axios
@@ -242,7 +246,7 @@ const EbookView = (props) => {
           is_ebook: 'true',
           volume: volumeId,
           branch: selectedBranch?.branch?.id,
-          domain_name: 'olvorchidnaigaon',
+          domain_name: domain_name,
           academic_year: selectedAcademicYear?.id,
           session_year: selectedAcademicYear?.session_year,
           page_number: page,
@@ -259,7 +263,7 @@ const EbookView = (props) => {
           grade: centralGrade,
           subject: centralSubject,
           volume: volumeId,
-          domain_name: 'olvorchidnaigaon',
+          domain_name: domain_name,
           page: page,
           page_size: '10',
           book_type: '4'
@@ -270,7 +274,6 @@ const EbookView = (props) => {
   }, [subjectId, volumeId, page]);
 
   useEffect(() => {
-    if (!subjectId && !volumeId) {
 
     if (props?.showTab == 1) {
       fetchEbooksDefault({
@@ -278,7 +281,7 @@ const EbookView = (props) => {
         session_year: selectedAcademicYear?.session_year,
         page_number: page,
         page_size: '10',
-        domain_name: 'olvorchidnaigaon',
+        domain_name: domain_name,
       })
     } else {
       fetchIbooksDefault({
@@ -286,9 +289,8 @@ const EbookView = (props) => {
         session_year: selectedAcademicYear?.session_year,
         page_number: page,
         page_size: '10',
-        domain_name: 'olvorchidnaigaon',
+        domain_name: domain_name,
       })
-    }
   }
   },[props?.showTab])
 
