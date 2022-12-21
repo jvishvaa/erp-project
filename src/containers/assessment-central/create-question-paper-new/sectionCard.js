@@ -15,7 +15,7 @@ const SectionCard = () => {
     const onClose = () => {
         setDrawerOpen(false)
     }
-
+ 
   return (
     <>
       <div className='row col-md-12 mt-3'>
