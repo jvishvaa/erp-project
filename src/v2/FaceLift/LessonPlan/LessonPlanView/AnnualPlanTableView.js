@@ -21,7 +21,8 @@ import {
   RightCircleOutlined,
   RightOutlined,
   EyeFilled,
-  FilePdfOutlined
+  FilePdfOutlined,
+  BookOutlined
 } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
@@ -43,7 +44,8 @@ import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import _ from 'lodash';
-import EbookList from './viewEbooks'
+import EbookList from './viewEbooks';
+import IbookList from './viewIbooks';
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -122,6 +124,10 @@ const TableView = (props) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [openEbook, setOpenEbook] = useState(false);
   const [openIbook, setOpenIbook] = useState(false);
+
+  const env = window.location.host
+  const domain = window.location.host.split('.')
+  let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids'  : domain[0]
 
   const showEbookDrawer = () => {
     setOpenEbook(true);
@@ -235,8 +241,39 @@ const TableView = (props) => {
         session_year: selectedAcademicYear?.session_year,
         book_type: '4',
         branch: selectedBranch?.branch?.id,
+        domain_name: domain_name
+      })
+      fetchEbooks({
+        subject_id: subjectId,
+        volume_id: volumeId,
+        grade_id: gradeId,
+        session_year: selectedAcademicYear?.session_year,
+        book_type: '3',
+        branch: selectedBranch?.branch?.id,
+        domain_name: domain_name
       })
   };
+  const fetchEbooks = (params) => {
+    setLoading(true)
+    axios
+      .get(`${endpoints.newEbook.ebookList}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          message.success('Ebooks Fetched Successfully');
+          setEbookData(res.data.result.data);
+        }  else {
+          message.error('Cannot Fetch Right Now');
+          setEbookData([]);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false)
+      });
+
+  }
   const fetchIbooks = (params) => {
     setLoading(true)
     axios
@@ -802,23 +839,26 @@ const TableView = (props) => {
               visible={openEbook}
               footer={null}
             >
-              {/* <div>
-                {ebookData?.length > 0 && (
-                  ebookData?.map((item , i) => (
-                    <div>
-                      <span>{i+1} {item?.ebook_name}</span>
-                      <div className='ml-3'>
-                      <EyeFilled
-                        className='th-primary'
-                        fontSize={20}
-                        style={{ verticalAlign: 'inherit' }}
-                      />
-                    </div>
-                    </div>
-                  ))
-                )}
-              </div> */}
+             
               <EbookList data={ebookData} />
+            </Modal>
+            {ibookData?.length > 0 && (
+              <div className='col-md-3'>
+                <Badge count={ibookData?.length} >
+                  <Button icon={<BookOutlined />} onClick={showIbookDrawer} />
+                </Badge>
+              </div>
+            )}
+            <Modal
+              title="Ibooks"
+              closable={true}
+              onCancel={onIbookClose}
+              visible={openIbook}
+              footer={null}
+              width = {'90vh'}
+            >
+            
+              <IbookList data={ibookData} />
             </Modal>
           </div>
         </div>
