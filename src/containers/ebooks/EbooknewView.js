@@ -221,12 +221,12 @@ const EbookView = (props) => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Ebook' &&
+          item.parent_modules === 'Online Books' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
+            if (item.child_name === 'Online Books') {
               setModuleId(item.child_id);
             }
           });
@@ -283,7 +283,8 @@ const EbookView = (props) => {
         page_size: '10',
         domain_name: domain_name,
       })
-    } else {
+    } 
+    if (props?.showTab == 2){
       fetchIbooksDefault({
         book_type: '4',
         session_year: selectedAcademicYear?.session_year,
@@ -302,13 +303,13 @@ const EbookView = (props) => {
       })
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('Ebooks Fetched Successfully');
+          message.success('Ebooks Fetched Successfully',[0.0002]);
           setLoading(false)
           setEbookData(res.data.result.data);
           setTotal(res.data.result.total_ebooks)
           console.log(res.data.result.data);
         }  else {
-          message.error('Cannot Fetch Right Now');
+          message.error(res.data.description);
           setLoading(false)
           setEbookData([]);
           setTotal()
@@ -329,13 +330,13 @@ const EbookView = (props) => {
       })
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('Ebooks Fetched Successfully');
+          message.success('Ebooks Fetched Successfully',[0.0002]);
           setLoading(false)
           setEbookData(res.data.result.data);
           setTotal(res.data.result.total_ebooks)
           console.log(res.data.result.data);
         } else {
-          message.error('Cannot Fetch Right Now');
+          message.error(res.data.description);
           setLoading(false)
           setEbookData([]);
           setTotal()
@@ -360,10 +361,10 @@ const EbookView = (props) => {
           setIbookData(res.data.result.result);
           setTotal(res.data.result.total_ebooks)
           console.log(res.data.result);
-          message.success('Ibooks Fetched Successfully');
+          message.success('Ibooks Fetched Successfully',[0.0002]);
           setLoading(false)
         } else {
-          message.error('Cannot Fetch Right Now');
+          message.error(res.data.description);
           setLoading(false)
           setIbookData([]);
           setTotal()
@@ -389,10 +390,10 @@ const EbookView = (props) => {
           setIbookData(res.data.result.result);
           setTotal(res.data.result.total_ebooks)
           console.log(res.data.result);
-          message.success('Ibooks Fetched Successfully');
+          message.success('Ibooks Fetched Successfully',[0.0002]);
           setLoading(false)
         } else {
-          message.error('Cannot Fetch Right Now');
+          message.error(res.data.description);
           setLoading(false)
           setIbookData([]);
           setTotal()
@@ -475,7 +476,7 @@ const EbookView = (props) => {
                 <Form.Item name='volume'>
                   <Select
                     placeholder='Select Volume'
-                    showSearch
+                    allowClear
                     //   defaultValue={'CBSE'}
                     optionFilterProp='children'
                     filterOption={(input, options) => {
@@ -499,7 +500,7 @@ const EbookView = (props) => {
         </div>
 
       </div>
-      <div  >
+      <div style={{minHeight: '55vh'}} >
         {loading ? (
           <div className='row justify-content-center py-3 mt-5'>
             <Spin title='Loading...' />

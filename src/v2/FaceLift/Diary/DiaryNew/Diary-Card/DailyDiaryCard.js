@@ -490,7 +490,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   </div>
                 </div>
                 <div className='row th-fw-600 text-capitalize'>
-                  Grade {diary?.grade_name.slice(-1)}
+                  {diary?.grade_name}
                   {diary?.section_name.slice(-1)}
                 </div>
                 <div className='row py-1'>
