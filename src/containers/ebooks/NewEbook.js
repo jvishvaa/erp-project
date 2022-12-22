@@ -25,7 +25,7 @@ const NewEbookView = (props) => {
               <Breadcrumb.Item
                 className='th-grey th-16 th-pointer'
               >
-                Lesson Plan
+                Online Books
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
                 {showTab == '1' ? 'EBOOK' : 'IBOOK'}
