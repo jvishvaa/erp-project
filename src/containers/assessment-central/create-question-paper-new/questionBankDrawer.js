@@ -115,6 +115,10 @@ useEffect(() => {
 useEffect(() => {
     if(grade && (formik.values.subject || erpCategory)){
         fetchFilterData()
+        setIsSelectAllQuestion(false)
+        setSelectedQuestion([])
+        setSelectedIdQuestion([])
+        
     }
     
 }, [page , formik.values,tabIsErpCentral])
@@ -226,19 +230,19 @@ const handleAddQuestionToQuestionPaper = (question) => {
     let quesindex1 = marksselection.findIndex((item) => item?.question_id === question?.id)
     if(quesindex !== -1){
         let questionMark = testMarks
-        questionMark[quesindex].question_mark = [(e.target.value).toString(),'0']
+        questionMark[quesindex].question_mark = [e.target.value,0]
         SettestMarks(questionMark)
     }
     if(quesindex1 !== -1){
       let questionMark = marksselection
-      questionMark[quesindex1].question_mark = [(e.target.value).toString(),'0']
+      questionMark[quesindex1].question_mark = [e.target.value,0]
       // SettestMarks(questionMark)
       setSelectionMarks(questionMark)
     }
     else{
         let marks = {
             question_id : question?.id,
-            question_mark : [(e.target.value).toString() , '0'],
+            question_mark : [e.target.value , 0],
             mark_type : 1,
             child_mark : [],
             is_central : question?.is_central,

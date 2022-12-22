@@ -140,7 +140,7 @@ const Sections = ({ question, section, questionId, onDelete, onDeleteQuestion,gr
   let marks = 0 
   const [ isOptionalQues , setisOptionalQues] = useState(false)
   const sectionMarks = section?.test_marks.forEach((item) => {
-        marks += parseInt(item?.question_mark[0])
+        marks +=item?.question_mark[0]
   } )
 
   useEffect(() => {
