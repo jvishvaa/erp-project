@@ -96,10 +96,6 @@ const QuestionBankDrawer = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (selectedBranch && selectedAcademicYear) {
-    }
-  }, [selectedBranch, selectedAcademicYear]);
 
   useEffect(() => {
     getQuestionTypes();
@@ -115,6 +111,9 @@ const QuestionBankDrawer = ({
   useEffect(() => {
     if (grade && (formik.values.subject || erpCategory)) {
       fetchFilterData();
+        setIsSelectAllQuestion(false)
+        setSelectedQuestion([])
+        setSelectedIdQuestion([])
     }
   }, [page, formik.values, tabIsErpCentral]);
 
@@ -216,19 +215,17 @@ const QuestionBankDrawer = ({
     dispatch(addMarksToSection(testMarks, questionId, section?.name));
   };
 
-  const handleMarks = (e, question, index) => {
-    let quesindex = testMarks.findIndex((item) => item?.question_id === question?.id);
-    let quesindex1 = marksselection.findIndex(
-      (item) => item?.question_id === question?.id
-    );
-    if (quesindex !== -1) {
-      let questionMark = testMarks;
-      questionMark[quesindex].question_mark = [e.target.value.toString(), '0'];
-      SettestMarks(questionMark);
+  const handleMarks = (e,question,index) => {
+    let quesindex = testMarks.findIndex((item) => item?.question_id === question?.id)
+    let quesindex1 = marksselection.findIndex((item) => item?.question_id === question?.id)
+    if(quesindex !== -1){
+        let questionMark = testMarks
+        questionMark[quesindex].question_mark = [e.target.value,0]
+        SettestMarks(questionMark)
     }
-    if (quesindex1 !== -1) {
-      let questionMark = marksselection;
-      questionMark[quesindex1].question_mark = [e.target.value.toString(), '0'];
+    if(quesindex1 !== -1){
+      let questionMark = marksselection
+      questionMark[quesindex1].question_mark = [e.target.value,0]
       // SettestMarks(questionMark)
       setSelectionMarks(questionMark);
     } else {
@@ -243,7 +240,7 @@ const QuestionBankDrawer = ({
       SettestMarks([...testMarks, marks]);
       setSelectionMarks([...marksselection, marks]);
     }
-  };
+  }
 
   console.log(marksselection, 'marksselection');
 
