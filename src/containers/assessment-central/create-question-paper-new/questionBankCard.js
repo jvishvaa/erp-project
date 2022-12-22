@@ -237,7 +237,7 @@ console.log(questionName,'questionName')
                 <div className='col-md-8 ml-3'>
                 <Checkbox style={{color : '#00c040'}} onChange={setMarksEnable}>Set Marks</Checkbox>
                 </div>
-            <div className='col-md-4'><Input disabled={!enableMarks} onChange={(e) => handleMarks(e,question,index)} style={{width:'52px', height:'24px',background: enableMarks ? 'white' : ''}} /></div>
+            <div className='col-md-4'><Input disabled={!enableMarks} type='number' maxLength={3} onChange={(e) => handleMarks(e,question,index)} style={{width:'52px', height:'24px',background: enableMarks ? 'white' : ''}} /></div>
             </div>}
         </div>
         <hr className='mt-1' />

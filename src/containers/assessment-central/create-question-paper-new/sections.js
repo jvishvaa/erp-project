@@ -228,13 +228,13 @@ setisOptionalQues(e.target.checked)
               {section?.questions?.length}
             </div>
           </div>
-          <div className='d-flex col-md-5'>
+          {!questionPaperWise && <div className='d-flex col-md-5'>
             Total Marks Added
             <div className='col-md-4'>
               {/* <Input style={{ width: '3rem', height: '1.5rem' }} /> */}
               {marks}
             </div>
-          </div>
+          </div>}
         </div>
       </div>
       <div className='row mx-5 mt-4' style={{ border: '4px solid #e8e8e9' ,borderRadius:'6px'}}>
