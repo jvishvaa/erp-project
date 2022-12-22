@@ -85,7 +85,7 @@ const NewIbook = (props) => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'))?.user_id || {};
     const selectedAcademicYear = useSelector(
         (state) => state.commonFilterReducer?.selectedYear
-      );
+    );
 
 
     const getDomainName = () => {
@@ -256,10 +256,10 @@ const NewIbook = (props) => {
         ebookClose({
             ebook_id: bookId,
             user_id: userDetails,
-            lst_opened_date : new Date(),
+            lst_opened_date: new Date(),
             book_type: '4',
-            page_number : '1',
-            session_year : selectedAcademicYear?.id
+            page_number: '1',
+            session_year: selectedAcademicYear?.id
         })
     };
     const ebookClose = (params) => {
@@ -277,41 +277,48 @@ const NewIbook = (props) => {
     return (
         <>
             {data?.length > 0 ?
-                <div className={classes.root} style={{ minHeight: '50vh' , display: 'flex' , justifyContent: 'space-between' , flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', width: '101%', alignItems: 'flex-start' }} >
-                        {data?.length > 0 && data.map((item, index) => (
+                <div className={classes.root} style={{ minHeight: '50vh', display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }}>
+                    <div style={{}} >
+                        {data?.length > 0 && data.map((data, index) => (
                             <>
                                 <div className='ebookCard' style={{ margin: '1%' }} >
-                                    <Card
-                                        hoverable
-                                        style={{
-                                            width: 400,
-                                            display: 'flex'
-                                        }}
-                                        cover={<img alt="example" src={`${bookImage}${item?.path}${item?.book_image}`} style={{ width: '150px', height: '150px', padding: '1%' }} />}
-                                    >
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
-                                            <div style={{ marginLeft: '2%' }} >
-                                                <span style={{ fontSize: '11px', marginLeft: '2px' }}>Published On : </span>
-                                                <span style={{ fontSize: '11px', color: 'grey' }}>{moment(item?.created_at).format('DD-MM-YYYY')}</span>
-                                            </div>
-                                            {/* <Tag color="#87d068" style={{ margin: '0px' }} >{item?.ebook_type == 1 ? 'General' : item?.ebook_type == 2 ? 'Curriculum' : ''}</Tag> */}
-                                        </div>
-                                        <div className='namediv'>
-                                            <span className='ebookname'>{item?.book_name.charAt(0).toUpperCase() + item?.book_name.slice(1)}</span>
-                                        </div>
-                                        <Divider />
-                                        <div className='bottomcard' >
-                                            <div style={{ display: 'flex', marginLeft: '2%' }} >
-                                                <span style={{ fontSize: '11px', color: 'grey' }}>Last Viewed : </span>
-                                                <span style={{ fontSize: '11px' }}>{moment(item?.lst_open_date).format('DD-MM-YYYY')}</span>
-                                            </div>
-                                            <div className='btndiv' >
-                                                <Button type="primary" className='btnant' onClick={() => handleBookOpen(item)}>Read</Button>
-                                            </div>
-                                        </div>
+                                    <Divider className='' orientation='left' orientationMargin='0' style={{margin: '1% 0'}} >
+                                        <span className='th-fw-600 th-18'>{data?.concept}</span>
+                                    </Divider>
+                                    <div style={{display: 'flex' , flexWrap: 'wrap'}} >
+                                        {data?.data?.map((item, index) => (
+                                            <Card
+                                                hoverable
+                                                style={{
+                                                    width: 400,
+                                                    display: 'flex',
+                                                    margin: '1%'
+                                                }}
+                                                cover={<img alt="example" src={`${bookImage}${item?.path}${item?.book_image}`} style={{ width: '150px', height: '150px', padding: '1%' }} />}
+                                            >
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
+                                                    <div style={{ marginLeft: '2%' }} >
+                                                        <span style={{ fontSize: '11px', marginLeft: '2px' }}>Published On : </span>
+                                                        <span style={{ fontSize: '11px', color: 'grey' }}>{moment(item?.created_at).format('DD-MM-YYYY')}</span>
+                                                    </div>
+                                                </div>
+                                                <div className='namediv'>
+                                                    <span className='ebookname'>{item?.book_name.charAt(0).toUpperCase() + item?.book_name.slice(1)}</span>
+                                                </div>
+                                                <Divider />
+                                                <div className='bottomcard' >
+                                                    <div style={{ display: 'flex', marginLeft: '2%' }} >
+                                                        <span style={{ fontSize: '11px', color: 'grey' }}>Last Viewed : </span>
+                                                        <span style={{ fontSize: '11px' }}>{moment(item?.lst_open_date).format('DD-MM-YYYY')}</span>
+                                                    </div>
+                                                    <div className='btndiv' >
+                                                        <Button type="primary" className='btnant' onClick={() => handleBookOpen(item)}>Read</Button>
+                                                    </div>
+                                                </div>
 
-                                    </Card>
+                                            </Card>
+                                        ))}
+                                    </div>
                                 </div>
 
                             </>
@@ -319,9 +326,9 @@ const NewIbook = (props) => {
 
                     </div>
                     {data?.length > 0 && (
-                    <div style={{ display: 'flex', justifyContent: 'center' }} >
-                        <Pagination defaultCurrent={props?.page} total={props?.total} onChange={props?.handlePageChange} pageSize={10} />
-                    </div>
+                        <div style={{ display: 'flex', justifyContent: 'center' , marginBottom: '1%' }} >
+                            <Pagination defaultCurrent={props?.page} total={props?.total} onChange={props?.handlePageChange} pageSize={10} />
+                        </div>
                     )}
 
 

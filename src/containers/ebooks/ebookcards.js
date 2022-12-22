@@ -149,7 +149,8 @@ const EbookCards = (props) => {
                                     hoverable
                                     style={{
                                         width: 400,
-                                        display: 'flex'
+                                        display: 'flex',
+                                        background: item?.ebook_type == 2 ? 'aliceblue' : '',
                                     }}
                                     cover={<img alt="example" src={item?.ebook_thumbnail} style={{ width: '150px', height: '150px', padding: '1%' }} />}
                                 >

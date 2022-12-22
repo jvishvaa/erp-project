@@ -839,7 +839,7 @@ const TableView = (props) => {
                 </a>
               </div>
             )}
-            {ebookData?.length > 0 && (
+            {ebookData?.length > 0 && YCPData?.length > 0 && (
               <div className='col-md-3 pl-0 col-12e4l'>
                 <a onClick={showEbookDrawer} >
                   <div className='col-md-3 pl-0 col-12e4l th-primary '>
@@ -863,7 +863,7 @@ const TableView = (props) => {
               </div>
             )}
 
-            {ibookData?.length > 0 && (
+            {ibookData?.length > 0 && YCPData?.length > 0 && (
               <div className='col-md-3 pl-0 col-12e4l'>
                 <a onClick={showIbookDrawer} >
                   <div className='col-md-3 pl-0 col-12e4l th-primary '>
