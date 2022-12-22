@@ -85,7 +85,11 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           Status of Exam :&nbsp;
           <span
             className={`${
-              item?.exam_status == 'completed' ? 'th-green' : 'th-primary'
+              item?.exam_status == 'completed'
+                ? 'th-green'
+                : item?.exam_status == 'ongoing'
+                ? 'th-red'
+                : 'th-primary'
             } text-capitalize`}
           >
             {' '}
@@ -979,7 +983,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   {diary?.teacher_report?.summary ? (
                     <>
                       <div className='row py-1'>
-                        <div className='col-3 pr-0 th-black-1'>Description</div>
+                        <div className='col-3 pr-0 th-black-1'>Description :&nbsp;</div>
                         <div className='col-9 pl-0'>{diary?.teacher_report?.summary}</div>
                       </div>
                     </>

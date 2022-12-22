@@ -289,7 +289,7 @@ const ErpAdminViewClass = ({ history }) => {
   };
 
   function noFilterGetClasses() {
-    debugger;
+    // debugger;
     const filterdata = JSON.parse(localStorage.getItem('filterData'));
     if (!filterdata?.branch) {
       var [startDateTechPer, endDateTechPer] = getminMaxDate().datearr;
@@ -731,7 +731,7 @@ const ErpAdminViewClass = ({ history }) => {
           return;
         }
       }
-      debugger;
+      // debugger;
       setLoading(true);
       localStorage.setItem(
         'filterData',

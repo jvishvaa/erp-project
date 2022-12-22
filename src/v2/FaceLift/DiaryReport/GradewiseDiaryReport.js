@@ -199,8 +199,9 @@ const GradewiseDiaryReport = () => {
 
   useEffect(() => {
     if (history.location.state) {
-      if (history.location.state?.diaryType)
+      if (history.location.state?.diaryType) {
         setDiaryType(history.location.state?.diaryType);
+      }
       setDate(history.location.state?.date);
     }
   }, [window.location.pathname]);
