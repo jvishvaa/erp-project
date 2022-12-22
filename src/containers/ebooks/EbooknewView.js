@@ -221,12 +221,12 @@ const EbookView = (props) => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Ebook' &&
+          item.parent_modules === 'Online Book' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
+            if (item.child_name === 'Online Book') {
               setModuleId(item.child_id);
             }
           });
@@ -308,7 +308,7 @@ const EbookView = (props) => {
           setTotal(res.data.result.total_ebooks)
           console.log(res.data.result.data);
         }  else {
-          message.error('Cannot Fetch Right Now');
+          message.error(res.data.description);
           setLoading(false)
           setEbookData([]);
           setTotal()
@@ -335,7 +335,7 @@ const EbookView = (props) => {
           setTotal(res.data.result.total_ebooks)
           console.log(res.data.result.data);
         } else {
-          message.error('Cannot Fetch Right Now');
+          message.error(res.data.description);
           setLoading(false)
           setEbookData([]);
           setTotal()
@@ -363,7 +363,7 @@ const EbookView = (props) => {
           message.success('Ibooks Fetched Successfully');
           setLoading(false)
         } else {
-          message.error('Cannot Fetch Right Now');
+          message.error(res.data.description);
           setLoading(false)
           setIbookData([]);
           setTotal()
@@ -392,7 +392,7 @@ const EbookView = (props) => {
           message.success('Ibooks Fetched Successfully');
           setLoading(false)
         } else {
-          message.error('Cannot Fetch Right Now');
+          message.error(res.data.description);
           setLoading(false)
           setIbookData([]);
           setTotal()
@@ -499,7 +499,7 @@ const EbookView = (props) => {
         </div>
 
       </div>
-      <div  >
+      <div style={{minHeight: '55vh'}} >
         {loading ? (
           <div className='row justify-content-center py-3 mt-5'>
             <Spin title='Loading...' />
