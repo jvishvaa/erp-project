@@ -12,6 +12,7 @@ import { Pagination } from '@material-ui/lab';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg'
+import { FormControlLabel } from '@material-ui/core';
 
 
 
@@ -309,7 +310,7 @@ const handleAddQuestionToQuestionPaper = (question) => {
 if(!formik.values.subject && !formik.values.erp_category){
     return message.error('Please Select Subject or ERP Category !')
 }
-    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${selectedAcademicYear?.id}&grade=${grade?.grade_id}&page_size=${limit}&page=${page}&question_status=${2}`;
+    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${selectedBranch?.id}&grade=${grade?.grade_id}&page_size=${limit}&page=${page}&question_status=${2}`;
     
     requestUrl += `&request_type=${tabIsErpCentral? 2 : 1}`;  
     if (formik.values.subject && !formik.values.erp_category) {
@@ -855,7 +856,22 @@ const handleQuestionCategory = (value) => {
             <img src={NoDataIcon} />
           </div>
           ) : (
-          periodData?.map((ques,i) => (
+          <>
+            <div className='ml-4'>
+                    <FormControlLabel
+                      style={{ minWidth: '150px',color:'blue' }}
+                      control={
+                        <Checkbox
+                        className='mr-2'
+                          checked={isSelectAllQuestion}
+                          onChange={(e) => toggleCompleteQuestion(e, periodData)}
+                          name='allSelect'
+                        />
+                      }
+                      label='Select All'
+                    />
+            </div>
+          {periodData?.map((ques,i) => (
             <div>
             <QuestionBankCard 
             index = {i}
@@ -873,7 +889,8 @@ const handleQuestionCategory = (value) => {
             questionPaperWise={questionPaperWise}
             />
           </div>
-          )) ) }
+          ))}
+          </> ) }
             </>
           )}
           

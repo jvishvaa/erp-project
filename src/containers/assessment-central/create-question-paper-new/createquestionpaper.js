@@ -307,9 +307,19 @@ const handlequesType = () => {
       const sectionData = [];
       const grade_subject_mapping =[]
       const subjects = []
+      let totalMark = 0
+      let instructionValidCount = 0
       sections.forEach((q) => {
         q.sections.forEach((sec) => {
+          if(sec?.instruction?.length === 0){
+            instructionValidCount += 1
+          }
           const sectionObj = { [sec.name]: [], discription: sec.name,mandatory_questions:sec?.mandatory_questions ,instruction:sec?.instruction ,test_marks:sec?.test_marks};
+          if(!questionPaperWise){
+            let marks = sec.test_marks?.forEach((item) => {
+              totalMark += parseInt(item?.question_mark[0])
+            })
+          }
           sec.questions.forEach((question) => {
             if(question?.is_central){
               grade_subject_mapping.push(question?.grade_subject_mapping)
@@ -330,6 +340,12 @@ const handlequesType = () => {
           sectionData.push(sectionObj);
         });
       });
+      if(instructionValidCount !== 0){
+        return setAlert('error','Please Enter instructions')
+       }
+       if(!questionPaperWise && (totalMark < parseInt(max_Marks)) || (totalMark > parseInt(max_Marks))){
+        return setAlert('error','Selected Marks not Matched with Maximum Marks')
+      }
 
       let reqObj = {
         academic_year: selectedAcademicYear?.id,
@@ -447,9 +463,9 @@ const handlequesType = () => {
       }else if(questionPaperWise && (qp_wise_marks < max_Marks || qp_wise_marks > max_Marks)){
         return setAlert('error','Selected Marks not Matched with Maximum Marks')
       }
-      if(questionPaperWise && (qp_wise_marks !== max_Marks)){
+      // if(questionPaperWise && (qp_wise_marks !== max_Marks)){
         
-      }
+      // }
       const questionData = [],
         centralQuestionData = [];
 
@@ -457,8 +473,12 @@ const handlequesType = () => {
       const grade_subject_mapping =[]
       const subjects = []
       let totalMark = 0
+      let instructionValidCount = 0
       sections.forEach((q) => {
         q.sections.forEach((sec) => {
+          if(sec?.instruction?.length === 0){
+            instructionValidCount += 1
+          }
             const sectionObj = { [sec.name]: [], discription: sec.name,mandatory_questions:sec?.mandatory_questions ,instruction:sec?.instruction ,test_marks:sec?.test_marks};
             if(!questionPaperWise){
               let marks = sec.test_marks?.forEach((item) => {
@@ -485,10 +505,14 @@ const handlequesType = () => {
           sectionData.push(sectionObj);
         });
       });
+      if(instructionValidCount !== 0){
+       return setAlert('error','Please Enter instructions')
+      }
 
       if(!questionPaperWise && (totalMark < parseInt(max_Marks)) || (totalMark > parseInt(max_Marks))){
         return setAlert('error','Selected Marks not Matched with Maximum Marks')
       }
+      
 
       let reqObj = {
         academic_year: selectedAcademicYear?.id,
