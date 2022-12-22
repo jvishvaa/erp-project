@@ -234,33 +234,36 @@ const QuestionBankCard = ({
         >
           <div className='row col-md-12 mt-1'>
             <div className='col-md-6 pl-0'>
-              <Checkbox onChange={(e) => toggleCompleteQuestion(e, question, index)} />{' '}
+              <Checkbox
+                checked={question?.checked}
+                onChange={(e) => {
+                  toggleCompleteQuestion(e, question, index);
+                  setEnableMarks(e.target.checked);
+                }}
+              />{' '}
               Select Question To Paper
             </div>
             {/* <div className='col-md-2'></div> */}
             {!questionPaperWise && (
-              <div className='col-md-6 d-flex'>
-                <div className='col-md-8 ml-3'>
-                  <Checkbox style={{ color: '#00c040' }} onChange={setMarksEnable}>
-                    Set Marks
-                  </Checkbox>
+              <div className='col-md-6 d-flex justify-content-end pr-0'>
+                <div className='mr-2' style={{ color: '#00c040' }}>
+                  Assign Marks
                 </div>
-                <div className='col-md-4'>
-                  <Input
-                    disabled={!enableMarks}
-                    type='number'
-                    maxLength={3}
-                    onChange={(e) => handleMarks(e, question, index)}
-                    style={{
-                      width: '52px',
-                      height: '24px',
-                      background: enableMarks ? 'white' : '',
-                    }}
-                  />
-                </div>
+                <Input
+                  disabled={!question?.checked}
+                  type='number'
+                  maxLength={3}
+                  onChange={(e) => handleMarks(e, question, index)}
+                  style={{
+                    width: '52px',
+                    height: '24px',
+                    background: enableMarks ? 'white' : '',
+                  }}
+                />
               </div>
             )}
           </div>
+
           <hr className='mt-1' />
           <div className='row'>
             Question:{' '}
@@ -315,6 +318,7 @@ const QuestionBankCard = ({
           </div>
         </div>
       </div>
+
       {/* {viewMore && <ViewMoreCard
                       setSelectedIndex={setSelectedIndex}
                       viewMoreData={viewMoreData}

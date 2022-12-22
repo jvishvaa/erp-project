@@ -324,8 +324,13 @@ const CreatequestionPaperNew = () => {
       const sectionData = [];
       const grade_subject_mapping = [];
       const subjects = [];
+      let totalMark = 0;
+      let instructionValidCount = 0;
       sections.forEach((q) => {
         q.sections.forEach((sec) => {
+          if (sec?.instruction?.length === 0) {
+            instructionValidCount += 1;
+          }
           const sectionObj = {
             [sec.name]: [],
             discription: sec.name,
@@ -333,6 +338,11 @@ const CreatequestionPaperNew = () => {
             instruction: sec?.instruction,
             test_marks: sec?.test_marks,
           };
+          if (!questionPaperWise) {
+            let marks = sec.test_marks?.forEach((item) => {
+              totalMark += parseInt(item?.question_mark[0]);
+            });
+          }
           sec.questions.forEach((question) => {
             if (question?.is_central) {
               grade_subject_mapping.push(question?.grade_subject_mapping);
@@ -353,6 +363,15 @@ const CreatequestionPaperNew = () => {
           sectionData.push(sectionObj);
         });
       });
+      if (instructionValidCount !== 0) {
+        return setAlert('error', 'Please Enter instructions');
+      }
+      if (
+        (!questionPaperWise && totalMark < parseInt(max_Marks)) ||
+        totalMark > parseInt(max_Marks)
+      ) {
+        return setAlert('error', 'Selected Marks not Matched with Maximum Marks');
+      }
 
       let reqObj = {
         academic_year: selectedAcademicYear?.id,
@@ -474,8 +493,9 @@ const CreatequestionPaperNew = () => {
       ) {
         return setAlert('error', 'Selected Marks not Matched with Maximum Marks');
       }
-      if (questionPaperWise && qp_wise_marks !== max_Marks) {
-      }
+      // if(questionPaperWise && (qp_wise_marks !== max_Marks)){
+
+      // }
       const questionData = [],
         centralQuestionData = [];
 
@@ -483,8 +503,12 @@ const CreatequestionPaperNew = () => {
       const grade_subject_mapping = [];
       const subjects = [];
       let totalMark = 0;
+      let instructionValidCount = 0;
       sections.forEach((q) => {
         q.sections.forEach((sec) => {
+          if (sec?.instruction?.length === 0) {
+            instructionValidCount += 1;
+          }
           const sectionObj = {
             [sec.name]: [],
             discription: sec.name,
@@ -517,6 +541,9 @@ const CreatequestionPaperNew = () => {
           sectionData.push(sectionObj);
         });
       });
+      if (instructionValidCount !== 0) {
+        return setAlert('error', 'Please Enter instructions');
+      }
 
       if (
         (!questionPaperWise && totalMark < parseInt(max_Marks)) ||
@@ -883,7 +910,7 @@ const CreatequestionPaperNew = () => {
         >
           <div className='col-md-4'>
             <Input
-              placeholder='Title'
+              placeholder='Question Paper Name'
               value={formik.values.questionPaperName}
               onChange={handleQuestionPaperName}
             />

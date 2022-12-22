@@ -12,6 +12,7 @@ import { Pagination } from '@material-ui/lab';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import { FormControlLabel } from '@material-ui/core';
 
 const { Option } = Select;
 
@@ -309,7 +310,7 @@ const QuestionBankDrawer = ({
       return message.error('Please Select Subject or ERP Category !');
     }
     let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${
-      selectedAcademicYear?.id
+      selectedBranch?.id
     }&grade=${grade?.grade_id}&page_size=${limit}&page=${page}&question_status=${2}`;
 
     requestUrl += `&request_type=${tabIsErpCentral ? 2 : 1}`;
@@ -866,25 +867,41 @@ const QuestionBankDrawer = ({
                 <img src={NoDataIcon} />
               </div>
             ) : (
-              periodData?.map((ques, i) => (
-                <div>
-                  <QuestionBankCard
-                    index={i}
-                    question={ques}
-                    setSelectedIndex={setSelectedIndex}
-                    // periodColor={selectedIndex === i}
-                    viewMore={viewMore}
-                    setLoading={setLoading}
-                    setViewMore={setViewMore}
-                    setViewMoreData={setViewMoreData}
-                    setPeriodDataForView={setPeriodDataForView}
-                    setCallFlag={setCallFlag}
-                    toggleCompleteQuestion={toggleCompleteQuestion}
-                    handleMarks={handleMarks}
-                    questionPaperWise={questionPaperWise}
+              <>
+                <div className='ml-4'>
+                  <FormControlLabel
+                    style={{ minWidth: '150px', color: 'blue' }}
+                    control={
+                      <Checkbox
+                        className='mr-2'
+                        checked={isSelectAllQuestion}
+                        onChange={(e) => toggleCompleteQuestion(e, periodData)}
+                        name='allSelect'
+                      />
+                    }
+                    label='Select All'
                   />
                 </div>
-              ))
+                {periodData?.map((ques, i) => (
+                  <div>
+                    <QuestionBankCard
+                      index={i}
+                      question={ques}
+                      setSelectedIndex={setSelectedIndex}
+                      // periodColor={selectedIndex === i}
+                      viewMore={viewMore}
+                      setLoading={setLoading}
+                      setViewMore={setViewMore}
+                      setViewMoreData={setViewMoreData}
+                      setPeriodDataForView={setPeriodDataForView}
+                      setCallFlag={setCallFlag}
+                      toggleCompleteQuestion={toggleCompleteQuestion}
+                      handleMarks={handleMarks}
+                      questionPaperWise={questionPaperWise}
+                    />
+                  </div>
+                ))}
+              </>
             )}
           </>
         )}

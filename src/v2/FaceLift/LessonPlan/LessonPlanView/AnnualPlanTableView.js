@@ -22,7 +22,9 @@ import {
   RightOutlined,
   EyeFilled,
   FilePdfOutlined,
-  BookOutlined
+  BookOutlined,
+  SnippetsOutlined,
+  FilePptOutlined
 } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
@@ -127,7 +129,7 @@ const TableView = (props) => {
 
   const env = window.location.host
   const domain = window.location.host.split('.')
-  let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids'  : domain[0]
+  let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids' : domain[0]
 
   const showEbookDrawer = () => {
     setOpenEbook(true);
@@ -234,24 +236,24 @@ const TableView = (props) => {
         message.error(error.message);
         setLoading(false);
       });
-      fetchIbooks({
-        subject_id: subjectId,
-        volume_id: volumeId,
-        grade_id: gradeId,
-        session_year: selectedAcademicYear?.session_year,
-        book_type: '4',
-        branch: selectedBranch?.branch?.id,
-        domain_name: domain_name
-      })
-      fetchEbooks({
-        subject_id: subjectId,
-        volume_id: volumeId,
-        grade_id: gradeId,
-        session_year: selectedAcademicYear?.session_year,
-        book_type: '3',
-        branch: selectedBranch?.branch?.id,
-        domain_name: domain_name
-      })
+    fetchIbooks({
+      subject_id: subjectId,
+      volume_id: volumeId,
+      grade_id: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '4',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name
+    })
+    fetchEbooks({
+      subject_id: subjectId,
+      volume_id: volumeId,
+      grade_id: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '3',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name
+    })
   };
   const fetchEbooks = (params) => {
     setLoading(true)
@@ -261,9 +263,9 @@ const TableView = (props) => {
       })
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('Ebooks Fetched Successfully');
+          // message.success('Ebooks Fetched Successfully');
           setEbookData(res.data.result.data);
-        }  else {
+        } else {
           message.error('Cannot Fetch Right Now');
           setEbookData([]);
         }
@@ -281,12 +283,12 @@ const TableView = (props) => {
         params: { ...params },
       })
       .then((res) => {
-     
+
         if (res.data.status_code === 200) {
           setIbookData(res.data.result.result);
           // setTotal(res.data.result.total_ebooks)
           console.log(res.data.result);
-          message.success('Ibooks Fetched Successfully');
+          // message.success('Ibooks Fetched Successfully');
           setLoading(false)
         } else {
           message.error('Cannot Fetch Right Now');
@@ -778,7 +780,7 @@ const TableView = (props) => {
                     });
                   }}
                 >
-                  <div className='row th-fw-600 th-pointer th-primary'>
+                  {/* <div className='row th-fw-600 th-pointer th-primary'>
                     <div className=''>Portion Document</div>
                     <div className='ml-3'>
                       <EyeFilled
@@ -787,6 +789,12 @@ const TableView = (props) => {
                         style={{ verticalAlign: 'inherit' }}
                       />
                     </div>
+                  </div> */}
+                  <div className=' pl-0 col-12e4l th-primary '>
+                    <Badge count='1' >
+                      <Button icon={<FilePptOutlined />} />
+                    </Badge>
+                    <span style={{ marginLeft: '5px', fontWeight: '600' }}>Portion Document</span>
                   </div>
                 </a>
               </div>
@@ -812,7 +820,7 @@ const TableView = (props) => {
                     });
                   }}
                 >
-                  <div className='row th-fw-600 th-pointer th-primary'>
+                  {/* <div className='row th-fw-600 th-pointer th-primary'>
                     <div className=''>Yearly Curriculum Plan</div>
                     <div className='ml-3'>
                       <EyeFilled
@@ -821,12 +829,67 @@ const TableView = (props) => {
                         style={{ verticalAlign: 'inherit' }}
                       />
                     </div>
+                  </div> */}
+                  <div className=' pl-0 col-12e4l th-primary '>
+                    <Badge count='1' >
+                      <Button icon={<SnippetsOutlined />} />
+                    </Badge>
+                    <span style={{ marginLeft: '5px', fontWeight: '600' }}>Yearly Curriculum Plan</span>
                   </div>
                 </a>
               </div>
             )}
             {ebookData?.length > 0 && (
+              <div className='col-md-3 pl-0 col-12e4l'>
+                <a onClick={showEbookDrawer} >
+                  <div className='col-md-3 pl-0 col-12e4l th-primary '>
+                    <Badge count={ebookData?.length} >
+                      <Button icon={<FilePdfOutlined />} onClick={showEbookDrawer} />
+                    </Badge>
+                    <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ebook</span>
+                  </div>
+
+                </a>
+                <Modal
+                  title="Ebooks"
+                  closable={true}
+                  onCancel={onEbookClose}
+                  visible={openEbook}
+                  footer={null}
+                >
+
+                  <EbookList data={ebookData} />
+                </Modal>
+              </div>
+            )}
+
+            {ibookData?.length > 0 && (
+              <div className='col-md-3 pl-0 col-12e4l'>
+                <a onClick={showIbookDrawer} >
+                  <div className='col-md-3 pl-0 col-12e4l th-primary '>
+                    <Badge count={ibookData?.length} >
+                      <Button icon={<BookOutlined />} onClick={showIbookDrawer} />
+                    </Badge>
+                    <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ibook</span>
+                  </div>
+
+                </a>
+                <Modal
+                  title="Ibooks"
+                  closable={true}
+                  onCancel={onIbookClose}
+                  visible={openIbook}
+                  footer={null}
+                  width={'90vh'}
+                >
+
+                  <IbookList data={ibookData} />
+                </Modal>
+              </div>
+            )}
+            {/* {ebookData?.length > 0 && (
               <div className='col-md-3'>
+                <span>Ebook</span>
                 <Badge count={ebookData?.length} >
                   <Button icon={<FilePdfOutlined />} onClick={showEbookDrawer} />
                 </Badge>
@@ -839,11 +902,12 @@ const TableView = (props) => {
               visible={openEbook}
               footer={null}
             >
-             
+
               <EbookList data={ebookData} />
             </Modal>
             {ibookData?.length > 0 && (
               <div className='col-md-3'>
+                <span>Ibook</span>
                 <Badge count={ibookData?.length} >
                   <Button icon={<BookOutlined />} onClick={showIbookDrawer} />
                 </Badge>
@@ -855,11 +919,11 @@ const TableView = (props) => {
               onCancel={onIbookClose}
               visible={openIbook}
               footer={null}
-              width = {'90vh'}
+              width={'90vh'}
             >
-            
+
               <IbookList data={ibookData} />
-            </Modal>
+            </Modal> */}
           </div>
         </div>
       )}
