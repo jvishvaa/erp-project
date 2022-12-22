@@ -320,7 +320,7 @@ const CreateAssesment = ({
         let asstypes = data.filter(
           (item) => item?.exam_name !== 'Open Test' && item?.exam_name !== 'Practice Test'
         );
-        if (mode?.name === 'Online') {
+        if (mode?.name === 'Offline') {
           setAssesmentTypes(asstypes);
         } else {
           setAssesmentTypes(data);
