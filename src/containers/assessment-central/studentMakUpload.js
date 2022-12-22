@@ -212,7 +212,6 @@ const StudentMark = () => {
     const [studentmarks, setStudentMarks] = useState();
     const [nextFlag, setNextFlag] = useState(false);
     const [studentImgs, setStudentImgs] = useState([]);
-    console.log('treepathcheck', studentImgs)
     let markQues = selectedUserData?.total_marks / selectedUserData?.total_question;
 
     const { openPreview, closePreview } =
@@ -400,22 +399,42 @@ const StudentMark = () => {
     const handleBack = () => {
         history.goBack()
     }
+ 
 
     const handleSave = () => {
+        
         let value = 0;
         let valueArray = [];
         let testArr = [];
         var sum = values.val.reduce((a, v) => a = parseFloat(a) + parseFloat(v), 0);
         console.log(values?.val);
         console.log(history?.location?.state?.studentData?.total_question);
-        if (values?.val?.length === history?.location?.state?.studentData?.total_question) {
-            if (values?.val?.length > 0 && !values?.val.some(ele => ele === "") && values?.val[0] !== undefined && !values?.val.some(ele => ele === null)) {
+        // if (values?.val?.length === history?.location?.state?.studentData?.total_question) {
+            if (values?.val?.length > 0 && values?.val[0] !== undefined) {
                 let checkValid = values?.val?.some((ele, index) => ele > quesList[index]?.question_mark[0] || -(quesList[index]?.question_mark[1]) > ele)
                 console.log(checkValid);
                 if (checkValid == true) {
-                    setAlert('warning', 'Marks cannot exceed Indiviual mark')
+                    setAlert('warning', 'Marks cannot exceed Individual mark')
                 } else {
-                    testArr = values?.val.map((ques, i) => valueArray.push({
+                    let obj = {}
+                    let markscount = 0;
+
+                 
+              let markcount =  quesList?.forEach((item) => {
+                if(obj[item?.sections?.discription] == undefined){
+                    obj[item?.sections?.discription] = item.sections.mandatory_questions                  
+                    markscount += item?.sections.mandatory_questions     
+                }         
+                })
+               let valueCount = values?.val.filter((item) => item!== undefined && item !== '')
+                if(valueCount?.length < markscount){
+                    return setAlert('error','please Fill all Mandetory Questions')
+                }else if(valueCount?.length > markscount){
+                    return setAlert('error' ,'Please Fill only Mandetory Questions')
+                }
+
+                      testArr = values?.val.map((ques, i) => {
+                        valueArray.push({
                         is_central: quesList[i]?.is_central,
                         parent_id: quesList[i]?.parent_id,
                         question: quesList[i]?.question,
@@ -423,16 +442,43 @@ const StudentMark = () => {
                         question_level: quesList[i]?.question_level,
                         question_mark: parseFloat(values?.val[i]),
                         question_type: quesList[i]?.question_type,
-                        user_answer: []
-                    }))
-                    console.log(valueArray, 'valArray');
+                        user_answer: [],
+                        section : quesList[i]?.sections?.discription,
+
+                    })
+                })
+                    let countobj = {}
+                    let count = 0
+                    const finalValue = []
+                    valueArray.forEach((item) => {
+                        if(item?.question_mark){
+                            if(countobj[item.section] == undefined){
+                                countobj[item.section] = 1
+                            }else{
+                                countobj[item.section] += 1
+                            }
+                            finalValue.push(item)
+                        }
+                        
+                    })
+                    let sectionkey = Object.keys(obj)
+                    let data =sectionkey.map((item) => {
+                        if(countobj[item] !== obj[item]) 
+                        return false
+                        else return true
+                    })
+
+                    if(data.includes(false)){
+                       return setAlert('error' ,'Please Fill only Mandetory Questions')
+                    }
+
+
                     const payload = {
                         test: history?.location?.state?.test_id,
                         submitted_by: selectedUser,
-                        user_response: valueArray,
+                        user_response: finalValue,
                         // total_mark: parseFloat(sum)
                     }
-                    console.log(payload);
                     axiosInstance
                         .put(`${endpoints.assessment.studentMarks}`, payload)
                         .then((result) => {
@@ -448,10 +494,6 @@ const StudentMark = () => {
             } else {
                 setAlert('warning', ' All Fields are required')
             }
-
-        } else {
-            setAlert('warning', ' All Fields are required')
-        }
     }
     const handleSkip = () => {
         studentList.map((ele, i) => {
@@ -650,7 +692,7 @@ const StudentMark = () => {
                                     {dummyArr.map((items, i) => (
                                         <TableRow key={items.id}>
                                             <TableCell className={classes.tableCell} style={{ fontSize: '13px', width: '10%' }} >
-                                                Question - {i + 1}
+                                            Sec {quesList[i].sections.discription} - Q{i + 1}
                                             </TableCell>
                                             <TableCell className={classes.tableCell} style={{ maxWidth: '400px', minWidth: '200px', height: '100px', fontSize: '13px' }} >
                                                 <div className='questnArea' style={{ textAlign: 'justify' }} >

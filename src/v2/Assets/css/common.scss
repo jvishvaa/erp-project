@@ -114,7 +114,7 @@ body {
   background-color: #cfe2ff !important;
 }
 .th-bg-blue-3 {
-  background-color: #f2f6fe !important;
+  background-color: #88abf26b !important;
 }
 .th-bg-yellow-2 {
   background: #f0f1e1 !important;
@@ -248,7 +248,9 @@ body {
   border: 1px solid #1b4ccb !important;
 }
 
-.ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before {
+.ant-picker-cell-in-view.ant-picker-cell-range-start:not(
+    .ant-picker-cell-range-start-single
+  )::before {
   background: #1b4ccb12 !important;
 }
 
@@ -260,7 +262,9 @@ body {
   background: #1b4ccb !important;
 }
 
-.ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
+.ant-picker-cell-in-view.ant-picker-cell-range-end:not(
+    .ant-picker-cell-range-end-single
+  )::before {
   background: #1b4ccb12 !important;
 }
 

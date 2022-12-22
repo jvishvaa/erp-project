@@ -1258,8 +1258,10 @@ const StudentSideBlog = () => {
                     borderRadius:'5px',
                     marginTop: '10px',
                     height: 'auto',
-                    border:'1px solid #dbdbdb'
-
+                    border:'1px solid #dbdbdb',
+                    width:'21vw',
+                    overflowY:'auto',
+                    maxHeight:'16vh'
                   }}
                 >
                   <div
@@ -1295,8 +1297,9 @@ const StudentSideBlog = () => {
                         border: '1px solid grey',
                         width: '295px',
                         height: 'auto',
-                        marginLeft: '11px',
-                        marginRight: '10px',
+                        // marginLeft: '11px',
+                        // marginRight: '10px',
+                        margin:'auto',
                         borderRadius: '5px',
                         background: '#f4f5f9'
                       }}

@@ -242,14 +242,14 @@ const PhysicalReviewed = (props) => {
     setCurrentPage(page);
   }
 
-  let dummyArr =[]
-  const filterRound =(data) => {
-      if(dummyArr.indexOf(data) !== -1){
-          return ""
-      }else{
-          dummyArr.push(data)
-          return data
-      }
+  let dummyArr = []
+  const filterRound = (data) => {
+    if (dummyArr.indexOf(data) !== -1) {
+      return ""
+    } else {
+      dummyArr.push(data)
+      return data
+    }
   }
 
   return (
@@ -362,7 +362,7 @@ const PhysicalReviewed = (props) => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <div style={{ width: '100%', padding:'10px'}}>
+        <div style={{ width: '100%', padding: '10px' }}>
           <div style={{ fontSize: '24px', marginLeft: '6px', display: 'flex', justifyContent: 'space-between' }}>
             <strong>Preview</strong>
             <strong onClick={handleCloseViewMore} style={{ cursor: 'pointer', marginRight: '10px' }} >
@@ -465,13 +465,15 @@ const PhysicalReviewed = (props) => {
                 <div
                   style={{
                     background: '#f9f9f9',
-                    margin: '1rem 2rem',
+                    margin: 'auto',
                     padding: '0.5rem 1rem',
                     borderRadius: '5px',
                     // marginTop: '10px',
                     height: 'auto',
                     border: '1px solid #dbdbdb',
-                    width: '26vw',
+                    width: '36vw',
+                    maxHeight: '20vh',
+                    overflowY: 'auto'
 
                   }}
                 >
@@ -496,15 +498,16 @@ const PhysicalReviewed = (props) => {
                     </span>
                   </div>
                 </div>
-                <Divider />
+                <Divider style={{ margin: '1.5rem 0.5rem' }} />
                 <div
                   style={{
                     background: 'white',
                     width: '502px',
                     marginLeft: '34px',
                     height: 'auto',
-                    marginTop: '12px',
-                    marginBottom: '29px',
+                    // marginTop: '12px',
+                    // marginBottom: '29px',
+                    margin: 'auto',
                   }}
                 >
                   <div style={{ paddingTop: '12px' }}>
@@ -537,7 +540,7 @@ const PhysicalReviewed = (props) => {
                                     style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
                                   >
                                     {' '}
-                                    {obj?.name}<b style={{color:'#53bedd', fontSize:'12px'}}>{filterRound(obj?.level)}</b>
+                                    {obj?.name}<b style={{ color: '#53bedd', fontSize: '12px' }}>{filterRound(obj?.level)}</b>
                                   </div>
                                 )}
                                 {obj?.name == 'Overall' ? (
@@ -575,7 +578,6 @@ const PhysicalReviewed = (props) => {
 
                                 ) : (
                                   ""
-
                                 )}
                               </div>
 
@@ -606,7 +608,6 @@ const PhysicalReviewed = (props) => {
                           }}
                         >
                           <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                            {/* <ExpandMoreIcon onClick={expandMore} /> */}
                           </div>
                           <div
                             style={{
@@ -616,15 +617,7 @@ const PhysicalReviewed = (props) => {
                             }}
                           >
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                              {' '}
                               Overall
-                              {/* <RatingScale
-                          name='simple-controlled'
-                          defaultValue={DEFAULT_RATING}
-                          onChange={(event, value) => {
-                            setValue((prev) => ({ ...prev, rating: value }));
-                          }}
-                        /> */}
                             </div>
                             <div
                               style={{
@@ -640,26 +633,7 @@ const PhysicalReviewed = (props) => {
                       )}
                     </Grid>
                   </div>
-                  {/* <div
-                      style={{
-                        paddingLeft: '30px',
-                        paddingTop: '12px',
-                        paddingBottom: '6px',
-                      }}
-                    >
-                      {ReactHtmlParser(data?.submitted_work?.html_text)}
-                    </div> */}
                 </div>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row-reverse',
-                  paddingTop: '9px',
-                }}
-              >
-                {' '}
-                &nbsp;
               </div>
             </Grid>
           </Grid>

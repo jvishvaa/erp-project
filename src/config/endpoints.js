@@ -104,6 +104,10 @@ export default {
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
   },
+  doodle: {
+    checkDoodle: `/assessment/check-sys-config/`,
+    // fetchDoodle: `/erp_user/fetch-doodle/`,
+  },
 
   communication: {
     roles: '/erp_user/roles/',
@@ -280,6 +284,7 @@ export default {
     gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
     periodData: `/academic/chapter-period/`,
     periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
+    subjects: 'academic/v2/lesson-plan-subjects/',
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,

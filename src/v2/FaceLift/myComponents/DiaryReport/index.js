@@ -98,7 +98,7 @@ const DiaryReport = () => {
 
                         <div className='col-6 text-right pr-3 th-16 th-fw-600 th-green-1'>
                           <span className='mr-4'>
-                            {item?.dairy_count}
+                            {item?.diary_count}
                             {/* <RightOutlined className='th-black-1 pl-3' /> */}
                           </span>
                         </div>
@@ -114,8 +114,7 @@ const DiaryReport = () => {
                     history.push({
                       pathname: '/gradewise-diary-report',
                       state: {
-                        startDate: moment().subtract(6, 'days').format('YYYY-MM-DD'),
-                        endDate: moment().format('YYYY-MM-DD'),
+                        date: moment().format('YYYY-MM-DD'),
                       },
                     })
                   }

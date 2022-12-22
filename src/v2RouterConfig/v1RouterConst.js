@@ -269,6 +269,7 @@ import ActivateInactivateStudentAdm from 'containers/Finance/src/components/Fina
 import QuestionBankList from 'containers/question-bank/question-bank-list';
 import CreateQuestion from 'containers/question-bank/create-question';
 import CreateQuestionPaper from 'containers/assessment-central/create-question-paper/index';
+import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
 // import Assesmentquestion from 'containers/assesment/assesment';
 import Assesment from 'containers/assessment-central';
 import AssessmentView from 'containers/assessment-central/assesment-view';
@@ -455,7 +456,8 @@ import CreatePostActivity from 'containers/newBlog/createPostActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 import NewEbookView from 'containers/ebooks/NewEbook';
-
+import Filters from 'containers/assessment-central/create-question-paper-new/filters';
+import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig'
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -522,9 +524,14 @@ const V1Router = [
     {({ match }) => <CreateQuestion match={match} />}
   </Route>,
   <Route exact path='/create-question-paper/:id?'>
-    {({ match }) => <CreateQuestionPaper match={match} />}
+    {({ match }) => <QuestionPaperConfig match={match} />}
   </Route>,
-
+  <Route exact path='/createquestionpaper'>
+    {({ match }) => <CreatequestionPaperNew match={match} />}
+  </Route>,
+  // <Route exact path='/create-question-paper/:id?'>
+  //   {({ match }) => <Filters match={match} />}
+  // </Route>,
   <Route exact path='/assessment-question'>
     {({ match }) => <AssessmentView match={match} />}
   </Route>,

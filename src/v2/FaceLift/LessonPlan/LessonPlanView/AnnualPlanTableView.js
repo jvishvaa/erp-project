@@ -176,7 +176,7 @@ const TableView = (props) => {
       module_id: moduleId,
     };
     axios
-      .get(`${endpoints.academics.grades}`, { params })
+      .get(`/erp_user/v2/grademapping/`, { params })
       .then((res) => {
         if (res.data.status_code === 200) {
           setGradeData(res.data.data);
@@ -189,7 +189,7 @@ const TableView = (props) => {
 
   const fetchSubjectData = (params = {}) => {
     axios
-      .get(`${endpoints.lessonPlan.subjects}`, { params: { ...params } })
+      .get(`${endpoints.lessonPlan.allSubjects}`, { params: { ...params } })
       .then((res) => {
         if (res.data.status_code === 200) {
           setSubjectData(res.data.result);

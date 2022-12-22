@@ -156,17 +156,25 @@ const PeriodListView = () => {
     if (nextPeriodDetails) {
       fetchLessonResourcesData(nextPeriodDetails);
       if (nextPeriodDetails.volume_id !== volumeId) {
+        setSelectedModuleId([]);
         formRef.current.setFieldsValue({
           volume: nextPeriodDetails.volume_name,
+          chapter: nextPeriodDetails?.chapter__chapter_name,
+          module: nextPeriodDetails?.chapter__lt_module__lt_module_name,
         });
-        setVolumeId(nextPeriodDetails.volume_id);
+        setVolumeId(nextPeriodDetails?.volume_id);
+        setChapterId(nextPeriodDetails?.chapter_id);
+        // setSelectedModuleId(nextPeriodDetails?.module_id);
+        fetchChapterListData({
+          subject_id: subjectId,
+          volume: nextPeriodDetails?.volume_id,
+          grade_id: gradeId,
+          branch_id: selectedBranch?.branch?.id,
+          board: boardId,
+          module_id: nextPeriodDetails?.module_id,
+        });
       } else if (nextPeriodDetails.chapter_id !== chapterId) {
-        let chapterName = `${nextPeriodDetails?.chapter__chapter_name}
-                    ${nextPeriodDetails?.chapter__lt_module__lt_module_name?.toLowerCase() ==
-            'kit activity'
-            ? ` (Kit Activity)`
-            : ''
-          }`;
+        let chapterName = nextPeriodDetails?.chapter__chapter_name;
         formRef.current.setFieldsValue({
           chapter: chapterName,
         });
