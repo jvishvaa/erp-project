@@ -61,6 +61,7 @@ const EbookView = (props) => {
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState()
   const [ recently , setRecently ] = useState(false)
+  const [ ibookSortedData , setIbookSortedData ] = useState([])
 
   const env = window.location.host
   const domain = window.location.host.split('.')
@@ -406,6 +407,34 @@ const EbookView = (props) => {
 
   }
 
+  useEffect(() => {
+    if(ibookData?.length > 0){
+      setIbookSortedData(getSortedIbookData(ibookData))
+    }
+  },[ibookData])
+
+  const getSortedIbookData = (data) => {
+    const conceptWisedata = data
+      ?.sort((a, b) => Number(a.chapter) - Number(b.chapter))
+      ?.reduce((initialValue, data) => {
+        let key = data?.chapter_name;
+        if (!initialValue[key]) {
+          initialValue[key] = [];
+        }
+        initialValue[key].push(data);
+        return initialValue;
+      }, {});
+    const sortedConceptData = Object.keys(conceptWisedata)?.map((concept) => {
+      return {
+        concept,
+        data: conceptWisedata[concept],
+      };
+    });
+
+    console.log(sortedConceptData , 'sorted');
+    return sortedConceptData;
+  };
+
   const handleReadEbook = (data) => {
     console.log(data);
   }
@@ -516,7 +545,7 @@ const EbookView = (props) => {
               : props?.showTab == 2 ?
                 <div>
                 <span style={{marginLeft: '1%' , fontSize: '20px'}} >{recently ? 'Recently Viewed Books' : ''}</span>
-                  <NewIbook data={ibookData} total={total} page={page} handlePageChange={handlePageChange} />
+                  <NewIbook data={ibookSortedData} total={total} page={page} handlePageChange={handlePageChange} />
                 </div> : ''
             }
           </>

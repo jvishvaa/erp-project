@@ -1788,7 +1788,7 @@ const V1Router = [
   </Route>,
   <Route path='/uploadOMR'>{({ match }) => <UploadOMR match={match} />}</Route>,
   <Route path='/student-mark'>{({ match }) => <StudentMark match={match} />}</Route>,
-  <Route path='/lesson-plan/ebook-View/'>
+  <Route path='/online-books/ebook-View/'>
     {({ match }) => <NewEbookView match={match} />}
   </Route>,
 

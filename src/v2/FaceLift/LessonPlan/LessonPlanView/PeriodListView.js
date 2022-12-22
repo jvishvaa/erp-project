@@ -962,7 +962,7 @@ const PeriodListView = () => {
                   {ebookData?.length > 0 && (
                     <div className='col-md-3 pl-0 col-12e4l'>
                       <a onClick={showEbookDrawer} >
-                        <div className='col-md-3 pl-0 col-12e4l th-primary '>
+                        <div className=' pl-0 col-12e4l th-primary '>
                           <Badge count={ebookData?.length} >
                             <Button icon={<FilePdfOutlined />} onClick={showEbookDrawer} />
                           </Badge>
@@ -986,7 +986,7 @@ const PeriodListView = () => {
                   {ibookData?.length > 0 && (
                     <div className='col-md-3 pl-0 col-12e4l'>
                       <a onClick={showIbookDrawer} >
-                        <div className='col-md-3 pl-0 col-12e4l th-primary '>
+                        <div className=' pl-0 col-12e4l th-primary '>
                           <Badge count={ibookData?.length} >
                             <Button icon={<BookOutlined />} onClick={showIbookDrawer} />
                           </Badge>
