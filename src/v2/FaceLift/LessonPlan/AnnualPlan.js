@@ -210,12 +210,12 @@ const AnnualPlan = () => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Ebook' &&
+          item.parent_modules === 'Online Books' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
+            if (item.child_name === 'Online Books') {
               setModuleId(item.child_id);
             }
           });

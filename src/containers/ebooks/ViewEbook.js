@@ -102,7 +102,7 @@ class ViewEbook extends Component {
       .get(
         `${endpoints.communication.branches}?session_year=${
           this.state.sessionYear?.id
-        }&module_id=${getModuleInfo('Ebook View').id}`
+        }&module_id=${getModuleInfo('Online Books').id}`
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
