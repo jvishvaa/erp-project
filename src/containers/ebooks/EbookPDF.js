@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const EbookPdf = (props) => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState();
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isZoomed, setZoomStatus] = useState(false);
@@ -162,8 +162,13 @@ const EbookPdf = (props) => {
   }, [props.id, page, height, width, mode]);
 
   useEffect(() => {
-    setPage(props.pageNumber);
-  }, [props.pageNumber]);
+    if(props?.recently == true){
+      console.log(props);
+      setPage(props?.pageNumber);
+    } else {
+      setPage(1)
+    }
+  }, []);
 
   const getSplittedImages = useCallback(() => {
     if (props.id && page) {
@@ -268,6 +273,7 @@ const EbookPdf = (props) => {
   const handlePage = (e) => {
     console.log(e);
     setPage(e)
+    props.getPageNum(e)
   }
 
   return (
@@ -340,7 +346,7 @@ const EbookPdf = (props) => {
                   cursor: 'pointer',
                   transition: 'all 0.3s ease 0s',
                   transform: isZoomed ? 'scale(1.5,1.5)' : 'scale(1,1)',
-                  height: '70vh',
+                  height: '50vh',
                 }}
               />
             </div>
@@ -374,7 +380,7 @@ const EbookPdf = (props) => {
             {console.log(totalPages)}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <span>Page</span>
-              <Pagination simple showSizeChanger={false} defaultCurrent={page} total={totalPages} defaultPageSize={1} onChange={handlePage} size='default'  />
+              <Pagination simple showSizeChanger={false} current={page} total={totalPages} defaultPageSize={1} onChange={handlePage} size='default'  />
             </div>
             {/* <div className={classes.pagercoustom}>
             <Grid container spacing={2}>

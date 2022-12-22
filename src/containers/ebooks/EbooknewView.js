@@ -540,7 +540,7 @@ const EbookView = (props) => {
 
               <div  >
                 <span style={{marginLeft: '1%' , fontSize: '20px'}}>{recently ? 'Recently Viewed Books' : ''}</span>
-                <EbookCards data={ebookData} total={total} page={page} handlePageChange={handlePageChange} />
+                <EbookCards data={ebookData} total={total} page={page} handlePageChange={handlePageChange} recently={recently} fetchEbooksDefault={fetchEbooksDefault} fetchEbooks={fetchEbooks} centralGrade={centralGrade} centralSubject={centralSubject} volumeId={volumeId} branchId={selectedBranch?.branch?.id}  />
               </div>
               : props?.showTab == 2 ?
                 <div>

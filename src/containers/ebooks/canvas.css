@@ -135,13 +135,13 @@ margin-top: 5% !important;
 
 .drwaing-resposive {
 margin-top: 10% !important;
-height: 70vh !important;
+height: 50vh !important;
 width: fit-content !important;
 cursor: url('https://img.icons8.com/emoji/20/000000/fountain-pen-emoji.png')1 30, crosshair !important;
 }
 .drwaing-resposive1 {
 margin-top: 10% !important;
-height: 70vh !important;
+height: 50vh !important;
 width: fit-content !important;
 cursor: url('https://img.icons8.com/color/30/000000/eraser.png')1 30, pointer !important;
 } 
@@ -157,19 +157,19 @@ cursor: url('https://img.icons8.com/color/30/000000/eraser.png')1 30, pointer !i
 }
 .drwaing-resposive {
   margin-top: 10% !important;
-  height: 70vh !important;
+  height: 50vh !important;
   width: fit-content !important;
   cursor: url('https://img.icons8.com/emoji/20/000000/fountain-pen-emoji.png')1 30, crosshair !important;
 }
 .drwaing-resposive1 {
   margin-top: 10% !important;
-  height: 70vh !important;
+  height: 50vh !important;
   width: fit-content !important;
   cursor: url('https://img.icons8.com/color/30/000000/eraser.png')1 30, pointer !important;
 } 
 #canvastyleview{
   margin-top: 10% !important;
-  height: 70vh !important;
+  height: 50vh !important;
 }
 /* #background__pdf {
   margin-top: -3% !important;

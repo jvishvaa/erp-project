@@ -67,8 +67,11 @@ const EbookCards = (props) => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'))?.user_id || {};
     const selectedAcademicYear = useSelector(
         (state) => state.commonFilterReducer?.selectedYear
-      );
+    );
 
+    const env = window.location.host
+    const domain = window.location.host.split('.')
+    let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids' : domain[0]
 
     const handleClickOpen = (data) => {
         setSelectedItem(data);
@@ -95,15 +98,22 @@ const EbookCards = (props) => {
             }
             setPdfUrl(url && url);
             setLoading(true);
-            setOpen(true);
             axiosInstance
                 .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`
                 )
-                .then(({ data }) => {
-                    console.log(data);
+                .then((res) => {
+                    console.log(res);
                     setLoading(false);
-                    setPageNumber(data.page_number);
-                    setTimeSpent(data.time_spent);
+                    if (props?.recently == true) {
+                        console.log(data?.page_number, 'hit rec');
+                        setPageNumber(data?.page_number)
+                    } else {
+                        setPageNumber(res?.data?.page_number);
+                        console.log(res?.data?.page_number, 'hit not rec');
+                    }
+                    setTimeSpent(res?.data?.time_spent);
+                    setOpen(true);
+
                 })
                 .catch((error) => {
                     console.log(error);
@@ -117,11 +127,35 @@ const EbookCards = (props) => {
         ebookClose({
             ebook_id: selectedItem?.id,
             user_id: userDetails,
-            lst_opened_date : new Date(),
+            lst_opened_date: new Date(),
             book_type: '3',
-            page_number : pageNumber,
-            session_year : selectedAcademicYear?.id
+            page_number: pageNumber,
+            session_year: selectedAcademicYear?.id
         })
+        if (props?.recently == true) {
+            props.fetchEbooksDefault({
+                book_type: '3',
+                session_year: selectedAcademicYear?.session_year,
+                page_number: props?.page,
+                page_size: '10',
+                domain_name: domain_name,
+            })
+        } else {
+
+            props.fetchEbooks({
+                grade: props?.centralGrade,
+                subject: props?.centralSubject,
+                is_ebook: 'true',
+                volume: props?.volumeId,
+                branch: props?.branchId,
+                domain_name: domain_name,
+                academic_year: selectedAcademicYear?.id,
+                session_year: selectedAcademicYear?.session_year,
+                page_number: props?.page,
+                page_size: '10',
+                book_type: '3'
+            })
+        }
     };
 
     const ebookClose = (params) => {
@@ -134,6 +168,11 @@ const EbookCards = (props) => {
                 console.log(error);
             });
 
+    }
+
+    const getPageNum = (pageNum) => {
+        console.log(pageNum);
+        setPageNumber(pageNum)
     }
 
 
@@ -202,6 +241,8 @@ const EbookCards = (props) => {
                                 passLoad={loading}
                                 goBackFunction={handleClose}
                                 name={selectedItem?.ebook_name}
+                                getPageNum={getPageNum}
+                                recently={props?.recently}
                             />
                         </Grid>
                     </Dialog>
