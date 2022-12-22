@@ -303,8 +303,8 @@ const NewIbook = (props) => {
                                         <Divider />
                                         <div className='bottomcard' >
                                             <div style={{ display: 'flex', marginLeft: '2%' }} >
-                                                <span style={{ fontSize: '11px', color: 'grey' }}>Last Viewed :</span>
-                                                <span style={{ fontSize: '11px' }}>{moment(item?.created_at).format('DD-MM-YYYY')}</span>
+                                                <span style={{ fontSize: '11px', color: 'grey' }}>Last Viewed : </span>
+                                                <span style={{ fontSize: '11px' }}>{moment(item?.lst_open_date).format('DD-MM-YYYY')}</span>
                                             </div>
                                             <div className='btndiv' >
                                                 <Button type="primary" className='btnant' onClick={() => handleBookOpen(item)}>Read</Button>

@@ -150,8 +150,8 @@ const EbookView = (props) => {
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
-        grade_id: gradeId,
-        // book_id: props?.showTab == 1 ? 3 : 4,
+        grade: gradeId,
+        book_type: props?.showTab == 1 ? 3 : 4,
       });
     }
   }, [gradeId]);
