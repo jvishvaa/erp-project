@@ -402,7 +402,6 @@ const StudentMark = () => {
  
 
     const handleSave = () => {
-        
         let value = 0;
         let valueArray = [];
         let testArr = [];
@@ -451,7 +450,7 @@ const StudentMark = () => {
                     let count = 0
                     const finalValue = []
                     valueArray.forEach((item) => {
-                        if(item?.question_mark){
+                        if(item?.question_mark >= 0){
                             if(countobj[item.section] == undefined){
                                 countobj[item.section] = 1
                             }else{
