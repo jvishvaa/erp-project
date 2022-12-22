@@ -127,8 +127,17 @@ const menuOptions = ['Remove'];
 
 const { Option } = Select;
 
-
-const Sections = ({ question, section, questionId, onDelete, onDeleteQuestion,grade,erpCategory,questionPaperWise,deleteOneSection }) => {
+const Sections = ({
+  question,
+  section,
+  questionId,
+  onDelete,
+  onDeleteQuestion,
+  grade,
+  erpCategory,
+  questionPaperWise,
+  deleteOneSection,
+}) => {
   let history = useHistory();
 
   const themeContext = useTheme();
@@ -137,15 +146,15 @@ const Sections = ({ question, section, questionId, onDelete, onDeleteQuestion,gr
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dispatch = useDispatch();
-  let marks = 0 
-  const [ isOptionalQues , setisOptionalQues] = useState(false)
+  let marks = 0;
+  const [isOptionalQues, setisOptionalQues] = useState(false);
   const sectionMarks = section?.test_marks.forEach((item) => {
-        marks += parseInt(item?.question_mark[0])
-  } )
+    marks += parseInt(item?.question_mark[0]);
+  });
 
   useEffect(() => {
-    handleOptionalQuestion(section?.questions?.length,'')
-  },[section?.questions?.length])
+    handleOptionalQuestion(section?.questions?.length, '');
+  }, [section?.questions?.length]);
 
   const handleAddQuestion = () => {
     setDrawerOpen(true);
@@ -155,20 +164,18 @@ const Sections = ({ question, section, questionId, onDelete, onDeleteQuestion,gr
     setDrawerOpen(false);
   };
 
-  const handleOptionalQuestion = (e,value) => {
-dispatch(addOptionalQuestion(e,questionId,section?.name))
-  }
+  const handleOptionalQuestion = (e, value) => {
+    dispatch(addOptionalQuestion(e, questionId, section?.name));
+  };
 
-
-const mandtorydropdown = ()=> {
-    let arr= []
-    for(let i=1;i<=section?.questions?.length ; i++){
-        arr.push(i)
+  const mandtorydropdown = () => {
+    let arr = [];
+    for (let i = 1; i <= section?.questions?.length; i++) {
+      arr.push(i);
     }
-    return arr
-}
-const Mandetary_question = mandtorydropdown()
-
+    return arr;
+  };
+  const Mandetary_question = mandtorydropdown();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -210,11 +217,11 @@ const Mandetary_question = mandtorydropdown()
     return span.textContent || span.innerText;
   }
 
-  console.log(section,'@@')
+  console.log(section, '@@');
 
   const isoptionalQues = (e) => {
-setisOptionalQues(e.target.checked)
-  }
+    setisOptionalQues(e.target.checked);
+  };
 
   return (
     <>
@@ -228,17 +235,21 @@ setisOptionalQues(e.target.checked)
               {section?.questions?.length}
             </div>
           </div>
-          {!questionPaperWise && <div className='d-flex col-md-5'>
-            Total Marks Added
-            <div className='col-md-4'>
-              {/* <Input style={{ width: '3rem', height: '1.5rem' }} /> */}
-              {marks}
+          {!questionPaperWise && (
+            <div className='d-flex col-md-5'>
+              Total Marks Added
+              <div className='col-md-4'>
+                {/* <Input style={{ width: '3rem', height: '1.5rem' }} /> */}
+                {marks}
+              </div>
             </div>
-          </div>}
+          )}
         </div>
       </div>
-      <div className='row mx-5 mt-4' style={{ border: '4px solid #e8e8e9' ,borderRadius:'6px'}}>
-
+      <div
+        className='row mx-5 mt-4'
+        style={{ border: '4px solid #e8e8e9', borderRadius: '6px' }}
+      >
         <div className='row mx-4 mt-2'>
           <span className='th-fw-600'>Instructions</span>
           <TextArea
@@ -248,19 +259,27 @@ setisOptionalQues(e.target.checked)
             className='mt-2'
             value={section?.instruction}
             style={{ height: '60px', background: '#f0f4fb' }}
-            onChange = {(e) => dispatch(addInstructionToSection(questionId,section?.name ,e.target.value))} 
+            onChange={(e) =>
+              dispatch(addInstructionToSection(questionId, section?.name, e.target.value))
+            }
           />
         </div>
         <hr />
         {/* {section?.questions.map((ques) => ( */}
-        {section?.questions?.map((ques, i) =>(
-          <QuestionCard ques={ques} index={i} handleDeleteQuestion = {handleDeleteQuestion} testMark = {section?.test_marks} questionPaperWise = {questionPaperWise}/>
+        {section?.questions?.map((ques, i) => (
+          <QuestionCard
+            ques={ques}
+            index={i}
+            handleDeleteQuestion={handleDeleteQuestion}
+            testMark={section?.test_marks}
+            questionPaperWise={questionPaperWise}
+          />
         ))}
         <div>
           <hr />
         </div>
-        <div className='row col-md-12 justify-content-end my-3'>
-          <div className='col-md-3' style={{marginRight:'3%'}}>
+        <div className='row justify-content-end my-3'>
+          <div className='col-md-3 pl-0 mr-2'>
             <Button className='w-100 th-button' onClick={handleAddQuestion}>
               Add Question from 'Question Bank'
             </Button>
@@ -269,46 +288,53 @@ setisOptionalQues(e.target.checked)
       </div>
       <hr />
       <div className=' row justify-content-end'>
-        <div className='mr-3 d-flex my-2' style={{ border: '1px solid #e8e8e9' }}>
-          <Checkbox className='ml-2' style={{ color: '#2ecf87' }} onChange={isoptionalQues}>
+        <div
+          className='mr-3 d-flex my-2 align-items-center p-1'
+          style={{ border: '1px solid #e8e8e9' }}
+        >
+          <Checkbox
+            className='ml-2'
+            style={{ color: '#2ecf87' }}
+            onChange={isoptionalQues}
+          >
             Set for Optional Questions
           </Checkbox>
-          <div className='d-flex'>
-          {section?.questions?.length}/
-          </div>
-         <Select
-         allowClear
-         placeholder= 'Topic'
-         showSearch
-         disabled = {!isOptionalQues}
-         value={section?.mandatory_questions}
-         // disabled={user_level == 13}
-         filterOption={(input, options) => {
-            return (
-              options.children
-            );
-          }}
-         optionFilterProp='children'
-         getPopupContainer={(trigger) => trigger.parentNode}
-         onChange={(e,value) => {
-            handleOptionalQuestion(e,value);
-          }}
-         >
+          <div className='d-flex mr-1'>{section?.questions?.length}/</div>
+          <Select
+            allowClear
+            placeholder='Topic'
+            showSearch
+            disabled={!isOptionalQues}
+            value={section?.mandatory_questions}
+            // disabled={user_level == 13}
+            filterOption={(input, options) => {
+              return options.children;
+            }}
+            optionFilterProp='children'
+            getPopupContainer={(trigger) => trigger.parentNode}
+            onChange={(e, value) => {
+              handleOptionalQuestion(e, value);
+            }}
+          >
             {Mandetary_question?.map((item) => (
-                <Option key={item} value={item}>{item}</Option>
+              <Option key={item} value={item}>
+                {item}
+              </Option>
             ))}
-        
-         </Select>
+          </Select>
         </div>
-        <div style={{display:'flex' , marginRight:'1%', alignItems : 'center'}}>
-            <DeleteFilled style={{color:'blue',fontSize:'large'}} onClick={() => deleteOneSection(questionId,section?.id)}/>
+        <div style={{ display: 'flex', marginRight: '1%', alignItems: 'center' }}>
+          <DeleteFilled
+            style={{ color: 'blue', fontSize: 'large' }}
+            onClick={() => deleteOneSection(questionId, section?.id)}
+          />
         </div>
       </div>
 
       {drawerOpen && (
         <QuestionBankDrawer
-          grade = {grade}
-          erpCategory = {erpCategory}
+          grade={grade}
+          erpCategory={erpCategory}
           onClose={onClose}
           drawerOpen={drawerOpen}
           section={section}

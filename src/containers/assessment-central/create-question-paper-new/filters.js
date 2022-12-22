@@ -5,7 +5,7 @@ import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { connect, useSelector,useDispatch } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 // import download from '../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import endpoints from '../../../config/endpoints';
@@ -34,13 +34,13 @@ const Filters = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const sections = useSelector((state) => state.createQuestionPaper.questions)
+  const sections = useSelector((state) => state.createQuestionPaper.questions);
   const is_ERP_CENTRAL = [
     { id: 1, flag: false, name: 'ERP' },
     { id: 2, flag: true, name: 'CENTRAL' },
   ];
   const [erpCategory, setErpCategory] = useState();
-  const [selectedGrade , setSelectedGrade] = useState()
+  const [selectedGrade, setSelectedGrade] = useState();
   const [erpCategoryDropdown, setErpGradeDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
@@ -59,7 +59,6 @@ const Filters = () => {
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
-
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -102,7 +101,7 @@ const Filters = () => {
   useEffect(() => {
     if (selectedBranch && moduleId) {
       getGrades();
-      getErpCategory()
+      getErpCategory();
     }
   }, [selectedBranch, moduleId]);
 
@@ -135,25 +134,25 @@ const Filters = () => {
     if (value) {
       setErpCategory(value);
     } else {
-      setErpCategory()
+      setErpCategory();
     }
   };
 
-const handleGrade = (e,value) => {
-  setSelectedGrade()
-if(value){
-  setSelectedGrade(value)
-//   let params = {
-//     session_year: selectedAcademicYear?.id,
-//     branch_id: selectedBranch?.branch?.id,
-//     module_id: moduleId,
-//     grade: value?.value,
-// }
-// fetchSubjectData(params)
-}else{
-  setSelectedGrade()
-}
-}
+  const handleGrade = (e, value) => {
+    setSelectedGrade();
+    if (value) {
+      setSelectedGrade(value);
+      //   let params = {
+      //     session_year: selectedAcademicYear?.id,
+      //     branch_id: selectedBranch?.branch?.id,
+      //     module_id: moduleId,
+      //     grade: value?.value,
+      // }
+      // fetchSubjectData(params)
+    } else {
+      setSelectedGrade();
+    }
+  };
 
   const handleAddSection = (i) => {
     let len = sections?.length || 0;
@@ -162,9 +161,9 @@ if(value){
         id: cuid(),
         name: `${String.fromCharCode(65 + i)}`,
         questions: [],
-        instruction:'',
-        mandatory_questions : 1,
-        test_marks : []
+        instruction: '',
+        mandatory_questions: 1,
+        test_marks: [],
       },
     ];
     const question = { id: cuid(), sections: sectionArray };
@@ -173,7 +172,7 @@ if(value){
   };
 
   // const handleSubject = (value) => {
-    
+
   //   if(value){
   //       let subject = subjectDropdown?.filter((item) => item?.subject_id === value?.value)
   //       // formik.setFieldValue('subject',subject[0])
@@ -182,25 +181,23 @@ if(value){
   //   }
   // }
 
-
   const handleSectionCount = (count) => {
-    if(!selectedGrade){
-      return setAlert('error', "Please Select Grade")
+    if (!selectedGrade) {
+      return setAlert('error', 'Please Select Grade');
+    } else {
+      for (let i = 0; i < count; i++) {
+        handleAddSection(i);
+      }
+      history.push({
+        pathname: '/createquestionpaper',
+        state: {
+          sectionCount: count,
+          Grade: selectedGrade,
+          erpCategory: erpCategory,
+        },
+      });
     }
-    else {
-      for(let i=0;i<count;i++){
-      handleAddSection(i)
-    }
-    history.push({
-        pathname : '/createquestionpaper',
-        state : {
-            sectionCount : count,
-            Grade : selectedGrade,
-            erpCategory : erpCategory
-        }
-    })
-  }
-  }
+  };
 
   const getGrades = () => {
     axiosInstance
@@ -236,75 +233,75 @@ if(value){
 
   return (
     <Layout>
-      <div className='row py-3 px-2' style={{ zIndex: 2 }}>
+      <div className='row p-3' style={{ zIndex: 2 }}>
         <Breadcrumb separator='>'>
-          <Breadcrumb.Item className='th-grey th-16'>
-            Assessment
+          <Breadcrumb.Item className='th-grey th-16'>Assessment</Breadcrumb.Item>
+          <Breadcrumb.Item className='th-black-1 th-16' href='/assessment-question'>
+            Question Paper
           </Breadcrumb.Item>
-          <Breadcrumb.Item className='th-black-1 th-16' href='/assessment-question'>Question Paper</Breadcrumb.Item>
           <Breadcrumb.Item className='th-black-1 th-16'>Create</Breadcrumb.Item>
-
         </Breadcrumb>
       </div>
-      <div className='row th-bg-white py-2 mx-3 '>
-        <div className='col-12'>
-          <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-            <div className='row align-items-center'>
-              {/* {boardFilterArr.includes(window.location.host) && ( */}
-              {/* )} */}
-              <div className='col-md-2 col-6 px-1'>
-                <div className='mb-2 text-left'>Grade</div>
-                <Form.Item name='grade'>
-                  <Select
-                    allowClear
-                    placeholder={
-                      // filterData?.grade ? filterData?.grade?.children :
-                      'Select Grade'
-                    }
-                    showSearch
-                    optionFilterProp='children'
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => {
-                      handleGrade(e,value);
-                    }}
-                    //   onClear={handleClearGrade}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-6'
-                    bordered={false}
-                  >
-                    {gradeOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className='col-md-2 col-6 px-2'>
-                <div className='mb-2 text-left'>Erp Category</div>
-                <Form.Item name='erpCategory'>
-                  <Select
-                    allowClear
-                    placeholder='Erp Category'
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    showSearch
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => {
-                      handleerpCategory(e, value);
-                    }}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-6'
-                    bordered={false}
-                  >
-                    {erpCategories}
-                  </Select>
-                </Form.Item>
-              </div>
-              {/* {!erpCategory && <div className='col-md-2 col-6'>
+      <div className='row px-3'>
+        <div className='row th-bg-white py-2'>
+          <div className='col-12'>
+            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+              <div className='row align-items-center'>
+                {/* {boardFilterArr.includes(window.location.host) && ( */}
+                {/* )} */}
+                <div className='col-md-2 col-6 px-1'>
+                  <div className='mb-2 text-left th-fw-600'>Grade</div>
+                  <Form.Item name='grade'>
+                    <Select
+                      allowClear
+                      placeholder={
+                        // filterData?.grade ? filterData?.grade?.children :
+                        'Select Grade'
+                      }
+                      showSearch
+                      optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handleGrade(e, value);
+                      }}
+                      //   onClear={handleClearGrade}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-6'
+                      bordered={false}
+                    >
+                      {gradeOptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='col-md-2 col-6 px-2'>
+                  <div className='mb-2 text-left th-fw-600'>ERP Category</div>
+                  <Form.Item name='erpCategory'>
+                    <Select
+                      allowClear
+                      placeholder='ERP Category'
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handleerpCategory(e, value);
+                      }}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-6'
+                      bordered={false}
+                    >
+                      {erpCategories}
+                    </Select>
+                  </Form.Item>
+                </div>
+                {/* {!erpCategory && <div className='col-md-2 col-6'>
                   <div className='mb-2 text-left'>Subject</div>
                   <Form.Item name='subject'>
                     <Select
@@ -330,7 +327,7 @@ if(value){
                     </Select>
                   </Form.Item>
                 </div>} */}
-              {/* <div className='col-md-2 col-6 px-2'>
+                {/* <div className='col-md-2 col-6 px-2'>
                 <div className='mb-2 text-left'>Question Level</div>
                 <Form.Item name='questionlevel'>
                   <Select
@@ -354,22 +351,51 @@ if(value){
                   </Select>
                 </Form.Item>
               </div> */}
+              </div>
+            </Form>
+          </div>
+          <div className='col-md-12'>
+            <hr className='my-2' />
+            <div className='row py-2 th-fw-600'>Choose Question Template</div>
+            <div className='row p-3 th-bg-grey justify-content-between align-items-center'>
+              <div
+                className='col-md-2 p-3 th-bg-white th-pointer'
+                onClick={() => handleSectionCount(1)}
+                style={{ height: '200px' }}
+              >
+                1 Section
+              </div>
+              <div
+                className='col-md-2 p-3 th-bg-white th-pointer'
+                onClick={() => handleSectionCount(2)}
+                style={{ height: '200px' }}
+              >
+                {' '}
+                2 Sections
+              </div>
+              <div
+                className='col-md-2 p-3 th-bg-white th-pointer'
+                onClick={() => handleSectionCount(4)}
+                style={{ height: '200px' }}
+              >
+                4 Sections
+              </div>
+              <div
+                className='col-md-2 p-3 th-bg-white th-pointer'
+                onClick={() => handleSectionCount(6)}
+                style={{ height: '200px' }}
+              >
+                6 Sections
+              </div>
+              <div
+                className='col-md-2 p-3 th-bg-white th-pointer'
+                onClick={() => handleSectionCount(8)}
+                style={{ height: '200px' }}
+              >
+                8 Sections
+              </div>
             </div>
-          </Form>
-        </div>
-        <div className = 'col-md-12'>
-            <div className='row'>
-                Choose Question Template
-            </div>
-            <hr />
-            <div className='row col-md-12 th-bg-grey justify-content-center'>
-                <div className='col-md-2 th-bg-white mr-3 mt-4 th-pointer' onClick={() => handleSectionCount(1)} style={{height : '200px'}}>1 Section</div>
-                <div className='col-md-2 th-bg-white m-4 th-pointer' onClick={() => handleSectionCount(2)} style={{height : '200px'}}> 2 Section</div>
-                <div className='col-md-2 th-bg-white m-4 th-pointer' onClick={() => handleSectionCount(4)} style={{height : '200px'}}>4 Section</div>
-                <div className='col-md-2 th-bg-white m-4 th-pointer' onClick={() => handleSectionCount(6)} style={{height : '200px'}}>6 Section</div>
-                <div className='col-md-2 th-bg-white ml-3 mt-4 th-pointer' onClick={() => handleSectionCount(8)} style={{height : '200px'}}>8 Section</div>
-
-            </div>
+          </div>
         </div>
       </div>
     </Layout>
