@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, createRef } from 'react';
-import { LeftOutlined } from '@ant-design/icons';
+import { LeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Select, Input, Checkbox, Switch } from 'antd';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector,useDispatch } from 'react-redux';
@@ -232,6 +232,11 @@ console.log(formik.values.grade,'grade')
 const handlequesType = () => {
   setQuestionPaperWise((prev) => !prev) 
   setQp_wise_Marks(0)
+  let data = sections.forEach((item)=> {
+  let dummy =   item?.sections[0].questions.forEach((que,i)=> {
+      handleDeleteQuestion(que?.id , i)
+    })
+  })
 }
 
   const handleerpCategory = (value) => {
@@ -595,6 +600,23 @@ const handlequesType = () => {
     }
   };
 
+  const handleAddSection = () => {
+    let len = sections?.length || 0;
+    const sectionArray = [
+      {
+        id: cuid(),
+        name: `${String.fromCharCode(65 + len)}`,
+        questions: [],
+        instruction:'',
+        mandatory_questions : 1,
+        test_marks : []
+      },
+    ];
+    const question = { id: cuid(), sections: sectionArray };
+    // initAddSection(question);
+    dispatch(addSection(question));
+  };
+
   const handleDeleteQuestion = (questionId, sectionId) => {
     dispatch(deleteQuestionSection(questionId, sectionId))
   }   
@@ -604,38 +626,45 @@ const handlequesType = () => {
     <Layout>
       <div className='mx-3'>
         <div className='row'>
-          {!isEdit && <Button
-            type='primary'
-            onClick={() => {
-              DeleteSections()
-              history.push('/create-question-paper')}}
-            shape='round'
-            variant='contained'
-            size={'small'}
-            color='primary'
-            className='th-br-6 th-fw-500'
-          >
-            <LeftOutlined size='small' />
-            Back To Create Question
-          </Button>}
-          {isEdit && <Button
-            type='primary'
-            onClick={() => {
-              DeleteSections()
-              history.push({
-              pathname: '/assessment-question',
-              state: {
-                isSet: isEdit ? 'true' :  'false',
-              }})}}
-            shape='round'
-            variant='contained'
-            size={'small'}
-            color='primary'
-            className='th-br-6 th-fw-500'
-          >
-            <LeftOutlined size='small' />
-            Back To Question Paper
-          </Button>}
+          {!isEdit && (
+            <Button
+              type='primary'
+              onClick={() => {
+                DeleteSections();
+                history.push('/create-question-paper');
+              }}
+              shape='round'
+              variant='contained'
+              size={'small'}
+              color='primary'
+              className='th-br-6 th-fw-500'
+            >
+              <LeftOutlined size='small' />
+              Back To Create Question
+            </Button>
+          )}
+          {isEdit && (
+            <Button
+              type='primary'
+              onClick={() => {
+                DeleteSections();
+                history.push({
+                  pathname: '/assessment-question',
+                  state: {
+                    isSet: isEdit ? 'true' : 'false',
+                  },
+                });
+              }}
+              shape='round'
+              variant='contained'
+              size={'small'}
+              color='primary'
+              className='th-br-6 th-fw-500'
+            >
+              <LeftOutlined size='small' />
+              Back To Question Paper
+            </Button>
+          )}
         </div>
         <div className='row my-3'>Question Paper Format/Details</div>
         <div className='row col-md-12'>
@@ -732,80 +761,109 @@ const handlequesType = () => {
                 </div>
               </Form>
             </div>
-            {!editFilters && <div style={{color:'#f7a262',cursor:'pointer',borderBottom:'1px solid'}} onClick ={() => {
-              setEditFilters(true)
-            }}>Edit</div>}
+            {!editFilters && (
+              <div
+                style={{ color: '#f7a262', cursor: 'pointer', borderBottom: '1px solid' }}
+                onClick={() => {
+                  setEditFilters(true);
+                }}
+              >
+                Edit
+              </div>
+            )}
           </div>
           <div className='col-md-1 th-bg-white'></div>
           <div className='d-flex col-md-3 th-bg-white align-items-center'>
             <div className='col-md-8'>
-              <div className='ml-5' style={{color :'#2ecf87'}}>Set Maximum Marks</div>
+              <div className='ml-5' style={{ color: '#2ecf87' }}>
+                Set Maximum Marks
+              </div>
             </div>
             <div className='col-md-4'>
-              <Input placeholder='Marks' onChange={(e) => setMaxMarks(e.target.value)} />
+              <Input placeholder='Marks' type='number' maxLength={3} onChange={(e) => setMaxMarks(e.target.value)} />
             </div>
           </div>
-</div>
-<div className='row th-bg-white'>
-  <div className='my-2 pl-4 d-flex align-items-center'>
-    <div>question Wise</div>
-    <Switch 
-    defaultChecked
-    Checked = {questionPaperWise}
-    onChange={handlequesType}
-     className='mx-2' /> 
-    <div>question paper wise</div>
-    {questionPaperWise && <div className='col-md-2'>
-      <Input placeholder='Marks' onChange={(e) => setQp_wise_Marks(e.target.value)}/>
-    </div>}
-    </div>
-
+        </div>
+        <div className='row th-bg-white'>
+          <div className='my-2 pl-4 d-flex align-items-center'>
+            <div>question Wise</div>
+            <Switch
+              defaultChecked
+              Checked={questionPaperWise}
+              onChange={handlequesType}
+              className='mx-2'
+            />
+            <div>question paper wise</div>
+            {questionPaperWise && (
+              <div className='col-md-3'>
+                <Input
+                style={{width:'68%'}}
+                  placeholder='Marks'
+                  type='text'
+                  pattern="\d*"
+                  maxLength={3}
+                  onChange={(e) => setQp_wise_Marks(e.target.value)}
+                />
+              </div>
+            )}
+          </div>
         </div>
         <div>
           {sections?.map((question) => (
             <div className='row th-bg-white my-3'>
               {/* <SectionCard /> */}
               <Question
-               grade = {formik.values.grade}
-               question={question}
-               erpCategory = {formik.values.erp_category || erpCategory}
-               onDeleteSection={handleDeleteSection}
-               onDeleteQuestion={handleDeleteQuestion}
-               questionPaperWise={questionPaperWise}
-               deleteOneSection = {deleteOneSection}
+                grade={formik.values.grade}
+                question={question}
+                erpCategory={formik.values.erp_category || erpCategory}
+                onDeleteSection={handleDeleteSection}
+                onDeleteQuestion={handleDeleteQuestion}
+                questionPaperWise={questionPaperWise}
+                deleteOneSection={deleteOneSection}
               />
             </div>
           ))}
+          <div className='row justify-content-end mb-3'>
+            <Button className='mr-5 th-button-active' onClick={handleAddSection}>
+            <PlusOutlined size='small' />
+              Add Section</Button>
+          </div>
         </div>
-        <div className='row align-items-center justify-content-end pr-5' 
-        style={{
-          height:'58px',
-          background:'#1b4ccb',
-          left:0,
-          right:0,
-          bottom:0,
-          overflow:'hidden',
-          position:'absolute'
-          }}>
-            <div className='col-md-2'>
-            <Input placeholder='Title' value={formik.values.questionPaperName} onChange={handleQuestionPaperName} />
+        <div
+          className='row align-items-center justify-content-end pr-5'
+          style={{
+            height: '58px',
+            background: '#1b4ccb',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            overflow: 'hidden',
+            position: 'absolute',
+          }}
+        >
+          <div className='col-md-4'>
+            <Input
+              placeholder='Title'
+              value={formik.values.questionPaperName}
+              onChange={handleQuestionPaperName}
+            />
+          </div>
+          <div className='col-md-1'></div>
+          <div className=' mr-4'>
+            <Button onClick={() => handleCreateQuestionPaper(true)}>Save As Draft</Button>
+          </div>
+          {!isEdit && (
+            <div className=''>
+              <Button onClick={() => handleCreateQuestionPaper(false)}>
+                Create Paper
+              </Button>
             </div>
-            <div className='col-md-1'></div>
-  <div className=' mr-4'>
-  <Button onClick={() => handleCreateQuestionPaper(true)}>
-    Save As Draft
-  </Button>
-</div>
-{!isEdit && <div className=''>
-  <Button onClick={() => handleCreateQuestionPaper(false)}>
-    Create Paper
-  </Button>
-</div>}
-{isEdit && <div className='col-md-2'>
-  <Button onClick={() => handleEditQuestionPaper(false )}>
-    Update Paper
-  </Button>
-</div>}
+          )}
+          {isEdit && (
+            <div className='col-md-2'>
+              <Button onClick={() => handleEditQuestionPaper(false)}>Update Paper</Button>
+            </div>
+          )}
         </div>
       </div>
     </Layout>

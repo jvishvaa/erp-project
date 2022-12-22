@@ -174,13 +174,20 @@ if(isEdit && EditData){
    let typetest =  testTypes.filter((item) => item?.id == EditData?.test_mode)
     formik.setFieldValue('test_mode', typetest[0]);
     initSetFilter('selectedTestType', typetest[0]);
-
+    getAssesmentTypes(typetest[0])
+  
 if(EditData?.has_sub_groups){
   setSectionToggle(true)
-}
-
-}
+}}
   },[isEdit])
+
+  useEffect(()=>{
+    debugger
+    if(isEdit && assesmentTypes.length){
+      let assesstype = assesmentTypes?.filter((item) => item?.exam_name == EditData?.testType)
+      formik.setFieldValue('test_type', assesstype);
+    }
+  },[assesmentTypes.length,isEdit])
 
   useEffect(() => {
 if(isEdit && branchDropdown.length){
@@ -209,7 +216,7 @@ if(isEdit && branchDropdown.length){
     let paperwise = false
     let test_mark = []
       let data = selectedQuestionPaper?.section?.forEach((sec) => {
-       let d =  sec?.test_Marks?.forEach((item) => {
+       let d =  sec?.test_marks?.forEach((item) => {
       test_mark.push(item)
     })
     })
@@ -294,15 +301,21 @@ handleGroup('',filteredgroup)
       });
     }
   }, []);
-  const getAssesmentTypes = async () => {
+  const getAssesmentTypes = async (mode) => {
     try {
-      const data = await fetchAssesmentTypes();
-      let asstypes = data.filter((item) => item?.exam_name !== 'Open Test' && item?.exam_name !== 'Practice Test')
-      if(formik?.values?.test_mode?.name === 'Online'){
-        setAssesmentTypes(asstypes)
+      if(mode){
+        const data = await fetchAssesmentTypes();
+        let asstypes = data.filter((item) => item?.exam_name !== 'Open Test' && item?.exam_name !== 'Practice Test')
+        if(mode?.name === 'Online'){
+          setAssesmentTypes(asstypes)
+        }else{
+          setAssesmentTypes(data);
+        }
+        // formik.setFieldValue('test_type', data);
+      }else{
+        setAssesmentTypes([])
       }
-      setAssesmentTypes(data);
-      formik.setFieldValue('test_type', data);
+    
     } catch (e) { }
   };
   // useEffect(() => {
@@ -433,6 +446,7 @@ handleGroup('',filteredgroup)
 
 
 
+
   useEffect(() => {
     if (selectedQuestionPaper) {
       getGroup();
@@ -516,7 +530,7 @@ handleGroup('',filteredgroup)
         }
       }
     }
-    if(sectionWiseTest == false && formik.values.test_type?.exam_name != 'Quiz' ){
+    if(sectionWiseTest == false && (formik.values.test_type?.exam_name != 'Quiz' && formik?.values?.test_type?.exam_name != 'Practice Test' && formik?.values?.test_type?.exam_name != 'Open Test') ){
       console.log(testDate);
       var todayDate = moment().format().slice(0,16)
       console.log(moment(testDate).isAfter(todayDate));
@@ -870,7 +884,6 @@ handleGroup('',filteredgroup)
       // initFetchQuestionPaperDetails(3);
       initFetchQuestionPaperDetails(selectedQuestionPaper?.id, selectedQuestionPaper);
     }
-    getAssesmentTypes();
     // initFetchQuestionPaperDetails(3);
   }, [selectedQuestionPaper]);
 
@@ -1148,11 +1161,12 @@ handleGroup('',filteredgroup)
                       <Grid container spacing={1} direction='row'>
                         <Grid item xs={12} md={4}>
                           <Autocomplete
-                            id='branch'
-                            name='branch'
+                            id='testmode'
+                            name='testmode'
                             onChange={(e, value) => {
                               formik.setFieldValue('test_mode', value);
                               initSetFilter('selectedTestType', value);
+                              getAssesmentTypes(value)
                             }}
                             value={formik.values.test_mode}
                             options={testTypes}
@@ -1273,14 +1287,14 @@ handleGroup('',filteredgroup)
                           </Grid>
                         } */}
                       </Grid>
-                      {(isEdit) && (
+                      {(selectedQuestionPaper || isEdit) && (
                         <Grid container alignItems='center' style={{ marginTop: 15 }}>
                           <Grid
                             container
                             xs={12}
                             md={4}
                           >
-                            <Grid 
+                            {isEdit && <Grid 
                             xs={6}
                             md={2}>
                             <Button color='primary' variant = 'contained' 
@@ -1288,7 +1302,7 @@ handleGroup('',filteredgroup)
                             >
                               Back
                             </Button>
-                            </Grid>
+                            </Grid>}
                             <div className='d-flex' style={{marginLeft:'20%'}}>
                             <Typography>Section</Typography>
                             <Switch

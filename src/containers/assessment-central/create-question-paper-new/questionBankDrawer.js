@@ -630,6 +630,7 @@ const handleQuestionCategory = (value) => {
                 type='primary'
                 htmlType='submit'
                 onClick={handleAdd}
+                disabled = {selectedQuestion?.length === 0}
               >
                 <PlusOutlined size='small' />
                 Add to Section
