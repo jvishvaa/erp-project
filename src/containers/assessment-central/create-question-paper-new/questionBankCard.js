@@ -20,7 +20,7 @@ import { Button, Checkbox, Drawer, Input, Typography } from 'antd';
 import ViewMoreCard from 'containers/question-bank/question-bank-list/view-more-card';
 
 const QuestionBankCard = ({
-//   period,
+  //   period,
   setPeriodDataForView,
   setViewMoreData,
   setViewMore,
@@ -31,37 +31,37 @@ const QuestionBankCard = ({
   toggleCompleteQuestion,
   handleMarks,
   questionPaperWise,
-//   onClick,
-//   showAddToQuestionPaper,
-//   periodColor,
-//   toggleComplete,
-//   toggleCompleteQuestion,
-//   isSelectAll,
-//   redFlag,
-//   checkbox,
-//   periodData,
-//   questionId
-question
+  //   onClick,
+  //   showAddToQuestionPaper,
+  //   periodColor,
+  //   toggleComplete,
+  //   toggleCompleteQuestion,
+  //   isSelectAll,
+  //   redFlag,
+  //   checkbox,
+  //   periodData,
+  //   questionId
+  question,
 }) => {
-    console.log(question,'!!')
+  console.log(question, '!!');
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-//   const classes = useStyles();
+  //   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [questionName, setQuestionName] = useState(question?.question_answer);
-  const [isChecked,setIsChecked]= useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const [selectedPublished, setSelectedPublished] = useState([]);
-//   const [viewMore,setViewMore] = useState(false)
-//   const [viewMoreData , setViewMoreData] = useState([])
-//   const  [periodDataForView ,setPeriodDataForView] = useState([])
-//   const [loading , setLoading] = useState(false)
-//   const [callFlag, setCallFlag] = useState(false)
-//   const [selectedIndex, setSelectedIndex] = useState(-1)
+  //   const [viewMore,setViewMore] = useState(false)
+  //   const [viewMoreData , setViewMoreData] = useState([])
+  //   const  [periodDataForView ,setPeriodDataForView] = useState([])
+  //   const [loading , setLoading] = useState(false)
+  //   const [callFlag, setCallFlag] = useState(false)
+  //   const [selectedIndex, setSelectedIndex] = useState(-1)
 
-console.log(questionName,'questionName')
+  console.log(questionName, 'questionName');
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -138,7 +138,6 @@ console.log(questionName,'questionName')
     }
   };
 
-
   const getquestionLevel = (type) => {
     switch (type) {
       case 1:
@@ -147,8 +146,8 @@ console.log(questionName,'questionName')
         return 'Average';
       case 3:
         return 'Difficult';
-      default :
-        return '--'
+      default:
+        return '--';
     }
   };
 
@@ -179,7 +178,7 @@ console.log(questionName,'questionName')
     }
   };
   function extractContent(s) {
-    console.log(s,'quesname')
+    console.log(s, 'quesname');
     const span = document.createElement('span');
     span.innerHTML = s;
     return span.textContent || span.innerText;
@@ -217,56 +216,110 @@ console.log(questionName,'questionName')
     setDeleteAlert(false);
   };
   //..........................................-------------------------------------------------------------------------
-  const [enableMarks , setEnableMarks] = useState(false)
+  const [enableMarks, setEnableMarks] = useState(false);
 
-  const setMarksEnable = (e) =>{
-    setEnableMarks(e.target.checked)
-  }
+  const setMarksEnable = (e) => {
+    setEnableMarks(e.target.checked);
+  };
 
   return (
     <>
-    <div className='row my-2'>
+      <div className='row my-2'>
         {/* <div>
             a
         </div> */}
-        <div className='col-md-11 ml-3 mt-2' style={{border:'1px solid',borderRadius:'6px',background : '#f8f8f8'}}>
-        <div className='row col-md-12 mt-1'>
-            <div className='col-md-6 pl-0'><Checkbox checked={question?.checked} onChange={(e) =>
-             {toggleCompleteQuestion(e,question,index)
-              setEnableMarks(e.target.checked)
-          }    
-
-            } /> Select Question To Paper</div>
+        <div
+          className='col-md-11 ml-3 mt-2'
+          style={{ border: '1px solid', borderRadius: '6px', background: '#f8f8f8' }}
+        >
+          <div className='row col-md-12 mt-1'>
+            <div className='col-md-6 pl-0'>
+              <Checkbox
+                checked={question?.checked}
+                onChange={(e) => {
+                  toggleCompleteQuestion(e, question, index);
+                  setEnableMarks(e.target.checked);
+                }}
+              />{' '}
+              Select Question To Paper
+            </div>
             {/* <div className='col-md-2'></div> */}
-            {!questionPaperWise && <div className='col-md-6 d-flex justify-content-end pr-0'>
-            <div className='mr-2' style={{color : '#00c040'}}>Assign Marks</div>
-              <Input disabled={!question?.checked} type='number' maxLength={3} onChange={(e) => handleMarks(e,question,index)} style={{width:'52px', height:'24px',background: enableMarks ? 'white' : ''}} /></div>
-            }
-        </div>
-        <hr className='mt-1' />
-        <div className='row'>
-        Question: {extractContent(question?.question_answer[0]?.question).length > 70 ? extractContent(question?.question_answer[0]?.question).substring(0,70) + '...' : extractContent(question?.question_answer[0]?.question)}
-        </div>
-        <div className='row col-md-12 my-2'>
-            <div className='d-flex col-md-2 align-items-center justify-content-center pl-0' style={{fontSize : '13px',background:'#00be91' ,color:'white', borderRadius:'6px',height:'20px'}}>
-                {getquestionLevel(parseInt(question?.question_level))}
+            {!questionPaperWise && (
+              <div className='col-md-6 d-flex justify-content-end pr-0'>
+                <div className='mr-2' style={{ color: '#00c040' }}>
+                  Assign Marks
                 </div>
-            <div className='d-flex col-md-3 align-items-center justify-content-center ml-2' style={{fontSize : '13px' , background:'#01b8d8' , color:'white',borderRadius:'6px',height:'20px'}}>
-                {questionType(question?.question_type)}</div>
-            <div className='d-flex col-md-5 align-items-center ml-2' style={{height:'20px'}}>
-                <Typography style={{fontSize:'13px'}}>
+                <Input
+                  disabled={!question?.checked}
+                  type='number'
+                  maxLength={3}
+                  onChange={(e) => handleMarks(e, question, index)}
+                  style={{
+                    width: '52px',
+                    height: '24px',
+                    background: enableMarks ? 'white' : '',
+                  }}
+                />
+              </div>
+            )}
+          </div>
+
+          <hr className='mt-1' />
+          <div className='row'>
+            Question:{' '}
+            {extractContent(question?.question_answer[0]?.question).length > 70
+              ? extractContent(question?.question_answer[0]?.question).substring(0, 70) +
+                '...'
+              : extractContent(question?.question_answer[0]?.question)}
+          </div>
+          <div className='row col-md-12 my-2'>
+            <div
+              className='d-flex col-md-2 align-items-center justify-content-center pl-0'
+              style={{
+                fontSize: '13px',
+                background: '#00be91',
+                color: 'white',
+                borderRadius: '6px',
+                height: '20px',
+              }}
+            >
+              {getquestionLevel(parseInt(question?.question_level))}
+            </div>
+            <div
+              className='d-flex col-md-4 align-items-center justify-content-center ml-2'
+              style={{
+                fontSize: '13px',
+                background: '#01b8d8',
+                color: 'white',
+                borderRadius: '6px',
+                height: '20px',
+              }}
+            >
+              {questionType(question?.question_type)}
+            </div>
+            <div
+              className='d-flex col-md-4 align-items-center ml-2'
+              style={{ height: '20px' }}
+            >
+              <Typography style={{ fontSize: '13px' }}>
                 Created on : {moment(question?.created_at).format('L')}
-                </Typography>                
+              </Typography>
             </div>
             <div className='pr-0 ml-2'>
-                <Button size='small' onClick={handleViewMore} className='th-button-active' style={{fontSize:'13px'}}>
-                    View
-                </Button>
+              <Button
+                size='small'
+                onClick={handleViewMore}
+                className='th-button-active'
+                style={{ fontSize: '13px' }}
+              >
+                View
+              </Button>
             </div>
+          </div>
         </div>
-        </div>
-    </div>
-    {/* {viewMore && <ViewMoreCard
+      </div>
+
+      {/* {viewMore && <ViewMoreCard
                       setSelectedIndex={setSelectedIndex}
                       viewMoreData={viewMoreData}
                       setViewMore={setViewMore}

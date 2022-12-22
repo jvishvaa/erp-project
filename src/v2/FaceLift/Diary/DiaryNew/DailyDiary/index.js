@@ -366,8 +366,15 @@ const DailyDiary = ({ isSubstituteClass }) => {
   };
 
   const handleClearGrade = () => {
+    formRef.current.setFieldsValue({
+      section: null,
+      subject: null,
+    });
     setSectionDropdown([]);
+    setSectionMappingID();
+    setSectionID();
     setSubjectDropdown([]);
+    setSubjectID([]);
     setChapterDropdown([]);
   };
 
@@ -377,6 +384,9 @@ const DailyDiary = ({ isSubstituteClass }) => {
     setSectionMappingID();
     setSectionID();
     setSubjectID();
+    formRef.current.setFieldsValue({
+      subject: null,
+    });
   };
 
   const handleClearSubject = () => {
