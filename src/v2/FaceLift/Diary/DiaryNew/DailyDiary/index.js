@@ -278,7 +278,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          message.success('Daily Diary Edited Successfully');
+          message.success('Daily Diary Updated Successfully');
           history.push('/diary/teacher');
         }
       })
@@ -1427,58 +1427,70 @@ const DailyDiary = ({ isSubstituteClass }) => {
                                 : message.error('Please select Subject first');
                             }}
                           >
-                            <div className='col-12 px-0'>
-                              <div
-                                className='row th-fw-600 align-items-center py-1 th-bg-pink'
-                                style={{ borderRadius: '6px 6px 0px 0px' }}
-                              >
-                                <div className='col-6 pr-0 th-18'>
-                                  {upcomingPeriod?.period_name}
-                                </div>
-                                <div className='col-6 pl-0 text-right'>
-                                  {upcomingPeriod?.completion_status?.filter(
-                                    (item) => item?.section_id === sectionMappingID
-                                  )[0]?.is_complete === true ? (
-                                    <div className='d-flex flex-column'>
-                                      <div className='th-10 th-grey-1'>Updated at</div>
-                                      <div className='th-10 th-black-1'>
-                                        {moment(
-                                          upcomingPeriod?.completion_status?.filter(
-                                            (item) =>
-                                              item?.section_id === sectionMappingID
-                                          )[0]?.completed_at
-                                        ).format('DD/MM/YYYY HH:mm a')}
+                            {!_.isEmpty(upcomingPeriod) && (
+                              <>
+                                <div className='col-12 px-0'>
+                                  <div
+                                    className='row th-fw-600 align-items-center py-1 th-bg-pink'
+                                    style={{ borderRadius: '6px 6px 0px 0px' }}
+                                  >
+                                    <div className='col-6 pr-0 th-18'>
+                                      {upcomingPeriod?.period_name}
+                                    </div>
+                                    <div className='col-6 pl-0 text-right'>
+                                      {upcomingPeriod?.completion_status?.filter(
+                                        (item) => item?.section_id === sectionMappingID
+                                      )[0]?.is_complete === true ? (
+                                        <div className='d-flex flex-column'>
+                                          <div className='th-10 th-grey-1'>
+                                            Updated at
+                                          </div>
+                                          <div className='th-10 th-black-1'>
+                                            {moment(
+                                              upcomingPeriod?.completion_status?.filter(
+                                                (item) =>
+                                                  item?.section_id === sectionMappingID
+                                              )[0]?.completed_at
+                                            ).format('DD/MM/YYYY HH:mm a')}
+                                          </div>
+                                        </div>
+                                      ) : null}
+                                    </div>
+                                  </div>
+                                  {boardFilterArr.includes(window.location.host) && (
+                                    <div className='row pt-3'>
+                                      <div className='col-4 pr-0 th-fw-600'>
+                                        Module :{' '}
+                                      </div>
+                                      <div className='col-8 pl-0 th-grey-1 text-truncate'>
+                                        {
+                                          upcomingPeriod?.chapter__lt_module__lt_module_name
+                                        }
                                       </div>
                                     </div>
-                                  ) : null}
-                                </div>
-                              </div>
-                              {boardFilterArr.includes(window.location.host) && (
-                                <div className='row pt-3'>
-                                  <div className='col-4 pr-0 th-fw-600'>Module : </div>
-                                  <div className='col-8 pl-0 th-grey-1 text-truncate'>
-                                    {upcomingPeriod?.chapter__lt_module__lt_module_name}
+                                  )}
+                                  <div className='row py-1'>
+                                    <div className='col-4 pr-0 th-fw-600'>
+                                      Chapter Name :{' '}
+                                    </div>
+                                    <div className='col-8 pl-0 th-grey-1 text-truncate'>
+                                      {upcomingPeriod?.chapter__chapter_name}
+                                    </div>
+                                  </div>
+                                  <div className='row pb-2'>
+                                    <div className='col-4 pr-0 th-fw-600'>
+                                      Key Concept :{' '}
+                                    </div>
+                                    <div className='col-8 pl-0 th-grey-1 text-truncate'>
+                                      {upcomingPeriod?.key_concept__topic_name}
+                                    </div>
                                   </div>
                                 </div>
-                              )}
-                              <div className='row py-1'>
-                                <div className='col-4 pr-0 th-fw-600'>
-                                  Chapter Name :{' '}
+                                <div className='col-12 text-right pb-1'>
+                                  <ArrowRightOutlined />
                                 </div>
-                                <div className='col-8 pl-0 th-grey-1 text-truncate'>
-                                  {upcomingPeriod?.chapter__chapter_name}
-                                </div>
-                              </div>
-                              <div className='row pb-2'>
-                                <div className='col-4 pr-0 th-fw-600'>Key Concept : </div>
-                                <div className='col-8 pl-0 th-grey-1 text-truncate'>
-                                  {upcomingPeriod?.key_concept__topic_name}
-                                </div>
-                              </div>
-                            </div>
-                            <div className='col-12 text-right pb-1'>
-                              <ArrowRightOutlined />
-                            </div>
+                              </>
+                            )}
                           </div>
                         )}
                       </div>
@@ -1554,15 +1566,17 @@ const DailyDiary = ({ isSubstituteClass }) => {
                         Add Homework
                       </div>
                     ) : (
-                      <div
-                        className='th-bg-primary th-white px-2 py-1 th-br-6 th-pointer'
-                        onClick={() => {
-                          setShowHomeworkForm(false);
-                          setHomeworkMapped(false);
-                        }}
-                      >
-                        Remove Homework <CloseCircleOutlined className='ml-2' />
-                      </div>
+                      !hwMappingID && (
+                        <div
+                          className='th-bg-primary th-white px-2 py-1 th-br-6 th-pointer'
+                          onClick={() => {
+                            setShowHomeworkForm(false);
+                            setHomeworkMapped(false);
+                          }}
+                        >
+                          Remove Homework <CloseCircleOutlined className='ml-2' />
+                        </div>
+                      )
                     )}
                   </div>
                 )}
@@ -1941,6 +1955,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
                                           setCompletedPeriod(item);
                                           openPeriodInfoModal();
                                           setUpcomingPeriod({});
+                                          setClearUpcomingPeriod(true);
                                         }}
                                       >
                                         Remove

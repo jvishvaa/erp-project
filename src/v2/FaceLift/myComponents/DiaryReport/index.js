@@ -115,6 +115,7 @@ const DiaryReport = () => {
                       pathname: '/gradewise-diary-report',
                       state: {
                         date: moment().format('YYYY-MM-DD'),
+                        diaryType: 2,
                       },
                     })
                   }
