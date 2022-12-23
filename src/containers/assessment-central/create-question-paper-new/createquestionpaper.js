@@ -339,9 +339,12 @@ debugger
             test_marks: sec?.test_marks,
           };
           if (!questionPaperWise) {
-            let marks = sec.test_marks?.forEach((item) => {
-              totalMark += parseInt(item?.question_mark[0]);
-            });
+            // let marks = sec.test_marks?.forEach((item) => {
+            //   totalMark += parseInt(item?.question_mark[0]);
+            // });
+            for(let i=0;i<sec?.mandatory_questions;i++){
+              totalMark += parseInt(sec?.test_marks[i].question_mark[0]);
+            }
           }
           sec.questions.forEach((question) => {
             if (question?.is_central) {
@@ -547,7 +550,6 @@ debugger
       if (instructionValidCount !== 0) {
         return setAlert('error', 'Please Enter instructions');
       }
-      debugger
 
       if (
         (!questionPaperWise && totalMark < parseInt(max_Marks)) ||
