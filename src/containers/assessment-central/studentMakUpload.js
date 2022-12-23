@@ -751,7 +751,7 @@ const StudentMark = () => {
               return (
                 <span className='mr-2'>
                   Sec {item?.section} -{' '}
-                  {item?.mandatory_questions ? item?.mandatory_questions : 0}
+                  {item?.sections?.mandatory_questions ? item?.sections?.mandatory_questions : 0}
                 </span>
               );
             })}

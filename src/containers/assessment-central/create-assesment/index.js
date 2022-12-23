@@ -179,7 +179,6 @@ const CreateAssesment = ({
   }, [isEdit]);
 
   useEffect(() => {
-    // debugger
     if (isEdit && assesmentTypes.length) {
       let assesstype = assesmentTypes?.filter(
         (item) => item?.exam_name == EditData?.testType

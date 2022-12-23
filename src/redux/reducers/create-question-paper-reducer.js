@@ -89,7 +89,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         const filterArray = newSec[0].questions.filter(
           (item) => item.id !== action.questionId
         );
-        const filterMarks = newSec[0].test_marks.filter((item) => item?.question_id === action.questionId)
+        const filterMarks = newSec[0].test_marks.filter((item) => item?.question_id !== action.questionId)
         newSec[0].questions = [...filterArray];
         newSec[0].test_marks = [...filterMarks]
         obj.sections = newSec;
