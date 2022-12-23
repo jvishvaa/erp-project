@@ -201,9 +201,14 @@ const QuestionBankDrawer = ({
   };
 
   const handleAdd = () => {
+   let marks = marksselection.map((item) => item?.question_mark[0])
+    let check = marks.every((item) => item === marks[0])
+
     if (!questionPaperWise && marksselection?.length !== selectedQuestion?.length) {
-      setAlert('error', 'please addMarks for All Selected Question');
-    } else {
+      setAlert('error', 'please add Marks for All Selected Question');
+    } else if(marksselection?.length === selectedQuestion?.length && !check){
+      setAlert('error', 'please add Equal Marks for All Selected Question');
+    } else{
       handleMarkstosection();
       let callRedux = selectedQuestion?.forEach((item, index) => {
         handleAddQuestionToQuestionPaper(item);
