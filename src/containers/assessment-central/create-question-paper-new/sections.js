@@ -279,9 +279,9 @@ const Sections = ({
           <hr />
         </div>
         <div className='row justify-content-end my-3'>
-          <div className='col-md-3 pl-0 mr-2'>
+          <div className='col-md-2 pl-0 mr-2'>
             <Button className='w-100 th-button' onClick={handleAddQuestion}>
-              Add Question from 'Question Bank'
+              Add Question
             </Button>
           </div>
         </div>
