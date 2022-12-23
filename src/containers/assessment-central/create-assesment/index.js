@@ -1105,7 +1105,6 @@ const CreateAssesment = ({
                       </FormGroup>
                     </div>
                   </div>
-                  {console.log(questionPaperDetails, 'questionPaperDetails')}
                   <div className='question-container'>
                     <div className='sections-container'>
                       {questionPaperDetails?.map((section) => (
@@ -1122,7 +1121,11 @@ const CreateAssesment = ({
                               </div>
                               <div className='section-name'>{`SECTION ${section.name}`}</div>
                               <div className='th-14 th-fw-500 ml-2'>
-                                {section?.instruction ? section?.instruction : ''}
+                                {
+                                  selectedQuestionPaper.section.filter(
+                                    (item) => item?.discription == section.name
+                                  )[0]?.instruction
+                                }
                               </div>
                             </div>
                           </div>

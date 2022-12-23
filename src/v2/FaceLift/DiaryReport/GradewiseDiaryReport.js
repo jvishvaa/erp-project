@@ -17,7 +17,7 @@ const GradewiseDiaryReport = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const history = useHistory();
-  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+  const [date, setDate] = useState();
   const [diaryType, setDiaryType] = useState(2);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [gradewiseDiaryData, setGradewiseDiaryData] = useState([]);
@@ -201,8 +201,8 @@ const GradewiseDiaryReport = () => {
     if (history.location.state) {
       if (history.location.state?.diaryType) {
         setDiaryType(history.location.state?.diaryType);
+        setDate(history.location.state?.date);
       }
-      setDate(history.location.state?.date);
     }
   }, [window.location.pathname]);
 
