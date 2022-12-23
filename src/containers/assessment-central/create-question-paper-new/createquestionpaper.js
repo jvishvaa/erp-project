@@ -843,6 +843,7 @@ const CreatequestionPaperNew = () => {
             <Input
               placeholder='Marks'
               type='number'
+              value={max_Marks}
               maxLength={3}
               className='w-25 mx-2 text-center'
               onChange={(e) => setMaxMarks(e.target.value)}
@@ -854,7 +855,6 @@ const CreatequestionPaperNew = () => {
           <div className='my-2 pl-4 d-flex align-items-center'>
             <div>Question Wise</div>
             <Switch
-              defaultChecked
               Checked={questionPaperWise}
               onChange={handlequesType}
               className='mx-2'
