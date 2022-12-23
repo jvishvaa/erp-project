@@ -248,6 +248,7 @@ const Diary = () => {
                           pathname: '/gradewise-diary-report',
                           state: {
                             date,
+                            diaryType: 2,
                           },
                         })
                       }
