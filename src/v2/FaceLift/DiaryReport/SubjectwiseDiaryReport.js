@@ -203,7 +203,7 @@ const SubjectwiseDiaryReport = () => {
         width: '30%',
         render: (data) => (
           <span className='th-black-2'>
-            {data !== 0 ? moment(data).format('hh:MM a') : null}
+            {data !== 0 ? moment(data).format('hh:mm a') : null}
           </span>
         ),
       },

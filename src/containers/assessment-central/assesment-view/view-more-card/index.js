@@ -114,7 +114,7 @@ const ViewMoreCard = ({
     
       if(showNewAsses){
         history.push({ 
-          pathname : `/createquestionpaper/`,
+          pathname : `/create-questionpaper/`,
           state:{
             isEdit : true,
             paperId : periodDataForView?.id
