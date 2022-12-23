@@ -146,11 +146,22 @@ const Sections = ({
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dispatch = useDispatch();
-  let marks = 0;
   const [isOptionalQues, setisOptionalQues] = useState(false);
-  const sectionMarks = section?.test_marks.forEach((item) => {
-        marks +=item?.question_mark[0]
-  } )
+  // const sectionMarks = section?.test_marks?.forEach((item) => {
+  //       marks += parseInt(item?.question_mark[0])
+  // } )
+
+  
+  const getMarks = () => {
+    let marks = 0;
+    for(let i=0;i<section?.mandatory_questions;i++){
+      marks += parseInt(section?.test_marks[i]?.question_mark[0])
+    }
+    return marks
+  }
+  let marks = 
+
+  
 
   useEffect(() => {
     handleOptionalQuestion(section?.questions?.length, '');
@@ -240,7 +251,7 @@ const Sections = ({
               Total Marks Added
               <div className='col-md-4'>
                 {/* <Input style={{ width: '3rem', height: '1.5rem' }} /> */}
-                {marks}
+                {getMarks()}
               </div>
             </div>
           )}
@@ -279,9 +290,9 @@ const Sections = ({
           <hr />
         </div>
         <div className='row justify-content-end my-3'>
-          <div className='col-md-3 pl-0 mr-2'>
+          <div className='col-md-2 pl-0 mr-2'>
             <Button className='w-100 th-button' onClick={handleAddQuestion}>
-              Add Question from 'Question Bank'
+              Add Question
             </Button>
           </div>
         </div>

@@ -176,6 +176,8 @@ const subActivityData = [
 const PhysicalActivity = () => {
   const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
   const formRef = createRef();
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
+  const branchIdsLocal = role_details?.branch ? role_details?.branch.map((obj) => obj.id) : [];
   const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const classes = useStyles();
   const themeContext = useTheme();
@@ -446,7 +448,7 @@ const PhysicalActivity = () => {
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.physicalActivityListApi}?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${sudActId ? sudActId : physicalActivityId}`,{
+        `${endpoints.newBlog.physicalActivityListApi}?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${sudActId ? sudActId : physicalActivityId}&branch_ids=${branchIdsLocal}`,{
           params: {
             ...(boardId ? {branch_ids: boardId} : {})
           },
@@ -731,6 +733,10 @@ const fetchSubActivityListData = () => {
     history.push('/blog/wall');
   };
 
+  const redirectBMI = () => {
+    history.push('/bmi/view');
+  }
+
   const handleGoBack = () =>{
     history.goBack()
   }
@@ -823,12 +829,20 @@ const branchOptions = boardListData?.map((each) => {
               </Breadcrumb.Item>
             </Breadcrumb>
         </div>
-        <div className='col-md-6' style={{zIndex:2, display: 'flex', alignItems:'center', justifyContent:'end' }}>
+        <div className='col-md-4' style={{zIndex:2, display: 'flex', alignItems:'center', justifyContent:'end' }}>
             <ButtonAnt type="primary" icon={<AppstoreAddOutlined />} 
             size={'large'}
             onClick={createPush}
             >
               Create Physical Activity
+            </ButtonAnt>
+        </div>
+        <div className='col-md-2' style={{zIndex:2, display: 'flex', alignItems:'center', justifyContent:'center' }}>
+            <ButtonAnt type="primary" icon={<AppstoreAddOutlined />} 
+            size={'large'}
+            onClick={redirectBMI}
+            >
+              Add BMI
             </ButtonAnt>
         </div>
         <div className='row'>
@@ -924,31 +938,7 @@ const branchOptions = boardListData?.map((each) => {
         </div>
 
       </Grid>
-     
-
-      <Grid container>
-        <Grid item md={12} xs={12} className={classes.tabStatic}>
-         <Tabs
-            onChange={handleTab}
-            textColor='primary'
-            indicatorColor='primary'
-            // className={ classes.tabsFont}
-            value={value}
-          >
-           
-            <Tab
-            label='Physical Activities'
-            classes={{
-              selected: classes.selected2,
-            }}
-            className={value === 0 ? classes.tabsFont : classes.tabsFont1}
-          />
-          </Tabs>
-         
-          <Divider className={classes.dividerColor} />
-        </Grid>
-      </Grid>
-
+      <Grid>
         <Paper className={`${classes.root} common-table`} id='singleStudent'>
           <TableContainer
             className={`table table-shadow view_users_table ${classes.container}`}
@@ -1039,6 +1029,7 @@ const branchOptions = boardListData?.map((each) => {
           </TableContainer>
         </Paper>
 
+      </Grid>
 
       <Dialog open={preview} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
         <div style={{ width: '642px' }}>

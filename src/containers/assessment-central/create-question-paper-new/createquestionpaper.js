@@ -82,15 +82,15 @@ const CreatequestionPaperNew = () => {
           }
         })
       );
-
+debugger
       const sectionArray = [
         {
           id: cuid(),
           name: key,
           questions: questionList,
-          instruction: section?.instruction,
-          mandatory_questions: section?.mandatory_fields,
-          test_marks: section?.test_marks,
+          instruction: section?.instruction || '',
+          mandatory_questions: section?.mandatory_questions,
+          test_marks: section?.test_marks || [],
         },
       ];
       const sectionObject = { id: sectionId, sections: sectionArray };
@@ -339,9 +339,12 @@ const CreatequestionPaperNew = () => {
             test_marks: sec?.test_marks,
           };
           if (!questionPaperWise) {
-            let marks = sec.test_marks?.forEach((item) => {
-              totalMark += parseInt(item?.question_mark[0]);
-            });
+            // let marks = sec.test_marks?.forEach((item) => {
+            //   totalMark += parseInt(item?.question_mark[0]);
+            // });
+            for(let i=0;i<sec?.mandatory_questions;i++){
+              totalMark += parseInt(sec?.test_marks[i].question_mark[0]);
+            }
           }
           sec.questions.forEach((question) => {
             if (question?.is_central) {
@@ -390,7 +393,7 @@ const CreatequestionPaperNew = () => {
         is_draft: isDraft ? 'True' : 'False',
         is_verified: 'False',
         total_mark: qp_wise_marks,
-        is_question_wise: questionPaperWise ? 'True' : 'False',
+        is_question_wise: !questionPaperWise ? 'True' : 'False',
       };
       let filterdata = {
         branch: formik.values.branch,
@@ -517,9 +520,12 @@ const CreatequestionPaperNew = () => {
             test_marks: sec?.test_marks,
           };
           if (!questionPaperWise) {
-            let marks = sec.test_marks?.forEach((item) => {
-              totalMark += parseInt(item?.question_mark[0]);
-            });
+            for(let i=0;i<sec?.mandatory_questions;i++){
+              totalMark += parseInt(sec?.test_marks[i].question_mark[0]);
+            }
+            // let marks = sec.test_marks?.forEach((item) => {
+            //   totalMark += parseInt(item?.question_mark[0]);
+            // });
           }
           sec.questions.forEach((question) => {
             if (question?.is_central) {
@@ -843,6 +849,7 @@ const CreatequestionPaperNew = () => {
             <Input
               placeholder='Marks'
               type='number'
+              value={max_Marks}
               maxLength={3}
               className='w-25 mx-2 text-center'
               onChange={(e) => setMaxMarks(e.target.value)}
@@ -854,8 +861,8 @@ const CreatequestionPaperNew = () => {
           <div className='my-2 pl-4 d-flex align-items-center'>
             <div>Question Wise</div>
             <Switch
-              defaultChecked
-              Checked={questionPaperWise}
+              // defaultChecked = {questionPaperWise ? true : false}
+              checked ={questionPaperWise ? true : false}
               onChange={handlequesType}
               className='mx-2'
             />

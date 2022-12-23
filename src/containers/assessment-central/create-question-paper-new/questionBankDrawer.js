@@ -201,9 +201,14 @@ const QuestionBankDrawer = ({
   };
 
   const handleAdd = () => {
+   let marks = marksselection.map((item) => item?.question_mark[0])
+    let check = marks.every((item) => item === marks[0])
+
     if (!questionPaperWise && marksselection?.length !== selectedQuestion?.length) {
-      setAlert('error', 'please addMarks for All Selected Question');
-    } else {
+      setAlert('error', 'please add Marks for All Selected Question');
+    } else if(marksselection?.length === selectedQuestion?.length && !check){
+      setAlert('error', 'please add Equal Marks for All Selected Question');
+    } else{
       handleMarkstosection();
       let callRedux = selectedQuestion?.forEach((item, index) => {
         handleAddQuestionToQuestionPaper(item);
@@ -220,18 +225,18 @@ const QuestionBankDrawer = ({
     let quesindex1 = marksselection.findIndex((item) => item?.question_id === question?.id)
     if(quesindex !== -1){
         let questionMark = testMarks
-        questionMark[quesindex].question_mark = [e.target.value,0]
+        questionMark[quesindex].question_mark = [parseInt(e.target.value),0]
         SettestMarks(questionMark)
     }
     if(quesindex1 !== -1){
       let questionMark = marksselection
-      questionMark[quesindex1].question_mark = [e.target.value,0]
+      questionMark[quesindex1].question_mark = [parseInt(e.target.value),0]
       // SettestMarks(questionMark)
       setSelectionMarks(questionMark);
     } else {
       let marks = {
         question_id: question?.id,
-        question_mark: [e.target.value.toString(), '0'],
+        question_mark: [parseInt(e.target.value), 0],
         mark_type: 1,
         child_mark: [],
         is_central: question?.is_central,
@@ -389,6 +394,7 @@ const QuestionBankDrawer = ({
         chapter: '',
         topic: '',
       });
+      setPeriodData([])
       setChapterDropdown([]);
       setKeyConceptsData([]);
     }

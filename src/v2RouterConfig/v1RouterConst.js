@@ -526,7 +526,7 @@ const V1Router = [
   <Route exact path='/create-question-paper/:id?'>
     {({ match }) => <QuestionPaperConfig match={match} />}
   </Route>,
-  <Route exact path='/createquestionpaper'>
+  <Route exact path='/create-questionpaper'>
     {({ match }) => <CreatequestionPaperNew match={match} />}
   </Route>,
   // <Route exact path='/create-question-paper/:id?'>

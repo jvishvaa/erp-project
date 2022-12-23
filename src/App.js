@@ -462,6 +462,7 @@ import CreatePostActivity from 'containers/newBlog/createPostActivity';
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
 import NewEbookView from 'containers/ebooks/NewEbook';
+import ViewBMI from 'containers/newBlog/ViewBMI';
 import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
 
@@ -597,7 +598,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/assessment-question'>
                               {({ match }) => <AssessmentView match={match} />}
                             </Route>
-                            <Route exact path='/createquestionpaper'>
+                            <Route exact path='/create-questionpaper'>
                               {({ match }) => <CreatequestionPaperNew match={match} />}
                             </Route>
 
@@ -2235,6 +2236,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                               {({ match }) => <NewEbookView match={match} />}
                             </Route>
 
+                            <Route path='/bmi/view'>
+                              {({ match }) => <ViewBMI match={match} />}
+                            </Route>
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
                             </Route>

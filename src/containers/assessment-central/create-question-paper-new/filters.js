@@ -189,7 +189,7 @@ const Filters = () => {
         handleAddSection(i);
       }
       history.push({
-        pathname: '/createquestionpaper',
+        pathname: '/create-questionpaper',
         state: {
           sectionCount: count,
           Grade: selectedGrade,
@@ -236,7 +236,7 @@ const Filters = () => {
       <div className='row p-3' style={{ zIndex: 2 }}>
         <Breadcrumb separator='>'>
           <Breadcrumb.Item className='th-grey th-16'>Assessment</Breadcrumb.Item>
-          <Breadcrumb.Item className='th-black-1 th-16' href='/assessment-question'>
+          <Breadcrumb.Item className='th-black-1 th-16 th-pointer' onClick={() => history.push('/assessment-question')}>
             Question Paper
           </Breadcrumb.Item>
           <Breadcrumb.Item className='th-black-1 th-16'>Create</Breadcrumb.Item>
