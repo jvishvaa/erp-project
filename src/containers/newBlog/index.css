@@ -1,0 +1,17 @@
+.th-date-picker .ant-picker-input:first-child > input {
+    text-align: center !important;
+  }
+  
+  .th-input .ant-input {
+    border-right-width: 0px !important;
+  }
+  .th-editor .tox .tox-toolbar--scrolling {
+    background-color: #f8f8f8 !important;
+    border-radius: 4px 4px 0px 0px;
+  }
+  
+  .th-editor .tox-tinymce {
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 4px;
+  }
+  

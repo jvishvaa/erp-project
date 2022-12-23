@@ -171,48 +171,44 @@ const QuestionPaperInfo = ({
     // return {
     // setLoading(true);
     // setAssessmentId,
-    if (attachments.length === 0) {
-      setAlert('warning', 'Please upload file');
-    }
-    if (attachments.length > 0) {
-      if (showSubmit.can_reupload) {
-        axiosInstance
-          .put(`${endpoints.assessment.imageupload}`, param)
-          .then((result) => {
-            if (result?.data?.status_code === 200) {
-              setAlert('success', result?.data?.message);
-              setReloadFlag(!reloadFlag);
-              setShowagain([]);
-            } else {
-              setAlert('error', result?.data?.message);
-            }
-            // setLoading(false);
-            // props.onClose();
-          })
-          .catch((error) => {
-            // setAlert('error', error?.response.data.developer_msg);
-            // setLoading(false);
-          });
-      } else {
-        axiosInstance
-          .post(`${endpoints.assessment.imageupload}`, body)
-          .then((result) => {
-            if (result?.data?.status_code === 200) {
-              setAlert('success', result?.data?.message);
-              setReloadFlag(!reloadFlag);
-              setShowagain([]);
-            } else {
-              setAlert('error', result?.data?.message);
-            }
-            // setLoading(false);
-            // props.onClose();
-          })
-          .catch((error) => {
-            // setAlert('error', error?.response.data.developer_msg);
-            // setLoading(false);
-          });
-      }
-    }
+   if(attachments.length === 0){
+     setAlert('warning','Please upload file')
+   }
+   if(attachments.length>0){
+    if(showSubmit.can_reupload){
+      axiosInstance.put(`${endpoints.assessment.imageupload}`, param)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
+          setReloadFlag(!reloadFlag)
+          setShowagain([])
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+        // setLoading(false);
+        // props.onClose();
+      })
+      .catch((error) => {
+        // setAlert('error', error?.response.data.developer_msg);
+        // setLoading(false);
+      });
+     }else{
+      axiosInstance.post(`${endpoints.assessment.imageupload}`, body)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
+          setReloadFlag(!reloadFlag)
+          setShowagain([])
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        // setAlert('error', error?.response.data.developer_msg);
+        // setLoading(false);
+      });
+   }
+   }
     // }
   };
 

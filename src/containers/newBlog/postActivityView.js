@@ -768,7 +768,7 @@ const PostActivityView = () => {
                     {postPreviewData?.file_type == "video/mp4" ? (
                       <video width="500" height="600" controls >
                         <source src={`${postPreviewData?.template_path}`} type="video/mp4" />
-                                Your browser does not support HTML video.}
+                                Your browser does not support HTML video.
                       </video>
 
                     ) : (
@@ -796,7 +796,7 @@ const PostActivityView = () => {
           </div>
         </Drawer>
 
-        {!loading && postListCount > 0 && (
+        {/* {!loading && postListCount > 0 && (
           <div className='text-center'>
             <Pagination
               current={pageNumber}
@@ -808,7 +808,7 @@ const PostActivityView = () => {
               total={postListCount}
             />
           </div>
-        )}
+        )} */}
 
       </>
     );

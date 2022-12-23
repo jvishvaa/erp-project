@@ -146,6 +146,7 @@ const BlogWall = () => {
   );
 
   console.log(branch_update_user, 'dl')
+  const branchIdsLocalId = branch_update_user?.branches?.map((item) => item?.id)
 
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -209,6 +210,8 @@ const BlogWall = () => {
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const [postWallList, setPostWallList] = useState([])
   const [postPreviewData, setPostPreviewData] = useState('');
+  const [userDataAPI, setUserDataAPI] = useState()
+  const token = data?.token;
   // const user_level = userData?.user_level;
 
 
@@ -240,6 +243,58 @@ const BlogWall = () => {
     )
   })
 
+
+  const getActivitySession = () => {
+    setLoading(true)
+    axios
+      .post(
+        `${endpoints.newBlog.activitySessionLogin}`,
+        {},
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+            Authorization: `${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        localStorage.setItem(
+          'ActivityManagementSession',
+          JSON.stringify(response?.data?.result)
+        );
+        setLoading(false)
+      });
+  };
+
+
+
+  useEffect(() =>{
+    ActvityLocalStorage()
+  },[])
+  const ActvityLocalStorage = () => {
+    setLoading(true)
+    axios
+      .post(
+        `${endpoints.newBlog.activityWebLogin}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((response) => {
+        localStorage.setItem(
+          'ActivityManagement',
+          JSON.stringify(response?.data?.result)
+        );
+        setUserDataAPI(response?.data?.result)
+        getActivitySession();
+        setLoading(false);
+      });
+  };
+
   const fetchGradeData = (e) => {
     if (e) {
       setLoading(true)
@@ -267,25 +322,29 @@ const BlogWall = () => {
 
   useEffect(() => {
     if (branch_update_user) {
-      setLoading(true)
-      var branchIds = branch_update_user?.branches?.map((item) => item?.id)
-      axios
-        .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          })
-        .then((response) => {
-          if (response?.data?.status_code === 200) {
-            setBranchList(response?.data?.result || [])
-            setLoading(false)
+      if(branchIdsLocalId){
+        setLoading(true)
+        var branchIds = branch_update_user?.branches?.map((item) => item?.id)
+          axios
+            .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIdsLocalId}`,
+              {
+                headers: {
+                  'X-DTS-HOST': X_DTS_HOST,
+                },
+              })
+            .then((response) => {
+              if (response?.data?.status_code === 200) {
+                setBranchList(response?.data?.result || [])
+                setLoading(false)
+    
+              }
+    
+            })
 
-          }
+      }
+  
 
-        })
-
-    }
+      }
   }, [])
 
   const blogListApiCall = () => {
@@ -785,7 +844,7 @@ const BlogWall = () => {
 
                 {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
                 <Grid container spacing={4} xs={12}>
-                  {postWallList.map((item) => {
+                  {postWallList && postWallList.map((item) => {
                     return (
 
                       <Grid item xs={12} md={3}>
