@@ -192,22 +192,25 @@ const SubjectwiseDiaryReport = () => {
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
+        title: <span className='th-white th-fw-700 '>TEACHER'S NAME</span>,
         dataIndex: 'name',
         align: 'center',
         width: '20%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
+        title: <span className='th-white th-fw-700 '>CREATED AT</span>,
         dataIndex: 'created_at',
         align: 'center',
         width: '30%',
         render: (data) => (
           <span className='th-black-2'>
-            {data !== 0 ? moment(data).format('hh:MM a') : null}
+            {data !== 0 ? moment(data).format('hh:mm a') : null}
           </span>
         ),
       },
       {
+        title: <span className='th-white th-fw-700 '>REASON</span>,
         dataIndex: 'reason',
         align: 'center',
         width: '30%',
@@ -216,9 +219,6 @@ const SubjectwiseDiaryReport = () => {
           !_.isEmpty(row?.reason_details) ? (
             <div className='d-flex justify-content-center'>
               <div className='text-truncate' style={{ maxWidth: 200 }}>
-                {/* {row?.reason_details?.is_class_cancelled ? (
-                  'Class Cancelled'
-                ) : ( */}
                 <Tooltip
                   placement='bottomRight'
                   title={<span className=''>{row?.reason_details?.reason}</span>}
@@ -232,7 +232,6 @@ const SubjectwiseDiaryReport = () => {
                       : row?.reason_details?.reason}
                   </span>
                 </Tooltip>
-                {/* )} */}
               </div>
               {user_level !== 11 && (
                 <div>
@@ -271,7 +270,7 @@ const SubjectwiseDiaryReport = () => {
       },
 
       {
-        title: 'icon',
+        title: '',
         align: 'center',
         width: '5%',
       },
@@ -283,9 +282,10 @@ const SubjectwiseDiaryReport = () => {
         dataSource={teacherwiseReport}
         pagination={false}
         loading={loadingInner}
-        showHeader={false}
+        showHeader={true}
         bordered={false}
         style={{ width: '100%' }}
+        className='th-inner-table-head-bg'
         rowClassName={(record, index) => 'th-pointer th-row'}
       />
     );
@@ -321,10 +321,11 @@ const SubjectwiseDiaryReport = () => {
       title: (
         <span className='th-white th-fw-700'>
           {user_level == 11
-            ? tableExpanded
-              ? "TEACHER'S NAME"
-              : null
-            : 'TOTAL TEACHERS'}
+            ? null
+            : // tableExpanded
+              //   ? 'TOTAL TEACHERS'
+              //   : null
+              'TOTAL TEACHERS'}
         </span>
       ),
       align: 'center',

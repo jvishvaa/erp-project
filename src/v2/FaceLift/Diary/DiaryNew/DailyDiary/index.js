@@ -1029,7 +1029,11 @@ const DailyDiary = ({ isSubstituteClass }) => {
             <div className='col-8 pl-1 text-capitalize'>
               <span
                 className={`${
-                  item?.exam_status == 'completed' ? 'th-green' : 'th-primary'
+                  item?.exam_status == 'completed'
+                    ? 'th-green'
+                    : item?.exam_status == 'ongoing'
+                    ? 'th-red th-fw-600'
+                    : 'th-primary'
                 } text-capitalize`}
               >
                 {item?.exam_status}
@@ -1095,7 +1099,6 @@ const DailyDiary = ({ isSubstituteClass }) => {
     }
   }, [showPeriodInfoModal]);
 
-  console.log('IDS', gradeID, sectionMappingID, homeworkDetails);
   return (
     <div className='row th-bg-white'>
       <div className='row py-1'>
