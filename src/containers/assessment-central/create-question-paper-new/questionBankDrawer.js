@@ -389,6 +389,7 @@ const QuestionBankDrawer = ({
         chapter: '',
         topic: '',
       });
+      setPeriodData([])
       setChapterDropdown([]);
       setKeyConceptsData([]);
     }

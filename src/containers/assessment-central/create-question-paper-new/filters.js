@@ -189,7 +189,7 @@ const Filters = () => {
         handleAddSection(i);
       }
       history.push({
-        pathname: '/createquestionpaper',
+        pathname: '/create-questionpaper',
         state: {
           sectionCount: count,
           Grade: selectedGrade,

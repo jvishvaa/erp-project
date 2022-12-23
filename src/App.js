@@ -598,7 +598,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/assessment-question'>
                               {({ match }) => <AssessmentView match={match} />}
                             </Route>
-                            <Route exact path='/createquestionpaper'>
+                            <Route exact path='/create-questionpaper'>
                               {({ match }) => <CreatequestionPaperNew match={match} />}
                             </Route>
 
