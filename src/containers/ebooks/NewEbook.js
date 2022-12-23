@@ -10,9 +10,18 @@ const NewEbookView = (props) => {
   const history = useHistory();
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showTab, setShowTab] = useState('1');
+  const [ changeRecent , setChangeRecent ] = useState(false)
 
   const onChangeTab = (e) => {
-    setShowTab(e)
+  setShowTab(e)
+  }
+
+  const handleRecent = () => {
+    if(changeRecent == true){
+      setChangeRecent(false)
+    }else if(changeRecent == false){
+      setChangeRecent(true)
+    }
   }
 
 
@@ -23,6 +32,7 @@ const NewEbookView = (props) => {
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
+              onClick={handleRecent}
                 className='th-grey th-16 th-pointer'
               >
                 Online Books
@@ -38,10 +48,10 @@ const NewEbookView = (props) => {
               <div className='th-tabs th-bg-white'>
                 <Tabs type='card' onChange={onChangeTab} activeKey={showTab}>
                   <TabPane tab='EBOOK' key='1'>
-                    <EbookView showTab={showTab} />
+                    <EbookView showTab={showTab} changeRecent={changeRecent} />
                   </TabPane>
                   <TabPane tab='IBOOK' key='2'>
-                    <EbookView showTab={showTab} />
+                    <EbookView showTab={showTab} changeRecent={changeRecent} />
                   </TabPane>
                 </Tabs>
               </div>
