@@ -14,24 +14,6 @@ import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 
-
-// interface DataType {
-//     key: string;
-//     name: string;
-//     erp_id: number;
-//     actions: string;
-//     // tags: string[];
-// }
-
-
-const tableData = { id: 1, student_name: 'Anam', erp_id: '221313131_OLV', grade: "grade 1", branch: 'Branch 1' }
-const dummyData = [
-    { id: 1, height: 20, weight: 40, bmi: 23, date: '28th Dec' },
-    { id: 2, height: 21, weight: 40, bmi: 33, date: '28th Dec' },
-    { id: 3, height: 20, weight: 44, bmi: 23, date: '28th Dec' },
-
-]
-
 const ViewBMITableCustom = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [openBigModal, setOpenBigModal] = useState(false);
@@ -226,29 +208,6 @@ const ViewBMITableCustom = (props) => {
         setIsModalOpen(false);
         setIsEdit(false)
     };
-
-    // const goSearch = () => {
-    //     setLoading(true)
-    //     if (boardId === undefined) {
-    //         setAlert('error', 'Please Select Branch');
-    //         setLoading(false)
-    //         return
-    //     } else if (gradeId == undefined) {
-    //         setAlert('error', 'Please Select Grade');
-    //         setLoading(false)
-    //         return
-    //     } else if (subjectId == undefined) {
-    //         setAlert('error', 'Please Select Subject');
-    //         setLoading(false)
-    //         return
-    //     }
-
-    //     else {
-    //         setFlag(true);
-    //         setLoading(false)
-    //     }
-
-    // }
 
     const goDownload = () => {
         //will implement soon
@@ -490,17 +449,6 @@ const ViewBMITableCustom = (props) => {
                         </div>
 
                     </div>
-                    {/* <div className='col-12' style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.5rem 1rem' }}>
-                        <ButtonAnt
-                            size='medium'
-                            type="primary"
-                            icon={<CloudDownloadOutlined />}
-                            onClick={goDownload}
-                        >
-                            Download Report
-                        </ButtonAnt>
-
-                    </div> */}
                     <div className='col-12' style={{ padding: '1rem 1rem' }}>
                         <Table
                             style={{ maxHeight: '50vh', overflowY: 'auto' }}

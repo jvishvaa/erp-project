@@ -227,14 +227,6 @@ const StudentSidePhysicalActivity = () => {
                             localStorage.setItem('moduleId', item.child_id);
                             setLoading(false)
                         }
-                        // if (
-                        //   item.child_name === 'Create Rating' 
-                        //     // &&
-                        //     // window.location.pathname === '/erp-online-class-student-view'
-                        // ) {
-                        //   setModuleId(item.child_id);
-                        //   localStorage.setItem('moduleId', item.child_id);
-                        // }
                     });
                 }
             });
@@ -273,59 +265,10 @@ const StudentSidePhysicalActivity = () => {
         },
     ];
 
-    // const columnsListTable = [
-    //     {
-    //         title: <span className='th-white th-fw-700 '>Title</span>,
-    //         dataIndex: 'height',
-    //         key: 'height',
-    //         align: 'center',
-    //         // render: (text) => <a>{text}</a>,
-    //     },
-    //     {
-    //         title: <span className='th-white th-fw-700 '>ERP ID</span>,
-    //         dataIndex: 'weight',
-    //         key: 'weight',
-    //         align: 'center'
-    //     },
-    //     {
-    //         title: <span className='th-white th-fw-700 '>Submission Date</span>,
-    //         dataIndex: 'bmi',
-    //         key: 'bmi',
-    //         align: 'center'
-    //     },
-    //     {
-    //         title: <span className='th-white th-fw-700 '>Overall Score</span>,
-    //         dataIndex: 'date',
-    //         key: 'date',
-    //         align: 'center'
-    //     },
-    //     {
-    //         title: <span className='th-white th-fw-700 '>Actions</span>,
-    //         dataIndex: 'date',
-    //         key: 'date',
-    //         align: 'center',
-    //         render: (data) => (
-    //             <>
-    //                 <span style={{margin:'0.5rem 1rem'}}>
-    //                     <ButtonAnt
-    //                                             type="primary"
-    //                                             icon={<FileProtectOutlined />}
-    //                                             onClick={() => assignPage(response)}
-    //                                             size={'medium'}>
-    //                                             Check Review
-    //                                         </ButtonAnt>
-    //                 </span>
-    //             </>
-    //         )
-    //     },
-    // ];
 
     const handleCloseViewMore = () => {
         setView(false);
     };
-
-
-
 
     const [view, setView] = useState(false);
     const [branchView, setBranchView] = useState(true);
@@ -684,32 +627,6 @@ const StudentSidePhysicalActivity = () => {
                         footer={null}
                     >
                         <div className='row'>
-                            {/* <div className='col-12' style={{ display: 'flex', borderRadius: '10px', padding: '0.5rem 1rem' }}>
-                                <div className='col-3'>
-                                    Name : {tableData?.student_name}
-                                </div>
-                                <div className='col-3'>
-                                    ERP ID :{tableData?.erp_id}
-                                </div>
-                                <div className='col-3'>
-                                    Branch : {tableData?.branch}
-                                </div>
-                                <div className='col-3'>
-                                    Grade: {tableData?.grade}
-                                </div>
-
-                            </div> */}
-                            {/* <div className='col-12' style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.5rem 1rem' }}>
-                                <ButtonAnt
-                                    size='medium'
-                                    type="primary"
-                                    icon={<CloudDownloadOutlined />}
-                                    onClick={goDownload}
-                                >
-                                    Download Report
-                                </ButtonAnt>
-
-                            </div> */}
                             <div className='col-12' style={{ padding: '1rem 1rem' }}>
                                 <TableAnt
                                     className='th-table'
@@ -723,18 +640,6 @@ const StudentSidePhysicalActivity = () => {
                         </div>
                     </Modal>
                 </Grid>
-                {/* <div className='row'>
-                    <div className='col-12'>
-                        <TableAnt
-                            className='th-table'
-                            rowClassName={(record, index) => `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                            }
-                            pagination={false}
-                            loading={loading}
-                            columns={columnsListTable} dataSource={totalSubmitted} />
-
-                    </div>
-                </div> */}
                 <Paper className={`${classes.root} common-table`} id='singleStudent'>
                     <TableContainer
                         className={`table table-shadow view_users_table ${classes.container}`}

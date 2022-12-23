@@ -20,60 +20,6 @@ import ViewBMITableCustom from './ViewBMITable';
 
 const DEFAULT_RATING = 0;
 
-// const useStyles = makeStyles((theme) => ({
-//   branch: {
-//     fontSize: '12px',
-//     marginLeft: '20px',
-//     color: 'gray',
-//   },
-//   home: {
-//     marginLeft: '5px',
-//     marginTop: '-2px',
-//     marginBottom: '15px',
-//     fontSize: '15px',
-//   },
-//   selected1: {
-//     background: `${theme.palette.primary.main} !important`,
-//     color: 'white !important',
-//     borderRadius: '4px',
-//   },
-//   selected2: {
-//     background: `${theme.palette.primary.main} !important`,
-//     color: 'white !important',
-//     borderRadius: '4px',
-//   },
-//   tabsFont: {
-//     '& .MuiTab-wrapper': {
-//       color: 'white',
-//       fontWeight: 'bold',
-//     },
-//   },
-//   tabsFont1: {
-//     '& .MuiTab-wrapper': {
-//       color: 'black',
-//       fontWeight: 'bold',
-//     },
-//   },
-//   topic: {
-//     marginLeft: '20px',
-//     background: '#F1F4F6',
-//   },
-//   topicName: {
-//     color: '#173260',
-//   },
-//   grade: {
-//     color: '#1B689A',
-//   },
-// }));
-
-// interface DataType {
-//   key: string;
-//   name: string;
-//   erp_id: number;
-//   actions: string;
-//   // tags: string[];
-// }
-
 
 const dummyData = [
   { id: 1, height: 20, weight: 40, bmi: 23, date: '28th Dec' },
@@ -501,26 +447,6 @@ const ViewBMI = () => {
     );
   });
 
-  // const functionFilter = (sourceData, targetData) => {
-  //   setLoading(true)
-  //   var finalData = []
-  //   sourceData.filter((item, i) => {
-  //     targetData.forEach((ele) => {
-  //       if (ele?.erp_id !== item?.erp_id) {
-  //         finalData.push(item)
-  //       }
-  //     })
-  //   })
-
-  //   let dummyData = []
-  //   var res = sourceData.filter(item => !targetData.map(item2 => item2?.erp_id).includes(item?.erp_id))
-  //   if (finalData == 0) {
-  //     setTotalSubmitted(sourceData)
-  //   } else {
-  //     setTotalSubmitted(res)
-  //   }
-  //   setLoading(false)
-  // }
 
   const erpAPI = () => {
     axios
@@ -561,23 +487,6 @@ const ViewBMI = () => {
 
   }
 
-  // const ActivityManagement = (sourceData) => {
-  //   axios
-  //     .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${boardId}&grade_id=${gradeId}&section_id=${subjectId}&activity_id=${ActivityId?.id}`, {
-  //       headers: {
-  //         'X-DTS-HOST': X_DTS_HOST,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       setTargetData(response?.data?.result)
-  //       functionFilter(sourceData, response?.data?.result)
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setLoading(false)
-  //     })
-
-  // }
 
   const getTotalSubmitted = () => {
     // if (props) {
@@ -588,39 +497,6 @@ const ViewBMI = () => {
     // }
   };
 
-  // const showReview = (data) => {
-  //   if (data) {
-  //     setLoading(true)
-  //     axios
-  //       .get(
-  //         `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data?.booking_detail_id}`,
-  //         {
-  //           headers: {
-  //             'X-DTS-HOST': X_DTS_HOST,
-  //           },
-  //         }
-  //       )
-  //       .then((response) => {
-  //         response.data.map((obj, index) => {
-  //           let temp = {};
-  //           temp['id'] = obj?.id;
-  //           temp['name'] = obj?.level.name;
-  //           temp['remarks'] = obj?.remarks;
-  //           temp['given_rating'] = obj?.given_rating;
-  //           temp['level'] = obj?.level?.rating;
-  //           temp['reviewer_id'] = user_id;
-  //           array.push(temp);
-  //         });
-  //         setRatingReview(array);
-  //         setLoading(false)
-  //         setView(true);
-  //       })
-  //       .catch((err) => {
-  //         setLoading(false)
-  //       })
-
-  //   }
-  // }
 
   useEffect(() => {
     if (boardId === undefined || gradeId === undefined) {
