@@ -179,7 +179,6 @@ const CreateAssesment = ({
   }, [isEdit]);
 
   useEffect(() => {
-    // debugger
     if (isEdit && assesmentTypes.length) {
       let assesstype = assesmentTypes?.filter(
         (item) => item?.exam_name == EditData?.testType
@@ -221,7 +220,6 @@ const CreateAssesment = ({
   }, [isEdit, branchDropdown]);
 
   useEffect(() => {
-    debugger
     let paperwise = false;
     let test_mark = [];
     let data = selectedQuestionPaper?.section?.forEach((sec) => {
