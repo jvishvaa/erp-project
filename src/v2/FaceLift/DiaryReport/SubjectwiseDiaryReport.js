@@ -57,15 +57,15 @@ const SubjectwiseDiaryReport = () => {
       subject: subjectID,
       section_mapping_id: selectedSection?.section_mapping,
       is_class_cancled: isClassCancelled,
+      data: description,
     };
-    if (!isClassCancelled) {
-      payload['data'] = description;
+    // if (!isClassCancelled) {
+    // }
+    // if (!isClassCancelled) {
+    if (!description) {
+      return;
     }
-    if (!isClassCancelled) {
-      if (!description) {
-        return;
-      }
-    }
+    // }
     setRequestSent(true);
     if (reasonId) {
       payload['id'] = reasonId;
@@ -216,19 +216,23 @@ const SubjectwiseDiaryReport = () => {
           !_.isEmpty(row?.reason_details) ? (
             <div className='d-flex justify-content-center'>
               <div className='text-truncate' style={{ maxWidth: 200 }}>
-                {row?.reason_details?.is_class_cancelled ? (
+                {/* {row?.reason_details?.is_class_cancelled ? (
                   'Class Cancelled'
-                ) : (
-                  <Tooltip
-                    placement='bottomLeft'
-                    title={<span className=''>{row?.reason_details?.reason}</span>}
-                    trigger='hover'
-                    className='th-pointer'
-                    zIndex={2000}
-                  >
-                    <span className=''>{row?.reason_details?.reason}</span>
-                  </Tooltip>
-                )}
+                ) : ( */}
+                <Tooltip
+                  placement='bottomRight'
+                  title={<span className=''>{row?.reason_details?.reason}</span>}
+                  trigger='hover'
+                  className='th-pointer'
+                  zIndex={2000}
+                >
+                  <span className=''>
+                    {row?.reason_details?.is_class_cancelled
+                      ? 'Class Cancelled'
+                      : row?.reason_details?.reason}
+                  </span>
+                </Tooltip>
+                {/* )} */}
               </div>
               {user_level !== 11 && (
                 <div>
@@ -316,7 +320,11 @@ const SubjectwiseDiaryReport = () => {
     {
       title: (
         <span className='th-white th-fw-700'>
-          {user_level == 11 ? null : 'TOTAL TEACHERS'}
+          {user_level == 11
+            ? tableExpanded
+              ? "TEACHER'S NAME"
+              : null
+            : 'TOTAL TEACHERS'}
         </span>
       ),
       align: 'center',
@@ -341,8 +349,6 @@ const SubjectwiseDiaryReport = () => {
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
   ];
-
-  console.log('Description', description);
 
   return (
     <Layout>
@@ -509,7 +515,7 @@ const SubjectwiseDiaryReport = () => {
                   >
                     <TextArea
                       rows={5}
-                      disabled={isClassCancelled}
+                      // disabled={isClassCancelled}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder='Enter Reason'
                       maxLength={150}
