@@ -237,22 +237,24 @@ const TableView = (props) => {
         setLoading(false);
       });
     fetchIbooks({
-      subject_id: subjectId,
-      volume_id: volumeId,
-      grade_id: gradeId,
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
       book_type: '4',
       branch: selectedBranch?.branch?.id,
-      domain_name: domain_name
+      domain_name: domain_name,
+      lesson_plan : 'true'
     })
     fetchEbooks({
-      subject_id: subjectId,
-      volume_id: volumeId,
-      grade_id: gradeId,
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
       book_type: '3',
       branch: selectedBranch?.branch?.id,
-      domain_name: domain_name
+      domain_name: domain_name,
+      lesson_plan : 'true'
     })
   };
   const fetchEbooks = (params) => {
@@ -266,7 +268,7 @@ const TableView = (props) => {
           // message.success('Ebooks Fetched Successfully');
           setEbookData(res.data.result.data);
         } else {
-          message.error('Cannot Fetch Right Now');
+          // message.error('Cannot Fetch Right Now');
           setEbookData([]);
         }
       })
@@ -291,7 +293,7 @@ const TableView = (props) => {
           // message.success('Ibooks Fetched Successfully');
           setLoading(false)
         } else {
-          message.error('Cannot Fetch Right Now');
+          // message.error('Cannot Fetch Right Now');
           setLoading(false)
           setIbookData([]);
           // setTotal()
@@ -839,10 +841,10 @@ const TableView = (props) => {
                 </a>
               </div>
             )}
-            {ebookData?.length > 0 && YCPData?.length > 0 && (
+            {ebookData?.length > 0 && (
               <div className='col-md-3 pl-0 col-12e4l'>
                 <a onClick={showEbookDrawer} >
-                  <div className='col-md-3 pl-0 col-12e4l th-primary '>
+                  <div className=' pl-0 col-12e4l th-primary '>
                     <Badge count={ebookData?.length} >
                       <Button icon={<FilePdfOutlined />} onClick={showEbookDrawer} />
                     </Badge>
@@ -856,6 +858,7 @@ const TableView = (props) => {
                   onCancel={onEbookClose}
                   visible={openEbook}
                   footer={null}
+                  width={'90vh'}
                 >
 
                   <EbookList data={ebookData} />
@@ -863,10 +866,10 @@ const TableView = (props) => {
               </div>
             )}
 
-            {ibookData?.length > 0 && YCPData?.length > 0 && (
+            {ibookData?.length > 0 && (
               <div className='col-md-3 pl-0 col-12e4l'>
                 <a onClick={showIbookDrawer} >
-                  <div className='col-md-3 pl-0 col-12e4l th-primary '>
+                  <div className=' pl-0 col-12e4l th-primary '>
                     <Badge count={ibookData?.length} >
                       <Button icon={<BookOutlined />} onClick={showIbookDrawer} />
                     </Badge>
