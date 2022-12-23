@@ -221,6 +221,7 @@ const CreateAssesment = ({
   }, [isEdit, branchDropdown]);
 
   useEffect(() => {
+    debugger
     let paperwise = false;
     let test_mark = [];
     let data = selectedQuestionPaper?.section?.forEach((sec) => {

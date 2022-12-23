@@ -219,7 +219,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
 
   useEffect(() => {
 if(publishFlag){
-  if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ) && tabQpValue && tabIsErpCentral)
+  if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ))
   handlePeriodList(
     tabIsErpCentral,
     tabAcademic,

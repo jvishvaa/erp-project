@@ -390,7 +390,7 @@ const CreatequestionPaperNew = () => {
         is_draft: isDraft ? 'True' : 'False',
         is_verified: 'False',
         total_mark: qp_wise_marks,
-        is_question_wise: questionPaperWise ? 'True' : 'False',
+        is_question_wise: !questionPaperWise ? 'True' : 'False',
       };
       let filterdata = {
         branch: formik.values.branch,
