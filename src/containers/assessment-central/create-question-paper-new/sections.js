@@ -153,10 +153,9 @@ const Sections = ({
 
   
   const getMarks = () => {
-    debugger
     let marks = 0;
     for(let i=0;i<section?.mandatory_questions;i++){
-      marks += parseInt(section?.test_marks[i].question_mark[0])
+      marks += parseInt(section?.test_marks[i]?.question_mark[0])
     }
     return marks
   }

@@ -547,6 +547,7 @@ debugger
       if (instructionValidCount !== 0) {
         return setAlert('error', 'Please Enter instructions');
       }
+      debugger
 
       if (
         (!questionPaperWise && totalMark < parseInt(max_Marks)) ||
