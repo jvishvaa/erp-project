@@ -1120,13 +1120,18 @@ const CreateAssesment = ({
                                 />
                               </div>
                               <div className='section-name'>{`SECTION ${section.name}`}</div>
-                              <div className='th-14 th-fw-500 ml-2'>
-                                {
+                            </div>
+                            <div className='th-14 th-fw-500 mr-3'>
+                              {selectedQuestionPaper.section.filter(
+                                (item) => item?.discription == section.name
+                              )[0]?.instruction
+                                ? `Instructions : 
+                                ${
                                   selectedQuestionPaper.section.filter(
                                     (item) => item?.discription == section.name
                                   )[0]?.instruction
-                                }
-                              </div>
+                                }`
+                                : null}
                             </div>
                           </div>
 
