@@ -181,13 +181,13 @@ const EbookCards = (props) => {
             {data?.length > 0 ?
 
                 <div className={classes.root} style={{ minHeight: '50vh', display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', width: '101%', alignItems: 'flex-start' }} >
+                    <div style={{ display: 'flex', flexWrap: 'wrap',  justifyContent: 'flex-start' }} >
                         {data?.length > 0 && data.map((item, index) => (
-                            <div className='ebookCard' style={{ margin: '1%' }} >
+                            <div className='ebookCard' style={{ margin: '5px'}} >
                                 <Card
                                     hoverable
                                     style={{
-                                        width: 400,
+                                        width: 370,
                                         display: 'flex',
                                         background: item?.ebook_type == 2 ? 'aliceblue' : '',
                                     }}
@@ -195,10 +195,10 @@ const EbookCards = (props) => {
                                 >
                                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
                                         <div style={{ marginLeft: '2%' }} >
-                                            <span style={{ fontSize: '11px', marginLeft: '2px' }}>Published On : </span>
-                                            <span style={{ fontSize: '11px', color: 'grey' }}>{moment(item?.created_at).format('DD-MM-YYYY')}</span>
+                                            <span style={{ fontSize: '9px',fontWeight: '600', marginLeft: '2px' }}>Published On : </span>
+                                            <span style={{ fontSize: '10px', color: 'grey' }}>{moment(item?.created_at).format('DD-MM-YYYY')}</span>
                                         </div>
-                                        <Tag color="#87d068" style={{ margin: '0px' }} >{item?.ebook_type == 1 ? 'General' : item?.ebook_type == 2 ? 'Curriculum' : ''}</Tag>
+                                        <Tag color="#87d068" style={{ margin: '0px' , height: '20px' }} >{item?.ebook_type == 1 ? 'General' : item?.ebook_type == 2 ? 'Curriculum' : ''}</Tag>
                                     </div>
                                     <div className='namediv'>
                                         <span className='ebookname'>{item?.ebook_name.charAt(0).toUpperCase() + item?.ebook_name.slice(1)}</span>
@@ -206,8 +206,8 @@ const EbookCards = (props) => {
                                     <Divider />
                                     <div className='bottomcard' >
                                         <div style={{ display: 'flex', marginLeft: '2%' }} >
-                                            <span style={{ fontSize: '11px', color: 'grey' }}>Last Viewed : </span>
-                                            <span style={{ fontSize: '11px' }}>{moment(item?.lst_open_date).format('DD-MM-YYYY')}</span>
+                                            <span style={{ fontSize: '9px',fontWeight: '600', color: 'grey' }}>Last Viewed : </span>
+                                            <span style={{ fontSize: '10px' }}>{moment(item?.lst_open_date).format('DD-MM-YYYY')}</span>
                                         </div>
                                         <div className='btndiv' >
                                             <Button type="primary" className='btnant' onClick={() => handleClickOpen(item)}>Read</Button>

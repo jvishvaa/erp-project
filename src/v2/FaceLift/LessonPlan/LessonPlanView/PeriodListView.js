@@ -387,22 +387,24 @@ const PeriodListView = () => {
         message.error(error.message);
       });
     fetchIbooks({
-      subject_id: subjectId,
-      volume_id: volumeId,
-      grade_id: gradeId,
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
       book_type: '4',
       branch: selectedBranch?.branch?.id,
-      domain_name: domain_name
+      domain_name: domain_name,
+      lesson_plan : 'true'
     })
     fetchEbooks({
-      subject_id: subjectId,
-      volume_id: volumeId,
-      grade_id: gradeId,
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
       book_type: '3',
       branch: selectedBranch?.branch?.id,
-      domain_name: domain_name
+      domain_name: domain_name,
+      lesson_plan : 'true'
     })
   };
   const fetchEbooks = (params) => {
@@ -416,7 +418,7 @@ const PeriodListView = () => {
           // message.success('Ebooks Fetched Successfully');
           setEbookData(res.data.result.data);
         } else {
-          message.error('Cannot Fetch Right Now');
+          // message.error('Cannot Fetch Right Now');
           setEbookData([]);
         }
       })
@@ -441,7 +443,7 @@ const PeriodListView = () => {
           // message.success('Ibooks Fetched Successfully');
           setLoading(false)
         } else {
-          message.error('Cannot Fetch Right Now');
+          // message.error('Cannot Fetch Right Now');
           setLoading(false)
           setIbookData([]);
           // setTotal()
@@ -976,6 +978,7 @@ const PeriodListView = () => {
                         onCancel={onEbookClose}
                         visible={openEbook}
                         footer={null}
+                        width={'90vh'}
                       >
 
                         <EbookList data={ebookData} />

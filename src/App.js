@@ -2232,7 +2232,7 @@ function App({ alert, isMsAPI, erpConfig }) {
 
                             {/* ebook v2 */}
 
-                            <Route path='/online-books/ebook-View/'>
+                            <Route path='/online-books/'>
                               {({ match }) => <NewEbookView match={match} />}
                             </Route>
 
