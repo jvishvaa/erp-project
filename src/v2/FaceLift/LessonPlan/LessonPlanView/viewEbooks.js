@@ -28,7 +28,11 @@ const LightTooltip = withStyles((theme) => ({
     },
 }))(Tooltip);
 const useStyles = makeStyles((theme) => ({
-
+    root: {
+        width: '100%',
+        margin: '-10px auto',
+        boxShadow: 'none',
+    },
     card: {
         textAlign: 'center',
         margin: theme.spacing(1),
@@ -109,42 +113,44 @@ const EbookList = (props) => {
     };
 
     return (
-        <div className={classes.root} style={{minHeight: '300px'}} >
-                   {data?.length > 0 && data.map((item, index) => (
-                            <>
-                                <div className='ebookCard' style={{ margin: '1%' }} >
-                                    <div style={{ margin: '3%' , display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' }}>
-                                        <img alt="example" src={item?.ebook_thumbnail} style={{ width: '100px', height: '100px', padding: '1%' }} />
-                                        <span>{item?.ebook_name}</span>
-                                        <Button icon={<EyeFilled />} onClick={() => handleClickOpen(item)} />
+        <>
+            <div className={classes.root} style={{ minHeight: '30vh', height: '40vh', overflow: 'scroll', marginTop: '1%' }}>
+                {data?.length > 0 && data.map((item, index) => (
+                    <>
+                        <div className='ebookCard' style={{ margin: '1%' }} >
+                            <div style={{ margin: '3%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <img alt="example" src={item?.ebook_thumbnail} style={{ width: '100px', height: '100px', padding: '1%' }} />
+                                <span>{item?.ebook_name}</span>
+                                <Button icon={<EyeFilled />} onClick={() => handleClickOpen(item)} />
 
-                                    </div>
-                                    <Divider style={{margin: '0px'}}/>
-                                </div>
+                            </div>
+                            <Divider style={{ margin: '0px' }} />
+                        </div>
 
-                            </>
-                        ))}
+                    </>
+                ))}
 
-            <Dialog
-                fullScreen
-                open={open}
-                onClose={handleClose}
-                style={{ zIndex: '10000' }}
-                TransitionComponent={Transition}
-            >
-                <Grid>
-                    <EbookPdf
-                        pageNumber={pageNumber}
-                        timeStore={timeSpent}
-                        id={selectedItem?.id}
-                        url={`${pdfUrl && pdfUrl}`}
-                        passLoad={loading}
-                        goBackFunction={handleClose}
-                        name={selectedItem?.ebook_name}
-                    />
-                </Grid>
-            </Dialog>
-        </div>
+                <Dialog
+                    fullScreen
+                    open={open}
+                    onClose={handleClose}
+                    style={{ zIndex: '10000' }}
+                    TransitionComponent={Transition}
+                >
+                    <Grid>
+                        <EbookPdf
+                            pageNumber={pageNumber}
+                            timeStore={timeSpent}
+                            id={selectedItem?.id}
+                            url={`${pdfUrl && pdfUrl}`}
+                            passLoad={loading}
+                            goBackFunction={handleClose}
+                            name={selectedItem?.ebook_name}
+                        />
+                    </Grid>
+                </Dialog>
+            </div>
+        </>
     );
 }
 
