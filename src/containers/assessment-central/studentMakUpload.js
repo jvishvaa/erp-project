@@ -285,15 +285,18 @@ const StudentMark = () => {
         } else {
           setNextFlag(false);
         }
-        marksArr = [result?.data?.result?.user_response];
-        console.log(marksArr);
-        marksArr[0].map((ele, i) => sum.push(ele?.question_mark));
-        console.log(sum);
-        // setValues( {val : sum[0]?.i})
-        if (marksArr[0] !== undefined) {
+        marksArr = result?.data?.result?.user_response;
+        if(marksArr?.length && quesList?.length){
+          for(let i=0;i<quesList?.length;i++){
+            let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
+            if(quemark.length){
+              sum.push(quemark[0].question_mark)
+            }else{
+              sum.push('')
+            }
+          }
           setValues({ val: sum });
         }
-        console.log(marksArr?.length);
       })
       .catch((error) => {
         console.log('');
@@ -331,10 +334,16 @@ const StudentMark = () => {
                   } else {
                     setNextFlag(false);
                   }
-                  marksArr = [result?.data?.result?.user_response];
-                  console.log(marksArr);
-                  marksArr[0].map((ele, i) => sum.push(ele?.question_mark));
-                  if (marksArr[0] !== undefined) {
+                  marksArr = result?.data?.result?.user_response;
+                  if(marksArr?.length && quesList?.length){
+                    for(let i=0;i<quesList?.length;i++){
+                      let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
+                      if(quemark.length){
+                        sum.push(quemark[0].question_mark)
+                      }else{
+                        sum.push('')
+                      }
+                    }
                     setValues({ val: sum });
                   }
                   console.log(sum);
@@ -385,10 +394,16 @@ const StudentMark = () => {
                   } else {
                     setNextFlag(false);
                   }
-                  marksArr = [result?.data?.result?.user_response];
-                  console.log(marksArr);
-                  marksArr[0].map((ele, i) => sum.push(ele?.question_mark));
-                  if (marksArr[0] !== undefined) {
+                  marksArr = result?.data?.result?.user_response;
+                  if(marksArr?.length && quesList?.length){
+                    for(let i=0;i<quesList?.length;i++){
+                      let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
+                      if(quemark.length){
+                        sum.push(quemark[0].question_mark)
+                      }else{
+                        sum.push('')
+                      }
+                    }
                     setValues({ val: sum });
                   }
                   console.log(sum);
