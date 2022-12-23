@@ -4,7 +4,7 @@ import React, {
     useEffect,
     useContext
 } from 'react';
-import { Button as ButtonAnt, Table, Modal, Row, Col, Input } from 'antd';
+import { Button as ButtonAnt, Table, Modal, Row, Col, Input,message } from 'antd';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import { FileAddOutlined, EditOutlined, CloudDownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import endpoints from '../../config/endpoints';
@@ -140,65 +140,85 @@ const ViewBMITableCustom = (props) => {
 
     const handleOk = () => {
         if (isEdit) {
-            const requestData = {
-                id: editData?.bmi_details?.id,
-                height: height,
-                weight: weight,
-                bmi: bmi,
-            };
-            const options = {
-                headers: {
-                    'X-DTS-HOST': X_DTS_HOST,
-                    Authorization: `${token}`,
-
-                }
-            }
-            axios
-                .post(`${endpoints.newBlog.addBMIApi}`, requestData, options)
-                .then((res) => {
-                    if (res?.data?.status_code === 200) {
-                        setAlert('success', res?.data?.message)
-                        setIsEdit(false)
-                        setIsModalOpen(false);
-                        showBMITable(editData?.student)
-
-
-                    } else {
-                        setAlert('error', res?.data?.message)
-                        setIsModalOpen(false);
-
+            if(!height){
+                message.error("Please Add Height");
+                return
+            }else if(!weight){
+                message.error("Please Add Weight");
+                return
+            }else{
+                const requestData = {
+                    id: editData?.bmi_details?.id,
+                    height: height,
+                    weight: weight,
+                    bmi: bmi,
+                };
+                const options = {
+                    headers: {
+                        'X-DTS-HOST': X_DTS_HOST,
+                        Authorization: `${token}`,
+    
                     }
+                }
+                axios
+                    .post(`${endpoints.newBlog.addBMIApi}`, requestData, options)
+                    .then((res) => {
+                        if (res?.data?.status_code === 200) {
+                            setAlert('success', res?.data?.message)
+                            setIsEdit(false)
+                            setIsModalOpen(false);
+                            showBMITable(editData?.student)
+    
+    
+                        } else {
+                            setAlert('error', res?.data?.message)
+                            setIsModalOpen(false);
+    
+                        }
+    
+                    })
 
-                })
+
+            }
+
 
         } else {
-            const requestData = {
-                student_id: checkBMIData?.id,
-                height: height,
-                weight: weight,
-                bmi: bmi,
-            };
-            const options = {
-                headers: {
-                    'X-DTS-HOST': X_DTS_HOST,
-                    Authorization: `${token}`,
-                }
-            }
-            axios
-                .post(`${endpoints.newBlog.addBMIApi}`, requestData, options)
-                .then((res) => {
-                    if (res?.data?.status_code === 200) {
-                        setAlert('success', res?.data?.message)
-                        setIsEdit(false)
-                        setIsModalOpen(false);
-
-                    } else {
-                        setAlert('error', res?.data?.message)
-                        setIsModalOpen(false);
-
+            if(!height){
+                message.error("Please Add Height");
+                return
+            }else if(!weight){
+                message.error("Please Add Weight");
+                return
+            }else{
+                const requestData = {
+                    student_id: checkBMIData?.id,
+                    height: height,
+                    weight: weight,
+                    bmi: bmi,
+                };
+                const options = {
+                    headers: {
+                        'X-DTS-HOST': X_DTS_HOST,
+                        Authorization: `${token}`,
                     }
+                }
+                axios
+                    .post(`${endpoints.newBlog.addBMIApi}`, requestData, options)
+                    .then((res) => {
+                        if (res?.data?.status_code === 200) {
+                            setAlert('success', res?.data?.message)
+                            setIsEdit(false)
+                            setIsModalOpen(false);
+    
+                        } else {
+                            setAlert('error', res?.data?.message)
+                            setIsModalOpen(false);
+    
+                        }
+    
+                    })
 
-                })
+            }
 
         }
 

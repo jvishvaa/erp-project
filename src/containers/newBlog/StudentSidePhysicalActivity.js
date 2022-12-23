@@ -530,8 +530,8 @@ const StudentSidePhysicalActivity = () => {
     }
 
     const studentViewBMI = () => {
-        setOpenBigModal(true)
         checkBMIFun()
+        // setOpenBigModal(true)
     }
 
     const checkBMIFun = () => {
@@ -546,7 +546,7 @@ const StudentSidePhysicalActivity = () => {
             .then((response) => {
                 setCheckBMIData(response?.data?.result)
                 showBMITable(response?.data?.result)
-                setAlert('success', response?.data?.message)
+                // setAlert('success', response?.data?.message)
                 setLoading(false);
             })
     }
