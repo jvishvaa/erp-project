@@ -205,6 +205,7 @@ export default {
     blogWallApi: `${newBlogURL}/api/blog_wall/`,
     blogListDropApi: `${newBlogURL}/api/activity_dropdown/`,
     blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
+    checkBMIApi: `${newBlogURL}/api/check_student/`,
   },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },

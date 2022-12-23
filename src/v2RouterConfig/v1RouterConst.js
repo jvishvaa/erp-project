@@ -526,7 +526,7 @@ const V1Router = [
   <Route exact path='/create-question-paper/:id?'>
     {({ match }) => <QuestionPaperConfig match={match} />}
   </Route>,
-  <Route exact path='/createquestionpaper'>
+  <Route exact path='/create-questionpaper'>
     {({ match }) => <CreatequestionPaperNew match={match} />}
   </Route>,
   // <Route exact path='/create-question-paper/:id?'>
@@ -1788,7 +1788,7 @@ const V1Router = [
   </Route>,
   <Route path='/uploadOMR'>{({ match }) => <UploadOMR match={match} />}</Route>,
   <Route path='/student-mark'>{({ match }) => <StudentMark match={match} />}</Route>,
-  <Route path='/online-books/ebook-View/'>
+  <Route path='/online-books/'>
     {({ match }) => <NewEbookView match={match} />}
   </Route>,
 
