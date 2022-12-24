@@ -343,7 +343,7 @@ const EbookView = (props) => {
       })
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('Ebooks Fetched Successfully', [0.0002]);
+          // message.success('Ebooks Fetched Successfully', [0.0002]);
           setLoading(false)
           setEbookData(res.data.result.data);
           setTotal(res.data.result.total_ebooks)
@@ -403,7 +403,7 @@ const EbookView = (props) => {
           setIbookData(res.data.result.result);
           setTotal(res.data.result.count)
           console.log(res.data.result);
-          message.success('Ibooks Fetched Successfully', [0.0002]);
+          // message.success('Ibooks Fetched Successfully', [0.0002]);
           setLoading(false)
         } else {
           message.error(res.data.description);
