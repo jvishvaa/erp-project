@@ -82,7 +82,7 @@ const CreatequestionPaperNew = () => {
           }
         })
       );
-debugger
+
       const sectionArray = [
         {
           id: cuid(),
@@ -342,7 +342,7 @@ debugger
             // let marks = sec.test_marks?.forEach((item) => {
             //   totalMark += parseInt(item?.question_mark[0]);
             // });
-            for(let i=0;i<sec?.mandatory_questions;i++){
+            for (let i = 0; i < sec?.mandatory_questions; i++) {
               totalMark += parseInt(sec?.test_marks[i].question_mark[0]);
             }
           }
@@ -520,7 +520,7 @@ debugger
             test_marks: sec?.test_marks,
           };
           if (!questionPaperWise) {
-            for(let i=0;i<sec?.mandatory_questions;i++){
+            for (let i = 0; i < sec?.mandatory_questions; i++) {
               totalMark += parseInt(sec?.test_marks[i].question_mark[0]);
             }
             // let marks = sec.test_marks?.forEach((item) => {
@@ -848,10 +848,11 @@ debugger
             {/* <div className='col-md-4'> */}
             <Input
               placeholder='Marks'
-              type='number'
               value={max_Marks}
+              type='text'
+              pattern='\d*'
               maxLength={3}
-              className='w-25 mx-2 text-center'
+              className='w-20 mx-2 text-center'
               onChange={(e) => setMaxMarks(e.target.value)}
             />
             {/* </div> */}
@@ -862,7 +863,7 @@ debugger
             <div>Question Wise</div>
             <Switch
               // defaultChecked = {questionPaperWise ? true : false}
-              checked ={questionPaperWise ? true : false}
+              checked={questionPaperWise ? true : false}
               onChange={handlequesType}
               className='mx-2'
             />

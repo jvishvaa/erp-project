@@ -151,19 +151,14 @@ const Sections = ({
   //       marks += parseInt(item?.question_mark[0])
   // } )
 
-  
   const getMarks = () => {
     let marks = 0;
-    for(let i=0;i<section?.mandatory_questions;i++){
-      marks += parseInt(section?.test_marks[i]?.question_mark[0])
+    for (let i = 0; i < section?.mandatory_questions; i++) {
+      marks += parseInt(section?.test_marks[i]?.question_mark[0]);
     }
-    return marks
-  }
-  let marks = 
-
-  
-
-  useEffect(() => {
+    return marks;
+  };
+  let marks = useEffect(() => {
     handleOptionalQuestion(section?.questions?.length, '');
   }, [section?.questions?.length]);
 
@@ -308,7 +303,7 @@ const Sections = ({
             style={{ color: '#2ecf87' }}
             onChange={isoptionalQues}
           >
-            Set for Optional Questions
+            Set for Mandatory Questions
           </Checkbox>
           <div className='d-flex mr-1'>{section?.questions?.length}/</div>
           <Select
