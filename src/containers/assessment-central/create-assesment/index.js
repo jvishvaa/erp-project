@@ -49,6 +49,7 @@ import './styles.scss';
 import AssesmentTest from './assesment-test';
 import { addQuestionPaperToTest } from '../../../redux/actions';
 import QuestionDetailCard from './question-detail-card.js';
+import _ from 'lodash';
 
 const testTypes = [
   { id: 1, name: 'Online' },
@@ -702,7 +703,7 @@ const CreateAssesment = ({
     }
 
     if (!paperchecked) {
-      reqObj = { ...reqObj, test_mark: testMarksArr };
+      reqObj = { ...reqObj, test_mark: _.uniqBy(testMarksArr, 'question_id') };
     }
 
     if (!sectionToggle && selectedSectionData?.length > 0) {
@@ -724,6 +725,7 @@ const CreateAssesment = ({
 
     try {
       setLoading(true);
+      // console.log('selectedQuestionPaper', selectedQuestionPaper, reqObj);
       const { results = {} } = (await initCreateAssesment(reqObj)) || {};
       if (results?.status_code === 200) {
         setLoading(false);
