@@ -123,7 +123,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const [searchSection, setSearchSection] = useState([]);
   const [searchGradeId, setSearchGradeId] = useState('');
   const [sectionDisp, setSectionDisp] = useState({});
-  const [acadId , setacadId ] = useState()
+  const [acadId, setacadId] = useState();
   const genders = [
     { id: '1', gender: 'Male' },
     { id: '2', gender: 'Female' },
@@ -184,8 +184,6 @@ const BulkUpload = ({ onUploadSuccess }) => {
     },
   ];
 
-
-
   useEffect(() => {
     if (moduleId && selectedAcademicYear) getBranches();
   }, [moduleId, selectedAcademicYear]);
@@ -208,7 +206,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const handleClearAll = () => {
     setBranchDisplay('');
     setBranch(null);
-    setFile('')
+    setFile('');
     // setBranchList([]);
     setBranchCode('');
     fileRef.current.value = null;
@@ -272,13 +270,13 @@ const BulkUpload = ({ onUploadSuccess }) => {
   };
 
   const handleBranchChange = (event, data) => {
-    debugger
+    // debugger
     setSearchGrade([]);
     setSearchSection([]);
     setSubjects([]);
     setGrades([]);
     setSearchGrade([]);
-    setacadId(data?.id)
+    setacadId(data?.id);
     setBranch(data?.branch?.id);
     setBranchCode(data?.branch?.branch_code);
     setBranchDisplay(data);

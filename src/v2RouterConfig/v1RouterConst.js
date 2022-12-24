@@ -269,6 +269,7 @@ import ActivateInactivateStudentAdm from 'containers/Finance/src/components/Fina
 import QuestionBankList from 'containers/question-bank/question-bank-list';
 import CreateQuestion from 'containers/question-bank/create-question';
 import CreateQuestionPaper from 'containers/assessment-central/create-question-paper/index';
+import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
 // import Assesmentquestion from 'containers/assesment/assesment';
 import Assesment from 'containers/assessment-central';
 import AssessmentView from 'containers/assessment-central/assesment-view';
@@ -454,6 +455,9 @@ import PostActivityView from 'containers/newBlog/postActivityView';
 import CreatePostActivity from 'containers/newBlog/createPostActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
+import NewEbookView from 'containers/ebooks/NewEbook';
+import Filters from 'containers/assessment-central/create-question-paper-new/filters';
+import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig'
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -514,15 +518,20 @@ const V1Router = [
     {({ match }) => <QuestionBankList match={match} />}
   </Route>,
   <Route exact path='/question-chapter-wise'>
-  {({ match }) => <Chapterwise match={match} />}
+    {({ match }) => <Chapterwise match={match} />}
   </Route>,
   <Route exact path='/create-question/:qId?'>
     {({ match }) => <CreateQuestion match={match} />}
   </Route>,
   <Route exact path='/create-question-paper/:id?'>
-    {({ match }) => <CreateQuestionPaper match={match} />}
+    {({ match }) => <QuestionPaperConfig match={match} />}
   </Route>,
-
+  <Route exact path='/create-questionpaper'>
+    {({ match }) => <CreatequestionPaperNew match={match} />}
+  </Route>,
+  // <Route exact path='/create-question-paper/:id?'>
+  //   {({ match }) => <Filters match={match} />}
+  // </Route>,
   <Route exact path='/assessment-question'>
     {({ match }) => <AssessmentView match={match} />}
   </Route>,
@@ -544,7 +553,7 @@ const V1Router = [
   <Route exact path='/assessment/category'>
     {({ match }) => <CategoryTable match={match} />}
   </Route>,
-   <Route path='/student/phycial/activity'>
+  <Route path='/student/phycial/activity'>
     {({ match }) => <StudentSidePhysicalActivity match={match} />}
   </Route>,
   <Route exact path='/assessment/report-card'>
@@ -1375,11 +1384,11 @@ const V1Router = [
   <Route exact path='/event-category'>
     {({ match }) => <EventCategory match={match} />}
   </Route>,
-   <Route path='/curriculum-completion-student-subject/'>
-   {({ match }) => (
-     <StudentSubject match={match} />
-   )}
- </Route>,
+  <Route path='/curriculum-completion-student-subject/'>
+    {({ match }) => (
+      <StudentSubject match={match} />
+    )}
+  </Route>,
   <Route exact path='/publications'>
     {({ match }) => <Publications match={match} />}
   </Route>,
@@ -1626,19 +1635,19 @@ const V1Router = [
     {({ match }) => <CurriculumCompletionSubject match={match} />}
   </Route>,
   <Route path='/curriculum-completion-chapter/'>
-  {({ match }) => (
-    <CurriculumCompletionChapter match={match} />
-  )}
-</Route>,
-<Route path='/curriculum-completion-chapter-subject/'>
-  {({ match }) => (
-    <CurriculumChapterWiseSubject match={match} />
-  )}
-</Route>,
+    {({ match }) => (
+      <CurriculumCompletionChapter match={match} />
+    )}
+  </Route>,
+  <Route path='/curriculum-completion-chapter-subject/'>
+    {({ match }) => (
+      <CurriculumChapterWiseSubject match={match} />
+    )}
+  </Route>,
   <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
     {({ match }) => <CurriculumCompletionSection match={match} />}
   </Route>,
-    <Route path='/curriculum-completion-teacher-subject/:branchId'>
+  <Route path='/curriculum-completion-teacher-subject/:branchId'>
     {({ match }) => (
       <TeacherSubject match={match} />
     )}
@@ -1774,11 +1783,15 @@ const V1Router = [
   <Route path='/offline-student'>
     {({ match }) => <OfflineStudentAssessment match={match} />}
   </Route>,
-    <Route path='/blog-activity-view'>
+  <Route path='/blog-activity-view'>
     {({ match }) => <BlogActivityView match={match} />}
   </Route>,
   <Route path='/uploadOMR'>{({ match }) => <UploadOMR match={match} />}</Route>,
   <Route path='/student-mark'>{({ match }) => <StudentMark match={match} />}</Route>,
+  <Route path='/online-books/'>
+    {({ match }) => <NewEbookView match={match} />}
+  </Route>,
+
   <Route path='*'>
     <ErrorBoundary404 HomeButton={true} />
   </Route>,

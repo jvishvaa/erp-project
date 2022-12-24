@@ -25,6 +25,19 @@ export default {
   userManagement: {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
   },
+  newEbook: {
+    ebookGrade : '/academic/ebook_mapped_grades_v1/',
+    ebookSubject : '/academic/ebook_mapped_subjects/',
+    ebookList: `/academic/v1/ebook_school_wise_filter/`,
+    ebookDefault: `/academic/v1/ebook_school_wise_default/`,
+    ebookClose: '/academic/v1/ebook_user/',
+    ebook_ibook_count: '/academic/v1/ebook_ibook_count/'
+  },
+  newibook:{
+    ibookList: '/academic/v1/ibook_school_wise_filter/',
+    ibookDefault :'/academic/v1/ibook_school_wise_default/',
+
+  },
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',
@@ -114,6 +127,13 @@ export default {
   },
   generalDiary: {
     diaryList: '/academic/general-dairy-messages/',
+    diaryListv2: '/academic/v2/general-dairy-messages/',
+  },
+  createQuestionApis: {
+    // topicList: `${baseURLCentral}/assessment/topic/`,
+    topicList: `${baseURLCentral}/assessment/topics-list/`,
+    questionType: `${baseURLCentral}/assessment/question_type/`,
+    createQuestion: `${baseURLCentral}/assessment/create-question/`,
   },
   dailyDiary: {
     createDiary: '/academic/create-dairy/',
@@ -186,6 +206,7 @@ export default {
     blogWallApi: `${newBlogURL}/api/blog_wall/`,
     blogListDropApi: `${newBlogURL}/api/activity_dropdown/`,
     blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
+    checkBMIApi: `${newBlogURL}/api/check_student/`,
   },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },

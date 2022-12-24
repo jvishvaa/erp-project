@@ -104,6 +104,10 @@ export default {
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
   },
+  doodle: {
+    checkDoodle: `/assessment/check-sys-config/`,
+    // fetchDoodle: `/erp_user/fetch-doodle/`,
+  },
 
   communication: {
     roles: '/erp_user/roles/',
@@ -280,6 +284,7 @@ export default {
     gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
     periodData: `/academic/chapter-period/`,
     periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
+    subjects: 'academic/v2/lesson-plan-subjects/',
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
@@ -395,6 +400,7 @@ export default {
     AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
     getCentralGrade: '/academic/ebook_grade_wise_filter/',
+    ebookClose: '/academic/v1/ebook_user/'
   },
   ibook: {
     // studentBook: '/academic/student-books-list/',
@@ -955,11 +961,14 @@ export default {
     physicalAddRating:`${newBlogURL}/api/student_performance/`, 
     physicalErpReview: `${newBlogURL}/api/reviewed_erps/`,
     bookingDetailsApi: `${newBlogURL}/api/check_student/`,
-    erpDataStudentsAPI : `${erpBlogURL}erp_user/fetch-user-details-by-section-mapping/`,
+    erpDataStudentsAPI: `${erpBlogURL}erp_user/fetch-user-details-by-section-mapping/`,
     physicalStudentReviewAPI: `${newBlogURL}/api/student_performance/`,
     postActivityListAPI : `${newBlogURL}/api/get_all_posts/`,
     postActivityViewMoreAPI: `${newBlogURL}/api/get_posts_details/`,
     postActivityCreateAPI : `${newBlogURL}/api/wall_post_create/`,
+    checkBMIApi: `${newBlogURL}/api/check_student/`,
+    addBMIApi : `${newBlogURL}/api/add_bmi/`,
+    getStudentBMIApi: `${newBlogURL}/api/get_bmi/`,
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

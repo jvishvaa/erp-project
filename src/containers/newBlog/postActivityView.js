@@ -571,95 +571,97 @@ const PostActivityView = () => {
                 style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap' }}
               >
 
-                {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
-                {postWallList.map((item) => {
-                  return (
-                    <Grid item xs={12} md={3}>
-                      <Card
-                        onClick={() => viewMorePost(item)}
-                        // className={classes.root}
-                        className='card-design'
+                <Grid container spacing={3} xs={12}>
+                  {postWallList.map((item) => {
+                    return (
+                      <Grid item xs={12} md={3}>
+                        <Card
+                          onClick={() => viewMorePost(item)}
+                          // className={classes.root}
+                          className='card-design'
 
-                      // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
-                      >
-                        <CardActionArea>
-                          {/* <CardHeader
-                            avatar={
-                              <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                        // style={{ width: '20vw', border: '1px solid black', borderRadius: '15px', margin: '10px' }}
+                        >
+                          <CardActionArea>
+                            {/* <CardHeader
+                              avatar={
+                                <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
 
-                              </Avatar>
-                            }
-                            title={item?.name}
-                            subheader={item?.description}
-                          // subheader={item?.grade?.name}
-                          />
-                          <div style={{ display: 'flex' }}>
-                            <div style={{ fontSize: '10px', color: 'blue', marginLeft: '72px', marginTop: '-15px' }}>
-                              {item?.view_level}
-                            </div>
-                            <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color: 'blue' }}>
-                              {moment(item?.created_at).format("MMM Do YY")}
-                            </div>
-
-                          </div> */}
-                        </CardActionArea>
-                        <CardActionArea style={{ padding: '8px', }}>
-                          {/* {console.log(item,'PP')} */}
-                          {item?.file_type == "video/mp4" ? (
-                            <CardMedia
-                              component="video"
-                              // autoPlay
-                              style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
-                              controls
-                              className={classes.media}
-                              src={item?.template_path}
+                                </Avatar>
+                              }
+                              title={item?.name}
+                              subheader={item?.description}
+                            // subheader={item?.grade?.name}
                             />
-                          ) : (
-
-                            <CardMedia
-                              className={classes.media}
-                              image={item?.template_path}
-                              style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
-                              // alt="Dummy Image"
-                              title="Blog View"
-                            />
-                          )}
-                        </CardActionArea>
-                        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection:'column' }}>
-                          <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
-                            <div>
-                              <Avatar size={40} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                              </Avatar>
-                            </div>
-                            <div style={{ padding: '0 0.5rem' }}>
-                              <div style={{ fontWeight: 600, fontSize: '16px' }}>
-                                {item?.name}
-                              </div>
-                              <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                            <div style={{ display: 'flex' }}>
+                              <div style={{ fontSize: '10px', color: 'blue', marginLeft: '72px', marginTop: '-15px' }}>
                                 {item?.view_level}
                               </div>
+                              <div style={{ fontSize: '12px', marginLeft: '72px', marginTop: '-15px', color: 'blue' }}>
+                                {moment(item?.created_at).format("MMM Do YY")}
+                              </div>
+
+                            </div> */}
+                          </CardActionArea>
+                          <CardActionArea style={{ padding: '8px', }}>
+                            {/* {console.log(item,'PP')} */}
+                            {item?.file_type == "video/mp4" ? (
+                              <CardMedia
+                                component="video"
+                                // autoPlay
+                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
+                                controls
+                                className={classes.media}
+                                src={item?.template_path}
+                              />
+                            ) : (
+
+                              <CardMedia
+                                className={classes.media}
+                                image={item?.template_path}
+                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
+                                // alt="Dummy Image"
+                                title="Blog View"
+                              />
+                            )}
+                          </CardActionArea>
+                          <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection:'column' }}>
+                            <div style={{ display: 'flex', width: '100%', paddingButton: '9px' }}>
+                              <div>
+                                <Avatar size={40} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                                </Avatar>
+                              </div>
+                              <div style={{ padding: '0 0.5rem' }}>
+                                <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                                  {item?.name}
+                                </div>
+                                <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                                  {item?.view_level}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                          <Divider style={{ padding: "0px", margin: "0px" }} />
-                          <div style={{ width: '100%', padding: '5px', fontSize: '12px', fontWeight: 500 }}>
-                            <div>
-                              {moment(item?.created_at).format("MMM Do YY")}
+                            <Divider style={{ padding: "0px", margin: "0px" }} />
+                            <div style={{ width: '100%', padding: '5px', fontSize: '12px', fontWeight: 500 }}>
+                              <div>
+                                {moment(item?.created_at).format("MMM Do YY")}
+                              </div>
+
                             </div>
 
-                          </div>
+                            {/* <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                              onClick={() => viewMorePost(item)}
+                            >
+                              View
+                            </Button> */}
+                          </CardActions>
+                        </Card>
+                      </Grid>
 
-                          {/* <Button type="primary" style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => viewMorePost(item)}
-                          >
-                            View
-                          </Button> */}
-                        </CardActions>
-                      </Card>
-                    </Grid>
+                    )
 
-                  )
+                  })}
+                </Grid>
 
-                })}
 
               </Grid>
 
@@ -732,7 +734,7 @@ const PostActivityView = () => {
                       style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px' }}
                     >
                       <span style={{ fontWeight: 'normal', fontSize: '18px', color: 'blue' }}>
-                        Title: {postPreviewData?.name}
+                        Title : {postPreviewData?.name}
                       </span>
                     </div>
                     <div
@@ -740,7 +742,11 @@ const PostActivityView = () => {
                         display: 'flex',
                         justifyContent: 'flex-start',
                         fontWeight: 'bold',
-                        paddingLeft: '10px'
+                        paddingLeft: '10px',
+                        maxHeight:'15vh',
+                        overflowY:'auto',
+                        // border:'1px solid grey',
+                        borderRadius:'5px'
                       }}
                     >
                       <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
@@ -762,7 +768,7 @@ const PostActivityView = () => {
                     {postPreviewData?.file_type == "video/mp4" ? (
                       <video width="500" height="600" controls >
                         <source src={`${postPreviewData?.template_path}`} type="video/mp4" />
-                                Your browser does not support HTML video.}
+                                Your browser does not support HTML video.
                       </video>
 
                     ) : (
@@ -790,7 +796,7 @@ const PostActivityView = () => {
           </div>
         </Drawer>
 
-        {!loading && postListCount > 0 && (
+        {/* {!loading && postListCount > 0 && (
           <div className='text-center'>
             <Pagination
               current={pageNumber}
@@ -802,7 +808,7 @@ const PostActivityView = () => {
               total={postListCount}
             />
           </div>
-        )}
+        )} */}
 
       </>
     );

@@ -288,7 +288,7 @@ import Publications from './containers/publications/Publications';
 import ActivateInactivateStudentAdm from './containers/Finance/src/components/Finance/Dashboard/FinanceAdmin/activateInactivateStudent.js';
 import QuestionBankList from './containers/question-bank/question-bank-list';
 import CreateQuestion from './containers/question-bank/create-question';
-import CreateQuestionPaper from './containers/assessment-central/create-question-paper/index';
+// import CreateQuestionPaper from './containers/assessment-central/create-question-paper/index';
 // import Assesmentquestion from './containers/assesment/assesment';
 import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
@@ -444,6 +444,7 @@ import StudentMark from 'containers/assessment-central/studentMakUpload';
 import UserProfile from 'containers/login/profiles';
 // Version 2
 import V2Router from 'v2RouterConfig/v2Router';
+import Filters from 'containers/assessment-central/create-question-paper-new/filters';
 import { IsV2Checker } from 'v2/isV2Checker';
 import EventsMark from 'containers/attendance/eventsmark';
 import Category from './containers/question-bank/category/category-table';
@@ -460,6 +461,10 @@ import PhysicalPendingReview from 'containers/newBlog/PhysicalPendingReview';
 import CreatePostActivity from 'containers/newBlog/createPostActivity';
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
+import NewEbookView from 'containers/ebooks/NewEbook';
+import ViewBMI from 'containers/newBlog/ViewBMI';
+import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
+import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -582,14 +587,21 @@ function App({ alert, isMsAPI, erpConfig }) {
                               {({ match }) => <CreateQuestion match={match} />}
                             </Route>
                             <Route exact path='/create-question-paper/:id?'>
-                              {({ match }) => <CreateQuestionPaper match={match} />}
+                              {({ match }) => <QuestionPaperConfig match={match} />}
                             </Route>
+                            {/* <Route exact path='/create-question-paper/:id?'>
+                              {({ match }) => <Filters match={match} />}
+                            </Route> */}
                             {/* <Route exact path='/edit-question-paper/:id'>
                             {({ match }) => <EditQuestionPaper match={match} />}
                           </Route> */}
                             <Route exact path='/assessment-question'>
                               {({ match }) => <AssessmentView match={match} />}
                             </Route>
+                            <Route exact path='/create-questionpaper'>
+                              {({ match }) => <CreatequestionPaperNew match={match} />}
+                            </Route>
+
                             <Route path='/create-assesment'>
                               {({ match }) => <CreateAssesment match={match} />}
                             </Route>
@@ -2216,6 +2228,16 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route path='/lesson-plan/student-view/list-view'>
                               {({ match }) => <LessonPlan match={match} />}
+                            </Route>
+
+                            {/* ebook v2 */}
+
+                            <Route path='/online-books/'>
+                              {({ match }) => <NewEbookView match={match} />}
+                            </Route>
+
+                            <Route path='/bmi/view'>
+                              {({ match }) => <ViewBMI match={match} />}
                             </Route>
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
