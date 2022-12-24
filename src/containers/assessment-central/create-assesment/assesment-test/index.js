@@ -180,7 +180,7 @@ const AssesmentTest = ({
                     </div>
                   </Grid>
                   {/* <div className='dividerVertical' /> */}
-                  {(formik?.values?.test_type?.exam_name == 'Quiz' || formik?.values?.test_type?.exam_name == 'Practice Test' || formik?.values?.test_type?.exam_name == 'Open Test') ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' || sectionWiseTest == true || sectionWiseTest == false ? '' :
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label}>Test ID</div>
@@ -207,7 +207,7 @@ const AssesmentTest = ({
                     </Grid>
                   }
                   {/* <div className='dividerVertical' /> */}
-                  {(formik?.values?.test_type?.exam_name == 'Quiz' || formik?.values?.test_type?.exam_name == 'Practice Test' || formik?.values?.test_type?.exam_name == 'Open Test') || sectionWiseTest ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' || sectionWiseTest ? '' :
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label} style={{ marginRight: isMobile && '1rem' }}>

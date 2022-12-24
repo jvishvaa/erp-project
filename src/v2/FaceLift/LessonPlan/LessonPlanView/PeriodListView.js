@@ -107,6 +107,9 @@ const PeriodListView = () => {
   const [totalEbook, setTotalEbook] = useState()
   const [pageIbook, setPageIbook] = useState(1)
   const [totalIbook, setTotalIbook] = useState()
+  const [ ebookCount , setEbookCount ] = useState()
+  const [ ibookCount , setIbookCount ] = useState()
+
 
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
@@ -391,18 +394,38 @@ const PeriodListView = () => {
         setLoading(false);
         message.error(error.message);
       });
-    fetchIbooks({
+
+    fetchEbookCount({
       subject: subjectId,
       volume: volumeId,
       grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
-      book_type: '4',
+      book_type: '3',
       branch: selectedBranch?.branch?.id,
       domain_name: domain_name,
       lesson_plan: 'true',
       page_size: '10',
-      page: pageIbook
+      page_number: pageEbook
     })
+    
+  };
+  const fetchEbookCount = (params) => {
+    // setLoading(true)
+    axios
+      .get(`${endpoints.newEbook.ebook_ibook_count}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        console.log(res);
+        setEbookCount(res?.data?.result?.ebook_count)
+        setIbookCount(res?.data?.result?.ibook_count)
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+
+  }
+  const getEbook = () => {
     fetchEbooks({
       subject: subjectId,
       volume: volumeId,
@@ -415,7 +438,24 @@ const PeriodListView = () => {
       page_size: '10',
       page_number: pageEbook
     })
-  };
+    showEbookDrawer()
+  }
+  const getIbook = () => {
+    fetchIbooks({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '4',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page: pageIbook
+    })
+    showIbookDrawer()
+  
+  }
   const fetchEbooks = (params) => {
     // setLoading(true)
     axios
@@ -1009,12 +1049,12 @@ const PeriodListView = () => {
                         </a>
                       </div>
                     )}
-                  {ebookData?.length > 0 && (
+                  {ebookCount != null && (
                     <div className='col-md-3 pl-0 col-12e4l'>
-                      <a onClick={showEbookDrawer} >
+                      <a onClick={getEbook} >
                         <div className=' pl-0 col-12e4l th-primary '>
-                          <Badge count={totalEbook} >
-                            <Button icon={<FilePdfOutlined />} onClick={showEbookDrawer} />
+                          <Badge count={ebookCount} >
+                            <Button icon={<FilePdfOutlined />} onClick={getEbook} />
                           </Badge>
                           <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ebook</span>
                         </div>
@@ -1041,12 +1081,12 @@ const PeriodListView = () => {
                     </div>
                   )}
 
-                  {ibookData?.length > 0 && (
+                  {ibookCount != null && (
                     <div className='col-md-3 pl-0 col-12e4l'>
-                      <a onClick={showIbookDrawer} >
+                      <a onClick={getIbook} >
                         <div className=' pl-0 col-12e4l th-primary '>
-                          <Badge count={totalIbook} >
-                            <Button icon={<BookOutlined />} onClick={showIbookDrawer} />
+                          <Badge count={ibookCount} >
+                            <Button icon={<BookOutlined />} onClick={getIbook} />
                           </Badge>
                           <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ibook</span>
                         </div>
