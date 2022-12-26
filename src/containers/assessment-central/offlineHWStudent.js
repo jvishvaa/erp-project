@@ -227,6 +227,7 @@ const OfflineStudentAssessment = () => {
   const [uploadBranchOMR, setUploadBranchOMR] = useState('');
   const [filterClicked, setFilterClicked] = useState(false)
   const [checkBoxFlag, setCheckBoxFlag] = useState(false)
+  const [showNewAsses, setShowNewAsses] = useState(true);
 
   console.log(createFilterData,'@@')
 
@@ -390,6 +391,29 @@ const OfflineStudentAssessment = () => {
     }
   }, [checkBoxFlag])
 
+  const fetchquesPaperStatus = () => {
+    setLoading(true);
+    axiosInstance
+      .get(`${endpoints.doodle.checkDoodle}?config_key=asmt_enhancement`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setShowNewAsses(true);
+          } else {
+            setShowNewAsses(false);
+          }
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error',error.msg || error?.message);
+      });
+  };
+  useEffect(() => {
+    // fetchquesPaperStatus();
+  }, [selectedBranch]);
+
   const uploadMarks = (data) => {
     console.log(data);
     let student = [];
@@ -401,9 +425,8 @@ const OfflineStudentAssessment = () => {
     )
     console.log(student);
     console.log(studentList);
-    
     history.push({
-      pathname: 'student-mark',
+      pathname: quesList[0].sections?.mandatory_questions ? 'student-marks-upload' : 'student-mark',
       state: {
         test_id: history?.location?.state?.test?.id,
         user: data?.user_id,

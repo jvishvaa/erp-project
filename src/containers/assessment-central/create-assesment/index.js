@@ -267,7 +267,6 @@ const CreateAssesment = ({
     setInstructions(EditData?.instructions);
   }, [EditData, branchId]);
 
-  // console.log(instructions , '@@')
   // console.log(EditData?.instructions,'@@E')
 
   useEffect(() => {
@@ -1003,6 +1002,15 @@ const CreateAssesment = ({
       //   CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
       // is_central: selectedQuestionPaper['is_central'],
     };
+
+    if (
+      formik?.values?.test_type?.exam_name != 'Quiz' &&
+      formik?.values?.test_type?.exam_name != 'Practice Test' &&
+      formik?.values?.test_type?.exam_name != 'Open Test' &&
+      sectionWiseTest == false
+    ) {
+      reqObj = { ...reqObj, test_date: testDate };
+    }
 
     if (!sectionToggle && selectedSectionData?.length > 0) {
       reqObj = { ...reqObj, section_mapping: selectedSectionMappingId };

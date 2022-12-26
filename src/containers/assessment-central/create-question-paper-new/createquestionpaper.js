@@ -385,7 +385,7 @@ const CreatequestionPaperNew = () => {
         // subjects: formik.values.subject?.map((obj) => obj?.subject_id),
         grade_subject_mapping: [...new Set(grade_subject_mapping)],
         // paper_level: formik.values.question_paper_level?.id,
-        subjects: [...new Set(subjects)],
+        // subjects: [...new Set(subjects)],
         // paper_level: formik.values.question_paper_level?.id,
         section: sectionData,
         sections: sectionData,
@@ -409,6 +409,11 @@ const CreatequestionPaperNew = () => {
       if (formik.values.erp_category) {
         reqObj['category'] = formik.values.erp_category?.erp_category_id;
         filterdata['category'] = formik.values.erp_category;
+        reqObj['subject'] = []
+      }
+
+      if(subjects?.length && !formik.values.erp_category){
+        reqObj["subjects"]= [...new Set(subjects)]
       }
 
       if (questionData?.length) {
@@ -565,7 +570,6 @@ const CreatequestionPaperNew = () => {
         academic_session: [selectedBranch?.id],
         grade_subject_mapping: [...new Set(grade_subject_mapping)],
         // paper_level: formik.values.question_paper_level?.id,
-        subjects: [...new Set(subjects)],
         section: sectionData,
         sections: sectionData,
         is_review: isDraft ? 'False' : 'True',
@@ -587,6 +591,11 @@ const CreatequestionPaperNew = () => {
       if (formik.values.erp_category) {
         reqObj['category'] = formik.values.erp_category?.erp_category_id;
         filterdata['category'] = formik.values.erp_category;
+        reqObj['subject'] = []
+      }
+
+      if(subjects?.length && !formik.values.erp_category){
+        reqObj["subjects"]= [...new Set(subjects)]
       }
       // if(formik.values.subject.length > 0){
       //   reqObj['subjects'] = formik.values.subject?.map((obj) => obj?.subject_id)
