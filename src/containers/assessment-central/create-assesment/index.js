@@ -221,15 +221,17 @@ const CreateAssesment = ({
   }, [isEdit, branchDropdown]);
 
   useEffect(() => {
-    let paperwise = false;
-    let test_mark = [];
-    let data = selectedQuestionPaper?.section?.forEach((sec) => {
-      let d = sec?.test_marks?.forEach((item) => {
-        test_mark.push(item);
+    if(selectedQuestionPaper && selectedQuestionPaper?.section){
+      let paperwise = false;
+      let test_mark = [];
+      let data = selectedQuestionPaper?.section?.forEach((sec) => {
+        let d = sec?.test_marks?.forEach((item) => {
+          test_mark.push(item);
+        });
       });
-    });
-    setChecked(paperwise);
-    setTestMarks(test_mark);
+      setChecked(paperwise);
+      setTestMarks(test_mark);
+    }
   }, [selectedQuestionPaper]);
 
   useEffect(() => {

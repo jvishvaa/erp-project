@@ -113,7 +113,7 @@ const CreatequestionPaperNew = () => {
           formik.setFieldValue('questionPaperName', result.data.result.paper_name);
           setQuestionPaperWise(!result?.data?.result?.is_question_wise);
           setMaxMarks(result?.data?.result?.total_mark);
-          if (result?.data?.result?.is_question_wise) {
+          if (!result?.data?.result?.is_question_wise) {
             setQp_wise_Marks(result?.data?.result?.total_mark);
           }
           let grade = gradeDropdown.filter(
@@ -900,6 +900,7 @@ const CreatequestionPaperNew = () => {
                 <Input
                   className='w-100 text-center'
                   placeholder='Marks'
+                  value={qp_wise_marks}
                   type='text'
                   pattern='\d*'
                   maxLength={3}
