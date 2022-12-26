@@ -220,6 +220,11 @@ const StudentMark = () => {
   const [studentmarks, setStudentMarks] = useState();
   const [nextFlag, setNextFlag] = useState(false);
   const [studentImgs, setStudentImgs] = useState([]);
+  const questionSections = [
+    ...new Set(quesList?.map((obj) => obj?.sections?.discription)),
+  ].map((item) => {
+    return quesList.find((obj) => obj?.sections?.discription === item);
+  });
   let markQues = selectedUserData?.total_marks / selectedUserData?.total_question;
 
   const { openPreview, closePreview } =
@@ -286,13 +291,15 @@ const StudentMark = () => {
           setNextFlag(false);
         }
         marksArr = result?.data?.result?.user_response;
-        if(marksArr?.length && quesList?.length){
-          for(let i=0;i<quesList?.length;i++){
-            let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
-            if(quemark.length){
-              sum.push(quemark[0].question_mark)
-            }else{
-              sum.push('')
+        if (marksArr?.length && quesList?.length) {
+          for (let i = 0; i < quesList?.length; i++) {
+            let quemark = marksArr.filter(
+              (item) => item?.question === quesList[i].question
+            );
+            if (quemark.length) {
+              sum.push(quemark[0].question_mark);
+            } else {
+              sum.push('');
             }
           }
           setValues({ val: sum });
@@ -335,13 +342,15 @@ const StudentMark = () => {
                     setNextFlag(false);
                   }
                   marksArr = result?.data?.result?.user_response;
-                  if(marksArr?.length && quesList?.length){
-                    for(let i=0;i<quesList?.length;i++){
-                      let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
-                      if(quemark.length){
-                        sum.push(quemark[0].question_mark)
-                      }else{
-                        sum.push('')
+                  if (marksArr?.length && quesList?.length) {
+                    for (let i = 0; i < quesList?.length; i++) {
+                      let quemark = marksArr.filter(
+                        (item) => item?.question === quesList[i].question
+                      );
+                      if (quemark.length) {
+                        sum.push(quemark[0].question_mark);
+                      } else {
+                        sum.push('');
                       }
                     }
                     setValues({ val: sum });
@@ -395,13 +404,15 @@ const StudentMark = () => {
                     setNextFlag(false);
                   }
                   marksArr = result?.data?.result?.user_response;
-                  if(marksArr?.length && quesList?.length){
-                    for(let i=0;i<quesList?.length;i++){
-                      let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
-                      if(quemark.length){
-                        sum.push(quemark[0].question_mark)
-                      }else{
-                        sum.push('')
+                  if (marksArr?.length && quesList?.length) {
+                    for (let i = 0; i < quesList?.length; i++) {
+                      let quemark = marksArr.filter(
+                        (item) => item?.question === quesList[i].question
+                      );
+                      if (quemark.length) {
+                        sum.push(quemark[0].question_mark);
+                      } else {
+                        sum.push('');
                       }
                     }
                     setValues({ val: sum });
@@ -761,12 +772,14 @@ const StudentMark = () => {
             </div>
           </div>
           <div className='pl-2 th-fw-600 th-14 py-1'>
-            Mandatory Questions in the Paper :{' '}
-            {_.uniqBy(quesList, 'section').map((item) => {
+            Mandatory Questions in the Paper : {console.log('quesList', quesList)}
+            {questionSections?.map((item) => {
               return (
                 <span className='mr-2'>
-                  Sec {item?.section} -{' '}
-                  {item?.sections?.mandatory_questions ? item?.sections?.mandatory_questions : 0}
+                  Sec {item?.sections?.discription} -{' '}
+                  {item?.sections?.mandatory_questions
+                    ? item?.sections?.mandatory_questions
+                    : 0}
                 </span>
               );
             })}
