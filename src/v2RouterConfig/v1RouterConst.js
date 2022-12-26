@@ -458,6 +458,7 @@ import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalA
 import NewEbookView from 'containers/ebooks/NewEbook';
 import Filters from 'containers/assessment-central/create-question-paper-new/filters';
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig'
+import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -1385,9 +1386,7 @@ const V1Router = [
     {({ match }) => <EventCategory match={match} />}
   </Route>,
   <Route path='/curriculum-completion-student-subject/'>
-    {({ match }) => (
-      <StudentSubject match={match} />
-    )}
+    {({ match }) => <StudentSubject match={match} />}
   </Route>,
   <Route exact path='/publications'>
     {({ match }) => <Publications match={match} />}
@@ -1635,22 +1634,16 @@ const V1Router = [
     {({ match }) => <CurriculumCompletionSubject match={match} />}
   </Route>,
   <Route path='/curriculum-completion-chapter/'>
-    {({ match }) => (
-      <CurriculumCompletionChapter match={match} />
-    )}
+    {({ match }) => <CurriculumCompletionChapter match={match} />}
   </Route>,
   <Route path='/curriculum-completion-chapter-subject/'>
-    {({ match }) => (
-      <CurriculumChapterWiseSubject match={match} />
-    )}
+    {({ match }) => <CurriculumChapterWiseSubject match={match} />}
   </Route>,
   <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
     {({ match }) => <CurriculumCompletionSection match={match} />}
   </Route>,
   <Route path='/curriculum-completion-teacher-subject/:branchId'>
-    {({ match }) => (
-      <TeacherSubject match={match} />
-    )}
+    {({ match }) => <TeacherSubject match={match} />}
   </Route>,
   <Route path='/sure-learning-trainee-courses'>
     {({ match }) => <CoursesView match={match} />}
@@ -1788,9 +1781,10 @@ const V1Router = [
   </Route>,
   <Route path='/uploadOMR'>{({ match }) => <UploadOMR match={match} />}</Route>,
   <Route path='/student-mark'>{({ match }) => <StudentMark match={match} />}</Route>,
-  <Route path='/online-books/'>
-    {({ match }) => <NewEbookView match={match} />}
+  <Route path='/student-marks-upload'>
+    {({ match }) => <StudentMarkNew match={match} />}
   </Route>,
+  <Route path='/online-books/'>{({ match }) => <NewEbookView match={match} />}</Route>,
 
   <Route path='*'>
     <ErrorBoundary404 HomeButton={true} />
