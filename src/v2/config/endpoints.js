@@ -30,7 +30,8 @@ export default {
     ebookSubject : '/academic/ebook_mapped_subjects/',
     ebookList: `/academic/v1/ebook_school_wise_filter/`,
     ebookDefault: `/academic/v1/ebook_school_wise_default/`,
-    ebookClose: '/academic/v1/ebook_user/'
+    ebookClose: '/academic/v1/ebook_user/',
+    ebook_ibook_count: '/academic/v1/ebook_ibook_count/'
   },
   newibook:{
     ibookList: '/academic/v1/ibook_school_wise_filter/',

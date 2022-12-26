@@ -20,7 +20,6 @@ import NewIbook from './newIbooks';
 const { Option } = Select;
 
 const EbookView = (props) => {
-  console.log(props);
   const formRef = createRef();
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -60,12 +59,12 @@ const EbookView = (props) => {
   const [ibookData, setIbookData] = useState([])
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState()
-  const [ recently , setRecently ] = useState(false)
-  const [ ibookSortedData , setIbookSortedData ] = useState([])
+  const [recently, setRecently] = useState(false)
+  const [ibookSortedData, setIbookSortedData] = useState([])
 
   const env = window.location.host
   const domain = window.location.host.split('.')
-  let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids'  : domain[0]
+  let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids' : domain[0]
 
   const fetchVolumeData = () => {
 
@@ -163,6 +162,13 @@ const EbookView = (props) => {
     setSubjectId('');
     setCentralSubject('')
     setSubjectName('');
+    setvolumeId('')
+    setvolumeName('')
+    formRef.current.setFieldsValue({
+      grade: null,
+      subject: null,
+      volume: null
+    });
   };
   const handleSubject = (item) => {
     if (item) {
@@ -215,8 +221,13 @@ const EbookView = (props) => {
       fetchGradeData();
       fetchVolumeData()
     }
-      setRecently(true)
+    setRecently(true)
   }, [moduleId, props?.showTab]);
+
+
+  useEffect(() => {
+    setRecently(true)
+  }, [props?.changeRecent])
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -271,11 +282,12 @@ const EbookView = (props) => {
         })
       }
 
-    } 
+    }
+   
   }, [subjectId, volumeId, page]);
 
   useEffect(() => {
-
+    handleClearGrade()
     if (props?.showTab == 1) {
       fetchEbooksDefault({
         book_type: '3',
@@ -284,7 +296,7 @@ const EbookView = (props) => {
         page_size: '10',
         domain_name: domain_name,
       })
-    } 
+    }
     if (props?.showTab == 2){
       fetchIbooksDefault({
         book_type: '4',
@@ -293,8 +305,8 @@ const EbookView = (props) => {
         page_size: '10',
         domain_name: domain_name,
       })
-  }
-  },[props?.showTab])
+    }
+  }, [props?.showTab, props?.changeRecent])
 
   const fetchEbooks = (params) => {
     setLoading(true)
@@ -304,12 +316,12 @@ const EbookView = (props) => {
       })
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('Ebooks Fetched Successfully',[0.0002]);
+          message.success('Ebooks Fetched Successfully', [0.0002]);
           setLoading(false)
           setEbookData(res.data.result.data);
           setTotal(res.data.result.total_ebooks)
           console.log(res.data.result.data);
-        }  else {
+        } else {
           message.error(res.data.description);
           setLoading(false)
           setEbookData([]);
@@ -331,7 +343,7 @@ const EbookView = (props) => {
       })
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('Ebooks Fetched Successfully',[0.0002]);
+          // message.success('Ebooks Fetched Successfully', [0.0002]);
           setLoading(false)
           setEbookData(res.data.result.data);
           setTotal(res.data.result.total_ebooks)
@@ -357,12 +369,12 @@ const EbookView = (props) => {
         params: { ...params },
       })
       .then((res) => {
-     
+
         if (res.data.status_code === 200) {
           setIbookData(res.data.result.result);
-          setTotal(res.data.result.total_ebooks)
+          setTotal(res.data.result.count)
           console.log(res.data.result);
-          message.success('Ibooks Fetched Successfully',[0.0002]);
+          message.success('Ibooks Fetched Successfully', [0.0002]);
           setLoading(false)
         } else {
           message.error(res.data.description);
@@ -386,12 +398,12 @@ const EbookView = (props) => {
         params: { ...params },
       })
       .then((res) => {
-       
+
         if (res.data.status_code === 200) {
           setIbookData(res.data.result.result);
-          setTotal(res.data.result.total_ebooks)
+          setTotal(res.data.result.count)
           console.log(res.data.result);
-          message.success('Ibooks Fetched Successfully',[0.0002]);
+          // message.success('Ibooks Fetched Successfully', [0.0002]);
           setLoading(false)
         } else {
           message.error(res.data.description);
@@ -408,10 +420,10 @@ const EbookView = (props) => {
   }
 
   useEffect(() => {
-    if(ibookData?.length > 0){
+    if (ibookData?.length > 0) {
       setIbookSortedData(getSortedIbookData(ibookData))
     }
-  },[ibookData])
+  }, [ibookData])
 
   const getSortedIbookData = (data) => {
     const conceptWisedata = data
@@ -431,7 +443,6 @@ const EbookView = (props) => {
       };
     });
 
-    console.log(sortedConceptData , 'sorted');
     return sortedConceptData;
   };
 
@@ -544,7 +555,7 @@ const EbookView = (props) => {
               </div>
               : props?.showTab == 2 ?
                 <div>
-                <span style={{marginLeft: '1%' , fontSize: '20px'}} >{recently ? 'Recently Viewed Books' : ''}</span>
+                  <span style={{marginLeft: '1%' , fontSize: '20px'}} >{recently ? 'Recently Viewed Books' : ''}</span>
                   <NewIbook data={ibookSortedData} total={total} page={page} handlePageChange={handlePageChange} />
                 </div> : ''
             }

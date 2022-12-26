@@ -11,6 +11,7 @@ import {
   Button,
   Divider,
   Badge,
+  Pagination
 } from 'antd';
 import {
   CloseOutlined,
@@ -102,6 +103,13 @@ const PeriodListView = () => {
   const [ibookData, setIbookData] = useState([]);
   const [openEbook, setOpenEbook] = useState(false);
   const [openIbook, setOpenIbook] = useState(false);
+  const [pageEbook, setPageEbook] = useState(1)
+  const [totalEbook, setTotalEbook] = useState()
+  const [pageIbook, setPageIbook] = useState(1)
+  const [totalIbook, setTotalIbook] = useState()
+  const [ ebookCount , setEbookCount ] = useState()
+  const [ ibookCount , setIbookCount ] = useState()
+
 
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
@@ -386,16 +394,38 @@ const PeriodListView = () => {
         setLoading(false);
         message.error(error.message);
       });
-    fetchIbooks({
+
+    fetchEbookCount({
       subject: subjectId,
       volume: volumeId,
       grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
-      book_type: '4',
+      book_type: '3',
       branch: selectedBranch?.branch?.id,
       domain_name: domain_name,
-      lesson_plan : 'true'
+      lesson_plan: 'true',
+      page_size: '10',
+      page_number: pageEbook
     })
+    
+  };
+  const fetchEbookCount = (params) => {
+    // setLoading(true)
+    axios
+      .get(`${endpoints.newEbook.ebook_ibook_count}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        console.log(res);
+        setEbookCount(res?.data?.result?.ebook_count)
+        setIbookCount(res?.data?.result?.ibook_count)
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+
+  }
+  const getEbook = () => {
     fetchEbooks({
       subject: subjectId,
       volume: volumeId,
@@ -404,11 +434,30 @@ const PeriodListView = () => {
       book_type: '3',
       branch: selectedBranch?.branch?.id,
       domain_name: domain_name,
-      lesson_plan : 'true'
+      lesson_plan: 'true',
+      page_size: '10',
+      page_number: pageEbook
     })
-  };
+    showEbookDrawer()
+  }
+  const getIbook = () => {
+    fetchIbooks({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '4',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page: pageIbook
+    })
+    showIbookDrawer()
+  
+  }
   const fetchEbooks = (params) => {
-    setLoading(true)
+    // setLoading(true)
     axios
       .get(`${endpoints.newEbook.ebookList}`, {
         params: { ...params },
@@ -417,6 +466,7 @@ const PeriodListView = () => {
         if (res.data.status_code === 200) {
           // message.success('Ebooks Fetched Successfully');
           setEbookData(res.data.result.data);
+          setTotalEbook(res?.data?.result?.total_ebooks)
         } else {
           // message.error('Cannot Fetch Right Now');
           setEbookData([]);
@@ -429,7 +479,7 @@ const PeriodListView = () => {
 
   }
   const fetchIbooks = (params) => {
-    setLoading(true)
+    // setLoading(true)
     axios
       .get(`${endpoints.newibook.ibookList}`, {
         params: { ...params },
@@ -438,6 +488,7 @@ const PeriodListView = () => {
 
         if (res.data.status_code === 200) {
           setIbookData(res.data.result.result);
+          setTotalIbook(res.data.result.count)
           // setTotal(res.data.result.total_ebooks)
           console.log(res.data.result);
           // message.success('Ibooks Fetched Successfully');
@@ -455,6 +506,43 @@ const PeriodListView = () => {
       });
 
   }
+
+  const handlePageEbook = (e) => {
+    setPageEbook(e)
+    fetchEbooks({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '3',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page_number: e
+    })
+    const element = document.getElementById('ebooktop');
+    element.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const handlePageIbook = (e) => {
+    setPageIbook(e)
+    fetchIbooks({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '4',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page: e
+    })
+    const element = document.getElementById('ibooktop');
+    element.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
     let sectionsCompletedSuccess = [];
@@ -961,12 +1049,12 @@ const PeriodListView = () => {
                         </a>
                       </div>
                     )}
-                  {ebookData?.length > 0 && (
+                  {ebookCount != null && (
                     <div className='col-md-3 pl-0 col-12e4l'>
-                      <a onClick={showEbookDrawer} >
+                      <a onClick={getEbook} >
                         <div className=' pl-0 col-12e4l th-primary '>
-                          <Badge count={ebookData?.length} >
-                            <Button icon={<FilePdfOutlined />} onClick={showEbookDrawer} />
+                          <Badge count={ebookCount} >
+                            <Button icon={<FilePdfOutlined />} onClick={getEbook} />
                           </Badge>
                           <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ebook</span>
                         </div>
@@ -977,8 +1065,15 @@ const PeriodListView = () => {
                         closable={true}
                         onCancel={onEbookClose}
                         visible={openEbook}
-                        footer={null}
                         width={'90vh'}
+                        footer={[
+                          <div>
+                            {totalEbook > 10 ?
+                              <Pagination total={totalEbook} current={pageEbook} onChange={handlePageEbook} pageSize={10} />
+                              : ''
+                            }
+                          </div>
+                        ]}
                       >
 
                         <EbookList data={ebookData} />
@@ -986,12 +1081,12 @@ const PeriodListView = () => {
                     </div>
                   )}
 
-                  {ibookData?.length > 0 && (
+                  {ibookCount != null && (
                     <div className='col-md-3 pl-0 col-12e4l'>
-                      <a onClick={showIbookDrawer} >
+                      <a onClick={getIbook} >
                         <div className=' pl-0 col-12e4l th-primary '>
-                          <Badge count={ibookData?.length} >
-                            <Button icon={<BookOutlined />} onClick={showIbookDrawer} />
+                          <Badge count={ibookCount} >
+                            <Button icon={<BookOutlined />} onClick={getIbook} />
                           </Badge>
                           <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ibook</span>
                         </div>
@@ -1002,8 +1097,16 @@ const PeriodListView = () => {
                         closable={true}
                         onCancel={onIbookClose}
                         visible={openIbook}
-                        footer={null}
                         width={'90vh'}
+                        footer={[
+                          <div>
+                            {totalIbook > 10 ?
+                              <Pagination total={totalIbook} current={pageIbook} onChange={handlePageIbook} pageSize={10} />
+                              : ''
+                            }
+                          </div>
+                        ]}
+      
                       >
 
                         <IbookList data={ibookData} />
