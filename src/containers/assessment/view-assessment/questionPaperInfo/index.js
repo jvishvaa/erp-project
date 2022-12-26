@@ -38,7 +38,6 @@ const QuestionPaperInfo = ({
   assessmentId,
   assessmentDate,
   handleCloseInfo,
-  viewMoreData,
   ...restProps
 }) => {
   const [subQuestionsData, setsubQuestionData] = useState([]);
@@ -76,7 +75,6 @@ const QuestionPaperInfo = ({
         user_response: userResponseObj,
         test_duration: testDuration,
         test_mode: test_mode,
-        test_type : test_type
       } = {},
       fetching,
       fetchFailed,
@@ -84,7 +82,6 @@ const QuestionPaperInfo = ({
     } = {},
     questionsArray,
   } = useContext(AssessmentReviewContext) || {};
-  console.log(viewMoreData, '@@')
 
   const firstUpdate = useRef(true);
   const fileUploadInput = useRef(null);
@@ -92,6 +89,7 @@ const QuestionPaperInfo = ({
   const attachmentsInitialRef = useRef(null);
   const [showPrev, setshowPrev] = useState(0);
   const [showPrevAgain, setshowPrevAgain] = useState(0);
+
   const handleScroll = (dir) => {
     if (dir === 'left') {
       attachmentsRef.current.scrollLeft -= 150;
@@ -448,11 +446,11 @@ const QuestionPaperInfo = ({
             {[gradeName, ...(subjects || [])].join(', ')}
           </h4>
         </div>
-        {testDate && <div className={classes.cardDate}>
+        <div className={classes.cardDate}>
           {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
             new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
           }`}
-        </div>}
+        </div>
       </div>
     </>
   );
@@ -495,9 +493,9 @@ const QuestionPaperInfo = ({
         >
           Take Test
         </Button> */}
-        {viewMoreData?.test_mode == 1 ? (
+        {test_mode == 1 ? (
           <>
-            {((viewMoreData?.test_type != 38 && viewMoreData?.test_type != 37 ) && testEndTime < new Date().getTime()) ? (
+            {testEndTime < new Date().getTime() ? (
               <Button
                 style={{
                   padding: '0.3rem 1rem',
@@ -513,8 +511,6 @@ const QuestionPaperInfo = ({
                 Not Attempted
               </Button>
             ) : (
-              <>
-              {(viewMoreData?.test_type != 38 && viewMoreData?.test_type != 37 ) ?
               <Button
                 variant='contained'
                 color='primary'
@@ -542,38 +538,13 @@ const QuestionPaperInfo = ({
                 ) : (
                   'Not Started'
                 )}
-              </Button> : 
-              <Button
-              variant='contained'
-              color='primary'
-              style={{
-                fontFamily: 'Andika New Basic, sans-serif',
-                padding: '0.3rem 1rem',
-                borderRadius: '0.6rem',
-                fontSize: '0.9rem',
-                margin: 'auto',
-              }}
-              onClick={() => {
-                // Object.entries(localStorage).forEach(([key, value]) => {
-                //   if (key?.startsWith('assessment-')) {
-                //     localStorage.removeItem(key);
-                //   }
-                // });
-                restProps.history.push(
-                  `/assessment/${questionPaperId}/${assessmentId}/attempt/`
-                );
-              }}
-            >
-                <b style={{ fontSize: '20px' }}>Take Test</b>
-            </Button>
-              }
-              </>
+              </Button>
             )}
           </>
         ) : (
           <div>
-            {((!showSubmit?.attempted && showSubmit?.is_test_active) ||
-            showSubmit?.can_reupload && (viewMoreData?.test_type != 38 && viewMoreData?.test_type != 37 ))  ? (
+            {(!showSubmit?.attempted && showSubmit?.is_test_active) ||
+            showSubmit?.can_reupload ? (
               <>
                 <h5>Upload the image file here.</h5>
                 <input

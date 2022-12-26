@@ -67,7 +67,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const query = new URLSearchParams(window.location.search);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
-  const [viewMoreData , setViewMoreData] = useState()
   useEffect(() => {
     localStorage.setItem('is_retest', query.get('status') === '2');
   }, []);
@@ -129,11 +128,8 @@ const ViewAssessments = ({ history, ...restProps }) => {
   };
 
   const handleShowInfo = (paperInfoObj) => {
-    setViewMoreData(paperInfoObj)
     setShowInfo(paperInfoObj.id);
-    if(paperInfoObj?.test_date){
-      setTestDate(paperInfoObj.test_date);
-    }
+    setTestDate(paperInfoObj.test_date);
   };
   const [downloadTestId, setDownloadTestId] = useState(null);
   const downloadAssessment = useCallback(
@@ -257,7 +253,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
                 key={showInfo}
                 loading={loading}
                 handleCloseInfo={handleCloseInfo}
-                viewMoreData = {viewMoreData}
               />
             </Grid>
           )}
