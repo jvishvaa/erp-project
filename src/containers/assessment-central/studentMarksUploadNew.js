@@ -34,7 +34,7 @@ import './styles.scss';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import Popover from '@material-ui/core/Popover';
-
+import _ from 'lodash';
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
   paperStyled: {
@@ -171,7 +171,7 @@ const StyledClearButton = withStyles((theme) => ({
   },
 }))(Button);
 
-const StudentMark = () => {
+const StudentMarkNew = () => {
   const history = useHistory();
   const classes = useStyles({});
   const fileRef = useRef();
@@ -220,9 +220,12 @@ const StudentMark = () => {
   const [studentmarks, setStudentMarks] = useState();
   const [nextFlag, setNextFlag] = useState(false);
   const [studentImgs, setStudentImgs] = useState([]);
-  console.log('treepathcheck', studentImgs);
   let markQues = selectedUserData?.total_marks / selectedUserData?.total_question;
-
+  const questionSections = [
+    ...new Set(quesList?.map((obj) => obj?.sections?.discription)),
+  ].map((item) => {
+    return quesList.find((obj) => obj?.sections?.discription === item);
+  });
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
 
@@ -286,15 +289,18 @@ const StudentMark = () => {
         } else {
           setNextFlag(false);
         }
-        marksArr = [result?.data?.result?.user_response];
-        console.log(marksArr);
-        marksArr[0].map((ele, i) => sum.push(ele?.question_mark));
-        console.log(sum);
-        // setValues( {val : sum[0]?.i})
-        if (marksArr[0] !== undefined) {
+        marksArr = result?.data?.result?.user_response;
+        if(marksArr?.length && quesList?.length){
+          for(let i=0;i<quesList?.length;i++){
+            let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
+            if(quemark.length){
+              sum.push(quemark[0].question_mark)
+            }else{
+              sum.push('')
+            }
+          }
           setValues({ val: sum });
         }
-        console.log(marksArr?.length);
       })
       .catch((error) => {
         console.log('');
@@ -332,10 +338,16 @@ const StudentMark = () => {
                   } else {
                     setNextFlag(false);
                   }
-                  marksArr = [result?.data?.result?.user_response];
-                  console.log(marksArr);
-                  marksArr[0].map((ele, i) => sum.push(ele?.question_mark));
-                  if (marksArr[0] !== undefined) {
+                  marksArr = result?.data?.result?.user_response;
+                  if(marksArr?.length && quesList?.length){
+                    for(let i=0;i<quesList?.length;i++){
+                      let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
+                      if(quemark.length){
+                        sum.push(quemark[0].question_mark)
+                      }else{
+                        sum.push('')
+                      }
+                    }
                     setValues({ val: sum });
                   }
                   console.log(sum);
@@ -386,10 +398,16 @@ const StudentMark = () => {
                   } else {
                     setNextFlag(false);
                   }
-                  marksArr = [result?.data?.result?.user_response];
-                  console.log(marksArr);
-                  marksArr[0].map((ele, i) => sum.push(ele?.question_mark));
-                  if (marksArr[0] !== undefined) {
+                  marksArr = result?.data?.result?.user_response;
+                  if(marksArr?.length && quesList?.length){
+                    for(let i=0;i<quesList?.length;i++){
+                      let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
+                      if(quemark.length){
+                        sum.push(quemark[0].question_mark)
+                      }else{
+                        sum.push('')
+                      }
+                    }
                     setValues({ val: sum });
                   }
                   console.log(sum);
@@ -426,55 +444,85 @@ const StudentMark = () => {
     var sum = values.val.reduce((a, v) => (a = parseFloat(a) + parseFloat(v)), 0);
     console.log(values?.val);
     console.log(history?.location?.state?.studentData?.total_question);
-    if (values?.val?.length === history?.location?.state?.studentData?.total_question) {
-      if (
-        values?.val?.length > 0 &&
-        !values?.val.some((ele) => ele === '') &&
-        values?.val[0] !== undefined &&
-        !values?.val.some((ele) => ele === null)
-      ) {
-        let checkValid = values?.val?.some(
-          (ele, index) =>
-            ele > quesList[index]?.question_mark[0] ||
-            -quesList[index]?.question_mark[1] > ele
-        );
-        console.log(checkValid);
-        if (checkValid == true) {
-          setAlert('warning', 'Marks cannot exceed Indiviual mark');
-        } else {
-          testArr = values?.val.map((ques, i) =>
-            valueArray.push({
-              is_central: quesList[i]?.is_central,
-              parent_id: quesList[i]?.parent_id,
-              question: quesList[i]?.question,
-              question_categories: quesList[i]?.question_categories,
-              question_level: quesList[i]?.question_level,
-              question_mark: parseFloat(values?.val[i]),
-              question_type: quesList[i]?.question_type,
-              user_answer: [],
-            })
-          );
-          console.log(valueArray, 'valArray');
-          const payload = {
-            test: history?.location?.state?.test_id,
-            submitted_by: selectedUser,
-            user_response: valueArray,
-            // total_mark: parseFloat(sum)
-          };
-          console.log(payload);
-          axiosInstance
-            .put(`${endpoints.assessment.studentMarks}`, payload)
-            .then((result) => {
-              console.log(result);
-              setAlert('success', 'Marks Uploaded');
-              setNextFlag(false);
-            })
-            .catch((error) => {
-              console.log('');
-            });
-        }
+    // if (values?.val?.length === history?.location?.state?.studentData?.total_question) {
+    if (values?.val?.length > 0 && values?.val[0] !== undefined) {
+      let checkValid = values?.val?.some(
+        (ele, index) =>
+          ele > quesList[index]?.question_mark[0] ||
+          -quesList[index]?.question_mark[1] > ele
+      );
+      console.log(checkValid);
+      if (checkValid == true) {
+        setAlert('warning', 'Marks cannot exceed Individual mark');
       } else {
-        setAlert('warning', ' All Fields are required');
+        let obj = {};
+        let markscount = 0;
+
+        let markcount = quesList?.forEach((item) => {
+          if (obj[item?.sections?.discription] == undefined) {
+            obj[item?.sections?.discription] = item.sections.mandatory_questions;
+            markscount += item?.sections.mandatory_questions;
+          }
+        });
+        let valueCount = values?.val.filter((item) => item !== undefined && item !== '');
+        if (valueCount?.length < markscount) {
+          return setAlert('error', 'please Fill all Mandetory Questions');
+        } else if (valueCount?.length > markscount) {
+          return setAlert('error', 'Please Fill only Mandetory Questions');
+        }
+
+        testArr = values?.val.map((ques, i) => {
+          valueArray.push({
+            is_central: quesList[i]?.is_central,
+            parent_id: quesList[i]?.parent_id,
+            question: quesList[i]?.question,
+            question_categories: quesList[i]?.question_categories,
+            question_level: quesList[i]?.question_level,
+            question_mark: parseFloat(values?.val[i]),
+            question_type: quesList[i]?.question_type,
+            user_answer: [],
+            section: quesList[i]?.sections?.discription,
+          });
+        });
+        let countobj = {};
+        let count = 0;
+        const finalValue = [];
+        valueArray.forEach((item) => {
+          if (item?.question_mark >= 0) {
+            if (countobj[item.section] == undefined) {
+              countobj[item.section] = 1;
+            } else {
+              countobj[item.section] += 1;
+            }
+            finalValue.push(item);
+          }
+        });
+        let sectionkey = Object.keys(obj);
+        let data = sectionkey.map((item) => {
+          if (countobj[item] !== obj[item]) return false;
+          else return true;
+        });
+
+        if (data.includes(false)) {
+          return setAlert('error', 'Please Fill only Mandetory Questions');
+        }
+
+        const payload = {
+          test: history?.location?.state?.test_id,
+          submitted_by: selectedUser,
+          user_response: finalValue,
+          // total_mark: parseFloat(sum)
+        };
+        axiosInstance
+          .put(`${endpoints.assessment.studentMarks}`, payload)
+          .then((result) => {
+            console.log(result);
+            setAlert('success', 'Marks Uploaded');
+            setNextFlag(false);
+          })
+          .catch((error) => {
+            console.log('');
+          });
       }
     } else {
       setAlert('warning', ' All Fields are required');
@@ -716,6 +764,19 @@ const StudentMark = () => {
               </div>
             </div>
           </div>
+          <div className='pl-2 th-fw-600 th-14 py-1'>
+            Mandatory Questions in the Paper : {console.log('quesList', quesList)}
+            {questionSections?.map((item) => {
+              return (
+                <span className='mr-2'>
+                  Sec {item?.sections?.discription} -{' '}
+                  {item?.sections?.mandatory_questions
+                    ? item?.sections?.mandatory_questions
+                    : 0}
+                </span>
+              );
+            })}
+          </div>
 
           <Paper className={`${classes.root} common-table`} id='singleStudent'>
             <TableContainer
@@ -725,7 +786,7 @@ const StudentMark = () => {
                 <TableHead className={`${classes.columnHeader} table-header-row`}>
                   <TableRow>
                     <TableCell className={classes.tableCell} style={{ fontSize: '12px' }}>
-                      Number
+                      Sec - Q No.
                     </TableCell>
                     <TableCell className={classes.tableCell} style={{ fontSize: '12px' }}>
                       Question
@@ -748,7 +809,7 @@ const StudentMark = () => {
                         className={classes.tableCell}
                         style={{ fontSize: '13px', width: '10%' }}
                       >
-                        Question - {i + 1}
+                        Sec {quesList[i].sections.discription} - Q{i + 1}
                       </TableCell>
                       <TableCell
                         className={classes.tableCell}
@@ -859,4 +920,4 @@ const StudentMark = () => {
   );
 };
 
-export default StudentMark;
+export default StudentMarkNew;
