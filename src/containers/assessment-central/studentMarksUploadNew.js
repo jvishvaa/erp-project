@@ -221,7 +221,11 @@ const StudentMarkNew = () => {
   const [nextFlag, setNextFlag] = useState(false);
   const [studentImgs, setStudentImgs] = useState([]);
   let markQues = selectedUserData?.total_marks / selectedUserData?.total_question;
-
+  const questionSections = [
+    ...new Set(quesList?.map((obj) => obj?.sections?.discription)),
+  ].map((item) => {
+    return quesList.find((obj) => obj?.sections?.discription === item);
+  });
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
 
@@ -761,12 +765,14 @@ const StudentMarkNew = () => {
             </div>
           </div>
           <div className='pl-2 th-fw-600 th-14 py-1'>
-            Mandatory Questions in the Paper :{' '}
-            {_.uniqBy(quesList, 'section').map((item) => {
+            Mandatory Questions in the Paper : {console.log('quesList', quesList)}
+            {questionSections?.map((item) => {
               return (
                 <span className='mr-2'>
                   Sec {item?.sections?.discription} -{' '}
-                  {item?.sections?.mandatory_questions ? item?.sections?.mandatory_questions : 0}
+                  {item?.sections?.mandatory_questions
+                    ? item?.sections?.mandatory_questions
+                    : 0}
                 </span>
               );
             })}

@@ -903,6 +903,7 @@ const CreatequestionPaperNew = () => {
                 onDeleteQuestion={handleDeleteQuestion}
                 questionPaperWise={questionPaperWise}
                 deleteOneSection={deleteOneSection}
+                isEdit = {isEdit}
               />
             </div>
           ))}

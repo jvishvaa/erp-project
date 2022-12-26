@@ -137,6 +137,7 @@ const Sections = ({
   erpCategory,
   questionPaperWise,
   deleteOneSection,
+  isEdit
 }) => {
   let history = useHistory();
 
@@ -159,7 +160,9 @@ const Sections = ({
     return marks;
   };
   let marks = useEffect(() => {
-    handleOptionalQuestion(section?.questions?.length, '');
+    if(!isEdit){
+      handleOptionalQuestion(section?.questions?.length, '');
+    }
   }, [section?.questions?.length]);
 
   const handleAddQuestion = () => {
