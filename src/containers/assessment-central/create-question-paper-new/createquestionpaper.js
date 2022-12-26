@@ -124,6 +124,8 @@ const CreatequestionPaperNew = () => {
             value: grade[0]?.grade_id,
             children: grade[0]?.grade_name,
           });
+          let category = erpCategoryDropdown?.filter((item) => item?.erp_category_id == result.data.result?.category)
+          formik.setFieldValue('erp_category', category[0]);
           // setFilterData(result.data.result)
           const { questions: responseQuestions = [], sections: responseSections = [] } =
             result.data.result || {};
@@ -183,6 +185,20 @@ const CreatequestionPaperNew = () => {
       grade: value,
     });
   }, [formik?.values?.grade]);
+
+  useEffect(() => {
+    if(isEdit){
+      let value = {
+        key: formik?.values?.erp_category?.erp_category_id,
+        children: formik.values.erp_category?.erp_category_name,
+        value: formik.values.erp_category?.erp_category_id,
+      };
+      formRef.current.setFieldsValue({
+        erpCategory: value,
+      });
+    }
+
+  }, [formik?.values?.erp_category]);
 
   const gradeOptions = gradeDropdown?.map((each) => {
     return (
@@ -458,6 +474,7 @@ const CreatequestionPaperNew = () => {
       if (finalSubmitFlag) {
         await dispatch(editQuestionPaper(reqObj, paperId));
         DeleteSections();
+        dispatch(setFilter('questionPaperName', ''));
         sessionStorage.setItem('filter', JSON.stringify(filterdata));
         // await initEditQuestionPaper(reqObj);
         // history.push('/assessment-question');
@@ -647,6 +664,7 @@ const CreatequestionPaperNew = () => {
       if (finalSubmitFlag) {
         await dispatch(createQuestionPaper(reqObj));
         DeleteSections();
+        dispatch(setFilter('questionPaperName', ''));
         // history.push('/assessment-question');
         // sessionStorage.removeItem('filter')
         sessionStorage.setItem('filter', JSON.stringify(filterdata));

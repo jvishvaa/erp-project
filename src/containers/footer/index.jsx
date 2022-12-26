@@ -40,8 +40,7 @@ function ContactNumber() {
     <Typography variant='body2' color='textSecondary' align='center'>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CallIcon />
-        <Link href='tel:08049673244' style={{ marginTop: 5 ,textDecoration:"none"}}>08049673244,</Link>
-        <Link href='tel:08047276575' style={{ marginTop: 5 ,textDecoration:"none"}}>08047276575</Link> &nbsp; &nbsp;
+        <Link href='tel:8888888999' style={{ marginTop: 5 ,textDecoration:"none"}}>8888888999</Link> &nbsp; &nbsp;
         <WhatsAppIcon />
         <Link href='https://wa.me/918884016161' style={{ marginTop: 5 ,textDecoration:"none"}}>8884016161</Link>
       </div>
