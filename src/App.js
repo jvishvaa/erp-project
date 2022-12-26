@@ -465,6 +465,7 @@ import NewEbookView from 'containers/ebooks/NewEbook';
 import ViewBMI from 'containers/newBlog/ViewBMI';
 import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
+import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -2222,6 +2223,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route path='/student-mark'>
                               {({ match }) => <StudentMark match={match} />}
+                            </Route>
+                            <Route path='/student-marks-upload'>
+                              {({ match }) => <StudentMarkNew match={match} />}
                             </Route>
                             <Route path='/lesson-plan/teacher-view/list-view'>
                               {({ match }) => <LessonPlan match={match} />}
