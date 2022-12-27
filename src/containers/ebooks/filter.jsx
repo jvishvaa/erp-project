@@ -72,7 +72,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             withAxiosInstance(
               `${endpoints.communication.branches}?session_year=${
                 selectedAcad?.id
-              }&module_id=${getModuleInfo('Online Books').id}`,
+              }&module_id=${getModuleInfo('Ebook View').id}`,
               'branch'
             );
           } else if (key === 'branch') {
@@ -93,7 +93,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
   useEffect(() => {   
     withAxiosInstance(
       `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${
-        getModuleInfo('Online Books').id
+        getModuleInfo('Ebook View').id
       }`,
       'branch'
     );   
@@ -125,7 +125,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                   `${endpoints.ebook.EbookMappedGrade}?session_year=${
                     selectedAcad?.id
                   }&branch_id=${value.branch.id}&module_id=${
-                    getModuleInfo('Online Books').id
+                    getModuleInfo('Ebook View').id
                   }`,
                   'grade'
                 );
@@ -156,7 +156,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
               if (value) {
                 withAxiosInstance(
                   `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value.erp_grade}&module_id=${
-                    getModuleInfo('Online Books').id
+                    getModuleInfo('Ebook View').id
                   }`,
                   'subject'
                 );
