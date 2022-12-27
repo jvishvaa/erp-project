@@ -64,7 +64,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
     axiosInstance
       .get(
         `${endpoints.userManagement.academicYear}?module_id=${
-          getModuleInfo('Online Books').id
+          getModuleInfo('Ebook View').id
         }`
       )
       .then((res) => {
@@ -152,7 +152,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
   useEffect(() => {
     withAxiosInstance(
       `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${
-        getModuleInfo('Online Books').id
+        getModuleInfo('Ebook View').id
       }`,
       'branch'
     );
@@ -324,7 +324,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
                   `${endpoints.ibook.ibookMappedGrade}?session_year=${
                     selectedAcad?.id
                   }&branch_id=${value.branch.id}&module_id=${
-                    getModuleInfo('Online Books').id
+                    getModuleInfo('Ebook View').id
                   }`,
                   'grade'
                 );

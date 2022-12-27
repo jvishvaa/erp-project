@@ -388,7 +388,7 @@ const PeriodView = () => {
                     )}
                     <div
                       className='col-12 mt-3'
-                      style={{ maxHeight: 400, overflowY: 'scroll' }}
+                      style={{ maxHeight: '80vh', overflowY: 'scroll' }}
                     >
                       {periodData
                         ?.filter((item) => {
@@ -585,7 +585,7 @@ const PeriodView = () => {
         ) : (
           <>
             {periodData.length > 0 ? (
-              <div className='row p-3' style={{ maxHeight: 400, overflowY: 'scroll' }}>
+              <div className='row p-3' style={{ maxHeight: '80vh', overflowY: 'scroll' }}>
                 {periodData.map((each) =>
                   each?.data?.map((item) => (
                     <div className='col-lg-4 col-md-6 pl-0 mt-2'>
