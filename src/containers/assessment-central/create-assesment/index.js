@@ -922,7 +922,8 @@ const CreateAssesment = ({
     }
   }, [selectedQuestionPaper, moduleId, isEdit]);
   useEffect(() => {
-    if (selectedQuestionPaper) {
+    debugger
+    if (selectedQuestionPaper && selectedQuestionPaper?.id) {
       // initFetchQuestionPaperDetails(3);
       initFetchQuestionPaperDetails(selectedQuestionPaper?.id, selectedQuestionPaper);
     }
@@ -1119,7 +1120,7 @@ const CreateAssesment = ({
                   </div>
                   <div className='question-container'>
                     <div className='sections-container'>
-                      {questionPaperDetails?.map((section) => (
+                      {selectedQuestionPaper && questionPaperDetails?.map((section) => (
                         <div className='section-container'>
                           <div className='section-header'>
                             <div className='left'>
@@ -1134,12 +1135,12 @@ const CreateAssesment = ({
                               <div className='section-name'>{`SECTION ${section.name}`}</div>
                               <div className='ml-2'>
                                 {' '}
-                                {selectedQuestionPaper.section.filter(
+                                {selectedQuestionPaper?.section?.filter(
                                   (item) => item?.discription == section.name
                                 )[0]?.mandatory_questions
                                   ? `Mandatory Questions:: 
                                 ${
-                                  selectedQuestionPaper.section.filter(
+                                  selectedQuestionPaper?.section?.filter(
                                     (item) => item?.discription == section.name
                                   )[0]?.mandatory_questions
                                 }`
@@ -1147,12 +1148,12 @@ const CreateAssesment = ({
                               </div>
                             </div>
                             <div className='th-14 th-fw-500 mr-3'>
-                              {selectedQuestionPaper.section.filter(
+                              {selectedQuestionPaper?.section?.filter(
                                 (item) => item?.discription == section.name
                               )[0]?.instruction
                                 ? `Instructions : 
                                 ${
-                                  selectedQuestionPaper.section.filter(
+                                  selectedQuestionPaper?.section?.filter(
                                     (item) => item?.discription == section.name
                                   )[0]?.instruction
                                 }`
@@ -1325,7 +1326,7 @@ const CreateAssesment = ({
                               ''
                             )}
                             {selectedQuestionPaper &&
-                              !selectedQuestionPaper.is_central && (
+                              !selectedQuestionPaper?.is_central && (
                                 <Grid item xs={12} md={4}>
                                   <Autocomplete
                                     id='branch_name'
