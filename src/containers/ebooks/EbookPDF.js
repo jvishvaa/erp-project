@@ -276,6 +276,30 @@ const EbookPdf = (props) => {
     props.getPageNum(e)
   }
 
+  let rightClick = document.getElementsByClassName('anticon anticon-right')
+  let leftClick = document.getElementsByClassName('anticon anticon-left')
+
+ document.onkeydown = function (e) {
+  console.log(e);
+  if(e?.keyCode == 39){
+    console.log(rightClick ,'right');
+    if(isZoomed == false){
+      rightClick[1].click()
+    } else {
+      handlePage(page + 1)
+    }
+  }
+  if(e?.keyCode == 37){
+    console.log(leftClick ,'left');
+    if(isZoomed == false){
+      leftClick[1].click()
+    } else {
+      handlePage(page - 1)
+    }
+  }
+ }
+
+
   return (
     <Grid>
       <div style={{ height: '300px' }}>
@@ -283,7 +307,7 @@ const EbookPdf = (props) => {
           ''
         ) : (
           <div className={classes.root} id='pdfviewhead' >
-            <div style={{ display: 'flex', justifyContent: 'space-between', background: '#e7e7e7' }} >
+            <div style={{ display: 'flex', justifyContent: 'space-between', background: '#e7e7e7' , position: 'fixed' , top: '0' , width: '100%' }} >
               <div style={{ width: '15%', display: 'flex', justifyContent: 'space-around' }}>
                 <Button onClick={() => setMode('pen')} shape="circle" icon={<EditOutlined />} className={clsx(classes.backButton)} style={{
                   fontSize: '25px',
@@ -346,7 +370,7 @@ const EbookPdf = (props) => {
                   cursor: 'pointer',
                   transition: 'all 0.3s ease 0s',
                   transform: isZoomed ? 'scale(1.5,1.5)' : 'scale(1,1)',
-                  height: '50vh',
+                  height: '80vh',
                 }}
               />
             </div>
@@ -378,7 +402,7 @@ const EbookPdf = (props) => {
         ) : (
           <>
             {console.log(totalPages)}
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' , position: 'fixed' , bottom: '0' , width: '100%'  , background: '#e7e7e7'}} >
               <span>Page</span>
               <Pagination simple showSizeChanger={false} current={page} total={totalPages} defaultPageSize={1} onChange={handlePage} size='default'  />
             </div>
