@@ -422,6 +422,8 @@ const EbookView = (props) => {
   useEffect(() => {
     if (ibookData?.length > 0) {
       setIbookSortedData(getSortedIbookData(ibookData))
+    } else {
+      setIbookSortedData([])
     }
   }, [ibookData])
 
