@@ -922,7 +922,6 @@ const CreateAssesment = ({
     }
   }, [selectedQuestionPaper, moduleId, isEdit]);
   useEffect(() => {
-    debugger
     if (selectedQuestionPaper && selectedQuestionPaper?.id) {
       // initFetchQuestionPaperDetails(3);
       initFetchQuestionPaperDetails(selectedQuestionPaper?.id, selectedQuestionPaper);
