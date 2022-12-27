@@ -192,6 +192,11 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
   };
   const changequestionFrom = (e) => {
     setPage(1)
+    if(e==='edu'){
+      setTabValue(2)
+    }else{
+      setTabValue(0)
+    }
     setTabIsErpCentral((prev) => !prev)
     }
 
@@ -214,7 +219,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
 
   useEffect(() => {
 if(publishFlag){
-  if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ) && tabQpValue && tabIsErpCentral)
+  if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ))
   handlePeriodList(
     tabIsErpCentral,
     tabAcademic,
@@ -354,7 +359,7 @@ if(publishFlag){
                     tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'}
                   } th-width-100 th-br-6 mt-2`}
                   // style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
-                  onClick={changequestionFrom}
+                  onClick={() => changequestionFrom('edu')}
                 >
                   Eduvate Question
                 </Button>
@@ -365,7 +370,7 @@ if(publishFlag){
                   className={`${
                     !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'}
                   } th-width-100 th-br-6 mt-2`}
-                  onClick={changequestionFrom}
+                  onClick={() => changequestionFrom('school')}
                   // style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
                 >
                   School Question

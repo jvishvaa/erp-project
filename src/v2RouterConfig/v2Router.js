@@ -41,6 +41,7 @@ import TeacherDiaryReport from 'v2/FaceLift/DiaryReport/TeacherDiaryReport';
 import TeacherwiseDiaryReport from 'v2/FaceLift/DiaryReport/TeacherwiseDiaryReport';
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
+import ViewBMI from 'containers/newBlog/ViewBMI';
 
 import endpoints from 'config/endpoints';
 import axios from 'axios';
@@ -216,6 +217,9 @@ const V2Router = () => {
                         </Route>
                         <Route exact path='/teacherwise-diary-report'>
                           {({ match }) => <TeacherwiseDiaryReport match={match} />}
+                        </Route>
+                        <Route exact path='/bmi/view'>
+                          {({ match }) => <ViewBMI match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

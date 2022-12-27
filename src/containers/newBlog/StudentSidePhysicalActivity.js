@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect, useContext, createRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
@@ -11,14 +10,8 @@ import Loader from '../../components/loader/loader';
 import {
     IconButton,
     Divider,
-    TextField,
-    Button,
-    SvgIcon,
     makeStyles,
-    Typography,
     Grid,
-    MenuItem,
-    TextareaAutosize,
     Paper,
     TableCell,
     TableBody,
@@ -27,51 +20,19 @@ import {
     TableContainer,
     Table,
     Drawer,
-    TablePagination,
-    InputAdornment,
-    DialogActions,
 } from '@material-ui/core';
-import Modal from '@material-ui/core/Modal';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import SearchIcon from '@material-ui/icons/Search';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 import Layout from 'containers/Layout';
-import Close from '@material-ui/icons/Close';
-import DoneIcon from '@material-ui/icons/Done';
 
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Box from '@material-ui/core/Box';
-import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import ForumIcon from '@material-ui/icons/Forum';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import CloseIcon from '@material-ui/icons/Close';
 import './styles.scss';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddIcon from '@material-ui/icons/Add';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { PieChartOutlined, IdcardOutlined, DownOutlined, FileProtectOutlined, CloseCircleOutlined, UserOutlined } from '@ant-design/icons';
-import { Breadcrumb, Button as ButtonAnt, Form, Select, message, Input, Avatar } from 'antd';
+import { FileProtectOutlined, CloseCircleOutlined, UserOutlined, FundViewOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import { Breadcrumb, Button as ButtonAnt, Select, Input, Avatar, Modal, Table as TableAnt } from 'antd';
 
-import {
-    AppstoreAddOutlined,
-    SearchOutlined,
-} from '@ant-design/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -163,6 +124,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+// interface DataType {
+//     height: number;
+//     weight: number;
+//     bmi: number;
+//     date: string;
+// }
+
+
+const dummyData = [
+    { id: 1, height: 20, weight: 40, bmi: 23, date: '28th Dec' },
+    { id: 2, height: 21, weight: 40, bmi: 33, date: '28th Dec' },
+    { id: 3, height: 20, weight: 44, bmi: 23, date: '28th Dec' },
+
+]
+
+const tableData = { id: 1, student_name: 'Anam', erp_id: '221313131_OLV', grade: "grade 1", branch: 'Branch 1' }
 
 
 const StudentSidePhysicalActivity = () => {
@@ -210,6 +187,7 @@ const StudentSidePhysicalActivity = () => {
     const physicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId'))
     // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
     const [subjectData, setSubjectData] = useState([]);
+    const erpData = dataes?.erp
     const token = dataes?.token;
     const user_level = dataes?.user_level;
     const { Option } = Select;
@@ -227,7 +205,9 @@ const StudentSidePhysicalActivity = () => {
     const [totalSubmitted, setTotalSubmitted] = useState([]);
     const [dataId, setDataId] = useState();
     const [ratingReview, setRatingReview] = useState([]);
-
+    const [openBigModal, setOpenBigModal] = useState(false);
+    const [checkBMIData, setCheckBMIData] = useState([])
+    const [bmiDetails, setBmiDetails] = useState([])
     useEffect(() => {
         setLoading(true)
         if (NavData && NavData.length) {
@@ -247,26 +227,48 @@ const StudentSidePhysicalActivity = () => {
                             localStorage.setItem('moduleId', item.child_id);
                             setLoading(false)
                         }
-                        // if (
-                        //   item.child_name === 'Create Rating' 
-                        //     // &&
-                        //     // window.location.pathname === '/erp-online-class-student-view'
-                        // ) {
-                        //   setModuleId(item.child_id);
-                        //   localStorage.setItem('moduleId', item.child_id);
-                        // }
                     });
                 }
             });
         }
     }, [window.location.pathname]);
 
+    const columnsBigTable = [
+        {
+            title: <span className='th-white th-fw-700 '>Height(in meters)</span>,
+            dataIndex: 'height',
+            key: 'height',
+            align: 'center',
+            render: (text, row, index) => <a>{row?.bmi_details?.height}</a>,
+            // render: (text) => <a>{text}</a>,
+        },
+        {
+            title: <span className='th-white th-fw-700 '>Weight(in kgs)</span>,
+            dataIndex: 'weight',
+            key: 'weight',
+            align: 'center',
+            render: (text, row, index) => <a>{row?.bmi_details?.weight}</a>
+        },
+        {
+            title: <span className='th-white th-fw-700 '>BMI</span>,
+            dataIndex: 'bmi',
+            key: 'bmi',
+            align: 'center',
+            render: (text, row, index) => <a>{row?.bmi_details?.bmi}</a>
+        },
+        {
+            title: <span className='th-white th-fw-700 '>Date</span>,
+            dataIndex: 'date',
+            key: 'date',
+            align: 'center',
+            render: (text, row, index) => <a>{moment(row?.bmi_details?.created_at).format("MMM Do YY")}</a>
+        },
+    ];
+
+
     const handleCloseViewMore = () => {
         setView(false);
     };
-
-
-
 
     const [view, setView] = useState(false);
     const [branchView, setBranchView] = useState(true);
@@ -277,6 +279,7 @@ const StudentSidePhysicalActivity = () => {
     const [assigned, setAssigned] = useState(false);
     const [userId, setUserId] = useState('');
     const todayDate = moment();
+    
 
 
     const [unassingeds, setUnAssigneds] = useState([]);
@@ -308,16 +311,10 @@ const StudentSidePhysicalActivity = () => {
     };
     const [assingeds, setAssigneds] = useState([]);
 
-
-    // useEffect(()=>{
-    //   setAssigneds(dummyData)
-    // },[])
-
     useEffect(() => {
         getAssinged()
     }, [currentPageAssigned, sudActId, boardId])
     const getAssinged = () => {
-        // const branchIds = selectedBranch.map((obj) => obj.id);
         setLoading(true)
         axios
             .get(
@@ -388,12 +385,9 @@ const StudentSidePhysicalActivity = () => {
                 name: 'Select All',
                 id: 'all',
             });
-            // setBranchList(transformedData);
         }
     };
     useEffect(() => {
-        // ActvityLocalStorage();
-
         fetchBranches();
     }, []);
 
@@ -525,14 +519,66 @@ const StudentSidePhysicalActivity = () => {
         }
     };
 
-    let dummyArr =[]
-    const filterRound =(data) => {
-        if(dummyArr.indexOf(data) !== -1){
+    let dummyArr = []
+    const filterRound = (data) => {
+        if (dummyArr.indexOf(data) !== -1) {
             return ""
-        }else{
+        } else {
             dummyArr.push(data)
             return data
         }
+    }
+
+    const studentViewBMI = () => {
+        checkBMIFun()
+        // setOpenBigModal(true)
+    }
+
+    const checkBMIFun = () => {
+        setLoading(true)
+        axios
+            .get(`${endpoints.newBlog.checkBMIApi}?erp_id=${erpData}&user_level=${13}`, {
+                headers: {
+                    Authorization: `${token}`,
+                    'X-DTS-HOST': X_DTS_HOST,
+                }
+            })
+            .then((response) => {
+                setCheckBMIData(response?.data?.result)
+                showBMITable(response?.data?.result)
+                // setAlert('success', response?.data?.message)
+                setLoading(false);
+            })
+    }
+
+    const goDownload = () => {
+        //will implement soon
+    }
+
+    const showBMITable = (data) => {
+        setLoading(true)
+        axios
+            .get(`${endpoints.newBlog.getStudentBMIApi}?student_id=${data?.id}`, {
+                headers: {
+                    Authorization: `${token}`,
+                    'X-DTS-HOST': X_DTS_HOST,
+                }
+            })
+            .then((res) => {
+                if (res.data?.status_code == 200) {
+                    setBmiDetails(res?.data?.result)
+                    setLoading(false)
+                    setAlert('success', res?.data?.message)
+                    setOpenBigModal(true)
+
+                } else if (res?.data?.status_code == 400) {
+                    setOpenBigModal(false)
+                    setAlert('error', res?.data?.message)
+                    setLoading(false)
+                    setOpenBigModal(false)
+                }
+            })
+
     }
 
 
@@ -546,7 +592,6 @@ const StudentSidePhysicalActivity = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                         paddingLeft: '22px',
-                        paddingBottom: '15px',
                     }}
                 >
                     <div className='col-md-6' style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}>
@@ -561,8 +606,40 @@ const StudentSidePhysicalActivity = () => {
                             </Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                </Grid>
+                    <div className='col-md-6' style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '0.5rem 2rem', fontWeight: 'bold' }}>
+                        <ButtonAnt
+                            type="primary"
+                            size='medium'
+                            onClick={studentViewBMI}
+                            icon={<FundViewOutlined />}
+                        >
+                            View BMI
+                        </ButtonAnt>
+                    </div>
+                    <Modal
+                        title="BMI Details"
+                        visible={openBigModal}
+                        centered
+                        open={openBigModal}
+                        onOk={() => setOpenBigModal(false)}
+                        onCancel={() => setOpenBigModal(false)}
+                        width={1000}
+                        footer={null}
+                    >
+                        <div className='row'>
+                            <div className='col-12' style={{ padding: '1rem 1rem' }}>
+                                <TableAnt
+                                    className='th-table'
+                                    rowClassName={(record, index) => `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                    }
+                                    pagination={false}
+                                    // loading={loading}
+                                    columns={columnsBigTable} dataSource={bmiDetails} />
 
+                            </div>
+                        </div>
+                    </Modal>
+                </Grid>
                 <Paper className={`${classes.root} common-table`} id='singleStudent'>
                     <TableContainer
                         className={`table table-shadow view_users_table ${classes.container}`}
@@ -576,9 +653,7 @@ const StudentSidePhysicalActivity = () => {
                                     <TableCell className={classes.tableCell}>Title</TableCell>
                                     <TableCell className={classes.tableCell}>ERP ID</TableCell>
 
-                                    {/* <TableCell className={classes.tableCell}></TableCell> */}
                                     <TableCell className={classes.tableCell}>Submission Date</TableCell>
-                                    {/* <TableCell className={classes.tableCell}>Reviewed By</TableCell> */}
                                     <TableCell className={classes.tableCell}>Overall Score</TableCell>
                                     <TableCell className={classes.tableCell}></TableCell>
 
@@ -593,24 +668,20 @@ const StudentSidePhysicalActivity = () => {
                                         hover
                                         role='checkbox'
                                         tabIndex={-1}
-                                    // key={`user_table_index${i}`}
                                     >
                                         <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                                         <TableCell className={classes.tableCells}>
                                             {' '}
                                             {response?.activity_detail?.title}
-                                            {/* {response?.name} */}
                                         </TableCell>
                                         <TableCell className={classes.tableCells}>
                                             {' '}
                                             {response?.booked_user?.username}
                                         </TableCell>
-                                        {/* <TableCell className={classes.tableCells}>GRADE 1</TableCell> */}
                                         <TableCell className={classes.tableCells}>
                                             {' '}
                                             {response?.submitted_on?.substring(0, 10)}
                                         </TableCell>
-                                        {/* <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell> */}
                                         <TableCell className={classes.tableCells}>
                                             {response?.user_reviews?.remarks}
                                         </TableCell>
@@ -637,20 +708,20 @@ const StudentSidePhysicalActivity = () => {
                             ))}
                         </Table>
                         {/* <TablePagination
-                component='div'
-                count={totalCount}
-                rowsPerPage={limit}
-                page={Number(currentPage) - 1}
-                onChangePage={(e, page) => {
-                handlePagination(e, page + 1);
-                }}
-                rowsPerPageOptions={false}
-                className='table-pagination'
-                classes={{
-                spacer: classes.tablePaginationSpacer,
-                toolbar: classes.tablePaginationToolbar,
-                }}
-            /> */}
+                        component='div'
+                        count={totalCount}
+                        rowsPerPage={limit}
+                        page={Number(currentPage) - 1}
+                        onChangePage={(e, page) => {
+                        handlePagination(e, page + 1);
+                        }}
+                        rowsPerPageOptions={false}
+                        className='table-pagination'
+                        classes={{
+                        spacer: classes.tablePaginationSpacer,
+                        toolbar: classes.tablePaginationToolbar,
+                        }}
+                            /> */}
                     </TableContainer>
                 </Paper>
 
@@ -675,8 +746,6 @@ const StudentSidePhysicalActivity = () => {
                             <Grid item>
                                 <div
                                     style={{
-                                        // border: '1px solid #813032',
-                                        // width: '583px',
                                         background: 'white',
                                         height: 'auto',
                                     }}
@@ -698,7 +767,7 @@ const StudentSidePhysicalActivity = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem', alignItems:'center' }}>
+                                        <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem', alignItems: 'center' }}>
                                             <div style={{ padding: '5px' }}>
                                                 <Avatar size={40} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
                                                 </Avatar>
@@ -719,13 +788,16 @@ const StudentSidePhysicalActivity = () => {
                                     <div
                                         style={{
                                             background: '#f9f9f9',
-                                            margin: '1rem 2rem',
+                                            // margin: '1rem 2rem',
                                             padding: '0.5rem 1rem',
                                             borderRadius: '5px',
                                             // marginTop: '10px',
                                             height: 'auto',
                                             border: '1px solid #dbdbdb',
-                                            width: '26vw',
+                                            width: '36vw',
+                                            overflowY:'auto',
+                                            maxHeight:'16vh',
+                                            margin:'auto'
 
                                         }}
                                     >
@@ -750,7 +822,7 @@ const StudentSidePhysicalActivity = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <Divider />
+                                    <Divider  style={{margin:'1.5rem 0.5rem'}}/>
                                     <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '34px', paddingTop:'10px'}}>Review</div>
                                     <div
                                         style={{
@@ -760,8 +832,6 @@ const StudentSidePhysicalActivity = () => {
                                             height: 'auto',
                                             marginTop: '12px',
                                             marginBottom: '29px',
-                                            // border:'1px solid grey'
-                                            // border
                                         }}
                                     >
                                         <div
@@ -791,7 +861,7 @@ const StudentSidePhysicalActivity = () => {
                                                                 style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
                                                             >
                                                                 {' '}
-                                                                {obj?.name}<b style={{color:'#53bedd', fontSize:'12px'}}>{filterRound(obj?.level)}</b>
+                                                                {obj?.name}<b style={{ color: '#53bedd', fontSize: '12px' }}>{filterRound(obj?.level)}</b>
                                                             </div>
                                                         )}
                                                         {/* {obj} */}
@@ -802,7 +872,6 @@ const StudentSidePhysicalActivity = () => {
 
                                                                 <Input
                                                                     placeholder={obj?.name}
-                                                                    // onChange={(event) => handleInputCreativity(event, index)}
                                                                     value={obj?.remarks}
 
                                                                 />

@@ -10,6 +10,8 @@ import {
   Tooltip,
   Button,
   Divider,
+  Badge,
+  Pagination
 } from 'antd';
 import {
   CloseOutlined,
@@ -19,6 +21,10 @@ import {
   LeftOutlined,
   RightOutlined,
   RightCircleOutlined,
+  FilePdfOutlined,
+  BookOutlined,
+  SnippetsOutlined,
+  FilePptOutlined
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -44,6 +50,8 @@ import defaultFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/defaultfil
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import moment from 'moment';
 import _ from 'lodash';
+import EbookList from './viewEbooks';
+import IbookList from './viewIbooks';
 const { Option } = Select;
 
 const PeriodListView = () => {
@@ -91,6 +99,18 @@ const PeriodListView = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [allComplete, setAllComplete] = useState(false);
   const [nextPeriodDetails, setNextPeriodDetails] = useState();
+  const [ebookData, setEbookData] = useState([]);
+  const [ibookData, setIbookData] = useState([]);
+  const [openEbook, setOpenEbook] = useState(false);
+  const [openIbook, setOpenIbook] = useState(false);
+  const [pageEbook, setPageEbook] = useState(1)
+  const [totalEbook, setTotalEbook] = useState()
+  const [pageIbook, setPageIbook] = useState(1)
+  const [totalIbook, setTotalIbook] = useState()
+  const [ ebookCount , setEbookCount ] = useState()
+  const [ ibookCount , setIbookCount ] = useState()
+
+
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -100,6 +120,23 @@ const PeriodListView = () => {
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
   ];
+  const env = window.location.host
+  const domain = window.location.host.split('.')
+  let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids' : domain[0]
+
+  const showEbookDrawer = () => {
+    setOpenEbook(true);
+  };
+  const onEbookClose = () => {
+    setOpenEbook(false);
+  };
+  const showIbookDrawer = () => {
+    setOpenIbook(true);
+  };
+  const onIbookClose = () => {
+    console.log("hit");
+    setOpenIbook(false);
+  };
 
   const showDrawer = () => {
     setDrawerVisible(true);
@@ -357,7 +394,155 @@ const PeriodListView = () => {
         setLoading(false);
         message.error(error.message);
       });
+
+    fetchEbookCount({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '3',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page_number: pageEbook
+    })
+    
   };
+  const fetchEbookCount = (params) => {
+    // setLoading(true)
+    axios
+      .get(`${endpoints.newEbook.ebook_ibook_count}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        console.log(res);
+        setEbookCount(res?.data?.result?.ebook_count)
+        setIbookCount(res?.data?.result?.ibook_count)
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+
+  }
+  const getEbook = () => {
+    fetchEbooks({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '3',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page_number: pageEbook
+    })
+    showEbookDrawer()
+  }
+  const getIbook = () => {
+    fetchIbooks({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '4',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page: pageIbook
+    })
+    showIbookDrawer()
+  
+  }
+  const fetchEbooks = (params) => {
+    // setLoading(true)
+    axios
+      .get(`${endpoints.newEbook.ebookList}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          // message.success('Ebooks Fetched Successfully');
+          setEbookData(res.data.result.data);
+          setTotalEbook(res?.data?.result?.total_ebooks)
+        } else {
+          // message.error('Cannot Fetch Right Now');
+          setEbookData([]);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false)
+      });
+
+  }
+  const fetchIbooks = (params) => {
+    // setLoading(true)
+    axios
+      .get(`${endpoints.newibook.ibookList}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+
+        if (res.data.status_code === 200) {
+          setIbookData(res.data.result.result);
+          setTotalIbook(res.data.result.count)
+          // setTotal(res.data.result.total_ebooks)
+          console.log(res.data.result);
+          // message.success('Ibooks Fetched Successfully');
+          setLoading(false)
+        } else {
+          // message.error('Cannot Fetch Right Now');
+          setLoading(false)
+          setIbookData([]);
+          // setTotal()
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false)
+      });
+
+  }
+
+  const handlePageEbook = (e) => {
+    setPageEbook(e)
+    fetchEbooks({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '3',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page_number: e
+    })
+    const element = document.getElementById('ebooktop');
+    element.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const handlePageIbook = (e) => {
+    setPageIbook(e)
+    fetchIbooks({
+      subject: subjectId,
+      volume: volumeId,
+      grade: gradeId,
+      session_year: selectedAcademicYear?.session_year,
+      book_type: '4',
+      branch: selectedBranch?.branch?.id,
+      domain_name: domain_name,
+      lesson_plan: 'true',
+      page_size: '10',
+      page: e
+    })
+    const element = document.getElementById('ibooktop');
+    element.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
     let sectionsCompletedSuccess = [];
@@ -782,79 +967,157 @@ const PeriodListView = () => {
                 <div className='row'>
                   {YCPData?.filter((item) => item?.lesson_type == '1')[0]
                     ?.media_file[0] && (
-                    <div className='col-md-3 pl-0 col-12'>
-                      <a
-                        onClick={() => {
-                          const fileName = YCPData?.filter(
-                            (item) => item?.lesson_type == '1'
-                          )[0]?.media_file[0];
-                          const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
-                          openPreview({
-                            currentAttachmentIndex: 0,
-                            attachmentsArray: [
-                              {
-                                src: fileSrc,
-                                name: 'Portion Document',
-                                extension:
-                                  '.' +
-                                  fileName?.split('.')[fileName?.split('.')?.length - 1],
-                              },
-                            ],
-                          });
-                        }}
-                      >
-                        <div className='row th-fw-600 th-pointer th-primary'>
-                          <div className=''>Portion Document</div>
-                          <div className='ml-3'>
-                            <EyeFilled
-                              className='th-primary'
-                              fontSize={20}
-                              style={{ verticalAlign: 'inherit' }}
-                            />
+                      <div className='col-md-3 pl-0 col-12'>
+                        <a
+                          onClick={() => {
+                            const fileName = YCPData?.filter(
+                              (item) => item?.lesson_type == '1'
+                            )[0]?.media_file[0];
+                            const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  src: fileSrc,
+                                  name: 'Portion Document',
+                                  extension:
+                                    '.' +
+                                    fileName?.split('.')[fileName?.split('.')?.length - 1],
+                                },
+                              ],
+                            });
+                          }}
+                        >
+                          {/* <div className='row th-fw-600 th-pointer th-primary'>
+                            <div className=''>Portion Document</div>
+                            <div className='ml-3'>
+                              <EyeFilled
+                                className='th-primary'
+                                fontSize={20}
+                                style={{ verticalAlign: 'inherit' }}
+                              />
+                            </div>
+                          </div> */}
+                          <div className=' pl-0 col-12e4l th-primary '>
+                            <Badge count='1' >
+                              <Button icon={<FilePptOutlined />} />
+                            </Badge>
+                            <span style={{ marginLeft: '5px', fontWeight: '600' }}>Portion Document</span>
                           </div>
-                        </div>
-                      </a>
-                    </div>
-                  )}
+                        </a>
+                      </div>
+                    )}
                   {YCPData?.filter((item) => item?.lesson_type == '2')[0]
                     ?.media_file[0] && (
-                    <div className='col-md-3 pl-0 col-12e4l'>
-                      <a
-                        onClick={() => {
-                          const fileName = YCPData?.filter(
-                            (item) => item?.lesson_type == '2'
-                          )[0]?.media_file[0];
-                          const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
-                          openPreview({
-                            currentAttachmentIndex: 0,
-                            attachmentsArray: [
-                              {
-                                src: fileSrc,
-                                name: 'Yearly Curriculum Plan',
-                                extension:
-                                  '.' +
-                                  fileName?.split('.')[fileName?.split('.')?.length - 1],
-                              },
-                            ],
-                          });
-                        }}
-                      >
-                        <div className='row th-fw-600 th-pointer th-primary'>
-                          <div className=''>Yearly Curriculum Plan</div>
-                          <div className='ml-3'>
-                            <EyeFilled
-                              className='th-primary'
-                              fontSize={20}
-                              style={{ verticalAlign: 'inherit' }}
-                            />
+                      <div className='col-md-3 pl-0 col-12e4l'>
+                        <a
+                          onClick={() => {
+                            const fileName = YCPData?.filter(
+                              (item) => item?.lesson_type == '2'
+                            )[0]?.media_file[0];
+                            const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  src: fileSrc,
+                                  name: 'Yearly Curriculum Plan',
+                                  extension:
+                                    '.' +
+                                    fileName?.split('.')[fileName?.split('.')?.length - 1],
+                                },
+                              ],
+                            });
+                          }}
+                        >
+                          {/* <div className='row th-fw-600 th-pointer th-primary'>
+                            <div className=''>Yearly Curriculum Plan</div>
+                            <div className='ml-3'>
+                              <EyeFilled
+                                className='th-primary'
+                                fontSize={20}
+                                style={{ verticalAlign: 'inherit' }}
+                              />
+                            </div>
+                          </div> */}
+                          <div className=' pl-0 col-12e4l th-primary '>
+                            <Badge count='1' >
+                              <Button icon={<SnippetsOutlined />} />
+                            </Badge>
+                            <span style={{ marginLeft: '5px', fontWeight: '600' }}>Yearly Curriculum Plan</span>
                           </div>
+                        </a>
+                      </div>
+                    )}
+                  {ebookCount != null && (
+                    <div className='col-md-3 pl-0 col-12e4l'>
+                      <a onClick={getEbook} >
+                        <div className=' pl-0 col-12e4l th-primary '>
+                          <Badge count={ebookCount} >
+                            <Button icon={<FilePdfOutlined />} onClick={getEbook} />
+                          </Badge>
+                          <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ebook</span>
                         </div>
+
                       </a>
+                      <Modal
+                        title="Ebooks"
+                        closable={true}
+                        onCancel={onEbookClose}
+                        visible={openEbook}
+                        width={'90vh'}
+                        footer={[
+                          <div>
+                            {totalEbook > 10 ?
+                              <Pagination total={totalEbook} current={pageEbook} onChange={handlePageEbook} pageSize={10} />
+                              : ''
+                            }
+                          </div>
+                        ]}
+                      >
+
+                        <EbookList data={ebookData} />
+                      </Modal>
+                    </div>
+                  )}
+
+                  {ibookCount != null && (
+                    <div className='col-md-3 pl-0 col-12e4l'>
+                      <a onClick={getIbook} >
+                        <div className=' pl-0 col-12e4l th-primary '>
+                          <Badge count={ibookCount} >
+                            <Button icon={<BookOutlined />} onClick={getIbook} />
+                          </Badge>
+                          <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ibook</span>
+                        </div>
+
+                      </a>
+                      <Modal
+                        title="Ibooks"
+                        closable={true}
+                        onCancel={onIbookClose}
+                        visible={openIbook}
+                        width={'90vh'}
+                        footer={[
+                          <div>
+                            {totalIbook > 10 ?
+                              <Pagination total={totalIbook} current={pageIbook} onChange={handlePageIbook} pageSize={10} />
+                              : ''
+                            }
+                          </div>
+                        ]}
+      
+                      >
+
+                        <IbookList data={ibookData} />
+                      </Modal>
                     </div>
                   )}
                 </div>
               </div>
             )}
+
+
           </div>
           {loading ? (
             <div className='row justify-content-center my-5'>
@@ -894,22 +1157,21 @@ const PeriodListView = () => {
                                 ? myRef
                                 : null
                               : each?.last_taught == true
-                              ? myRef
-                              : null
+                                ? myRef
+                                : null
                           }
                         >
                           <div className='row mb-3 pb-1'>
                             <div
-                              className={`col-12 th-br-20 th-bg-pink py-2 ${
-                                isStudent
-                                  ? each.last_taught == true
-                                    ? 'highlighted-period'
-                                    : 'period-card'
-                                  : each.next_to_be_taught == true
+                              className={`col-12 th-br-20 th-bg-pink py-2 ${isStudent
+                                ? each.last_taught == true
                                   ? 'highlighted-period'
                                   : 'period-card'
-                              }`}
-                              // id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
+                                : each.next_to_be_taught == true
+                                  ? 'highlighted-period'
+                                  : 'period-card'
+                                }`}
+                            // id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
                             >
                               <div className='row px-1 pt-2'>
                                 <div className='col-md-7 col-6 px-0 th-18 th-fw-600'>
@@ -926,9 +1188,8 @@ const PeriodListView = () => {
                                     className='mr-2'
                                   ></div>
                                   <div
-                                    className={`${
-                                      each?.is_complete ? 'th-green' : 'th-red'
-                                    } th-fw-500`}
+                                    className={`${each?.is_complete ? 'th-green' : 'th-red'
+                                      } th-fw-500`}
                                   >
                                     {each?.is_complete ? 'COMPLETED' : 'NOT COMPLETED'}
                                   </div>
@@ -1138,7 +1399,7 @@ const PeriodListView = () => {
                 </div>
               </div>
               {resourcesData?.lp_files?.map((each) => each?.media_file).flat().length >
-              0 ? (
+                0 ? (
                 <div
                   style={{
                     overflowY: 'scroll',

@@ -276,6 +276,22 @@ if(filtersDetails){
       setIsSelectAll(false)
       setClearFlag(false)
     }
+  }, [page]);
+
+  useEffect(() => {
+    if(clearFlag === true){
+      setTabMapId('');
+      setTabQueLevel('');
+      setTabQueTypeId('');
+      setTabQueCatId('');
+      setTabTopicId('');
+      setTabGradeId('');
+      setTabChapterId('');
+      setTabIsErpCentral(false);
+      setSelectedId([])
+      setIsSelectAll(false)
+      setClearFlag(false)
+    }
     
   }, [clearFlag]);
 

@@ -1,16 +1,36 @@
+.table-filter{
+  display: flex;
+  /* border: 1px solid black; */
+  align-items: center;
+}
+
+
 .filter-container-tab button {
-    margin-right: 2rem;
-    min-width: 5rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    background: white;
-    color: rgb(65, 98, 168);
-    border-radius: 2rem;
-    border: 2px solid rgb(65, 98, 168);
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 2rem;
-    font-size: 14px;
+  margin-right: 2rem;
+  min-width: 5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: white;
+  color: rgb(65, 98, 168);
+  border-radius: 2rem;
+  border: 2px solid rgb(65, 98, 168);
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 2rem;
+  font-size: 14px;
+
+}
+.filter-container-tab span {
+  margin-right: 2rem;
+  min-width: 5rem;
+
+  padding: inherit;
+  border: none;
+  /* background: white; */
+  color: grey;
+  font-weight: bold;
+  /* margin-top: 2rem; */
+  font-size: 14px;
 
 }
 
@@ -179,3 +199,135 @@ button.active {
     border-radius: 7px;
 
 }
+
+
+
+
+
+
+  .carousel-global{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color:#333333;
+
+  }
+  .carousel-global-inner{
+   height: inherit;
+   display: flex;
+   align-items: center;
+
+  }
+
+  .carousel-status{
+    display: none;
+  }
+
+  .carousel {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 1rem;
+  }
+
+  .carousel-global .slide {
+    opacity: 1 !important;
+  }
+
+  .carousel .slider-wrapper {
+     /* background-color: #333333; */
+  }
+
+  .carousel .slide {
+    /* background-color: #333333; */
+    /* height: 80vh; */
+    margin: auto;
+  }
+
+  .carousel .slide-wrapper {
+    width: 50%;
+  }
+  .carousel .thumb{
+    width: 5%;
+    height: 50px;
+  }
+
+  .carousel .slide img{
+    max-height: 100%;
+    /* width: fit-content; */
+  }
+
+  .image{
+    margin: 0 auto;
+    height: 100%;
+    width: auto;
+  }
+
+  @media only screen and (max-width:1200px) {
+    .carousel{
+      height: 90vh;
+    }
+    .carousel .slide img {
+      margin: 10vh auto;
+      width: 100vw;
+    }
+    
+  }
+
+  @media only screen and (max-width:900px) {
+    .carousel{
+      height: 8 0vh;
+    }
+  }
+
+  @media only screen and (max-width:750px) {
+    .carousel{
+      height: 70vh;
+    }
+  }
+
+  @media only screen and (max-width:650px) {
+    .carousel{
+      height: 60vh;
+    }    
+  }
+
+
+  @media only screen and (max-width:500px) {
+    .carousel{
+      height: 70vh;
+    }    
+  }
+
+
+  .post-description {
+    display: flex;
+    padding: 0.5rem;
+    /* border: 1px solid;  */
+  }
+  .profile-branch-format{
+    display: contents;
+  }
+
+  .post-avatar {
+    /* border: 1px solid; */
+    padding: 0.5rem; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .post-profile-description{
+    /* border: 1px solid; */
+    padding: 0.5rem;
+  }
+
+  .post-description-inner{
+    width: 100%;
+    overflow-y: auto;
+    flex-wrap: wrap;
+    /* border: 1px solid saddlebrown; */
+    color: gray;
+    font-size: 15px;
+  }
+
+
+

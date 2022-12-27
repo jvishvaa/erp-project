@@ -252,6 +252,10 @@ const Layout = ({ children, history }) => {
         history.push('/ebook/view');
         break;
       }
+      case 'Online Books': {
+        history.push('/online-books/');
+        break;
+      }
       case 'Ibook View': {
         history.push('/intelligent-book/view');
         break;

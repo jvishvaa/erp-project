@@ -4,21 +4,17 @@ import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { Table, DatePicker, Breadcrumb, message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import CalendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
-
-const { RangePicker } = DatePicker;
 
 const TeacherwiseDiaryReport = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const history = useHistory();
-  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
   const [teacherwiseReport, setTeacherwiseReport] = useState([]);
   const [teacherwiseStats, setTeacherwiseStats] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,8 +23,7 @@ const TeacherwiseDiaryReport = () => {
 
   const handleDateChange = (value) => {
     if (value) {
-      setStartDate(moment(value[0]).format('YYYY-MM-DD'));
-      setEndDate(moment(value[1]).format('YYYY-MM-DD'));
+      setDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
     }
   };
 
@@ -55,23 +50,21 @@ const TeacherwiseDiaryReport = () => {
   };
 
   useEffect(() => {
-    if (startDate && endDate && diaryType) {
+    if (date && selectedSection) {
       fetchTeacherwiseReport({
         acad_session_id: selectedBranch?.id,
         dairy_type: diaryType,
         grade_id: selectedSection?.grade_id,
         section_mapping: selectedSection?.section_mapping,
-        start_date: startDate,
-        end_date: endDate,
+        date,
       });
     }
-  }, [startDate, endDate, diaryType]);
+  }, [date, diaryType]);
 
   useEffect(() => {
     if (history.location.state) {
       setSelectedSection(history.location.state.data);
-      setStartDate(history.location.state.startDate);
-      setEndDate(history.location.state.endDate);
+      setDate(history.location.state.date);
       setDiaryType(history.location.state.diaryType);
     }
   }, [window.location.pathname]);
@@ -85,11 +78,9 @@ const TeacherwiseDiaryReport = () => {
       render: (data) => <span className='pl-4 th-black-1'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>ASSIGNED DATE</span>,
-      dataIndex: 'date',
+      title: null,
       align: 'center',
       width: '30%',
-      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>ASSIGNED TIME</span>,
@@ -114,8 +105,7 @@ const TeacherwiseDiaryReport = () => {
                 history.push({
                   pathname: '/gradewise-diary-report',
                   state: {
-                    startDate,
-                    endDate,
+                    date,
                     diaryType,
                   },
                 })
@@ -127,27 +117,18 @@ const TeacherwiseDiaryReport = () => {
           </Breadcrumb>
         </div>
         <div className='col-md-4 mt-3 mt-sm-0 text-right'>
-          <div>
-            <RangePicker
-              disabledDate={(current) => {
-                let customDate = moment().format('YYYY-MM-DD');
-                return current && current > moment(customDate, 'YYYY-MM-DD');
-              }}
-              allowClear={false}
-              bordered={false}
-              placement='bottomRight'
-              showToday={false}
-              suffixIcon={<DownOutlined />}
-              value={[moment(startDate), moment(endDate)]}
-              onChange={(value) => handleDateChange(value)}
-              className='th-range-picker th-br-4'
-              separator={'to'}
-              format={'DD/MM/YYYY'}
-            />
-          </div>
-          <div className='th-date-range'>
-            <img src={CalendarIcon} />
-          </div>
+          <DatePicker
+            disabledDate={(current) => current.isAfter(moment())}
+            allowClear={false}
+            value={moment(date)}
+            placement='bottomLeft'
+            onChange={(event, value) => handleDateChange(value)}
+            showToday={false}
+            bordered={false}
+            suffixIcon={<DownOutlined className='th-black-1' />}
+            className='th-black-2 pl-0 th-date-picker th-br-6'
+            format={'DD/MM/YYYY'}
+          />
         </div>
         {!loading && (
           <div
@@ -184,7 +165,7 @@ const TeacherwiseDiaryReport = () => {
               rowKey={(record) => record?.subject_id}
               dataSource={teacherwiseReport}
               pagination={false}
-              scroll={{ x: 'max-content', y: 600 }}
+              scroll={{ x: teacherwiseReport.length > 0 ? 'max-content' : null, y: 600 }}
             />
           </div>
         </div>

@@ -226,6 +226,10 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
     // history.replace({ state: { isSet: false } })
   };
 
+  const handleClearQuestionLevel = () => {
+    setQpValue('');
+  }
+
   const handleAcademicYear = (event, value) => {
     setFilterData({
       academic: '',
@@ -756,6 +760,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                         getPopupContainer={(trigger) => trigger.parentNode}
                         showSearch
                         optionFilterProp='children'
+                        onClear={handleClearQuestionLevel}
                         filterOption={(input, options) => {
                           return (
                             options.children.toLowerCase().indexOf(input.toLowerCase()) >=

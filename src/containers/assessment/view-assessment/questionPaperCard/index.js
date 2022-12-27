@@ -63,27 +63,28 @@ const QuestionPaperCard = ({
             <div className={classes.cardDescription}>
               {[gradeName, ...(subjects || [])].join(', ')}
             </div>
-            <div className={classes.cardAttemptedTextRed}>
+            {testDate && <div className={classes.cardAttemptedTextRed}>
               Start Time - &nbsp;
-              {testDate.slice(11, 16)}
-            </div>
+              {testDate?.slice(11, 16)}
+            </div>}
             {isTestAttempted ? (
               <>
                 {test_mode == 2 ?
-                  <div className={classes.cardAttemptedTextGreen}>
+                  (testDate ? <div className={classes.cardAttemptedTextGreen}>
                     Completed at - &nbsp;
                     {new Date(testDate).toDateString()}
-                  </div>
+                  </div> : '' )
                   : <div className={classes.cardAttemptedTextGreen}>
                     Completed at - &nbsp;
                     {new Date(testAttemptedDate).toDateString()}
                   </div>}
               </>
             ) : (
-              <div className={classes.cardAttemptedTextRed}>
+             
+              ( testDate ? (<div className={classes.cardAttemptedTextRed}>
                 Scheduled at - &nbsp;
                 {new Date(testDate).toDateString()}
-              </div>
+              </div>) : '')
             )}
           </div>
           <Button
