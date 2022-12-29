@@ -131,7 +131,7 @@ const AttendanceReport = (props) => {
       >
         <div className='row justify-content-between'>
           <div className='col-8 col-md-6 th-16 th-fw-500 th-black-1 d-flex flex-column flex-md-row align-items-md-center'>
-            Attendance Report{' '}
+            Today's Attendance Report{' '}
             <div className='th-12 pl-0 pl-md-3 th-pointer th-primary'>
               {attendanceReportData?.length > 0 ? (
                 <span onClick={showAllData} className='mr-3 mr-md-0'>
