@@ -60,30 +60,13 @@ const AssessmentView = () => {
   const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
   const [clearFlag, setClearFlag] = useState(false);
   const [callFlag, setCallFlag] = useState(false);
-  const [erpCategory , setErpCategory] = useState('')
+  const [erpCategory, setErpCategory] = useState('');
   const handlePagination = (event, page) => {
     setPage(page);
   };
 
-
   useEffect(() => {
-if(tabGradeId && (tabSubjectId || erpCategory)){
-  handlePeriodList(
-    tabIsErpCentral,
-    tabAcademic,
-    tabBranch,
-    tabGradeId,
-    tabSubjectId,
-    tabQpValue,
-    erpCategory,
-    tabValue,
-  );
-}
-  },[tabValue, tabIsErpCentral,erpCategory])
-
-  useEffect(() => {
-    if(tabGradeId && (tabSubjectId || erpCategory) && page > 1){
-      
+    if (tabGradeId && (tabSubjectId || erpCategory)) {
       handlePeriodList(
         tabIsErpCentral,
         tabAcademic,
@@ -92,11 +75,25 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
         tabSubjectId,
         tabQpValue,
         erpCategory,
-        tabValue,
+        tabValue
       );
     }
-      },[page])
+  }, [tabValue, tabIsErpCentral, erpCategory]);
 
+  useEffect(() => {
+    if (tabGradeId && (tabSubjectId || erpCategory) && page >= 1) {
+      handlePeriodList(
+        tabIsErpCentral,
+        tabAcademic,
+        tabBranch,
+        tabGradeId,
+        tabSubjectId,
+        tabQpValue,
+        erpCategory,
+        tabValue
+      );
+    }
+  }, [page]);
 
   const handleGetQuestionPapers = (newValue = 0, requestURL) => {
     setTabValue(newValue);
@@ -112,7 +109,7 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
     if (newValue == 2) {
       requestURL += `&is_verified=True&is_delete=False`;
     }
-    if(newValue == 4){
+    if (newValue == 4) {
       requestURL += `&is_delete=True`;
     }
     axiosInstance
@@ -142,9 +139,9 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
     subject = '',
     qpValue,
     erpCategory = '',
-    newValue = 0,
+    newValue = 0
   ) => {
-    if (!academic || branch?.length === 0 || !grade ||(!subject && !erpCategory)) {
+    if (!academic || branch?.length === 0 || !grade || (!subject && !erpCategory)) {
       setAlert('error', 'Select all the fields!');
       return;
     }
@@ -155,23 +152,27 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
     setTabGradeId(grade);
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
-    console.log(qpValue,tabQpValue ,'@@')
+    console.log(qpValue, tabQpValue, '@@');
     // setTabIsErpCentral(isErpCentral);
-    setErpCategory(erpCategory)
+    setErpCategory(erpCategory);
     const branchIds = branch.map((element) => element?.branch?.id) || [];
-    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&grade=${grade?.value}&page=${page}&page_size=${limit}&request_type=${tabIsErpCentral ? 2 : 1} `;
-    if(qpValue) {
-      requestURL += `&paper_level=${qpValue?.value}`
+    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${
+      academic?.id
+    }&branch=${branchIds}&grade=${
+      grade?.value
+    }&page=${page}&page_size=${limit}&request_type=${tabIsErpCentral ? 2 : 1} `;
+    if (qpValue) {
+      requestURL += `&paper_level=${qpValue?.value}`;
     }
-    if(subject || !erpCategory){
-      requestURL += `&subjects=${subject?.value}`
+    if (subject || !erpCategory) {
+      requestURL += `&subjects=${subject?.value}`;
     }
     if (!subject && erpCategory) {
       requestURL += `&category=${erpCategory?.value}`; //isErpCentral?.flag ? erpCategory?.central_category_id : erpCategory?.erp_category_id
     }
     handleGetQuestionPapers(newValue, requestURL);
     let filterdata = {
-      branch : branch,
+      branch: branch,
       academic: academic,
       // category : erpCategory,
       subject: subject,
@@ -179,8 +180,8 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
       qpValue: qpValue,
       page: page,
       limit: limit,
-      type: isErpCentral
-    }
+      type: isErpCentral,
+    };
     // if(erpCategory && !subject){
     //   filterdata['category'] = erpCategory
     // }
@@ -188,22 +189,30 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
     //   filterdata['subject'] = subject
 
     // }
-    sessionStorage.setItem('filter',JSON.stringify(filterdata));
+    sessionStorage.setItem('filter', JSON.stringify(filterdata));
   };
   const changequestionFrom = (e) => {
-    setPage(1)
-    if(e==='edu'){
-      setTabValue(2)
-    }else{
-      setTabValue(0)
+    setPage(1);
+    if (e === 'edu') {
+      setTabValue(2);
+    } else {
+      setTabValue(0);
     }
-    setTabIsErpCentral((prev) => !prev)
-    }
+    setTabIsErpCentral((prev) => !prev);
+  };
 
   useEffect(() => {
     // if (publishFlag)
-      // handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue,erpCategory ); //
-    if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ) && tabQpValue && tabIsErpCentral && page > 1)
+    // handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue,erpCategory ); //
+    if (
+      tabAcademic &&
+      tabBranch &&
+      tabGradeId &&
+      (tabSubjectId || erpCategory) &&
+      tabQpValue &&
+      tabIsErpCentral &&
+      page >= 1
+    )
       handlePeriodList(
         tabIsErpCentral,
         tabAcademic,
@@ -212,64 +221,64 @@ if(tabGradeId && (tabSubjectId || erpCategory)){
         tabSubjectId,
         tabQpValue,
         erpCategory,
-        tabValue,
-        
+        tabValue
       );
   }, [page]);
 
   useEffect(() => {
-if(publishFlag){
-  if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory ))
-  handlePeriodList(
-    tabIsErpCentral,
-    tabAcademic,
-    tabBranch,
-    tabGradeId,
-    tabSubjectId,
-    tabQpValue,
-    erpCategory,
-    tabValue,
-  );
-
-}},[publishFlag])
+    if (publishFlag) {
+      if (tabAcademic && tabBranch && tabGradeId && (tabSubjectId || erpCategory))
+        handlePeriodList(
+          tabIsErpCentral,
+          tabAcademic,
+          tabBranch,
+          tabGradeId,
+          tabSubjectId,
+          tabQpValue,
+          erpCategory,
+          tabValue
+        );
+    }
+  }, [publishFlag]);
 
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div
-         className='assesment-scroll'
-         style={{
-           height: '90vh',
-           overflowX: 'hidden',
-           overflowY: 'scroll',
-         }}>
-        {/* <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}> */}
-        <div className='row py-3 px-2'>
-          <div className='col-md-8 th-bg-grey' style={{ zIndex: 2 }}>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item className='th-black-1 th-18'>Assessment</Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-18'>
-                Question Paper
-              </Breadcrumb.Item>
-            </Breadcrumb>
+          className='assesment-scroll'
+          style={{
+            height: '90vh',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+          }}
+        >
+          {/* <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}> */}
+          <div className='row py-3 px-2'>
+            <div className='col-md-8 th-bg-grey' style={{ zIndex: 2 }}>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item className='th-black-1 th-18'>Assessment</Breadcrumb.Item>
+                <Breadcrumb.Item className='th-black-1 th-18'>
+                  Question Paper
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
           </div>
-        </div>
-        <div className='th-bg-white py-2 mx-3'>
-        {/* </BreadcrumbToggler> */}
-        <div className={!isFilter ? 'showFilters' : 'hideFilters'}>
-          <AssessmentFilters
-            setClearFlag={setClearFlag}
-            handlePeriodList={handlePeriodList}
-            setPeriodData={setPeriodData}
-            setViewMore={setViewMore}
-            setViewMoreData={setViewMoreData}
-            setFilterDataDown={setFilterDataDown}
-            setSelectedIndex={setSelectedIndex}
-            setPage = {setPage}
-          />
-        </div>
-          {/* <TabPanel
+          <div className='th-bg-white py-2 mx-3'>
+            {/* </BreadcrumbToggler> */}
+            <div className={!isFilter ? 'showFilters' : 'hideFilters'}>
+              <AssessmentFilters
+                setClearFlag={setClearFlag}
+                handlePeriodList={handlePeriodList}
+                setPeriodData={setPeriodData}
+                setViewMore={setViewMore}
+                setViewMoreData={setViewMoreData}
+                setFilterDataDown={setFilterDataDown}
+                setSelectedIndex={setSelectedIndex}
+                setPage={setPage}
+              />
+            </div>
+            {/* <TabPanel
             handlePeriodList={handlePeriodList}
             tabAcademic={tabAcademic}
             tabBranch={tabBranch}
@@ -283,202 +292,233 @@ if(publishFlag){
             setSelectedIndex={setSelectedIndex}
             tabIsErpCentral={tabIsErpCentral}
           /> */}
-          <div className='row ml-2'>
-              {!tabIsErpCentral && <div className='col-md-1 col-6'>
-              <Button
-                  className={`${
-                    tabValue == 0 ? 'th-button-active' : 'th-button'
-                  } th-width-100 th-br-6 mt-2`}
-                  onClick={() => 
-                  {setTabValue(0)
-                  setPage(1)}}
-                >
-                  All
-                </Button>
-              </div>}
-            <div className='col-md-5 d-flex pl-0'>
-              <div className='col-md-4 col-6'>
-                <Button
-                  className={`${
-                    (tabValue == 2 || tabIsErpCentral) ? 'th-button-active' : 'th-button'
-                  } th-width-100 th-br-6 mt-2`}
-                  onClick={() => {setTabValue(2) 
-                    setPage(1)}}
-                >
-                  Published
-                </Button>
+            <div className='row ml-2'>
+              {!tabIsErpCentral && (
+                <div className='col-md-1 col-6'>
+                  <Button
+                    className={`${
+                      tabValue == 0 ? 'th-button-active' : 'th-button'
+                    } th-width-100 th-br-6 mt-2`}
+                    onClick={() => {
+                      setTabValue(0);
+                      setPage(1);
+                    }}
+                  >
+                    All
+                  </Button>
+                </div>
+              )}
+              <div className='col-md-5 d-flex pl-0'>
+                <div className='col-md-4 col-6'>
+                  <Button
+                    className={`${
+                      tabValue == 2 || tabIsErpCentral ? 'th-button-active' : 'th-button'
+                    } th-width-100 th-br-6 mt-2`}
+                    onClick={() => {
+                      setTabValue(2);
+                      setPage(1);
+                    }}
+                  >
+                    Published
+                  </Button>
+                </div>
+                {!tabIsErpCentral && (
+                  <div className='col-md-4 col-6'>
+                    <Button
+                      className={`${
+                        tabValue == 3 ? 'th-button-active' : 'th-button'
+                      } th-width-100 th-br-6 mt-2`}
+                      onClick={() => {
+                        setTabValue(3);
+                        setPage(1);
+                      }}
+                    >
+                      For Review
+                    </Button>
+                  </div>
+                )}
+                {!tabIsErpCentral && (
+                  <div className='col-md-4 col-6'>
+                    <Button
+                      className={`${
+                        tabValue == 1 ? 'th-button-active' : 'th-button'
+                      } th-width-100 th-br-6 mt-2`}
+                      onClick={() => {
+                        setTabValue(1);
+                        setPage(1);
+                      }}
+                    >
+                      Draft
+                    </Button>
+                  </div>
+                )}
               </div>
-              {!tabIsErpCentral && <div className='col-md-4 col-6'>
-                <Button
-                  className={`${
-                    tabValue == 3 ? 'th-button-active' : 'th-button'
-                  } th-width-100 th-br-6 mt-2`}
-                  onClick={() => {setTabValue(3)
-                    setPage(1)
-                  }}
-                >
-                  For Review
-                </Button>
-              </div>}
-              {!tabIsErpCentral &&<div className='col-md-4 col-6'>
-                <Button
-                  className={`${
-                    tabValue == 1 ? 'th-button-active' : 'th-button'
-                  } th-width-100 th-br-6 mt-2`}
-                  onClick={() => {setTabValue(1)
-                  setPage(1)}}
-                >
-                  Draft
-                </Button>
-              </div>}
-            </div>
-            {tabIsErpCentral && <div className='col-md-1 col-6'></div>}
-            <div className='col-md-2 d-flex' style={{marginLeft : '-2%'}}>
-            {!tabIsErpCentral &&<div className='col-md-10 col-6'>
-                <Button
-                  className={`${
-                    tabValue == 4 ? 'th-button-active' : 'th-button'
-                  } th-width-100 th-br-6 mt-2`}
-                  onClick={() => {setTabValue(4)
-                  setPage(1)}}
-                >
-                  Deleted
-                </Button>
-              </div>}
-              <div className='col-md-2 col-6'></div>
+              {tabIsErpCentral && <div className='col-md-1 col-6'></div>}
+              <div className='col-md-2 d-flex' style={{ marginLeft: '-2%' }}>
+                {!tabIsErpCentral && (
+                  <div className='col-md-10 col-6'>
+                    <Button
+                      className={`${
+                        tabValue == 4 ? 'th-button-active' : 'th-button'
+                      } th-width-100 th-br-6 mt-2`}
+                      onClick={() => {
+                        setTabValue(4);
+                        setPage(1);
+                      }}
+                    >
+                      Deleted
+                    </Button>
+                  </div>
+                )}
+                <div className='col-md-2 col-6'></div>
               </div>
               <div className='col-md-4 pr-0'>
                 <div className='row justify-content-between'>
-              
-                {/* <div className='d-flex align-items-center'> 
+                  {/* <div className='d-flex align-items-center'> 
                 <Switch onChange={changequestionFrom} checked={tabIsErpCentral}/>
                 </div> */}
-               <div className='col-md-6 col-12'>
-                <Button
-                  className={`${
-                    tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'}
+                  <div className='col-md-6 col-12'>
+                    <Button
+                      className={`${
+                        tabIsErpCentral
+                          ? 'highlightbtn th-button-active'
+                          : 'nonHighlightbtn th-button'
+                      }
                   } th-width-100 th-br-6 mt-2`}
-                  // style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
-                  onClick={() => changequestionFrom('edu')}
-                >
-                  Eduvate Question
-                </Button>
-                {tabIsErpCentral && <hr className='my-1 th-fw-700' style={{borderTop : '1px solid #1B4CCB'}}/>}
-                </div>
-                <div className='col-md-6 col-12 pr-0'> 
-                <Button
-                  className={`${
-                    !tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'}
-                  } th-width-100 th-br-6 mt-2`}
-                  onClick={() => changequestionFrom('school')}
-                  // style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
-                >
-                  School Question
-                </Button>
-                {!tabIsErpCentral && <hr className='my-1 th-fw-700' style={{borderTop : '1px solid #1B4CCB'}}/>}
-                </div>
-                </div>
-            </div>
-        </div>
-        <hr/>
-
-        <Paper className={classes.root}>
-          {periodData?.length > 0 ? (
-            <Grid
-              container
-              style={
-                isMobile
-                  ? { width: '95%', margin: '20px auto' }
-                  : { width: '100%', margin: '20px auto' }
-              }
-              spacing={5}
-            >
-              <Grid item xs={12} sm={viewMore ? 7 : 12}>
-                <Grid container spacing={isMobile ? 3 : 5}>
-                  {periodData.map((period, i) => (
-                    <Grid
-                      item
-                      xs={12}
-                      style={isMobile ? { marginLeft: '-8px' } : null}
-                      sm={12}
+                      // style={{boxShadow : tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none' }}
+                      onClick={() => changequestionFrom('edu')}
                     >
-                      <AssessmentCard
-                        index={i}
-                        filterDataDown={filterDataDown}
-                        period={period}
+                      Eduvate Question
+                    </Button>
+                    {tabIsErpCentral && (
+                      <hr
+                        className='my-1 th-fw-700'
+                        style={{ borderTop: '1px solid #1B4CCB' }}
+                      />
+                    )}
+                  </div>
+                  <div className='col-md-6 col-12 pr-0'>
+                    <Button
+                      className={`${
+                        !tabIsErpCentral
+                          ? 'highlightbtn th-button-active'
+                          : 'nonHighlightbtn th-button'
+                      }
+                  } th-width-100 th-br-6 mt-2`}
+                      onClick={() => changequestionFrom('school')}
+                      // style={{boxShadow : !tabIsErpCentral ? 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' : 'none'}}
+                    >
+                      School Question
+                    </Button>
+                    {!tabIsErpCentral && (
+                      <hr
+                        className='my-1 th-fw-700'
+                        style={{ borderTop: '1px solid #1B4CCB' }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+
+            <Paper className={classes.root}>
+              {periodData?.length > 0 ? (
+                <Grid
+                  container
+                  style={
+                    isMobile
+                      ? { width: '95%', margin: '20px auto' }
+                      : { width: '100%', margin: '20px auto' }
+                  }
+                  spacing={5}
+                >
+                  <Grid item xs={12} sm={viewMore ? 7 : 12}>
+                    <Grid container spacing={isMobile ? 3 : 5}>
+                      {periodData.map((period, i) => (
+                        <Grid
+                          item
+                          xs={12}
+                          style={isMobile ? { marginLeft: '-8px' } : null}
+                          sm={12}
+                        >
+                          <AssessmentCard
+                            index={i}
+                            filterDataDown={filterDataDown}
+                            period={period}
+                            setSelectedIndex={setSelectedIndex}
+                            periodColor={selectedIndex === i ? true : false}
+                            viewMore={viewMore}
+                            setLoading={setLoading}
+                            setViewMore={setViewMore}
+                            setCallFlag={setCallFlag}
+                            setViewMoreData={setViewMoreData}
+                            setPeriodDataForView={setPeriodDataForView}
+                            setPublishFlag={setPublishFlag}
+                            tabIsErpCentral={tabIsErpCentral}
+                            tabValue={tabValue}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Grid>
+                  {viewMore && (
+                    <Grid item xs={12} sm={5} style={{ width: '100%' }}>
+                      <ViewMoreCard
                         setSelectedIndex={setSelectedIndex}
-                        periodColor={selectedIndex === i ? true : false}
-                        viewMore={viewMore}
-                        setLoading={setLoading}
+                        viewMoreData={viewMoreData}
                         setViewMore={setViewMore}
-                        setCallFlag={setCallFlag}
-                        setViewMoreData={setViewMoreData}
-                        setPeriodDataForView={setPeriodDataForView}
+                        filterDataDown={filterDataDown}
+                        periodDataForView={periodDataForView}
                         setPublishFlag={setPublishFlag}
-                        tabIsErpCentral={tabIsErpCentral}
-                        tabValue = {tabValue}
+                        tabValue={tabValue}
                       />
                     </Grid>
-                  ))}
+                  )}
                 </Grid>
-              </Grid>
-              {viewMore && (
-                <Grid item xs={12} sm={5} style={{ width: '100%' }}>
-                  <ViewMoreCard
-                    setSelectedIndex={setSelectedIndex}
-                    viewMoreData={viewMoreData}
-                    setViewMore={setViewMore}
-                    filterDataDown={filterDataDown}
-                    periodDataForView={periodDataForView}
-                    setPublishFlag={setPublishFlag}
-                    tabValue = {tabValue}
+              ) : (
+                <div className='periodDataUnavailable mt-4'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={
+                          isMobile
+                            ? { height: '100px', width: '200px' }
+                            : { height: '160px', width: '290px' }
+                        }
+                        src={unfiltered}
+                      />
+                    )}
                   />
-                </Grid>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={
+                          isMobile
+                            ? { height: '20px', width: '250px' }
+                            : { height: '50px', width: '400px', marginLeft: '5%' }
+                        }
+                        src={selectfilter}
+                      />
+                    )}
+                  />
+                </div>
               )}
-            </Grid>
-          ) : (
-            <div className='periodDataUnavailable mt-4'>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={
-                      isMobile
-                        ? { height: '100px', width: '200px' }
-                        : { height: '160px', width: '290px' }
-                    }
-                    src={unfiltered}
-                  />
-                )}
-              />
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={
-                      isMobile
-                        ? { height: '20px', width: '250px' }
-                        : { height: '50px', width: '400px', marginLeft: '5%' }
-                    }
-                    src={selectfilter}
-                  />
-                )}
-              />
-            </div>
-          )}
 
-          {periodData?.length > 0 && (
-            <div className='paginateData paginateMobileMargin'>
-              <Pagination
-                onChange={handlePagination}
-                style={{ marginTop: 25 }}
-                count={Math.ceil(totalCount / limit)}
-                color='primary'
-                page={page}
-              />
-            </div>
-          )}
-        </Paper>
+              {periodData?.length > 0 && (
+                <div className='paginateData paginateMobileMargin py-2'>
+                  <Pagination
+                    onChange={handlePagination}
+                    style={{ marginTop: 25 }}
+                    count={Math.ceil(totalCount / limit)}
+                    color='primary'
+                    page={page}
+                  />
+                </div>
+              )}
+            </Paper>
+          </div>
         </div>
-      </div>
       </Layout>
     </>
   );

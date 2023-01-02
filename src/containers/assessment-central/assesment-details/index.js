@@ -1,4 +1,4 @@
-import React, { useContext , useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid, IconButton, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -17,12 +17,19 @@ import { handleDownloadPdf } from '../../../../src/utility-functions';
 import { Drawer, Tooltip, Typography } from 'antd';
 import Loader from 'components/loader/loader';
 
-
-const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, testselection,reportLoad }) => {
+const AssesmentDetails = ({
+  test,
+  onClick,
+  onClose,
+  filterData,
+  handleClose,
+  testselection,
+  reportLoad,
+}) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
-  console.log(filterData, "filter");
-  const[loading,setLoading] = useState(false)
+  console.log(filterData, 'filter');
+  const [loading, setLoading] = useState(false);
   const {
     test_id: id,
     id: assessmentId,
@@ -36,25 +43,25 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
     total_mark: totalMark,
     created_at: createdDate,
     updated_at: updatedDate,
-    test_mode : testMode,
-    section_name : sectionName,
+    test_mode: testMode,
+    section_name: sectionName,
     section_mapping,
     question_paper_id: question_paper_id,
     test_id: test_id,
   } = test;
 
   const handleData = () => {
-    sessionStorage.setItem('createfilterdata',JSON.stringify(filterData))
+    sessionStorage.setItem('createfilterdata', JSON.stringify(filterData));
     let state = {
       // data: filterData,
-      test: test
-    }
-    history.push({pathname : '/offline-student',state})
-  }
+      test: test,
+    };
+    history.push({ pathname: '/offline-student', state });
+  };
 
   useEffect(() => {
-    showDrawer()
-  },[])
+    showDrawer();
+  }, []);
 
   const showDrawer = () => {
     setOpen(true);
@@ -62,7 +69,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
 
   const onClosedrawer = () => {
     setOpen(false);
-    onClose()
+    onClose();
   };
 
   const handleDownloadReport = () => {
@@ -95,20 +102,19 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
   };
 
   const { setAlert } = useContext(AlertNotificationContext);
-  const [ testStart , setTestStart ] = useState(false)
+  const [testStart, setTestStart] = useState(false);
   const [confirmAlert, setConfirmAlert] = useState(false);
 
   const CancelStart = () => {
-    setConfirmAlert(false)
-  }
+    setConfirmAlert(false);
+  };
 
   const openStartModal = () => {
-    setConfirmAlert(true)
-  }
-
+    setConfirmAlert(true);
+  };
 
   const downloadAssessment = () => {
-    reportLoad(true)
+    reportLoad(true);
     axiosInstance
       .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${assessmentId}`, {
         responseType: 'blob',
@@ -125,67 +131,72 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
         } else {
           setAlert('info', message);
         }
-        reportLoad(false)
+        reportLoad(false);
       })
       .catch((error) => {
         setAlert(error?.message);
-        reportLoad(false)
+        reportLoad(false);
       });
   };
 
   const getSection = () => {
-    var sectionname = ' '
-    let getsectionname = sectionName.map((sec , i ) => {
+    var sectionname = ' ';
+    let getsectionname = sectionName.map((sec, i) => {
       // var check = sec.split('')
       // console.log(check[ check?.length - 1 ]);
-      if(sectionname?.length - 1 == i )
-      {
-        sectionname +=  `${sec}`
-      }else{
-        sectionname +=  `${sec},`
+      if (sectionname?.length - 1 == i) {
+        sectionname += `${sec}`;
+      } else {
+        sectionname += `${sec},`;
       }
-    })
+    });
     return sectionname;
-  }
+  };
 
   const handleTest = () => {
-    history.push(
-      `/assessment/${question_paper_id}/${assessmentId}/attempt/`
-    );
+    history.push(`/assessment/${question_paper_id}/${assessmentId}/attempt/`);
     console.log(test);
   };
 
   const handleTeststart = () => {
     var today = new Date().toISOString().replace('Z', '');
-    today = today.replace(/\.\d+/, "");
+    today = today.replace(/\.\d+/, '');
     console.log(today);
     let payload = {
       test_duration: testDuration,
       test_date: today,
-      id: assessmentId
-    }
+      id: assessmentId,
+    };
     axiosInstance
       // .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
       .put(`/assessment/update-test/`, payload)
       .then((res) => {
         console.log(res);
         if (res.data.status_code == 200) {
-          setAlert('success', 'Test Started')
-          setTestStart(true)
-          setConfirmAlert(false)
+          setAlert('success', 'Test Started');
+          setTestStart(true);
+          setConfirmAlert(false);
         } else {
-          setAlert('error', 'Failed to Start the Test')
-          setConfirmAlert(false)
+          setAlert('error', 'Failed to Start the Test');
+          setConfirmAlert(false);
         }
       })
       .catch((error) => {
         setAlert('error', error?.message);
-        setConfirmAlert(false)
+        setConfirmAlert(false);
       });
   };
 
   return (
-    <Drawer title = {testMode == 1 ? "Online" : "Offline"} zIndex={1300} width={'450px'} placement="right" onClose={onClosedrawer} open={open} visible={open}>
+    <Drawer
+      title={testMode == 1 ? 'Online' : 'Offline'}
+      zIndex={1300}
+      width={'450px'}
+      placement='right'
+      onClose={onClosedrawer}
+      open={open}
+      visible={open}
+    >
       {/* <div className='header-container'>
         <div
           className='primary-header-container'
@@ -350,52 +361,77 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
         </div>
       </div> */}
       <div>
-        <div className='row'>
-          <div className='col-md-10 d-flex ' style={{marginLeft : '-4%'}}>
-          Test Name : <p title= {testName} className='ml-2'>{testName?.length >20 ? testName.slice(0,20) + '...' : testName}</p>
+        <div className='row align-items-center'>
+          <div className='col-10'>
+            <div className='row'>
+              <div className='col-4 px-0'>
+                <span className='th-16'></span>Test Name:
+              </div>
+              <div className='col-8 pl-0'>
+                <span className='th-16'>{testName}</span>
+              </div>
+            </div>
+            {/* Test Name : <span>{testName}</span> */}
           </div>
-        {filterData?.status?.children !== "Completed" && <div className='col-md-2 d-flex justify-content-end'>
-          <Button color='primary' variant='contained' onClick={() => {
-            sessionStorage.setItem('createfilterdata',JSON.stringify(filterData))
-            history.push({
-              pathname :  '/create-assesment',
-              state : {
-                isEdit : true,
-                data : test,
-                filterData : JSON.stringify(filterData)
-              }
-            })
-          }} >
-          Edit
-          </Button>
-        </div>}
+          {filterData?.status?.children !== 'Completed' && (
+            <div className='col-md-2 d-flex justify-content-end'>
+              <Button
+                color='primary'
+                variant='contained'
+                onClick={() => {
+                  sessionStorage.setItem('createfilterdata', JSON.stringify(filterData));
+                  history.push({
+                    pathname: '/create-assesment',
+                    state: {
+                      isEdit: true,
+                      data: test,
+                      filterData: JSON.stringify(filterData),
+                    },
+                  });
+                }}
+              >
+                Edit
+              </Button>
+            </div>
+          )}
         </div>
-        <div className='row my-4'>
-        TestId : <Typography className='ml-2'>{test_id}</Typography>
+        <div className='row py-3'>
+          TestId : <Typography className='ml-2'>{test_id}</Typography>
         </div>
         <div className='row'>
-          Section :  
-        <p title= {getSection()} style={{ whiteSpace: 'nowrap' , overflow: 'hidden' , textOverflow: 'ellipsis' , fontSize: '15px' }}>
-            {
-              `${getSection().length > 25 ? getSection().slice(0,40) + '...' : getSection() }`
-            }</p>
+          Section :
+          <p
+            title={getSection()}
+            style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              fontSize: '15px',
+            }}
+          >
+            {`${
+              getSection().length > 25 ? getSection().slice(0, 40) + '...' : getSection()
+            }`}
+          </p>
         </div>
         <div className='parameters-container mt-2'>
-        {/* <div className='parameters-header'>
+          {/* <div className='parameters-header'>
           <span className='header-text font-lg font-center'>Test Parameters</span>
         </div> */}
-        <div className='parameters-content'>
-          <Grid className='pl-4 pt-2' container style={{ backgroundColor: '#F1F1F1' , border:'1px solid black' }}>
-            <Grid item md={3} className='parameter-cell-grid'>
-              <div className='parameter-cell'>
-                <p className='cell-header font-weight-bold'>
-                  Test type
-                </p>
-                <p className='cell-header left-align'>{testType}</p>
-              </div>
-            </Grid>
-            <Grid item md={6}></Grid>
-            {/* <Grid
+          <div className='parameters-content'>
+            <Grid
+              className='pl-4 pt-2'
+              container
+              style={{ backgroundColor: '#F1F1F1', border: '1px solid black' }}
+            >
+              <Grid item md={3} className='parameter-cell-grid'>
+                <div className='parameter-cell'>
+                  <p className='cell-header font-weight-bold'>Test type</p>
+                  <p className='cell-header left-align'>{testType}</p>
+                </div>
+              </Grid>
+              <Grid item md={6}></Grid>
+              {/* <Grid
               item
               md={4}
               className='parameter-cell-grid'
@@ -408,39 +444,29 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                 <p className='cell-header left-align'>{id}</p>
               </div>
             </Grid> */}
-            <Grid item md={3} className='parameter-cell-grid'>
-              <div className='parameter-cell'>
-                <p className='cell-header font-weight-bold'>
-                  Duration
-                </p>
-                <p className='cell-header left-align'>{testDuration}</p>
-              </div>
-            </Grid>
-            <div className='row mt-4'></div>
-            <Grid item md={3} className='parameter-cell-grid'>
-              <div className='parameter-cell'>
-                <p className='cell-header font-weight-bold'>
-                  Total marks
-                </p>
-                <p className='cell-header left-align'>{totalMark}</p>
-              </div>
-            </Grid>
-            <Grid item md={6}></Grid>
-            <Grid
-              item
-              md={3}
-              className='parameter-cell-grid'
-            >
-              <div className='parameter-cell'>
-                <p className='cell-header font-weight-bold'>
-                  Created
-                </p>
-                <p className='cell-header left-align'>
-                  {createdDate ? moment(createdDate).format('DD-MM-YYYY') : ''}
-                </p>
-              </div>
-            </Grid>
-            {/* <Grid item md={4} className='parameter-cell-grid'>
+              <Grid item md={3} className='parameter-cell-grid'>
+                <div className='parameter-cell'>
+                  <p className='cell-header font-weight-bold'>Duration</p>
+                  <p className='cell-header left-align'>{testDuration}</p>
+                </div>
+              </Grid>
+              <div className='row mt-4'></div>
+              <Grid item md={3} className='parameter-cell-grid'>
+                <div className='parameter-cell'>
+                  <p className='cell-header font-weight-bold'>Total marks</p>
+                  <p className='cell-header left-align'>{totalMark}</p>
+                </div>
+              </Grid>
+              <Grid item md={6}></Grid>
+              <Grid item md={3} className='parameter-cell-grid'>
+                <div className='parameter-cell'>
+                  <p className='cell-header font-weight-bold'>Created</p>
+                  <p className='cell-header left-align'>
+                    {createdDate ? moment(createdDate).format('DD-MM-YYYY') : ''}
+                  </p>
+                </div>
+              </Grid>
+              {/* <Grid item md={4} className='parameter-cell-grid'>
               <div className='parameter-cell'>
                 <p className='cell-header' style={{ color: '#ff6b6b' }}>
                   Updated
@@ -450,32 +476,39 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                 </p>
               </div>
             </Grid> */}
-          </Grid>
-          {(!testselection || !handleClose) &&
-           
-              <Grid container >
-                
-                   {/* <Grid item xs={12} style={{ margin: '4% 0' }} >
+            </Grid>
+            {(!testselection || !handleClose) && (
+              <Grid container>
+                {/* <Grid item xs={12} style={{ margin: '4% 0' }} >
                      <Button variant='contained' color='primary' onClick={handleData}>
                        Upload Marks
                      </Button>
                    </Grid> */}
-                  <div className='row mt-4'>
-                  {filterData?.status?.children === "Completed"  && test?.test_mode == 2 &&
-                    <div className='col-6-md'>
-                    <Button variant='contained' color='primary' onClick={()=> handleData()}>
-                      Upload Marks
-                     </Button>
-                    </div>}
-                    {enable && <div className='col-6-md ' style={{marginLeft : test?.test_mode == 2 ? '43%' : '0'}}>
-                    <Button variant='contained' color='primary' onClick={handleTest}>
-                    Preview
-                  </Button>
-                    </div>}
-                    
-                   
-                  </div>
-                  
+                <div className='row mt-4'>
+                  {filterData?.status?.children === 'Completed' &&
+                    test?.test_mode == 2 && (
+                      <div className='col-6-md'>
+                        <Button
+                          variant='contained'
+                          color='primary'
+                          onClick={() => handleData()}
+                        >
+                          Upload Marks
+                        </Button>
+                      </div>
+                    )}
+                  {enable && (
+                    <div
+                      className='col-6-md '
+                      style={{ marginLeft: test?.test_mode == 2 ? '43%' : '0' }}
+                    >
+                      <Button variant='contained' color='primary' onClick={handleTest}>
+                        Preview
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
                 {/* <Grid item xs={12} style={{ margin: '4% 0' }} >
                   <Button variant='contained' color='primary' onClick={handleTest}>
                     Preview
@@ -490,68 +523,87 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                     </>
                     : ''}
                 </Grid> */}
-                <Grid item xs={12} className={testType == 'Quiz' ? 'mt-4' : '' }>
-
-                  {testType == 'Quiz' && test?.test_mode == 1 ?
+                <Grid item xs={12} className={testType == 'Quiz' ? 'mt-4' : ''}>
+                  {testType == 'Quiz' && test?.test_mode == 1 ? (
                     <>
-                      {testDate == null ?
-                      <>
-                      {!testStart ?
-                        <Button variant='contained' color='primary' onClick={openStartModal}>
-                          Start Test
-                        </Button>
-                        : 
-                        <Button variant='contained' color='primary' disabled>
-                          In Progress
-                        </Button>
-                        }
+                      {testDate == null ? (
+                        <>
+                          {!testStart ? (
+                            <Button
+                              variant='contained'
+                              color='primary'
+                              onClick={openStartModal}
+                            >
+                              Start Test
+                            </Button>
+                          ) : (
+                            <Button variant='contained' color='primary' disabled>
+                              In Progress
+                            </Button>
+                          )}
                         </>
-                        :
-                        <Button variant='contained' disabled color='primary' >
+                      ) : (
+                        <Button variant='contained' disabled color='primary'>
                           Test Completed
                         </Button>
-                      }
+                      )}
                     </>
-                    : ''}
+                  ) : (
+                    ''
+                  )}
                 </Grid>
-                {enable && <Grid item xs={12} style={{marginTop:'5%'}}>
-                  <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
-                    <GetAppIcon fontSize="small" />
-                    Download Question Paper
-                  </Button>
-                </Grid>}
-                {((filterData?.status?.children === "Completed" || filterData?.status?.id === 2) || (testType == 'Quiz' && testDate != null)) && <Grid item xs={12} style={{margin : '4% 0'}}>
-                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
-                    <GetAppIcon fontSize="small" />
-                    Download Report
-                  </Button>
-                </Grid>}
+                {enable && (
+                  <Grid item xs={12} style={{ marginTop: '5%' }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => downloadAssessment()}
+                    >
+                      <GetAppIcon fontSize='small' />
+                      Download Question Paper
+                    </Button>
+                  </Grid>
+                )}
+                {(filterData?.status?.children === 'Completed' ||
+                  filterData?.status?.id === 2 ||
+                  (testType == 'Quiz' && testDate != null)) && (
+                  <Grid item xs={12} style={{ margin: '4% 0' }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleDownloadReport}
+                    >
+                      <GetAppIcon fontSize='small' />
+                      Download Report
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
-            }
+            )}
+          </div>
         </div>
       </div>
-      </div>
-       <Dialog open={confirmAlert} onClose={CancelStart}>
-           <DialogTitle id='draggable-dialog-title'>Confirm Start</DialogTitle>
-          <DialogContent>
-           <DialogContentText>
-             Once The Test Is Started, You Can't Stop It.
-           </DialogContentText>
-         </DialogContent>
-         <DialogActions>
-           <Button onClick={CancelStart} className='labelColor cancelButton'>
-             Cancel
-           </Button>
-           <Button
-             color='primary'
-             variant='contained'
-             style={{ color: 'white' }}
-             onClick={handleTeststart}
-           >
-             Start
-           </Button>
-         </DialogActions>
-       </Dialog>
+      <Dialog open={confirmAlert} onClose={CancelStart}>
+        <DialogTitle id='draggable-dialog-title'>Confirm Start</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Once The Test Is Started, You Can't Stop It.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={CancelStart} className='labelColor cancelButton'>
+            Cancel
+          </Button>
+          <Button
+            color='primary'
+            variant='contained'
+            style={{ color: 'white' }}
+            onClick={handleTeststart}
+          >
+            Start
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Drawer>
   );
 };
