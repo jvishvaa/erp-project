@@ -63,6 +63,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   };
   const [showInfo, setShowInfo] = useState(getInfoDefaultVal());
   const [testDate, setTestDate] = useState();
+  const [assessmentType , setAssessmentType] = useState()
   const { setAlert } = useContext(AlertNotificationContext);
   const query = new URLSearchParams(window.location.search);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -130,6 +131,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const handleShowInfo = (paperInfoObj) => {
     setShowInfo(paperInfoObj.id);
     setTestDate(paperInfoObj.test_date);
+    setAssessmentType(paperInfoObj?.test_type_name)
   };
   const [downloadTestId, setDownloadTestId] = useState(null);
   const downloadAssessment = useCallback(
@@ -250,6 +252,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
               <QuestionPaperInfo
                 assessmentId={showInfo}
                 assessmentDate={testDate}
+                assessmentType = {assessmentType}
                 key={showInfo}
                 loading={loading}
                 handleCloseInfo={handleCloseInfo}
