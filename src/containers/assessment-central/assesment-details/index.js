@@ -362,7 +362,7 @@ const AssesmentDetails = ({
       </div> */}
       <div>
         <div className='row align-items-center'>
-          <div className='col-10'>
+          <div className='col-10 px-0'>
             <div className='row'>
               <div className='col-4 px-0'>
                 <span className='th-16'></span>Test Name:

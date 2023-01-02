@@ -218,7 +218,11 @@ const AssesmentCard = ({
             name='allSelect'
           />
         )}
-        <div className='col-8 text-truncate pl-2'>{value?.test_name}</div>
+        <div className='col-8 text-truncate pl-2'>
+          <Tooltip title={<span>{value?.test_name}</span>} arrow placement='bottom'>
+            <span>{value?.test_name}</span>
+          </Tooltip>
+        </div>
 
         <div className='col-4 px-0'>
           <div className='d-flex align-items-center justify-content-center'>
@@ -339,7 +343,6 @@ const AssesmentCard = ({
               <span>{getSection()}</span>
             </Tooltip>
           </div>
-          \{/* <p className='completed'>Completed -30.12.2020</p> */}
           {value.test_date != null ? (
             <p className='scheduled' style={{ marginLeft: '10px' }}>
               {`Created On - ${moment(value.test_date).format('DD-MM-YYYY')}`}
