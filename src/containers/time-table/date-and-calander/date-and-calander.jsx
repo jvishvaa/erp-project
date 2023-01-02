@@ -21,7 +21,7 @@ import {
 } from './apis';
 import EditPeriodDialog from './editPeriodDialog';
 import ConfirmPopOver from '../ConfirmPopOver.js';
-    import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 // import NewTimeTable from 'components/newTimeTable.js';
 
@@ -55,11 +55,11 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   addtimetablebtn: {
-    backgroundColor:  `${theme.palette.v2Color2.primaryV2} !important`,
+    backgroundColor: `${theme.palette.v2Color2.primaryV2} !important`,
     marginTop: '5px',
     marginLeft: '12%',
     '&:hover': {
-      backgroundColor:  `${theme.palette.v2Color2.primaryV2} !important`,
+      backgroundColor: `${theme.palette.v2Color2.primaryV2} !important`,
     },
   },
   addperiodbutton: {
@@ -74,11 +74,9 @@ const useStyles = makeStyles((theme) => ({
   datepicker: {
     '& .MuiInputBase-input': {
       // color: theme.palette.secondary.main,
-      padding: "10px",
-    }
-
+      padding: '10px',
+    },
   },
-  
 }));
 const DateAndCalander = (props) => {
   const classes = useStyles();
@@ -102,16 +100,12 @@ const DateAndCalander = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState();
   const [showTableView, setShowTableView] = useState(true);
-  const [collidingIDs,setCollidingIDs] = useState()
-  const [isTTCollided,setIsTTCollided] = useState(false)
-  const [collidingMsg,setCollidingMsg] = useState()
-  const [isEdit,setIsEdit] = useState(false)
-  const [selectedItem , setSelectedItem] = useState()
-  const { user_level,is_superuser } = JSON.parse(localStorage.getItem('userDetails'));
-
-
-
-
+  const [collidingIDs, setCollidingIDs] = useState();
+  const [isTTCollided, setIsTTCollided] = useState(false);
+  const [collidingMsg, setCollidingMsg] = useState();
+  const [isEdit, setIsEdit] = useState(false);
+  const [selectedItem, setSelectedItem] = useState();
+  const { user_level, is_superuser } = JSON.parse(localStorage.getItem('userDetails'));
 
   function convert(str) {
     var date = new Date(str),
@@ -150,11 +144,17 @@ const DateAndCalander = (props) => {
           ? firstDateOfWeek + 6
           : firstDateOfWeek;
       let setConvertDate = convert(currDate.setDate(setDate));
-      let pType = item?.period_type_name === "Examination"? 'Exam': item?.period_type_name
-      let subName = item?.subject_name
-      let title = (item?.period_type === 3 || item?.period_type === 2) ? subName ? `${pType} : ${subName}` : `${pType}` : item?.period_type_name
+      let pType =
+        item?.period_type_name === 'Examination' ? 'Exam' : item?.period_type_name;
+      let subName = item?.subject_name;
+      let title =
+        item?.period_type === 3 || item?.period_type === 2
+          ? subName
+            ? `${pType} : ${subName}`
+            : `${pType}`
+          : item?.period_type_name;
       let tempObj = {
-        title: title == "Break" ? title  : title +" "+ "(" + item?.teacher_name + ")",
+        title: title == 'Break' ? title : title + ' ' + '(' + item?.teacher_name + ')',
         start: setConvertDate + 'T' + item?.start_time,
         end: setConvertDate + 'T' + item?.end_time,
         extendedProps: item,
@@ -167,7 +167,7 @@ const DateAndCalander = (props) => {
 
   const createNewTable = () => {
     setShowTable(false);
-    props.HideAutocomplete(false)
+    props.HideAutocomplete(false);
     setnewTable(true);
     setTimeTableName('');
     setselectedStartTime(new Date('0'));
@@ -180,22 +180,21 @@ const DateAndCalander = (props) => {
     try {
       const data = await getTTList(id);
       setTimeTableList(data?.result);
-      setLoading(false)
+      setLoading(false);
     } catch (e) {
       console.log(e);
     }
   };
   useEffect(() => {
-    setLoading(true)
-      ttList(props.section_mappingId);
-  }, [props.section_mappingId,showTableView]);
+    setLoading(true);
+    ttList(props.section_mappingId);
+  }, [props.section_mappingId, showTableView]);
 
   useEffect(() => {
     if (props.getTTFlag) {
       getTT(ttId);
     }
   }, [props.getTTFlag]);
-
 
   const handleCancel = () => {
     setnewTable(false);
@@ -219,7 +218,7 @@ const DateAndCalander = (props) => {
     props.ttId(id);
     props.setGetTTFlag(false);
     setShowTable(true);
-    props.HideAutocomplete(true)
+    props.HideAutocomplete(true);
     setShowAddPeriodButton(true);
     if (data?.result?.length) ResponseConverter(data?.result);
     else setTimeTableEvents([]);
@@ -228,7 +227,7 @@ const DateAndCalander = (props) => {
     setSelectedTable(value);
     if (!value) {
       setShowTable(false);
-      props.HideAutocomplete(false)
+      props.HideAutocomplete(false);
       setShowAddPeriodButton(false);
       return;
     }
@@ -245,25 +244,26 @@ const DateAndCalander = (props) => {
 
   const createTT = async (payload) => {
     let data = await createTimeTable(payload);
-    if(data?.status_code === 200){
+    if (data?.status_code === 200) {
       const list = await getTTList(props?.section_mappingId);
       setTimeTableList(list?.result);
-        list.result.forEach(item => {
-          if(item?.id === data?.result?.id) {
-              handleTimeTable('',item)
-          }
-        })
-        setLoading(false)
-        setShowTable(true);
-        props.HideAutocomplete(true)
-        setShowAddPeriodButton(true);
+      list.result.forEach((item) => {
+        if (item?.id === data?.result?.id) {
+          handleTimeTable('', item);
+        }
+      });
+      setLoading(false);
+      setShowTable(true);
+      props.HideAutocomplete(true);
+      setShowAddPeriodButton(true);
+      setnewTable(false);
+      setShowTableView(false);
       setAlert('success', 'TimeTable created successfully');
       console.log('Time Table Created SuccessFully', data);
-    }else{
-      setLoading(false)
+    } else {
+      setLoading(false);
       setAlert('warning', data?.response?.data?.developer_msg);
     }
-    
   };
 
   const handlesetPeriodDetails = (data) => {
@@ -277,10 +277,10 @@ const DateAndCalander = (props) => {
   };
 
   const handleSubmit = () => {
-    let start_date = `${moment(selectedStartDate).format('YYYY-MM-DD')}`
-    let end_date = `${moment(selectedEndDate).format('YYYY-MM-DD')}`
-    let start_time = `${moment(selectedStartTime).format('HH:mm:00')}`
-    let end_time = `${moment(selectedEndTime).format('HH:mm:00')}`
+    let start_date = `${moment(selectedStartDate).format('YYYY-MM-DD')}`;
+    let end_date = `${moment(selectedEndDate).format('YYYY-MM-DD')}`;
+    let start_time = `${moment(selectedStartTime).format('HH:mm:00')}`;
+    let end_time = `${moment(selectedEndTime).format('HH:mm:00')}`;
     if (!TimeTableName) {
       setAlert('error', 'Please Add Time Table Name');
       return false;
@@ -296,8 +296,8 @@ const DateAndCalander = (props) => {
     } else if (!selectedEndTime) {
       setAlert('error', 'Please Select School Ending Time');
       return false;
-    } else if(!props?.grade_Name){
-      setAlert('error','Please Select Grade');
+    } else if (!props?.grade_Name) {
+      setAlert('error', 'Please Select Grade');
       return false;
     } else if (start_date === end_date) {
       setAlert('error', 'Please Change School Ending Date or Starting Date');
@@ -306,7 +306,7 @@ const DateAndCalander = (props) => {
       setAlert('error', 'Please Change School Ending Time or Starting Time');
       return false;
     }
-    
+
     let payload = {
       ttname: TimeTableName,
       start_date: start_date,
@@ -317,12 +317,10 @@ const DateAndCalander = (props) => {
     };
     // setselectedEndTime(`${moment(selectedEndTime).format('HH:mm:00')}`);
     // setselectedStartTime(`${moment(selectedStartTime).format('HH:mm:00')}`);
-    setLoading(true)
+    setLoading(true);
     handleTimeTable('', null);
-    setnewTable(false);
     setTimeTableEvents([]);
     createTT(payload);
-    setShowTableView(false)
   };
 
   const calendarBtnHideFix = () => {
@@ -345,7 +343,6 @@ const DateAndCalander = (props) => {
       if (data.status_code === 200) {
         setAlert('success', data.message);
         ttList(props.section_mappingId);
-
       } else {
         setAlert('warning', data?.response?.data?.developer_msg);
       }
@@ -356,7 +353,7 @@ const DateAndCalander = (props) => {
       if (data?.status_code === 200) {
         setAlert('success', data?.message);
         setShowTable(false);
-        props.HideAutocomplete(false)
+        props.HideAutocomplete(false);
         ttList(props.section_mappingId);
         setShowAddPeriodButton(false);
         handleTimeTable('', null);
@@ -371,94 +368,95 @@ const DateAndCalander = (props) => {
         status: temp_status,
       };
       let data = await editTimeTable(selectedTable?.id, payload);
-      
+
       if (data?.status_code === 200) {
         setAlert('success', data?.message);
         setShowTable(false);
-        props.HideAutocomplete(false)
+        props.HideAutocomplete(false);
         ttList(props.section_mappingId);
         setShowAddPeriodButton(false);
         handleTimeTable('', null);
       } else {
         // setAlert('warning', data?.response?.data?.developer_msg);
-        setCollidingIDs(data?.response?.data?.result?.colliding_id)
-        setCollidingMsg(data?.response?.data?.message)
+        setCollidingIDs(data?.response?.data?.result?.colliding_id);
+        setCollidingMsg(data?.response?.data?.message);
         // console.log(data?.response?.data?.result?.colliding_id)
-        setIsTTCollided(true)
+        setIsTTCollided(true);
       }
     }
     setShowTableView(true);
     setShowTable(false);
-    props.HideAutocomplete(false)
+    props.HideAutocomplete(false);
   };
 
-  const handleCollide = async() => {
-   let payload = {
-      "colliding_id" : collidingIDs
+  const handleCollide = async () => {
+    let payload = {
+      colliding_id: collidingIDs,
+    };
+    let data = await collidingPeriod(payload);
+    if (data?.status_code == 200) {
+      setAlert('success', data?.message);
     }
-let data = await collidingPeriod(payload);
-    if(data?.status_code == 200){
-      setAlert("success", data?.message)
-    }
-  }
+  };
 
   const handleBack = () => {
     setShowTable(false);
-    props.HideAutocomplete(false)
+    props.HideAutocomplete(false);
     setShowTableView(true);
-  }
-  const handleOperation = (operation,value) =>{
-    if(operation === "deActive"){
-      setAlert("warning", "Please activate other timeTable")
+  };
+  const handleOperation = (operation, value) => {
+    if (operation === 'deActive') {
+      setAlert('warning', 'Please activate other timeTable');
       return;
     }
-    if(operation === "active" && value?.status === 1){
-      setAlert("warning", "Please Publish Your TimeTable First")
-    } else if(operation === 'edit' && value?.status === 2){
-      setAlert("warning", "Time Table is Already Published")
-    }else if(operation === 'edit' && value?.status === 1){
-      setIsEdit(true)
+    if (operation === 'active' && value?.status === 1) {
+      setAlert('warning', 'Please Publish Your TimeTable First');
+    } else if (operation === 'edit' && value?.status === 2) {
+      setAlert('warning', 'Time Table is Already Published');
+    } else if (operation === 'edit' && value?.status === 1) {
+      setIsEdit(true);
       // setSelectedItem(value)
       setSelectedTable(value);
-    }else{
+    } else {
       setSelectedTable(value);
       setConfirmMessage(operation);
       setOpenModal(true);
     }
-  }
+  };
 
-  const handleEditTT = () => {
-
-  }
+  const handleEditTT = () => {};
   return (
     <>
       {showTableView && (
         <>
-        {(user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
-          color='primary'
-          style={{marginBottom:'10px'}}
-          variant='contained'
-          onClick={createNewTable}
-        >
-          Create New Timetable
-        </Button>}
-        { TimeTableList?.length > 0 && <TableViews 
-          TimeTableList={TimeTableList} 
-          handleView={handleTimeTable} 
-          handleOperation={handleOperation}
-          user_level = {user_level}
-          teacherView = {props?.teacherView}
-          is_superuser = {is_superuser}
-        />}
+          {(user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) &&
+            props?.teacherView && (
+              <Button
+                color='primary'
+                style={{ marginBottom: '10px' }}
+                variant='contained'
+                onClick={createNewTable}
+              >
+                Create New Timetable
+              </Button>
+            )}
+          {TimeTableList?.length > 0 && (
+            <TableViews
+              TimeTableList={TimeTableList}
+              handleView={handleTimeTable}
+              handleOperation={handleOperation}
+              user_level={user_level}
+              teacherView={props?.teacherView}
+              is_superuser={is_superuser}
+            />
+          )}
         </>
       )}
-      {
-        TimeTableList?.length === 0 && <NoFilterData data={"No Data Found"}/>
-      }
+      {TimeTableList?.length === 0 && <NoFilterData data={'No Data Found'} />}
 
-    { showTableView === false && (
-      <div className='table-header'>
-        {/* <Grid item xs={3} sm={3} md={3}>
+      {showTableView === false && (
+        <div className='table-header'>
+          {/* <Grid item xs={3} sm={3} md={3}>
           <Autocomplete
             size='small'
             style={{ width: '100%', marginLeft: '10%' }}
@@ -473,7 +471,7 @@ let data = await collidingPeriod(payload);
             )}
           />
         </Grid> */}
-        {/* <Grid item xs={3} sm={3} md={3}>
+          {/* <Grid item xs={3} sm={3} md={3}>
           <Tooltip title='Create TimeTable' placement='bottom' arrow>
             <IconButton
               size='small'
@@ -485,15 +483,15 @@ let data = await collidingPeriod(payload);
             </IconButton>
           </Tooltip>
         </Grid> */}
-        <Grid item xs={12} sm={12} md={12}>
-          {props.teacherView &&
-          addPeriodButton &&
-          selectedTable?.status == 1 &&
-          showTable ? (
-            <>
-            <div style={{display:'flex'}}>
-             <Grid item xs={2} sm={2} md={2}>
-             {/* {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
+          <Grid item xs={12} sm={12} md={12}>
+            {props.teacherView &&
+            addPeriodButton &&
+            selectedTable?.status == 1 &&
+            showTable ? (
+              <>
+                <div style={{ display: 'flex' }}>
+                  <Grid item xs={2} sm={2} md={2}>
+                    {/* {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
               color='primary'
               variant='contained'
               style = {{marginLeft : '17%'}}
@@ -504,37 +502,43 @@ let data = await collidingPeriod(payload);
             >
               Publish
             </Button>} */}
-            </Grid>
-            <Grid item xs={2} sm={2} md={2} style={{marginLeft : '72%'}}>
-            {(user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView &&<Button
-              color='primary'
-              // className={classes.addperiodbutton}
-              variant='contained'
-              onClick={() => handleOpenNewPeriod()}
-            >
-              Add Period
-            </Button>}
-            </Grid>
-           </div>
-            </>
-          ) : (
-            <></>
-          )}
-        </Grid>
+                  </Grid>
+                  <Grid item xs={2} sm={2} md={2} style={{ marginLeft: '72%' }}>
+                    {(user_level === 1 ||
+                      user_level === 8 ||
+                      user_level === 10 ||
+                      is_superuser) &&
+                      props?.teacherView && (
+                        <Button
+                          color='primary'
+                          // className={classes.addperiodbutton}
+                          variant='contained'
+                          onClick={() => handleOpenNewPeriod()}
+                        >
+                          Add Period
+                        </Button>
+                      )}
+                  </Grid>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+          </Grid>
           <Grid item xs={3} sm={3} md={1}>
             <Button
               color='primary'
               // className={classes.addperiodbutton}
               // style={{ marginLeft: '2%' }}
               variant='contained'
-              onClick={()=>handleBack()}
+              onClick={() => handleBack()}
             >
               Back
             </Button>
           </Grid>
         </div>
       )}
-      
+
       {/* <Divider variant='middle' className='date-week-underline' /> */}
       {newTable && (
         <Dialog
@@ -544,24 +548,24 @@ let data = await collidingPeriod(payload);
           aria-labelledby='form-dialog-title'
         >
           <DialogTitle id='form-dialog-title'>
-            <div style={{display:'flex', justifyContent:'space-between'}}>
-              <div>
-            Create Time Table 
-
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div>Create Time Table</div>
+              <div style={{ marginRight: '15px' }}>
+                <IconButton
+                  onClick={handleCancel}
+                  aria-label='close'
+                  size='large'
+                  style={{ marginLeft: '72%' }}
+                >
+                  <HighlightOffIcon
+                    // style={{ color: 'white', backgroundColor: 'black' }}
+                    fontSize='inherit'
+                  />
+                </IconButton>
               </div>
-              <div style={{marginRight:'15px'}}>
-            <IconButton onClick={handleCancel} aria-label='close' size='large' style={{marginLeft:"72%"}}>
-                <HighlightOffIcon
-                  // style={{ color: 'white', backgroundColor: 'black' }}
-                  fontSize='inherit'
-                />
-              </IconButton>
-
-              </div>
-
             </div>
-            </DialogTitle>
-            <hr/>
+          </DialogTitle>
+          <hr />
           <div className='dialog-data-container'>
             <div className={classes.formTextFields}>
               <TextField
@@ -651,11 +655,11 @@ let data = await collidingPeriod(payload);
                 size='small'
                 value={props?.grade_Name}
                 // onChange={(e) => setTimeTableName(e.target.value)}
-                disabled= {true}
+                disabled={true}
               />
             </div>
           </div>
-          <hr/>
+          <hr />
           <DialogActions>
             <Button color='primary' variant='contained' onClick={createNewTable}>
               Clear
@@ -745,8 +749,8 @@ let data = await collidingPeriod(payload);
           section_mappingId={props.section_mappingId}
           ttId={ttId}
           selectedTableId={selectedTable?.status}
-          user_level = {user_level}
-          is_superuser = {is_superuser}
+          user_level={user_level}
+          is_superuser={is_superuser}
           teacherView={props?.teacherView}
         />
       )}
@@ -764,21 +768,22 @@ let data = await collidingPeriod(payload);
           submit={handleCollide}
           openModal={isTTCollided}
           setOpenModal={setIsTTCollided}
-          operation={"custom"}
-          message = {collidingMsg}
+          operation={'custom'}
+          message={collidingMsg}
         />
       )}
-       { isEdit &&
-       <TimeTableDialog
-       selectedItem = {selectedTable}
-       editTable = {isEdit}
-       setIsEdit = {setIsEdit}
-       getTTList = {ttList}
-       gradeName = {props?.grade_Name}
-       section_mappingId = {props.section_mappingId}  
-      />}
+      {isEdit && (
+        <TimeTableDialog
+          selectedItem={selectedTable}
+          editTable={isEdit}
+          setIsEdit={setIsEdit}
+          getTTList={ttList}
+          gradeName={props?.grade_Name}
+          section_mappingId={props.section_mappingId}
+        />
+      )}
       {loading && <Loader />}
-    </> 
+    </>
   );
 };
 
