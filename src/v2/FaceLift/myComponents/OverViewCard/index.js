@@ -53,7 +53,7 @@ const OverviewCard = (props) => {
         return curriculamGradeRoute();
       case 'Academic Report':
         return handleTestScore();
-      case 'Attendance Report':
+      case 'Overall Attendance':
         return handleCurriculumCompletion(false);
     }
   };
@@ -98,7 +98,7 @@ const OverviewCard = (props) => {
           <img src={icon} />
         </div>
         <div className='my-2 th-fw-500 th-14 th-black-1 pr-4'>{title}</div>
-        {title === 'Attendance Report' && (
+        {title === 'Overall Attendance' && (
           <>
             {' '}
             <div className='th-20 th-fw-600 pb-2'>

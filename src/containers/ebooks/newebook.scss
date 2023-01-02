@@ -27,3 +27,9 @@
         cursor: default;
     }
 }
+.ibookWhole{
+    .perspectiveContainer{
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+}

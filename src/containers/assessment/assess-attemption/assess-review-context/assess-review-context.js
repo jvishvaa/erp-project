@@ -48,6 +48,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   const [assessmentResultDetails, setAssessmentResultDetails] = useState();
 
   const [assessmentId, setAssessmentId] = React.useState();
+  const [assessmentType, setAssessmentType] = React.useState();
   const [assessmentDate, setAssessmentDate] = React.useState();
   const [assessmentResult, fetchAssessmentResultHook] = useFetcher(
     assessmentResultHookProps
@@ -182,11 +183,11 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   function fetchAssessmentResult(params = {}, callbacks) {
     const { onResolve: onResolveInstacnceOne = () => {} } = callbacks || {};
     const { test_id: testId, user_id: userId, test_date: testDate } = params || {};
-    if ([!!testId, !!userId, !!testDate].includes(false)) {
-      // eslint-disable-next-line no-alert
-      window.alert('param not fed');
-      return null;
-    }
+    // if ([!!testId, !!userId, !!testDate].includes(false)) {
+    //   // eslint-disable-next-line no-alert
+    //   window.alert('param not fed');
+    //   return null;
+    // }
     const query = new URLSearchParams(window.location.search);
     const dataProp = {
       queryParamObj: {
@@ -209,12 +210,16 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   }
   React.useEffect(() => {
     const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
-    if (assessmentId && assessmentDate) {
-      fetchAssessmentResult({
+    if (assessmentId) {
+      let params = {
         user_id: user,
         test_id: assessmentId,
-        test_date: assessmentDate,
-      });
+        // test_date: assessmentDate,
+      }
+      if(assessmentDate && assessmentType != "Practice Test" && assessmentType != "Open Test"){
+        params.test_date = assessmentDate
+      }
+      fetchAssessmentResult(params);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assessmentId, assessmentDate]);
@@ -276,6 +281,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
         fetchAssessmentResult,
         assessmentId,
         setAssessmentId,
+        setAssessmentType,
         setAssessmentDate,
         questionsDataObj,
 
