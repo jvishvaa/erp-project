@@ -5,6 +5,7 @@ import { Button, useTheme, IconButton } from '@material-ui/core';
 import { ContainerContext } from '../../../Layout';
 import useStyles from './useStyles';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { Badge } from 'antd';
 
 const QuestionPaperCard = ({
   // testTitle,
@@ -20,6 +21,7 @@ const QuestionPaperCard = ({
   test_name: testTitle,
   question_paper: questionPaperObj = {},
   test_mode,
+  test_type_name,
 }) => {
   const themeContext = useTheme();
   // const { setAlert } = useContext(AlertNotificationContext);
@@ -36,16 +38,17 @@ const QuestionPaperCard = ({
 
   return (
     <Paper elevation={2} className={classes.paper} style={{ background: test_mode == 2 ? '#eaeaea' : '' }} >
-      <div className={classes.cardWrapper}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Badge.Ribbon text={test_type_name}>
+      <div className={classes.cardWrapper}>      
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop:'5%' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', width: '90%' }}>
             <h3 className={classes.cardTitleHeading}  >{testTitle}</h3>
             <h4>{test_mode == 1 ? "Online" : test_mode == 2 ? "Offline" : ''}</h4>
           </div>
-          <h4 className={classes.cardDescription}>
+          {/* <h4 className={classes.cardDescription}> */}
             {/* Some test name, (This includes module) */}
             {/* {testDescription} */}
-          </h4>
+          {/* </h4> */}
           {/* <div style={{ float: 'right' }}>
             {isTestAttempted && (
               <IconButton
@@ -104,7 +107,9 @@ const QuestionPaperCard = ({
             View more
           </Button>
         </div>
+        
       </div>
+      </Badge.Ribbon>
     </Paper>
   );
 };

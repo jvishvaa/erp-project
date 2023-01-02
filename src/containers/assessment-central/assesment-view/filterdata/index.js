@@ -707,11 +707,11 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category?.value 
                   </Form.Item>
                 </div>
                 <div className='col-md-2 col-6 px-2'>
-                    <div className='mb-2 text-left'>Erp Category</div>
+                    <div className='mb-2 text-left'>ERP Category</div>
                     <Form.Item name='erpCategory'>
                       <Select
                         allowClear
-                        placeholder='Erp Category'
+                        placeholder='ERP Category'
                         getPopupContainer={(trigger) => trigger.parentNode}
                         showSearch
                         optionFilterProp='children'
