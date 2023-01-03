@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 
-const GeneralDiary = ({ isSubstituteClass }) => {
+const GeneralDiary = ({ isSubstituteDiary }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -115,7 +115,7 @@ const GeneralDiary = ({ isSubstituteClass }) => {
     };
     axios
       .get(`${endpoints.academics.grades}`, {
-        params: { ...params, ...(isSubstituteClass ? { is_substitue_teacher: 1 } : {}) },
+        params: { ...params, ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}) },
       })
       .then((result) => {
         if (result?.data?.status_code == 200) {
@@ -166,7 +166,9 @@ const GeneralDiary = ({ isSubstituteClass }) => {
       dairy_type: 1,
       documents: uploadedFiles,
     };
-
+    if (isSubstituteDiary) {
+      payload['is_substitute_diary'] = true;
+    }
     axios
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {

@@ -148,7 +148,7 @@ const Diary = () => {
                       history.push({
                         pathname: '/create/diary',
                         state: {
-                          isSubstituteClass: false,
+                          isSubstituteDiary: false,
                         },
                       })
                     }
@@ -169,7 +169,7 @@ const Diary = () => {
                           history.push({
                             pathname: '/create/diary',
                             state: {
-                              isSubstituteClass: true,
+                              isSubstituteDiary: true,
                             },
                           })
                         }

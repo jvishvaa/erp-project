@@ -424,13 +424,13 @@ const DateAndCalander = (props) => {
     }
   };
 
-  const handleEditTT = () => {};
   return (
     <>
       {showTableView && (
         <>
           {(user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) &&
-            props?.teacherView && (
+            props?.teacherView &&
+            props?.grade_Name && (
               <Button
                 color='primary'
                 style={{ marginBottom: '10px' }}
@@ -440,7 +440,7 @@ const DateAndCalander = (props) => {
                 Create New Timetable
               </Button>
             )}
-          {TimeTableList?.length > 0 && (
+          {TimeTableList?.length > 0 && props?.grade_Name && (
             <TableViews
               TimeTableList={TimeTableList}
               handleView={handleTimeTable}
@@ -452,92 +452,8 @@ const DateAndCalander = (props) => {
           )}
         </>
       )}
+      {!props?.grade_Name && <NoFilterData selectfilter={true} />}
       {TimeTableList?.length === 0 && <NoFilterData data={'No Data Found'} />}
-
-      {showTableView === false && (
-        <div className='table-header'>
-          {/* <Grid item xs={3} sm={3} md={3}>
-          <Autocomplete
-            size='small'
-            style={{ width: '100%', marginLeft: '10%' }}
-            id='timetable'
-            value={selectedTable || []}
-            options={TimeTableList || []}
-            getOptionLabel={(option) => option?.ttname}
-            // getOptionSelected={(option, value) => option?.id == value?.id}
-            onChange={handleTimeTable}
-            renderInput={(params) => (
-              <TextField {...params} variant='outlined' label='Time Table' />
-            )}
-          />
-        </Grid> */}
-          {/* <Grid item xs={3} sm={3} md={3}>
-          <Tooltip title='Create TimeTable' placement='bottom' arrow>
-            <IconButton
-              size='small'
-              variant='contained'
-              onClick={createNewTable}
-              className={classes.addtimetablebtn}
-            >
-              <AddIcon style={{ color: '#fff' }} />
-            </IconButton>
-          </Tooltip>
-        </Grid> */}
-          <Grid item xs={12} sm={12} md={12}>
-            {props.teacherView &&
-            addPeriodButton &&
-            selectedTable?.status == 1 &&
-            showTable ? (
-              <>
-                <div style={{ display: 'flex' }}>
-                  <Grid item xs={2} sm={2} md={2}>
-                    {/* {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
-              color='primary'
-              variant='contained'
-              style = {{marginLeft : '17%'}}
-              onClick={() => {
-                setConfirmMessage('publish');
-                setOpenModal(true);
-              }}
-            >
-              Publish
-            </Button>} */}
-                  </Grid>
-                  <Grid item xs={2} sm={2} md={2} style={{ marginLeft: '72%' }}>
-                    {(user_level === 1 ||
-                      user_level === 8 ||
-                      user_level === 10 ||
-                      is_superuser) &&
-                      props?.teacherView && (
-                        <Button
-                          color='primary'
-                          // className={classes.addperiodbutton}
-                          variant='contained'
-                          onClick={() => handleOpenNewPeriod()}
-                        >
-                          Add Period
-                        </Button>
-                      )}
-                  </Grid>
-                </div>
-              </>
-            ) : (
-              <></>
-            )}
-          </Grid>
-          <Grid item xs={3} sm={3} md={1}>
-            <Button
-              color='primary'
-              // className={classes.addperiodbutton}
-              // style={{ marginLeft: '2%' }}
-              variant='contained'
-              onClick={() => handleBack()}
-            >
-              Back
-            </Button>
-          </Grid>
-        </div>
-      )}
 
       {/* <Divider variant='middle' className='date-week-underline' /> */}
       {newTable && (
@@ -684,6 +600,91 @@ const DateAndCalander = (props) => {
             {TimeTableName} - ({`${moment(selectedStartDate).format('MMMM D[,] YYYY')}`} -{' '}
             {`${moment(selectedEndDate).format('MMMM D[,] YYYY')}`})
           </h2>
+
+          {showTableView === false && (
+            <div className='table-header'>
+              {/* <Grid item xs={3} sm={3} md={3}>
+          <Autocomplete
+            size='small'
+            style={{ width: '100%', marginLeft: '10%' }}
+            id='timetable'
+            value={selectedTable || []}
+            options={TimeTableList || []}
+            getOptionLabel={(option) => option?.ttname}
+            // getOptionSelected={(option, value) => option?.id == value?.id}
+            onChange={handleTimeTable}
+            renderInput={(params) => (
+              <TextField {...params} variant='outlined' label='Time Table' />
+            )}
+          />
+        </Grid> */}
+              {/* <Grid item xs={3} sm={3} md={3}>
+          <Tooltip title='Create TimeTable' placement='bottom' arrow>
+            <IconButton
+              size='small'
+              variant='contained'
+              onClick={createNewTable}
+              className={classes.addtimetablebtn}
+            >
+              <AddIcon style={{ color: '#fff' }} />
+            </IconButton>
+          </Tooltip>
+        </Grid> */}
+              <Grid item xs={12} sm={12} md={12}>
+                {props.teacherView &&
+                addPeriodButton &&
+                selectedTable?.status == 1 &&
+                showTable ? (
+                  <>
+                    <div style={{ display: 'flex' }}>
+                      <Grid item xs={2} sm={2} md={2}>
+                        {/* {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
+              color='primary'
+              variant='contained'
+              style = {{marginLeft : '17%'}}
+              onClick={() => {
+                setConfirmMessage('publish');
+                setOpenModal(true);
+              }}
+            >
+              Publish
+            </Button>} */}
+                      </Grid>
+                      <Grid item xs={2} sm={2} md={2} style={{ marginLeft: '72%' }}>
+                        {(user_level === 1 ||
+                          user_level === 8 ||
+                          user_level === 10 ||
+                          is_superuser) &&
+                          props?.teacherView && (
+                            <Button
+                              color='primary'
+                              // className={classes.addperiodbutton}
+                              variant='contained'
+                              onClick={() => handleOpenNewPeriod()}
+                            >
+                              Add Period
+                            </Button>
+                          )}
+                      </Grid>
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Grid>
+              <Grid item xs={3} sm={3} md={1}>
+                <Button
+                  color='primary'
+                  // className={classes.addperiodbutton}
+                  // style={{ marginLeft: '2%' }}
+                  variant='contained'
+                  onClick={() => handleBack()}
+                >
+                  Back
+                </Button>
+              </Grid>
+            </div>
+          )}
 
           <MyCalendar
             defaultView={'timeGridWeek'}
