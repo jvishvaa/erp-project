@@ -167,7 +167,7 @@ const AssessmentView = () => {
     if (subject || !erpCategory) {
       requestURL += `&subjects=${subject?.value}`;
     }
-    if (!subject && erpCategory) {
+    if (!subject && erpCategory?.value != '0') {
       requestURL += `&category=${erpCategory?.value}`; //isErpCentral?.flag ? erpCategory?.central_category_id : erpCategory?.erp_category_id
     }
     handleGetQuestionPapers(newValue, requestURL);

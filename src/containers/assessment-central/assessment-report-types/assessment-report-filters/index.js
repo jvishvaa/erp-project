@@ -789,7 +789,7 @@ const AssessmentReportFilters = ({
         const blob = new Blob([data], {
           type: 'application/pdf',
         });
-        FileSaver.saveAs(blob, `Quiz_Report${new Date()}.pdf`);
+        FileSaver.saveAs(blob, `Test_Report${new Date()}.pdf`);
       } catch (error) {
         setAlert('error', 'Failed to download attendee list');
       }
