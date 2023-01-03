@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardWrapper: {
     display: 'flex',
-    padding: '15px',
+    // padding: '15px',
     flexDirection: 'column',
     justifyContent: 'space-between',
     '&:hover': {
@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardTitleHeading: {
     margin: 2,
+    fontSize : '25px',
     color: theme.palette.primary.main,
     fontFamily: 'Andika New Basic, sans- serif',
   },
@@ -67,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    height:'50px'
   },
   cardStartButton: {
     // background: '#FF6B6B',

@@ -5,7 +5,7 @@ import { Button, useTheme, IconButton } from '@material-ui/core';
 import { ContainerContext } from '../../../Layout';
 import useStyles from './useStyles';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { Badge } from 'antd';
+import { Badge, Card } from 'antd';
 
 const QuestionPaperCard = ({
   // testTitle,
@@ -39,11 +39,11 @@ const QuestionPaperCard = ({
   return (
     <Paper elevation={2} className={classes.paper} style={{ background: test_mode == 2 ? '#eaeaea' : '' }} >
       <Badge.Ribbon text={test_type_name}>
+      <Card title={test_mode == 1 ? "Online" : test_mode == 2 ? "Offline" : ''} bodyStyle={{padding: "10px 20px"}}>
       <div className={classes.cardWrapper}>      
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop:'5%' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '90%' }}>
-            <h3 className={classes.cardTitleHeading}  >{testTitle}</h3>
-            <h4>{test_mode == 1 ? "Online" : test_mode == 2 ? "Offline" : ''}</h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <p title = {testTitle} className={classes.cardTitleHeading} >{testTitle?.length > 25 ? `${testTitle.slice(0,20)}...` : testTitle}</p>
           </div>
           {/* <h4 className={classes.cardDescription}> */}
             {/* Some test name, (This includes module) */}
@@ -109,6 +109,7 @@ const QuestionPaperCard = ({
         </div>
         
       </div>
+      </Card>
       </Badge.Ribbon>
     </Paper>
   );
