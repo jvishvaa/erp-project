@@ -15,7 +15,13 @@ import DialogActions from '@material-ui/core/DialogActions';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
 import { Drawer, Tooltip, Typography } from 'antd';
+import { useFormik } from 'formik';
+import {  Form, Select,  } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import Loader from 'components/loader/loader';
+
+const { Option } = Select;
+
 
 const AssesmentDetails = ({
   test,
@@ -25,11 +31,14 @@ const AssesmentDetails = ({
   handleClose,
   testselection,
   reportLoad,
+  quizAccess,
+  userLevel
 }) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   console.log(filterData, 'filter');
   const [loading, setLoading] = useState(false);
+  const [ isteacher , setIsTeacher ] = useState(false)
   const {
     test_id: id,
     id: assessmentId,
@@ -49,6 +58,12 @@ const AssesmentDetails = ({
     question_paper_id: question_paper_id,
     test_id: test_id,
   } = test;
+
+  const formik = useFormik({
+    initialValues: {
+      section: '',
+    },
+  });
 
   const handleData = () => {
     sessionStorage.setItem('createfilterdata', JSON.stringify(filterData));
@@ -186,6 +201,62 @@ const AssesmentDetails = ({
         setConfirmAlert(false);
       });
   };
+
+  const sectionOptions = sectionName?.map((each , index) => {
+    return (
+      <Option key={index} value={index}>
+        {each}
+      </Option>
+    );
+  });
+  console.log(sectionOptions , section_mapping);
+
+  const handleQuizstart = () => {
+    if(formik.values.section != ''){
+    let payload = {
+      test_id: assessmentId,
+      section_mapping: formik.values.section
+    };
+    axiosInstance
+      // .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
+      .post(`${endpoints.academics.startQuiz}`, payload)
+      .then((res) => {
+        console.log(res);
+        if (res.data.status_code == 200) {
+          setAlert('success', 'Test Started');
+          setTestStart(true);
+          setConfirmAlert(false);
+          onClosedrawer()
+        } else {
+          setAlert('error', 'Failed to Start the Test');
+          setConfirmAlert(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+        setConfirmAlert(false);
+      });
+    }else {
+      setAlert('error', 'Please Select Section');
+
+    }
+  };
+
+  const handleSection = (e , value) => {
+    console.log(e , value);
+    formik.setFieldValue('section', section_mapping[0]);
+  }
+
+  useEffect(() => {
+   if(quizAccess != [] && userLevel){
+    if(quizAccess.includes(userLevel) == true){
+      setIsTeacher(true)
+    } else{
+      setIsTeacher(false)
+    }
+   }
+
+  },[quizAccess])
 
   return (
     <Drawer
@@ -414,6 +485,35 @@ const AssesmentDetails = ({
             }`}
           </p>
         </div>
+        {section_mapping[0] != null ?
+        <div >
+                <div className='mb-2 text-left'>Section</div>
+                <Form.Item name='section'>
+                  <Select
+                    allowClear
+                    placeholder= 'Select Section'                   
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    optionFilterProp='children'
+                    showArrow={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    value={formik.values.section || []}
+                    onChange={(e, value) => {
+                      handleSection(e, value);
+                    }}
+                    // onClear={handleClearBoard}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={false}
+                  >
+                    {sectionOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              : ''}
         <div className='parameters-container mt-2'>
           {/* <div className='parameters-header'>
           <span className='header-text font-lg font-center'>Test Parameters</span>
@@ -524,7 +624,7 @@ const AssesmentDetails = ({
                     : ''}
                 </Grid> */}
                 <Grid item xs={12} className={testType == 'Quiz' ? 'mt-4' : ''}>
-                  {testType == 'Quiz' && test?.test_mode == 1 ? (
+                  {testType == 'Quiz' && test?.test_mode == 1 && isteacher ? (
                     <>
                       {testDate == null ? (
                         <>
@@ -598,7 +698,7 @@ const AssesmentDetails = ({
             color='primary'
             variant='contained'
             style={{ color: 'white' }}
-            onClick={handleTeststart}
+            onClick={handleQuizstart}
           >
             Start
           </Button>

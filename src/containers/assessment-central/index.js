@@ -113,6 +113,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [ quizAccess , setQuizAccess ] = useState()
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [bulkUpload, setBulkUpload] = useState(false);
@@ -684,6 +685,22 @@ useEffect(() => {
       );
     }
   };
+
+  useEffect(() => {
+    fetchUserAccessQuiz()
+    console.log("hittttt");
+  },[])
+  const fetchUserAccessQuiz = () => {
+    axiosInstance
+    .get(`${endpoints.academics.checkQuizUser}`)
+    .then((res) => {
+      console.log(res);
+      setQuizAccess(res.data.result)
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
 
   const { token: TOKEN = '' } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
@@ -1318,6 +1335,8 @@ useEffect(() => {
                   filterData={filterData}
                   handleClose={handleClose}
                   reportLoad={reportLoad}
+                  quizAccess={quizAccess}
+                  userLevel={userLevel}
                 />
               </Grid>
             )}
