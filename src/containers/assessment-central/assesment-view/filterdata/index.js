@@ -103,7 +103,15 @@ const AssessmentFilters = ({
     );
   });
 
-  const erpCategories = erpCategoryDropdown?.map((each) => {
+  let subjectDrop = {
+    id: '00',
+    erp_category_id: '0',
+    erp_category_name: 'Subject Wise'
+  }
+
+  let newErpCat = [...erpCategoryDropdown , subjectDrop]
+
+  const erpCategories = newErpCat?.map((each) => {
     return (
       <Option key={each?.id} value={each.erp_category_id}>
         {each?.erp_category_name}
@@ -135,7 +143,8 @@ const getErpCategory = () => {
 }
 
 useEffect(() => {
-if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
+if(filterData?.grade && (filterData?.subject || filterData?.erp_category?.value != '0')){
+  console.log(filterData);
   handleFilter()
 }
 },[filterData?.subject,qpValue,filterData?.erp_category])
@@ -278,7 +287,12 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
     // setLoading(true);
     setIsErpCategory(false)
     if (value) {
-      setIsErpCategory(true)
+      console.log(value);
+      if(value?.value != "0" ){
+        setIsErpCategory(true)
+      } else if (value?.value == "0"){
+        setIsErpCategory(false)
+      }
       formRef.current.setFieldsValue({
         subject: null,
       });
@@ -367,16 +381,16 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
     setPage(1)
     setFilterData({ ...filterData, subject: '' });
     // setQpValue('');
-    formRef.current.setFieldsValue({
-      erpCategory: null,
-    });
+    // formRef.current.setFieldsValue({
+    //   erpCategory: null,
+    // });
     setPeriodData([]);
     if (value) {
       setFilterData({ ...filterData, subject: value });
       // handleFilter()
-      formRef.current.setFieldsValue({
-        erpCategory: null,
-      });
+      // formRef.current.setFieldsValue({
+      //   erpCategory: null,
+      // });
     }
   };
 
@@ -718,7 +732,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       </Select>
                     </Form.Item>
                   </div>
-                {!isErpCategory && <div className='col-md-2 col-6 px-2'>
+                {!isErpCategory ? <div className='col-md-2 col-6 px-2'>
                   <div className='mb-2 text-left'>Subject</div>
                   <Form.Item name='subject'>
                     <Select
@@ -750,7 +764,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category)){
                       {subjectOptions}
                     </Select>
                   </Form.Item>
-                </div>}
+                </div>: ''}
                 <div className='col-md-2 col-6 px-2'>
                     <div className='mb-2 text-left'>Question Level</div>
                     <Form.Item name='questionlevel'>
