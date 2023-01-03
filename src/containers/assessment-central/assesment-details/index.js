@@ -526,6 +526,12 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData,handleClose, test
                     Download Report
                   </Button>
                 </Grid>}
+                {( (testType == 'Practice Test' || testType == 'Open Test')) && <Grid item xs={12} style={{margin : '4% 0'}}>
+                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
+                    <GetAppIcon fontSize="small" />
+                    Download Report
+                  </Button>
+                </Grid>}
               </Grid>
             }
         </div>

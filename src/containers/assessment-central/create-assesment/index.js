@@ -1243,9 +1243,18 @@ const CreateAssesment = ({
                                 id='testmode'
                                 name='testmode'
                                 onChange={(e, value) => {
+                                  if(value){ 
                                   formik.setFieldValue('test_mode', value);
                                   initSetFilter('selectedTestType', value);
+                                  formik.setFieldValue('test_type', '');
+                                  setAssesmentTypes([])
                                   getAssesmentTypes(value);
+                                  }else{
+                                    formik.setFieldValue('test_mode', '');
+                                  initSetFilter('selectedTestType', '');
+                                    formik.setFieldValue('test_type', '');
+                                    setAssesmentTypes([])
+                                  }
                                 }}
                                 value={formik.values.test_mode}
                                 options={testTypes}
@@ -1270,7 +1279,11 @@ const CreateAssesment = ({
                                 className='dropdownIcon'
                                 onChange={(e, value) => {
                                   console.log(value);
-                                  formik.setFieldValue('test_type', value);
+                                  if(value){
+                                    formik.setFieldValue('test_type', value);
+                                  }else{
+                                    formik.setFieldValue('test_type', '');
+                                  }
                                   if (
                                     value?.exam_name == 'Quiz' ||
                                     value?.exam_name == 'Practice Test' ||
