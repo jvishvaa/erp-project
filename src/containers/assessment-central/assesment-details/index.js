@@ -433,7 +433,7 @@ const AssesmentDetails = ({
       </div> */}
       <div>
         <div className='row align-items-center'>
-          <div className='col-10'>
+          <div className='col-10 px-0'>
             <div className='row'>
               <div className='col-4 px-0'>
                 <span className='th-16'></span>Test Name:
@@ -652,32 +652,24 @@ const AssesmentDetails = ({
                     ''
                   )}
                 </Grid>
-                {enable && (
-                  <Grid item xs={12} style={{ marginTop: '5%' }}>
-                    <Button
-                      variant='contained'
-                      color='primary'
-                      onClick={() => downloadAssessment()}
-                    >
-                      <GetAppIcon fontSize='small' />
-                      Download Question Paper
-                    </Button>
-                  </Grid>
-                )}
-                {(filterData?.status?.children === 'Completed' ||
-                  filterData?.status?.id === 2 ||
-                  (testType == 'Quiz' && testDate != null)) && (
-                  <Grid item xs={12} style={{ margin: '4% 0' }}>
-                    <Button
-                      variant='contained'
-                      color='primary'
-                      onClick={handleDownloadReport}
-                    >
-                      <GetAppIcon fontSize='small' />
-                      Download Report
-                    </Button>
-                  </Grid>
-                )}
+                {enable && <Grid item xs={12} style={{marginTop:'5%'}}>
+                  <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
+                    <GetAppIcon fontSize="small" />
+                    Download Question Paper
+                  </Button>
+                </Grid>}
+                {((filterData?.status?.children === "Completed" || filterData?.status?.id === 2) || (testType == 'Quiz' && testDate != null)) && <Grid item xs={12} style={{margin : '4% 0'}}>
+                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
+                    <GetAppIcon fontSize="small" />
+                    Download Report
+                  </Button>
+                </Grid>}
+                {( (testType == 'Practice Test' || testType == 'Open Test')) && <Grid item xs={12} style={{margin : '4% 0'}}>
+                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
+                    <GetAppIcon fontSize="small" />
+                    Download Report
+                  </Button>
+                </Grid>}
               </Grid>
             )}
           </div>
