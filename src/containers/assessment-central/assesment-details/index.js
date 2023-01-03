@@ -249,7 +249,7 @@ const AssesmentDetails = ({
 
   useEffect(() => {
    if(quizAccess != [] && userLevel){
-    if(quizAccess.includes(userLevel) == true){
+    if(quizAccess?.includes(userLevel) == true){
       setIsTeacher(true)
     } else{
       setIsTeacher(false)
@@ -485,7 +485,7 @@ const AssesmentDetails = ({
             }`}
           </p>
         </div>
-        {section_mapping[0] != null ?
+        {testType == 'Quiz' && test?.test_mode == 1 && isteacher && section_mapping[0] != null ?
         <div >
                 <div className='mb-2 text-left'>Section</div>
                 <Form.Item name='section'>
