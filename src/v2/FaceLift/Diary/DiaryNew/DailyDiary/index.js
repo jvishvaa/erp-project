@@ -47,7 +47,7 @@ let boardFilterArr = [
   'qa.olvorchidnaigaon.letseduvate.com',
 ];
 const { Panel } = Collapse;
-const DailyDiary = ({ isSubstituteClass }) => {
+const DailyDiary = ({ isSubstituteDiary }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -332,6 +332,9 @@ const DailyDiary = ({ isSubstituteClass }) => {
     }
     if (!_.isEmpty(upcomingPeriod)) {
       payload['upcoming_period_id'] = upcomingPeriod?.id;
+    }
+    if (isSubstituteDiary) {
+      payload['is_substitute_diary'] = true;
     }
     if (
       payload?.teacher_report?.summary ||
@@ -629,7 +632,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
     };
     axios
       .get(`${endpoints.academics.grades}`, {
-        params: { ...params, ...(isSubstituteClass ? { is_substitue_teacher: 1 } : {}) },
+        params: { ...params, ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}) },
       })
       .then((result) => {
         if (result?.data?.status_code == 200) {
@@ -933,7 +936,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
       fetchGradeData();
       fetchResourceYear();
     }
-  }, [moduleId, isSubstituteClass]);
+  }, [moduleId, isSubstituteDiary]);
 
   const handleClearAll = () => {
     setGradeDropdown([]);

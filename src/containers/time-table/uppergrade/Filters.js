@@ -119,7 +119,7 @@ const Filters = (props) => {
         sectionDisplay?.id,
         selectedBranch?.id,
         selectedAcademicYear?.session_year,
-        gradeDisplay?.grade__grade_name,
+        gradeDisplay?.grade_name,
         selectedBranch?.branch_name,
         sectionDisplay?.section__section_name
       );
@@ -190,7 +190,7 @@ const Filters = (props) => {
               required
               value={gradeDisplay}
               options={gradesList || []}
-              getOptionLabel={(option) => option?.grade__grade_name || ''}
+              getOptionLabel={(option) => option?.grade_name || ''}
               filterSelectedOptions
               className='dropdownIcon'
               renderInput={(params) => (
@@ -216,29 +216,36 @@ const Filters = (props) => {
               getOptionLabel={(option) => option?.section__section_name || ''}
               filterSelectedOptions
               className='dropdownIcon'
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Sections'
-                  placeholder='Sections'
-                />
-              )}
+              renderInput={(params) => {
+                console.log(sectionDisplay, 'params');
+                return (
+                  <TextField
+                    title={sectionDisplay?.section__section_name}
+                    {...params}
+                    variant='outlined'
+                    label='Sections'
+                    placeholder='Sections'
+                  />
+                );
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={3}>
             <Button
               onClick={handleFilter}
-              style={{ marginRight: '17px'}}
-              color = 'primary'
-              variant = 'contained'
+              style={{ marginRight: '17px' }}
+              color='primary'
+              variant='contained'
             >
               Filter
             </Button>
             {/* </Grid>
           <Grid item xs={12} sm={1}> */}
-            <Button onClick={() => handleClearData('clear')} color = 'primary'
-              variant = 'contained'>
+            <Button
+              onClick={() => handleClearData('clear')}
+              color='primary'
+              variant='contained'
+            >
               Clear
             </Button>
           </Grid>

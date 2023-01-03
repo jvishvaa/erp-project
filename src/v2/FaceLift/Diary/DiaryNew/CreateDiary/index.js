@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 const CreateDiary = () => {
   const history = useHistory();
   const [diaryType, setDiaryType] = useState(2);
-  const [isSubstituteClass, setIsSubstituteClass] = useState(false);
+  const [isSubstituteDiary, setIsSubstituteDiary] = useState(false);
   const handleDiaryType = () => {
     if (diaryType == 1) {
       setDiaryType(2);
@@ -20,7 +20,7 @@ const CreateDiary = () => {
 
   useEffect(() => {
     if (history?.location?.state)
-      setIsSubstituteClass(history?.location?.state?.isSubstituteClass);
+      setIsSubstituteDiary(history?.location?.state?.isSubstituteDiary);
   }, [window.location.pathname]);
   return (
     <>
@@ -37,7 +37,7 @@ const CreateDiary = () => {
                 Diary
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
-                {!isSubstituteClass ? 'Create Diary' : 'Create  Substitute Class Diary'}
+                {!isSubstituteDiary ? 'Create Diary' : 'Create  Substitute Class Diary'}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -57,9 +57,9 @@ const CreateDiary = () => {
 
               <div className='row'>
                 {diaryType == 2 ? (
-                  <DailyDiary isSubstituteClass={isSubstituteClass} />
+                  <DailyDiary isSubstituteDiary={isSubstituteDiary} />
                 ) : (
-                  <GeneralDiary isSubstituteClass={isSubstituteClass} />
+                  <GeneralDiary isSubstituteDiary={isSubstituteDiary} />
                 )}
               </div>
             </div>
