@@ -11,7 +11,7 @@ import {
   Button,
   Divider,
   Badge,
-  Pagination
+  Pagination,
 } from 'antd';
 import {
   CloseOutlined,
@@ -24,7 +24,7 @@ import {
   FilePdfOutlined,
   BookOutlined,
   SnippetsOutlined,
-  FilePptOutlined
+  FilePptOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -103,13 +103,12 @@ const PeriodListView = () => {
   const [ibookData, setIbookData] = useState([]);
   const [openEbook, setOpenEbook] = useState(false);
   const [openIbook, setOpenIbook] = useState(false);
-  const [pageEbook, setPageEbook] = useState(1)
-  const [totalEbook, setTotalEbook] = useState()
-  const [pageIbook, setPageIbook] = useState(1)
-  const [totalIbook, setTotalIbook] = useState()
-  const [ ebookCount , setEbookCount ] = useState()
-  const [ ibookCount , setIbookCount ] = useState()
-
+  const [pageEbook, setPageEbook] = useState(1);
+  const [totalEbook, setTotalEbook] = useState();
+  const [pageIbook, setPageIbook] = useState(1);
+  const [totalIbook, setTotalIbook] = useState();
+  const [ebookCount, setEbookCount] = useState();
+  const [ibookCount, setIbookCount] = useState();
 
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
@@ -120,9 +119,14 @@ const PeriodListView = () => {
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
   ];
-  const env = window.location.host
-  const domain = window.location.host.split('.')
-  let domain_name = env.includes('qa') || env.includes('localhost') ? 'olvorchidnaigaon' : env.includes('test') ? 'orchids' : domain[0]
+  const env = window.location.host;
+  const domain = window.location.host.split('.');
+  let domain_name =
+    env.includes('qa') || env.includes('localhost')
+      ? 'olvorchidnaigaon'
+      : env.includes('test')
+      ? 'orchids'
+      : domain[0];
 
   const showEbookDrawer = () => {
     setOpenEbook(true);
@@ -134,7 +138,6 @@ const PeriodListView = () => {
     setOpenIbook(true);
   };
   const onIbookClose = () => {
-    console.log("hit");
     setOpenIbook(false);
   };
 
@@ -405,9 +408,8 @@ const PeriodListView = () => {
       domain_name: domain_name,
       lesson_plan: 'true',
       page_size: '10',
-      page_number: pageEbook
-    })
-    
+      page_number: pageEbook,
+    });
   };
   const fetchEbookCount = (params) => {
     // setLoading(true)
@@ -416,15 +418,13 @@ const PeriodListView = () => {
         params: { ...params },
       })
       .then((res) => {
-        console.log(res);
-        setEbookCount(res?.data?.result?.ebook_count)
-        setIbookCount(res?.data?.result?.ibook_count)
+        setEbookCount(res?.data?.result?.ebook_count);
+        setIbookCount(res?.data?.result?.ibook_count);
       })
       .catch((error) => {
         message.error(error.message);
       });
-
-  }
+  };
   const getEbook = () => {
     fetchEbooks({
       subject: subjectId,
@@ -436,10 +436,10 @@ const PeriodListView = () => {
       domain_name: domain_name,
       lesson_plan: 'true',
       page_size: '10',
-      page_number: pageEbook
-    })
-    showEbookDrawer()
-  }
+      page_number: pageEbook,
+    });
+    showEbookDrawer();
+  };
   const getIbook = () => {
     fetchIbooks({
       subject: subjectId,
@@ -451,11 +451,10 @@ const PeriodListView = () => {
       domain_name: domain_name,
       lesson_plan: 'true',
       page_size: '10',
-      page: pageIbook
-    })
-    showIbookDrawer()
-  
-  }
+      page: pageIbook,
+    });
+    showIbookDrawer();
+  };
   const fetchEbooks = (params) => {
     // setLoading(true)
     axios
@@ -466,7 +465,7 @@ const PeriodListView = () => {
         if (res.data.status_code === 200) {
           // message.success('Ebooks Fetched Successfully');
           setEbookData(res.data.result.data);
-          setTotalEbook(res?.data?.result?.total_ebooks)
+          setTotalEbook(res?.data?.result?.total_ebooks);
         } else {
           // message.error('Cannot Fetch Right Now');
           setEbookData([]);
@@ -474,10 +473,9 @@ const PeriodListView = () => {
       })
       .catch((error) => {
         message.error(error.message);
-        setLoading(false)
+        setLoading(false);
       });
-
-  }
+  };
   const fetchIbooks = (params) => {
     // setLoading(true)
     axios
@@ -485,30 +483,27 @@ const PeriodListView = () => {
         params: { ...params },
       })
       .then((res) => {
-
         if (res.data.status_code === 200) {
           setIbookData(res.data.result.result);
-          setTotalIbook(res.data.result.count)
+          setTotalIbook(res.data.result.count);
           // setTotal(res.data.result.total_ebooks)
-          console.log(res.data.result);
           // message.success('Ibooks Fetched Successfully');
-          setLoading(false)
+          setLoading(false);
         } else {
           // message.error('Cannot Fetch Right Now');
-          setLoading(false)
+          setLoading(false);
           setIbookData([]);
           // setTotal()
         }
       })
       .catch((error) => {
         message.error(error.message);
-        setLoading(false)
+        setLoading(false);
       });
-
-  }
+  };
 
   const handlePageEbook = (e) => {
-    setPageEbook(e)
+    setPageEbook(e);
     fetchEbooks({
       subject: subjectId,
       volume: volumeId,
@@ -519,14 +514,14 @@ const PeriodListView = () => {
       domain_name: domain_name,
       lesson_plan: 'true',
       page_size: '10',
-      page_number: e
-    })
+      page_number: e,
+    });
     const element = document.getElementById('ebooktop');
     element.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  };
 
   const handlePageIbook = (e) => {
-    setPageIbook(e)
+    setPageIbook(e);
     fetchIbooks({
       subject: subjectId,
       volume: volumeId,
@@ -537,11 +532,11 @@ const PeriodListView = () => {
       domain_name: domain_name,
       lesson_plan: 'true',
       page_size: '10',
-      page: e
-    })
+      page: e,
+    });
     const element = document.getElementById('ibooktop');
     element.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  };
 
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
@@ -967,28 +962,28 @@ const PeriodListView = () => {
                 <div className='row'>
                   {YCPData?.filter((item) => item?.lesson_type == '1')[0]
                     ?.media_file[0] && (
-                      <div className='col-md-3 pl-0 col-12'>
-                        <a
-                          onClick={() => {
-                            const fileName = YCPData?.filter(
-                              (item) => item?.lesson_type == '1'
-                            )[0]?.media_file[0];
-                            const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: [
-                                {
-                                  src: fileSrc,
-                                  name: 'Portion Document',
-                                  extension:
-                                    '.' +
-                                    fileName?.split('.')[fileName?.split('.')?.length - 1],
-                                },
-                              ],
-                            });
-                          }}
-                        >
-                          {/* <div className='row th-fw-600 th-pointer th-primary'>
+                    <div className='col-md-3 pl-0 col-12'>
+                      <a
+                        onClick={() => {
+                          const fileName = YCPData?.filter(
+                            (item) => item?.lesson_type == '1'
+                          )[0]?.media_file[0];
+                          const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: [
+                              {
+                                src: fileSrc,
+                                name: 'Portion Document',
+                                extension:
+                                  '.' +
+                                  fileName?.split('.')[fileName?.split('.')?.length - 1],
+                              },
+                            ],
+                          });
+                        }}
+                      >
+                        {/* <div className='row th-fw-600 th-pointer th-primary'>
                             <div className=''>Portion Document</div>
                             <div className='ml-3'>
                               <EyeFilled
@@ -998,39 +993,41 @@ const PeriodListView = () => {
                               />
                             </div>
                           </div> */}
-                          <div className=' pl-0 col-12e4l th-primary '>
-                            <Badge count='1' >
-                              <Button icon={<FilePptOutlined />} />
-                            </Badge>
-                            <span style={{ marginLeft: '5px', fontWeight: '600' }}>Portion Document</span>
-                          </div>
-                        </a>
-                      </div>
-                    )}
+                        <div className=' pl-0 col-12e4l th-primary '>
+                          <Badge count='1'>
+                            <Button icon={<FilePptOutlined />} />
+                          </Badge>
+                          <span style={{ marginLeft: '5px', fontWeight: '600' }}>
+                            Portion Document
+                          </span>
+                        </div>
+                      </a>
+                    </div>
+                  )}
                   {YCPData?.filter((item) => item?.lesson_type == '2')[0]
                     ?.media_file[0] && (
-                      <div className='col-md-3 pl-0 col-12e4l'>
-                        <a
-                          onClick={() => {
-                            const fileName = YCPData?.filter(
-                              (item) => item?.lesson_type == '2'
-                            )[0]?.media_file[0];
-                            const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: [
-                                {
-                                  src: fileSrc,
-                                  name: 'Yearly Curriculum Plan',
-                                  extension:
-                                    '.' +
-                                    fileName?.split('.')[fileName?.split('.')?.length - 1],
-                                },
-                              ],
-                            });
-                          }}
-                        >
-                          {/* <div className='row th-fw-600 th-pointer th-primary'>
+                    <div className='col-md-3 pl-0 col-12e4l'>
+                      <a
+                        onClick={() => {
+                          const fileName = YCPData?.filter(
+                            (item) => item?.lesson_type == '2'
+                          )[0]?.media_file[0];
+                          const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: [
+                              {
+                                src: fileSrc,
+                                name: 'Yearly Curriculum Plan',
+                                extension:
+                                  '.' +
+                                  fileName?.split('.')[fileName?.split('.')?.length - 1],
+                              },
+                            ],
+                          });
+                        }}
+                      >
+                        {/* <div className='row th-fw-600 th-pointer th-primary'>
                             <div className=''>Yearly Curriculum Plan</div>
                             <div className='ml-3'>
                               <EyeFilled
@@ -1040,42 +1037,50 @@ const PeriodListView = () => {
                               />
                             </div>
                           </div> */}
-                          <div className=' pl-0 col-12e4l th-primary '>
-                            <Badge count='1' >
-                              <Button icon={<SnippetsOutlined />} />
-                            </Badge>
-                            <span style={{ marginLeft: '5px', fontWeight: '600' }}>Yearly Curriculum Plan</span>
-                          </div>
-                        </a>
-                      </div>
-                    )}
+                        <div className=' pl-0 col-12e4l th-primary '>
+                          <Badge count='1'>
+                            <Button icon={<SnippetsOutlined />} />
+                          </Badge>
+                          <span style={{ marginLeft: '5px', fontWeight: '600' }}>
+                            Yearly Curriculum Plan
+                          </span>
+                        </div>
+                      </a>
+                    </div>
+                  )}
                   {ebookCount != null && (
                     <div className='col-md-3 pl-0 col-12e4l'>
-                      <a onClick={getEbook} >
+                      <a onClick={getEbook}>
                         <div className=' pl-0 col-12e4l th-primary '>
-                          <Badge count={ebookCount} >
+                          <Badge count={ebookCount}>
                             <Button icon={<FilePdfOutlined />} onClick={getEbook} />
                           </Badge>
-                          <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ebook</span>
+                          <span style={{ marginLeft: '5px', fontWeight: '600' }}>
+                            Ebook
+                          </span>
                         </div>
-
                       </a>
                       <Modal
-                        title="Ebooks"
+                        title='Ebooks'
                         closable={true}
                         onCancel={onEbookClose}
                         visible={openEbook}
                         width={'90vh'}
                         footer={[
                           <div>
-                            {totalEbook > 10 ?
-                              <Pagination total={totalEbook} current={pageEbook} onChange={handlePageEbook} pageSize={10} />
-                              : ''
-                            }
-                          </div>
+                            {totalEbook > 10 ? (
+                              <Pagination
+                                total={totalEbook}
+                                current={pageEbook}
+                                onChange={handlePageEbook}
+                                pageSize={10}
+                              />
+                            ) : (
+                              ''
+                            )}
+                          </div>,
                         ]}
                       >
-
                         <EbookList data={ebookData} />
                       </Modal>
                     </div>
@@ -1083,32 +1088,37 @@ const PeriodListView = () => {
 
                   {ibookCount != null && (
                     <div className='col-md-3 pl-0 col-12e4l'>
-                      <a onClick={getIbook} >
+                      <a onClick={getIbook}>
                         <div className=' pl-0 col-12e4l th-primary '>
-                          <Badge count={ibookCount} >
+                          <Badge count={ibookCount}>
                             <Button icon={<BookOutlined />} onClick={getIbook} />
                           </Badge>
-                          <span style={{ marginLeft: '5px', fontWeight: '600' }}>Ibook</span>
+                          <span style={{ marginLeft: '5px', fontWeight: '600' }}>
+                            Ibook
+                          </span>
                         </div>
-
                       </a>
                       <Modal
-                        title="Ibooks"
+                        title='Ibooks'
                         closable={true}
                         onCancel={onIbookClose}
                         visible={openIbook}
                         width={'90vh'}
                         footer={[
                           <div>
-                            {totalIbook > 10 ?
-                              <Pagination total={totalIbook} current={pageIbook} onChange={handlePageIbook} pageSize={10} />
-                              : ''
-                            }
-                          </div>
+                            {totalIbook > 10 ? (
+                              <Pagination
+                                total={totalIbook}
+                                current={pageIbook}
+                                onChange={handlePageIbook}
+                                pageSize={10}
+                              />
+                            ) : (
+                              ''
+                            )}
+                          </div>,
                         ]}
-      
                       >
-
                         <IbookList data={ibookData} />
                       </Modal>
                     </div>
@@ -1116,8 +1126,6 @@ const PeriodListView = () => {
                 </div>
               </div>
             )}
-
-
           </div>
           {loading ? (
             <div className='row justify-content-center my-5'>
@@ -1135,7 +1143,7 @@ const PeriodListView = () => {
                   All the periods are complete!
                 </div>
               ) : null}
-              <div className='col-12' style={{ height: '400px', overflowY: 'scroll' }}>
+              <div className='col-12' style={{ maxHeight: '80vh', overflowY: 'scroll' }}>
                 <div className='row'>
                   {periodSortedData?.map((period) => (
                     <>
@@ -1157,21 +1165,22 @@ const PeriodListView = () => {
                                 ? myRef
                                 : null
                               : each?.last_taught == true
-                                ? myRef
-                                : null
+                              ? myRef
+                              : null
                           }
                         >
                           <div className='row mb-3 pb-1'>
                             <div
-                              className={`col-12 th-br-20 th-bg-pink py-2 ${isStudent
-                                ? each.last_taught == true
+                              className={`col-12 th-br-20 th-bg-pink py-2 ${
+                                isStudent
+                                  ? each.last_taught == true
+                                    ? 'highlighted-period'
+                                    : 'period-card'
+                                  : each.next_to_be_taught == true
                                   ? 'highlighted-period'
                                   : 'period-card'
-                                : each.next_to_be_taught == true
-                                  ? 'highlighted-period'
-                                  : 'period-card'
-                                }`}
-                            // id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
+                              }`}
+                              // id={each.next_to_be_taught == true ? 'highlightedPeriod' : ''}
                             >
                               <div className='row px-1 pt-2'>
                                 <div className='col-md-7 col-6 px-0 th-18 th-fw-600'>
@@ -1188,8 +1197,9 @@ const PeriodListView = () => {
                                     className='mr-2'
                                   ></div>
                                   <div
-                                    className={`${each?.is_complete ? 'th-green' : 'th-red'
-                                      } th-fw-500`}
+                                    className={`${
+                                      each?.is_complete ? 'th-green' : 'th-red'
+                                    } th-fw-500`}
                                   >
                                     {each?.is_complete ? 'COMPLETED' : 'NOT COMPLETED'}
                                   </div>
@@ -1306,7 +1316,7 @@ const PeriodListView = () => {
             </div>
           )}
           {!loading && (
-            <div className='row justify-content-between p-1'>
+            <div className='row justify-content-between p-1 pb-2'>
               <div className='col-lg-2 col-6'>
                 <Button
                   disabled={currentIndex == 0}
@@ -1399,7 +1409,7 @@ const PeriodListView = () => {
                 </div>
               </div>
               {resourcesData?.lp_files?.map((each) => each?.media_file).flat().length >
-                0 ? (
+              0 ? (
                 <div
                   style={{
                     overflowY: 'scroll',
