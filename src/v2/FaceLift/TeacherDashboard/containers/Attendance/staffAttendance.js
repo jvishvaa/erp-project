@@ -3,13 +3,14 @@ import React, { useContext, useState, useEffect } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
 import moment from 'moment';
-import { Table, DatePicker, Breadcrumb,Avatar, Input } from 'antd';
+import { Table, DatePicker, Breadcrumb, Avatar, Input } from 'antd';
 import { DownOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import demoPic from 'v2/Assets/images/student_pic.png'
+const { RangePicker } = DatePicker;
 
 
 const StaffAttendance = (props) => {
@@ -18,8 +19,29 @@ const StaffAttendance = (props) => {
   const [adminData, setAdminData] = useState([]);
   const [date, setDate] = useState(history?.location?.state?.date);
   const [searchedValue, setSearchedValue] = useState('');
+  const [startDate, setStartDate] = useState()
+  const [endDate, setEndDate] = useState()
+  const [value, setValue] = useState(null);
 
-const handleDateChange = (value) => {
+  const disabledDate = (current) => {
+    if (!date) {
+      return false;
+    }
+    const tooLate = date[0] && current.diff(date[0], 'days') > 7;
+    const tooEarly = date[1] && date[1].diff(current, 'days') > 7;
+    return !!tooEarly || !!tooLate;
+  };
+  const onOpenChange = (open) => {
+    if (open) {
+      setDate([null, null]);
+    } else {
+      setDate(null);
+    }
+    console.log(value);
+  };
+
+
+  const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value).format('YYYY-MM-DD'));
     }
@@ -29,12 +51,12 @@ const handleDateChange = (value) => {
     setLoading(true);
     axios
       .get(
-        `${endpoints.adminDashboard.staffStats}` , {     
-          params : { ...params },
-          headers: {
-            'X-DTS-Host': X_DTS_HOST,
-          },
-        }
+        `${endpoints.adminDashboard.staffStats}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
+      }
       )
       .then((res) => {
         setLoading(false);
@@ -52,17 +74,32 @@ const handleDateChange = (value) => {
 
   useEffect(() => {
     let selected_branch;
-    if(history?.location?.state?.selectedbranchData){
+    if (history?.location?.state?.selectedbranchData && history?.location?.state?.end_date) {
       selected_branch = history?.location?.state?.selectedbranchData
-    }
     getStaffWiseState({
-        role_id : history?.location?.state?.role?.erp_user__roles_id[0],
-        acad_session_id : selected_branch?.acadsession__id.toString(),
-        date_range_type : date
-
-
+      role_id: history?.location?.state?.role?.erp_user__roles_id[0],
+      acad_session_id: selected_branch?.acadsession__id.toString(),
+      // date_range_type: date
+      start_date: history?.location?.state?.start_date,
+      end_date: history?.location?.state?.end_date
     });
-  }, [date]);
+    setDate([moment(history?.location?.state?.start_date) , moment(history?.location?.state?.end_date)])
+  }
+  }, [history]);
+
+  useEffect(() => {
+    let selected_branch;
+    if (value != null) {
+      selected_branch = history?.location?.state?.selectedbranchData
+    getStaffWiseState({
+      role_id: history?.location?.state?.role?.erp_user__roles_id[0],
+      acad_session_id: selected_branch?.acadsession__id.toString(),
+      // date_range_type: date
+      start_date: moment(value[0]).format('YYYY-MM-DD'),
+      end_date: moment(value[1]).format('YYYY-MM-DD')
+    });
+  }
+  }, [value]);
 
   const columns = [
     {
@@ -120,7 +157,7 @@ const handleDateChange = (value) => {
         <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
-            <DatePicker
+            {/* <DatePicker
               disabledDate={(current) => current.isAfter(moment())}
               allowClear={false}
               bordered={false}
@@ -132,6 +169,16 @@ const handleDateChange = (value) => {
               suffixIcon={<DownOutlined className='th-black-1' />}
               className='th-black-2 pl-0 th-date-picker'
               format={'YYYY-MM-DD'}
+            /> */}
+
+            <RangePicker
+              placement='bottomRight'
+              className='th-black-2 pl-0 th-date-picker'
+              value={date || value}
+              disabledDate={disabledDate}
+              onCalendarChange={(val) => setDate(val)}
+              onChange={(val) => setValue(val)}
+              onOpenChange={onOpenChange}
             />
           </span>
         </div>
