@@ -7,7 +7,9 @@
 thead[class*='ant-table-thead'] th {
   background-color: #1b4ccb !important;
 }
-
+.th-inner-head thead[class*='ant-table-thead'] th {
+  background-color: #c9cbc5 !important;
+}
 .ant-table-tbody > tr > td {
   border-bottom: none !important;
 }
@@ -26,7 +28,9 @@ thead[class*='ant-table-thead'] th {
 
 .ant-table-thead
   > tr
-  > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before {
   width: 0px !important;
 }
 
@@ -64,4 +68,7 @@ thead[class*='ant-table-thead'] th {
 
 .th-table .ant-table-content {
   border-radius: 10px !important;
+}
+.th-inner-table-head-bg thead[class*='ant-table-thead'] th {
+  background-color: #95c5eb !important;
 }

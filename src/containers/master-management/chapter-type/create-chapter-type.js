@@ -455,9 +455,11 @@ const CreateChapterType = ({
     setLoading(true);
     axiosInstance
       .post(endpoints.masterManagement.chapter, {
-        academic_year: filterData?.year.id,
+        // academic_year : filterData?.year.id,
+        session_year: filterData?.year.id,
         subject: filterData?.subject.subject_id,
         chapter_name: categoryName,
+        grade : filterData?.grade?.grade_id,
       })
       .then((result) => {
         if (result.data.status_code === 200) {

@@ -123,6 +123,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const [searchSection, setSearchSection] = useState([]);
   const [searchGradeId, setSearchGradeId] = useState('');
   const [sectionDisp, setSectionDisp] = useState({});
+  const [acadId, setacadId] = useState();
   const genders = [
     { id: '1', gender: 'Male' },
     { id: '2', gender: 'Female' },
@@ -183,8 +184,6 @@ const BulkUpload = ({ onUploadSuccess }) => {
     },
   ];
 
-
-
   useEffect(() => {
     if (moduleId && selectedAcademicYear) getBranches();
   }, [moduleId, selectedAcademicYear]);
@@ -207,7 +206,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const handleClearAll = () => {
     setBranchDisplay('');
     setBranch(null);
-    setFile('')
+    setFile('');
     // setBranchList([]);
     setBranchCode('');
     fileRef.current.value = null;
@@ -218,7 +217,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
     formData.append('branch', branch);
     formData.append('branch_code', branchCode);
     formData.append('academic_year_value', selectedAcademicYear?.session_year);
-    formData.append('academic_year', selectedAcademicYear?.id);
+    formData.append('academic_year', acadId);
     formData.append('file', file);
     if (branch && selectedAcademicYear && file) {
       setUploadFlag(true);
@@ -259,10 +258,10 @@ const BulkUpload = ({ onUploadSuccess }) => {
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-          const modifiedResponse = result?.data?.data?.results.map(
-            (obj) => (obj && obj.branch) || {}
-          );
-          setBranchList(modifiedResponse);
+          // const modifiedResponse = result?.data?.data?.results.map(
+          //   (obj) => (obj && obj.branch) || {}
+          // );
+          setBranchList(result?.data?.data?.results);
         }
       })
       .catch((error) => {
@@ -271,18 +270,20 @@ const BulkUpload = ({ onUploadSuccess }) => {
   };
 
   const handleBranchChange = (event, data) => {
+    // debugger
     setSearchGrade([]);
     setSearchSection([]);
     setSubjects([]);
     setGrades([]);
     setSearchGrade([]);
-    setBranch(data?.id);
-    setBranchCode(data?.branch_code);
+    setacadId(data?.id);
+    setBranch(data?.branch?.id);
+    setBranchCode(data?.branch?.branch_code);
     setBranchDisplay(data);
-    if (data?.id > 0 && selectedAcademicYear?.id > 0) {
+    if (data?.branch?.id > 0 && selectedAcademicYear?.id > 0) {
       axiosInstance
         .get(
-          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${data?.id}&module_id=${moduleId}`
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${data?.branch?.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.status === 200) {
@@ -402,8 +403,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
             id='create__class-subject'
             className='dropdownIcon'
             options={branchList || []}
-            value={branchDisplay || ''}
-            getOptionLabel={(option) => option.branch_name || ''}
+            value={branchDisplay || {}}
+            getOptionLabel={(option) => option?.branch?.branch_name || ''}
             filterSelectedOptions
             onChange={handleBranchChange}
             required

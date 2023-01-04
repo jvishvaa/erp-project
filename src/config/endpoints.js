@@ -1,3 +1,4 @@
+import endpoints from 'v2/config/endpoints';
 import ENVCONFIG from './config';
 
 const {
@@ -9,6 +10,7 @@ const {
     baseURL,
     baseURLMPQ,
     newBlogURL,
+    erpBlogURL,
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -62,6 +64,8 @@ export default {
     dataupdate: '/erp_user/present_absent',
     checkOMR: '/assessment/check-sys-config/?config_key=enable_omr_uploads_branches',
     buttonStatus: `/assessment/check-sys-config/?config_key=config_properties&config_type=json`,
+    checkQuizUser : `/assessment/get-start-quiz-user-levels-access/`,
+    startQuiz : '/assessment/v2/test/',
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
@@ -82,7 +86,7 @@ export default {
     assignLevel: '/erp_user/level_create/',
     centralUserLevel: '/erp_user/central-user-level/',
     passwordChange: '/erp_user/password-reset/',
-    onBoardingReport : `${msReportsUrl}/api/reports/v1/onboarding-report/`
+    onBoardingReport : `${msReportsUrl}/api/reports/v1/onboarding-report/`,
   },
   timeTable: {
     tableData: '/academic/time_table/',
@@ -101,6 +105,10 @@ export default {
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
+  },
+  doodle: {
+    checkDoodle: `/assessment/check-sys-config/`,
+    // fetchDoodle: `/erp_user/fetch-doodle/`,
   },
 
   communication: {
@@ -200,6 +208,8 @@ export default {
     updateTopic: '/assessment/',
     erpSystemConfig: '/erp_user/erp_system_config/',
     defaultAcademicYear: '/erp_user/default-current-session-year/',
+    centralGrades : '/erp_user/v1/grades-list/',
+    centralSubjects : '/erp_user/v1/subjects-list/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -276,6 +286,7 @@ export default {
     gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
     periodData: `/academic/chapter-period/`,
     periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
+    subjects: 'academic/v2/lesson-plan-subjects/',
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
@@ -391,6 +402,7 @@ export default {
     AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
     getCentralGrade: '/academic/ebook_grade_wise_filter/',
+    ebookClose: '/academic/v1/ebook_user/'
   },
   ibook: {
     // studentBook: '/academic/student-books-list/',
@@ -639,10 +651,18 @@ export default {
   ownerDashboard: {
     // gradeWiseStudentAttendanceState : `${`https://tiny-newt-42.loca.lt`}/api/acad_performance/v1/attendance/grade-wise-stats/`,
     // gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    gradeWise : `${msReportsUrl}/api/acad_performance/v3/curriculam-grade-wise-data/`,
+    subjectWise : `${msReportsUrl}/api/acad_performance/v3/curriculam-grade-wise-subject-data/`,
+    chapterWise : `${msReportsUrl}/api/acad_performance/v3/curriculam-chapter-wise-data/`,
+    teacherWise : `${msReportsUrl}/api/acad_performance/v3/curriculam-teacher-wise-data/`,
+    topicWise : `${msReportsUrl}/api/acad_performance/v3/curriculam-topic-wise-data/`,
+    teacherSubjectWise : `${msReportsUrl}/api/acad_performance/curriculam-teacher-grade-section-wise-data/`,
     gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v2/attendance-section-wise-stats/`,
     subjectWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/subject-wise-stats/`,
     // studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
     studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v2/attendance-student-wise-stats/`,
+    gradeWiseReport: `${msReportsUrl}/api/acad_performance/curriculam-grade-wise-report/`,
+    teacherSubjectWiseReport : `${msReportsUrl}/api/acad_performance/curriculam-grade-subject-wise-report/`,
 
     studentWiseMoreAbsentStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-absence-stats/`,
     subjectWiseTestStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/test/subject-wise-stats/`,
@@ -938,6 +958,19 @@ export default {
     blogWallApi : `${newBlogURL}/api/blog_wall/`,
     blogListDropApi : `${newBlogURL}/api/activity_dropdown/`,
     blogRedirectApi : `${newBlogURL}/api/activity_type_count/`,
+    subActivityListApi : `${newBlogURL}/api/activity_types/`,
+    physicalActivityListApi : `${newBlogURL}/api/get_activities/`,
+    physicalAddRating:`${newBlogURL}/api/student_performance/`, 
+    physicalErpReview: `${newBlogURL}/api/reviewed_erps/`,
+    bookingDetailsApi: `${newBlogURL}/api/check_student/`,
+    erpDataStudentsAPI: `${erpBlogURL}erp_user/fetch-user-details-by-section-mapping/`,
+    physicalStudentReviewAPI: `${newBlogURL}/api/student_performance/`,
+    postActivityListAPI : `${newBlogURL}/api/get_all_posts/`,
+    postActivityViewMoreAPI: `${newBlogURL}/api/get_posts_details/`,
+    postActivityCreateAPI : `${newBlogURL}/api/wall_post_create/`,
+    checkBMIApi: `${newBlogURL}/api/check_student/`,
+    addBMIApi : `${newBlogURL}/api/add_bmi/`,
+    getStudentBMIApi: `${newBlogURL}/api/get_bmi/`,
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

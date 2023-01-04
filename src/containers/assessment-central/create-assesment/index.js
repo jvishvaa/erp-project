@@ -17,6 +17,8 @@ import {
   Button,
   SvgIcon,
   Switch,
+  FormGroup,
+  makeStyles,
 } from '@material-ui/core';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
@@ -45,11 +47,32 @@ import Loader from './../../../components/loader/loader';
 import Checkbox from '@material-ui/core/Checkbox';
 import './styles.scss';
 import AssesmentTest from './assesment-test';
+import { addQuestionPaperToTest } from '../../../redux/actions';
+import QuestionDetailCard from './question-detail-card.js';
+import _ from 'lodash';
 
 const testTypes = [
   { id: 1, name: 'Online' },
   { id: 2, name: 'Offline' },
 ];
+
+const useStyles = makeStyles((theme) => ({
+  questionsheader: {
+    color: theme.palette.primary.main,
+    fontSize: '1.2rem',
+  },
+  formfieldheader: {
+    color: theme.palette.primary.main,
+    fontSize: '1.2rem',
+    margin: '1rem 0',
+  },
+  label: {
+    color: theme.palette.secondary.main,
+    marginLeft: '1rem',
+    fontSize: '1.1rem',
+    width: '50%',
+  },
+}));
 
 const CreateAssesment = ({
   initSetFilter,
@@ -68,9 +91,11 @@ const CreateAssesment = ({
   initialTotalMarks,
   initQuestionsLength,
   initResetFormState,
+  initAddQuestionPaperToTest,
 }) => {
   const [CentralFilter, setCentralFilter] = useState(false);
   const [flag, setFlag] = useState(false);
+  const classes = useStyles();
   const [branch, setBranch] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [branchId, setBranchId] = useState([]);
@@ -111,17 +136,156 @@ const CreateAssesment = ({
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [values, setValues] = useState({ val: [] });
-  const [sectionWiseTest, setSectionWiseTest] = useState(false)
+  const [sectionWiseTest, setSectionWiseTest] = useState(false);
+
+  const EditData = location?.state?.data;
+  const isEdit = location?.state?.isEdit;
 
   const formik = useFormik({
     initialValues: {
       test_mode: '',
       test_type: '',
     },
-    onSubmit: (values) => { },
+    onSubmit: (values) => {},
     validateOnChange: false,
     validateOnBlur: false,
   });
+
+  useEffect(() => {
+    if (isEdit && EditData) {
+      setTestName(EditData?.test_name);
+      setTestId(EditData?.test_id);
+      setTestDate(EditData?.test_date);
+      setTestDuration(EditData?.test_duration);
+      setTotalmarks(EditData?.total_mark);
+      initChangeTestFormFields('testName', EditData?.test_name);
+      initChangeTestFormFields('testId', EditData?.test_id);
+      initChangeTestFormFields('testDate', EditData?.test_date);
+      initChangeTestFormFields('testDuration', EditData?.test_duration);
+      initChangeTestFormFields('totalMarks', EditData?.total_mark);
+      initChangeTestFormFields('testInstructions', EditData?.instructions);
+      // setTestMarks(EditData?.test_name);
+      // initAddQuestionPaperToTest({
+      //   is_central : EditData?.central_qp_id !== null ? true : false
+      // });
+      let typetest = testTypes.filter((item) => item?.id == EditData?.test_mode);
+      formik.setFieldValue('test_mode', typetest[0]);
+      initSetFilter('selectedTestType', typetest[0]);
+      getAssesmentTypes(typetest[0]);
+
+      if (EditData?.has_sub_groups) {
+        setSectionToggle(true);
+      }
+    }
+  }, [isEdit]);
+
+  useEffect(() => {
+    if (isEdit && assesmentTypes.length) {
+      let assesstype = assesmentTypes?.filter(
+        (item) => item?.exam_name == EditData?.testType
+      );
+      formik.setFieldValue('test_type', assesstype);
+    }
+  }, [assesmentTypes.length, isEdit]);
+
+  useEffect(() => {
+    if (isEdit && branchDropdown.length) {
+      let branchDetail = EditData?.branch_details;
+      let data = branchDetail?.map((item) => {
+        let dict = {
+          branch: {
+            id: item?.branch_id,
+            branch_name: item?.branch_name,
+          },
+          id: item?.acad_session_id,
+        };
+        return dict;
+      });
+      handleBranch('', data);
+      axiosInstance
+        .get(
+          `${endpoints.assessmentErp.getGroups}?acad_session=${
+            EditData?.acad_session_id
+          }&grade=${
+            EditData?.grade_id
+          }&is_active=${true}&is_assessment=${true}&is_central_grade=${
+            EditData?.question_paper_id == null ? true : false
+          }`
+        )
+        .then((result) => {
+          if (result?.status === 200) {
+            setGroupList(result?.data);
+          }
+        });
+    }
+  }, [isEdit, branchDropdown]);
+
+  useEffect(() => {
+    if(selectedQuestionPaper && selectedQuestionPaper?.section){
+      let paperwise = false;
+      let test_mark = [];
+      let data = selectedQuestionPaper?.section?.forEach((sec) => {
+        let d = sec?.test_marks?.forEach((item) => {
+          test_mark.push(item);
+        });
+      });
+      setChecked(paperwise);
+      setTestMarks(test_mark);
+    }
+  }, [selectedQuestionPaper]);
+
+  useEffect(() => {
+    if (isEdit && groupList.length && EditData?.group_id !== null) {
+      let filteredgroup = groupList.filter((item) => item?.id === EditData?.group_id);
+      handleGroup('', filteredgroup);
+    }
+  }, [groupList]);
+
+  useEffect(() => {
+    if (branchId?.length && isEdit) {
+      getEditSection(EditData?.grade_id);
+    }
+  }, [EditData, branchId]);
+
+  useEffect(() => {
+    if (assesmentTypes?.length && isEdit) {
+      let assessmentType = assesmentTypes?.filter(
+        (item) => item?.exam_name == EditData?.test_type__exam_name
+      );
+
+      formik.setFieldValue('test_type', assessmentType[0]);
+      if (
+        assessmentType[0]?.exam_name == 'Quiz' ||
+        assessmentType[0]?.exam_name == 'Practice Test' ||
+        assessmentType[0]?.exam_name == 'Open Test'
+      ) {
+        setSectionWiseTest(false);
+      }
+    }
+  }, [isEdit, assesmentTypes.length]);
+
+  useEffect(() => {
+    initChangeTestFormFields('testInstructions', EditData?.instructions);
+    setInstructions(EditData?.instructions);
+  }, [EditData, branchId]);
+
+  // console.log(EditData?.instructions,'@@E')
+
+  useEffect(() => {
+    if (sectionList.length && isEdit) {
+      let sectionFilterData = [];
+      let sectionData = sectionList?.filter((item) => {
+        let v = EditData?.section_mapping.forEach((id) => {
+          if (id === item?.id) {
+            sectionFilterData.push(item);
+          }
+        });
+        // return item?.id
+      });
+      setSelectedSectionData(sectionFilterData);
+      setSelectedSectionMappingId(EditData?.section_mapping);
+    }
+  }, [sectionList.length]);
 
   const resetForm = () => {
     setTestName('');
@@ -150,12 +314,23 @@ const CreateAssesment = ({
       });
     }
   }, []);
-  const getAssesmentTypes = async () => {
+  const getAssesmentTypes = async (mode) => {
     try {
-      const data = await fetchAssesmentTypes();
-      setAssesmentTypes(data);
-      formik.setFieldValue('test_type', data);
-    } catch (e) { }
+      if (mode) {
+        const data = await fetchAssesmentTypes();
+        let asstypes = data.filter(
+          (item) => item?.exam_name !== 'Open Test' && item?.exam_name !== 'Practice Test'
+        );
+        if (mode?.name === 'Offline') {
+          setAssesmentTypes(asstypes);
+        } else {
+          setAssesmentTypes(data);
+        }
+        // formik.setFieldValue('test_type', data);
+      } else {
+        setAssesmentTypes([]);
+      }
+    } catch (e) {}
   };
   // useEffect(() => {
   //   if (moduleId) {
@@ -163,9 +338,11 @@ const CreateAssesment = ({
   //   }
   //   getAssesmentTypes();
   // }, [moduleId]);
-
   useEffect(() => {
-    if (selectedQuestionPaper?.is_central && moduleId) {
+    if (
+      (selectedQuestionPaper?.is_central || EditData?.central_qp_id != null) &&
+      moduleId
+    ) {
       setCentralFilter(true);
       axiosInstance
         .get(
@@ -188,7 +365,7 @@ const CreateAssesment = ({
           setAlert('error', error?.message);
         });
     }
-  }, [selectedQuestionPaper?.is_central, moduleId]);
+  }, [selectedQuestionPaper?.is_central, moduleId, isEdit]);
 
   const getSection = (gradeID) => {
     let branchID = selectedQuestionPaper?.is_central ? branchId : branchIdFromErp;
@@ -216,6 +393,35 @@ const CreateAssesment = ({
       .finally((e) => setLoading(false));
   };
 
+  const getEditSection = (gradeID) => {
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${'/erp_user/v2/newsectionmapping/'}?acad_session=${branchId}&grade=${gradeID}&is_central=${
+          EditData?.question_paper_id == null ? true : false
+        }`
+      )
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          const transformData = res?.data?.result.map((item) => ({
+            section_name: item.section_name,
+            id: item.id,
+          }));
+          if (transformData?.length > 1) {
+            transformData.unshift({
+              section_name: 'Select All',
+              id: 'all',
+            });
+          }
+          setSectionList(transformData);
+        } else {
+          setSectionList([]);
+        }
+        setLoading(false);
+      })
+      .finally((e) => setLoading(false));
+  };
+
   useEffect(() => {
     if (
       selectedQuestionPaper &&
@@ -228,19 +434,19 @@ const CreateAssesment = ({
   }, [branchIdFromErp]);
 
   useEffect(() => {
-    if (branch.length > 0) {
+    if (branch.length > 0 && !isEdit) {
       getSection(selectedQuestionPaper?.grade);
     }
   }, [branch]);
 
   const handleSection = (e, value) => {
-    if (value.length) {
+    if (value?.length) {
       value =
-        value.filter(({ id }) => id === 'all').length === 1
+        value?.filter(({ id }) => id === 'all').length === 1
           ? [...sectionList].filter(({ id }) => id !== 'all')
           : value;
       setSelectedSectionData(value);
-      setSelectedSectionMappingId(value.map((i) => i.id));
+      setSelectedSectionMappingId(value?.map((i) => i.id));
     } else {
       setSelectedSectionData([]);
       setSelectedSectionMappingId([]);
@@ -248,12 +454,22 @@ const CreateAssesment = ({
   };
 
   const getGroup = () => {
-    let acadId = selectedQuestionPaper?.is_central ? branchId : selectedQuestionPaper?.academic_session	  //&group_type=${1}
-    axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${selectedQuestionPaper?.grade}&is_active=${true}&is_assessment=${true}&is_central_grade=${selectedQuestionPaper?.is_central}`).then((result) => {
-      if (result?.status === 200) {
-        setGroupList(result?.data)
-      }
-    })
+    let acadId = selectedQuestionPaper?.is_central
+      ? branchId
+      : selectedQuestionPaper?.academic_session; //&group_type=${1}
+    axiosInstance
+      .get(
+        `${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${
+          selectedQuestionPaper?.grade
+        }&is_active=${true}&is_assessment=${true}&is_central_grade=${
+          selectedQuestionPaper?.is_central
+        }`
+      )
+      .then((result) => {
+        if (result?.status === 200) {
+          setGroupList(result?.data);
+        }
+      });
   };
 
   useEffect(() => {
@@ -327,23 +543,27 @@ const CreateAssesment = ({
       return;
     }
 
-   
-    if(sectionWiseTest == true ){
-      const checkDate = values.val.filter(x => x)
-      var todayDate = moment().format().slice(0,16)
-      for (let i = 0; i < checkDate?.length; i++)  {
+    if (sectionWiseTest == true) {
+      const checkDate = values.val.filter((x) => x);
+      var todayDate = moment().format().slice(0, 16);
+      for (let i = 0; i < checkDate?.length; i++) {
         console.log(moment(checkDate[i]?.test_date).isAfter(todayDate));
-        if(moment(checkDate[i]?.test_date).isAfter(todayDate) == false){
+        if (moment(checkDate[i]?.test_date).isAfter(todayDate) == false) {
           setAlert('error', 'Please Select Correct Date and Time');
           return;
         }
       }
     }
-    if(sectionWiseTest == false && formik.values.test_type?.exam_name != 'Quiz' ){
+    if (
+      sectionWiseTest == false &&
+      formik.values.test_type?.exam_name != 'Quiz' &&
+      formik?.values?.test_type?.exam_name != 'Practice Test' &&
+      formik?.values?.test_type?.exam_name != 'Open Test'
+    ) {
       console.log(testDate);
-      var todayDate = moment().format().slice(0,16)
+      var todayDate = moment().format().slice(0, 16);
       console.log(moment(testDate).isAfter(todayDate));
-      if(moment(testDate).isAfter(todayDate) == false){
+      if (moment(testDate).isAfter(todayDate) == false) {
         setAlert('error', 'Please Select Correct Date and Time');
         return;
       }
@@ -361,7 +581,7 @@ const CreateAssesment = ({
     });
     let testMarksArr = testMarks;
     qMap.forEach((value, key) => {
-      const totalQuestionMarks = value.reduce(
+      const totalQuestionMarks = value?.reduce(
         (acc, currValue) => {
           acc[0] += currValue.question_mark[0];
           acc[1] += currValue.question_mark[1];
@@ -395,6 +615,7 @@ const CreateAssesment = ({
         mark_type: '1',
         child_mark: [],
         is_central: null,
+        ques_type: 2,
       };
 
       const parentIndex = testMarksArr.findIndex((q) => q.question_id === key);
@@ -465,25 +686,32 @@ const CreateAssesment = ({
       is_central: selectedQuestionPaper['is_central'],
     };
 
-    if (formik.values.test_type?.exam_name != 'Quiz' && sectionWiseTest == false) {
+    if (
+      formik?.values?.test_type?.exam_name != 'Quiz' &&
+      formik?.values?.test_type?.exam_name != 'Practice Test' &&
+      formik?.values?.test_type?.exam_name != 'Open Test' &&
+      sectionWiseTest == false
+    ) {
       reqObj = { ...reqObj, test_date: testDate };
     }
 
-    // if (formik.values.test_type?.exam_name != 'Quiz' ) {
-    //   if(sectionWiseTest != true){
-    //     reqObj = { ...reqObj, test_id: testId };
-    //   }
-    // }
+    if (
+      formik?.values?.test_type?.exam_name != 'Quiz' &&
+      formik?.values?.test_type?.exam_name != 'Practice Test' &&
+      formik?.values?.test_type?.exam_name != 'Open Test'
+    ) {
+      reqObj = { ...reqObj, test_id: testId };
+    }
 
     if (!paperchecked) {
-      reqObj = { ...reqObj, test_mark: testMarksArr };
+      reqObj = { ...reqObj, test_mark: _.uniqBy(testMarksArr, 'question_id') };
     }
 
     if (!sectionToggle && selectedSectionData?.length > 0) {
       reqObj = { ...reqObj, section_mapping: selectedSectionMappingId };
     }
     if (sectionWiseTest && values?.val?.length > 0) {
-      const newVal = values.val.filter(x => x)
+      const newVal = values.val.filter((x) => x);
 
       reqObj = { ...reqObj, section_mapping: newVal };
     }
@@ -497,16 +725,38 @@ const CreateAssesment = ({
     }
 
     try {
+      setLoading(true);
+      // console.log('selectedQuestionPaper', selectedQuestionPaper, reqObj);
       const { results = {} } = (await initCreateAssesment(reqObj)) || {};
       if (results?.status_code === 200) {
+        setLoading(false);
         setAlert('success', results?.message);
         resetForm();
         history.push('/assesment');
       } else {
+        setLoading(false);
         setAlert('error', results?.message);
       }
     } catch (e) {
+      setLoading(false);
       setAlert('error', 'Test creation failed');
+    }
+  };
+
+  const handleBack = () => {
+    if (isEdit) {
+      // initChangeTestFormFields('testInstructions', '');
+      history.push({
+        pathname: '/assesment',
+        state: {
+          filtersData: JSON.parse(location?.state?.filterData),
+          dataRestore: true,
+        },
+      });
+    } else {
+      history.push({
+        pathname: '/assesment',
+      });
     }
   };
 
@@ -625,11 +875,11 @@ const CreateAssesment = ({
     setSelectedGroupId('');
     if (value?.length > 0) {
       value =
-        value.filter(({ id }) => id === 'all').length === 1
+        value?.filter(({ id }) => id === 'all').length === 1
           ? [...branchDropdown].filter(({ id }) => id !== 'all')
           : value;
-      const branchIds = value.map((element) => element?.id) || [];
-      const selectedbranch = value.map((element) => element?.branch?.id) || [];
+      const branchIds = value?.map((element) => element?.id) || [];
+      const selectedbranch = value?.map((element) => element?.branch?.id) || [];
       setBranchId(branchIds);
       setSelectedBranchId(selectedbranch);
       setBranch(value);
@@ -647,6 +897,7 @@ const CreateAssesment = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           let data = result?.data?.data?.results;
+          setBranchDropdown(data);
           let filterBranch = data.filter(
             (item) => selectedQuestionPaper?.academic_session.indexOf(item?.id) !== -1
           );
@@ -662,16 +913,19 @@ const CreateAssesment = ({
       .finally((e) => setLoading(false));
   };
   useEffect(() => {
-    if (selectedQuestionPaper && !selectedQuestionPaper?.is_central && moduleId) {
+    if (
+      ((selectedQuestionPaper && !selectedQuestionPaper?.is_central) ||
+        EditData?.question_paper_id != null) &&
+      moduleId
+    ) {
       getBranch();
     }
-  }, [selectedQuestionPaper, moduleId]);
+  }, [selectedQuestionPaper, moduleId, isEdit]);
   useEffect(() => {
-    if (selectedQuestionPaper) {
+    if (selectedQuestionPaper && selectedQuestionPaper?.id) {
       // initFetchQuestionPaperDetails(3);
       initFetchQuestionPaperDetails(selectedQuestionPaper?.id, selectedQuestionPaper);
     }
-    getAssesmentTypes();
     // initFetchQuestionPaperDetails(3);
   }, [selectedQuestionPaper]);
 
@@ -685,23 +939,114 @@ const CreateAssesment = ({
   };
 
   const sectionDate = (event, i, section) => {
-    var comDate = moment().format().slice(0,16)
-    if(moment(event.target.value).isAfter(comDate)){
-    let vals = [...values.val];
-    // vals[i] = event.target.value;
-    vals[i] = {
-      test_date: event.target.value,
-      section_mapping: [section.id]
+    var comDate = moment().format().slice(0, 16);
+    if (moment(event.target.value).isAfter(comDate)) {
+      let vals = [...values.val];
+      // vals[i] = event.target.value;
+      vals[i] = {
+        test_date: event.target.value,
+        section_mapping: [section.id],
+      };
+      setValues({ val: vals });
+      console.log(vals);
+    } else {
+      setAlert('error', 'Please Select Correct Date and Time ');
     }
-    setValues({ val: vals });
-    console.log(vals);
-  } else {
-    setAlert('error','Please Select Correct Date and Time ')
-  }
-  }
+  };
 
   const handleChangeSection = (event) => {
     setSectionWiseTest(event.target.checked);
+  };
+
+  const updateTest = () => {
+    if (!branchId) {
+      setAlert('warning', 'Please Select Branch');
+      return;
+    }
+    if (totalMarks < 0 || totalMarks > 1000) {
+      setAlert('warning', 'Please enter valid marks.');
+      return;
+    }
+
+    if (testDuration < 0 || testDuration > 1441) {
+      setAlert('warning', 'Please enter valid duration.');
+      return;
+    }
+    if (!instructions.length) {
+      return setAlert('warning', 'Please Enter Test Instruction ');
+    }
+    if (!formik.values.test_type?.id) {
+      setAlert('error', 'Select Assessment Type');
+      return;
+    }
+    if (!formik.values.test_mode?.id) {
+      setAlert('error', 'Select Test Mode');
+      return;
+    }
+
+    let reqObj = {
+      // question_paper: EditData?.id,
+      test_name: testName,
+      total_mark: totalMarks,
+      test_mode: formik.values.test_mode?.id,
+      test_type: formik.values.test_type?.id,
+      test_duration: testDuration,
+      instructions,
+      descriptions: 'Assessment',
+      acad_session: branchId,
+
+      // has_sub_groups :
+      // group :
+      // is_question_wise: !paperchecked,
+      // grade: selectedQuestionPaper['grade'],
+      // subjects: selectedQuestionPaper['subjects'],
+      // acad_session:
+      //   CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
+      // is_central: selectedQuestionPaper['is_central'],
+    };
+
+    if (
+      formik?.values?.test_type?.exam_name != 'Quiz' &&
+      formik?.values?.test_type?.exam_name != 'Practice Test' &&
+      formik?.values?.test_type?.exam_name != 'Open Test' &&
+      sectionWiseTest == false
+    ) {
+      reqObj = { ...reqObj, test_date: testDate };
+    }
+
+    if (!sectionToggle && selectedSectionData?.length > 0) {
+      reqObj = { ...reqObj, section_mapping: selectedSectionMappingId };
+    }
+
+    if (sectionToggle && groupSectionMappingId.length > 0) {
+      reqObj = {
+        ...reqObj,
+        has_sub_groups: true,
+        group: selectedGroupId,
+        section_mapping: groupSectionMappingId,
+      };
+    }
+
+    setLoading(true);
+    axiosInstance
+      .patch(
+        `${endpoints.assessmentErp.deleteAssessmentTest}${EditData?.id}/test/`,
+        reqObj
+      )
+      .then((results) => {
+        setLoading(false);
+        if (results?.data?.status_code === 200) {
+          setAlert('success', results?.data?.message);
+          handleBack();
+          // filterResults(1); // 1 is the current page no.
+        } else {
+          setLoading(false);
+          setAlert('error', results?.response?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.response?.data?.message);
+      });
   };
 
   return (
@@ -713,15 +1058,143 @@ const CreateAssesment = ({
           childComponentName='Create Test'
           isAcademicYearVisible={true}
         />
-        <div className='content-container'>
-          <Accordion
-            className='collapsible-section'
-            square
-            expanded={expandFilter}
-            onChange={() => { }}
-          >
-            <AccordionSummary>
-              <div className='header mv-20'>
+
+        <div className='create-container'>
+          <div className='questions-paper-container'>
+            {!isEdit && (
+              <div className='questions-container'>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                  className='questions-header-container'
+                >
+                  <div className={classes.questionsheader}>QUESTIONS </div>
+                  <Button
+                    variant='contained'
+                    onClick={() => {
+                      history.push(`/assessment-question`);
+                    }}
+                    color='primary'
+                    className='mv-20'
+                    style={{ color: 'white', margin: '1rem', borderRadius: '10px' }}
+                  >
+                    ADD QUESTION PAPER
+                  </Button>
+                </div>
+                <div className='divider-container'>
+                  <Divider color='secondary' />
+                </div>
+
+                <div className='questions-content'>
+                  <div
+                    className='question-header-row'
+                    style={{ justifyContent: 'flex-end' }}
+                  >
+                    {/* <div className='info-section'>
+                <p>Question paper 1</p>
+                <div className='dividerVertical'></div>
+                <p>Online</p>
+                <div className='dividerVertical'></div>
+                <p>Created on 02.02.2021</p>
+              </div> */}
+                    <div className='action-section'>
+                      <FormGroup>
+                        {/* <FormLabel>Parent marks</FormLabel>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            size='small'
+                            onChange={onMarksAssignModeChange}
+                            color='primary'
+                            checked={marksAssignMode}
+                          />
+                        }
+                      />
+                      <FormLabel>Child marks</FormLabel> */}
+                      </FormGroup>
+                    </div>
+                  </div>
+                  <div className='question-container'>
+                    <div className='sections-container'>
+                      {selectedQuestionPaper && questionPaperDetails?.map((section) => (
+                        <div className='section-container'>
+                          <div className='section-header'>
+                            <div className='left'>
+                              <div className='checkbox'>
+                                <Checkbox
+                                  checked
+                                  onChange={() => {}}
+                                  inputProps={{ 'aria-label': 'primary checkbox' }}
+                                  color='primary'
+                                />
+                              </div>
+                              <div className='section-name'>{`SECTION ${section.name}`}</div>
+                              <div className='ml-2'>
+                                {' '}
+                                {selectedQuestionPaper?.section?.filter(
+                                  (item) => item?.discription == section.name
+                                )[0]?.mandatory_questions
+                                  ? `Mandatory Questions:: 
+                                ${
+                                  selectedQuestionPaper?.section?.filter(
+                                    (item) => item?.discription == section.name
+                                  )[0]?.mandatory_questions
+                                }`
+                                  : null}
+                              </div>
+                            </div>
+                            <div className='th-14 th-fw-500 mr-3'>
+                              {selectedQuestionPaper?.section?.filter(
+                                (item) => item?.discription == section.name
+                              )[0]?.instruction
+                                ? `Instructions : 
+                                ${
+                                  selectedQuestionPaper?.section?.filter(
+                                    (item) => item?.discription == section.name
+                                  )[0]?.instruction
+                                }`
+                                : null}
+                            </div>
+                          </div>
+
+                          <div className='section-content'>
+                            <div>Total Questions: {section.questions.length} </div>
+                            {section.questions.map((q) => (
+                              <div
+                                className='question-detail-card-wrapper'
+                                style={{ width: '100%' }}
+                              >
+                                <QuestionDetailCard
+                                  createdAt={q?.created_at}
+                                  question={q}
+                                  expanded={marksAssignMode}
+                                  onChangeMarks={handleChangeTestMarks}
+                                  testMarks={testMarks}
+                                  paperchecked={paperchecked}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className='content-container'>
+              <Accordion
+                className='collapsible-section'
+                square
+                expanded={expandFilter}
+                onChange={() => {}}
+              >
+                <AccordionSummary>
+                  {/* <div className='header mv-20'>
                 {!expandFilter ? (
                   <IconButton
                     onClick={() => {
@@ -757,125 +1230,144 @@ const CreateAssesment = ({
                     <FilterListIcon color='secondary' />
                   </IconButton>
                 )}
-              </div>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div className='form-grid-container'>
-                <Grid container spacing={1}>
-                  <Grid item xs={12} md={12}>
-                    <FormControl variant='outlined' style={{ display: 'flex' }}>
-                      <Grid container spacing={1} direction='row'>
-                        <Grid item xs={12} md={4}>
-                          <Autocomplete
-                            id='branch'
-                            name='branch'
-                            onChange={(e, value) => {
-                              formik.setFieldValue('test_mode', value);
-                              initSetFilter('selectedTestType', value);
-                            }}
-                            value={formik.values.test_mode}
-                            options={testTypes}
-                            className='dropdownIcon'
-                            getOptionLabel={(option) => option.name || ''}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Test Mode'
-                                placeholder='Test Mode'
-                                required
+              </div> */}
+                </AccordionSummary>
+                <AccordionDetails>
+                  <div className='form-grid-container'>
+                    <Grid container spacing={1}>
+                      <Grid item xs={12} md={12}>
+                        <FormControl variant='outlined' style={{ display: 'flex' }}>
+                          <Grid container spacing={1} direction='row'>
+                            <Grid item xs={12} md={4}>
+                              <Autocomplete
+                                id='testmode'
+                                name='testmode'
+                                onChange={(e, value) => {
+                                  if(value){ 
+                                  formik.setFieldValue('test_mode', value);
+                                  initSetFilter('selectedTestType', value);
+                                  formik.setFieldValue('test_type', '');
+                                  setAssesmentTypes([])
+                                  getAssesmentTypes(value);
+                                  }else{
+                                    formik.setFieldValue('test_mode', '');
+                                  initSetFilter('selectedTestType', '');
+                                    formik.setFieldValue('test_type', '');
+                                    setAssesmentTypes([])
+                                  }
+                                }}
+                                value={formik.values.test_mode}
+                                options={testTypes}
+                                className='dropdownIcon'
+                                getOptionLabel={(option) => option.name || ''}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    variant='outlined'
+                                    label='Test Mode'
+                                    placeholder='Test Mode'
+                                    required
+                                  />
+                                )}
+                                size='small'
                               />
-                            )}
-                            size='small'
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                          <Autocomplete
-                            id='assesment_type'
-                            name='assesment_type'
-                            className='dropdownIcon'
-                            onChange={(e, value) => {
-                              console.log(value)
-                              formik.setFieldValue('test_type', value);
-                              if(value?.exam_name == 'Quiz'){
-                                setSectionWiseTest(false)
-                              }
-                            }}
-                            value={formik.values.test_type}
-                            options={assesmentTypes}
-                            getOptionLabel={(option) => option.exam_name || ''}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Assessment Type'
-                                placeholder='Assessment Type'
-                                required
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                              <Autocomplete
+                                id='assesment_type'
+                                name='assesment_type'
+                                className='dropdownIcon'
+                                onChange={(e, value) => {
+                                  console.log(value);
+                                  if(value){
+                                    formik.setFieldValue('test_type', value);
+                                  }else{
+                                    formik.setFieldValue('test_type', '');
+                                  }
+                                  if (
+                                    value?.exam_name == 'Quiz' ||
+                                    value?.exam_name == 'Practice Test' ||
+                                    value?.exam_name == 'Open Test'
+                                  ) {
+                                    setSectionWiseTest(false);
+                                  }
+                                }}
+                                value={formik.values.test_type}
+                                options={assesmentTypes}
+                                getOptionLabel={(option) => option.exam_name || ''}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    variant='outlined'
+                                    label='Assessment Type'
+                                    placeholder='Assessment Type'
+                                    required
+                                  />
+                                )}
+                                size='small'
                               />
+                            </Grid>
+                            {CentralFilter === true || isEdit ? (
+                              <Grid item xs={12} md={4}>
+                                <Autocomplete
+                                  id='branch_name'
+                                  name='branch_name'
+                                  multiple
+                                  limitTags={2}
+                                  className='dropdownIcon'
+                                  onChange={handleBranch}
+                                  value={branch || []}
+                                  options={branchDropdown || []}
+                                  getOptionLabel={(option) =>
+                                    option?.branch?.branch_name || ''
+                                  }
+                                  filterSelectedOptions
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant='outlined'
+                                      label='Branch'
+                                      placeholder='Branch'
+                                      required
+                                    />
+                                  )}
+                                  size='small'
+                                />
+                              </Grid>
+                            ) : (
+                              ''
                             )}
-                            size='small'
-                          />
-                        </Grid>
-                        {CentralFilter === true ? (
-                          <Grid item xs={12} md={4}>
-                            <Autocomplete
-                              id='branch_name'
-                              name='branch_name'
-                              multiple
-                              limitTags={2}
-                              className='dropdownIcon'
-                              onChange={handleBranch}
-                              value={branch || []}
-                              options={branchDropdown || []}
-                              getOptionLabel={(option) =>
-                                option?.branch?.branch_name || ''
-                              }
-                              filterSelectedOptions
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  variant='outlined'
-                                  label='Branch'
-                                  placeholder='Branch'
-                                  required
-                                />
+                            {selectedQuestionPaper &&
+                              !selectedQuestionPaper?.is_central && (
+                                <Grid item xs={12} md={4}>
+                                  <Autocomplete
+                                    id='branch_name'
+                                    name='branch_name'
+                                    multiple
+                                    limitTags={2}
+                                    className='dropdownIcon'
+                                    // onChange={handleBranch}
+                                    disabled
+                                    value={branchFromErp || []}
+                                    options={[]}
+                                    getOptionLabel={(option) =>
+                                      option?.branch?.branch_name || ''
+                                    }
+                                    // filterSelectedOptions
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        variant='outlined'
+                                        label='Branch'
+                                        placeholder='Branch'
+                                        required
+                                      />
+                                    )}
+                                    size='small'
+                                  />
+                                </Grid>
                               )}
-                              size='small'
-                            />
-                          </Grid>
-                        ) : (
-                          ''
-                        )}
-                        {selectedQuestionPaper && !selectedQuestionPaper.is_central && (
-                          <Grid item xs={12} md={4}>
-                            <Autocomplete
-                              id='branch_name'
-                              name='branch_name'
-                              multiple
-                              limitTags={2}
-                              className='dropdownIcon'
-                              // onChange={handleBranch}
-                              disabled
-                              value={branchFromErp || []}
-                              options={[]}
-                              getOptionLabel={(option) =>
-                                option?.branch?.branch_name || ''
-                              }
-                              // filterSelectedOptions
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  variant='outlined'
-                                  label='Branch'
-                                  placeholder='Branch'
-                                  required
-                                />
-                              )}
-                              size='small'
-                            />
-                          </Grid>
-                        )}
-                        {/* {formik?.values?.test_type?.exam_name == 'Quiz' ? '' :
+                            {/* {formik?.values?.test_type?.exam_name == 'Quiz' ? '' :
                           <Grid container alignItems='center' style={{ marginTop: 15, display: 'flex', justifyContent: 'space-evenly' }}>
                             <Grid container
                               alignItems='center'
@@ -891,168 +1383,242 @@ const CreateAssesment = ({
                             <p>Section Wise</p>
                           </Grid>
                         } */}
-                      </Grid>
-                      {selectedQuestionPaper && (
-                        <Grid container alignItems='center' style={{ marginTop: 15 }}>
-                          <Grid
-                            container
-                            alignItems='center'
-                            justifyContent='center'
-                            xs={12}
-                            md={4}
-                          >
-                            <Typography>Section</Typography>
-                            <Switch
-                              checked={sectionToggle}
-                              onChange={handleSectionToggle}
-                              color='default'
-                              inputProps={{ 'aria-label': 'checkbox with default color' }}
-                            />
-                            <Typography>Group</Typography>
                           </Grid>
-                          {sectionToggle ? (
-                            <Grid item xs={12} md={4}>
-                              <Autocomplete
-                                id='Group'
-                                name='group'
-                                // multiple
-                                // limitTags={2}
-                                className='dropdownIcon'
-                                onChange={handleGroup}
-                                value={selectedGroupData || []}
-                                options={groupList || []}
-                                getOptionLabel={(option) => option?.group_name || ''}
-                                filterSelectedOptions
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    variant='outlined'
-                                    label='Group'
-                                    placeholder='Group'
-                                    required
-                                  />
+                          {(selectedQuestionPaper || isEdit) && (
+                            <Grid container alignItems='center' style={{ marginTop: 15 }}>
+                              <Grid container xs={12} md={4}>
+                                {isEdit && (
+                                  <Grid xs={6} md={2}>
+                                    <Button
+                                      color='primary'
+                                      variant='contained'
+                                      onClick={handleBack}
+                                    >
+                                      Back
+                                    </Button>
+                                  </Grid>
                                 )}
-                                size='small'
-                              />
-                            </Grid>
-                          ) : (
-                            <Grid item xs={12} md={4}>
-                              <Autocomplete
-                                id='section_name'
-                                name='section_name'
-                                multiple
-                                limitTags={2}
-                                className='dropdownIcon'
-                                onChange={handleSection}
-                                value={selectedSectionData || []}
-                                options={sectionList || []}
-                                getOptionLabel={(option) => option?.section_name || ''}
-                                filterSelectedOptions
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    variant='outlined'
-                                    label='Section'
-                                    placeholder='Section'
-                                    required
+                                <div className='d-flex' style={{ marginLeft: '20%' }}>
+                                  <Typography>Section</Typography>
+                                  <Switch
+                                    checked={sectionToggle}
+                                    onChange={handleSectionToggle}
+                                    color='default'
+                                    inputProps={{
+                                      'aria-label': 'checkbox with default color',
+                                    }}
                                   />
-                                )}
-                                size='small'
-                              />
+                                  <Typography>Group</Typography>
+                                </div>
+                              </Grid>
+                              {sectionToggle ? (
+                                <Grid item xs={12} md={4}>
+                                  <Autocomplete
+                                    id='Group'
+                                    name='group'
+                                    // multiple
+                                    // limitTags={2}
+                                    className='dropdownIcon'
+                                    onChange={handleGroup}
+                                    value={selectedGroupData || []}
+                                    options={groupList || []}
+                                    getOptionLabel={(option) => option?.group_name || ''}
+                                    filterSelectedOptions
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        variant='outlined'
+                                        label='Group'
+                                        placeholder='Group'
+                                        required
+                                      />
+                                    )}
+                                    size='small'
+                                  />
+                                </Grid>
+                              ) : (
+                                <Grid item xs={12} md={4}>
+                                  <Autocomplete
+                                    id='section_name'
+                                    name='section_name'
+                                    multiple
+                                    limitTags={2}
+                                    className='dropdownIcon'
+                                    onChange={handleSection}
+                                    value={selectedSectionData || []}
+                                    options={sectionList || []}
+                                    getOptionLabel={(option) =>
+                                      option?.section_name || ''
+                                    }
+                                    filterSelectedOptions
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        variant='outlined'
+                                        label='Section'
+                                        placeholder='Section'
+                                        required
+                                      />
+                                    )}
+                                    size='small'
+                                  />
+                                </Grid>
+                              )}
+                              {selectedSectionData?.length > 0 &&
+                              formik?.values?.test_type != '' ? (
+                                <>
+                                  {formik?.values?.test_type?.exam_name == 'Quiz' ||
+                                  formik?.values?.test_type?.exam_name ==
+                                    'Practice Test' ||
+                                  formik?.values?.test_type?.exam_name == 'Open Test' ? (
+                                    ''
+                                  ) : (
+                                    <>
+                                      {sectionToggle ? (
+                                        ''
+                                      ) : (
+                                        <>
+                                          {!isEdit && (
+                                            <Grid
+                                              item
+                                              xs={12}
+                                              md={4}
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                              }}
+                                            >
+                                              <Checkbox
+                                                checked={sectionWiseTest}
+                                                onChange={handleChangeSection}
+                                                inputProps={{
+                                                  'aria-label': 'primary checkbox',
+                                                }}
+                                              />
+                                              <p
+                                                style={{
+                                                  display: 'flex',
+                                                  alignItems: 'center',
+                                                  margin: '0px',
+                                                  fontSize: '17px',
+                                                }}
+                                              >
+                                                Section Wise
+                                              </p>
+                                            </Grid>
+                                          )}
+                                        </>
+                                      )}
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                ''
+                              )}
                             </Grid>
                           )}
-                          {selectedSectionData?.length > 0 && formik?.values?.test_type != '' ? 
-                          <>
-                          {formik?.values?.test_type?.exam_name == 'Quiz'   ? '' :
-                          <>
-                          {sectionToggle ? '' : 
-                            <Grid item xs={12} md={4} style={{display : 'flex' , justifyContent: 'center'}} >
-                              <Checkbox
-                                checked={sectionWiseTest}
-                                onChange={handleChangeSection}
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                              />
-                              <p style={{display: 'flex' , alignItems: 'center', margin: '0px', fontSize: '17px'}}  >Section Wise</p>
-                            </Grid>
-                          }
-                          </>
-                          }
-                          </> : '' }
-                        </Grid>
-                      )}
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </div>
+                </AccordionDetails>
+              </Accordion>
+            </div>
 
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </div>
-            </AccordionDetails>
-          </Accordion>
+            <AssesmentTest
+              questionPaper={questionPaperDetails}
+              onMarksAssignModeChange={handleMarksAssignModeChange}
+              marksAssignMode={marksAssignMode}
+              onChangeTestMarks={handleChangeTestMarks}
+              testMarks={testMarks}
+              onCreate={handleCreateAssesmentTest}
+              testName={testName}
+              testId={testId}
+              testDuration={testDuration}
+              testDate={testDate}
+              testInstructions={instructions}
+              isEdit={isEdit}
+              totalMarks={totalMarks}
+              onTestNameChange={(value) => {
+                setTestName(value);
+                initChangeTestFormFields('testName', value);
+              }}
+              onTestIdChange={(value) => {
+                setTestId(value);
+                initChangeTestFormFields('testId', value);
+              }}
+              onInstructionsChange={(value) => {
+                const WORDS = value.split(' ');
 
-          <div className='divider-container'>
-            <Divider />
+                const MAX_WORDS = WORDS.length;
+                const MAX_LENGTH = 500;
+                if (MAX_WORDS <= MAX_LENGTH) {
+                  setInstructions(value);
+                  initChangeTestFormFields('testInstructions', value);
+                } else {
+                  // editor.setContent(value);
+                  setInstructions(instructions);
+                  setAlert('error', 'Maximum word limit reached!');
+                }
+                // setInstructions(value);
+              }}
+              onTestDateChange={(value) => {
+                var comDate = moment().format().slice(0, 16);
+                if (moment(value).isAfter(comDate)) {
+                  setTestDate(value);
+                  initChangeTestFormFields('testDate', value);
+                } else {
+                  setAlert('error', 'Please Select Correct Date and Time');
+                }
+              }}
+              onTestDurationChange={(value) => {
+                setTestDuration(value);
+                initChangeTestFormFields('testDuration', value);
+              }}
+              onTotalMarksChange={(value) => {
+                setTotalmarks(value);
+                initChangeTestFormFields('totalMarks', value);
+              }}
+              paperchecked={paperchecked}
+              setChecked={setChecked}
+              formik={formik}
+              selectedSectionData={selectedSectionData}
+              sectionDate={sectionDate}
+              values={values}
+              sectionWiseTest={sectionWiseTest}
+              updateTest={updateTest}
+            />
+            <div className='divider-container'>
+              <Divider />
+            </div>
           </div>
-          <AssesmentTest
-            questionPaper={questionPaperDetails}
-            onMarksAssignModeChange={handleMarksAssignModeChange}
-            marksAssignMode={marksAssignMode}
-            onChangeTestMarks={handleChangeTestMarks}
-            testMarks={testMarks}
-            onCreate={handleCreateAssesmentTest}
-            testName={testName}
-            testId={testId}
-            testDuration={testDuration}
-            testDate={testDate}
-            testInstructions={instructions}
-            totalMarks={totalMarks}
-            onTestNameChange={(value) => {
-              setTestName(value);
-              initChangeTestFormFields('testName', value);
-            }}
-            onTestIdChange={(value) => {
-              setTestId(value);
-              initChangeTestFormFields('testId', value);
-            }}
-            onInstructionsChange={(value) => {
-              const WORDS = value.split(' ');
-
-              const MAX_WORDS = WORDS.length;
-              const MAX_LENGTH = 500;
-              if (MAX_WORDS <= MAX_LENGTH) {
-                setInstructions(value);
-                initChangeTestFormFields('testInstructions', value);
-              } else {
-                // editor.setContent(value);
-                setInstructions(instructions);
-                setAlert('error', 'Maximum word limit reached!');
-              }
-              // setInstructions(value);
-            }}
-            onTestDateChange={(value) => {
-              var comDate = moment().format().slice(0,16)
-              if(moment(value).isAfter(comDate)){
-              setTestDate(value);
-              initChangeTestFormFields('testDate', value);
-              } else {
-                setAlert('error','Please Select Correct Date and Time')
-              }
-            }}
-            onTestDurationChange={(value) => {
-              setTestDuration(value);
-              initChangeTestFormFields('testDuration', value);
-            }}
-            onTotalMarksChange={(value) => {
-              setTotalmarks(value);
-              initChangeTestFormFields('totalMarks', value);
-            }}
-            paperchecked={paperchecked}
-            setChecked={setChecked}
-            formik={formik}
-            selectedSectionData={selectedSectionData}
-            sectionDate={sectionDate}
-            values={values}
-            sectionWiseTest={sectionWiseTest}
-          />
         </div>
+        {isEdit ? (
+          <div className='submit-btn-conntainer mv-20'>
+            <Button
+              variant='contained'
+              className=''
+              style={{ borderRadius: '10px' }}
+              color='primary'
+              onClick={(e) => updateTest()}
+            >
+              Update
+            </Button>
+          </div>
+        ) : (
+          <div className='submit-btn-conntainer mv-20'>
+            <Button
+              variant='contained'
+              className=''
+              style={{ borderRadius: '10px' }}
+              color='primary'
+              onClick={handleCreateAssesmentTest}
+              disabled={!testDuration || !testName || !instructions}
+            >
+              Submit
+            </Button>
+          </div>
+        )}
       </div>
     </Layout>
   );
@@ -1080,5 +1646,6 @@ const mapDispatchToProps = (dispatch) => ({
   initCreateAssesment: (data) => dispatch(createAssesment(data)),
   initChangeTestFormFields: (field, data) => dispatch(changeTestFormField(field, data)),
   initResetFormState: () => dispatch(resetFormState()),
+  initAddQuestionPaperToTest: (data) => dispatch(addQuestionPaperToTest(data)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(CreateAssesment);

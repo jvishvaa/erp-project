@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
-    maxWidth: '200px',
-    wordBreak: 'break-all',
+    // maxWidth: '200px',
+    // wordBreak: 'break-all',
   },
   buttonContainer: {
     width: '95%',
@@ -60,7 +60,14 @@ const useStyles = makeStyles((theme) => ({
 const columns = [
   {
     id: 'subject_name',
-    label: 'Subject',
+    label: 'School Subject',
+    minWidth: 100,
+    align: 'center',
+    labelAlign: 'center',
+  },
+  {
+    id: 'subject_slag',
+    label: 'Eduvate Subject Name',
     minWidth: 100,
     align: 'center',
     labelAlign: 'center',
@@ -115,9 +122,25 @@ const SubjectTable = () => {
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [centralSubjects, setCentralSubjects] = useState()
 
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
+
+  const [open, setOpen] = useState(false);
+  const showModal = () => {
+    setOpen(true);
+  };
+  const handleOk = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setOpen(false);
+    }, 3000);
+  };
+  const handleCancel = () => {
+    setOpen(false);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
@@ -130,10 +153,11 @@ const SubjectTable = () => {
   };
 
   const handleEditSubject = (subj) => {
-    setTableFlag(false);
+    // setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
     setSubjectData(subj);
+    setOpen(true)
   };
 
   const handleGoBack = () => {
@@ -174,6 +198,18 @@ const SubjectTable = () => {
     setOpenDeleteModal(true);
   };
 
+  const getCentralSubjects = () => {
+    axiosInstance
+      .get(`${endpoints.masterManagement.centralSubjects}`)
+      .then((result) => {
+        console.log(result);
+        setCentralSubjects(result?.data?.result)
+      })
+      .catch((error) => {
+        setAlert('error', error?.response?.data.message || error?.response?.data.msg);
+      });
+  }
+
   const handleCloseDeleteModal = () => {
     setOpenDeleteModal(false);
   };
@@ -201,6 +237,7 @@ const SubjectTable = () => {
       .catch((error) => {
         setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
       });
+    getCentralSubjects()
   }, [goBackFlag, delFlag, page, searchSubject]);
 
   return (
@@ -216,25 +253,25 @@ const SubjectTable = () => {
                 addFlag && !tableFlag
                   ? 'Add Subject'
                   : editFlag && !tableFlag
-                  ? 'Edit Subject'
-                  : null
+                    ? 'Edit Subject'
+                    : null
               }
             />
           </div>
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} />
+          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} centralSubjects={centralSubjects} />
         )}
-        {!tableFlag && !addFlag && editFlag && (
+        {/* {!tableFlag && !addFlag && editFlag && (
           <EditSubject
             setLoading={setLoading}
             handleGoBack={handleGoBack}
             subjectData={subjectData}
           />
-        )}
+        )} */}
 
-        {tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && (
           <>
             <Grid
               container
@@ -277,7 +314,7 @@ const SubjectTable = () => {
         <>
           {/* {!isMobile ? ( */}
           <>
-            {tableFlag && !addFlag && !editFlag && (
+            {tableFlag && !addFlag && (
               <Paper className={`${classes.root} common-table`}>
                 <TableContainer className={classes.container}>
                   <Table stickyHeader aria-label='sticky table'>
@@ -299,8 +336,19 @@ const SubjectTable = () => {
                       {subjects.map((subject, index) => {
                         return (
                           <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
+                            <TableCell className={classes.tableCell} >
+                                <span >{subject?.subject_name}</span>
+                                <IconButton
+                                  onClick={(e) => handleEditSubject(subject)}
+                                  title='Edit Subject'
+                                  style={{ float: 'right' , padding: '0px' }}
+                                >
+                                  <EditOutlinedIcon />
+                                </IconButton>
+                              {/* {subject?.subject_name} */}
+                            </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {subject?.subject_name}
+                              {subject?.eduvate_subject_id == null ? '-' : subject?.subject_slag}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
                               {subject?.created_by}
@@ -312,20 +360,23 @@ const SubjectTable = () => {
                               {subject?.is_optional ? 'Yes' : 'No'}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              <IconButton
-                                onClick={(e) => {
-                                  handleOpenDeleteModal(subject);
-                                }}
-                                title='Delete Subject'
-                              >
-                                <DeleteOutlinedIcon />
-                              </IconButton>
-                              <IconButton
+                              {subject?.eduvate_subject_id == null ?
+                                <IconButton
+                                  onClick={(e) => {
+                                    handleOpenDeleteModal(subject);
+                                  }}
+                                  title='Delete Subject'
+                                  name='click'
+                                >
+                                  <DeleteOutlinedIcon />
+                                </IconButton>
+                                : ''}
+                              {/* <IconButton
                                 onClick={(e) => handleEditSubject(subject)}
                                 title='Edit Subject'
                               >
                                 <EditOutlinedIcon />
-                              </IconButton>
+                              </IconButton> */}
                             </TableCell>
                           </TableRow>
                         );
@@ -384,7 +435,7 @@ const SubjectTable = () => {
           <DialogTitle id='draggable-dialog-title'>Delete Subject</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {`Confirm Delete Subject ${subjectName}`}
+              {`Are you sure you want to delete ${subjectName} ?`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -402,6 +453,17 @@ const SubjectTable = () => {
           </DialogActions>
         </Dialog>
       </Layout>
+      <EditSubject
+        setLoading={setLoading}
+        handleGoBack={handleGoBack}
+        subjectData={subjectData}
+        loading={loading}
+        open={open}
+        showModal={showModal}
+        handleCancel={handleCancel}
+        handleOk={handleOk}
+        setOpen={setOpen}
+      />
     </>
   );
 };

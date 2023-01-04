@@ -108,8 +108,8 @@ const AcademicPerformance = (props) => {
         });
       } else {
         fetchCurriculumStats({
-          branch_id: selectedBranch?.id,
-          acad_session_id: selectedAcademicYear?.id,
+          branch_id: selectedBranch?.branch?.id,
+          acad_session_id: selectedBranch?.id,
         });
         fetchTestScoreStats({ acad_session_id: selectedBranch?.id });
         fetchAttendanceStats({
@@ -136,7 +136,7 @@ const AcademicPerformance = (props) => {
       icon: avgTestScore,
     },
     {
-      title: 'Attendance Report',
+      title: 'Overall Attendance',
       value: attendacneStats,
       icon: attendanceReport,
     },

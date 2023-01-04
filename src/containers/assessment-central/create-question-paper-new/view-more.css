@@ -1,0 +1,35 @@
+.downloadAllContainer {
+  display: flex;
+}
+.downloadAllIcon {
+  margin: 5px;
+}
+
+.MuiIconButton-root.bulkDownloadIconViewMore {
+  padding: 0;
+}
+
+.question-container {
+  /* border: 1px solid #dbdbdb;
+  padding: 1rem; */
+  font-size: 0.9rem;
+  /* border-radius: 10px; */
+  margin: 1rem 0;
+  color: #014b7e;
+  word-wrap: break-word;
+}
+
+.divider.MuiDivider-root {
+  border: none;
+  height: 1px;
+  margin: 29px 0 0 0;
+  flex-shrink: 0;
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+@media screen and (max-width: 768px) {
+  .downloadAllContainer {
+    margin-left: 20px;
+    margin-bottom: 10px;
+  }
+}

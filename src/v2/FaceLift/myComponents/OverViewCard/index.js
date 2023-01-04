@@ -50,13 +50,26 @@ const OverviewCard = (props) => {
   const Redirections = (type) => {
     switch (type) {
       case 'Curriculum Completion':
-        return handleCurriculumCompletion(true);
+        return curriculamGradeRoute();
       case 'Academic Report':
         return handleTestScore();
-      case 'Attendance Report':
+      case 'Overall Attendance':
         return handleCurriculumCompletion(false);
     }
   };
+
+  const curriculamGradeRoute =() => {
+    history.push({
+      pathname: `/curriculum-completion/${selectedBranch?.branch?.id}`,
+      state : {
+        branchId:selectedBranch?.branch?.id,
+        acad_sess_id : selectedBranch?.id,
+        branchName:selectedBranch?.branch?.branch_name,
+        acad_session_id:selectedBranch?.session_year?.id,
+        module_id:moduleId
+      }
+    })
+  }
 
   const handleCurriculumCompletion = (iscurriculam) => {
     history.push({
@@ -85,7 +98,7 @@ const OverviewCard = (props) => {
           <img src={icon} />
         </div>
         <div className='my-2 th-fw-500 th-14 th-black-1 pr-4'>{title}</div>
-        {title === 'Attendance Report' && (
+        {title === 'Overall Attendance' && (
           <>
             {' '}
             <div className='th-20 th-fw-600 pb-2'>

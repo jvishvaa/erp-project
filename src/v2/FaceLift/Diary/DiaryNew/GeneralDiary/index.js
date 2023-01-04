@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 
-const GeneralDiary = () => {
+const GeneralDiary = ({ isSubstituteDiary }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -114,7 +114,9 @@ const GeneralDiary = () => {
       module_id: moduleId,
     };
     axios
-      .get(`${endpoints.academics.grades}`, { params })
+      .get(`${endpoints.academics.grades}`, {
+        params: { ...params, ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}) },
+      })
       .then((result) => {
         if (result?.data?.status_code == 200) {
           setGradeDropdown(result?.data?.data);
@@ -164,13 +166,19 @@ const GeneralDiary = () => {
       dairy_type: 1,
       documents: uploadedFiles,
     };
-
+    if (isSubstituteDiary) {
+      payload['is_substitute_diary'] = true;
+    }
     axios
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('General Diary Created Succssfully');
-          history.push('/diary/teacher');
+          if (res?.data?.message.includes('successfully')) {
+            message.success('General Diary Created Successfully');
+            history.push('/diary/teacher');
+          } else {
+            message.error(res?.data?.message);
+          }
         }
       })
       .catch((error) => {
@@ -264,19 +272,13 @@ const GeneralDiary = () => {
     Table.SELECTION_COLUMN,
   ];
   return (
-    <Layout>
-      <div className='row'>
-        <div className='col-md-12 px-4'>
-          <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-black-1'>Diary</Breadcrumb.Item>
-            <Breadcrumb.Item className='th-black-1'>Create General Diary</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
-
+    <>
+      <div className='row th-bg-white'>
         <div className='col-12 mt-3 px-2'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row py-2 text-left'>
               <div className='col-md-3 py-2'>
+                <div className='text-capitalize th-fw-700 th-black-1'>Grade</div>
                 <Form.Item name='grade'>
                   <Select
                     className='th-width-100 th-br-6'
@@ -298,6 +300,7 @@ const GeneralDiary = () => {
               </div>
 
               <div className='col-md-3 py-2'>
+                <div className='text-capitalize th-fw-700 th-black-1'>Section</div>
                 <Form.Item name='section'>
                   <Select
                     className='th-width-100 th-br-6'
@@ -399,16 +402,13 @@ const GeneralDiary = () => {
                       <div className='col-md-10 col-8'>
                         <div className='row'>
                           {uploadedFiles?.map((item, index) => {
-                            const fullName = item?.split('_')[
-                              item?.split('_').length - 1
-                            ];
+                            const fullName =
+                              item?.split('_')[item?.split('_').length - 1];
 
-                            const fileName = fullName.split('.')[
-                              fullName?.split('.').length - 2
-                            ];
-                            const extension = fullName.split('.')[
-                              fullName?.split('.').length - 1
-                            ];
+                            const fileName =
+                              fullName.split('.')[fullName?.split('.').length - 2];
+                            const extension =
+                              fullName.split('.')[fullName?.split('.').length - 1];
 
                             return (
                               <div className='th-br-15  col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
@@ -479,7 +479,7 @@ const GeneralDiary = () => {
           setUploadedFiles={handleUploadedFiles}
         />
       </div>
-    </Layout>
+    </>
   );
 };
 

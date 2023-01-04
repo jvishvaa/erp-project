@@ -118,10 +118,11 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
   useEffect(() => {
     if (filterData.year.id && filterData.subject.id) {
       axiosInstance
-        .get(`${endpoints.masterManagement.chapter}?subject=${filterData.subject.id}`)
+        .get(
+          `${endpoints.masterManagement.chapter}?subject=${filterData.subject.id}&session_year=${filterData.year.id}&grade=${filterData.grade.grade_id}`
+        )
         .then((res) => {
-          console.log(res.data, 'chapter');
-          setChapterDropdown(res.data.result);
+          setChapterDropdown(res?.data?.result);
         })
         .catch((error) => console.log(error));
     }

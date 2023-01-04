@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, createRef } from 'react';
 import {
-  Typography,
   Grid,
   FormControl,
   TextField,
@@ -9,7 +8,6 @@ import {
   Tabs,
   Tab,
   Paper,
-  Button,
   InputLabel,
   OutlinedInput,
   Accordion,
@@ -39,6 +37,8 @@ import TabPanel from '../lesson-plan/create-lesson-plan/tab-panel';
 import './styles.scss';
 import AssesmentCard from './assesment-card';
 import AssesmentDetails from './assesment-details';
+import hidefilter from '../../assets/images/hidefilter.svg'; //hidefilter.svg
+import showfilter from '../../assets/images/showfilter.svg'; //showfilter.svg
 import {
   fetchAssesmentTypes,
   fetchAssesmentTests,
@@ -60,6 +60,9 @@ import endpoints from 'config/endpoints';
 import Loader from './../../components/loader/loader';
 import FileSaver from 'file-saver';
 import axiosInstance from './../../config/axios';
+import { Breadcrumb, Button, Form, Select, Space, Typography, DatePicker } from 'antd';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import { DownOutlined } from '@ant-design/icons';
 
 const useStyles = makeStyles({
   tabsFlexContainer: {
@@ -69,16 +72,21 @@ const useStyles = makeStyles({
   },
 });
 
+const { RangePicker } = DatePicker;
+
 const statuses = [
   { id: 1, name: 'Upcoming' },
   { id: 2, name: 'Completed' },
 ];
+
+const { Option } = Select;
 
 const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const fileRef = useRef();
+  const formRef = createRef();
 
   // const [statuses, setStatuses] = useState([]);
   const [academicDropdown, setAcademicDropdown] = useState([]);
@@ -94,11 +102,9 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const [assesmentTestsPage, setAssesmentTestsPage] = useState(1);
   const [assesmentTestsTotalPage, setAssesmentTestsTotalPage] = useState(0);
   const [filteredAssesmentTests, setFilteredAssesmentTests] = useState([]);
-  console.log('filteravi', filteredAssesmentTests)
   const [filteredAssesmentTestsPage, setFilteredAssesmentTestPage] = useState(1);
-  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] = useState(
-    0
-  );
+  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] =
+    useState(0);
   const [showFilteredList, setShowFilteredList] = useState(false);
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
@@ -107,6 +113,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [ quizAccess , setQuizAccess ] = useState()
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [bulkUpload, setBulkUpload] = useState(false);
@@ -127,7 +134,9 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {}
   let isRestoreFields = history?.location?.state?.dataRestore || false
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
-  const [ checkDel , setCheckDel ] = useState(false);
+  const [checkDel, setCheckDel] = useState(false);
+  const [showFilter, setShowfilter] = useState(false);
+  const filtersData = history?.location?.state?.filtersData
 
 
   useEffect(() => {
@@ -156,7 +165,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const formik = useFormik({
     initialValues: {
       status: '',
-      date: [moment().startOf('isoWeek'), moment().endOf('week')],
+      date: '', //[moment().startOf('isoWeek'), moment().endOf('week')], 
       branch: [],
       academic: selectedAcademicYear,
       grade: '',
@@ -172,6 +181,57 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     validateOnBlur: false,
   });
 
+// useEffect(() => {
+//   if(filtersData && moduleId){
+//     debugger
+//     handleBranch('',filtersData?.branch)
+//       formik.setFieldValue('branch', filtersData?.branch);
+//       // handleGrade('',filtersData?.grade)
+//       // formik.setFieldValue('grade', filtersData?.grade);
+//       // handleSubject()
+//       formik.setFieldValue('status', filtersData?.status);
+//       formik.setFieldValue('section', filtersData?.section);
+//       formik.setFieldValue('group', filtersData?.group);
+//       formik.setFieldValue('assesment_type', filtersData?.assesment_type);
+//       formik.setFieldValue('date', filtersData?.date);
+//       formRef.current.setFieldsValue({
+//         branch : filtersData?.branch,
+//         // grade : filtersData?.grade,
+//         // subject : filtersData?.subject,
+//         status : filtersData?.status,
+//         assessmentType : filtersData?.assesment_type,
+//         section : filtersData?.section,
+//         date : filtersData?.date
+
+
+//       })
+//       // formik.setFieldValue('grade', filtersData?.grade);
+     
+//   }
+
+// },[filtersData, moduleId])
+
+useEffect(() => {
+  if(filtersData && formik.values.branch.length){
+    handleGrade('',filtersData?.grade)
+      formik.setFieldValue('grade', filtersData?.grade);
+      formRef.current.setFieldsValue({
+        grade : filtersData?.grade,
+      })
+  }
+},[formik.values.branch])
+
+useEffect(() => {
+  if(filtersData && formik.values.grade){
+    handleSubject('',filtersData?.subject)
+    formik.setFieldValue('subject', filtersData?.subject);
+    formRef.current.setFieldsValue({
+        subject : filtersData?.subject,
+      })
+  }
+},[formik.values.grade])
+
+
   const getAcademic = async () => {
     // try {
     //   setAcademicDropdown([]);
@@ -186,7 +246,14 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     // }
   };
 
+  useEffect(() => {
+    if (formik.values.subject.length > 0) {
+      handleFilterAssessment();
+    }
+  }, [formik.values.date]);
+
   const getBranch = async (acadId) => {
+    setLoading(true)
     try {
       setBranchDropdown([]);
       setGrades([]);
@@ -194,29 +261,39 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       if(moduleId){
         const data = await fetchBranches(acadId, moduleId);
         setBranchDropdown(data);
+        setLoading(false)
       }
     } catch (e) {
+      setLoading(false)
       setAlert('error', 'Failed to fetch branch');
     }
+    
+
   };
 
   const getGrades = async (acadId, branchId) => {
+    setLoading(true)
     try {
       setGrades([]);
       setSubjects([]);
       const data = await fetchGrades(acadId, branchId, moduleId);
       setGrades(data);
+      setLoading(false)
     } catch (e) {
+      setLoading(false)
       setAlert('error', 'Failed to fetch grades');
     }
   };
 
   const getSubjects = async (acadSessionIds, mappingId) => {
+    setLoading(true)
     try {
       setSubjects([]);
       const data = await fetchSubjects(acadSessionIds, mappingId);
       setSubjects(data);
+      setLoading(false)
     } catch (e) {
+      setLoading(false)
       setAlert('error', 'Failed to fetch subjects');
     }
   };
@@ -229,6 +306,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   };
   let filterData1 = [];
   const filterResults = async (page) => {
+    setLoading(true)
     const {
       branch = [],
       grade,
@@ -239,30 +317,35 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       section,
       group,
     } = formik.values;
-    console.log(formik.values);
     filterData1 = {
       branch: formik.values.branch,
       grade: formik.values.grade,
       subject: formik.values.subject,
-      status : formik.values.status
+      status: formik.values.status,
+      assesment_type : formik.values.assesmentType,
+      date :formik.values?.date ,
+      section : formik.values.section,
+      group : formik.values.group,
+
     };
-    console.log(filterData1);
     setFilterData(filterData1);
     // const acadSessionId = branch?.id;
-    const acadSessionIds = branch.map((element) => element?.id) || [];
-    const subjectIds = subject.map(({ subject_id }) => subject_id);
-    const sectionMappingIds = section.map((i) => i?.id);
-    const groupIds = group?.id;
+    const acadSessionIds = branch.map((element) => element?.value) || [];
+    const subjectIds = subject.map((item) => item?.value);
+    const sectionMappingIds = section;
+    const groupIds = group;
+    sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
+    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList, isSectionToggle: sectionToggle }))
     try {
       setFetchingTests(true);
       const { results, totalPages } = await fetchAssesmentTests(
         false,
         activeTab,
         acadSessionIds,
-        grade?.grade_id,
+        grade?.value,
         subjectIds,
-        assesmentType.id,
-        status.id,
+        assesmentType?.value,
+        status?.value,
         date,
         page,
         9,
@@ -276,7 +359,9 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setFilteredAssesmentTestsTotalPage(totalPages);
       setFilteredAssesmentTests(results);
       setFetchingTests(false);
+      setLoading(false)
     } catch (e) {
+      setLoading(false)
       setAlert('error', 'Fetching tests failed');
       setFetchingTests(false);
     }
@@ -305,27 +390,27 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     }
   };
 
-  useEffect(() => {
-    if (formik.values.academic) {
-      getBranch(formik.values.academic?.id);
-      if (formik.values.branch.length) {
-        const branchIds =
-          formik.values.branch.map((element) => element?.branch?.id) || [];
-        setSelectedBranchId(branchIds);
-        getGrades(formik.values.academic?.id, branchIds);
-        if (formik.values.grade) {
-          const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
-          getSubjects(acadSessionIds, formik.values.grade?.grade_id);
-        } else {
-          setSubjects([]);
-        }
-      } else {
-        setGrades([]);
-      }
-    } else {
-      setBranchDropdown([]);
-    }
-  }, [moduleId]);
+  // useEffect(() => {
+  //   if (formik.values.academic) {
+  //     getBranch(formik.values.academic?.id);
+  //     if (formik.values.branch.length) {
+  //       const branchIds =
+  //         formik.values.branch.map((element) => element?.branch?.id) || [];
+  //       setSelectedBranchId(branchIds);
+  //       getGrades(formik.values.academic?.id, branchIds);
+  //       if (formik.values.grade) {
+  //         const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
+  //         getSubjects(acadSessionIds, formik.values.grade?.grade_id);
+  //       } else {
+  //         setSubjects([]);
+  //       }
+  //     } else {
+  //       setGrades([]);
+  //     }
+  //   } else {
+  //     setBranchDropdown([]);
+  //   }
+  // }, [moduleId]);
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
@@ -342,17 +427,17 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   };
 
   useEffect(() => {
-    if (showFilteredList) {
+    if (formik?.values?.status  && formik?.values?.branch?.length && formik?.values?.grade && formik?.values?.subject?.length && formik?.values?.date) {
       setFilteredAssesmentTestPage(1);
       setSelectedAssesmentTest(null);
       filterResults(1); // reseting the page
     }
     // clearResults();
-  }, [activeTab]);
+  }, [activeTab, formik.values]);
 
   useEffect(() => {
     if (formik.values.status?.name === 'Upcoming') {
-      formik.setFieldValue('date', [moment(), moment().add(6, 'days')]);
+      // formik.setFieldValue('date', [moment(), moment().add(6, 'days')]);
       setMinDate(Date(moment()));
     } else {
       setMinDate(null);
@@ -369,27 +454,27 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   let checkDelete = '';
   const checkDelPermission = () => {
     axiosInstance
-    .get(`assessment/assessment-deletion-access-config/`)
-    .then((res) => {
-      console.log(res);
-      checkDelete = res.data.result.find(each=>parseInt(each)===userLevel)
-      setCheckDel(checkDelete != undefined ? true : false)
-    })
-    .catch((error) => {
-      setAlert('error', 'Something Wrong!');
-    });
-  }
+      .get(`assessment/assessment-deletion-access-config/`)
+      .then((res) => {
+        console.log(res);
+        checkDelete = res.data.result.find((each) => parseInt(each) === userLevel);
+        setCheckDel(checkDelete != undefined ? true : false);
+      })
+      .catch((error) => {
+        setAlert('error', 'Something Wrong!');
+      });
+  };
 
   const handleFilterAssessment = () => {
-    checkDelPermission()
+    checkDelPermission();
     if (!formik?.values?.status) {
       setAlert('error', 'Select Status');
       return;
     }
-    if (!formik?.values?.academic) {
-      setAlert('error', 'Select Academic Year');
-      return;
-    }
+    // if (!formik?.values?.academic) {
+    //   setAlert('error', 'Select Academic Year');
+    //   return;
+    // }
     if (formik?.values?.branch.length === 0) {
       setAlert('error', 'Select Branch');
       return;
@@ -402,8 +487,12 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setAlert('error', 'Select Subject');
       return;
     }
-    if (!formik?.values?.assesment_type) {
-      setAlert('error', 'Select Assessment Type');
+    // if (!formik?.values?.assesment_type) {
+    //   setAlert('error', 'Select Assessment Type');
+    //   return;
+    // }
+    if(!formik?.values?.date){
+      setAlert('error', 'Select Date');
       return;
     }
     formik.handleSubmit();
@@ -420,7 +509,18 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       formik.setFieldValue('section', testFilterData?.section);
       formik.setFieldValue('group', testFilterData?.group);
       formik.setFieldValue('assesment_type', testFilterData?.assesment_type)
-      formik.setFieldValue('date', testFilterData?.date)
+      let date = [moment(testFilterData?.date[0]),moment(testFilterData?.date[1])]
+      formik.setFieldValue('date',date )
+      formRef.current.setFieldsValue({
+          status : testFilterData?.status,
+          branch : testFilterData?.branch,
+          grade : testFilterData?.grade,
+          subject : testFilterData?.subject,
+          group : testFilterData?.group,
+          section : testFilterData?.section,
+          assessmentType : testFilterData?.assesment_type,
+          date : date
+      })
       setBranchDropdown(testFilterDropdownList?.branch)
       setGrades(testFilterDropdownList?.grade)
       setSubjects(testFilterDropdownList?.subject)
@@ -444,6 +544,10 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   };
 
   const handleBranch = (event, value) => {
+    formRef.current.setFieldsValue({
+      grade: [],
+      subject: [],
+    });
     formik.setFieldValue('branch', []);
     formik.setFieldValue('grade', []);
     formik.setFieldValue('subject', []);
@@ -451,8 +555,12 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     formik.setFieldValue('group', '');
     setSectionList([]);
     setGroupList([]);
-    if (value.length > 0) {
-      const branchIds = value?.map((element) => element?.branch?.id) || [];
+    setGrades([])
+    setSubjects([])
+    if (value?.length > 0) {
+      formik.setFieldValue('grade', []);
+      formik.setFieldValue('subject', []);
+      const branchIds = value?.map((element) => parseInt(element?.key)) || [];
       getGrades(formik.values.academic?.id, branchIds);
       formik.setFieldValue('branch', value);
     }
@@ -471,9 +579,10 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
             id: item.id,
           }));
           transformData.unshift({
-            section_id: 'all',
-            section__section_name: 'Select All',
-            id: 'section_mapping_id',
+            value: 'all',
+            section__section_name: 'All',
+            id: 'all',
+            section_id: 'section_mapping_id',
           });
           setSectionList(transformData);
         }
@@ -485,9 +594,9 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     setSectionFlag(false);
     if (value.length) {
       value =
-        value.filter(({ section_id }) => section_id === 'all').length === 1
-          ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
-          : value;
+        value.filter((item) => item?.value === 'all').length === 1
+          ? [...sectionOptions].filter((item) => item?.props?.value !== 'all').map((items) => items?.props?.value)
+          : value?.map((i) => (i?.value)); 
       formik.setFieldValue('section', value);
       setSectionFlag(true);
     }
@@ -512,32 +621,36 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     formik.setFieldValue('section', []);
     formik.setFieldValue('group', '');
     if (value) {
-      const sections = value?.group_section_mapping.map((i) => i?.section_mapping_id);
+      // const sections = value?.group_section_mapping.map((i) => i?.section_mapping_id);
       formik.setFieldValue('group', value);
       setGroupFlag(true);
     }
   };
 
   const handleGrade = (event, value) => {
+    formRef.current.setFieldsValue({
+      subject: [],
+    });
     formik.setFieldValue('grade', []);
     formik.setFieldValue('subject', []);
     formik.setFieldValue('section', []);
     formik.setFieldValue('group', '');
     setSectionList([]);
     setGroupList([]);
+    setSubjects([])
     if (value) {
-      const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
-      getSubjects(acadSessionIds, value?.grade_id);
+      const acadSessionIds = formik.values.branch.map((element) => element?.value) || [];
+      getSubjects(acadSessionIds, value?.value);
       formik.setFieldValue('grade', value);
-      const branchIds = formik?.values?.branch.map((i) => i?.branch?.id);
+      const branchIds = formik?.values?.branch.map((i) => parseInt(i?.key));
       const sectionData = fetchSection(
         selectedAcademicYear?.id,
         branchIds,
-        value?.grade_id,
+        value?.value,
         moduleId
       );
       setSectionList(sectionData);
-      const groupData = fetchGroupList(acadSessionIds, value?.grade_id);
+      const groupData = fetchGroupList(acadSessionIds, value?.value);
       setGroupList(groupData);
     }
   };
@@ -546,6 +659,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     formik.setFieldValue('subject', []);
     if (value) {
       formik.setFieldValue('subject', value);
+      // handleFilterAssessment()
     }
   };
 
@@ -572,6 +686,22 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     }
   };
 
+  useEffect(() => {
+    fetchUserAccessQuiz()
+    console.log("hittttt");
+  },[])
+  const fetchUserAccessQuiz = () => {
+    axiosInstance
+    .get(`${endpoints.academics.checkQuizUser}`)
+    .then((res) => {
+      console.log(res);
+      setQuizAccess(res.data.result)
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
   const { token: TOKEN = '' } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const excelDownload = (data) => {
@@ -582,6 +712,9 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   };
 
   const uploadMarks = () => {
+    if (!file) {
+      setAlert('warning', 'Please select file');
+    }
     const data = new FormData();
     data.append('file', file);
     if (file) {
@@ -606,24 +739,23 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
         })
         .finally(() => setLoading(false));
     }
-    if (!file) {
-      setAlert('warning', 'Please select file');
+  };
+
+  const handleDateChange = (value) => {
+    if (value) {
+      formik.setFieldValue('date', value);
     }
   };
 
   const [addedId, setAddedId] = useState([]);
-  console.log('debugaddedId', addedId);
 
   const selectAssetmentCard = (id, checked) => {
-    console.log('debugaddedidcheck', id, checked)
     if (checked) {
-      console.log('debugpushing id', checked)
       setAddedId([...addedId, id]);
     } else {
       const previousArr = [...addedId]
       const index = addedId.indexOf(id);
-      previousArr.splice(index, 1)
-      console.log('debugnewremovedid', previousArr, index)
+      previousArr.splice(index, 1);
       setAddedId(previousArr);
     }
   }
@@ -632,6 +764,10 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const handleSectionToggle = (event) => {
     setSectionToggle(event.target.checked);
     formik.setFieldValue('section', []);
+    formRef.current.setFieldsValue({
+      section : [],
+      group : ''
+    })
     formik.setFieldValue('group', '');
   };
 
@@ -647,743 +783,568 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     setLoading(e)
   }
 
+  const branchOptions = branchDropdown?.map((each) => {
+    return (
+      <Option key={each?.branch?.id} value={each?.id}>
+        {each?.branch?.branch_name}
+      </Option>
+    );
+  });
+
+  const gradeOptions = grades?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.grade_id}>
+        {each?.grade_name}
+      </Option>
+    );
+  });
+  const subjectOptions = subjects?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.subject_id}>
+        {each?.subject_name}
+      </Option>
+    );
+  });
+  const assessmentTypeoption = assesmentTypes.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id}>
+        {each?.exam_name}
+      </Option>
+    );
+  });
+
+  const sectionOptions = sectionList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id}>
+        {each?.section__section_name}
+      </Option>
+    );
+  });
+
+  const groupOptions = groupList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id}>
+        {each?.group_name}
+      </Option>
+    );
+  });
+
+  const statusOption = statuses?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id}>
+        {each?.name}
+      </Option>
+    );
+  });
+
   // let newid = filterbasedonsub()
 
   return (
     <Layout>
       {loading && <Loader />}
-      <div className='assesment-container assessment-ques' style={{
-        background: 'white',
-        height: '90vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-      }} >
+      {/* <div
+        className='assesment-container assessment-ques'
+        style={{
+          background: 'white',
+          height: '90vh',
+          overflowX: 'hidden',
+          overflowY: 'scroll',
+        }}
+      > */}
+      <div className='row py-3 px-2 th-bg-grey'>
+        <div className='col-md-8' style={{ zIndex: 2 }}>
+          <Breadcrumb separator='>'>
+            <Breadcrumb.Item className='th-black-1 th-18'>Create Test</Breadcrumb.Item>
+            {/* <Breadcrumb.Item className='th-black-1 th-18'>
+                Question Bank
+              </Breadcrumb.Item> */}
+          </Breadcrumb>
+        </div>
+      </div>
+      <div className='th-bg-white py-0 mx-3'>
+      <div className='row'>
+        <div className='col-12 py-3'>
+          <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+            <div className='row align-items-center'>
+            <div className='col-md-2 col-6 pl-0'>
+                  <div className='mb-2 text-left'>Status</div>
+                  <Form.Item name='status'>
+                    <Select
+                      allowClear
+                      placeholder={
+                        // subjectName ? (
+                        //   <span className='th-black-1'>{subjectName}</span>
+                        // ) : (
+                        //   'Select Subject'
+                        // )
+                        'Select Status'
+                      }
+                      showSearch
+                      optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      // defaultValue={subjectName}
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        formik.setFieldValue('status', value);
+                      }}
+                      // onClear={handleClearSubject}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {statusOption}
+                    </Select>
+                  </Form.Item>
+                </div>
+              <div className='col-md-2 col-6'>
+                <div className='mb-2 text-left'>Branch</div>
+                <Form.Item name='branch'>
+                  <Select
+                    allowClear
+                    placeholder= 'Select Branch'                   
+                    mode='multiple'
+                    showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    optionFilterProp='children'
+                    maxTagCount={2}
+                    showArrow={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    value={formik.values.branch || []}
+                    onChange={(e, value) => {
+                      handleBranch(e, value);
+                    }}
+                    // onClear={handleClearBoard}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={false}
+                  >
+                    {branchOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-2 col-6'>
+                <div className='mb-2 text-left'>Grade</div>
+                <Form.Item name='grade'>
+                  <Select
+                    allowClear
+                    placeholder={'Select Grade'}
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    onChange={(e, value) => {
+                      handleGrade(e, value);
+                    }}
+                    // onClear={handleClearGrade}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={false}
+                  >
+                    {gradeOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-2 col-6'>
+                <div className='mb-2 text-left'>Subject</div>
+                <Form.Item name='subject'>
+                  <Select
+                    allowClear
+                    mode='multiple'
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    maxTagCount={2}
+                    showArrow={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    placeholder={
+                      // subjectName ? (
+                      //   <span className='th-black-1'>{subjectName}</span>
+                      // ) : (
+                      //   'Select Subject'
+                      // )
+                      'Select Subject'
+                    }
+                    showSearch
+                    optionFilterProp='children'
+                    // defaultValue={subjectName}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    onChange={(e, value) => {
+                      handleSubject(e, value);
+                    }}
+                    // onClear={handleClearSubject}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={false}
+                  >
+                    {subjectOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-2 col-6 px-0'>
+                  <div className='mb-2 ml-1 text-left'>Date Range</div>
+                  <Form.Item name='date'>
+                    <Space direction='vertical' size={12}>
+                      <RangePicker
+                        allowClear={false}
+                        style={{width:'105%', border:'none'}}
+                        bordered={true}
+                        placement='bottomRight'
+                        showToday={false}
+                        suffixIcon={<DownOutlined />}
+                        // defaultValue={[moment(), moment()]}
+                        value={formik?.values.date}
+                        onChange={(value) => handleDateChange(value)}
+                        className='th-range-picker th-br-4 th-bg-grey'
+                        separator={'-'}
+                        format={'DD/MM/YYYY'}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      />
+                    </Space>
+                    
+                  </Form.Item>
+                </div>
+              <div className='col-md-2 d-flex mt-2 pr-1'>
+              {!handleClose && <div
+                className='col-md-5 col-6 ml-2'
+                style={{ display: 'flex', justifyContent: 'center' }}
+              >
+                 <Button
+                  // type='primary'
+                  onClick={() => history.push('/create-assesment?clear=true')}
+                  // style={{ width: '30%' }}
+                  // shape='round'
+                  className='th-br-6 th-button-active ml-3'
+                >
+                  Create
+                </Button>
 
-        <div
-          className='lesson-plan-breadcrumb-wrapper'
-          style={{ display: 'flex', justifyContent: 'space-between' }}
-        >
-          <CommonBreadcrumbs componentName='Create Test' isAcademicYearVisible={true} />
-          <div>
-            {!expandFilter ? (
-              <IconButton
-                onClick={() => {
-                  setExpandFilter(true);
-                }}
+              </div>}
+              {/* {handleClose && <div
+                className='col-md-8 col-6 px-0'
+                style={{ display: 'flex', justifyContent: 'center' }}
               >
-                <Typography
-                  component='h4'
-                  color='secondary'
-                  style={{ marginRight: '5px' }}
+                 <Button
+                  // type='primary'
+                  onClick={() => {
+                  handleColumnSelectedTestChange(addedId)
+                  handleClose()}}
+                  // style={{ width: '30%' }}
+                  // shape='round'
+                  className='th-br-6 th-button'
                 >
-                  Expand Filter
-                </Typography>
-                <FilterListIcon color='secondary' />
-              </IconButton>
-            ) : (
-              <IconButton
-                onClick={() => {
-                  setExpandFilter(false);
-                }}
-              >
-                <Typography
-                  component='h4'
-                  color='secondary'
-                  style={{ marginRight: '5px' }}
-                >
-                  Close Filter
-                </Typography>
-                <FilterListIcon color='secondary' />
-              </IconButton>
+                  Back
+                </Button>
+
+              </div>} */}
+              <div className='col-md-7 hideShowFilterIcon text-right pr-0'>
+                {/* <IconButton onClick={() => setShowfilter(!showFilter)}>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ height: '20px', width: '25px' }}
+                        src={showFilter ? hidefilter : showfilter}
+                      />
+                    )}
+                  />
+                </IconButton> */}
+                {showFilter && <span onClick={() => setShowfilter(!showFilter)} style={{color : 'blue' , cursor:'pointer' , borderBottom : '1px solid'}}>Close</span>}
+                {!showFilter && <span onClick={() => setShowfilter(!showFilter)} style={{color : 'blue' , cursor:'pointer' , borderBottom : '1px solid'}}> More Filters</span>}
+
+                
+              </div>
+              </div>
+            </div>
+            {showFilter && (
+              <div className='row align-items-center mt-2'>
+                <div className='col-md-2 col-6 pl-0'>
+                  <div className='mb-2 text-left'>Assesment Type</div>
+                  <Form.Item name='assessmentType'>
+                    <Select
+                      allowClear
+                      placeholder='Select Type'
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      // options={branchDropdown.map(item => ({
+                      //   value: item,
+                      //   label: item?.branch?.branch_name,
+                      // }))}
+                      // value={formik.values.branch || []}
+                      onChange={(e, value) => {
+                        formik.setFieldValue('assesment_type', value);
+                      }}
+                      // onClear={handleClearBoard}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {assessmentTypeoption}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='col-md-2 col-6 d-flex'>
+                  <Typography className='d-flex align-items-center'>Section</Typography>
+                  <div className='d-flex align-items-center'>
+                    <Switch onChange={handleSectionToggle} checked={sectionToggle} />
+                  </div>
+                  <Typography className='d-flex align-items-center'>Group</Typography>
+                </div>
+                {!sectionToggle ? (
+                  <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                    <div className='mb-2 text-left'>Section</div>
+                    <Form.Item name='section'>
+                      <Select
+                        allowClear
+                        mode='multiple'
+                        placeholder={
+                          // subjectName ? (
+                          //   <span className='th-black-1'>{subjectName}</span>
+                          // ) : (
+                          //   'Select Subject'
+                          // )
+                          'Select Section'
+                        }
+                        value={formik.values.section || []}
+                        showSearch
+                        optionFilterProp='children'
+                        // defaultValue={subjectName}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e, value) => {
+                          handleSection(e, value);
+                        }}
+                        // onClear={handleClearSubject}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={false}
+                      >
+                        {sectionOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                ) : (
+                  <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                    <div className='mb-2 text-left'>Group</div>
+                    <Form.Item name='group'>
+                      <Select
+                        allowClear
+                        placeholder={
+                          // subjectName ? (
+                          //   <span className='th-black-1'>{subjectName}</span>
+                          // ) : (
+                          //   'Select Subject'
+                          // )
+                          'Select Group'
+                        }
+                        showSearch
+                        optionFilterProp='children'
+                        // defaultValue={subjectName}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e, value) => {
+                          handleGroup(e, value);
+                        }}
+                        // onClear={handleClearSubject}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={false}
+                      >
+                        {groupOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                )}
+                
+              </div>
+            )}
+          </Form>
+        </div>
+      </div>
+      <div className='row '>
+        <div className='col-md-1 col-6'>
+          <Button
+            className={`${
+              activeTab == 'all' ? 'th-button-active' : 'th-button'
+            } th-width-100 th-br-6 mt-2`}
+            onClick={() => setActiveTab('all')}
+          >
+            All
+          </Button>
+        </div>
+        <div className='col-md-2 col-6'>
+          <Button
+            className={`${
+              activeTab == 'online-pattern' ? 'th-button-active' : 'th-button'
+            } th-width-100 th-br-6 mt-2`}
+            onClick={() => setActiveTab('online-pattern')}
+          >
+            Online
+          </Button>
+        </div>
+        <div className='col-md-2 col-6'>
+          <Button
+            className={`${
+              activeTab == 'physical-test' ? 'th-button-active' : 'th-button'
+            } th-width-100 th-br-6 mt-2`}
+            onClick={() => setActiveTab('physical-test')}
+          >
+            Offline
+          </Button>
+        </div>
+        {!handleClose && checkDel &&  <div className='col-md-2 col-6'>
+          <Button
+            className={`${
+              activeTab == 'deleted' ? 'th-button-active' : 'th-button'
+            } th-width-100 th-br-6 mt-2`}
+            onClick={() => setActiveTab('deleted')}
+          >
+            Deleted
+          </Button>
+        </div>}
+        {handleClose && addedId.length > 0 && <div className='col-md-2 col-6 d-flex justify-content-end align-items-end'>
+        <h6 className=' mt-2'>Total Selected: {addedId.length}</h6>
+        </div>}
+        {handleClose && addedId.length > 0 && <div className='col-md-2 col-6'>
+        <Button
+            className={'th-br-6 th-button th-width-100 mt-2'}
+            startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+            onClick={() => {
+              handleColumnSelectedTestChange(addedId);
+              handleClose();
+            }}
+          >
+            Add Selected
+          </Button>
+        </div>}
+{(isSuperAdmin || isSuperuser) && !handleClose && (
+  <>
+  <div className='col-md-2'>
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={bulkUpload}
+          onChange={() => setBulkUpload(!bulkUpload)}
+          name='checked'
+          color='primary'
+        />
+      }
+      label={<Typography color='secondary'>Upload Marks</Typography>}
+    />
+  </div>
+  <div className='col-md-5'>
+    <div className = 'row'>
+  {bulkUpload ? (
+    <div className='col-md-7 th-12'>
+      <Input
+        type='file'
+        inputRef={fileRef}
+        className='th-18'
+        inputProps={{ accept: '.xlsx,.xls' }}
+        onChange={handleFileChange}
+      />
+      <div>Accepted Files : [.xlsx,.xls] files</div>
+      <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
+        <Box p={1}>
+          {`Download Format: `}
+          <a
+            style={{ cursor: 'pointer' }}
+            href='assets/download-format/Response.xlsx'
+            download='format.xlsx'
+          >
+            Download format
+          </a>
+        </Box>
+      </Box>
+    </div>
+  ) : (
+    <div></div>
+  )}
+   {bulkUpload && <div className='col-md-5'>
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={() => uploadMarks()}
+        className='th-button-active th-width-100 th-br-6 mt-2'
+      >
+        Upload
+      </Button>
+   </div>}
+   </div>
+   </div>
+</>
+)}
+
+      </div>
+<hr/>
+      <div className='row mt-2 py-2'>
+        {results.length === 0 ? (
+          <div className='row justify-content-center my-5'>
+            <img src={NoDataIcon} />
+          </div>
+        ) : (
+          <div className='row '>
+            <Grid container>
+              {results.map((test) => (
+                <Grid item md={4} className='p-1'>
+                  <AssesmentCard
+                    value={test}
+                    onEdit={() => {}}
+                    onClick={handleSelectTest}
+                    isSelected={selectedAssesmentTest?.id === test.id}
+                    filterResults={filterResults}
+                    activeTab={activeTab}
+                    addedId={addedId}
+                    selectAssetmentCard={selectAssetmentCard}
+                    handleClose={handleClose}
+                    filteredAssesmentTests={filteredAssesmentTests}
+                    // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0])
+                    filterbasedonsub={filterbasedonsub}
+                    isdisable={filterbasedonsub(test?.subjects[0])}
+                    checkDel={checkDel}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            {selectedAssesmentTest && (
+              <Grid item md={4}>
+                <AssesmentDetails
+                  test={selectedAssesmentTest}
+                  onClose={() => {
+                    setSelectedAssesmentTest(null);
+                  }}
+                  filterData={filterData}
+                  handleClose={handleClose}
+                  reportLoad={reportLoad}
+                  quizAccess={quizAccess}
+                  userLevel={userLevel}
+                />
+              </Grid>
             )}
           </div>
-        </div>
-        <div className='content-container'>
-          <Accordion
-            className='collapsible-section'
-            square
-            expanded={expandFilter}
-            onChange={() => { }}
-          >
-            <AccordionSummary></AccordionSummary>
-            <AccordionDetails>
-              <div className='form-grid-container mv-20' style={{ marginTop: '-50px' }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={3}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='status'
-                        name='status'
-                        className='dropdownIcon'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('status', value);
-                        }}
-                        value={formik.values.status}
-                        options={statuses}
-                        getOptionLabel={(option) => option.name}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Status'
-                            placeholder='Status'
-                            required
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.status ? formik.errors.status : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={3} className='dateRangeSelector'>
-                    <FormControl fullWidth variant='outlined'>
-                      <DateRangeSelector
-                        value={formik.values.date}
-                        onChange={(value) => {
-                          formik.setFieldValue('date', value);
-                          setDatePickerOpen(false);
-                        }}
-                        open={datePickerOpen}
-                        onClick={() => setDatePickerOpen(true)}
-                        minDate={minDate}
-                        required
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.status ? formik.errors.status : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  {/* <Grid item xs={12} md={3}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='academic'
-                        name='academic'
-                        className='dropdownIcon'
-                        onChange={handleAcademicYear}
-                        value={formik.values.academic}
-                        options={academicDropdown}
-                        getOptionLabel={(option) => option?.session_year || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Academic Year'
-                            placeholder='Academic Year'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.academic ? formik.errors.academic : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid> */}
-                  <Grid item xs={12} md={3}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='branch'
-                        name='branch'
-                        className='dropdownIcon'
-                        onChange={handleBranch}
-                        multiple
-                        value={formik.values.branch || []}
-                        options={branchDropdown || []}
-                        getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Branch'
-                            placeholder='Branch'
-                            required
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.branch ? formik.errors.branch : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={3}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='grade'
-                        name='grade'
-                        className='dropdownIcon'
-                        onChange={handleGrade}
-                        value={formik.values.grade || ''}
-                        options={grades || []}
-                        getOptionLabel={(option) => option?.grade__grade_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Grade'
-                            placeholder='Grade'
-                            required
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.grade ? formik.errors.grade : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={3}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='subject'
-                        name='subject'
-                        onChange={handleSubject}
-                        multiple
-                        className='dropdownIcon'
-                        value={formik.values.subject || ''}
-                        options={subjects || []}
-                        getOptionLabel={(option) => option?.subject_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Subject'
-                            placeholder='Subject'
-                            required
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.subject ? formik.errors.subject : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={3}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='assesment_type'
-                        name='assesment_type'
-                        className='dropdownIcon'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('assesment_type', value);
-                        }}
-                        value={formik.values.assesment_type || ''}
-                        options={assesmentTypes || []}
-                        getOptionLabel={(option) => option.exam_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Assessment Type'
-                            placeholder='Assessment Type'
-                            required
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.assesment_type ? formik.errors.assesment_type : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid
-                    container
-                    alignItems='center'
-                    justifyContent='center'
-                    xs={12}
-                    md={3}
-                  >
-                    <Typography>Section</Typography>
-                    <Switch
-                      checked={sectionToggle}
-                      onChange={handleSectionToggle}
-                      color='default'
-                      inputProps={{ 'aria-label': 'checkbox with default color' }}
-                    />
-                    <Typography>Group</Typography>
-                  </Grid>
-                  {!sectionToggle ? (
-                    <Grid item xs={12} md={3}>
-                      <FormControl fullWidth variant='outlined'>
-                        <Autocomplete
-                          id='section_name'
-                          name='section_name'
-                          multiple
-                          limitTags={2}
-                          className='dropdownIcon'
-                          onChange={handleSection}
-                          value={formik.values.section || []}
-                          options={sectionList || []}
-                          getOptionLabel={(option) => option?.section__section_name || ''}
-                          filterSelectedOptions
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='outlined'
-                              label='Section'
-                              placeholder='Section'
-                            />
-                          )}
-                          size='small'
-                        />
-                        {/* <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.assesment_type ? formik.errors.assesment_type : ''}
-                      </FormHelperText> */}
-                      </FormControl>
-                    </Grid>
-                  ) : (
-                    <Grid item xs={12} md={3}>
-                      <FormControl fullWidth variant='outlined'>
-                        <Autocomplete
-                          id='Group'
-                          name='group'
-                          // multiple
-                          // limitTags={2}
-                          className='dropdownIcon'
-                          onChange={handleGroup}
-                          value={formik?.values?.group || []}
-                          options={groupList || []}
-                          getOptionLabel={(option) => option?.group_name || ''}
-                          filterSelectedOptions
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='outlined'
-                              label='Group'
-                              placeholder='Group'
-                            />
-                          )}
-                          size='small'
-                        />
-                        {/* <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.assesment_type ? formik.errors.assesment_type : ''}
-                      </FormHelperText> */}
-                      </FormControl>
-                    </Grid>
-                  )}
-                </Grid>
-              </div>
-            </AccordionDetails>
-          </Accordion>
-          <div className='divider-container'>
-            <Divider />
-          </div>
-
-          <div className='form-actions-container mv-20'>
-            <Grid container spacing={2}>
-              <Grid item md={2} xs={6}>
-                <div className='btn-container'>
-                  <Button
-                    style={{ width: '100%' }}
-                    variant='contained'
-                    className='cancelButton labelColor'
-                    onClick={() => {
-                      handleClearAll();
-                    }}
-                  >
-                    Clear All
-                  </Button>
-                </div>
-              </Grid>
-              <Grid item md={2} xs={6}>
-                <div className='btn-container with-border'>
-                  <Button
-                    style={{ width: '100%', color: 'white' }}
-                    variant='contained'
-                    color='primary'
-                    size='medium'
-                    onClick={() => {
-                      handleFilterAssessment();
-                    }}
-                  >
-                    Filter
-                  </Button>
-                </div>
-              </Grid>
-              {!handleClose &&
-                <Grid item md={2} xs={6}>
-                  <div className='btn-container'>
-                    <Button
-                      style={{ width: '100%', color: 'white' }}
-                      variant='contained'
-                      startIcon={<AddIcon style={{ fontSize: '30px' }} />}
-                      color='primary'
-                      size='medium'
-                      onClick={() => {
-                        history.push('/create-assesment?clear=true');
-                      }}
-                    >
-                      Create New
-                    </Button>
-                  </div>
-                </Grid>}
-              {(isSuperAdmin || isSuperuser) && !handleClose && (
-
-                <Grid item container md={6} xs={6} justifyContent='flex-end'>
-                  <div className='btn-container'>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={bulkUpload}
-                          onChange={() => setBulkUpload(!bulkUpload)}
-                          name='checked'
-                          color='primary'
-                        />
-                      }
-                      label={<Typography color='secondary'>Upload Marks</Typography>}
-                    />
-                  </div>
-
-                  {bulkUpload ? (
-                    <div>
-                      <Input
-                        type='file'
-                        inputRef={fileRef}
-                        inputProps={{ accept: '.xlsx,.xls' }}
-                        onChange={handleFileChange}
-                      />
-                      <div>Accepted Files : [.xlsx,.xls] files</div>
-                      <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
-                        <Box p={1}>
-                          {`Download Format: `}
-                          <a
-                            style={{ cursor: 'pointer' }}
-                            href='assets/download-format/Response.xlsx'
-                            download='format.xlsx'
-                          >
-                            Download format
-                          </a>
-                        </Box>
-                      </Box>
-                      <Button
-                        variant='contained'
-                        color='primary'
-                        onClick={() => uploadMarks()}
-                        style={{ marginLeft: '22%' }}
-                      >
-                        Upload
-                      </Button>
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
-                </Grid>
-              )}
-
-              {handleClose && addedId.length > 0 && <Grid item md={4} xs={4} style={{ display: 'flex' }}>
-                <div className='btn-container'>
-                  <h6 >Total Selected: {addedId.length}</h6>
-                </div>
-                <div className='btn-container' style={{ marginLeft: '5px' }}>
-                  <Button
-                    style={{ width: '100%', color: 'white' }}
-                    variant='contained'
-                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
-                    color='primary'
-                    size='medium'
-                    onClick={() => {
-                      console.log('aded the idasse', addedId)
-                      handleColumnSelectedTestChange(
-                        addedId
-                      )
-                      handleClose()
-                    }}
-                  >
-                    Add Selected
-                  </Button>
-                </div>
-              </Grid>}
-              {handleClose &&
-                <Grid item md={2} xs={2} style={{ display: 'flex' }}>
-                  <Button
-                    style={{ color: 'white', height: '40px', marginTop: 30 }}
-                    variant='contained'
-                    // startIcon={<AddIcon style={{ fontSize: '30px' }} />}
-                    color='primary'
-                    size='medium'
-                    onClick={() => {
-                      console.log('aded the idasse', addedId)
-                      handleColumnSelectedTestChange(
-                        addedId
-                      )
-                      handleClose()
-                    }}
-                  >
-                    BACK
-                  </Button>
-                </Grid>}
-            </Grid>
-          </div>
-          <div className='tabs-container'>
-            <Paper square style={{ boxShadow: 'none' }}>
-              <Grid
-                container
-                spacing={2}
-                alignItems='center'
-                justify='space-between'
-                style={{ backgroundColor: '#fafafa' }}
-              >
-                <Grid item md={11} xs={12} style={{ alignItems: 'right' }}>
-                  <Tabs
-                    indicatorColor='primary'
-                    textColor='primary'
-                    onChange={(event, value) => {
-                      setActiveTab(value);
-                    }}
-                    aria-label='disabled tabs example'
-                    value={activeTab}
-                    classes={{
-                      flexContainer: classes.tabsFlexContainer,
-                    }}
-                  >
-                    <Tab label='All' value='all' className='right-border' />
-                    <Tab
-                      // label='Physical Test'
-                      label='Offline Test'
-                      value='physical-test'
-                      className='right-border'
-                      icon={<img className='info-icon' src={infoIcon} alt='info' />}
-                    />
-                    <Tab
-                      // label='Online Pattern'
-                      label='Online Test'
-                      value='online-pattern'
-                      icon={<img className='info-icon' src={infoIcon} alt='info' />}
-                    />
-                  </Tabs>
-                </Grid>
-              </Grid>
-              <TabPanel name='all' value={activeTab}>
-                <div className='list-grid-outer-container'>
-                  <Grid container>
-                    <Grid item md={selectedAssesmentTest ? 8 : 12}>
-                      <div className='list-container'>
-                        {fetchingTests && (
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <CircularProgress />
-                          </div>
-                        )}
-                        {results.length === 0 && (
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: '100%',
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <img src={unfiltered} alt='placeholder' />
-                              <p className='select-filter-text'>
-                                Please select the filter to display reports
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                        {results.length > 0 && (
-                          <Grid container>
-                            {results.map((test) => (
-                              <Grid item md={selectedAssesmentTest ? 6 : 4}>
-                                <AssesmentCard
-                                  value={test}
-                                  onEdit={() => { }}
-                                  onClick={handleSelectTest}
-                                  isSelected={selectedAssesmentTest?.id === test.id}
-                                  filterResults={filterResults}
-                                  activeTab={activeTab}
-                                  addedId={addedId}
-                                  selectAssetmentCard={selectAssetmentCard}
-                                  handleClose={handleClose}
-                                  filteredAssesmentTests={filteredAssesmentTests}
-                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
-                                  filterbasedonsub={filterbasedonsub}
-                                  isdisable={filterbasedonsub(test?.subjects[0])}
-                                  checkDel={checkDel}
-                                />
-                              </Grid>
-                            ))}
-                          </Grid>
-                        )}
-                      </div>
-                    </Grid>
-                    {selectedAssesmentTest && (
-                      <Grid item md={4}>
-                        <AssesmentDetails
-                          test={selectedAssesmentTest}
-                          onClose={() => {
-                            setSelectedAssesmentTest(null);
-                          }}
-                          filterData={filterData}
-                          handleClose={handleClose}
-                          reportLoad={reportLoad}
-                        />
-                      </Grid>
-                    )}
-                  </Grid>
-                </div>
-              </TabPanel>
-              <TabPanel name='physical-test' value={activeTab}>
-                <div className='list-grid-outer-container'>
-                  <Grid container>
-                    <Grid item md={selectedAssesmentTest ? 8 : 12}>
-                      <div className='list-container'>
-                        {fetchingTests && (
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <CircularProgress />
-                          </div>
-                        )}
-                        {results?.length === 0 && (
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: '100%',
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <img src={unfiltered} alt='placeholder' />
-                              <p className='select-filter-text'>
-                                Please select the filter to display reports
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                        {results?.length > 0 && (
-                          <Grid container>
-                            {results.map((test) => (
-                              <Grid item md={selectedAssesmentTest ? 6 : 4}>
-                                <AssesmentCard
-                                  value={test}
-                                  onEdit={() => { }}
-                                  onClick={handleSelectTest}
-                                  isSelected={selectedAssesmentTest?.id === test.id}
-                                  filterResults={filterResults}
-                                  addedId={addedId}
-                                  selectAssetmentCard={selectAssetmentCard}
-                                  handleClose={handleClose}
-                                  filteredAssesmentTests={filteredAssesmentTests}
-                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
-                                  filterbasedonsub={filterbasedonsub}
-                                  isdisable={filterbasedonsub(test.subjects[0])}
-                                  checkDel={checkDel}
-                                />
-                              </Grid>
-                            ))}
-                          </Grid>
-                        )}
-                      </div>
-                    </Grid>
-                    {selectedAssesmentTest && (
-                      <Grid item md={4}>
-                        <AssesmentDetails
-                          test={selectedAssesmentTest}
-                          onClose={() => {
-                            setSelectedAssesmentTest(null);
-                          }}
-                          filterData={filterData}
-                          handleClose={handleClose}
-                          reportLoad={reportLoad}
-                        />
-                      </Grid>
-                    )}
-                  </Grid>
-                </div>
-              </TabPanel>
-              <TabPanel name='online-pattern' value={activeTab}>
-                <div className='list-grid-outer-container'>
-                  <Grid container>
-                    <Grid item md={selectedAssesmentTest ? 8 : 12}>
-                      <div className='list-container'>
-                        {fetchingTests && (
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <CircularProgress />
-                          </div>
-                        )}
-                        {results?.length === 0 && (
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: '100%',
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <img src={unfiltered} alt='placeholder' />
-                              <p className='select-filter-text'>
-                                Please select the filter to display reports
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                        {results.length > 0 && (
-                          <Grid container>
-                            {results.map((test) => (
-                              <Grid item md={selectedAssesmentTest ? 6 : 4}>
-                                <AssesmentCard
-                                  value={test}
-                                  onEdit={() => { }}
-                                  onClick={handleSelectTest}
-                                  isSelected={selectedAssesmentTest?.id === test.id}
-                                  filterResults={filterResults}
-                                  addedId={addedId}
-                                  selectAssetmentCard={selectAssetmentCard}
-                                  handleClose={handleClose}
-                                  filteredAssesmentTests={filteredAssesmentTests}
-                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
-                                  filterbasedonsub={filterbasedonsub}
-                                  isdisable={filterbasedonsub(test.subjects[0])}
-                                  checkDel={checkDel}
-                                />
-                              </Grid>
-                            ))}
-                          </Grid>
-                        )}
-                      </div>
-                    </Grid>
-                    {selectedAssesmentTest && (
-                      <Grid item md={4}>
-                        <AssesmentDetails
-                          test={selectedAssesmentTest}
-                          onClose={() => {
-                            setSelectedAssesmentTest(null);
-                          }}
-                          filterData={filterData1}
-                          reportLoad={reportLoad}
-                        />
-                      </Grid>
-                    )}
-                  </Grid>
-                </div>
-              </TabPanel>
-            </Paper>
-          </div>
-        </div>
-        <div className='pagination-container'>
+        )}
+      </div>
+      </div>
+      <div className='pagination-container d-flex justify-content-center'>
           <Pagination
             page={showFilteredList ? filteredAssesmentTestsPage : assesmentTestsPage}
             count={
@@ -1393,7 +1354,8 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
             onChange={(e, page) => handleAssesmentTestsPageChange(page)}
           />
         </div>
-      </div>
+      {/* </div> */}
+      
     </Layout>
   );
 };

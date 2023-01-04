@@ -257,6 +257,10 @@ const Layout = ({ children, history }) => {
         history.push('/ebook/view');
         break;
       }
+      case 'Online Books': {
+        history.push('/online-books/');
+        break;
+      }
       case 'Ibook View': {
         history.push('/intelligent-book/view');
         break;
@@ -471,7 +475,7 @@ const Layout = ({ children, history }) => {
       //   break;
       // }
       case 'Question Bank': {
-        history.push('/question-bank');
+        history.push('/question-chapter-wise');
         break;
       }
       case 'Question Paper': {
@@ -1098,7 +1102,8 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Blog Activity': {
-        history.push('/blog/blogview');
+        // history.push('/blog/blogview');
+        history.push('/blog/wall/central/redirect');
         break;
       }
       case 'Create Activity Type': {
@@ -1177,6 +1182,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Assign Teacher': {
         history.push('/sure-learning/assign-teacher');
+        break;
+      }
+      case 'Curriculum Completion': {
+        history.push('/curriculum-completion-student-subject/');
         break;
       }
       default:

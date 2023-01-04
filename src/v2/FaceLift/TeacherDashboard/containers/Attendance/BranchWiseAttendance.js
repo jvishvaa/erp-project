@@ -151,7 +151,8 @@ history.push({
               pathname : './rolewise-attendance',
               state : {
                 selectedbranchData : row,
-                allBranchdata : history?.location?.state?.acadId
+                allBranchdata : history?.location?.state?.acadId,
+                date: date
               }
             })
           }
@@ -196,7 +197,7 @@ history.push({
             <Table
               className='th-table'
               rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
               }
               loading={loading}
               columns={columns}
@@ -204,6 +205,20 @@ history.push({
               dataSource={branchwiseAttendanceData}
               pagination={false}
               scroll={{ x: 'max-content' }}
+              onRow={(row, rowindex) => {
+                return {
+      
+                  onClick: (e) =>
+                  history.push({
+                    pathname : './rolewise-attendance',
+                    state : {
+                      selectedbranchData : row,
+                      allBranchdata : history?.location?.state?.acadId,
+                      date: date
+                    }
+                  })
+                }
+              }}
             />
           </div>
         </div>

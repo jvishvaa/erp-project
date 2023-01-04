@@ -17,10 +17,10 @@ const RoleWiseAttendance = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+  const history = useHistory();
+  const [date, setDate] = useState(history?.location?.state?.date);
   const [rolewiseAttendanceData, setRolewiseAttendanceData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   const handleDateChange = (value) => {
@@ -167,6 +167,7 @@ const RoleWiseAttendance = () => {
               bordered={false}
               placement='bottomRight'
               defaultValue={moment()}
+              value={moment(date)}
               onChange={(value) => handleDateChange(value)}
               showToday={false}
               suffixIcon={<DownOutlined className='th-black-1' />}
@@ -181,7 +182,7 @@ const RoleWiseAttendance = () => {
             <Table
               className='th-table'
               rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
               }
               loading={loading}
               columns={columns}
@@ -189,6 +190,28 @@ const RoleWiseAttendance = () => {
               dataSource={rolewiseAttendanceData}
               pagination={false}
               scroll={{ x: 'max-content' }}
+              onRow={(row, rowindex) => {
+                return {
+      
+                  onClick: (e) =>
+                    {row?.erp_user__roles__role_name === 'Student' ? 
+                    history.push({
+                      pathname : './gradewise-attendance',
+                      state : {
+                        selectedbranchData : history?.location?.state?.selectedbranchData || selectedBranch,
+                        date: date
+                      }
+                    }) : 
+                    history.push({
+                      pathname : './Staff-attendance',
+                      state : {
+                        selectedbranchData : history?.location?.state?.selectedbranchData || selectedBranch,
+                        role : row,
+                        date: date
+                      }
+                    }) }
+                }
+              }}
             />
           </div>
         </div>

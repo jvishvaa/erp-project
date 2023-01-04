@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
-import AsignHomework from '../../../../assets/images/hw-given.svg';
+import AsignHomework from '../../../../../assets/images/hw-given.svg';
 import QuestionCard from 'components/question-card';
 import moment from 'moment';
 import cuid from 'cuid';
@@ -251,29 +251,35 @@ const DailyDiary = () => {
     if (hwMappingID) {
       payload['hw_dairy_mapping_id'] = hwMappingID;
     }
-    if(payload?.teacher_report?.previous_class || payload?.teacher_report?.summary || payload?.teacher_report?.class_work || payload?.teacher_report?.tools_used || showHomeworkForm && payload?.teacher_report?.homework || assignedHomework?.length > 0 ){
+    if (
+      payload?.teacher_report?.previous_class ||
+      payload?.teacher_report?.summary ||
+      payload?.teacher_report?.class_work ||
+      payload?.teacher_report?.tools_used ||
+      (showHomeworkForm && payload?.teacher_report?.homework) ||
+      assignedHomework?.length > 0
+    ) {
       axios
-      .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
-      .then((res) => {
-        if (res?.data?.status_code == 200) {
-          setLoading(false);
-          if (res?.data?.message === 'Daily Dairy created successfully') {
-            message.success('Daily Diary Created Succssfully');
-            history.push('/diary/teacher');
-          } else {
-            message.error('Daily Diary Already Exists');
+        .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            setLoading(false);
+            if (res?.data?.message === 'Daily Dairy created successfully') {
+              message.success('Daily Diary Created Succssfully');
+              history.push('/diary/teacher');
+            } else {
+              message.error('Daily Diary Already Exists');
+            }
           }
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        message.error(error?.message);
-      });
-    }else {
-      message.error('Please Enter Details')
+        })
+        .catch((error) => {
+          setLoading(false);
+          message.error(error?.message);
+        });
+    } else {
+      message.error('Please Enter Details');
       setLoading(false);
       return;
-
     }
 
     // if (hwMappingID) {
@@ -359,6 +365,8 @@ const DailyDiary = () => {
         session_year: selectedBranch.branch.id,
         subject_id: e.id,
         subject: e.value,
+        sch_grade_id: gradeID,
+        sch_sy_id: selectedAcademicYear?.id,
       };
       axios
         .get(`${endpoints.academics.chapter}`, { params: { ...params } })
@@ -871,16 +879,13 @@ const DailyDiary = () => {
                           <div className='col-8'>
                             <div className='row'>
                               {uploadedFiles?.map((item, index) => {
-                                const fullName = item?.split('_')[
-                                  item?.split('_').length - 1
-                                ];
+                                const fullName =
+                                  item?.split('_')[item?.split('_').length - 1];
 
-                                const fileName = fullName.split('.')[
-                                  fullName?.split('.').length - 2
-                                ];
-                                const extension = fullName.split('.')[
-                                  fullName?.split('.').length - 1
-                                ];
+                                const fileName =
+                                  fullName.split('.')[fullName?.split('.').length - 2];
+                                const extension =
+                                  fullName.split('.')[fullName?.split('.').length - 1];
 
                                 return (
                                   <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>

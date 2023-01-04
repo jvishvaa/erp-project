@@ -22,9 +22,9 @@ import CreateAnnouncement from 'v2/FaceLift/Announcement/CreateAnnouncement/Crea
 import StudentDashboardNew from 'v2/FaceLift/StudentDashboard';
 import V1Router from './v1RouterConst';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
-import Diary from 'v2/FaceLift/Diary';
-import DailyDiary from 'v2/FaceLift/Diary/DailyDiary';
-import GeneralDiary from 'v2/FaceLift/Diary/GeneralDiary';
+import Diary from 'v2/FaceLift/Diary/DiaryOld';
+import DailyDiary from 'v2/FaceLift/Diary/DiaryOld/DailyDiary';
+import GeneralDiary from 'v2/FaceLift/Diary/DiaryOld/GeneralDiary';
 import GradeWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/GradeWiseAttendance';
 import SectionWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/SectionWiseAttendance';
 import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/ReportConfigTable';
@@ -39,9 +39,14 @@ import GradewiseDiaryReport from 'v2/FaceLift/DiaryReport/GradewiseDiaryReport';
 import SubjectwiseDiaryReport from 'v2/FaceLift/DiaryReport/SubjectwiseDiaryReport';
 import TeacherDiaryReport from 'v2/FaceLift/DiaryReport/TeacherDiaryReport';
 import TeacherwiseDiaryReport from 'v2/FaceLift/DiaryReport/TeacherwiseDiaryReport';
+import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
+import BlogActivityView from 'containers/newBlog/BlogActivityView';
+import ViewBMI from 'containers/newBlog/ViewBMI';
+
 import endpoints from 'config/endpoints';
 import axios from 'axios';
-
+import CreateDiary from 'v2/FaceLift/Diary/DiaryNew/CreateDiary';
+import DiaryMain from 'v2/FaceLift/Diary';
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -133,7 +138,16 @@ const V2Router = () => {
                           {({ match }) => <CreateAnnouncement match={match} />}
                         </Route>
                         <Route path='/diary/teacher'>
+                          {({ match }) => <DiaryMain match={match} />}
+                        </Route>
+                        {/* <Route path='/diary/teacher'>
                           {({ match }) => <Diary match={match} />}
+                        </Route> */}
+                        <Route path='/diary/student'>
+                          {({ match }) => <DiaryMain match={match} />}
+                        </Route>
+                        <Route path='/create/diary'>
+                          {({ match }) => <CreateDiary match={match} />}
                         </Route>
                         <Route path='/create/daily-diary'>
                           {({ match }) => <DailyDiary match={match} />}
@@ -146,6 +160,12 @@ const V2Router = () => {
                         </Route>{' '}
                         <Route path='/rolewise-attendance'>
                           {({ match }) => <RoleWiseAttendance match={match} />}
+                        </Route>
+                        <Route path='/student/phycial/activity'>
+                          {({ match }) => <StudentSidePhysicalActivity match={match} />}
+                        </Route>
+                        <Route path='blog-activity-view'>
+                          {({ match }) => <BlogActivityView match={match} />}
                         </Route>
                         <Route path='/branchwise-attendance'>
                           {({ match }) => <BranchWiseAttendance match={match} />}
@@ -197,6 +217,9 @@ const V2Router = () => {
                         </Route>
                         <Route exact path='/teacherwise-diary-report'>
                           {({ match }) => <TeacherwiseDiaryReport match={match} />}
+                        </Route>
+                        <Route exact path='/bmi/view'>
+                          {({ match }) => <ViewBMI match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

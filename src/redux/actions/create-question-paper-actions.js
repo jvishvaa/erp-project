@@ -13,6 +13,9 @@ export const createQuestionPaperActions = {
   RESET_STATE: 'RESET_STATE',
   DELETE_SECTION: 'DELETE_SECTION',
   DELETE_QUESTION_UNDER_SECTION: 'DELETE_QUESTION_UNDER_SECTION',
+  ADD_INSTRUCTION_TO_SECTION : 'ADD_INSTRUCTION_TO_SECTION',
+  ADD_MARKS_TO_SECTION :'ADD_MARKS_TO_SECTION',
+  ADD_OPTIONAL_QUESTION:'ADD_OPTIONAL_QUESTION'
 };
 export const editQuestionPaperActions = {
   ADD_NEW_QUESTION: 'ADD_NEW_QUESTION',
@@ -25,6 +28,10 @@ export const editQuestionPaperActions = {
   RESET_STATE: 'RESET_STATE',
   DELETE_SECTION: 'DELETE_SECTION',
   DELETE_QUESTION_UNDER_SECTION: 'DELETE_QUESTION_UNDER_SECTION',
+  ADD_INSTRUCTION_TO_SECTION : 'ADD_INSTRUCTION_TO_SECTION',
+  ADD_MARKS_TO_SECTION : 'ADD_MARKS_TO_SECTION',
+  ADD_OPTIONAL_QUESTION : 'ADD_OPTIONAL_QUESTION'
+
 }
 export const addSection = (question) => ({
   type: createQuestionPaperActions.ADD_NEW_QUESTION,
@@ -37,6 +44,7 @@ export const setFilter = (filter, data) => ({
   data,
 });
 
+
 export const setIsFetched = (isFetched) => ({
   type: createQuestionPaperActions.SET_IS_FETCH,
   isFetched,
@@ -47,6 +55,28 @@ export const addQuestionToSection = (data, questionId, section) => ({
   data,
   questionId,
   section,
+});
+
+export const addMarksToSection = (data, questionId, section) => ({
+  type: createQuestionPaperActions.ADD_MARKS_TO_SECTION,
+  data,
+  questionId,
+  section,
+});
+
+export const addOptionalQuestion = (data, questionId, section) => ({
+  type: createQuestionPaperActions.ADD_OPTIONAL_QUESTION,
+  data,
+  questionId,
+  section,
+});
+
+
+export const addInstructionToSection = (questionId, section, data) => ({
+  type: createQuestionPaperActions.ADD_INSTRUCTION_TO_SECTION,
+  questionId,
+  section,
+  data
 });
 
 export const createQuestionPaper = (data) => async (dispatch) => {

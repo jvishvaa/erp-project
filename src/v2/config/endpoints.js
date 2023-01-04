@@ -25,6 +25,19 @@ export default {
   userManagement: {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
   },
+  newEbook: {
+    ebookGrade : '/academic/ebook_mapped_grades_v1/',
+    ebookSubject : '/academic/ebook_mapped_subjects/',
+    ebookList: `/academic/v1/ebook_school_wise_filter/`,
+    ebookDefault: `/academic/v1/ebook_school_wise_default/`,
+    ebookClose: '/academic/v1/ebook_user/',
+    ebook_ibook_count: '/academic/v1/ebook_ibook_count/'
+  },
+  newibook:{
+    ibookList: '/academic/v1/ibook_school_wise_filter/',
+    ibookDefault :'/academic/v1/ibook_school_wise_default/',
+
+  },
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',
@@ -62,6 +75,7 @@ export default {
     staffAttandance: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-wise-stats/`,
     staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
     staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
+    gradeWise: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-wise-data/`,
   },
   teacherDashboard: {
     todaysAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/attendance-today/`,
@@ -70,6 +84,7 @@ export default {
     curriculumCompletion: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-subject-sectionwise-report/`,
     classworkReport: `${msReportsUrl}/api/reports/v1/classwork-stats/`,
     homeworkReport: `${msReportsUrl}/api/reports/v1/homework-stats/`,
+    curriculumnWidget: `${msReportsUrl}/api/acad_performance/grade-subject-wise-curriculum-completion-widget/`,
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
@@ -91,6 +106,9 @@ export default {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,
   },
+  userManagementBlog: {
+    getUserLevel: '/erp_user/level_list/',
+  },
   profile: {
     getUserStatus: '/erp_user/user-information/',
     getPendingFeeStatus: '/apiV1/fee-defaulters-banner/',
@@ -109,6 +127,13 @@ export default {
   },
   generalDiary: {
     diaryList: '/academic/general-dairy-messages/',
+    diaryListv2: '/academic/v2/general-dairy-messages/',
+  },
+  createQuestionApis: {
+    // topicList: `${baseURLCentral}/assessment/topic/`,
+    topicList: `${baseURLCentral}/assessment/topics-list/`,
+    questionType: `${baseURLCentral}/assessment/question_type/`,
+    createQuestion: `${baseURLCentral}/assessment/create-question/`,
   },
   dailyDiary: {
     createDiary: '/academic/create-dairy/',
@@ -120,6 +145,7 @@ export default {
     removeFile: '/academic/delete-file/',
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
+    upcomingPeriodData: `${baseURLCentral}/lesson_plan/v2/upcoming-period-data/`,
   },
 
   diaryReport: {
@@ -129,9 +155,11 @@ export default {
     subjectwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/view/`,
     subjectTeacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/view/`,
     teacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/data/view/`,
+    resources: `${baseURLCentral}/lesson_plan/lesson/`,
   },
   lessonPlan: {
     subjects: 'academic/v2/lesson-plan-subjects/',
+    allSubjects: 'academic/v3/lesson-plan-subjects/',
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     chapterList: 'academic/central-chapters-list-v3/',
@@ -178,6 +206,7 @@ export default {
     blogWallApi: `${newBlogURL}/api/blog_wall/`,
     blogListDropApi: `${newBlogURL}/api/activity_dropdown/`,
     blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
+    checkBMIApi: `${newBlogURL}/api/check_student/`,
   },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },

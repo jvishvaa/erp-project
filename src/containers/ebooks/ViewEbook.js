@@ -266,6 +266,7 @@ class ViewEbook extends Component {
 
     const domainTobeSent = subDomain;
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
+    const filterAcadYear = `${acad ? `&session_year=${acad?.session_year}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     let filterGrade;
     if (customGrade) {
@@ -291,12 +292,12 @@ class ViewEbook extends Component {
           endpoints.ebook.ebook
         }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
           tabValue + 1
-        }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+        }${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
       }
     } else if (tabValue === 2) {
       urlPath = `${
         endpoints.ebook.ebook
-      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
     axiosInstance
       .get(urlPath, {
@@ -425,16 +426,23 @@ class ViewEbook extends Component {
                     </Grid>
                     {(user_level == 13 || user_level == 12) && isOrchids ? (
                       <div
-                        className='col-md-12 text-right th-pointer'
-                        onClick={() => this.setState({ showGrievanceModal: true })}
+                        className='row justify-content-end'
+                        style={{ position: 'fixed', bottom: '5%', right: '2%' }}
                       >
-                        Not able to see the Ebooks?
-                        <span
-                          className='th-primary pl-1'
-                          style={{ textDecoration: 'underline' }}
+                        <div
+                          className='th-bg-white px-2 py-1 th-br-6 th-pointer'
+                          style={{ border: '1px solid #d9d9d9' }}
+                          onClick={() => this.setState({ showGrievanceModal: true })}
                         >
-                          Raise your query
-                        </span>
+                          Having any issues with Ebook ?<br />
+                          <br />
+                          <span
+                            className='th-primary pl-1'
+                            style={{ textDecoration: 'underline' }}
+                          >
+                            Raise your query
+                          </span>
+                        </div>
                       </div>
                     ) : null}
                     {this.state.showGrievanceModal && (

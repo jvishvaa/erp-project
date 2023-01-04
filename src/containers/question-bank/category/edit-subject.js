@@ -46,12 +46,12 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
       //   request['category_name'] = subjectName;
       // if (description1 !== desc && description1 !== '')
       //   request['description'] = description1;
-      // if (optional !== opt && optional !== '') 
+      // if (optional !== opt && optional !== '')
       //   request['is_subject_dependent'] = optional;
 
-        request['category_name'] = subjectName;
-        request['description'] = description1;
-        request['is_subject_dependent'] = optional;
+      request['category_name'] = subjectName;
+      request['description'] = description1;
+      request['is_subject_dependent'] = optional;
 
       if (addFlag) {
         axiosInstance
@@ -77,7 +77,7 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
         axiosInstance
           .put(`${endpoints.questionBank.categoryQuestion}`, request)
           .then((result) => {
-            debugger
+            // debugger
             if (result?.status === 201) {
               handleGoBack();
               setSubjectName('');
@@ -92,7 +92,10 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
           })
           .catch((error) => {
             setLoading(false);
-            setAlert('error', error.response.data.message || error.response.data.msg || 'Failed');
+            setAlert(
+              'error',
+              error.response.data.message || error.response.data.msg || 'Failed'
+            );
           });
       }
     } else {

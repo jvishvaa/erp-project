@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { createRef, useContext, useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
@@ -16,10 +16,14 @@ import { useLocation } from 'react-router-dom';
 import './question-bank.css';
 import ENVCONFIG from '../../../../src/config/config';
 import { setFilter } from 'redux/actions';
+import { Form, Select } from 'antd';
 
 const {
   apiGateway: { baseURLCentral, xAPIKey },
 } = ENVCONFIG;
+
+const { Option } = Select;
+
 
 const QuestionBankFilters = ({
   questionList,
@@ -34,11 +38,14 @@ const QuestionBankFilters = ({
   setClearFlag,
   isEdit,
   setFilter,
-  setPage
+  setPage,
+  FilteredData,
+  tabIsErpCentral
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const history = useHistory();
+  const formRef = createRef();
   const [loading, setLoading] = useState(false);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
@@ -64,12 +71,37 @@ const QuestionBankFilters = ({
   const [keyConceptDropdown, setKeyConceptDropdown] = useState([]);
   const [flag,setFlag] = useState(false);
   const location = useLocation();
+  const is_ERP_CENTRAL = [
+    { id: 1, flag: false, name: 'ERP' },
+    { id: 2, flag: true, name: 'CENTRAL' },
+  ];
+  const [filterData, setFilterData] = useState({
+    year: '',
+    branch: FilteredData?.academic_session,
+    volume: '',
+    grade: FilteredData?.grade,
+    subject: FilteredData?.subjectId,
+    chapter: FilteredData?.chapter,
+    quesType: '',
+    topicId: FilteredData?.topic,
+    question_level: '',
+    question_category: '',
+    is_erp_central: tabIsErpCentral,
+    erp_category : ''
+  });
 
   const question_level_options = [
     { value: 1, Question_level: 'Easy' },
     { value: 2, Question_level: 'Average' },
     { value: 3, Question_level: 'Difficult' },
   ];
+  const questionLeveloptions = question_level_options?.map((each) => {
+    return (
+      <Option key={each?.value} value={each.value}>
+        {each?.Question_level}
+      </Option>
+    );
+  });
 
   const question_categories_options = [
     { value: 1, q_cat: 'Knowledge' },
@@ -81,11 +113,60 @@ const QuestionBankFilters = ({
     { value: 7, q_cat: 'Creating' },
 
   ];
+  const questioncategoryoptions = question_categories_options?.map((each) => {
+    return (
+      <Option key={each?.value} value={each.value}>
+        {each?.q_cat}
+      </Option>
+    );
+  });
 
-  const is_ERP_CENTRAL = [
-    { id: 1, flag: false, name: 'ERP' },
-    { id: 2, flag: true, name: 'CENTRAL' },
-  ];
+  const questionTypes = queTypeDropdown?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.question_type}
+      </Option>
+    );
+  });
+
+  const erpCategories = erpCategoryDropdown?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.erp_category_id}>
+        {each?.erp_category_name}
+      </Option>
+    );
+  });
+
+  useEffect(() => {
+  //  if(filterData?.quesType || filterData?.question_category || filterData?.question_level || filterData?.erp_category){
+  handlePeriodList(
+      filterData?.quesType,
+      filterData?.question_category,
+      filterData?.subject,
+      filterData?.question_level,
+      filterData?.topicId,
+      FilteredData?.academic_session,
+      filterData?.grade,
+      filterData?.chapter,
+      filterData?.is_erp_central,
+      tabIsErpCentral ? 2 : 0,
+      filterData?.erp_category,
+    );
+
+  //  }
+      
+      // setSelectedIndex(-1);
+  },[filterData])
+
+  // const erpCategorys = erpCategoryDropdown?.map((each) => {
+  //   return (
+  //     <Option key={each?.id} value={each.id}>
+  //       {each?.question_type}
+  //     </Option>
+  //   );
+  // });
+
+
 
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -94,21 +175,6 @@ const QuestionBankFilters = ({
     'dev.olvorchidnaigaon.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com'
   ]
-
-  const [filterData, setFilterData] = useState({
-    year: '',
-    branch: '',
-    volume: '',
-    grade: '',
-    subject: '',
-    chapter: '',
-    quesType: '',
-    topicId: '',
-    question_level: '',
-    question_category: '',
-    is_erp_central: is_ERP_CENTRAL[0],
-    erp_category : ''
-  });
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -204,7 +270,7 @@ const QuestionBankFilters = ({
   }, []);
 
   const handleClear = () => {
-    setClearFlag((prev) => !prev);
+    setClearFlag(true);
     setFilterData({
       year: filterData?.year,
       branch: '',
@@ -326,7 +392,7 @@ const QuestionBankFilters = ({
     }
   };
 
-  const handleQuestionCategory = (event, value) => {
+  const handleQuestionCategory = (value) => {
     setPage(1)
     setFilterData({ ...filterData, question_category: '', quesType: '' });
     setPeriodData([]);
@@ -338,7 +404,8 @@ const QuestionBankFilters = ({
       setLoading(false);
     }
   };
-  const handleerpCategory = (event, value) => {
+  const handleerpCategory = (value) => {
+    setPage(1)
     setFilterData({ ...filterData, erp_category: '',  });
     setLoading(true);
     setFlag(false)
@@ -350,13 +417,11 @@ const QuestionBankFilters = ({
       setLoading(false);
     }
   };
-  const handleQuestionLevel = (event, value) => {
+  const handleQuestionLevel = (value) => {
+    setPage(1)
     setFilterData({
       ...filterData,
       question_level: '',
-      question_category: '',
-      quesType: '',
-      quesLevel: '',
     });
     setPeriodData([]);
     setLoading(true);
@@ -365,9 +430,11 @@ const QuestionBankFilters = ({
       setLoading(false);
     } else {
       setLoading(false);
+
     }
   };
-  const handleQuestionType = (event, value) => {
+  const handleQuestionType = ( value) => {
+    setPage(1)
     setFilterData({ ...filterData, quesType: '' });
     setPeriodData([]);
     setPeriodData([]);
@@ -493,6 +560,13 @@ const QuestionBankFilters = ({
       }
     }
   };
+
+  const Clearquestionlevel = () => {
+    setFilterData({
+      ...filterData,
+      question_level: '',
+    });
+  }
 
 
   const handleBoard = (event = {}, values = []) => {
@@ -685,7 +759,122 @@ const QuestionBankFilters = ({
     <>
       {loading ? <Loading message='Loading...' /> : null}
 
-      <Grid
+  
+      <div className='col-12 mt-2 th-bg-white'>
+            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+              <div className='row align-items-center'>
+                {/* {boardFilterArr.includes(window.location.host) && ( */}
+                  <div className='col-md-2 col-6 pl-0'>
+                    <div className='mb-2 text-left'>Question Level</div>
+                    <Form.Item name='question_level'>
+                      <Select
+                        allowClear
+                        placeholder='Question Level'
+                        showSearch
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e) => {
+                          handleQuestionLevel(e);
+                        }}
+                        onClear={Clearquestionlevel}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={false}
+                      >
+                        {questionLeveloptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                {/* )} */}
+                <div className='col-md-2 col-6'>
+                  <div className='mb-2 text-left'>Question Category</div>
+                  <Form.Item name='question category'>
+                    <Select
+                      allowClear
+                      placeholder= 'Question category'
+                      showSearch
+                      // disabled={user_level == 13}
+                      optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e) => {
+                        handleQuestionCategory(e);
+                      }}
+                      // onClear={handleClearGrade}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {questioncategoryoptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='col-md-2 col-6 '>
+                  <div className='mb-2 text-left'>Question Type</div>
+                  <Form.Item name='question type'>
+                    <Select
+                    allowClear
+                      placeholder='Question Type'
+                      showSearch
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handleQuestionType(e,value)}}
+                      // onClear={handleClearSubject}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {questionTypes}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='col-md-2 col-6'>
+                  <div className='mb-2 text-left'>ERP Category</div>
+                  <Form.Item name='ERP category'>
+                    <Select
+                      allowClear
+                      placeholder= 'ERP category'
+                      showSearch
+                      // disabled={user_level == 13}
+                      optionFilterProp='children'
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(value) => {
+                        handleerpCategory(value);
+                      }}
+                      // onClear={handleClearGrade}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={false}
+                    >
+                      {erpCategories}
+                    </Select>
+                  </Form.Item>
+                </div>
+              </div>
+              
+            </Form>
+          </div> 
+
+
+
+      {/* <Grid
         container
         spacing={isMobile ? 3 : 5}
         style={{ width: widerWidth, margin: wider }}
@@ -708,27 +897,6 @@ const QuestionBankFilters = ({
                 label='Branch'
                 placeholder='Branch'
                 required
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onChange={handleerpCategory}
-            id='Category'
-            className='dropdownIcon'
-            value={filterData?.erp_category || {}}
-            options={erpCategoryDropdown || []}
-            getOptionLabel={(option) => option?.erp_category_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='ERP Category'
-                placeholder='ERP Category'
               />
             )}
           />
@@ -974,7 +1142,7 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
-        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -994,7 +1162,28 @@ const QuestionBankFilters = ({
               />
             )}
           />
-        </Grid> */}
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleerpCategory}
+            id='Category'
+            className='dropdownIcon'
+            value={filterData?.erp_category || {}}
+            options={erpCategoryDropdown || []}
+            getOptionLabel={(option) => option?.erp_category_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='ERP Category'
+                placeholder='ERP Category'
+              />
+            )}
+          />
+        </Grid>
 
 
         {!isMobile && (
@@ -1066,7 +1255,7 @@ const QuestionBankFilters = ({
           </Grid>
         )}
         {isMobile && <Grid item xs={3} sm={0} />}
-      </Grid>
+      </Grid> */}
     </>
   );
 };

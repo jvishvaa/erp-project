@@ -56,7 +56,7 @@ const menuOptions = [
   // 'Relative marking',
 ];
 
-const QuestionDetailCard = ({ question, expanded }) => {
+const QuestionDetailCard = ({ question, expanded, index }) => {
   const classes = useStyles()
 
   const themeContext = useTheme();
@@ -89,7 +89,7 @@ const QuestionDetailCard = ({ question, expanded }) => {
         </div>
         {/* <Divider style={{ backgroundColor: '#014b7e' }} /> */}
         <div style={{ padding: '0 0.5rem' }}>
-          <QuestionView question={question} />
+          <QuestionView question={question} index = {index} />
         </div>
       </>
     </div>

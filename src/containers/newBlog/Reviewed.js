@@ -11,8 +11,8 @@ import StarsIcon from '@material-ui/icons/Stars';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
-
+import { UserOutlined} from '@ant-design/icons';
+import { Avatar} from 'antd';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Rating from '@material-ui/lab/Rating';
@@ -21,7 +21,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { TablePagination } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import Loader from 'components/loader/loader';
-
+import CancelIcon from '@material-ui/icons/Cancel';
 import axios from 'axios';
 import './images.css';
 const DEFAULT_RATING = 0;
@@ -113,13 +113,13 @@ const Reviewed = (props) => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [submit, setSubmit] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
-  const [totalCount,setTotalCount] = useState(0);
-  const [currentPage,setCurrentPage] = useState(1)
-  const [totalPages,setTotalPages] = useState(0);
-  const [limit,setLimit] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(10);
   const [isClicked, setIsClicked] = useState(false);
-  const [buttonFlag,setButtonFlag] = useState(false);
-  const [loading,setLoading] = useState(false);
+  const [buttonFlag, setButtonFlag] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   let array = [];
   const getRatingView = (data) => {
@@ -179,14 +179,14 @@ const Reviewed = (props) => {
   };
 
   const getTotalSubmitted = () => {
-    if(props){
+    if (props) {
       setLoading(true)
       const branchIds = props.selectedBranch.map((obj) => obj.id);
       const gradeIds = props?.selectedGrade?.id
-  
+
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=null&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&activity_detail_id=${ActivityId?.id}&is_reviewed=True`,
+          `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=null&branch_ids=${branchIds == "" ? null : branchIds}&grade_id=${gradeIds}&activity_detail_id=${ActivityId?.id}&is_reviewed=True&page=${currentPage}&page_size${limit}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -196,55 +196,55 @@ const Reviewed = (props) => {
         .then((response) => {
           setTotalCount(response?.data?.count)
           setTotalPages(response?.data?.page_size)
-          setCurrentPage(response?.data?.page + 1)
+          setCurrentPage(response?.data?.page)
           setLimit(Number(limit))
           props.setFlag(false)
           setAlert('success', response?.data?.message)
           setTotalSubmitted(response?.data?.result);
           setLoading(false)
         });
-      
+
     }
   };
 
   const assignPage = (data) => {
-    if(data?.length !== 0){
+    if (data?.length !== 0) {
       setView(true);
       setImageData(JSON?.parse(data?.template?.html_file))
       setData(data);
       setDataId(data?.id);
-  
+
       getRatingView(data?.id);
     }
   };
 
 
-  useEffect(()=>{
-    if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
+  useEffect(() => {
+    if (props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0) {
       setTotalSubmitted([])
     }
 
-  },[props.selectedBranch, props.selectedGrade, props.flag])
+  }, [props.selectedBranch, props.selectedGrade, props.flag])
 
   useEffect(() => {
-    if(props?.flag){
+    if (props?.flag && currentPage) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade,props.flag, currentPage]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
   const [view, setView] = useState(false);
   const [data, setData] = useState();
   const handleCloseViewMore = () => {
     setView(false);
   };
 
-  const handlePagination = (event, page) =>{
+  const handlePagination = (event, page) => {
     setIsClicked(true);
     setCurrentPage(page);
   }
 
   return (
     <>
-    {loading && <Loader/>}
+      {loading && <Loader />}
       <Paper className={`${classes.root} common-table`} id='singleStudent'>
         <TableContainer
           className={`table table-shadow view_users_table ${classes.container}`}
@@ -275,7 +275,7 @@ const Reviewed = (props) => {
                   hover
                   role='checkbox'
                   tabIndex={-1}
-                  // key={`user_table_index${i}`}
+                // key={`user_table_index${i}`}
                 >
                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                   <TableCell className={classes.tableCells}>
@@ -317,7 +317,7 @@ const Reviewed = (props) => {
                       size='small'
                       className={response?.is_bookmarked ? classes.buttonColor9 : classes.buttonColor1}
                       onClick={() => confirmassign(response)}
-                      disabled={response?.is_bookmarked }
+                      disabled={response?.is_bookmarked}
 
 
                     >
@@ -343,7 +343,7 @@ const Reviewed = (props) => {
             rowsPerPage={limit}
             page={Number(currentPage) - 1}
             onChangePage={(e, page) => {
-            handlePagination(e, page + 1);
+              handlePagination(e, page);
             }}
             rowsPerPageOptions={false}
             className='table-pagination'
@@ -363,10 +363,10 @@ const Reviewed = (props) => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <div style={{ width: '100%', marginTop: '72px' }}>
-          <div style={{ fontSize: '24px', display:'flex', justifyContent:'space-between' }}>
+        <div style={{ width: '100%', padding: '10px' }}>
+          <div style={{ fontSize: '24px', display: 'flex', justifyContent: 'space-between' }}>
             <strong>Preview</strong>
-            <strong  onClick={handleCloseViewMore} style={{marginRight:'10px', cursor:'pointer'}}>x</strong>
+            <strong onClick={handleCloseViewMore} style={{ marginRight: '10px', cursor: 'pointer' }}> <CancelIcon /></strong>
           </div>
           <Divider />
 
@@ -397,7 +397,7 @@ const Reviewed = (props) => {
                   </div>
                 </div>
 
-                <div
+                {/* <div
                   style={{
                     background: 'white',
                     width: '502px',
@@ -426,7 +426,7 @@ const Reviewed = (props) => {
                       Description: {data?.activity_detail?.description}
                     </span>
                   </div>
-                </div>
+                </div> */}
                 <div
                   style={{
                     background: 'white',
@@ -444,22 +444,24 @@ const Reviewed = (props) => {
                       alt='image'
                     /> */}
                     <div
-        style={{
-          background: `url(${data?.template?.template_path})`,
-          backgroundSize: "contain",
-          position: "relative",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundColor: "rgba(244 245 247 / 25%)",
-    height: "683px",
-        }}
-      >
-        <div className="certificate-text-center certificate-input-box" style={{top: imageData ? `calc(279px + ${imageData[0]?.x_cordinate.concat('px')})` : '', left: imageData ? `calc(232px + ${imageData[0]?.y_cordinate.concat('px')})` : ''}}>
-          <textarea className="certificate-box" style={{width: imageData ?  `${imageData[0]?.width.concat('px')}` : '',
-    height: imageData ? `${imageData[0]?.height.concat('px')}` : ''}} value={data?.submitted_work?.html_text} placeholder="type text here..." />
-         
-        </div>
-      </div>
+                      style={{
+                        background: `url(${data?.template?.template_path})`,
+                        backgroundSize: "contain",
+                        position: "relative",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundColor: "rgba(244 245 247 / 25%)",
+                        height: "683px",
+                      }}
+                    >
+                      <div className="certificate-text-center certificate-input-box" style={{ top: imageData ? `calc(279px + ${imageData[0]?.x_cordinate.concat('px')})` : '', left: imageData ? `calc(232px + ${imageData[0]?.y_cordinate.concat('px')})` : '' }}>
+                        <textarea className="certificate-box" style={{
+                          width: imageData ? `${imageData[0]?.width.concat('px')}` : '',
+                          height: imageData ? `${imageData[0]?.height.concat('px')}` : ''
+                        }} value={data?.submitted_work?.html_text} placeholder="type text here..." />
+
+                      </div>
+                    </div>
                   </div>
                   {/* <div
                     style={{
@@ -474,19 +476,79 @@ const Reviewed = (props) => {
               </div>
             </Grid>
             <Grid item>
+            <div>
+                  <div style={{ display: 'flex', width: '100%', padding:'0.5rem 1rem' }}>
+                    <div style={{ padding: '5px' }}>
+                      <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                      </Avatar>
+                    </div>
+                    <div style={{ padding: '0 0.5rem' }}>
+                      <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                        {data?.booked_user?.name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                        {data?.branch?.name}
+                      </div>
+                      <div style={{ fontWeight: 500, fontSize: '12px' }}>
+                      {data?.grade?.name}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    background: '#f9f9f9',
+                    margin:'0.5rem 1rem',
+                    padding:'0.5rem 1rem',
+                    borderRadius:'5px',
+                    marginTop: '10px',
+                    height: 'auto',
+                    border:'1px solid #dbdbdb',
+                    width:'21vw',
+                    overflowY:'auto',
+                    maxHeight:'16vh'
+
+                  }}
+                >
+                  <div
+                    style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
+                  >
+                    <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
+                      Title: {data?.activity_detail?.title}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      fontWeight: 'bold',
+                      paddingLeft: '10px',
+                      paddingBottom: '10px'
+                    }}
+                  >
+                    <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
+                      Description: {data?.activity_detail?.description}
+                    </span>
+                  </div>
+                </div>
+                <Divider />
+
               {submit == false ? (
-                <div style={{ paddingLeft: '10px' }}>Add Review</div>
+                <div style={{ padding: '10px' }}>Review</div>
               ) : (
-                <div style={{ paddingLeft: '8px' }}>Edit Review</div>
+                <div style={{ padding: '8px' }}>Edit Review</div>
               )}
               {submit == false && (
                 <div
                   style={{
-                    border: '1px solid #707070',
+                    border: '1px solid grey',
                     width: '295px',
                     height: 'auto',
-                    marginLeft: '11px',
-                    marginRight: '10px',
+                    // marginLeft: '11px',
+                    // marginRight: '10px',
+                    margin:'auto',
+                    background: '#f4f5f9',
+                    borderRadius:'5px'
                   }}
                 >
                   {ratingReview?.map((obj, index) => {
@@ -504,7 +566,7 @@ const Reviewed = (props) => {
                           style={{ display: 'flex', justifyContent: 'space-between' }}
                         >
                           {' '}
-                          {obj?.name}      
+                          {obj?.name}
                           <StyledRating
                             name={`rating${index}`}
                             size='small'
@@ -513,24 +575,24 @@ const Reviewed = (props) => {
                             precision={0.1}
                             max={parseInt(obj?.level)}
                             readOnly
-                            // defaultValue={props.defaultValue}
+                          // defaultValue={props.defaultValue}
                           />
                         </div>
                         {/* {obj?.name == 'Overall' ? (
                           ''
                         ) : ( */}
-                          <div>
-                            <TextField
-                              id='outlined-basic'
-                              size='small'
-                              variant='outlined'
-                              value={obj?.remarks}
-                              style={{ width: '264px' }}
-                              inputProps={
-                                { readOnly: true, }
-                              }
-                            />
-                          </div>
+                        <div>
+                          <TextField
+                            id='outlined-basic'
+                            size='small'
+                            variant='outlined'
+                            value={obj?.remarks}
+                            style={{ width: '264px', background:'white' }}
+                            inputProps={
+                              { readOnly: true, }
+                            }
+                          />
+                        </div>
                         {/* // )} */}
                       </div>
                     );

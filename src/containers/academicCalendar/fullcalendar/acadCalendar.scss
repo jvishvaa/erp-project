@@ -115,3 +115,22 @@
     margin: 0px 20px 20px 0px;
     float: right;
 }
+.addSubjectCss{
+    .MuiDialog-paperScrollPaper{
+        min-width: 25%;
+    }
+}
+.tableSubjectAdd{
+    .ant-checkbox-inner{
+        width: 25px;
+        height: 25px;
+    }
+    .ant-checkbox-disabled{
+        .ant-checkbox-inner{
+            background-color: #ccc9c9;
+        }
+    }
+    .ant-checkbox-inner::after{
+        left: 30.5%;
+    }
+}

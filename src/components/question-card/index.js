@@ -538,7 +538,7 @@ const QuestionCard = ({
         academic_year: sessionYear,
         grade_id: grade,
         branch_id: branch,
-        board: selectedBoards,
+        board: selectedBoardsID,
         module_id: each?.id,
       });
     }
@@ -568,7 +568,7 @@ const QuestionCard = ({
   };
 
   return (
-    <Grid container className='home-question-container'>
+    <Grid container className='home-question-container' style={{ marginBottom: 5 }}>
       <Dialog maxWidth='sm' open={openAttachmentModal} onClose={closeAttachmentsModal}>
         <DialogTitle color='primary'>Attachments</DialogTitle>
         <DialogContent style={{ maxHeight: '60vh', overflow: 'auto' }}>
@@ -605,59 +605,67 @@ const QuestionCard = ({
                       id='question'
                       name='question'
                       onChange={(e) => {
-                        setquestionData(e.target.value);
+                        if (!window.location.pathname.includes('/diary/')) {
+                          setquestionData(e.target.value);
+                        }
                       }}
                       label='Question'
-                      autoFocus
+                      autoFocus={!window.location.pathname.includes('/diary')}
                       multiline
                       rows={4}
                       rowsMax={6}
                       value={questionData}
+                      // disabled={true}
                     />
                     <FormHelperText style={{ color: 'red' }}>
                       {question.errors?.question}
                     </FormHelperText>
                   </FormControl>
                 </Grid>
-                <Grid item md={6}>
-                  <div>
-                    <input
-                      className='file-upload-input'
-                      type='file'
-                      name='attachments'
-                      accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
-                      onChange={(e) => {
-                        handleFileUpload(e.target.files[0]);
-                        e.target.value = null;
-                      }}
-                      ref={fileUploadInput}
-                    />
-                    {fileUploadInProgress ? (
-                      <div>
-                        <CircularProgress
-                          color='primary'
-                          style={{ width: '25px', height: '25px', margin: '5px' }}
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        <IconButton
-                          onClick={() => fileUploadInput.current.click()}
-                          title='Attach files'
-                        >
-                          <Badge badgeContent={attachmentPreviews.length} color='primary'>
-                            <AttachFileIcon color='primary' />
-                          </Badge>
-                        </IconButton>
-                        <small className={classes.acceptedfiles}>
-                          {' '}
-                          Accepted files: jpeg,jpg,mp3,mp4,pdf,png
-                        </small>
-                      </>
-                    )}
-                  </div>
-                  <div></div>
-                </Grid>
+                {!window.location.pathname.includes('/diary/') && (
+                  <Grid item md={6}>
+                    <div>
+                      <input
+                        className='file-upload-input'
+                        type='file'
+                        name='attachments'
+                        accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
+                        onChange={(e) => {
+                          handleFileUpload(e.target.files[0]);
+                          e.target.value = null;
+                        }}
+                        ref={fileUploadInput}
+                      />
+                      {fileUploadInProgress ? (
+                        <div>
+                          <CircularProgress
+                            color='primary'
+                            style={{ width: '25px', height: '25px', margin: '5px' }}
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          <IconButton
+                            onClick={() => fileUploadInput.current.click()}
+                            title='Attach files'
+                          >
+                            <Badge
+                              badgeContent={attachmentPreviews.length}
+                              color='primary'
+                            >
+                              <AttachFileIcon color='primary' />
+                            </Badge>
+                          </IconButton>
+                          <small className={classes.acceptedfiles}>
+                            {' '}
+                            Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                          </small>
+                        </>
+                      )}
+                    </div>
+                    <div></div>
+                  </Grid>
+                )}
               </Grid>
               {attachmentPreviews.length > 0 && (
                 <Grid item xs={12} className='attachments-grid'>
@@ -802,7 +810,7 @@ const QuestionCard = ({
               <Grid
                 item
                 xs={12}
-                md={3}
+                md={window.location.pathname.includes('/diary/') ? 6 : 3}
                 // className='question-ctrls-inner'
                 style={{ display: 'flex' }}
               >
@@ -827,12 +835,18 @@ const QuestionCard = ({
                   label='File Upload'
                   labelPlacement='start'
                   style={{ minWidth: '50px' }}
+                  disabled={window.location.pathname.includes('/diary/')}
                 />
 
                 {/* </Box> */}
               </Grid>
               {enableAttachments && (
-                <Grid item xs={12} md={3} className='question-ctrl-outer-container'>
+                <Grid
+                  item
+                  xs={12}
+                  md={window.location.pathname.includes('/diary/') ? 5 : 3}
+                  className='question-ctrl-outer-container'
+                >
                   {/* <Box className='question-ctrl-inner-container max-attachments'> */}
                   <div>
                     <div className='question-ctrl-label'>Maximum number of files</div>
@@ -843,6 +857,7 @@ const QuestionCard = ({
                       defaultValue={2}
                       onChange={(e) => setmaxAttachment(e.target.value)}
                       value={maxattachment}
+                      disabled={window.location.pathname.includes('/diary/')}
                     >
                       {Array.from({ length: 10 }, (_, index) => (
                         <option value={index + 1}>{index + 1}</option>
@@ -852,9 +867,14 @@ const QuestionCard = ({
                   {/* </Box> */}
                 </Grid>
               )}
-              <Grid item xs={12} md={3} style={{ display: 'flex' }}>
+              <Grid
+                item
+                xs={12}
+                md={window.location.pathname.includes('/diary/') ? 6 : 3}
+                style={{ display: 'flex' }}
+              >
                 {/* <Box className='question-ctrl-inner-container'> */}
-                <div>
+                <div style={{ display: 'flex' }}>
                   {/* <IconButton className='question-cntrl-file-upload'> */}
                   <IconButton>
                     <CreateIcon color='primary' />
@@ -875,84 +895,93 @@ const QuestionCard = ({
                     label='Pen tool'
                     labelPlacement='start'
                     style={{ minWidth: '50px' }}
+                    disabled={window.location.pathname.includes('/diary/')}
                   />
                 </div>
                 {/* </Box> */}
               </Grid>
-              <Grid
-                item
-                xs={12}
-                md={2}
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-              >
-                {/* <Box className='question-ctrl-inner-container th-pointer'> */}
-                <div>
-                  <Button
-                    onClick={handleResourcesDrawerOpen}
-                    variant='contained'
-                    color='primary'
-                  >
-                    Resources
-                  </Button>
-                </div>
-                <div className='th-12 pt-2'>(From Leson Plan)</div>
-              </Grid>
+              {!window.location.pathname.includes('/diary/') && (
+                <Grid
+                  item
+                  xs={12}
+                  md={2}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  {/* <Box className='question-ctrl-inner-container th-pointer'> */}
+                  <div>
+                    <Button
+                      onClick={handleResourcesDrawerOpen}
+                      variant='contained'
+                      color='primary'
+                    >
+                      Resources
+                    </Button>
+                  </div>
+                  <div className='th-12 pt-2'>(From Leson Plan)</div>
+                </Grid>
+              )}
             </Grid>
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
-        <Grid item xs={12} className='question-btn-container' />
-        {index > 0 && (
-          <Grid item xs={12} className='question-btn-container'>
-            <div className='question-btn-inner-container '>
-              <Button
-                variant='contained'
-                color='default'
-                startIcon={<DeleteIcon />}
-                onClick={() => {
-                  handleClick();
-                }}
-                title='Remove Question'
-                className='btn remove-question-btn'
-              >
-                Remove question
-              </Button>
-            </div>
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-            >
-              <div style={{ padding: '20px 30px' }}>
-                <Typography style={{ fontSize: '20px', marginBottom: '15px' }}>
-                  Are you sure you want to delete?
-                </Typography>
-                <div>
-                  <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={() => removeQuestion(index)}
-                    style={{ float: 'right' }}
-                  >
-                    Confirm
-                  </Button>
-                </div>
+      {!window.location.pathname.includes('/diary/') && (
+        <Grid item xs={12}>
+          <Grid item xs={12} className='question-btn-container' />
+          {index > 0 && (
+            <Grid item xs={12} className='question-btn-container'>
+              <div className='question-btn-inner-container '>
+                <Button
+                  variant='contained'
+                  color='default'
+                  startIcon={<DeleteIcon />}
+                  onClick={() => {
+                    handleClick();
+                  }}
+                  title='Remove Question'
+                  className='btn remove-question-btn'
+                >
+                  Remove question
+                </Button>
               </div>
-            </Popover>
-          </Grid>
-        )}
-      </Grid>
+              <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+              >
+                <div style={{ padding: '20px 30px' }}>
+                  <Typography style={{ fontSize: '20px', marginBottom: '15px' }}>
+                    Are you sure you want to delete?
+                  </Typography>
+                  <div>
+                    <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => removeQuestion(index)}
+                      style={{ float: 'right' }}
+                    >
+                      Confirm
+                    </Button>
+                  </div>
+                </div>
+              </Popover>
+            </Grid>
+          )}
+        </Grid>
+      )}
       <Drawer
         anchor='right'
         open={showDrawer}

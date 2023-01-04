@@ -31,6 +31,7 @@ const MyTinyEditor = ({
           selector: 'textarea#myTextArea',
           placeholder: placeholder,
           menubar: false,
+          paste_data_images: true,
           plugins:
             id?.startsWith('studentAnswerEditor') || id?.startsWith('descriptioneditor')
               ? ['lists link file paste wordcount']

@@ -58,6 +58,9 @@ const EditBranch = ({ branchData, handleGoBack, setLoading }) => {
             handleGoBack();
             setLoading(false);
             setAlert('success', 'Branch successfully updated');
+          } else if(result.data.status_code === 409) {
+            setAlert('error', "Branch Code Already Exist");
+            setLoading(false);
           } else {
             setLoading(false);
             setAlert('error', result.data.message || result.data.msg);

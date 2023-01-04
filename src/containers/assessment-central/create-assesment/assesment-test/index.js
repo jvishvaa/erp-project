@@ -24,6 +24,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import './styles.scss';
 import QuestionDetailCard from '../question-detail-card.js';
 import ENVCONFIG from '../../../../config/config';
+import axiosInstance from 'config/axios';
 
 const useStyles = makeStyles((theme) => ({
   questionsheader: {
@@ -63,6 +64,7 @@ const AssesmentTest = ({
   onTestDurationChange,
   onTotalMarksChange,
   testName,
+  isEdit,
   testId,
   testDuration,
   testDate,
@@ -75,7 +77,8 @@ const AssesmentTest = ({
   selectedSectionData,
   sectionDate,
   values,
-  sectionWiseTest
+  sectionWiseTest,
+  updateTest
 }) => {
   const classes = useStyles()
   const [minimize, setMinimize] = useState(false);
@@ -177,7 +180,9 @@ const AssesmentTest = ({
                     </div>
                   </Grid>
                   {/* <div className='dividerVertical' /> */}
-                  {formik?.values?.test_type?.exam_name == 'Quiz' || sectionWiseTest == true || sectionWiseTest == false ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' ||  formik?.values?.test_type?.exam_name ==
+                                    'Practice Test' ||
+                                  formik?.values?.test_type?.exam_name == 'Open Test' || sectionWiseTest == true || sectionWiseTest == false ? '' :
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label}>Test ID</div>
@@ -204,7 +209,9 @@ const AssesmentTest = ({
                     </Grid>
                   }
                   {/* <div className='dividerVertical' /> */}
-                  {formik?.values?.test_type?.exam_name == 'Quiz' || sectionWiseTest ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' || formik?.values?.test_type?.exam_name ==
+                                    'Practice Test' ||
+                                  formik?.values?.test_type?.exam_name == 'Open Test' ||  sectionWiseTest ? '' :
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label} style={{ marginRight: isMobile && '1rem' }}>
@@ -215,7 +222,7 @@ const AssesmentTest = ({
                             variant='outlined'
                             type='datetime-local'
                             size='small'
-                            inputProps={{ min: minDateTime.toISOString().slice(0, 16) }}
+                            // inputProps={{ min: minDateTime.toISOString().slice(0, 16) }}
                             className='date-time-picker bg-white'
                           id='test-section'
                             value={testDate}
@@ -322,9 +329,9 @@ const AssesmentTest = ({
                               variant='outlined'
                               type='datetime-local'
                               size='small'
-                              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
-                              className='date-time-picker-section'
-                              value={values?.val?.length > 0 && values?.val[i] != undefined ? values?.val[i]?.test_date : ''}
+                              // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+                              className='date-time-picker bg-white'
+                              value={values?.val?.length > 0 ? values?.val[i]?.test_date : ''}
                               color='primary'
                               style={{ width: isMobile ? '50%' : '100%' , marginLeft: '10px' }}
                               onChange={(e) => {
@@ -417,116 +424,6 @@ const AssesmentTest = ({
                   }}
                 />
               )}
-            </div>
-            <div className='questions-container'>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-                className='questions-header-container'
-              >
-                <div className={classes.questionsheader}>QUESTIONS </div>
-                <Button
-                  variant='contained'
-                  onClick={() => {
-                    history.push(`/assessment-question`);
-                  }}
-                  color='primary'
-                  className='mv-20'
-                  style={{ color: 'white', margin: '1rem', borderRadius: '10px' }}
-                >
-                  ADD QUESTION PAPER
-                </Button>
-              </div>
-              <div className='divider-container'>
-                <Divider color='secondary' />
-              </div>
-
-              <div className='questions-content'>
-                <div
-                  className='question-header-row'
-                  style={{ justifyContent: 'flex-end' }}
-                >
-                  {/* <div className='info-section'>
-                <p>Question paper 1</p>
-                <div className='dividerVertical'></div>
-                <p>Online</p>
-                <div className='dividerVertical'></div>
-                <p>Created on 02.02.2021</p>
-              </div> */}
-                  <div className='action-section'>
-                    <FormGroup>
-                      {/* <FormLabel>Parent marks</FormLabel>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            size='small'
-                            onChange={onMarksAssignModeChange}
-                            color='primary'
-                            checked={marksAssignMode}
-                          />
-                        }
-                      />
-                      <FormLabel>Child marks</FormLabel> */}
-                    </FormGroup>
-                  </div>
-                </div>
-                <div className='question-container'>
-                  <div className='sections-container'>
-                    {questionPaper?.map((section) => (
-                      <div className='section-container'>
-                        <div className='section-header'>
-                          <div className='left'>
-                            <div className='checkbox'>
-                              <Checkbox
-                                checked
-                                onChange={() => { }}
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                                color='primary'
-                              />
-                            </div>
-                            <div className='section-name'>{`SECTION ${section.name}`}</div>
-                          </div>
-                        </div>
-
-                        <div className='section-content'>
-                          <div>Total Questions: {section.questions.length} </div>
-                          {section.questions.map((q) => (
-                            <div className='question-detail-card-wrapper' style={{ width: '100%' }}>
-                              <QuestionDetailCard
-                                createdAt={q?.created_at}
-                                question={q}
-                                expanded={marksAssignMode}
-                                onChangeMarks={onChangeTestMarks}
-                                testMarks={testMarks}
-                                paperchecked={paperchecked}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className='submit-btn-conntainer mv-20'>
-                  <Button
-                    variant='contained'
-                    className=''
-                    style={{ borderRadius: '10px' }}
-                    color='primary'
-                    onClick={onCreate}
-                    disabled={
-                      !testDuration ||
-                      !testName ||
-                      !testInstructions
-                    }
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </div>
             </div>
           </>
         )}

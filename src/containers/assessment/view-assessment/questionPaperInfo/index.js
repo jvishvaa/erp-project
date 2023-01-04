@@ -37,6 +37,7 @@ import Loader from './../../../../components/loader/loader';
 const QuestionPaperInfo = ({
   assessmentId,
   assessmentDate,
+  assessmentType,
   handleCloseInfo,
   ...restProps
 }) => {
@@ -55,6 +56,7 @@ const QuestionPaperInfo = ({
   const {
     assessmentId: assessmentIdFromContext = null,
     setAssessmentId,
+    setAssessmentType,
     setAssessmentDate,
     assessmentResult: {
       data: {
@@ -75,6 +77,8 @@ const QuestionPaperInfo = ({
         user_response: userResponseObj,
         test_duration: testDuration,
         test_mode: test_mode,
+        test_type : test_type,
+        test_type_name:test_type_name,
       } = {},
       fetching,
       fetchFailed,
@@ -171,48 +175,44 @@ const QuestionPaperInfo = ({
     // return {
     // setLoading(true);
     // setAssessmentId,
-    if (attachments.length === 0) {
-      setAlert('warning', 'Please upload file');
-    }
-    if (attachments.length > 0) {
-      if (showSubmit.can_reupload) {
-        axiosInstance
-          .put(`${endpoints.assessment.imageupload}`, param)
-          .then((result) => {
-            if (result?.data?.status_code === 200) {
-              setAlert('success', result?.data?.message);
-              setReloadFlag(!reloadFlag);
-              setShowagain([]);
-            } else {
-              setAlert('error', result?.data?.message);
-            }
-            // setLoading(false);
-            // props.onClose();
-          })
-          .catch((error) => {
-            // setAlert('error', error?.response.data.developer_msg);
-            // setLoading(false);
-          });
-      } else {
-        axiosInstance
-          .post(`${endpoints.assessment.imageupload}`, body)
-          .then((result) => {
-            if (result?.data?.status_code === 200) {
-              setAlert('success', result?.data?.message);
-              setReloadFlag(!reloadFlag);
-              setShowagain([]);
-            } else {
-              setAlert('error', result?.data?.message);
-            }
-            // setLoading(false);
-            // props.onClose();
-          })
-          .catch((error) => {
-            // setAlert('error', error?.response.data.developer_msg);
-            // setLoading(false);
-          });
-      }
-    }
+   if(attachments.length === 0){
+     setAlert('warning','Please upload file')
+   }
+   if(attachments.length>0){
+    if(showSubmit.can_reupload){
+      axiosInstance.put(`${endpoints.assessment.imageupload}`, param)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
+          setReloadFlag(!reloadFlag)
+          setShowagain([])
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+        // setLoading(false);
+        // props.onClose();
+      })
+      .catch((error) => {
+        // setAlert('error', error?.response.data.developer_msg);
+        // setLoading(false);
+      });
+     }else{
+      axiosInstance.post(`${endpoints.assessment.imageupload}`, body)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
+          setReloadFlag(!reloadFlag)
+          setShowagain([])
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        // setAlert('error', error?.response.data.developer_msg);
+        // setLoading(false);
+      });
+   }
+   }
     // }
   };
 
@@ -342,6 +342,9 @@ const QuestionPaperInfo = ({
     if (assessmentDate) {
       setAssessmentDate(assessmentDate);
     }
+    if(assessmentType){
+      setAssessmentType(assessmentType)
+    }
   }, []);
 
   const testAnalysisRouteBtn = (
@@ -366,6 +369,32 @@ const QuestionPaperInfo = ({
         >
           Details
         </Button>
+        {test_type_name == "Practice Test"  && <Button
+                variant='contained'
+                color='primary'
+                style={{
+                  fontFamily: 'Andika New Basic, sans-serif',
+                  padding: '0.3rem 1rem',
+                  borderRadius: '0.6rem',
+                  fontSize: '0.9rem',
+                  margin: 'auto',
+                }}
+                // disabled={(test_type != 37 && test_type != 38) && !getTestStatus()}
+                onClick={() => {
+                  // Object.entries(localStorage).forEach(([key, value]) => {
+                  //   if (key?.startsWith('assessment-')) {
+                  //     localStorage.removeItem(key);
+                  //   }
+                  // });
+                  restProps.history.push(
+                    `/assessment/${questionPaperId}/${assessmentId}/attempt/`
+                  );
+                }}
+              >
+                <b style={{ fontSize: '13px' }}>Take Test</b>
+                
+                
+              </Button>}
       </div>
       <br />
     </>
@@ -450,11 +479,11 @@ const QuestionPaperInfo = ({
             {[gradeName, ...(subjects || [])].join(', ')}
           </h4>
         </div>
-        <div className={classes.cardDate}>
+        {testDate && <div className={classes.cardDate}>
           {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
             new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
           }`}
-        </div>
+        </div>}
       </div>
     </>
   );
@@ -499,7 +528,7 @@ const QuestionPaperInfo = ({
         </Button> */}
         {test_mode == 1 ? (
           <>
-            {testEndTime < new Date().getTime() ? (
+            {(test_type_name != "Open Test" && test_type_name != "Practice Test") && testEndTime < new Date().getTime() ? (
               <Button
                 style={{
                   padding: '0.3rem 1rem',
@@ -525,7 +554,7 @@ const QuestionPaperInfo = ({
                   fontSize: '0.9rem',
                   margin: 'auto',
                 }}
-                disabled={!getTestStatus()}
+                disabled={(test_type_name !== "Open Test" && test_type_name !== "Practice Test") && !getTestStatus()}
                 onClick={() => {
                   // Object.entries(localStorage).forEach(([key, value]) => {
                   //   if (key?.startsWith('assessment-')) {
@@ -537,11 +566,16 @@ const QuestionPaperInfo = ({
                   );
                 }}
               >
-                {getTestStatus() ? (
-                  <b style={{ fontSize: '20px' }}>Take Test</b>
+                {(test_type_name !== "Open Test" && test_type_name !== "Practice Test") ? (
+                  getTestStatus() ? (
+                    <b style={{ fontSize: '20px' }}>Take Test</b>
+                  ) : (
+                    'Not Started'
+                  )
                 ) : (
-                  'Not Started'
+                  <b style={{ fontSize: '20px' }}>Take Test</b>
                 )}
+                
               </Button>
             )}
           </>

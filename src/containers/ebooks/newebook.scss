@@ -1,0 +1,35 @@
+.ebookCard{
+    .ant-card-body{
+        padding: 0px;
+        width: 100%;
+    }
+    .namediv{
+        margin-left: 7%;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4dacff;
+    }
+    .bottomcard{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .btndiv{
+        padding: 2%;
+    }
+    .ant-divider{
+        margin: 20% 0 0 0;
+    }
+    .ant-btn{
+        border-radius: 5px;
+    }
+    .ant-card-hoverable{
+        cursor: default;
+    }
+}
+.ibookWhole{
+    .perspectiveContainer{
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+}

@@ -289,7 +289,7 @@ const ErpAdminViewClass = ({ history }) => {
   };
 
   function noFilterGetClasses() {
-    debugger;
+    // debugger;
     const filterdata = JSON.parse(localStorage.getItem('filterData'));
     if (!filterdata?.branch) {
       var [startDateTechPer, endDateTechPer] = getminMaxDate().datearr;
@@ -731,7 +731,7 @@ const ErpAdminViewClass = ({ history }) => {
           return;
         }
       }
-      debugger;
+      // debugger;
       setLoading(true);
       localStorage.setItem(
         'filterData',
@@ -1529,13 +1529,20 @@ const ErpAdminViewClass = ({ history }) => {
           </Grid>
           {(user_level == 13 || user_level == 12) && isOrchids ? (
             <div
-              className='col-md-12 text-right th-pointer'
-              onClick={() => setShowGrievanceModal(true)}
+              className='row justify-content-end '
+              style={{ position: 'fixed', bottom: '5%', right: '2%' }}
             >
-              Not able to attend/join online classes?
-              <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
-                Raise your query
-              </span>
+              <div
+                className='th-bg-white px-2 py-1 th-br-6 th-pointer'
+                style={{ border: '1px solid #d9d9d9' }}
+                onClick={() => setShowGrievanceModal(true)}
+              >
+                Not able to attend/join online classes?
+                <br />
+                <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+                  Raise your query
+                </span>
+              </div>
             </div>
           ) : null}
           {showGrievanceModal && (
