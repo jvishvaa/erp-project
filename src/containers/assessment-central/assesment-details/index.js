@@ -469,8 +469,20 @@ const AssesmentDetails = ({
           TestId : <Typography className='ml-2'>{test_id}</Typography>
         </div>
         <div className='row'>
-          Section :
-          <span className='ml-2'>{sectionName.map((sec, i) => sec).join(', ')}</span>
+          <div className='col-12 px-0 text-truncate'>
+            Section :{' '}
+            <Tooltip
+              placement='bottomRight'
+              title={
+                <span className=''>{sectionName.map((sec, i) => sec).join(', ')}</span>
+              }
+              trigger='hover'
+              className='th-pointer'
+              zIndex={2000}
+            >
+              <span className='ml-2'>{sectionName.map((sec, i) => sec).join(', ')}</span>
+            </Tooltip>
+          </div>
         </div>
 
         <div className='parameters-container mt-2'>
