@@ -9,7 +9,7 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-const { RangePicker } = DatePicker;
+
 const BranchWiseAttendance = () => {
 
 const history = useHistory();
@@ -19,67 +19,17 @@ const history = useHistory();
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
   const [branchwiseAttendanceData, setBranchwiseAttendanceData] = useState([]);
   const [attendanceCountData, setAttendanceCountData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  const [ startDate , setStartDate ] = useState()
-  const [ endDate , setEndDate ] = useState()
-  const [value, setValue] = useState(null);
-    let today = moment().format('YYYY-MM-DD');
-
-  useEffect(() => {
-    setStartDate(today)
-    setEndDate(today)
-    setDate([moment(today),moment(today)])
-  },[today])
 
   const handleDateChange = (value) => {
-    console.log(value);
     if (value) {
       setDate(moment(value).format('YYYY-MM-DD'));
     }
   };
-
-  const disabledDate = (current) => {
-    if (!date) {
-      return false;
-    }
-    const tooLate = date[0] && current.diff(date[0], 'days') > 7;
-    const tooEarly = date[1] && date[1].diff(current, 'days') > 7;
-    return !!tooEarly || !!tooLate;
-  };
-  const onOpenChange = (open) => {
-    if (open) {
-      setDate([null, null]);
-    } else {
-      setDate(null);
-    }
-    console.log(value);
-  };
-
- 
-
-
-  useEffect(() => {
-    let acadIds;
-    if(history?.location?.state?.acadId?.length){
-      let branches = history?.location?.state?.acadId
-      acadIds = branches.map((item) => item?.acadId || item?.id)
-    }
-    if(value != null){
-    fetchBranchwiseAttendanceData({
-      session_year: selectedAcademicYear?.id,
-      // date_range_type: date,
-      start_date: moment(value[0]).format('YYYY-MM-DD'),
-      end_date: moment(value[1]).format('YYYY-MM-DD'),
-      acad_session_id : acadIds?.toString()
-    });
-    setStartDate(moment(value[0]).format('YYYY-MM-DD'))
-    setEndDate(moment(value[1]).format('YYYY-MM-DD'))
-  }
-  }, [value]);
 
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
@@ -116,7 +66,6 @@ const history = useHistory();
       });
   };
 
-
   useEffect(() => {
     let acadIds;
     if(history?.location?.state?.acadId?.length){
@@ -125,13 +74,11 @@ const history = useHistory();
     }
     fetchBranchwiseAttendanceData({
       session_year: selectedAcademicYear?.id,
-      // date_range_type: date,
-      start_date : today,
-      end_date: today,
+      date_range_type: date,
       // branch_id: selectedBranch?.branch?.id,
       acad_session_id : acadIds?.toString()
     });
-  }, []);
+  }, [date]);
 
   const toRolewiseAttendance = (branch) => {
 history.push({
@@ -205,9 +152,7 @@ history.push({
               state : {
                 selectedbranchData : row,
                 allBranchdata : history?.location?.state?.acadId,
-                // date: date,
-                start_date: startDate,
-                end_date: endDate
+                date: date
               }
             })
           }
@@ -232,22 +177,17 @@ history.push({
         <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
-            <RangePicker
-              // disabledDate={(current) => current.isAfter(moment())}
-              // allowClear={false}
-              // bordered={false}
+            <DatePicker
+              disabledDate={(current) => current.isAfter(moment())}
+              allowClear={false}
+              bordered={false}
               placement='bottomRight'
-              // defaultValue={moment()}
-              // onChange={(value) => handleDateChange(value)}
-              // showToday={false}
-              // suffixIcon={<DownOutlined className='th-black-1' />}
+              defaultValue={moment()}
+              onChange={(value) => handleDateChange(value)}
+              showToday={false}
+              suffixIcon={<DownOutlined className='th-black-1' />}
               className='th-black-2 pl-0 th-date-picker'
-              // format={'YYYY-MM-DD'}
-              value={date || value}
-              disabledDate={disabledDate}
-              onCalendarChange={(val) => setDate(val)}
-              onChange={(val) => setValue(val)}
-              onOpenChange={onOpenChange}
+              format={'YYYY-MM-DD'}
             />
           </span>
         </div>
@@ -274,9 +214,7 @@ history.push({
                     state : {
                       selectedbranchData : row,
                       allBranchdata : history?.location?.state?.acadId,
-                      // date: date,
-                      start_date: startDate,
-                      end_date: endDate
+                      date: date
                     }
                   })
                 }
