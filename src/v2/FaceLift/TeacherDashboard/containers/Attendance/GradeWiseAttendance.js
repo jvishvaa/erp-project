@@ -10,6 +10,7 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+const { RangePicker } = DatePicker;
 
 const GradeWiseAttendance = () => {
   const selectedAcademicYear = useSelector(
@@ -21,11 +22,34 @@ const GradeWiseAttendance = () => {
 
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const history = useHistory();
-  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+  const [date, setDate] = useState();
   const [gradewiseAttendanceData, setGradewiseAttendanceData] = useState([]);
   const [attendanceCountData, setAttendanceCountData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [startDate, setStartDate] = useState()
+  const [endDate, setEndDate] = useState()
+  const [value, setValue] = useState(null);
+  let today = moment().format('YYYY-MM-DD');
+
+
+  const disabledDate = (current) => {
+    if (!date) {
+      return false;
+    }
+    const tooLate = date[0] && current.diff(date[0], 'days') > 7;
+    const tooEarly = date[1] && date[1].diff(current, 'days') > 7;
+    return !!tooEarly || !!tooLate;
+  };
+  const onOpenChange = (open) => {
+    if (open) {
+      setDate([null, null]);
+    } else {
+      setDate(null);
+    }
+    console.log(value);
+  };
+
 
   const handleDateChange = (value) => {
     if (value) {
@@ -33,10 +57,12 @@ const GradeWiseAttendance = () => {
     }
   };
   useEffect(() => {
-  if(history?.location?.state?.date != undefined ){
-    setDate(history?.location?.state?.date)
-  }
-  },[history])
+    if (history?.location?.state?.start_date != undefined) {
+    setDate([moment(history?.location?.state?.start_date) , moment(history?.location?.state?.end_date)])
+    } else {
+      setDate([moment() , moment()])
+    }
+  }, [history])
 
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
@@ -126,7 +152,7 @@ const GradeWiseAttendance = () => {
                   gradeID: record?.grade_id,
                   sectionName: row?.section_name,
                   sectionID: row?.section_id,
-                  date: date,
+                  date: startDate,
                 },
               })
             }
@@ -151,16 +177,16 @@ const GradeWiseAttendance = () => {
           return {
 
             onClick: (e) =>
-            history.push({
-              pathname: '/sectionwise-attendance',
-              state: {
-                gradeName: record?.grade_name,
-                gradeID: record?.grade_id,
-                sectionName: row?.section_name,
-                sectionID: row?.section_id,
-                date: date,
-              },
-            })
+              history.push({
+                pathname: '/sectionwise-attendance',
+                state: {
+                  gradeName: record?.grade_name,
+                  gradeID: record?.grade_id,
+                  sectionName: row?.section_name,
+                  sectionID: row?.section_id,
+                  date: startDate,
+                },
+              })
           }
         }}
       />
@@ -171,13 +197,49 @@ const GradeWiseAttendance = () => {
     let selected_branch;
     if (history?.location?.state?.selectedbranchData) {
       selected_branch = history?.location?.state?.selectedbranchData;
-    }
+    
     fetchGradewiseAttendanceData({
       session_year: selectedAcademicYear?.id,
-      date: date,
+      start_date: history?.location?.state?.start_date,
+      end_date: history?.location?.state?.end_date,
       branch_id: selected_branch?.branch_id || selectedBranch?.branch?.id,
     });
-  }, [date]);
+    setStartDate(history?.location?.state?.start_date)
+    setEndDate(history?.location?.state?.end_date)
+  }
+  }, [history]);
+
+  useEffect(() => {
+    let selected_branch;
+    if (value != null ) {
+      selected_branch = history?.location?.state?.selectedbranchData;
+    
+    fetchGradewiseAttendanceData({
+      session_year: selectedAcademicYear?.id,
+      start_date: moment(value[0]).format('YYYY-MM-DD'),
+      end_date: moment(value[1]).format('YYYY-MM-DD'),
+      branch_id: selected_branch?.branch_id || selectedBranch?.branch?.id,
+    });
+    setStartDate(moment(value[0]).format('YYYY-MM-DD'))
+    setEndDate(moment(value[1]).format('YYYY-MM-DD'))
+  }
+  }, [value]);
+
+  useEffect(() => {
+    let selected_branch;
+    if (history?.location?.state?.start_date == undefined && today ) {
+      selected_branch = history?.location?.state?.selectedbranchData;
+    
+    fetchGradewiseAttendanceData({
+      session_year: selectedAcademicYear?.id,
+      start_date: today,
+      end_date: today,
+      branch_id: selected_branch?.branch_id || selectedBranch?.branch?.id,
+    });
+    setStartDate(today)
+    setEndDate(today)
+  }
+  }, [today]);
 
   const columns = [
     {
@@ -246,7 +308,7 @@ const GradeWiseAttendance = () => {
         <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
-            <DatePicker
+            {/* <DatePicker
               disabledDate={(current) => current.isAfter(moment())}
               allowClear={false}
               bordered={false}
@@ -258,6 +320,15 @@ const GradeWiseAttendance = () => {
               suffixIcon={<DownOutlined className='th-black-1' />}
               className='th-black-2 pl-0 th-date-picker'
               format={'YYYY/MM/DD'}
+            /> */}
+            <RangePicker
+              placement='bottomRight'
+              className='th-black-2 pl-0 th-date-picker'
+              value={date || value}
+              disabledDate={disabledDate}
+              onCalendarChange={(val) => setDate(val)}
+              onChange={(val) => setValue(val)}
+              onOpenChange={onOpenChange}
             />
           </span>
         </div>
