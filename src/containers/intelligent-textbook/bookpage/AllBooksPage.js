@@ -406,6 +406,7 @@ const AllBooksPage = () => {
         ) : null}
         {showGrievanceModal && (
           <GrievanceModal
+            module={'IBook'}
             title={'IBook Related Query'}
             showGrievanceModal={showGrievanceModal}
             handleClose={handleCloseGrievanceModal}

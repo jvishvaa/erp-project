@@ -54,6 +54,7 @@ const GrievanceModal = (props) => {
       );
       payload.append('raised_by', userDetails?.erp);
       payload.append('description', description);
+      payload.append('source_module', props?.module);
 
       if (attachment) {
         payload.append('file', attachment);

@@ -47,7 +47,7 @@ const isOrchids =
   window.location.host.split('.')[0] === 'qa'
     ? true
     : false;
-    
+
 const useStyles = makeStyles((theme) => ({
   root: {
     ...theme.homeworkTableWrapper,
@@ -70,22 +70,21 @@ const useStyles = makeStyles((theme) => ({
   },
   homeworkblock: {
     color: theme.palette.secondary.main,
-    fontWeight: 600
+    fontWeight: 600,
   },
   dayicon: theme.dayIcon,
   homeworkstudentheadercount: {
-    position: "absolute",
+    position: 'absolute',
     right: 0,
     top: 0,
     backgroundColor: theme.palette.primary.main,
-    color: "white",
-    width: "20px",
+    color: 'white',
+    width: '20px',
   },
   dateweb: {
     color: theme.palette.secondary.main,
-    marginTop: "10px"
-  }
-
+    marginTop: '10px',
+  },
 }));
 
 const StudentHomework = withRouter(({ history, ...props }) => {
@@ -120,8 +119,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [moduleId, setModuleId] = useState();
   const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true);
   const [displayRatingBox, setDisplayRatingBox] = useState(false);
-  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
-    const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
 
   const getTableDetails = async () => {
@@ -198,7 +197,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                   isOpened: subjects.hw_status.is_opened,
                   submitted_at: subjects.submitted_at,
                   last_sub: subjects.last_submission_dt,
-                  sub_mode: subjects.submission_mode
+                  sub_mode: subjects.submission_mode,
                 };
             });
             if (!tempobj[header.subject_slag]) {
@@ -251,22 +250,22 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     setIsSelectedCell({ row, index });
   };
 
-  const handleOpenHomework = (id, classDate, subjectName, status, isEvaluated , row) => {
+  const handleOpenHomework = (id, classDate, subjectName, status, isEvaluated, row) => {
     setHomeworkSubmission({
       isOpen: true,
       homeworkId: id,
       date: classDate,
       subjectName,
       status,
-      isEvaluated
+      isEvaluated,
     });
   };
 
   const checkMode = (id, classDate, subjectName, status, mode) => {
-    if(mode == 'online'){
-      handleOpenHomework(id , classDate , subjectName , status)
+    if (mode == 'online') {
+      handleOpenHomework(id, classDate, subjectName, status);
     }
-  }
+  };
 
   const handleStartDateChange = (date) => {
     const endDate = getDaysAfter(date.clone(), 6);
@@ -347,9 +346,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout className='layout-container'>
         <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
-          <CommonBreadcrumbs componentName='Homework'
-            isAcademicYearVisible={true}
-          />
+          <CommonBreadcrumbs componentName='Homework' isAcademicYearVisible={true} />
           <div
             className={clsx(
               'create_group_filter_container',
@@ -374,7 +371,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             ) : (
               !homeworkSubmission.isOpen && (
                 <div className='homework_block_wrapper'>
-                  <Typography color="secondary"
+                  <Typography
+                    color='secondary'
                     className={` ${classes.homeworkblock}  icon-desc-container-desk`}
                     style={{ fontSize: '16px', marginLeft: '15px' }}
                   >
@@ -390,7 +388,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color="secondary" style={{ fontSize: '16px' }}>Unopened</Typography>
+                    <Typography color='secondary' style={{ fontSize: '16px' }}>
+                      Unopened
+                    </Typography>
                   </div>
 
                   <div className='icon-desc-container-desk'>
@@ -403,7 +403,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color="secondary" style={{ fontSize: '16px' }}>
+                    <Typography color='secondary' style={{ fontSize: '16px' }}>
                       File Opened
                     </Typography>
                   </div>
@@ -417,7 +417,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color="secondary" style={{ fontSize: '16px' }}>Submitted</Typography>
+                    <Typography color='secondary' style={{ fontSize: '16px' }}>
+                      Submitted
+                    </Typography>
                   </div>
 
                   <div className='icon-desc-container-desk'>
@@ -430,7 +432,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color="secondary" style={{ fontSize: '16px' }}>Evaluated</Typography>
+                    <Typography color='secondary' style={{ fontSize: '16px' }}>
+                      Evaluated
+                    </Typography>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
@@ -445,7 +449,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color="secondary" style={{ fontSize: '16px' }}>
+                    <Typography color='secondary' style={{ fontSize: '16px' }}>
                       Not Submitted
                     </Typography>
                   </div>
@@ -479,7 +483,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                       xs={12}
                       lg={
                         studentHomeworkData.header?.is_top_performers ||
-                          !homeworkTimelineDisplay
+                        !homeworkTimelineDisplay
                           ? 9
                           : 12
                       }
@@ -495,7 +499,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                 {messageRows.header?.map((headers, i) =>
                                   headers.isOptional ? (
                                     <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                                      <span className={classes.homeworkstudentheadercount}>
+                                      <span
+                                        className={classes.homeworkstudentheadercount}
+                                      >
                                         {optionalSubjects.length}
                                       </span>
                                       {/* <Select
@@ -538,7 +544,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                     </TableCell>
                                   ) : headers.isOthers ? (
                                     <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                                      <span className={classes.homeworkstudentheadercount}>
+                                      <span
+                                        className={classes.homeworkstudentheadercount}
+                                      >
                                         {otherSubjects.length}
                                       </span>
                                       <Autocomplete
@@ -561,7 +569,14 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                       />
                                     </TableCell>
                                   ) : (
-                                    <TableCell className='homework_header' style={headers.subject_slag === 'date' ? { zIndex: 20 } : { zIndex: 2 }}>
+                                    <TableCell
+                                      className='homework_header'
+                                      style={
+                                        headers.subject_slag === 'date'
+                                          ? { zIndex: 20 }
+                                          : { zIndex: 2 }
+                                      }
+                                    >
                                       {headers.subject_slag === 'date'
                                         ? 'Weekday'
                                         : headers.subject_slag}
@@ -578,7 +593,14 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                 >
                                   {messageRows.header?.map((headers, i) =>
                                     headers.subject_slag === 'date' ? (
-                                      <TableCell style={{ position: "sticky", zIndex: 20, left: 0, backgroundColor: 'white' }}>
+                                      <TableCell
+                                        style={{
+                                          position: 'sticky',
+                                          zIndex: 20,
+                                          left: 0,
+                                          backgroundColor: 'white',
+                                        }}
+                                      >
                                         <div className='table-date'>
                                           <div
                                             className={classes.dayicon}
@@ -597,7 +619,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                         onClick={() => handleCellClick(rowIndex, i)}
                                         className={
                                           isSelectedCell.row === rowIndex &&
-                                            isSelectedCell.index === i
+                                          isSelectedCell.index === i
                                             ? 'selected'
                                             : 'not_selected'
                                         }
@@ -631,10 +653,10 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                               />
                                             </span>
                                           ) : new Date(
-                                            new Date().getFullYear(),
-                                            new Date().getMonth(),
-                                            new Date().getDate()
-                                          ) >= new Date(row.date) ? (
+                                              new Date().getFullYear(),
+                                              new Date().getMonth(),
+                                              new Date().getDate()
+                                            ) >= new Date(row.date) ? (
                                             <SvgIcon
                                               component={() => (
                                                 <img
@@ -655,7 +677,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                 <span
                                                   onClick={() =>
                                                     handleOpenHomework(
-                                                      row[headers.subject_slag].homeworkId,
+                                                      row[headers.subject_slag]
+                                                        .homeworkId,
                                                       row.date,
                                                       headers.subject_slag,
                                                       1
@@ -681,7 +704,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                 <span
                                                   onClick={() =>
                                                     handleOpenHomework(
-                                                      row[headers.subject_slag].homeworkId,
+                                                      row[headers.subject_slag]
+                                                        .homeworkId,
                                                       row.date,
                                                       headers.subject_slag,
                                                       1
@@ -716,10 +740,15 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                               //     3,row[headers?.subject_slag]?.sub_mode
                                               //   )
                                               // }
-                                              onClick={() => checkMode( row[headers.subject_slag].homeworkId,
-                                                row.date,
-                                                headers.subject_slag,
-                                                3,row[headers?.subject_slag]?.sub_mode)}
+                                              onClick={() =>
+                                                checkMode(
+                                                  row[headers.subject_slag].homeworkId,
+                                                  row.date,
+                                                  headers.subject_slag,
+                                                  3,
+                                                  row[headers?.subject_slag]?.sub_mode
+                                                )
+                                              }
                                             >
                                               <SvgIcon
                                                 component={() => (
@@ -728,7 +757,11 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                       width: '35px',
                                                       height: '35px',
                                                       padding: '5px',
-                                                      cursor: row[headers?.subject_slag]?.sub_mode === 'online' ? 'pointer' : 'default'
+                                                      cursor:
+                                                        row[headers?.subject_slag]
+                                                          ?.sub_mode === 'online'
+                                                          ? 'pointer'
+                                                          : 'default',
                                                     }}
                                                     src={studentHomeworkEvaluted}
                                                     alt='homeworkEvaluted'
@@ -738,12 +771,35 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             </span>
                                           ) : null}
                                         </div>
-                                        <small>{row[headers?.subject_slag]?.submitted_at?.split('/')[0]}</small>
+                                        <small>
+                                          {
+                                            row[
+                                              headers?.subject_slag
+                                            ]?.submitted_at?.split('/')[0]
+                                          }
+                                        </small>
                                         <div>
-                                          <small>{row[headers?.subject_slag]?.submitted_at?.split('/')[1]}</small>
-                                          {row[headers?.subject_slag]?.last_sub !== null ? <div style={{width: '100%' , fontSize: '14px'}} >Due Date : {moment(row[headers?.subject_slag]?.last_sub).format('DD-MM-YYYY')}</div> : ''}
+                                          <small>
+                                            {
+                                              row[
+                                                headers?.subject_slag
+                                              ]?.submitted_at?.split('/')[1]
+                                            }
+                                          </small>
+                                          {row[headers?.subject_slag]?.last_sub !==
+                                          null ? (
+                                            <div
+                                              style={{ width: '100%', fontSize: '14px' }}
+                                            >
+                                              Due Date :{' '}
+                                              {moment(
+                                                row[headers?.subject_slag]?.last_sub
+                                              ).format('DD-MM-YYYY')}
+                                            </div>
+                                          ) : (
+                                            ''
+                                          )}
                                         </div>
-
                                       </TableCell>
                                     ) : (
                                       <TableCell />
@@ -760,7 +816,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                       <Grid className='homework_right_wrapper' container>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
                           <Accordion
-                            onChange={() => setDisplayRatingBox(prev => !prev)}
+                            onChange={() => setDisplayRatingBox((prev) => !prev)}
                           >
                             <AccordionSummary
                               expandIcon={<ExpandMoreIcon />}
@@ -808,17 +864,16 @@ const StudentHomework = withRouter(({ history, ...props }) => {
               </div>
             )}
           </div>
-        </div>       
+        </div>
         {(user_level == 13 || user_level == 12) && isOrchids ? (
           <div
             className='row justify-content-end'
             style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-           
           >
             <div
               className='th-bg-white px-2 py-1 th-br-6 th-pointer'
               style={{ border: '1px solid #d9d9d9' }}
-               onClick={() => setShowGrievanceModal(true)}
+              onClick={() => setShowGrievanceModal(true)}
             >
               Having any issues with Homework ?<br />
               <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
@@ -829,7 +884,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
         ) : null}
         {showGrievanceModal && (
           <GrievanceModal
-            title={'Dairy Related Query'}
+            module={'Homework'}
+            title={'Homework Related Query'}
             showGrievanceModal={showGrievanceModal}
             handleClose={handleCloseGrievanceModal}
           />

@@ -16,12 +16,11 @@ import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
 import { Drawer, Tooltip, Typography } from 'antd';
 import { useFormik } from 'formik';
-import { Form, Select, } from 'antd';
+import { Form, Select } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import Loader from 'components/loader/loader';
 
 const { Option } = Select;
-
 
 const AssesmentDetails = ({
   test,
@@ -33,13 +32,13 @@ const AssesmentDetails = ({
   reportLoad,
   quizAccess,
   userLevel,
-  filterResults
+  filterResults,
 }) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   console.log(filterData, 'filter');
   const [loading, setLoading] = useState(false);
-  const [isteacher, setIsTeacher] = useState(false)
+  const [isteacher, setIsTeacher] = useState(false);
   const {
     test_id: id,
     id: assessmentId,
@@ -216,7 +215,7 @@ const AssesmentDetails = ({
     if (formik.values.section != '') {
       let payload = {
         test_id: assessmentId,
-        section_mapping: formik.values.section
+        section_mapping: formik.values.section,
       };
       axiosInstance
         // .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
@@ -227,8 +226,8 @@ const AssesmentDetails = ({
             setAlert('success', 'Test Started');
             setTestStart(true);
             setConfirmAlert(false);
-            onClosedrawer()
-            filterResults(1)
+            onClosedrawer();
+            filterResults(1);
           } else {
             setAlert('error', 'Failed to Start the Test');
             setConfirmAlert(false);
@@ -240,25 +239,23 @@ const AssesmentDetails = ({
         });
     } else {
       setAlert('error', 'Please Select Section');
-
     }
   };
 
   const handleSection = (e, value) => {
     console.log(e, value);
     formik.setFieldValue('section', section_mapping[e]);
-  }
+  };
 
   useEffect(() => {
     if (quizAccess != [] && userLevel) {
       if (quizAccess?.includes(userLevel) == true) {
-        setIsTeacher(true)
+        setIsTeacher(true);
       } else {
-        setIsTeacher(false)
+        setIsTeacher(false);
       }
     }
-
-  }, [quizAccess])
+  }, [quizAccess]);
 
   return (
     <Drawer
@@ -438,7 +435,7 @@ const AssesmentDetails = ({
           <div className='col-10 px-0'>
             <div className='row'>
               <div className='col-4 px-0'>
-                <span className='th-16'></span>Test Name:
+                <span className='th-16'></span>Test Name :
               </div>
               <div className='col-8 pl-0'>
                 <span className='th-16'>{testName}</span>
@@ -472,19 +469,20 @@ const AssesmentDetails = ({
           TestId : <Typography className='ml-2'>{test_id}</Typography>
         </div>
         <div className='row'>
-          Section :
-          <p
-            title={getSection()}
-            style={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              fontSize: '15px',
-            }}
-          >
-            {`${getSection().length > 25 ? getSection().slice(0, 40) + '...' : getSection()
-              }`}
-          </p>
+          <div className='col-12 px-0 text-truncate'>
+            Section :{' '}
+            <Tooltip
+              placement='bottomRight'
+              title={
+                <span className=''>{sectionName.map((sec, i) => sec).join(', ')}</span>
+              }
+              trigger='hover'
+              className='th-pointer'
+              zIndex={2000}
+            >
+              <span className='ml-2'>{sectionName.map((sec, i) => sec).join(', ')}</span>
+            </Tooltip>
+          </div>
         </div>
 
         <div className='parameters-container mt-2'>
@@ -625,24 +623,44 @@ const AssesmentDetails = ({
                     ''
                   )}
                 </Grid>
-                {enable && <Grid item xs={12} style={{ marginTop: '5%' }}>
-                  <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
-                    <GetAppIcon fontSize="small" />
-                    Download Question Paper
-                  </Button>
-                </Grid>}
-                {((filterData?.status?.children === "Completed" || filterData?.status?.id === 2) || (testType == 'Quiz' && testDate != null)) && <Grid item xs={12} style={{ margin: '4% 0' }}>
-                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
-                    <GetAppIcon fontSize="small" />
-                    Download Report
-                  </Button>
-                </Grid>}
-                {((testType == 'Practice Test' || testType == 'Open Test')) && <Grid item xs={12} style={{ margin: '4% 0' }}>
-                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
-                    <GetAppIcon fontSize="small" />
-                    Download Report
-                  </Button>
-                </Grid>}
+                {enable && (
+                  <Grid item xs={12} style={{ marginTop: '5%' }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => downloadAssessment()}
+                    >
+                      <GetAppIcon fontSize='small' />
+                      Download Question Paper
+                    </Button>
+                  </Grid>
+                )}
+                {(filterData?.status?.children === 'Completed' ||
+                  filterData?.status?.id === 2 ||
+                  (testType == 'Quiz' && testDate != null)) && (
+                  <Grid item xs={12} style={{ margin: '4% 0' }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleDownloadReport}
+                    >
+                      <GetAppIcon fontSize='small' />
+                      Download Report
+                    </Button>
+                  </Grid>
+                )}
+                {(testType == 'Practice Test' || testType == 'Open Test') && (
+                  <Grid item xs={12} style={{ margin: '4% 0' }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleDownloadReport}
+                    >
+                      <GetAppIcon fontSize='small' />
+                      Download Report
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             )}
           </div>
@@ -654,8 +672,11 @@ const AssesmentDetails = ({
           <DialogContentText>
             Once The Test Is Started, You Can't Stop It.
           </DialogContentText>
-          {testType == 'Quiz' && test?.test_mode == 1 && isteacher && section_mapping[0] != null ?
-            <div >
+          {testType == 'Quiz' &&
+          test?.test_mode == 1 &&
+          isteacher &&
+          section_mapping[0] != null ? (
+            <div>
               <div className='mb-2 text-left'>Section</div>
               <Form.Item name='section'>
                 <Select
@@ -682,7 +703,9 @@ const AssesmentDetails = ({
                 </Select>
               </Form.Item>
             </div>
-            : ''}
+          ) : (
+            ''
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={CancelStart} className='labelColor cancelButton'>
