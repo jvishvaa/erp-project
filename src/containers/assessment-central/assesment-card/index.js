@@ -20,6 +20,7 @@ import Badge from '@material-ui/core/Badge';
 import RestoreModal from './restore-model';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
+import { Tag } from 'antd';
 
 const menuOptions = ['Delete'];
 const restoreOption = ['Restore'];
@@ -210,7 +211,7 @@ const AssesmentCard = ({
           ""
         )}
       </div> */}
-      <div className='assessment-name row align-items-center'>
+      <div className='assessment-name row py-2 align-items-center'>
         {handleClose && value.subject_count == 1 && (
           <Checkbox
             checked={addedId.includes(value.id)}
@@ -218,15 +219,15 @@ const AssesmentCard = ({
             name='allSelect'
           />
         )}
-        <div className='col-8 text-truncate pl-2'>
+        <div className='col-8 pl-0 text-truncate'>
           <Tooltip title={<span>{value?.test_name}</span>} arrow placement='bottom'>
             <span>{value?.test_name}</span>
           </Tooltip>
         </div>
 
         <div className='col-4 px-0'>
-          <div className='d-flex align-items-center justify-content-center'>
-            {`${value?.test_mode == 1 ? '(Online)' : '(Offline)'}`}
+          <div className='d-flex align-items-center justify-content-end'>
+            <div>{`${value?.test_mode == 1 ? '(Online)' : '(Offline)'}`}</div>
             {checkDel == true ? (
               <>
                 <IconButton
@@ -234,6 +235,7 @@ const AssesmentCard = ({
                   aria-controls='long-menu'
                   aria-haspopup='true'
                   onClick={handleMenuOpen}
+                  className='p-0'
                 >
                   <MoreHorizIcon color='primary' />
                 </IconButton>
@@ -330,30 +332,43 @@ const AssesmentCard = ({
           </div>
         </div>
       </div>
-      <div className='assessment-name'>
-        <p
+      <div className='assessment-name row'>
+        <div className='col-6 pl-0 th-14'>Test Id: {value?.test_id}</div>
+        <div className='col-6 text-right pr-0'>
+          <Tag color='geekblue' className='th-br-6'>
+            {value?.test_type__exam_name}
+          </Tag>
+        </div>
+        {/* <p
           className='idPara'
           style={{ marginLeft: '10px', fontSize: '14px' }}
-        >{`Test Id: ${value?.test_id}`}</p>
+        >{`Test Id: ${value?.test_id}`}</p> */}
       </div>
-      <div className='row align-items-center'>
+      <div className='row align-items-center py-2'>
         <div className='col-8 px-0'>
-          <div className='pl-2 text-truncate'>
+          <div className='text-truncate text-capitalize'>
             <Tooltip title={getSection()} arrow placement='bottom'>
               <span>{getSection()}</span>
             </Tooltip>
           </div>
-          {value.test_date != null ? (
+          <div className='th-14'>
+            {value.test_date ? (
+              <span>
+                Test Time -{moment(value.test_date).format('DD-MM-YYYY HH:mm')}{' '}
+              </span>
+            ) : null}
+          </div>
+          {/* {value.test_date != null ? (
             <p className='scheduled' style={{ marginLeft: '10px' }}>
-              {`Created On - ${moment(value.test_date).format('DD-MM-YYYY')}`}
+              {`Test Time - ${moment(value.test_date).format('DD-MM-YYYY')}`}
               {', '}
               {value?.test_date?.slice(11, 16)}
             </p>
           ) : (
             ''
-          )}
+          )} */}
         </div>
-        <div className='col-4 px-0'>
+        <div className='col-4 px-0 text-right'>
           {!isSelected && (
             <Button
               // style={{
@@ -366,6 +381,7 @@ const AssesmentCard = ({
               variant='contained'
               color='primary'
               className='th-br-6 th-white'
+              size='small'
               onClick={() => {
                 onClick(value);
               }}

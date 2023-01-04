@@ -72,8 +72,8 @@ const DiaryReport = () => {
             <div className='px-2'>
               <div className='row justify-content-between mb-1'>
                 <div className='col-6 th-grey th-fw-400 th-12'>Grade</div>
-                <div className='col-3 th-grey th-fw-400 th-12 text-center'>Assigned</div>
-                <div className='col-3 th-grey th-fw-400 th-12 text-center'>Pending</div>
+                <div className='col-6 th-grey th-fw-400 th-12 text-right'>Assigned</div>
+                {/* <div className='col-3 th-grey th-fw-400 th-12 text-center'>Pending</div> */}
               </div>
 
               <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
@@ -92,12 +92,12 @@ const DiaryReport = () => {
                           </Tooltip>
                         </div>
 
-                        <div className='col-3 text-center th-16 th-fw-600 th-green-1'>
-                          <span className=''>{item?.diary_count}</span>
+                        <div className='col-6 text-right th-16 th-fw-600 th-green-1'>
+                          <span className='pr-3'>{item?.diary_count}</span>
                         </div>
-                        <div className='col-3 text-center th-16 th-fw-600 th-red'>
+                        {/* <div className='col-3 text-center th-16 th-fw-600 th-red'>
                           <span className=''>{item?.pending_count}</span>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   );
