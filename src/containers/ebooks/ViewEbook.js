@@ -447,6 +447,7 @@ class ViewEbook extends Component {
                     ) : null}
                     {this.state.showGrievanceModal && (
                       <GrievanceModal
+                        module={'Ebook'}
                         title={'Ebook Related Query'}
                         showGrievanceModal={this.state.showGrievanceModal}
                         handleClose={this.handleCloseGrievanceModal}

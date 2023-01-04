@@ -1398,6 +1398,7 @@ const CreateAssesment = ({
                                     </Button>
                                   </Grid>
                                 )}
+                                {formik?.values?.test_type?.exam_name == 'Quiz' ? '' : 
                                 <div className='d-flex' style={{ marginLeft: '20%' }}>
                                   <Typography>Section</Typography>
                                   <Switch
@@ -1410,6 +1411,7 @@ const CreateAssesment = ({
                                   />
                                   <Typography>Group</Typography>
                                 </div>
+                                  }
                               </Grid>
                               {sectionToggle ? (
                                 <Grid item xs={12} md={4}>

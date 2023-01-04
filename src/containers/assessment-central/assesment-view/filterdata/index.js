@@ -47,7 +47,7 @@ const AssessmentFilters = ({
     { id: 1, flag: false, name: 'ERP' },
     { id: 2, flag: true, name: 'CENTRAL' },
   ];
-  const [isErpCategory , setIsErpCategory] = useState(false)
+  const [isErpCategory , setIsErpCategory] = useState(true)
   const [erpCategoryDropdown, setErpGradeDropdown] = useState([]);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -285,7 +285,7 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category?.value 
       subject: null,
     });
     // setLoading(true);
-    setIsErpCategory(false)
+    setIsErpCategory(true)
     if (value) {
       console.log(value);
       if(value?.value != "0" ){

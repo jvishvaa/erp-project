@@ -135,7 +135,9 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                 <img
                   className='text-center'
                   src={
-                    'https://d3ka3pry54wyko.cloudfront.net/homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512'
+                    schoolData?.board_logo
+                      ? `https://d3ka3pry54wyko.cloudfront.net/${schoolData?.board_logo}`
+                      : 'https://d3ka3pry54wyko.cloudfront.net/homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512'
                   }
                   width={'120px'}
                 />

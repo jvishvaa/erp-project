@@ -1337,6 +1337,7 @@ useEffect(() => {
                   reportLoad={reportLoad}
                   quizAccess={quizAccess}
                   userLevel={userLevel}
+                  filterResults={filterResults}
                 />
               </Grid>
             )}

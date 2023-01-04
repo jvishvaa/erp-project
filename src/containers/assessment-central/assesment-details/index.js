@@ -32,6 +32,7 @@ const AssesmentDetails = ({
   reportLoad,
   quizAccess,
   userLevel,
+  filterResults,
 }) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
@@ -226,6 +227,7 @@ const AssesmentDetails = ({
             setTestStart(true);
             setConfirmAlert(false);
             onClosedrawer();
+            filterResults(1);
           } else {
             setAlert('error', 'Failed to Start the Test');
             setConfirmAlert(false);
@@ -242,7 +244,7 @@ const AssesmentDetails = ({
 
   const handleSection = (e, value) => {
     console.log(e, value);
-    formik.setFieldValue('section', section_mapping[0]);
+    formik.setFieldValue('section', section_mapping[e]);
   };
 
   useEffect(() => {
@@ -470,38 +472,7 @@ const AssesmentDetails = ({
           Section :
           <span className='ml-2'>{sectionName.map((sec, i) => sec).join(', ')}</span>
         </div>
-        {testType == 'Quiz' &&
-        test?.test_mode == 1 &&
-        isteacher &&
-        section_mapping[0] != null ? (
-          <div>
-            <div className='mb-2 text-left'>Section</div>
-            <Form.Item name='section'>
-              <Select
-                allowClear
-                placeholder='Select Section'
-                getPopupContainer={(trigger) => trigger.parentNode}
-                optionFilterProp='children'
-                showArrow={true}
-                suffixIcon={<DownOutlined className='th-grey' />}
-                filterOption={(input, options) => {
-                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
-                value={formik.values.section || []}
-                onChange={(e, value) => {
-                  handleSection(e, value);
-                }}
-                // onClear={handleClearBoard}
-                className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                bordered={false}
-              >
-                {sectionOptions}
-              </Select>
-            </Form.Item>
-          </div>
-        ) : (
-          ''
-        )}
+
         <div className='parameters-container mt-2'>
           {/* <div className='parameters-header'>
           <span className='header-text font-lg font-center'>Test Parameters</span>
@@ -689,6 +660,40 @@ const AssesmentDetails = ({
           <DialogContentText>
             Once The Test Is Started, You Can't Stop It.
           </DialogContentText>
+          {testType == 'Quiz' &&
+          test?.test_mode == 1 &&
+          isteacher &&
+          section_mapping[0] != null ? (
+            <div>
+              <div className='mb-2 text-left'>Section</div>
+              <Form.Item name='section'>
+                <Select
+                  allowClear
+                  placeholder='Select Section'
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  optionFilterProp='children'
+                  showArrow={true}
+                  suffixIcon={<DownOutlined className='th-grey' />}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  value={formik.values.section || []}
+                  onChange={(e, value) => {
+                    handleSection(e, value);
+                  }}
+                  // onClear={handleClearBoard}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {sectionOptions}
+                </Select>
+              </Form.Item>
+            </div>
+          ) : (
+            ''
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={CancelStart} className='labelColor cancelButton'>
