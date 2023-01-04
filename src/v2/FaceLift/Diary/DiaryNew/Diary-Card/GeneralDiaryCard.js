@@ -55,7 +55,7 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
     <>
       <div className={`th-br-6 th-bg-white`} style={{ border: '1px solid #d9d9d9' }}>
         <div
-          className={`row ${diary?.substitute ? 'th-bg-pink-2' : 'th-bg-pink-3'}
+          className={`row ${diary?.is_substitute_diary ? 'th-bg-pink-2' : 'th-bg-pink-3'}
            align-items-center py-1`}
           style={{ borderRadius: '6px 6px 0px 0px' }}
         >
@@ -67,7 +67,7 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
           </div>
           <div className='col-4 text-right px-0 py-1'>
             <Tag color='blue' className='th-10 th-br-6'>
-              {diary?.substitute ? 'Substitute Diary' : 'General Diary'}
+              {diary?.is_substitute_diary ? 'Substitute Diary' : 'General Diary'}
             </Tag>
           </div>
           {user_id == diary?.created_by?.id && (

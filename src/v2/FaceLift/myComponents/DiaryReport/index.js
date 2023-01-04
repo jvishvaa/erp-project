@@ -96,7 +96,7 @@ const DiaryReport = () => {
                           <span className=''>{item?.diary_count}</span>
                         </div>
                         <div className='col-3 text-center th-16 th-fw-600 th-red'>
-                          <span className=''>{item?.diary_count}</span>
+                          <span className=''>{item?.pending_count}</span>
                         </div>
                       </div>
                     </div>
