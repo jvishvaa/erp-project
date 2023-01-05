@@ -400,7 +400,7 @@ const QuestionPaperInfo = ({
       </div>
       {test_type_name == 'Practice Test' && (
         <div className='d-flex justify-content-center pt-2'>
-          Note: Want to take this test again, Please click on Take Test
+          Note: If you want to take this test again, please click on Take Test
         </div>
       )}
       <br />
