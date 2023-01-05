@@ -8,7 +8,6 @@ import {
   Popover,
   FormControlLabel,
   Checkbox,
-  Tooltip,
 } from '@material-ui/core';
 import moment from 'moment';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -20,7 +19,7 @@ import Badge from '@material-ui/core/Badge';
 import RestoreModal from './restore-model';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
-import { Tag } from 'antd';
+import { Tag, Tooltip } from 'antd';
 
 const menuOptions = ['Delete'];
 const restoreOption = ['Restore'];
@@ -220,7 +219,7 @@ const AssesmentCard = ({
           />
         )}
         <div className='col-8 pl-0 text-truncate'>
-          <Tooltip title={<span>{value?.test_name}</span>} arrow placement='bottom'>
+          <Tooltip title={<span>{value?.test_name}</span>} placement='bottomLeft'>
             <span>{value?.test_name}</span>
           </Tooltip>
         </div>
@@ -347,7 +346,7 @@ const AssesmentCard = ({
       <div className='row align-items-center py-2'>
         <div className='col-8 px-0'>
           <div className='text-truncate text-capitalize'>
-            <Tooltip title={getSection()} arrow placement='bottom'>
+            <Tooltip title={getSection()} placement='bottomLeft'>
               <span>{getSection()}</span>
             </Tooltip>
           </div>

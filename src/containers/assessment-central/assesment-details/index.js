@@ -434,10 +434,10 @@ const AssesmentDetails = ({
         <div className='row align-items-center'>
           <div className='col-10 px-0'>
             <div className='row'>
-              <div className='col-4 px-0'>
+              <div className='col-3 px-0'>
                 <span className='th-16'></span>Test Name :
               </div>
-              <div className='col-8 pl-0'>
+              <div className='col-9 px-0 pl-1'>
                 <span className='th-16'>{testName}</span>
               </div>
             </div>
@@ -466,13 +466,13 @@ const AssesmentDetails = ({
           )}
         </div>
         <div className='row py-3'>
-          TestId : <Typography className='ml-2'>{test_id}</Typography>
+          Test Id : <Typography className='ml-2'>{test_id}</Typography>
         </div>
         <div className='row'>
           <div className='col-12 px-0 text-truncate'>
             Section :{' '}
             <Tooltip
-              placement='bottomRight'
+              placement='bottomLeft'
               title={
                 <span className=''>{sectionName.map((sec, i) => sec).join(', ')}</span>
               }
