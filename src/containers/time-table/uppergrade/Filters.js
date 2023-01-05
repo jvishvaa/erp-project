@@ -97,6 +97,7 @@ const Filters = (props) => {
 
   const handleGrade = (event, value) => {
     if (value) {
+      setSectionDisplay(null);
       setGradeDisplay(value);
       setLoading(true);
       axiosInstance
