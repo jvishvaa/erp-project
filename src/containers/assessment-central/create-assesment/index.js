@@ -485,8 +485,8 @@ const CreateAssesment = ({
     if (value) {
       const sections = value[0]?.group_section_mapping?.map((i) => i?.section_mapping_id);
       setGroupSectionMappingId(sections);
-      setSelectedGroupData(value);
-      setSelectedGroupId(value?.id);
+      setSelectedGroupData(value[0]);
+      setSelectedGroupId(value[0]?.id);
     }
   };
 
