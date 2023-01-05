@@ -377,7 +377,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setSectionMappingID();
     setSectionID();
     setSubjectDropdown([]);
-    setSubjectID([]);
+    setSubjectID();
     setChapterDropdown([]);
   };
 
@@ -563,7 +563,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       chapter: null,
     });
     setSubjectDropdown([]);
-    setSubjectID([]);
+    setSubjectID();
     if (each) {
       setSectionID(each?.value);
       setSectionMappingID(each?.mappingId);
@@ -576,7 +576,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         module_id: moduleId,
       };
       axios
-        .get(`${endpoints.academics.subjects}`, { params })
+        .get(`${endpoints.academics.subjects}`, {
+          params: {
+            ...params,
+            ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}),
+          },
+        })
         .then((result) => {
           if (result?.data?.status_code == 200) {
             setSubjectDropdown(result?.data?.data);
@@ -604,7 +609,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setSectionMappingID();
     setSectionID();
     setSubjectDropdown([]);
-    setSubjectID([]);
+    setSubjectID();
     if (e) {
       setGradeID(e.value);
       setGradeName(e.children);
@@ -946,7 +951,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setSectionMappingID();
     setSectionName();
     setSectionDropdown([]);
-    setSubjectID([]);
+    setSubjectID();
     setSubjectName();
     setSubjectDropdown([]);
     setClearTodaysTopic(true);
