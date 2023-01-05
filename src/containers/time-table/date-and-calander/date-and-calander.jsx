@@ -261,7 +261,10 @@ const DateAndCalander = (props) => {
       setAlert('success', 'TimeTable created successfully');
     } else {
       setLoading(false);
-      setAlert('warning', data?.response?.data?.developer_msg);
+      setAlert(
+        'warning',
+        data?.developer_msg ? data?.developer_msg : data?.response?.data?.developer_msg
+      );
     }
   };
 
