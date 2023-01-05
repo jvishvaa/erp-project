@@ -101,7 +101,7 @@ deploy_stage:
       - ip a
       - whoami
       - pwd
-      - sudo chmod 777 -R $CI_PROJECT_DIR
+      - sudo chmod 777 -R $PWD
      # - sudo npm cache clean --force
      # - sudo npm install -g serve
      # - sudo npm install -g forever
@@ -114,7 +114,7 @@ deploy_stage:
       # - sudo service uwsgi stop
       - sudo systemctl restart nginx
       - echo "Deploy to development server"
-      - npm install
+      - sudo npm install
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=8096
