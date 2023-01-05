@@ -47,7 +47,7 @@ let boardFilterArr = [
   'qa.olvorchidnaigaon.letseduvate.com',
 ];
 const { Panel } = Collapse;
-const DailyDiary = ({ isSubstituteClass }) => {
+const DailyDiary = ({ isSubstituteDiary }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -333,6 +333,9 @@ const DailyDiary = ({ isSubstituteClass }) => {
     if (!_.isEmpty(upcomingPeriod)) {
       payload['upcoming_period_id'] = upcomingPeriod?.id;
     }
+    if (isSubstituteDiary) {
+      payload['is_substitute_diary'] = true;
+    }
     if (
       payload?.teacher_report?.summary ||
       payload?.period_added_ids ||
@@ -374,7 +377,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
     setSectionMappingID();
     setSectionID();
     setSubjectDropdown([]);
-    setSubjectID([]);
+    setSubjectID();
     setChapterDropdown([]);
   };
 
@@ -560,7 +563,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
       chapter: null,
     });
     setSubjectDropdown([]);
-    setSubjectID([]);
+    setSubjectID();
     if (each) {
       setSectionID(each?.value);
       setSectionMappingID(each?.mappingId);
@@ -573,7 +576,12 @@ const DailyDiary = ({ isSubstituteClass }) => {
         module_id: moduleId,
       };
       axios
-        .get(`${endpoints.academics.subjects}`, { params })
+        .get(`${endpoints.academics.subjects}`, {
+          params: {
+            ...params,
+            ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}),
+          },
+        })
         .then((result) => {
           if (result?.data?.status_code == 200) {
             setSubjectDropdown(result?.data?.data);
@@ -601,7 +609,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
     setSectionMappingID();
     setSectionID();
     setSubjectDropdown([]);
-    setSubjectID([]);
+    setSubjectID();
     if (e) {
       setGradeID(e.value);
       setGradeName(e.children);
@@ -629,7 +637,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
     };
     axios
       .get(`${endpoints.academics.grades}`, {
-        params: { ...params, ...(isSubstituteClass ? { is_substitue_teacher: 1 } : {}) },
+        params: { ...params, ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}) },
       })
       .then((result) => {
         if (result?.data?.status_code == 200) {
@@ -933,7 +941,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
       fetchGradeData();
       fetchResourceYear();
     }
-  }, [moduleId, isSubstituteClass]);
+  }, [moduleId, isSubstituteDiary]);
 
   const handleClearAll = () => {
     setGradeDropdown([]);
@@ -943,7 +951,7 @@ const DailyDiary = ({ isSubstituteClass }) => {
     setSectionMappingID();
     setSectionName();
     setSectionDropdown([]);
-    setSubjectID([]);
+    setSubjectID();
     setSubjectName();
     setSubjectDropdown([]);
     setClearTodaysTopic(true);

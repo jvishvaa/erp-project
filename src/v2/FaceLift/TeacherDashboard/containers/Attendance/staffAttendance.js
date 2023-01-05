@@ -16,7 +16,7 @@ const StaffAttendance = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [adminData, setAdminData] = useState([]);
-  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+  const [date, setDate] = useState(history?.location?.state?.date);
   const [searchedValue, setSearchedValue] = useState('');
 
 const handleDateChange = (value) => {
@@ -126,6 +126,7 @@ const handleDateChange = (value) => {
               bordered={false}
               placement='bottomRight'
               defaultValue={moment()}
+              value={moment(date)}
               onChange={(value) => handleDateChange(value)}
               showToday={false}
               suffixIcon={<DownOutlined className='th-black-1' />}

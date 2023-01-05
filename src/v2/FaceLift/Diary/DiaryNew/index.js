@@ -148,7 +148,7 @@ const Diary = () => {
                       history.push({
                         pathname: '/create/diary',
                         state: {
-                          isSubstituteClass: false,
+                          isSubstituteDiary: false,
                         },
                       })
                     }
@@ -169,7 +169,7 @@ const Diary = () => {
                           history.push({
                             pathname: '/create/diary',
                             state: {
-                              isSubstituteClass: true,
+                              isSubstituteDiary: true,
                             },
                           })
                         }
@@ -383,6 +383,7 @@ const Diary = () => {
             ) : null}
             {showGrievanceModal && (
               <GrievanceModal
+                module={'Diary'}
                 title={'Diary Related Query'}
                 showGrievanceModal={showGrievanceModal}
                 handleClose={handleCloseGrievanceModal}

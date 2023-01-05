@@ -158,6 +158,7 @@ const CreateAssesment = ({
       setTestDate(EditData?.test_date);
       setTestDuration(EditData?.test_duration);
       setTotalmarks(EditData?.total_mark);
+      setChecked(!EditData?.is_question_wise)
       initChangeTestFormFields('testName', EditData?.test_name);
       initChangeTestFormFields('testId', EditData?.test_id);
       initChangeTestFormFields('testDate', EditData?.test_date);
@@ -222,14 +223,14 @@ const CreateAssesment = ({
 
   useEffect(() => {
     if(selectedQuestionPaper && selectedQuestionPaper?.section){
-      let paperwise = false;
+      // let paperwise = false;
       let test_mark = [];
       let data = selectedQuestionPaper?.section?.forEach((sec) => {
         let d = sec?.test_marks?.forEach((item) => {
           test_mark.push(item);
         });
       });
-      setChecked(paperwise);
+      setChecked(!selectedQuestionPaper?.is_question_wise);
       setTestMarks(test_mark);
     }
   }, [selectedQuestionPaper]);
@@ -482,10 +483,10 @@ const CreateAssesment = ({
     setSelectedGroupData({});
     setSelectedGroupId('');
     if (value) {
-      const sections = value?.group_section_mapping.map((i) => i?.section_mapping_id);
+      const sections = value[0]?.group_section_mapping?.map((i) => i?.section_mapping_id);
       setGroupSectionMappingId(sections);
-      setSelectedGroupData(value);
-      setSelectedGroupId(value?.id);
+      setSelectedGroupData(value[0]);
+      setSelectedGroupId(value[0]?.id);
     }
   };
 
@@ -1243,9 +1244,18 @@ const CreateAssesment = ({
                                 id='testmode'
                                 name='testmode'
                                 onChange={(e, value) => {
+                                  if(value){ 
                                   formik.setFieldValue('test_mode', value);
                                   initSetFilter('selectedTestType', value);
+                                  formik.setFieldValue('test_type', '');
+                                  setAssesmentTypes([])
                                   getAssesmentTypes(value);
+                                  }else{
+                                    formik.setFieldValue('test_mode', '');
+                                  initSetFilter('selectedTestType', '');
+                                    formik.setFieldValue('test_type', '');
+                                    setAssesmentTypes([])
+                                  }
                                 }}
                                 value={formik.values.test_mode}
                                 options={testTypes}
@@ -1270,7 +1280,11 @@ const CreateAssesment = ({
                                 className='dropdownIcon'
                                 onChange={(e, value) => {
                                   console.log(value);
-                                  formik.setFieldValue('test_type', value);
+                                  if(value){
+                                    formik.setFieldValue('test_type', value);
+                                  }else{
+                                    formik.setFieldValue('test_type', '');
+                                  }
                                   if (
                                     value?.exam_name == 'Quiz' ||
                                     value?.exam_name == 'Practice Test' ||
@@ -1385,6 +1399,7 @@ const CreateAssesment = ({
                                     </Button>
                                   </Grid>
                                 )}
+                                {formik?.values?.test_type?.exam_name == 'Quiz' ? '' : 
                                 <div className='d-flex' style={{ marginLeft: '20%' }}>
                                   <Typography>Section</Typography>
                                   <Switch
@@ -1397,6 +1412,7 @@ const CreateAssesment = ({
                                   />
                                   <Typography>Group</Typography>
                                 </div>
+                                  }
                               </Grid>
                               {sectionToggle ? (
                                 <Grid item xs={12} md={4}>

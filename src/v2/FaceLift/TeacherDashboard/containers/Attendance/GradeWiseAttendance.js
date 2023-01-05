@@ -20,11 +20,11 @@ const GradeWiseAttendance = () => {
   );
 
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const history = useHistory();
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
   const [gradewiseAttendanceData, setGradewiseAttendanceData] = useState([]);
   const [attendanceCountData, setAttendanceCountData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   const handleDateChange = (value) => {
@@ -32,6 +32,11 @@ const GradeWiseAttendance = () => {
       setDate(moment(value).format('YYYY-MM-DD'));
     }
   };
+  useEffect(() => {
+  if(history?.location?.state?.date != undefined ){
+    setDate(history?.location?.state?.date)
+  }
+  },[history])
 
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
@@ -141,6 +146,23 @@ const GradeWiseAttendance = () => {
         showHeader={false}
         bordered={false}
         style={{ width: '100%' }}
+        rowClassName='th-pointer'
+        onRow={(row, rowindex) => {
+          return {
+
+            onClick: (e) =>
+            history.push({
+              pathname: '/sectionwise-attendance',
+              state: {
+                gradeName: record?.grade_name,
+                gradeID: record?.grade_id,
+                sectionName: row?.section_name,
+                sectionID: row?.section_id,
+                date: date,
+              },
+            })
+          }
+        }}
       />
     );
   };
@@ -230,6 +252,7 @@ const GradeWiseAttendance = () => {
               bordered={false}
               placement='bottomRight'
               defaultValue={moment()}
+              value={moment(date)}
               onChange={(value) => handleDateChange(value)}
               showToday={false}
               suffixIcon={<DownOutlined className='th-black-1' />}
@@ -276,13 +299,14 @@ const GradeWiseAttendance = () => {
             <Table
               className='th-table'
               rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
               }
               loading={loading}
               columns={columns}
               rowKey={(record) => record?.grade_id}
               expandable={{ expandedRowRender }}
               dataSource={gradewiseAttendanceData}
+              expandRowByClick={true}
               pagination={false}
               expandIconColumnIndex={6}
               expandedRowKeys={expandedRowKeys}

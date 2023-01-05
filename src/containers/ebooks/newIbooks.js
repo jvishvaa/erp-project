@@ -19,6 +19,7 @@ import ViewBook from 'containers/intelligent-textbook/chapterpage/ViewBook';
 import { useSelector } from 'react-redux';
 import { Card, Divider, Tag, Button, Pagination, Empty } from 'antd';
 import { LeftOutlined, EditOutlined, ClearOutlined, CloseSquareOutlined, UndoOutlined } from '@ant-design/icons';
+import './newebook.scss';
 
 
 const isOrchids =
@@ -340,7 +341,7 @@ const NewIbook = (props) => {
                         TransitionComponent={Transition}
                     >
 
-                        <Grid>
+                        <Grid className='ibookWhole' >
                             <div style={{ display: 'flex', justifyContent: 'space-between' }} >
                                 <div style={{ width: '20px' }} ></div>
                                 <span style={{ textAlign: 'center', fontWeight: '600', fontSize: '20px', fontFamily: 'initial' }} >{bookName}</span>
