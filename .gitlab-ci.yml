@@ -99,10 +99,9 @@ deploy_stage:
     before_script:
       - sleep 10
       - ip a
-      - sudo chmod 777 -R /home/gitlab-runner/
       - whoami
       - pwd
-      - sudo chmod 777 -R /home/gitlab-runner/ 
+      - sudo chmod 777 -R $CI_PROJECT_DIR
      # - sudo npm cache clean --force
      # - sudo npm install -g serve
      # - sudo npm install -g forever
