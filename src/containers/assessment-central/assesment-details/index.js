@@ -37,8 +37,9 @@ const AssesmentDetails = ({
   const history = useHistory();
   const [open, setOpen] = useState(false);
   console.log(filterData, 'filter');
-  const [loading, setLoading] = useState(false);
+  const [loading , setLoading] = useState(false)
   const [isteacher, setIsTeacher] = useState(false);
+  const [ isdisable , setIsDisable ] = useState(false)
   const {
     test_id: id,
     id: assessmentId,
@@ -119,10 +120,26 @@ const AssesmentDetails = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [testStart, setTestStart] = useState(false);
   const [confirmAlert, setConfirmAlert] = useState(false);
+  const [inProgress , setInprogress ] = useState(false)
 
   const CancelStart = () => {
     setConfirmAlert(false);
   };
+  let currDate = new Date()
+  useEffect(() => {
+    if (testDate != null) {
+      var add_minutes = function (dt, minutes) {
+        return new Date(dt.getTime() + minutes * 60000);
+      }
+
+      let endTime = add_minutes(new Date(testDate), testDuration).toString();
+      const inProgressQuiz = moment(endTime).isAfter(currDate)
+      setInprogress(inProgressQuiz)
+      console.log(inProgressQuiz , 'inprogress');
+    }
+  }, [])
+
+
 
   const openStartModal = () => {
     setConfirmAlert(true);
@@ -212,6 +229,7 @@ const AssesmentDetails = ({
   console.log(sectionOptions, section_mapping);
 
   const handleQuizstart = () => {
+    setIsDisable(true)
     if (formik.values.section != '') {
       let payload = {
         test_id: assessmentId,
@@ -228,6 +246,8 @@ const AssesmentDetails = ({
             setConfirmAlert(false);
             onClosedrawer();
             filterResults(1);
+            setIsDisable(false)
+
           } else {
             setAlert('error', 'Failed to Start the Test');
             setConfirmAlert(false);
@@ -613,10 +633,16 @@ const AssesmentDetails = ({
                             </Button>
                           )}
                         </>
-                      ) : (
+                      ) : (<>
+                        {testType == 'Quiz' && test?.test_mode == 1 && inProgress ? 
+                        <Button variant='contained' disabled color='primary'>
+                          In Progress
+                        </Button>
+                        : 
                         <Button variant='contained' disabled color='primary'>
                           Test Completed
-                        </Button>
+                        </Button> }
+                        </>
                       )}
                     </>
                   ) : (
@@ -666,16 +692,17 @@ const AssesmentDetails = ({
           </div>
         </div>
       </div>
-      <Dialog open={confirmAlert} onClose={CancelStart}>
+      <Dialog open={confirmAlert} onClose={CancelStart} maxWidth='sm'
+        fullWidth >
         <DialogTitle id='draggable-dialog-title'>Confirm Start</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ minHeight: '200px' }} >
           <DialogContentText>
             Once The Test Is Started, You Can't Stop It.
           </DialogContentText>
           {testType == 'Quiz' &&
-          test?.test_mode == 1 &&
-          isteacher &&
-          section_mapping[0] != null ? (
+            test?.test_mode == 1 &&
+            isteacher &&
+            section_mapping[0] != null ? (
             <div>
               <div className='mb-2 text-left'>Section</div>
               <Form.Item name='section'>
@@ -711,6 +738,17 @@ const AssesmentDetails = ({
           <Button onClick={CancelStart} className='labelColor cancelButton'>
             Cancel
           </Button>
+          {isdisable ? 
+          <Button
+            color='primary'
+            variant='contained'
+            style={{ color: 'white' }}
+            onClick={handleQuizstart}
+            disabled
+          >
+            Start
+          </Button>
+          :
           <Button
             color='primary'
             variant='contained'
@@ -718,7 +756,7 @@ const AssesmentDetails = ({
             onClick={handleQuizstart}
           >
             Start
-          </Button>
+          </Button> }
         </DialogActions>
       </Dialog>
     </Drawer>
