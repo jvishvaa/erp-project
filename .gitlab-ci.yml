@@ -115,7 +115,7 @@ deploy_stage:
       # - sudo service uwsgi stop
       - sudo systemctl restart nginx
       - echo "Deploy to development server"
-      - sudo npm install
+      - npm install
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=8096
