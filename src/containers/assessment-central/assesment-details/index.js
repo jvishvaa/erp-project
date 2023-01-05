@@ -635,7 +635,7 @@ const AssesmentDetails = ({
                     </Button>
                   </Grid>
                 )}
-                {(filterData?.status?.children === 'Completed' ||
+                {((filterData?.status?.children === 'Completed' && (testType != 'Open Test')) ||
                   filterData?.status?.id === 2 ||
                   (testType == 'Quiz' && testDate != null)) && (
                   <Grid item xs={12} style={{ margin: '4% 0' }}>
@@ -649,7 +649,7 @@ const AssesmentDetails = ({
                     </Button>
                   </Grid>
                 )}
-                {(testType == 'Practice Test' || testType == 'Open Test') && (
+                {(testType == 'Open Test') && (
                   <Grid item xs={12} style={{ margin: '4% 0' }}>
                     <Button
                       variant='contained'
