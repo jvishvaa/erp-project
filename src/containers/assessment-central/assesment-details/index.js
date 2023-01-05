@@ -229,8 +229,8 @@ const AssesmentDetails = ({
   console.log(sectionOptions, section_mapping);
 
   const handleQuizstart = () => {
-    setIsDisable(true)
     if (formik.values.section != '') {
+    setIsDisable(true)
       let payload = {
         test_id: assessmentId,
         section_mapping: formik.values.section,
