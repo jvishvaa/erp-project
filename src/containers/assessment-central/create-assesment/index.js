@@ -158,6 +158,7 @@ const CreateAssesment = ({
       setTestDate(EditData?.test_date);
       setTestDuration(EditData?.test_duration);
       setTotalmarks(EditData?.total_mark);
+      setChecked(!EditData?.is_question_wise)
       initChangeTestFormFields('testName', EditData?.test_name);
       initChangeTestFormFields('testId', EditData?.test_id);
       initChangeTestFormFields('testDate', EditData?.test_date);
@@ -222,14 +223,14 @@ const CreateAssesment = ({
 
   useEffect(() => {
     if(selectedQuestionPaper && selectedQuestionPaper?.section){
-      let paperwise = false;
+      // let paperwise = false;
       let test_mark = [];
       let data = selectedQuestionPaper?.section?.forEach((sec) => {
         let d = sec?.test_marks?.forEach((item) => {
           test_mark.push(item);
         });
       });
-      setChecked(paperwise);
+      setChecked(!selectedQuestionPaper?.is_question_wise);
       setTestMarks(test_mark);
     }
   }, [selectedQuestionPaper]);

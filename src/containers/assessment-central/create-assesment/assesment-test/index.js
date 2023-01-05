@@ -91,7 +91,7 @@ const AssesmentTest = ({
   console.log(formik);
 
   const toggleChecked = () => {
-    setChecked((prev) => !prev);
+      setChecked((prev) => !prev);
   };
 
   const handleChange = (event) => {
@@ -259,9 +259,9 @@ const AssesmentTest = ({
                   </Grid>
                   <Grid xs={12} sm={6} style={{ padding: '15px 25px' }}>
                     <Typography>
-                      <Grid component={classes.label} container alignItems='center' spacing={1}>
+                      <Grid component={classes.label} style={{display:'flex'}} alignItems='center' spacing={1}>
                         <Grid item>Ques. Wise Marks</Grid>
-                        <Switch checked={paperchecked} onChange={toggleChecked} />
+                        <Switch checked={paperchecked} disabled={isEdit ? true : false} onChange={toggleChecked} />
                         <Grid item>Ques. Paper Wise Marks</Grid>
                       </Grid>
                     </Typography>
