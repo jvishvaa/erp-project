@@ -101,6 +101,7 @@ const TimeTable = (props) => {
   const [isTimeTable, setIsTimeTable] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
   const [periodType, setPeriodType] = useState();
+  const [filteredData, setFilteredData] = useState({});
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -156,10 +157,21 @@ const TimeTable = (props) => {
     } else {
       setDays([]);
     }
-    console.log(days, 'selected days');
+  };
+  const handleFilteredData = (
+    gradeDisplay,
+    sectionDisplay,
+    selectedBranch,
+    selectedAcademicYear
+  ) => {
+    setFilteredData({
+      gradeDisplay,
+      sectionDisplay,
+      selectedBranch,
+      selectedAcademicYear,
+    });
   };
   const handlePassOpenNewPeriod = () => {
-    console.log('openNewPeriod');
     setOpenNewPeriod(true);
   };
   const handlePassData = (
@@ -509,10 +521,12 @@ const TimeTable = (props) => {
                   // teacherView={teacherView}
                   handleCloseTable={handleCloseTable}
                   handlePassData={handlePassData}
+                  handleFilteredData={handleFilteredData}
                   handleClickAPI={handleClickAPI}
                   // handlePassOpenNewPeriod={handlePassOpenNewPeriod}
                   section_mapping_id={setSectionMappingId}
                   handleAutoComplete={handleFilter}
+                  filteredData={filteredData}
                 />
                 {/* <div
                   className='filter-container'
@@ -554,6 +568,8 @@ const TimeTable = (props) => {
                   handlePassOpenNewPeriod={handlePassOpenNewPeriod}
                   isTimeTable={isTimeTable}
                   HideAutocomplete={(value) => setShowFilter(!value)}
+                  handlePassData={handlePassData}
+                  filteredData={filteredData}
                 />
               )}
               {!isTimeTable && <NoFilterData selectfilter={true} />}

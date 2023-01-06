@@ -91,7 +91,7 @@ const AssesmentTest = ({
   console.log(formik);
 
   const toggleChecked = () => {
-    setChecked((prev) => !prev);
+      setChecked((prev) => !prev);
   };
 
   const handleChange = (event) => {
@@ -180,7 +180,9 @@ const AssesmentTest = ({
                     </div>
                   </Grid>
                   {/* <div className='dividerVertical' /> */}
-                  {formik?.values?.test_type?.exam_name == 'Quiz' || sectionWiseTest == true || sectionWiseTest == false ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' ||  formik?.values?.test_type?.exam_name ==
+                                    'Practice Test' ||
+                                  formik?.values?.test_type?.exam_name == 'Open Test' || sectionWiseTest == true || sectionWiseTest == false ? '' :
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label}>Test ID</div>
@@ -207,7 +209,9 @@ const AssesmentTest = ({
                     </Grid>
                   }
                   {/* <div className='dividerVertical' /> */}
-                  {formik?.values?.test_type?.exam_name == 'Quiz' || sectionWiseTest ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' || formik?.values?.test_type?.exam_name ==
+                                    'Practice Test' ||
+                                  formik?.values?.test_type?.exam_name == 'Open Test' ||  sectionWiseTest ? '' :
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label} style={{ marginRight: isMobile && '1rem' }}>
@@ -255,9 +259,9 @@ const AssesmentTest = ({
                   </Grid>
                   <Grid xs={12} sm={6} style={{ padding: '15px 25px' }}>
                     <Typography>
-                      <Grid component={classes.label} container alignItems='center' spacing={1}>
+                      <Grid component={classes.label} style={{display:'flex'}} alignItems='center' spacing={1}>
                         <Grid item>Ques. Wise Marks</Grid>
-                        <Switch checked={paperchecked} onChange={toggleChecked} />
+                        <Switch checked={paperchecked} disabled={isEdit ? true : false} onChange={toggleChecked} />
                         <Grid item>Ques. Paper Wise Marks</Grid>
                       </Grid>
                     </Typography>

@@ -314,7 +314,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       >
         <div
           className={`row ${
-            diary?.substitute ? 'th-bg-blue-3' : 'th-bg-blue-1'
+            diary?.is_substitute_diary ? 'th-bg-blue-3' : 'th-bg-blue-1'
           } align-items-center py-1`}
           style={{ borderRadius: '6px 6px 0px 0px' }}
         >
@@ -335,7 +335,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           <div className='col-4 text-right px-0 py-1'>
             {/* <span className='th-bg-primary th-10 th-white th-br-6 p-2'>Daily Diary</span> */}
             <Tag color='geekblue' className='th-10 th-br-6'>
-              {diary?.substitute ? 'Substitute Dairy' : 'Daily Diary'}
+              {diary?.is_substitute_diary ? 'Substitute Dairy' : 'Daily Diary'}
             </Tag>
           </div>
           {user_id == diary?.teacher_id && (

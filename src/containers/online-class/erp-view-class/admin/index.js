@@ -1547,6 +1547,7 @@ const ErpAdminViewClass = ({ history }) => {
           ) : null}
           {showGrievanceModal && (
             <GrievanceModal
+              module={'Online Class'}
               title={'Online Class Related Query'}
               showGrievanceModal={showGrievanceModal}
               handleClose={handleCloseGrievanceModal}
