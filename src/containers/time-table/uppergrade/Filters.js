@@ -33,6 +33,22 @@ const Filters = (props) => {
     }
   }, [selectedAcademicYear, props.teacherModuleId]);
 
+  useEffect(() => {
+    if (Object.keys(props?.filteredData).length !== 0) {
+      callApi(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${props?.filteredData?.selectedBranch?.id}&module_id=${props.teacherModuleId}`,
+        'gradeList'
+      );
+      callApi(
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${props?.filteredData?.selectedBranch?.id}&grade_id=${props?.filteredData?.gradeDisplay?.grade_id}&module_id=${props.teacherModuleId}`,
+        'sectionList'
+      );
+      setSelectedBranch(props?.filteredData?.selectedBranch);
+      setGradeDisplay(props?.filteredData?.gradeDisplay);
+      setSectionDisplay(props?.filteredData?.sectionDisplay);
+    }
+  }, [props.filteredData]);
+
   function callApi(api, key) {
     setLoading(true);
     axiosInstance
@@ -47,6 +63,10 @@ const Filters = (props) => {
           }
           if (key === 'gradeList') {
             setGradesList(result.data.data || []);
+            setLoading(false);
+          }
+          if (key === 'sectionList') {
+            setSectionsList(result.data.data || []);
             setLoading(false);
           }
         } else {
@@ -77,6 +97,7 @@ const Filters = (props) => {
 
   const handleGrade = (event, value) => {
     if (value) {
+      setSectionDisplay(null);
       setGradeDisplay(value);
       setLoading(true);
       axiosInstance
@@ -122,6 +143,12 @@ const Filters = (props) => {
         gradeDisplay?.grade_name,
         selectedBranch?.branch_name,
         sectionDisplay?.section__section_name
+      );
+      props.handleFilteredData(
+        gradeDisplay,
+        sectionDisplay,
+        selectedBranch,
+        selectedAcademicYear
       );
       props.handleClickAPI();
       props.section_mapping_id(sectionDisplay?.id);
@@ -217,7 +244,6 @@ const Filters = (props) => {
               filterSelectedOptions
               className='dropdownIcon'
               renderInput={(params) => {
-                console.log(sectionDisplay, 'params');
                 return (
                   <TextField
                     title={sectionDisplay?.section__section_name}

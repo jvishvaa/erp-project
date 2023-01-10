@@ -16,12 +16,11 @@ import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
 import { Drawer, Tooltip, Typography } from 'antd';
 import { useFormik } from 'formik';
-import {  Form, Select,  } from 'antd';
+import { Form, Select } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import Loader from 'components/loader/loader';
 
 const { Option } = Select;
-
 
 const AssesmentDetails = ({
   test,
@@ -32,13 +31,15 @@ const AssesmentDetails = ({
   testselection,
   reportLoad,
   quizAccess,
-  userLevel
+  userLevel,
+  filterResults,
 }) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   console.log(filterData, 'filter');
-  const [loading, setLoading] = useState(false);
-  const [ isteacher , setIsTeacher ] = useState(false)
+  const [loading , setLoading] = useState(false)
+  const [isteacher, setIsTeacher] = useState(false);
+  const [ isdisable , setIsDisable ] = useState(false)
   const {
     test_id: id,
     id: assessmentId,
@@ -119,10 +120,26 @@ const AssesmentDetails = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [testStart, setTestStart] = useState(false);
   const [confirmAlert, setConfirmAlert] = useState(false);
+  const [inProgress , setInprogress ] = useState(false)
 
   const CancelStart = () => {
     setConfirmAlert(false);
   };
+  let currDate = new Date()
+  useEffect(() => {
+    if (testDate != null) {
+      var add_minutes = function (dt, minutes) {
+        return new Date(dt.getTime() + minutes * 60000);
+      }
+
+      let endTime = add_minutes(new Date(testDate), testDuration).toString();
+      const inProgressQuiz = moment(endTime).isAfter(currDate)
+      setInprogress(inProgressQuiz)
+      console.log(inProgressQuiz , 'inprogress');
+    }
+  }, [])
+
+
 
   const openStartModal = () => {
     setConfirmAlert(true);
@@ -202,61 +219,63 @@ const AssesmentDetails = ({
       });
   };
 
-  const sectionOptions = sectionName?.map((each , index) => {
+  const sectionOptions = sectionName?.map((each, index) => {
     return (
       <Option key={index} value={index}>
         {each}
       </Option>
     );
   });
-  console.log(sectionOptions , section_mapping);
+  console.log(sectionOptions, section_mapping);
 
   const handleQuizstart = () => {
-    if(formik.values.section != ''){
-    let payload = {
-      test_id: assessmentId,
-      section_mapping: formik.values.section
-    };
-    axiosInstance
-      // .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
-      .post(`${endpoints.academics.startQuiz}`, payload)
-      .then((res) => {
-        console.log(res);
-        if (res.data.status_code == 200) {
-          setAlert('success', 'Test Started');
-          setTestStart(true);
-          setConfirmAlert(false);
-          onClosedrawer()
-        } else {
-          setAlert('error', 'Failed to Start the Test');
-          setConfirmAlert(false);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error?.message);
-        setConfirmAlert(false);
-      });
-    }else {
-      setAlert('error', 'Please Select Section');
+    if (formik.values.section != '') {
+    setIsDisable(true)
+      let payload = {
+        test_id: assessmentId,
+        section_mapping: formik.values.section,
+      };
+      axiosInstance
+        // .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
+        .post(`${endpoints.academics.startQuiz}`, payload)
+        .then((res) => {
+          console.log(res);
+          if (res.data.status_code == 200) {
+            setAlert('success', 'Test Started');
+            setTestStart(true);
+            setConfirmAlert(false);
+            onClosedrawer();
+            filterResults(1);
+            setIsDisable(false)
 
+          } else {
+            setAlert('error', 'Failed to Start the Test');
+            setConfirmAlert(false);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error?.message);
+          setConfirmAlert(false);
+        });
+    } else {
+      setAlert('error', 'Please Select Section');
     }
   };
 
-  const handleSection = (e , value) => {
-    console.log(e , value);
-    formik.setFieldValue('section', section_mapping[0]);
-  }
+  const handleSection = (e, value) => {
+    console.log(e, value);
+    formik.setFieldValue('section', section_mapping[e]);
+  };
 
   useEffect(() => {
-   if(quizAccess != [] && userLevel){
-    if(quizAccess?.includes(userLevel) == true){
-      setIsTeacher(true)
-    } else{
-      setIsTeacher(false)
+    if (quizAccess != [] && userLevel) {
+      if (quizAccess?.includes(userLevel) == true) {
+        setIsTeacher(true);
+      } else {
+        setIsTeacher(false);
+      }
     }
-   }
-
-  },[quizAccess])
+  }, [quizAccess]);
 
   return (
     <Drawer
@@ -435,10 +454,10 @@ const AssesmentDetails = ({
         <div className='row align-items-center'>
           <div className='col-10 px-0'>
             <div className='row'>
-              <div className='col-4 px-0'>
-                <span className='th-16'></span>Test Name:
+              <div className='col-3 px-0'>
+                <span className='th-16'></span>Test Name :
               </div>
-              <div className='col-8 pl-0'>
+              <div className='col-9 px-0 pl-1'>
                 <span className='th-16'>{testName}</span>
               </div>
             </div>
@@ -467,53 +486,25 @@ const AssesmentDetails = ({
           )}
         </div>
         <div className='row py-3'>
-          TestId : <Typography className='ml-2'>{test_id}</Typography>
+          Test Id : <Typography className='ml-2'>{test_id}</Typography>
         </div>
         <div className='row'>
-          Section :
-          <p
-            title={getSection()}
-            style={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              fontSize: '15px',
-            }}
-          >
-            {`${
-              getSection().length > 25 ? getSection().slice(0, 40) + '...' : getSection()
-            }`}
-          </p>
+          <div className='col-12 px-0 text-truncate'>
+            Section :{' '}
+            <Tooltip
+              placement='bottomLeft'
+              title={
+                <span className=''>{sectionName.map((sec, i) => sec).join(', ')}</span>
+              }
+              trigger='hover'
+              className='th-pointer'
+              zIndex={2000}
+            >
+              <span className='ml-2'>{sectionName.map((sec, i) => sec).join(', ')}</span>
+            </Tooltip>
+          </div>
         </div>
-        {testType == 'Quiz' && test?.test_mode == 1 && isteacher && section_mapping[0] != null ?
-        <div >
-                <div className='mb-2 text-left'>Section</div>
-                <Form.Item name='section'>
-                  <Select
-                    allowClear
-                    placeholder= 'Select Section'                   
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    optionFilterProp='children'
-                    showArrow={true}
-                    suffixIcon={<DownOutlined className='th-grey' />}
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    value={formik.values.section || []}
-                    onChange={(e, value) => {
-                      handleSection(e, value);
-                    }}
-                    // onClear={handleClearBoard}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={false}
-                  >
-                    {sectionOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-              : ''}
+
         <div className='parameters-container mt-2'>
           {/* <div className='parameters-header'>
           <span className='header-text font-lg font-center'>Test Parameters</span>
@@ -642,50 +633,122 @@ const AssesmentDetails = ({
                             </Button>
                           )}
                         </>
-                      ) : (
+                      ) : (<>
+                        {testType == 'Quiz' && test?.test_mode == 1 && inProgress ? 
+                        <Button variant='contained' disabled color='primary'>
+                          In Progress
+                        </Button>
+                        : 
                         <Button variant='contained' disabled color='primary'>
                           Test Completed
-                        </Button>
+                        </Button> }
+                        </>
                       )}
                     </>
                   ) : (
                     ''
                   )}
                 </Grid>
-                {enable && <Grid item xs={12} style={{marginTop:'5%'}}>
-                  <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
-                    <GetAppIcon fontSize="small" />
-                    Download Question Paper
-                  </Button>
-                </Grid>}
-                {((filterData?.status?.children === "Completed" || filterData?.status?.id === 2) || (testType == 'Quiz' && testDate != null)) && <Grid item xs={12} style={{margin : '4% 0'}}>
-                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
-                    <GetAppIcon fontSize="small" />
-                    Download Report
-                  </Button>
-                </Grid>}
-                {( (testType == 'Practice Test' || testType == 'Open Test')) && <Grid item xs={12} style={{margin : '4% 0'}}>
-                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
-                    <GetAppIcon fontSize="small" />
-                    Download Report
-                  </Button>
-                </Grid>}
+                {enable && (
+                  <Grid item xs={12} style={{ marginTop: '5%' }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => downloadAssessment()}
+                    >
+                      <GetAppIcon fontSize='small' />
+                      Download Question Paper
+                    </Button>
+                  </Grid>
+                )}
+                {((filterData?.status?.children === 'Completed' && (testType != 'Open Test')) ||
+                  filterData?.status?.id === 2 ||
+                  (testType == 'Quiz' && testDate != null)) && (
+                  <Grid item xs={12} style={{ margin: '4% 0' }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleDownloadReport}
+                    >
+                      <GetAppIcon fontSize='small' />
+                      Download Report
+                    </Button>
+                  </Grid>
+                )}
+                {(testType == 'Open Test') && (
+                  <Grid item xs={12} style={{ margin: '4% 0' }}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleDownloadReport}
+                    >
+                      <GetAppIcon fontSize='small' />
+                      Download Report
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             )}
           </div>
         </div>
       </div>
-      <Dialog open={confirmAlert} onClose={CancelStart}>
+      <Dialog open={confirmAlert} onClose={CancelStart} maxWidth='sm'
+        fullWidth >
         <DialogTitle id='draggable-dialog-title'>Confirm Start</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ minHeight: '200px' }} >
           <DialogContentText>
             Once The Test Is Started, You Can't Stop It.
           </DialogContentText>
+          {testType == 'Quiz' &&
+            test?.test_mode == 1 &&
+            isteacher &&
+            section_mapping[0] != null ? (
+            <div>
+              <div className='mb-2 text-left'>Section</div>
+              <Form.Item name='section'>
+                <Select
+                  allowClear
+                  placeholder='Select Section'
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  optionFilterProp='children'
+                  showArrow={true}
+                  suffixIcon={<DownOutlined className='th-grey' />}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  value={formik.values.section || []}
+                  onChange={(e, value) => {
+                    handleSection(e, value);
+                  }}
+                  // onClear={handleClearBoard}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {sectionOptions}
+                </Select>
+              </Form.Item>
+            </div>
+          ) : (
+            ''
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={CancelStart} className='labelColor cancelButton'>
             Cancel
           </Button>
+          {isdisable ? 
+          <Button
+            color='primary'
+            variant='contained'
+            style={{ color: 'white' }}
+            onClick={handleQuizstart}
+            disabled
+          >
+            Start
+          </Button>
+          :
           <Button
             color='primary'
             variant='contained'
@@ -693,7 +756,7 @@ const AssesmentDetails = ({
             onClick={handleQuizstart}
           >
             Start
-          </Button>
+          </Button> }
         </DialogActions>
       </Dialog>
     </Drawer>

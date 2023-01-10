@@ -194,6 +194,7 @@ const StudentReportCard = () => {
           ) : null}
           {showGrievanceModal && (
             <GrievanceModal
+              module={'Report Card'}
               title={'Report Card Related Query'}
               showGrievanceModal={showGrievanceModal}
               handleClose={handleCloseGrievanceModal}

@@ -259,10 +259,12 @@ const DateAndCalander = (props) => {
       setnewTable(false);
       setShowTableView(false);
       setAlert('success', 'TimeTable created successfully');
-      console.log('Time Table Created SuccessFully', data);
     } else {
       setLoading(false);
-      setAlert('warning', data?.response?.data?.developer_msg);
+      setAlert(
+        'warning',
+        data?.developer_msg ? data?.developer_msg : data?.response?.data?.developer_msg
+      );
     }
   };
 
@@ -380,7 +382,6 @@ const DateAndCalander = (props) => {
         // setAlert('warning', data?.response?.data?.developer_msg);
         setCollidingIDs(data?.response?.data?.result?.colliding_id);
         setCollidingMsg(data?.response?.data?.message);
-        // console.log(data?.response?.data?.result?.colliding_id)
         setIsTTCollided(true);
       }
     }
@@ -423,7 +424,6 @@ const DateAndCalander = (props) => {
       setOpenModal(true);
     }
   };
-
   return (
     <>
       {showTableView && (

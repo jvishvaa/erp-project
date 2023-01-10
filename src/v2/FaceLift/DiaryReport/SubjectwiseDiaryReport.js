@@ -82,10 +82,14 @@ const SubjectwiseDiaryReport = () => {
               subject_id: subjectID,
               date,
             });
+          } else {
+            message.error(res.data.message);
+            setRequestSent(false);
           }
         })
         .catch((error) => {
           message.error(error.message);
+          setRequestSent(false);
         });
     } else {
       axios
@@ -100,6 +104,9 @@ const SubjectwiseDiaryReport = () => {
               subject_id: subjectID,
               date,
             });
+          } else {
+            message.error(res.data.message);
+            setRequestSent(false);
           }
         })
         .catch((error) => {

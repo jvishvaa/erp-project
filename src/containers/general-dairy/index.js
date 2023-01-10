@@ -415,6 +415,7 @@ const GeneralDairyList = () => {
           ) : null}
           {showGrievanceModal && (
             <GrievanceModal
+              module={'Diary'}
               title={'Diary Related Query'}
               showGrievanceModal={showGrievanceModal}
               handleClose={handleCloseGrievanceModal}

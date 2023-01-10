@@ -189,7 +189,7 @@ const SectionWiseAttendance = () => {
   const gradeOptions = gradeData?.map((each) => {
     return (
       <Option key={each?.id} value={each.grade_id}>
-        {each?.grade__grade_name}
+        {each?.grade_name}
       </Option>
     );
   });
@@ -211,6 +211,12 @@ const SectionWiseAttendance = () => {
   useEffect(() => {
     if (moduleId) {
       fetchGradeData();
+      fetchSectionData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
+        module_id: moduleId,
+        grade_id: gradeId,
+      });
     }
   }, [moduleId]);
 
@@ -221,7 +227,7 @@ const SectionWiseAttendance = () => {
         section: history?.location?.state?.sectionName,
       });
     }
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     let selected_branch;
