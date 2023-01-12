@@ -178,9 +178,7 @@ deploy_prod:
     only:
       - master
     when: manual
- 
-stages:
-  - deploy
+
 
 # deploy_finance-integration2:
 #     before_script:
