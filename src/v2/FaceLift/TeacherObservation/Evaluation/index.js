@@ -43,6 +43,7 @@ const Evaluation = () => {
   const [overallRemarks, setOverallRemarks] = useState('');
   const [teacherData, setTeacherData] = useState([]);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
     observationGet({ levels__id__in: user_level, status: true });
@@ -122,6 +123,7 @@ const Evaluation = () => {
         score: _.sumBy(flatttenData, 'score'),
         report: JSON.stringify(modifiedData),
         subject_map: subjectID,
+        reviewed_by: role_details?.erp_user_id,
       };
       axios
         .post(`${endpoints.observationName.observationReport}`, obj)

@@ -76,9 +76,9 @@ const Observation = () => {
     setDrawerOpen(true);
     axios.get(`${endpoints.observationName.observationGet}${id}/`).then((res) => {
       formRef.current.setFieldsValue({
-        observation: res.data.observation,
-        observation_area: res.data?.observation_area?.id,
-        score: res.data.score,
+        observation: res.data.result?.observation,
+        observation_area: res.data?.result?.observation_area?.id,
+        score: res.data.result?.score,
       });
     });
   };
