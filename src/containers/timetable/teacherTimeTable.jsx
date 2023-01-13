@@ -69,7 +69,7 @@ const TeacherTimeTable = () => {
             : `${pType}`
           : item?.period_type_name;
       let tempObj = {
-        title: title,
+        title: `${title} ${item?.grade_name} ${item?.section_name}`,
         start: setConvertDate + 'T' + item?.start_time,
         end: setConvertDate + 'T' + item?.end_time,
         extendedProps: item,
