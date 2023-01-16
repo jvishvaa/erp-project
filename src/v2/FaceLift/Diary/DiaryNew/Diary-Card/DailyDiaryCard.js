@@ -21,6 +21,8 @@ import {
   Popconfirm,
   Divider,
   Tag,
+  Table,
+  Tooltip,
 } from 'antd';
 import axios from 'v2/config/axios';
 import axiosInstance from 'axios';
@@ -35,6 +37,7 @@ import cuid from 'cuid';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import toddlerGroup from '../../../../../assets/images/toddler-group.svg';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const { Panel } = Collapse;
 let boardFilterArr = [
@@ -53,7 +56,8 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
-  const { user_level, user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_level, user_id, erp } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [homeworkDetails, setHomeworkDetails] = useState(false);
   const [questionList, setQuestionList] = useState([
@@ -76,11 +80,37 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
   const [todaysAssessment, setTodaysAssessment] = useState([]);
   const [upcomingAssessment, setUpcomingAssessment] = useState([]);
   const [currentAssessment, setCurrentAssessment] = useState([]);
+  const [activityData, setActivityData] = useState([]);
+  const [currentActivity, setCurrentActivity] = useState([]);
+  const [activityResultLoading, setActivityResultLoading] = useState(false);
+  const [physicalActivityData, setPhysicalActivityData] = useState([]);
+  const [publicSpeakingData, setPublicSpeakingData] = useState([]);
+  const [publicSpeakingMarks, setPublicSpeakingMarks] = useState([]);
   const history = useHistory();
-
+  const publicSpeakingColumns = [
+    {
+      title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
+      align: 'left',
+      dataIndex: 'criterion',
+    },
+    {
+      title: <span className='th-white th-fw-600'>Remarks</span>,
+      align: 'center',
+      render: (row) => <span>{row?.remarks?.name}</span>,
+    },
+  ];
+  let roundsArray = [];
+  const filterRound = (data) => {
+    if (roundsArray.indexOf(data) !== -1) {
+      return '';
+    } else {
+      roundsArray.push(data);
+      return data;
+    }
+  };
   const showAssessmentData = (data) => {
     return data.map((item) => (
-      <div className='row th-bg-white th-br-6 py-2 th-fw-500 mb-2'>
+      <div className='row th-bg-white shadow-sm th-br-6 py-2 th-fw-500 mb-2'>
         <div className='col-6 th-12'>
           Status of Exam :&nbsp;
           <span
@@ -139,6 +169,73 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
     ));
   };
 
+  const showActivityData = (data) => {
+    return data.map((item) => (
+      <div
+        className='th-bg-white th-br-6 pt-2 mb-2'
+        style={{ outline: '1px solid #d9d9d9' }}
+      >
+        <div className='row align-items-center'>
+          <div className='col-6 th-fw-500'>
+            {item?.activity_type?.name !== 'Physical Activity' && (
+              <>
+                Status :&nbsp;
+                <span
+                  className={`${
+                    item?.state == 'completed'
+                      ? 'th-green'
+                      : item?.state == 'ongoing'
+                      ? 'th-red th-fw-600'
+                      : 'th-primary'
+                  } text-capitalize`}
+                >
+                  {' '}
+                  {item?.state}
+                </span>
+              </>
+            )}
+          </div>
+          <div className='col-6 text-right th-12 pr-0'>
+            <Tag color='green'>{item?.activity_type?.name}</Tag>
+          </div>
+        </div>
+        <div className='row py-2 align-items-center'>
+          <div className='col-10 text-truncate'>
+            <span className='th-fw-600 th-black-1'>Title :&nbsp; </span>
+            <span className='th-fw-600 th-grey'>
+              <Tooltip title={item?.name ? item?.name : item?.title}>
+                {' '}
+                {item?.name ? item?.name : item?.title}
+              </Tooltip>
+            </span>
+          </div>
+          {(item?.state == 'completed' || item?.asset_state == true) &&
+            user_level == 13 && (
+              <div className='col-2 pl-1'>
+                <div
+                  className='badge p-2 th-bg-white th-br-6 th-pointer'
+                  style={{
+                    border: '1px solid #d9d9d9',
+                  }}
+                  onClick={() => {
+                    if (item?.activity_type?.name === 'Physical Activity') {
+                      setShowTab(4);
+                      setCurrentActivity(item);
+                      fetchPhysicalActivityData({ activity_id: item?.id, erp: erp });
+                    } else {
+                      setShowTab(5);
+                      fetchPublicSpeakingData({ erp: erp, activity_id: item?.id });
+                    }
+                  }}
+                >
+                  View &gt;
+                </div>
+              </div>
+            )}
+        </div>
+      </div>
+    ));
+  };
   const showDrawer = () => {
     setDrawerVisible(true);
   };
@@ -150,6 +247,8 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
     setCurrentPeriodId(null);
     setTodaysAssessment([]);
     setUpcomingAssessment([]);
+    setCurrentActivity([]);
+    setActivityData([]);
   };
   const displayHomeworkDetails = () => {
     // setShowHomeworkDrawer(true);
@@ -292,6 +391,79 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       })
       .catch((error) => message.error('error', error?.message));
   };
+  const fetchActivityData = (params = {}) => {
+    axios
+      .get(`${endpoints.newBlog.diaryActivities}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setActivityData(response?.data?.result);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+  const fetchPhysicalActivityData = (params = {}) => {
+    setActivityResultLoading(true);
+    axios
+      .get(`${endpoints.newBlog.studentReviewss}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response?.data.length > 0) {
+          let finalData = [];
+          response.data.map((obj, index) => {
+            let temp = {};
+            temp['id'] = obj.id;
+            temp['name'] = obj.level.name;
+            temp['remarks'] = obj.remarks;
+            temp['given_rating'] = obj.given_rating;
+            temp['level'] = obj?.level?.rating;
+            finalData.push(temp);
+          });
+          setPhysicalActivityData(finalData);
+        }
+        setActivityResultLoading(false);
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+        setActivityResultLoading(false);
+      });
+  };
+  const fetchPublicSpeakingData = (params = {}) => {
+    setActivityResultLoading(true);
+    axios
+      .get(`${endpoints.newBlog.studentPSContentApi}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response?.data.status_code == 200) {
+          setPublicSpeakingData(response.data.result);
+          let ratings = JSON.parse(
+            response.data.result.grading.grade_scheme_markings
+          ).map((item) => ({
+            criterion: item.criterion,
+            remarks: item.levels.filter((each) => each.status == true)[0],
+          }));
+          console.log('rating', ratings);
+          setPublicSpeakingMarks(ratings);
+        }
+        setActivityResultLoading(false);
+      })
+      .catch((error) => {
+        setActivityResultLoading(false);
+        message.error('error', error?.message);
+      });
+  };
   useEffect(() => {
     if (drawerVisible) {
       fetchHomeworkDetails({
@@ -304,8 +476,28 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         subject_id: subject?.subject_id,
         date: moment(diary?.created_at).format('YYYY-MM-DD'),
       });
+      if (subject.subject_name.includes('Physical Activity')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: diary?.grade_id,
+          section_id: diary?.section_id,
+          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
+          type: 'pa',
+          erp: erp,
+        });
+      } else if (subject.subject_name.includes('Public Speaking')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: diary?.grade_id,
+          section_id: diary?.section_id,
+          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
+          type: 'ps',
+          erp: erp,
+        });
+      }
     }
   }, [drawerVisible]);
+
   return (
     <>
       <div
@@ -489,7 +681,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     Subject : {subject?.subject_name}
                   </div>
 
-                  <div className='col-1 px-0 tex-right'>
+                  <div className='col-1 px-0 text-right'>
                     <CloseOutlined onClick={closeDrawer} />
                   </div>
                 </div>
@@ -519,7 +711,14 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     onClick={() => setShowTab(1)}
                     // onClick={() => setShowHomeworkDrawer(false)}
                   />
-                  <span> {showTab == 2 ? 'Homework' : 'Assessment'}</span>
+                  <span>
+                    {' '}
+                    {showTab == 2
+                      ? 'Homework'
+                      : showTab == 3
+                      ? 'Assessment'
+                      : 'Activities'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -531,6 +730,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         closable={false}
         width={window.innerWidth < 768 ? '90vw' : '450px'}
       >
+        {/* Normal view */}
         {showTab == 1 && (
           <>
             <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Today's Topic</div>
@@ -938,6 +1138,21 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 </div>
               </div>
             )}
+            {activityData.length > 0 && (
+              <div className='row py-2'>
+                <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Activities</div>
+                <div
+                  className='col-12 py-2 px-1 th-bg-grey th-br-6'
+                  style={{
+                    border: '2px solid #d9d9d9',
+                    maxHeight: '30vh',
+                    overflowY: 'auto',
+                  }}
+                >
+                  {showActivityData(activityData)}
+                </div>
+              </div>
+            )}
             <div className='row py-2'>
               <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Homework</div>
               <div className='col-12 px-1'>
@@ -983,7 +1198,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   {diary?.teacher_report?.summary ? (
                     <>
                       <div className='row py-1'>
-                        <div className='col-12 pl-0'>
+                        <div className='col-12 px-2'>
                           {diary?.teacher_report?.summary}
                         </div>
                       </div>
@@ -1062,6 +1277,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             )}
           </>
         )}
+        {/* Homework view */}
         {showTab == 2 && (
           <>
             <div className='row px-3 mt-3'>
@@ -1117,6 +1333,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             </div>
           </>
         )}
+        {/* Assessment View */}
         {showTab == 3 && (
           <>
             <div className='row pb-2'>
@@ -1255,6 +1472,106 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             )}
           </>
         )}
+        {/* Physical Activity View */}
+        {showTab == 4 && (
+          <>
+            <div className='row pb-2'>
+              <div className='col-12 py-2 px-1  th-br-6'>
+                <div className='row th-br-6 py-2 th-fw-500 th-bg-blue-1 align-items-center'>
+                  <div className='col-6 th-12'>
+                    <Tag color='green'>Physical Activity</Tag>
+                  </div>
+                  <div className='col-10 py-2'>
+                    <span className='th-fw-500 th-grey'>Title :&nbsp; </span>
+                    <span className='th-fw-600 th-black-1'>{currentActivity?.title}</span>
+                  </div>
+                  <div className='col-12 py-2'>
+                    <div className='pt-2' style={{ borderTop: '2px solid #d9d9d9' }}>
+                      Status : <span className='th-green'>Complete</span>
+                    </div>
+                  </div>
+                </div>
+                {activityResultLoading ? (
+                  <div className='w-100 row mt-4 justify-content-center'>
+                    <Spin tip='Loading..' />
+                  </div>
+                ) : (
+                  <div className='col-12 px-1 mt-2'>
+                    <div className='row th-fw-500'>Review</div>
+                    <div className='th-bg-pink-2 th-br-6 p-2'>
+                      {physicalActivityData.map(
+                        (item, index) =>
+                          item?.name !== 'Overall' && (
+                            <>
+                              <div className='col-12 pl-1 th-fw-600'>
+                                {filterRound(item?.level)}
+                              </div>
+                              <div className='row py-2 my-2 th-bg-white align-items-center justify-content-around th-br-6'>
+                                <div className='col-12 '>
+                                  <div className=' d-flex justify-content-between th-bg-grey p-2 th-br-6'>
+                                    <div className='th-fw-500'>{item?.name}</div>{' '}
+                                    <div>{item?.remarks}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )
+                      )}
+                      {physicalActivityData
+                        .filter((item) => item?.name == 'Overall')
+                        .map((item) => (
+                          <div className='row th-bg-white th-br-6'>
+                            <div className='col-12 py-2'>
+                              <div
+                                className=' th-fw-500'
+                                style={{ borderBottom: '2px solid #d9d9d9' }}
+                              >
+                                Overall
+                              </div>
+                            </div>
+                            <div className='col-12 py-1'>{item?.remarks}</div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+        {/* Public Speaking View */}
+        {showTab == 5 &&
+          (activityResultLoading ? (
+            <div className='w-100 row justify-content-center'>
+              <Spin tip='Loading..' />
+            </div>
+          ) : (
+            <div className='row'>
+              <div className='col-12'>
+                <video
+                  controls='controls'
+                  preload='metadata'
+                  style={{ height: '50vh', width: '100%', objectFit: 'cover' }}
+                >
+                  <source src={publicSpeakingData?.signed_URL} type='video/mp4' />
+                </video>
+              </div>
+              <div className='col-12'>
+                <Table
+                  className='th-table'
+                  columns={publicSpeakingColumns}
+                  // rowKey={(record) => record?.erp_id}
+                  // loading={loading}
+                  dataSource={publicSpeakingMarks}
+                  pagination={false}
+                  rowClassName={(record, index) =>
+                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  }
+                  scroll={{ x: publicSpeakingMarks.length > 0 ? 'max-content' : null }}
+                />
+              </div>
+            </div>
+          ))}
       </Drawer>
     </>
   );
