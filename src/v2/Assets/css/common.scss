@@ -377,3 +377,8 @@ svg {
   border-color: #1b4ccb;
   background: #1b4ccb;
 }
+.th-radio > .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    color: #fff;
+    background: #1b4ccb;
+    border-color: #1b4ccb;
+}
