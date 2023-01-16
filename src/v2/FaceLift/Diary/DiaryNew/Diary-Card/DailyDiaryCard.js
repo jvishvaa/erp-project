@@ -80,20 +80,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
   const [todaysAssessment, setTodaysAssessment] = useState([]);
   const [upcomingAssessment, setUpcomingAssessment] = useState([]);
   const [currentAssessment, setCurrentAssessment] = useState([]);
-  const [activityData, setActivityData] = useState([
-    {
-      exam_status: 'upcoming',
-      date: '10/01/2023',
-      title: 'Test Physical Activity',
-      test_type: 'pa',
-    },
-    {
-      exam_status: 'upcoming',
-      date: '10/01/2023',
-      title: 'Test Public Speaking',
-      test_type: 'ps',
-    },
-  ]);
+  const [activityData, setActivityData] = useState([]);
   const [currentActivity, setCurrentActivity] = useState([]);
   const [activityResultLoading, setActivityResultLoading] = useState(false);
   const [physicalActivityData, setPhysicalActivityData] = useState([]);
@@ -489,7 +476,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         subject_id: subject?.subject_id,
         date: moment(diary?.created_at).format('YYYY-MM-DD'),
       });
-      if (subject.subject_name == 'Physical Activity') {
+      if (subject.subject_name.includes('Physical Activity')) {
         fetchActivityData({
           branch_id: selectedBranch?.branch?.id,
           grade_id: diary?.grade_id,
@@ -498,7 +485,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           type: 'pa',
           erp: erp,
         });
-      } else if (subject.subject_name == 'Public Speaking') {
+      } else if (subject.subject_name.includes('Public Speaking')) {
         fetchActivityData({
           branch_id: selectedBranch?.branch?.id,
           grade_id: diary?.grade_id,

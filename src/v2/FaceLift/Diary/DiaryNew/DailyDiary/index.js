@@ -548,7 +548,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject_id: e.value,
         date: moment().format('YYYY-MM-DD'),
       });
-      if (e.children == 'Physical Activity') {
+      if (e.children.includes('Physical Activity')) {
         fetchActivityData({
           branch_id: selectedBranch?.branch?.id,
           grade_id: gradeID,
@@ -556,7 +556,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           start_date: moment().format('YYYY-MM-DD'),
           type: 'pa',
         });
-      } else if (e.children == 'Public Speaking') {
+      } else if (e.children.includes('Public Speaking')) {
         fetchActivityData({
           branch_id: selectedBranch?.branch?.id,
           grade_id: gradeID,
@@ -1058,7 +1058,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject_id: editSubject?.subject_id,
         date: moment(editData?.created_at).format('YYYY-MM-DD'),
       });
-      if (editSubject?.subject_name == 'Physical Activity') {
+      if (editSubject?.subject_name.includes('Physical Activity')) {
         fetchActivityData({
           branch_id: selectedBranch?.branch?.id,
           grade_id: editData?.grade_id,
@@ -1066,7 +1066,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           start_date: moment(editData?.created_at).format('YYYY-MM-DD'),
           type: 'pa',
         });
-      } else if (editSubject?.subject_name == 'Public Speaking') {
+      } else if (editSubject?.subject_name.includes('Public Speaking')) {
         fetchActivityData({
           branch_id: selectedBranch?.branch?.id,
           grade_id: editData?.grade_id,
