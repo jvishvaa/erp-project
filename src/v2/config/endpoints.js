@@ -26,17 +26,16 @@ export default {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
   },
   newEbook: {
-    ebookGrade : '/academic/ebook_mapped_grades_v1/',
-    ebookSubject : '/academic/ebook_mapped_subjects/',
+    ebookGrade: '/academic/ebook_mapped_grades_v1/',
+    ebookSubject: '/academic/ebook_mapped_subjects/',
     ebookList: `/academic/v1/ebook_school_wise_filter/`,
     ebookDefault: `/academic/v1/ebook_school_wise_default/`,
     ebookClose: '/academic/v1/ebook_user/',
-    ebook_ibook_count: '/academic/v1/ebook_ibook_count/'
+    ebook_ibook_count: '/academic/v1/ebook_ibook_count/',
   },
-  newibook:{
+  newibook: {
     ibookList: '/academic/v1/ibook_school_wise_filter/',
-    ibookDefault :'/academic/v1/ibook_school_wise_default/',
-
+    ibookDefault: '/academic/v1/ibook_school_wise_default/',
   },
   academics: {
     subjects: '/erp_user/subject/',
@@ -207,6 +206,7 @@ export default {
     blogListDropApi: `${newBlogURL}/api/activity_dropdown/`,
     blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
     checkBMIApi: `${newBlogURL}/api/check_student/`,
+    diaryActivities: `${newBlogURL}/api/diary_activities/`,
   },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },

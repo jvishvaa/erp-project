@@ -97,6 +97,9 @@ body {
 .th-bg-green {
   background: #20c51c;
 }
+.th-bg-red {
+  background: #f8222f;
+}
 
 .th-bg-grey {
   background-color: #f8f8f8 !important;
@@ -119,6 +122,9 @@ body {
 .th-bg-yellow-2 {
   background: #f0f1e1 !important;
 }
+.th-bg-yellow-3 {
+  background: #ff9922 !important;
+}
 .th-bg-pink-2 {
   background-color: #ffdddd !important;
 }
@@ -130,6 +136,9 @@ body {
 }
 .th-bg-violet {
   background-color: #9482da !important;
+}
+.th-bg-grey-2 {
+  background-color: #29262d80 !important;
 }
 #th-select {
   background: #f8f8f8 !important;
@@ -381,4 +390,17 @@ svg {
     color: #fff;
     background: #1b4ccb;
     border-color: #1b4ccb;
+}
+// Custom Timeline
+.th-timeline .ant-timeline-item-content {
+  margin: 0px 0px 0px 12px !important;
+  top: -12px !important;
+}
+.th-timeline .ant-timeline-item-last .ant-timeline-item-tail {
+  border-left: none !important;
+}
+
+// Full Calendar Pop Up
+.th-calendar-popover .fc .fc-popover {
+  z-index: 999 !important;
 }
