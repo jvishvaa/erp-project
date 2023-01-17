@@ -466,7 +466,7 @@ import ViewBMI from 'containers/newBlog/ViewBMI';
 import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
-
+import CalendarV2 from 'containers/attendance/CalendarEventHoliday';
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
@@ -1773,10 +1773,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                               {({ match }) => <MarkAttedance match={match} />}
                             </Route>
                             <Route exact path='/attendance-calendar/teacher-view'>
-                              {({ match }) => <AttedanceCalender match={match} />}
+                              {({ match }) => <CalendarV2 match={match} />}
                             </Route>
                             <Route exact path='/attendance-calendar/student-view'>
-                              {({ match }) => <AttedanceCalender match={match} />}
+                              {({ match }) => <CalendarV2 match={match} />}
                             </Route>
                             <Route exact path='/teacher-view/attendance'>
                               {({ match }) => <Attendance match={match} />}

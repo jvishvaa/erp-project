@@ -76,6 +76,7 @@ export default {
     staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
     staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
     gradeWise: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-wise-data/`,
+    calendarEventsEvent: `${msReportsUrl}/api/reports/v1/events/`,
   },
   teacherDashboard: {
     todaysAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/attendance-today/`,
