@@ -14,23 +14,27 @@
 .th-calendar .react-calendar__navigation__label__labelText--from {
   font-size: 14px;
   font-weight: 400 !important;
-  color: #1b4ccb !important;
-  background-color: #ffffff !important;
+  color: #ffffff !important;
+  background-color:   #89B4E2!important;
 }
 .th-calendar .react-calendar__navigation__arrow {
-  color: #1b4ccb !important;
+  color: #ffffff !important;
   font-weight: bold !important;
-  background-color: #ffffff !important;
+  background-color: #89B4E2 !important;
 }
 
 .th-calendar .react-calendar__navigation {
   display: flex;
   justify-content: center !important;
+  background-color: #89B4E2 !important;
+  border-radius: 5px;
 }
-
+.th-calendar .react-calendar__viewContainer{
+  background-color: #FCFCFD;
+}
 .th-calendar .react-calendar__navigation__label {
   flex-grow: 0.3 !important;
-  background-color: #ffffff !important;
+  background-color: #89B4E2 !important;
   pointer-events: none !important;
 }
 
@@ -47,4 +51,19 @@
 
 .th-calendar .react-calendar__year-view__months {
   height: 254px;
+}
+.calendar-card{
+  width: 50% !important;
+}
+.event_holiday .ant-card-head-title {
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.event_holidaymod .ant-modal-header{
+  background-color: #EDECF8;
+}
+
+.event_holidaymod .ant-modal-header{
+  background-color: #EDECF8;
 }
