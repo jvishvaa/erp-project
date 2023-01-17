@@ -16,6 +16,7 @@ import {
   Button,
   Popconfirm,
   Select,
+  Radio,
 } from 'antd';
 import { PlusOutlined, EditOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
@@ -27,17 +28,21 @@ const ObservationArea = () => {
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isStudent, setIsStudent] = useState(false);
+  const [tableView, setTableView] = useState('teacher');
   const [userLevelList, setUserLevelList] = useState([]);
 
   useEffect(() => {
-    observationGet();
     fetchUserLevel();
   }, []);
+  useEffect(() => {
+    observationGet({ is_student: tableView === 'teacher' ? false : true });
+  }, [tableView]);
 
-  const observationGet = () => {
+  const observationGet = (params = {}) => {
     setLoading(true);
     axios
-      .get(`${endpoints.observation.observationGet}`)
+      .get(`${endpoints.observation.observationGet}`, { params: { ...params } })
       .then((result) => {
         if (result.status === 200) {
           setData(result?.data);
@@ -79,7 +84,9 @@ const ObservationArea = () => {
         levels: res.data?.result?.levels_data?.map((each) => {
           return each?.id;
         }),
+        is_student: res.data.result.is_student,
       });
+      setIsStudent(res.data.result.is_student);
     });
   };
 
@@ -90,7 +97,7 @@ const ObservationArea = () => {
     axios
       .put(`${endpoints.observation.observationGet}${id}/`, body)
       .then((res) => {
-        observationGet();
+        observationGet({ is_student: tableView === 'teacher' ? false : true });
       })
       .catch((error) => console.log(error));
   };
@@ -101,7 +108,7 @@ const ObservationArea = () => {
       .then((result) => {
         if (result.status === 204) {
           message.success('Successfully Deleted');
-          observationGet();
+          observationGet({ is_student: tableView === 'teacher' ? false : true });
         } else {
           message.error('Something went wrong');
         }
@@ -125,7 +132,7 @@ const ObservationArea = () => {
     if (updateValues.observation_area_name) {
       const valuess = new FormData();
       valuess.append('observation_area_name', updateValues.observation_area_name);
-
+      valuess.append('is_student', updateValues.is_student);
       valuess.append('levels', updateValues.levels?.toString());
 
       if (!editId) {
@@ -136,8 +143,8 @@ const ObservationArea = () => {
         axios
           .put(`${endpoints.observation.observationGet}${editId}/`, valuess)
           .then((result) => {
-            observationGet();
             onClose();
+            setTableView(updateValues.is_student ? 'student' : 'teacher');
           })
           .catch((error) => {
             console.log(error);
@@ -146,8 +153,8 @@ const ObservationArea = () => {
         axios
           .post(`${endpoints.observation.observationGet}`, valuess)
           .then((result) => {
-            observationGet();
             onClose();
+            setTableView(updateValues.is_student ? 'student' : 'teacher');
           })
           .catch((error) => {
             console.log(error);
@@ -158,6 +165,13 @@ const ObservationArea = () => {
     }
   };
 
+  const handleApplicableFor = (e) => {
+    setIsStudent(e.target.value);
+  };
+
+  const handleTableView = (e) => {
+    setTableView(e.target.value);
+  };
   const userLevelListOptions = userLevelList?.map((each) => {
     return (
       <Option key={each?.id} value={each.id}>
@@ -248,7 +262,7 @@ const ObservationArea = () => {
     <React.Fragment>
       <Layout>
         <div className='row py-3 px-2'>
-          <div className='col-md-12' style={{ zIndex: 2 }}>
+          <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
@@ -257,6 +271,12 @@ const ObservationArea = () => {
                 Observation Area
               </Breadcrumb.Item>
             </Breadcrumb>
+          </div>
+          <div className='col-md-3 text-right th-radio'>
+            <Radio.Group onChange={handleTableView} value={tableView} buttonStyle='solid'>
+              <Radio.Button value={'teacher'}>Teacher</Radio.Button>
+              <Radio.Button value={'student'}>Student</Radio.Button>
+            </Radio.Group>
           </div>
           <div className='row mt-3'>
             <div className='col-12'>
@@ -318,6 +338,14 @@ const ObservationArea = () => {
             >
               <Input placeholder='Enter Observation Area' />
             </Form.Item>
+
+            <Form.Item label='Applicable for' name='is_student'>
+              <Radio.Group value={isStudent} onChange={handleApplicableFor}>
+                <Radio value={false}> Teacher </Radio>
+                <Radio value={true}> Student </Radio>
+              </Radio.Group>
+            </Form.Item>
+
             <Form.Item name='levels' label='Select User Level'>
               <Select
                 mode='multiple'
@@ -325,7 +353,6 @@ const ObservationArea = () => {
                 className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                 placement='bottomRight'
                 showArrow={true}
-                // onChange={(e, value) => handleUserLevel(e, value)}
                 dropdownMatchSelectWidth={false}
                 filterOption={(input, options) => {
                   return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;

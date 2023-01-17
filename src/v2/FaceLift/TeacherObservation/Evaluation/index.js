@@ -6,7 +6,7 @@ import {
   Breadcrumb,
   Select,
   Input,
-  DatePicker,
+  Radio,
   Button,
   message,
   Table,
@@ -40,13 +40,28 @@ const Evaluation = () => {
   const [teacherId, setTeacherId] = useState();
   const [teacherName, setTeacherName] = useState();
   const [teacherErp, setTeacherErp] = useState();
+  const [studentId, setStudentId] = useState();
+  const [studentName, setStudentName] = useState();
+  const [studentErp, setStudentErp] = useState();
+
   const [overallRemarks, setOverallRemarks] = useState('');
   const [teacherData, setTeacherData] = useState([]);
+  const [studentData, setStudentData] = useState([]);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [tableView, setTableView] = useState('teacher');
+
+  // useEffect(() => {
+  //   observationGet({ levels__id__in: user_level, status: true });
+  // }, []);
 
   useEffect(() => {
-    observationGet({ levels__id__in: user_level, status: true });
-  }, []);
+    observationGet({
+      is_student: tableView === 'teacher' ? false : true,
+      levels__id__in: user_level,
+      status: true,
+    });
+  }, [tableView]);
 
   const observationGet = (params = {}) => {
     setLoading(true);
@@ -90,6 +105,7 @@ const Evaluation = () => {
         innerArr.push(innerObj);
       }
       obj.observation = innerArr;
+      obj.is_student = paramData[i].is_student;
       arr.push(obj);
     }
     setModifiedData(arr);
@@ -112,7 +128,7 @@ const Evaluation = () => {
   const handleSubmit = () => {
     let flatttenData = modifiedData?.map((item) => item?.observation).flat();
     if (subjectID && teacherErp) {
-      let obj = {
+      var obj = {
         acad_session: selectedBranch?.id,
         date: moment().format('YYYY-MM-DD'),
         erp_user: teacherId,
@@ -122,24 +138,44 @@ const Evaluation = () => {
         score: _.sumBy(flatttenData, 'score'),
         report: JSON.stringify(modifiedData),
         subject_map: subjectID,
+        section_mapping: sectionID,
+        is_student: false,
+        reviewed_by: role_details?.erp_user_id,
       };
-      axios
-        .post(`${endpoints.observationName.observationReport}`, obj)
-        .then((res) => {
-          if (res.status === 201) {
-            message.success('Successfully Submitted');
-
-            setTimeout(function () {
-              window.location.reload(1);
-            }, 2000);
-          }
-        })
-        .catch((error) => {
-          console.log('error');
-        });
+    } else if (studentErp) {
+      var obj = {
+        acad_session: selectedBranch?.id,
+        date: moment().format('YYYY-MM-DD'),
+        erp_user: studentId,
+        student_name: studentName,
+        student_erp: studentErp,
+        remark: overallRemarks,
+        score: _.sumBy(flatttenData, 'score'),
+        report: JSON.stringify(modifiedData),
+        // subject_map: subjectID,
+        section_mapping: sectionID,
+        student: studentId,
+        is_student: true,
+        reviewed_by: role_details?.erp_user_id,
+      };
     } else {
       message.error('Please select all required fields ');
+      return;
     }
+    axios
+      .post(`${endpoints.observationName.observationReport}`, obj)
+      .then((res) => {
+        if (res.status === 201) {
+          message.success('Successfully Submitted');
+
+          setTimeout(function () {
+            window.location.reload(1);
+          }, 2000);
+        }
+      })
+      .catch((error) => {
+        console.log('error');
+      });
   };
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -220,6 +256,22 @@ const Evaluation = () => {
     }
   };
 
+  const fetchStudentList = (sectionID) => {
+    const params = {
+      session_year: selectedAcademicYear?.id,
+      branch_id: selectedBranch?.branch?.id,
+      grade: gradeID,
+      section: sectionID,
+    };
+    axios
+      .get(`${endpoints.communication.studentUserList}`, { params })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setStudentData(result?.data?.data?.results);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
   const handleClearGrade = () => {
     setSectionDropdown([]);
     setSubjectDropdown([]);
@@ -230,6 +282,7 @@ const Evaluation = () => {
   };
   const handleSection = (each) => {
     if (each) {
+      fetchStudentList(each?.value);
       setSectionID(each?.value);
       setSectionMappingID(each?.mappingId);
       const params = {
@@ -268,6 +321,33 @@ const Evaluation = () => {
       setTeacherErp(e.teacherName?.split('(')[1]?.split(')')[0]);
     }
   };
+
+  const handleClearStudent = () => {
+    setStudentId(null);
+    setStudentName(null);
+    setStudentErp(null);
+  };
+
+  const handleStudent = (e) => {
+    if (e) {
+      setStudentId(e.id);
+      setStudentName(e.studentName);
+      setStudentErp(e.value);
+    }
+  };
+  const handleTableView = (e) => {
+    setTableView(e.target.value);
+    setGradeID(null);
+    setSectionID(null);
+    setSubjectID(null);
+    setTeacherData([]);
+    setStudentData([]);
+    handleClearGrade();
+    handleClearSection();
+    handleClearStudent();
+    handleClearTeacher();
+  };
+
   const gradeOptions = gradeDropdown?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each?.grade_id}>
@@ -301,6 +381,19 @@ const Evaluation = () => {
         teacherName={each?.name}
       >
         {each?.name}
+      </Option>
+    );
+  });
+
+  const studentOptions = studentData?.map((each) => {
+    return (
+      <Option
+        key={each?.id}
+        value={each?.erp_id}
+        id={each?.id}
+        studentName={each?.user?.first_name + ' ' + each?.user?.last_name}
+      >
+        {each?.user?.first_name + ' ' + each?.user?.last_name}
       </Option>
     );
   });
@@ -360,15 +453,6 @@ const Evaluation = () => {
     },
   ];
 
-  console.log(
-    modifiedData,
-    teacherData,
-    teacherErp,
-    teacherId,
-    teacherName,
-    overallRemarks,
-    'modifiedDatamodifiedData'
-  );
   let marksObtained = _.sumBy(
     modifiedData?.map((item) => item?.observation).flat(),
     'score'
@@ -382,7 +466,7 @@ const Evaluation = () => {
     <React.Fragment>
       <Layout>
         <div className='row py-3 px-2'>
-          <div className='col-md-12' style={{ zIndex: 2 }}>
+          <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
@@ -390,6 +474,14 @@ const Evaluation = () => {
               <Breadcrumb.Item className='th-black-1 th-16'>Evaluation</Breadcrumb.Item>
             </Breadcrumb>
           </div>
+
+          <div className='col-md-3 text-right th-radio'>
+            <Radio.Group onChange={handleTableView} value={tableView} buttonStyle='solid'>
+              <Radio.Button value={'teacher'}>Teacher</Radio.Button>
+              <Radio.Button value={'student'}>Student</Radio.Button>
+            </Radio.Group>
+          </div>
+
           <div className='row mt-3'>
             <div className='col-12'>
               <Table
@@ -423,6 +515,7 @@ const Evaluation = () => {
                       options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     );
                   }}
+                  value={gradeID}
                 >
                   {gradeOptions}
                 </Select>
@@ -441,45 +534,70 @@ const Evaluation = () => {
                       options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     );
                   }}
+                  value={sectionID}
                 >
                   {sectionOptions}
                 </Select>
               </div>
-              <div className='col-md-3 py-2'>
-                <Select
-                  className='th-width-100 th-br-6'
-                  onChange={(e, value) => handleSubject(value)}
-                  placeholder='Select Subject*'
-                  allowClear
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                >
-                  {subjectOptions}
-                </Select>
-              </div>
-              <div className='col-md-3 py-2'>
-                <Select
-                  className='th-width-100 th-br-6'
-                  onChange={(e, value) => handleTeacher(value)}
-                  placeholder='Select Teacher*'
-                  allowClear
-                  onClear={handleClearTeacher}
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                >
-                  {teacherOptions}
-                </Select>
-              </div>
+              {tableView === 'teacher' ? (
+                <div className='col-md-3 py-2'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    onChange={(e, value) => handleSubject(value)}
+                    placeholder='Select Subject*'
+                    allowClear
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    value={subjectID}
+                  >
+                    {subjectOptions}
+                  </Select>
+                </div>
+              ) : null}
+              {tableView === 'teacher' ? (
+                <div className='col-md-3 py-2'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    onChange={(e, value) => handleTeacher(value)}
+                    placeholder='Select Teacher*'
+                    allowClear
+                    onClear={handleClearTeacher}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {teacherOptions}
+                  </Select>
+                </div>
+              ) : (
+                <div className='col-md-3 py-2'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    onChange={(e, value) => handleStudent(value)}
+                    placeholder='Select Student*'
+                    allowClear
+                    onClear={handleClearStudent}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {studentOptions}
+                  </Select>
+                </div>
+              )}
 
               <div className='col-md-3 py-2'>
                 <Input
