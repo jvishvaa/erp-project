@@ -45,11 +45,10 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
   );
 
   const data = [];
-  let schoolData = data?.school_info;
+  let schoolData = JSON.parse(localStorage.getItem('schoolDetails'));
   let userData = data?.user_info;
 
   const previewReportData = JSON.parse(previewData?.report);
-  console.log(previewReportData, previewData, 'previewReportDatapreviewReportData');
   return (
     <React.Fragment>
       <Layout>
@@ -74,7 +73,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                 </td>
                 <td width='15%' className='text-center'>
                   <img
-                    src={`https://d3ka3pry54wyko.cloudfront.net/${schoolData?.branch_logo}`}
+                    src={`https://d3ka3pry54wyko.cloudfront.net/${schoolData?.school_logo}`}
                     width={'80px'}
                   />
                 </td>
@@ -86,9 +85,13 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
             {/* Student details */}
             <tbody className='th-table-border th-12'>
               <tr>
-                <td className='th-fw-600 th-width-12 py-1'>TEACHER'S NAME</td>
+                <td className='th-fw-600 th-width-12 py-1'>
+                  {!previewData?.is_student ? "TEACHER'S NAME" : 'STUDENT NAME'}
+                </td>
                 <td className='th-width-33 text-uppercase py-1'>
-                  {previewData?.teacher_name}
+                  {previewData?.is_student
+                    ? previewData?.student_name
+                    : previewData?.teacher_name}
                 </td>
                 <td className='th-width-12 th-fw-600 py-1'>OBSERVATION DATE</td>
                 <td className='th-width-33 text-uppercase py-1'>{previewData?.date}</td>
@@ -98,7 +101,9 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                   ERP ID
                 </td>
                 <td className='text-uppercase py-1' colSpan={1}>
-                  {previewData?.teacher_erp}
+                  {previewData?.is_student
+                    ? previewData?.student_erp
+                    : previewData?.teacher_erp}
                 </td>
                 <td colSpan={1} className='th-fw-600 py-1'>
                   REPORT CREATION DATE
