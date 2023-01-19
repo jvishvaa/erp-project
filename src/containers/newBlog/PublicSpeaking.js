@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import RatingScale from './RatingScale';
 import Loader from 'components/loader/loader';
 
-// import Rating from '@material-ui/lab/Rating';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import './styles.scss';
@@ -199,11 +198,8 @@ const columns = [
   },
   {
     title: <span className='th-white th-fw-600'>Remarks</span>,
-    // dataIndex: 'attendance',
     width: '25%',
     align: 'center',
-    // key: 'total',
-    // id: 2,
     render: (text, row) => (
       row?.levels?.filter((item) => item.status == true)[0].name
     )
@@ -252,11 +248,6 @@ const PublicSpeakingWall = () => {
   const [totalPublish, setTotalPublish] = useState([]);
 
 
-  // useEffect(() => {
-  //   setValues({
-  //     rating: DEFAULT_RATING,
-  //   });
-  // }, []);
 
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
@@ -267,34 +258,6 @@ const PublicSpeakingWall = () => {
 
 
   let array = [];
-  const getRatingView = (data) => {
-    setLoading(true)
-    axios
-      .get(
-        `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        response.data.map((obj) => {
-          let temp = {};
-          temp['id'] = obj?.id;
-          temp['name'] = obj?.level.name;
-          temp['remarks'] = obj?.remarks;
-          temp['given_rating'] = obj?.given_rating;
-          temp['level'] = obj?.level?.rating;
-          array.push(temp);
-        });
-        setRatingReview(array);
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  };
   const expandMore = () => {
     setSubmit(false);
   };
@@ -321,29 +284,6 @@ const PublicSpeakingWall = () => {
       });
   };
 
-  const ActvityLocalStorage = () => {
-    setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activityWebLogin}`,
-        {},
-        {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        localStorage.setItem(
-          'ActivityManagement',
-          JSON.stringify(response?.data?.result)
-        );
-        setUserData(response?.data?.result)
-        getActivitySession();
-        setLoading(false);
-      });
-  };
   const [assinged, setAssigned] = useState([]);
 
   useEffect(() => {
@@ -375,50 +315,10 @@ const PublicSpeakingWall = () => {
       });
   };
 
-  useEffect(() => {
-    // ActvityLocalStorage();
-  }, []);
+
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalReview, setTotalReview] = useState([]);
-  const getTotalReview = async () => {
-    setLoading(true)
 
-    axios
-      .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_reviewed=True`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalReview(response?.data?.result);
-        setLoading(false);
-      });
-  };
-
-  const getTotalPublish = async () => {
-    setLoading(true)
-
-    axios
-      .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_published=True`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        debugger;
-        setTotalPublish(response?.data?.result)
-        // setTotalReview(response?.data?.result);
-        setLoading(false);
-      });
-  };
 
 
   const getTotalPublicSpeaking = async () => {
@@ -442,24 +342,6 @@ const PublicSpeakingWall = () => {
   };
 
 
-  const getTotalSubmitted = async () => {
-
-    setLoading(true)
-    axios
-      .get(
-        `${endpoints.newBlog.studentSideApi}?section_ids=null&&user_id=${User_id}&&activity_detail_id=null&is_reviewed=False&is_submitted=True`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalSubmitted(response?.data?.result);
-        setLoading(false)
-      });
-  };
 
   useEffect(() => {
     if (userData)
@@ -560,12 +442,6 @@ const PublicSpeakingWall = () => {
             }}
           >
             <Grid item xs={4} md={4} style={{ display: 'flex', alignItems: 'center' }}>
-              {/* <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' style={{color:'black'}} />}
-            aria-label='breadcrumb'
-          >
-            <Typography color='textPrimary' style={{fontSize: '22px', fontWeight:'bolder'}}>My Activities</Typography>
-          </Breadcrumbs> */}
               <div>
                 <IconButton aria-label="back" onClick={handleGoBack}>
                   <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
@@ -632,16 +508,12 @@ const PublicSpeakingWall = () => {
                           hover
                           role='checkbox'
                           tabIndex={-1}
-                        // key={`user_table_index${i}`}
                         >
                           <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                           <TableCell className={classes.tableCells}>{response?.group?.activity?.name}</TableCell>
                           <TableCell className={classes.tableCells}>
                             {`${moment(response?.scheduled_time).format('DD-MM-YYYY')}`}
                           </TableCell>
-                          {/* <TableCell className={classes.tableCells}>
-                     {response?.creator?.name}
-                   </TableCell> */}
                           <TableCell className={classes.tableCells}>
                             <Button
                               variant='outlined'
@@ -652,25 +524,7 @@ const PublicSpeakingWall = () => {
                               View More
                             </Button>{' '}
                             &nbsp;&nbsp;
-                            {/* <Button
-                       variant='outlined'
-                       size='small'
-                       className={classes.buttonColor2}
-                      //  onClick={() => handlePreview(response)}
-                     >
-                       Preview
-                     </Button> */}
                             &nbsp;&nbsp;
-                            {/* <Button
-                       variant='outlined'
-                       size='small'
-                       // style={{whiteSpace: 'nowrap'}}
-
-                       className={classes.buttonColor2}
-                       onClick={viewed}
-                     >
-                       View{' '}
-                     </Button>{' '} */}
                           </TableCell>
                         </TableRow>
                       </TableBody>
@@ -758,10 +612,6 @@ const PublicSpeakingWall = () => {
                             <div
                               style={{ paddingTop: '7px', fontWeight: 'bold', display: 'flex', justifyContent: 'center' }}
                             >
-                              {/* <span style={{ fontWeight: 'normal', fontSize:'20px' }}>
-                       
-                      Uploaded Video
-                      </span> */}
                             </div>
                             <div
                               style={{
@@ -772,11 +622,9 @@ const PublicSpeakingWall = () => {
                               }}
                             >
                               <span style={{ fontWeight: 'normal' }}>
-                                {/* Description: {previewData?.activity_detail?.description} */}
                               </span>
                             </div>
                           </div>
-                          {/* {console.log(previewData,"DP")} */}
                           <div
                             style={{
                               background: 'white',
@@ -790,7 +638,6 @@ const PublicSpeakingWall = () => {
                             <div style={{ padding: '5px' }}>
                               <div
                                 style={{
-                                  // background: `url(${previewData?.template?.template_path})`,
                                   backgroundSize: "contain",
                                   position: "relative",
                                   backgroundRepeat: "no-repeat",
@@ -803,12 +650,6 @@ const PublicSpeakingWall = () => {
                                 <video width="500" height="600" controls >
                                   <source src={`${videoData}`} type="video/mp4" />
                                   Your browser does not support HTML video.
-                                  {/* <track
-                      src={videoDetails?.signed_URL}
-                      kind="captions"
-                      srcLang="en"
-                      label="english_captions"
-                    /> */}
                                 </video>
 
                               </div>

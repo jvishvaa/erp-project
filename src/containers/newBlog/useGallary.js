@@ -26,8 +26,6 @@ const useGallary = (images) => {
   };
 
   useEffect(() => {
-    debugger;
-    console.log(slidesContainer,'HP inner')
     if(slidesContainer?.length !== undefined){
         setSlides([...slidesContainer.current.children]);
         setSlidesPagination([...slidesPaginationContainer.current.children]);
@@ -73,7 +71,6 @@ const useGallary = (images) => {
   };
 
   const slideNext = () => {
-    debugger;
     if (currentIndex < slides.length - 1) {
       setTimeout(() => {
         slides[currentIndex + 1].scrollIntoView({ behavior: "smooth" });

@@ -19,26 +19,24 @@ import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from '../../config/endpoints';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import { Rating } from '@material-ui/lab';
-import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button, Modal, Badge, Tooltip, Table as TableAnt } from 'antd';
+import { Breadcrumb, Tabs, Select, DatePicker, Pagination, Button, Modal, Badge, Tooltip, Table as TableAnt } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { Divider } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
-import { DownOutlined, CheckOutlined, SearchOutlined, FormOutlined, CloseOutlined, LikeFilled, PlayCircleOutlined, CommentOutlined, FileImageOutlined, RedoOutlined, UserOutlined } from '@ant-design/icons';
+import { DownOutlined, CheckOutlined, SearchOutlined, FormOutlined, CloseOutlined, PlayCircleOutlined, CommentOutlined, FileImageOutlined, RedoOutlined, UserOutlined } from '@ant-design/icons';
 import CancelIcon from '@material-ui/icons/Cancel';
 import BlogWallImage from "../../assets/images/ssss.jpg";
 import './blog.css';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 import ReactPlayer from 'react-player';
-// import { useGallary } from './useGallary';
 
 const drawerWidth = 350;
 const { TabPane } = Tabs;
@@ -159,7 +157,6 @@ const columns = [
   },
   {
     title: <span className='th-white th-fw-600'>Remarks</span>,
-    // dataIndex: 'attendance',
     width: '25%',
     align: 'center',
     // key: 'total',
@@ -219,8 +216,6 @@ const BlogWall = () => {
     grade: '',
     section: '',
   });
-  // const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  // const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const { Option } = Select;
@@ -266,7 +261,6 @@ const BlogWall = () => {
   const [attachmentDetails, setAttachmentDetails] = useState([])
   const [chatDetails, setChatDetails] = useState([])
   const [reloadData, setReloadData] = useState([])
-  // const user_level = userData?.user_level;
 
 
 
@@ -473,12 +467,8 @@ const BlogWall = () => {
         }
       })
       .then((response) => {
-        console.log(response, "kl4")
-        // setPostWallList(response?.data?.result)
         setPostListCount(response?.data?.result?.length)
-        // setPostWallList(postDummy)
         setPostWallList(response?.data?.result)
-        // setPostListCount(postDummy)
         setLoading(false)
       })
       .catch((err) => {
@@ -555,8 +545,6 @@ const BlogWall = () => {
         // page: pageNumber,
         publish_level: 'Intra Orchids Level',
         user_id: userId,
-        // categories: categoriesFilter
-        // is_limited: 'True',
       })
     } else if (showTab == 3) {
       fetchSchoolWall({
@@ -567,12 +555,8 @@ const BlogWall = () => {
       })
 
       fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
         publish_level: 'Branch Level',
         user_id: userId,
-        // categories:categoriesFilter
-        // is_limited: 'True',
       })
 
     } else if (showTab == 4) {
@@ -583,12 +567,8 @@ const BlogWall = () => {
         user_id: userId,
       })
       fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
         publish_level: 'Grade Level',
         user_id: userId,
-        // categories:categoriesFilter
-        // is_limited: 'True',
       })
     } else if (showTab == 5) {
       fetchSchoolWall({
@@ -598,12 +578,8 @@ const BlogWall = () => {
         user_id: userId,
       })
       fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
         is_best_blog: 'true',
         user_id: userId,
-        // categoriesFilter:categoriesFilter
-        // is_limited: 'True',
       })
     } else if (showTab == 6) {
       fetchSchoolWall({
@@ -613,12 +589,8 @@ const BlogWall = () => {
         user_id: userId,
       })
       fetchPostWall({
-        // page_size: 10,
-        // page: pageNumber,
         publish_level: 'Section Level',
         user_id: userId,
-        // categories:categoriesFilter
-        // is_limited: 'True',
       })
     }
   }
@@ -680,7 +652,6 @@ const BlogWall = () => {
     // }
   }
   const viewMorePost = (data) => {
-    // setPostView(true);
     setPostPreviewData(data)
     getViewCard(data?.id)
 
@@ -820,7 +791,6 @@ const BlogWall = () => {
   const customRenderItem = (item, props) => <item.type {...item.props} {...props} />;
 
   const customRenderThumb = (props, state) => {
-    console.log(props, 'IPAD')
     let thumbList = props.map((product, index) =>
       product?.props?.children?.props?.alt === "image" ?
         <picture key={index}>
@@ -890,7 +860,6 @@ const BlogWall = () => {
 
 
   const handleChange = (value) => {
-    console.log(`Selected: ${value}`);
     setCategoriesFilter(value)
   };
 
@@ -991,7 +960,6 @@ const BlogWall = () => {
                   placement='bottomRight'
                   showToday={false}
                   suffixIcon={<DownOutlined />}
-                  // defaultValue={[moment(), moment()]}
                   onChange={(value) => handleDateChange(value)}
                   className='th-range-picker th-br-4'
                   separator={'to'}
@@ -1018,7 +986,6 @@ const BlogWall = () => {
                 style={{ overflowY: 'scroll', display: 'flex', flexWrap: 'wrap', padding: 0, paddingBottom: '30px' }}
               >
 
-                {/* <Grid item xs={12} md={12} style={{display:'flex', flexWrap:'wrap'}}> */}
                 <Grid container spacing={4} xs={12}>
 
                   {postWallList && postWallList.map((item, index) =>
@@ -1057,9 +1024,6 @@ const BlogWall = () => {
                                   </Avatar>
                                 </div>
                                 <div style={{ padding: '0 0.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                  {/* <div style={{ fontSize: '12px', color: 'blue' }}>
-                                    Grade Name
-                                  </div> */}
                                   <div style={{ fontWeight: 600, fontSize: '16px' }}>
                                     {item?.name}
                                   </div>
@@ -1070,13 +1034,6 @@ const BlogWall = () => {
                                 <div className='col-6' style={{ padding: '0px' }}>
                                   {moment(item?.created_at).format("MMM Do YY")}
                                 </div>
-                                {/* <div className='col-6' style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                  <LikeFilled style={{ color: 'blue', fontSize: '16px' }} />
-                                </div> */}
-                                {/* <Button onClick={handleModal}>
-                                  modal
-                                </Button> */}
-
                               </div>
                             </CardActions>
                           </Card>
@@ -1087,8 +1044,6 @@ const BlogWall = () => {
                       <Grid item xs={12} md={3}>
                         <Badge.Ribbon text={item?.type.toUpperCase()} color="purple">
                           <Card
-                            // className={classes.root}
-                            // onClick={() => viewMorePost(item)}
                             onClick={() => viewMore(item)}
                             className='card-design'
                           >
@@ -1160,9 +1115,7 @@ const BlogWall = () => {
                                 className={classes.media}
                                 style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
                                 component="video"
-                                // autoPlay 
                                 controls={false}
-                                // image={'https://source.unsplash.com/user/c_v_r/1900x800'}
                                 src={item?.asset?.signed_URL}
                               />
                             </CardActionArea>
@@ -1208,12 +1161,10 @@ const BlogWall = () => {
         <Modal
           title="Public Speaking"
           centered
-          // open={postView}
           visible={openModalPublic}
           onOk={() => setOpenModalPublic(false)}
           onCancel={() => setOpenModalPublic(false)}
           width={'80vw'}
-          // bodyStyle={{ height: "90vh" }}
           footer={null}
           closeIcon={
             <CloseOutlined />
@@ -1225,22 +1176,14 @@ const BlogWall = () => {
               <div className='image'>
                 <ReactPlayer
                   url={videoDetailsPub?.signed_URL}
-                  // src={item?.thumb}
                   width="100%"
-                  // thumb={item?.thumb}
                   height="60vh"
                   pip={true}
-                  // light={item?.thumb}
-                  // playing = {isPlaying}
-                  // onPlay={handleVideoPlay}
-                  // muted
-                  // playing
                   playIcon={<Tooltip title="play">
                     <Button style={{ background: 'transparent', border: 'none', height: '30vh', width: '30vw' }} shape="circle" icon={<PlayCircleOutlined style={{ color: 'white', fontSize: '70px' }} />} />
                   </Tooltip>}
                   alt={"video"}
                   controls={true}
-                // playing={true}
                 />
               </div>
             </div>
@@ -1587,7 +1530,6 @@ const BlogWall = () => {
             onCancel={() => setOpenModal(false)}
             width={'80vw'}
             style={{ top: 20 }}
-            // bodyStyle={{ height: "90vh" }}
             footer={null}
             closeIcon={
               <CloseOutlined />
@@ -1601,7 +1543,6 @@ const BlogWall = () => {
                   showThumbs={true}
                   showStatus={false}
                   emulateTouch={true}
-                  // renderItem={customRenderItem}
                   renderThumbs={customRenderThumb}
                 >
                   {viewMorePostButton && viewMorePostButton?.content.map((item, index) => {
@@ -1616,22 +1557,13 @@ const BlogWall = () => {
                             url={item?.s3_url}
                             thumb={item?.s3_url}
                             key={index}
-                            // src={item?.thumb}
                             width="100%"
-                            // thumb={item?.thumb}
                             height="100%"
-                            // pip={true}
-                            // light={item?.thumb}
-                            // playing = {isPlaying}
-                            // onPlay={handleVideoPlay}
-                            // muted
-                            // playing
                             playIcon={<Tooltip title="play">
                               <Button style={{ background: 'transparent', border: 'none', height: '30vh', width: '30vw' }} shape="circle" icon={<PlayCircleOutlined style={{ color: 'white', fontSize: '70px' }} />} />
                             </Tooltip>}
                             alt={"video"}
                             controls={true}
-                          // playing={true}
                           />
                         )
                         }

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Upload, message, Button } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
-// import endpoints from 'v2/config/endpoints';
-// import axios from 'v2/config/axios';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import imageFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/imageFileIcon.svg';
@@ -70,7 +68,6 @@ const UploadModalBlog = (props) => {
         .then((res) => {
           if (res?.data?.status_code === 200) {
             message.success(res?.data?.message);
-            // props.setUploadedFiles((pre) => [...pre, res?.data?.data]);
             setFileList([]);
             props.handleClose();
             history.push('/blog/wall');
