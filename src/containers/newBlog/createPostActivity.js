@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect, createRef, useContext } from 'react'
-import { Avatar, Breadcrumb, Button, Spin, Divider, Modal, Form, Select } from 'antd';
+import { Avatar, Breadcrumb, Button, Spin, Divider, Modal, Form, Select, Upload } from 'antd';
+// import type { UploadProps } from 'antd';
 import './blog.css';
 import { CardActionArea, Card, CardHeader, Grid, CardMedia, makeStyles, CardActions, Drawer, TextField } from '@material-ui/core';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import IconButton from '@material-ui/core/IconButton';
-import { FormOutlined, UserOutlined, DownOutlined, SearchOutlined, FileProtectOutlined } from '@ant-design/icons';
+import { FormOutlined, UserOutlined, DownOutlined, SearchOutlined, FileProtectOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -18,6 +19,10 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import { each } from 'highcharts';
 import { validate } from '@material-ui/pickers';
 import Loader from 'containers/sure-learning/hoc/loader';
+import assessAttemption from 'containers/assessment/assess-attemption';
+import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
+import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
+import UploadModalBlog from './UploadModalBlog';
 
 
 
@@ -127,9 +132,23 @@ const CreatePostActivity = () => {
     const [description, setDescription] = useState('');
     const [activityLevel, setActivityLevel] = useState('')
     const { setAlert } = useContext(AlertNotificationContext);
-    const [assessmentReviewFile, setAssessmentReviewFile] = useState('');
+    const [assessmentReviewFile, setAssessmentReviewFile] = useState([]);
     const [activityId, setActivityId] = useState('')
     const fileRef = useRef()
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [showUploadModal, setShowUploadModal] = useState(false);
+
+    // const props: UploadProps = {
+    //     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    //     onChange({ file, fileList }) {
+    //         if (file.status !== 'uploading') {
+    //             console.log(file, fileList);
+    //             console.log(file, 'wt2')
+    //             console.log(fileList, 'wt3')
+    //             setAssessmentReviewFile(fileList)
+    //         }
+    //     },
+    // };
 
 
     const handleGoBack = () => {
@@ -225,6 +244,10 @@ const CreatePostActivity = () => {
             const formData = new FormData();
             formData.append('name', title);
             formData.append('description', description);
+            // for(let i=0 ; i< assessmentReviewFile.length; i++){
+            //     formData.append('file', assessmentReviewFile[i]);
+
+            // }
             formData.append('file', assessmentReviewFile);
             formData.append('view_level', activityLevel);
             formData.append('user_id', user_id?.id);
@@ -257,15 +280,40 @@ const CreatePostActivity = () => {
 
 
     const onFileChange = (event) => {
-        console.log(event.target.files[0])
-        setAssessmentReviewFile(event.target.files[0])
+        console.log(event.target.files[0], 'wt previous')
+        setAssessmentReviewFile(...assessmentReviewFile, event.target.files[0])
         console.log(URL.createObjectURL(event.target.files[0]))
     }
 
+    console.log(assessmentReviewFile, 'PP')
     const handleClearActivity = () => {
         setActivityId('')
         setActivityLevel("")
     }
+
+    const handleRemoveUploadedFile = (index) => {
+        const newFileList = uploadedFiles.slice();
+        newFileList.splice(index, 1);
+        setUploadedFiles(newFileList);
+    };
+
+    const handleUploadedFiles = (value) => {
+        console.log(value,'wt 666')
+        setUploadedFiles(value);
+    };
+
+    const handleShowModal = () => {
+        if (!boardId) {
+          setAlert('error','Please Select Branch')
+          return;
+        } else {
+        setShowUploadModal(true);
+        }
+    };
+
+    const handleUploadModalClose = () => {
+        setShowUploadModal(false);
+      };
 
 
 
@@ -398,7 +446,7 @@ const CreatePostActivity = () => {
                                                         rows='8'
                                                         variant='outlined'
                                                     />
-                                                    <div className='col-12' style={{ display: 'flex', padding: '0.5rem 1rem' }}>
+                                                    {/* <div className='col-12' style={{ display: 'flex', padding: '0.5rem 1rem' }}>
                                                         <input type="file"
                                                             accept=".jpeg, .png, .mp4"
                                                             id="outlined-button-file"
@@ -406,9 +454,66 @@ const CreatePostActivity = () => {
                                                             onChange={onFileChange}
                                                             ref={fileRef}
                                                         />
+                                                    </div> */}
+                                                    <div className='col-12' style={{ display: 'flex', padding: '0.5rem 1rem' }}>
+                                                        {/* <Upload {...props}> */}
+                                                            <Button  onClick={handleShowModal} icon={<UploadOutlined />}>Upload</Button>
+                                                        {/* </Upload> */}
                                                     </div>
 
-                                                    <div className='col-12' style={{ display: 'flex', alignItem: 'center', padding: '0.5rem 1rem', justifyContent: 'center' }}>
+                                                    {/* <div className='col-12' style={{ display: 'flex', padding: '0.5rem 1rem' }}> */}
+                                                        {/* <div className='col-md-6 py-3 py-md-0'>
+                                                            <span className='th-grey th-14'>Upload Attachments</span>
+                                                            <div
+                                                                className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
+                                                                style={{ border: '1px solid #D9D9D9' }}
+                                                            >
+                                                                <div className='col-md-10 col-9'>
+                                                                    <div className='row'>
+                                                                        {uploadedFiles?.map((item, index) => {
+                                                                            const fullName =
+                                                                                item[0]?.split('/')[item[0]?.split('/').length - 1];
+
+                                                                            const fileName =
+                                                                                fullName.split('.')[fullName?.split('.').length - 2];
+                                                                            const extension =
+                                                                                fullName.split('.')[fullName?.split('.').length - 1];
+                                                                            return (
+                                                                                <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                                                                                    <span className='th-12 th-black-1 text-truncate'>
+                                                                                        {fileName}
+                                                                                    </span>
+                                                                                    <span className='th-12 th-black-1 '>.{extension}</span>
+
+                                                                                    <span className='ml-md-3 ml-1 th-pointer '>
+                                                                                        <img
+                                                                                            src={smallCloseIcon}
+                                                                                            onClick={() => handleRemoveUploadedFile(index)}
+                                                                                        />
+                                                                                    </span>
+                                                                                </div>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                                <div
+                                                                    className='col-md-2 col-3 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'
+                                                                    onClick={handleShowModal}
+                                                                >
+                                                                    <span className='th-12'>
+                                                                        {' '}
+                                                                        <u>Upload</u>
+                                                                    </span>
+                                                                    <span className='ml-3 pb-2'>
+                                                                        <img src={uploadIcon} />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div> */}
+                                                    {/* </div> */}
+
+
+                                                    {/* <div className='col-12' style={{ display: 'flex', alignItem: 'center', padding: '0.5rem 1rem', justifyContent: 'center' }}>
                                                         <Button type="primary"
                                                             icon={<FileProtectOutlined />}
                                                             // onClick={goSearch}
@@ -416,7 +521,7 @@ const CreatePostActivity = () => {
                                                             size={'medium'}>
                                                             Submit
                                                         </Button>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
 
@@ -432,6 +537,17 @@ const CreatePostActivity = () => {
                         </div>
 
                     </div>
+                    
+                    <UploadModalBlog
+                        show={showUploadModal}
+                        branchId={boardId}
+                        title={title}
+                        description={description} 
+                        view_level={activityLevel}
+                        user_id={user_id?.id}                                              
+                        handleClose={handleUploadModalClose}
+                        setUploadedFiles={handleUploadedFiles}
+                    />
 
                 </Layout>
 
