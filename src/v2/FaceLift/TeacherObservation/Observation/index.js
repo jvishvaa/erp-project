@@ -43,6 +43,12 @@ const Observation = () => {
   useEffect(() => {
     getObservationArea({
       status: true,
+      is_student: tableView === 'teacher' ? false : true,
+    });
+  }, []);
+  useEffect(() => {
+    getObservationArea({
+      status: true,
       is_student: isStudent,
     });
   }, [isStudent]);
@@ -132,12 +138,11 @@ const Observation = () => {
     setDrawerOpen(false);
     setEditId(null);
     formRef.current.resetFields();
-    setObseravationAreaData([]);
   };
 
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
-    if (updateValues.observation) {
+    if (updateValues.observation && updateValues.observation_area && updateValues.score) {
       const valuess = new FormData();
       valuess.append('observation', updateValues.observation);
       valuess.append('score', updateValues.score);
@@ -153,6 +158,9 @@ const Observation = () => {
           .then((result) => {
             onClose();
             setTableView(updateValues.is_student ? 'student' : 'teacher');
+            observationGet({
+              is_student: updateValues.is_student === 'teacher' ? false : true,
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -163,6 +171,9 @@ const Observation = () => {
           .then((result) => {
             onClose();
             setTableView(updateValues.is_student ? 'student' : 'teacher');
+            observationGet({
+              is_student: updateValues.is_student === 'teacher' ? false : true,
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -344,7 +355,7 @@ const Observation = () => {
               </Form.Item>
             </div>
             <div className='col-md-12'>
-              <Form.Item label='Applicable for' name='is_student'>
+              <Form.Item label='Applicable for' name='is_student' defaultValue={false}>
                 <Radio.Group value={isStudent} onChange={handleApplicableFor}>
                   <Radio value={false}> Teacher </Radio>
                   <Radio value={true}> Student </Radio>
@@ -357,7 +368,15 @@ const Observation = () => {
                 label='Select Observation Area'
                 rules={[{ required: true, message: 'Please Select Observation Area' }]}
               >
-                <Select placeholder='Select Observation Area'>
+                <Select
+                  showSearch
+                  placeholder='Select Observation Area'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
                   {observationAreaOptions}
                 </Select>
               </Form.Item>

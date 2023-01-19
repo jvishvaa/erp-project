@@ -145,6 +145,9 @@ const ObservationArea = () => {
           .then((result) => {
             onClose();
             setTableView(updateValues.is_student ? 'student' : 'teacher');
+            observationGet({
+              is_student: updateValues.is_student === 'teacher' ? false : true,
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -155,6 +158,9 @@ const ObservationArea = () => {
           .then((result) => {
             onClose();
             setTableView(updateValues.is_student ? 'student' : 'teacher');
+            observationGet({
+              is_student: updateValues.is_student === 'teacher' ? false : true,
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -340,7 +346,11 @@ const ObservationArea = () => {
             </Form.Item>
 
             <Form.Item label='Applicable for' name='is_student'>
-              <Radio.Group value={isStudent} onChange={handleApplicableFor}>
+              <Radio.Group
+                value={isStudent}
+                onChange={handleApplicableFor}
+                defaultValue={false}
+              >
                 <Radio value={false}> Teacher </Radio>
                 <Radio value={true}> Student </Radio>
               </Radio.Group>
