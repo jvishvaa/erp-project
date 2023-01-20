@@ -147,7 +147,10 @@ const Observation = () => {
       valuess.append('observation', updateValues.observation);
       valuess.append('score', updateValues.score);
       valuess.append('observation_area', updateValues.observation_area);
-      valuess.append('is_student', updateValues.is_student);
+      valuess.append(
+        'is_student',
+        updateValues.is_student ? updateValues.is_student : false
+      );
       if (!editId) {
         valuess.append('status', true);
       }
@@ -159,7 +162,7 @@ const Observation = () => {
             onClose();
             setTableView(updateValues.is_student ? 'student' : 'teacher');
             observationGet({
-              is_student: updateValues.is_student === 'teacher' ? false : true,
+              is_student: updateValues.is_student ? true : false,
             });
           })
           .catch((error) => {
@@ -172,7 +175,7 @@ const Observation = () => {
             onClose();
             setTableView(updateValues.is_student ? 'student' : 'teacher');
             observationGet({
-              is_student: updateValues.is_student === 'teacher' ? false : true,
+              is_student: updateValues.is_student ? true : false,
             });
           })
           .catch((error) => {

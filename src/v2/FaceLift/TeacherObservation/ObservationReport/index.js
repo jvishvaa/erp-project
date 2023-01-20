@@ -85,7 +85,7 @@ const ObservationReport = () => {
         subject_map__section_mapping__grade_id: gradeID,
         subject_map__section_mapping__section_id: sectionID,
         subject_map__section_mapping__acad_session__branch_id: selectedBranch?.branch?.id,
-        student_name__icontains: studentName,
+        teacher_name__icontains: studentName,
         is_student: true,
       });
     }
