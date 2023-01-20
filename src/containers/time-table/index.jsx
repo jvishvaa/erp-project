@@ -338,6 +338,7 @@ const TimeTable = (props) => {
   const handlePeriodType = (value) => {
     setPeriodType(value);
     setperiodTypeId(value?.id);
+    setSectionIdOption(null);
   };
   return (
     <>

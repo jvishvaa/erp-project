@@ -93,6 +93,7 @@ export default {
     sectionwiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections-students/`,
   },
   studentDashboard: {
+    checkConfigStatus: `${msReportsUrl}/api/acad_performance/get-dashboard-cfg/`,
     todaysClasses: `${msOriginUrl}/api/oncls/v1/student-oncls/`,
     pendingHomework: `${msReportsUrlNew}/api/acad_performance/v1/student-hw-report-dash/`,
     pendingClasswork: `${msReportsUrlNew}/api/acad_performance/v1/student-cw-report-dash/`,
@@ -100,6 +101,11 @@ export default {
     studentAnnualAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-annual-attreport/`,
     studentMonthlyAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-monthly-attreport/`,
     studentUpcomingHolidays: `${msReportsUrl}/api/reports/v1/stu-upcoming-holydays/`,
+    assessmentPerformance: `${msReportsUrl}/api/reports/student_performance/`,
+    upcomingAssessment: `${msReportsUrl}/api/reports/upcoming_exam/`,
+    homeworkReport: `${msReportsUrl}/api/reports/dashboard_student_hw_performance/`,
+    diaryStats: `${msReportsUrl}/api/reports/diary_homework_count/`,
+    todaysTimeTable: `${msReportsUrl}/api/reports/retrieve_daily_periods/`,
   },
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
