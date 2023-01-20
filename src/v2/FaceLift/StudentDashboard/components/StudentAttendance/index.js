@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import axios from 'v2/config/axios';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
-import moment from 'moment';
+import { Progress } from 'antd';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const StudentAttendance = (props) => {
+  const history = useHistory();
   const [attendanceData, setAttendanceData] = useState([]);
   const [monthlyAttendanceData, setMonthlyAttendanceData] = useState([]);
 
@@ -33,9 +34,27 @@ const StudentAttendance = (props) => {
   };
 
   const options = {
+    chart: {
+      type: 'column',
+    },
     title: {
       text: 'Last 3 Month Attendance',
       align: 'left',
+    },
+    dataLabels: {
+      enabled: true,
+    },
+    plotOptions: {
+      series: {
+        stacking: 'normal',
+      },
+      column: {
+        dataLabels: {
+          enabled: true,
+          inside: false,
+          // overflow: 'none',
+        },
+      },
     },
     series: [
       {
@@ -44,6 +63,34 @@ const StudentAttendance = (props) => {
           return item?.attendance_details?.present_percentage;
         }),
         name: 'Attendance %',
+        color: '#20c51c',
+        dataLabels: {
+          format: '{point.y:.1f} %',
+          enabled: true,
+          align: 'center',
+          style: {
+            fontSize: '8px',
+          },
+        },
+        // pointWidth: 20,
+      },
+
+      {
+        showInLegend: false,
+        data: monthlyAttendanceData?.slice(-3)?.map((item) => {
+          return item?.attendance_details?.present_percentage - 100;
+        }),
+        name: 'Absent %',
+        color: '#F32D2D',
+        dataLabels: {
+          format: '{point.y:.1f} %',
+          enabled: true,
+          align: 'center',
+          style: {
+            fontSize: '8px',
+          },
+        },
+        // pointWidth: 20,
       },
     ],
     xAxis: {
@@ -52,10 +99,12 @@ const StudentAttendance = (props) => {
         enabled: false,
       },
       categories: monthlyAttendanceData?.slice(-3)?.map((item) => {
-        return moment(item?.month, 'M').format('MMMM');
+        return item?.month_name + ' ' + item?.year;
       }),
     },
     yAxis: {
+      min: -100,
+      max: 100,
       title: {
         text: 'Attendance %',
       },
@@ -66,6 +115,18 @@ const StudentAttendance = (props) => {
     credits: {
       enabled: false,
     },
+    scales: {
+      xAxes: [
+        {
+          stacked: true,
+          gridLines: {
+            display: false,
+          },
+          barPercentage: 0.2,
+        },
+      ],
+    },
+    maintainAspectRatio: false,
   };
 
   return (
@@ -111,15 +172,30 @@ const StudentAttendance = (props) => {
           </div>
           <div className='col-md-12'>
             <div
-              className='d-flex justify-content-between mt-2 p-2 '
+              className='d-flex justify-content-between align-items-center p-2 '
               style={{ background: '#F8F8F8', borderRadius: 6 }}
             >
               <div className='th-black-2'>Overall Attendance</div>
-              <div className='th-green th-fw-600'>{attendanceData?.att_ptnge}</div>
-              <div className='th-primary th-pointer'>
-                <Link to={'/student-attendance-dashboard'}>
-                  <u>{'View >'}</u>
-                </Link>
+              <div className='th-green th-fw-600'>
+                <Progress
+                  type='circle'
+                  percent={attendanceData?.present_percentage}
+                  strokeColor='#20c51c'
+                  width={40}
+                  format={() => (
+                    <span className='th-8 th-green'>{attendanceData?.att_ptnge}</span>
+                  )}
+                />
+              </div>
+              {/* <div className='th-primary th-pointer'>
+              
+              </div> */}
+              <div
+                className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
+                style={{ outline: '1px solid #d9d9d9' }}
+                onClick={() => history.push('/student-attendance-dashboard')}
+              >
+                View Details
               </div>
             </div>
           </div>

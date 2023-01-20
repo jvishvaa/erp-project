@@ -64,6 +64,9 @@ body {
 .th-green-1 {
   color: #09a23a;
 }
+.th-green-2 {
+  color: #3aac45;
+}
 
 .th-blue {
   color: #1b4ccb;
@@ -386,21 +389,24 @@ svg {
   border-color: #1b4ccb;
   background: #1b4ccb;
 }
-.th-radio > .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-    color: #fff;
-    background: #1b4ccb;
-    border-color: #1b4ccb;
-}
-// Custom Timeline
-.th-timeline .ant-timeline-item-content {
-  margin: 0px 0px 0px 12px !important;
-  top: -12px !important;
-}
-.th-timeline .ant-timeline-item-last .ant-timeline-item-tail {
-  border-left: none !important;
+.th-radio
+  > .ant-radio-group-solid
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,
+.ant-radio-group-solid
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  color: #fff;
+  background: #1b4ccb;
+  border-color: #1b4ccb;
 }
 
 // Full Calendar Pop Up
 .th-calendar-popover .fc .fc-popover {
   z-index: 999 !important;
+}
+.th-calendar-popover .fc .fc-popover-title {
+  visibility: hidden !important;
+}
+.th-calendar-popover .fc-more-link {
+  bottom: 0px !important;
+  height: 25px !important;
 }

@@ -1,0 +1,27 @@
+.th-timeline .ant-timeline-item-content {
+  margin: 0px 0px 0px 12px !important;
+  top: -12px !important;
+  left: 15% !important;
+  width: 83% !important;
+}
+.th-timeline .ant-timeline-item-last .ant-timeline-item-tail {
+  border-left: none !important;
+}
+.th-timeline .ant-timeline.ant-timeline-label .ant-timeline-item-tail{
+    left: 15% !important;
+}
+.th-timeline .ant-timeline-item-head{
+    left: 15% !important;
+    top:20% !important
+}
+.th-timeline .ant-timeline-item-tail{    
+    top:28px !important
+}
+.th-timeline .ant-timeline.ant-timeline-label .ant-timeline-item-label{
+    width: 15% !important;
+    text-align: center !important;
+}
+.th-assessment-progress .ant-progress > .ant-progress-inner .ant-progress-circle-gradient{
+  width: 220px !important;
+  height: 220px !important;
+}

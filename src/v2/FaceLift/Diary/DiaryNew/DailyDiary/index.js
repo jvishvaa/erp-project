@@ -1177,6 +1177,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     allowClear
                     onClear={handleClearGrade}
                     showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
@@ -1196,6 +1197,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleSection(value)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     placeholder='Section'
                     allowClear
                     onClear={handleClearSection}
@@ -1218,6 +1220,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleSubject(value)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     placeholder='Subject'
                     allowClear
                     onClear={handleClearSubject}
@@ -1904,6 +1907,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     // disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleChapter(value)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     placeholder={
                       chapterName ? (
                         <div className='th-black-2'>{chapterName}</div>
@@ -1934,6 +1938,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     // disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleKeyConcept(value)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     placeholder={
                       keyConceptName ? (
                         <div className='th-black-2'>{keyConceptName}</div>
