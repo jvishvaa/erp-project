@@ -108,6 +108,13 @@ export default {
     diaryStats: `${msReportsUrl}/api/reports/diary_homework_count/`,
     todaysTimeTable: `${msReportsUrl}/api/reports/retrieve_daily_periods/`,
   },
+  assessmentDashboard: {
+    studentMonthwiseAssessment: `${msReportsUrl}/api/acad_performance/month-wise-assessment-report/`,
+    studentSubjectwiseAssessment: `${msReportsUrl}/api/acad_performance/subject-wise-assessment-report/`,
+    studentTestwiseAssessment: `${msReportsUrl}/api/acad_performance/test-wise-assessment-report/`,
+    studentTestDetail: `${msReportsUrl}/api/acad_performance/test-detail-report/`,
+    assessmentConfig: `${msReportsUrl}/api/acad_performance/get-dashboard-cfg/`,
+  },
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,

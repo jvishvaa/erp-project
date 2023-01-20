@@ -47,6 +47,7 @@ import endpoints from 'config/endpoints';
 import axios from 'axios';
 import CreateDiary from 'v2/FaceLift/Diary/DiaryNew/CreateDiary';
 import DiaryMain from 'v2/FaceLift/Diary';
+import StudentAssessmentDashboard from 'v2/FaceLift/AssessmentDashboard/studentAssessmentDashboard';
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -220,6 +221,10 @@ const V2Router = () => {
                         </Route>
                         <Route exact path='/bmi/view'>
                           {({ match }) => <ViewBMI match={match} />}
+                        </Route>
+                        {/* Assesment dashboard */}
+                        <Route exact path='/student-assessment-dashboard'>
+                          {({ match }) => <StudentAssessmentDashboard match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {
