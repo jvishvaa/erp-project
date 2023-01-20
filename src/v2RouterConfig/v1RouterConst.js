@@ -459,7 +459,7 @@ import NewEbookView from 'containers/ebooks/NewEbook';
 import Filters from 'containers/assessment-central/create-question-paper-new/filters';
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig'
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
-
+import CalendarV2 from 'containers/attendance/CalendarEventHoliday';
 // const [theme, setTheme] = useState(() => themeGenerator());
 
 const V1Router = [
@@ -1365,10 +1365,10 @@ const V1Router = [
     {({ match }) => <MarkAttedance match={match} />}
   </Route>,
   <Route exact path='/attendance-calendar/teacher-view'>
-    {({ match }) => <AttedanceCalender match={match} />}
+    {({ match }) => <CalendarV2 match={match} />}
   </Route>,
   <Route exact path='/attendance-calendar/student-view'>
-    {({ match }) => <AttedanceCalender match={match} />}
+    {({ match }) => <CalendarV2 match={match} />}
   </Route>,
   <Route exact path='/teacher-view/attendance'>
     {({ match }) => <Attendance match={match} />}

@@ -48,3 +48,28 @@ border-radius: 10px;
         }
     }
 }
+
+
+
+.afterDivide{
+    .ant-segmented-item{
+        margin-bottom: 0px !important;
+    }
+}
+.cardsevents{
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 70vh;
+}
+
+.titleCardHoliday{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+.dateAreaCard{
+    font-size: 10px;
+    display: flex;
+    justify-content: space-between;
+}

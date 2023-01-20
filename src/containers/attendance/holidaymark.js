@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, createRef } from 'react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loader from '../../components/loader/loader';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
+import { Breadcrumb, Checkbox, Select, Input, Button, message, Form, Spin, DatePicker } from 'antd';
 
 import { IconButton } from '@material-ui/core';
 import DateRangeIcon from '@material-ui/icons/DateRange';
@@ -11,7 +12,6 @@ import moment from 'moment';
 import Layout from 'containers/Layout';
 import Divider from '@material-ui/core/Divider';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
-import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import axiosInstance from '../../config/axios';
@@ -22,96 +22,79 @@ import '../Calendar/Styles.css';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import './AttendanceCalender.scss';
-function getDaysAfter(date, amount) {
-  return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
-}
+import { DownOutlined, CheckOutlined } from '@ant-design/icons';
+
+const { Option } = Select;
+const { RangePicker } = DatePicker;
+const { TextArea } = Input;
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: '1rem',
+    borderRadius: '10px',
+    width: '100%',
+
+    margin: '1.5rem -0.1rem',
+  },
+  bord: {
+    margin: theme.spacing(1),
+    border: 'solid lightgrey',
+    borderRadius: 10,
+  },
+  button: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    // width: '20%',
+  },
+}));
+
 
 const HolidayMark = () => {
-  const [flag,setFlag] = useState(false);
+  const [flag, setFlag] = useState(false);
   const [evnetcategoryType, setEventcategoryType] = useState([]);
   const [selectedSession, setSelectedSession] = useState([]);
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
     moment().subtract(6, 'days'),
     moment(),
   ]);
+  const formRef = createRef();
 
   const [holidayName, setHolidayName] = useState('');
   const [holidayDesc, setHolidayDesc] = useState('');
-  const [minStartDate, setMinStartDate] = useState();
-  const [maxStartDate, setMaxStartDate] = useState();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
-
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      padding: '1rem',
-      borderRadius: '10px',
-      width: '100%',
-
-      margin: '1.5rem -0.1rem',
-    },
-    bord: {
-      margin: theme.spacing(1),
-      border: 'solid lightgrey',
-      borderRadius: 10,
-    },
-    button: {
-      display: 'flex',
-      justifyContent: 'space-evenly',
-      // width: '20%',
-    },
-  }));
-
+  const classes = useStyles();
+  const [academicYear, setAcademicYear] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [gradeList, setGradeList] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSection, setSelectedSection] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [dates, setDates] = useState(null);
   const handleChangeHoliday = (event) => {
     setHolidayName(event.target.value);
   };
   const handleChangeHolidayDesc = (event) => {
     setHolidayDesc(event.target.value);
   };
-
-  const handleBranch = (event = {}, value = []) => {
-    setFlag(true);
-    setSelectedBranch([]);
-    setGradeList([]);
-    if (value?.length) {
-      value = value.filter(({id}) => id === 'all').length === 1 
-      ? [...branchList].filter(({id}) => id !== 'all') : value;
-      const ids = value.map((el) => el);
-      const selectedSession = value.map((el) => el?.acadSession);
-      setSelectedSession(selectedSession);
-      const selectedId = value.map((el) => el?.id);
-      setSelectedBranch(ids);
-      callApi(
-        `${endpoints.academics.grades}?session_year=${
-          selectedAcademicYear?.id
-        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-        'gradeList'
-      );
-    }
-    if (value?.length === 0) {      
-      setSelectedGrade([]);
-      setGradeList([]);
-    }
-  };
-
-  const handleGrade = (event = {}, value = []) => {
-    setSelectedGrade([]);
-    if (value?.length) {
-      value =
-        value.filter(({ grade_id }) => grade_id === 'all').length === 1
-          ? [...gradeList].filter(({ grade_id }) => grade_id !== 'all')
-          : value;
-      const ids = value.map((el) => el) || [];
-      setSelectedGrade(ids);
-    }
-  };
-
+  const user_level =
+  JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(startDate , endDate , 'startt');
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+    let branches = branchList.filter(item => selectedBranch.includes(item?.branch?.id))
+    console.log(branches);
 
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
@@ -133,18 +116,17 @@ const HolidayMark = () => {
       setAlert('warning', 'Select Grade');
       return;
     }
-
     if (isEdit) {
       axiosInstance
         .put(endpoints.academics.getHoliday, {
           title: holidayName,
           description: holidayDesc,
-          holiday_start_date: moment(startDateTechPer)?.format('YYYY-MM-DD'),
-          holiday_end_date: moment(endDateTechPer)?.format('YYYY-MM-DD'),
-          branch: selectedBranch.map((el) => el?.branch?.id),
-          grade: selectedGrade.map((el) => el?.grade_id),
+          holiday_start_date: moment(startDate).format('YYYY-MM-DD'),
+          holiday_end_date: moment(endDate).format('YYYY-MM-DD'),
+          branch: selectedBranch,
+          grade: selectedGrade,
           holiday_id: history?.location?.state?.data?.id,
-          acad_session: selectedSession,
+          acad_session: branches.map((el) => el?.id),
         })
         .then((result) => {
           setAlert('success', result.data.message);
@@ -159,13 +141,12 @@ const HolidayMark = () => {
         .post(endpoints.academics.getHoliday, {
           title: holidayName,
           description: holidayDesc,
-          holiday_start_date: startDateTechPer.format('YYYY-MM-DD'),
-          holiday_end_date: endDateTechPer.format('YYYY-MM-DD'),
-          branch: selectedBranch.map((el) => el?.id),
-          grade: selectedGrade.map((el) => el?.grade_id),
+          holiday_start_date: startDate,
+          holiday_end_date: endDate,
+          branch: selectedBranch,
+          grade: selectedGrade,
           academic_year: selectedAcademicYear?.id,
-          grade: selectedGrade.map((el) => el?.grade_id),
-          acad_session: selectedSession,
+          acad_session: branches.map((el) => el?.id),
         })
 
         .then((result) => {
@@ -179,36 +160,26 @@ const HolidayMark = () => {
     }
   };
   const handleBackButtonClick = (e) => {
-    const payload = {
-      academic_year_id: history?.location?.state?.payload?.academic_year_id,
-      branch_id: history?.location?.state?.payload?.branch_id,
-      grade_id: history?.location?.state?.payload?.grade_id,
-      section_id: history?.location?.state?.payload?.section_id,
-      startDate: history?.location?.state?.payload?.startDate,
-      endDate: history?.location?.state?.payload?.endDate,
-      counter: history?.location?.state?.payload?.counter,
-    };
-    history.push({
-      pathname: '/attendance-calendar/teacher-view',
-      state: {
-        payload: payload,
-        backButtonStatus: true,
-      },
-    });
+    if(user_level == 13 ){
+      history.push({
+        pathname: '/attendance-calendar/student-view',
+        state: {
+          payload: history?.location?.state?.payload,
+          backButtonStatus: true,
+        },
+      });  
+    } else {
+      history.push({
+        pathname: '/attendance-calendar/teacher-view',
+        state: {
+          payload: history?.location?.state?.payload,
+          backButtonStatus: true,
+        },
+      });
+    }
   };
 
-  const classes = useStyles();
-  const [academicYear, setAcademicYear] = useState([]);
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
-  const [branchList, setBranchList] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState([]);
-  const [gradeList, setGradeList] = useState([]);
-  const [selectedGrade, setSelectedGrade] = useState([]);
-  const [sectionList, setSectionList] = useState([]);
-  const [selectedSection, setSelectedSection] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
+
 
   function callApi(api, key) {
     setLoading(true);
@@ -222,43 +193,12 @@ const HolidayMark = () => {
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            if(result?.data?.length !== 0){
-              const transformedData = result?.data?.data?.results?.map((obj) => ({
-                id: obj?.branch?.id,
-                branch_name: obj?.branch?.branch_name,
-                acadSession : obj?.id,
-              }))
-              if(transformedData){
-                transformedData.unshift({
-                  branch_name: 'Select All',
-                  id: 'all',
-                  acadSession : 'Acad session'
-                });
-                // setBranchList(result?.data?.data?.results || []);
-                setBranchList(transformedData);
 
-              }
-            }
+            setBranchList(result?.data?.data?.results)
           }
           if (key === 'gradeList') {
-            if(result?.data?.length !== 0){
-              const transformedData = result?.data?.data?.map((obj) => ({
-                grade_id: obj?.grade_id,
-                grade__grade_name : obj?.grade__grade_name,
-                acadSession : obj?.id,
-              }));
-              if(transformedData){
-                transformedData.unshift({
-                  grade__grade_name : 'Select All',
-                  grade_id: 'all',
-                  acadSession : 'Acad session'
-                });
-                // setGradeList(result.data.data || []);
-                setGradeList(transformedData);
 
-              }
-
-            }
+            setGradeList(result?.data?.data);
           }
           if (key === 'section') {
             setSectionList(result.data.data);
@@ -291,7 +231,6 @@ const HolidayMark = () => {
       });
     }
   }, [window.location.pathname]);
-  console.log(moduleId, 'MODULE_ID');
 
   useEffect(() => {
     callApi(
@@ -309,78 +248,67 @@ const HolidayMark = () => {
       setIsEdit(true);
       setHolidayDesc(history?.location?.state?.data?.description);
       setHolidayName(history?.location?.state?.data?.title);
-      handleGrade(history?.location?.state?.data?.grade);
-      setDateRangeTechPer([
-        moment(history?.location?.state?.data?.holiday_start_date).format('MM/DD/YYYY'),
-        moment(history?.location?.state?.data?.holiday_end_date).format('MM/DD/YYYY'),
-      ]);
 
-      // if (history?.location?.state?.data?.branch?.length) {
-      //   const ids = history?.location?.state?.data?.branch.map((el, index) => el);
+      console.log([moment(history?.location?.state?.data?.holiday_start_date), moment(history?.location?.state?.data?.holiday_end_date)], 'datearray');
+      let branches = branchList?.filter(item => history.location?.state?.data?.acad_session.includes(item?.id))
+      console.log(branches, 'branches');
+      let setBranchVal = branches?.map(item => item?.branch?.id)
 
-      //   let filterBranch = branchList.filter(
-      //     (item) => ids.indexOf(item.branch.id) !== -1
-      //   );
-      //   setSelectedBranch(filterBranch);
-      //   if (moduleId) {
-      //     callApi(
-      //       `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${history?.location?.state?.data?.branch}&module_id=${moduleId}`,
-      //       'gradeList'
-      //     );
-      //   }
-      // }
-      // if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
-      //   const ids = history?.location?.state?.data?.grade.map((el, index) => el);
-
-      //   let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
-      //   setSelectedGrade(filterBranch);
-      // }
+      formRef.current.setFieldsValue({
+        holiday_name: history?.location?.state?.data?.title,
+        holiday_desc: history?.location?.state?.data?.description,
+        branch: setBranchVal,
+        date:[moment(history?.location?.state?.data?.holiday_start_date), moment(history?.location?.state?.data?.holiday_end_date)]
+      });
+      setSelectedBranch(setBranchVal)
+      getGrades(setBranchVal)
+    }
+    if(history?.location?.state?.data?.holiday_start_date){
+      setDates([moment(history?.location?.state?.data?.holiday_start_date), moment(history?.location?.state?.data?.holiday_end_date)])
+      setStartDate(moment(history?.location?.state?.data?.holiday_start_date))
+      setEndDate(moment(history?.location?.state?.data?.holiday_end_date))
     }
   }, [branchList]);
 
-  useEffect(() =>{
-    if(flag == false){
-      if(isEdit && branchList.length>0){
-        const ids = history?.location?.state?.data?.grade.map((el, index) => el);
-        let filterGrade = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
-        setSelectedGrade(filterGrade);
-      }
-    }
-  },[gradeList])
+  // useEffect(() => {
+  //   if (flag == false) {
+  //     if (isEdit && branchList.length > 0) {
+  //       const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+  //       let filterGrade = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+  //       setSelectedGrade(filterGrade);
+  //     }
+  //   }
+  // }, [gradeList])
 
   const isEdited = history?.location?.state?.isEdit;
 
   useEffect(() => {
-    if (isEdited && branchList.length > 0) {
-      gradeEdit();
+    if (isEdited && selectedBranch) {
+      // gradeEdit();
     }
-  }, [isEdited, branchList]);
+  }, [isEdited, selectedBranch]);
 
-  const gradeEdit = () => {
-    const acadId = history?.location?.state?.acadId;
-    let filterBranch = branchList.filter((item) => acadId.indexOf(item?.acadSession) !== -1);
-    const selectedSession = filterBranch.map((el) => el?.acadSession)
-    setSelectedSession(selectedSession)
-    setSelectedBranch(filterBranch);
+  // const gradeEdit = () => {
 
-    const allBranchIds = filterBranch.map((i) => {
-      return i?.id;
-    });
-    if(moduleId){
-      callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${allBranchIds}&module_id=${moduleId}`,
-        'gradeList'
-      );
-    }
-    const gradeId = history?.location?.state?.gradeId;
-    let filterGrade = gradeList.filter((item) => gradeId.indexOf(item.id) !== -1);
-  };
+  //   if (moduleId) {
+  //     callApi(
+  //       `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${}&module_id=${moduleId}`,
+  //       'gradeList'
+  //     );
+  //   }
+  //   const gradeId = history?.location?.state?.gradeId;
+  //   let filterGrade = gradeList.filter((item) => gradeId.indexOf(item.id) !== -1);
+  // };
 
   useEffect(() => {
     if (history?.location?.state?.data?.grade?.length) {
       const ids = history?.location?.state?.data?.grade.map((el, index) => el);
       let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
       setSelectedGrade(filterBranch);
+      formRef.current.setFieldsValue({
+        grade: ids
+      });
+      setSelectedGrade(ids)
     }
   }, [gradeList]);
 
@@ -404,161 +332,258 @@ const HolidayMark = () => {
     setSelectedBranch([]);
   };
 
+  const handleSelectBranch = (value, arr, acad) => {
+    console.log(value, arr, acad, formRef.current, 'value arr');
+    if (value == 'all' && selectedBranch?.length == 0) {
+      formRef.current.setFieldsValue({
+        branch: arr,
+      });
+      setSelectedBranch(arr);
+      setSelectedSession(acad)
+      getGrades(arr)
+    } else if (value == 'all' && selectedBranch?.length > 0) {
+      formRef.current.setFieldsValue({
+        branch: [],
+      });
+      setSelectedBranch([]);
+      setSelectedSession([])
+    }
+    else {
+      if (!selectedBranch.includes(value)) {
+        setSelectedBranch([...selectedBranch, Number(value)]);
+        getGrades([...selectedBranch, Number(value)])
+      }
+      if (selectedBranch.includes(value)) {
+        let arrayy = selectedBranch.filter(item => item !== value)
+        setSelectedBranch(arrayy);
+        getGrades(arrayy)
+      }
+
+    }
+
+  };
+
+  const getGrades = (branch) => {
+    console.log(branch, 'branchhhhgreade');
+    if (branch && moduleId) {
+      callApi(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
+        }&branch_id=${branch.toString()}&module_id=${moduleId}`,
+        'gradeList'
+      );
+    }
+
+  }
+  const handleDeSelectBranch = (each) => {
+    console.log(each);
+    formRef.current.setFieldsValue({
+      section: [],
+      grade: []
+    });
+    const index = selectedBranch.indexOf(each?.value);
+    const newBranchList = selectedBranch.slice();
+    newBranchList.splice(index, 1);
+    setSelectedBranch(newBranchList);
+    console.log(newBranchList);
+    getGrades(newBranchList)
+  };
+
+  const handleSelectGrade = (value, arr) => {
+    console.log(value, arr, 'value arr');
+    if (value == 'all') {
+      formRef.current.setFieldsValue({
+        grade: arr,
+      });
+      setSelectedGrade(arr);
+    } else {
+      if (!selectedGrade.includes(value)) {
+        setSelectedGrade([...selectedGrade, Number(value)]);
+      }
+    }
+  };
+  const handleDeSelectGrade = (each) => {
+  
+    const index = selectedGrade.indexOf(each?.value);
+    const newGradeList = selectedGrade.slice();
+    newGradeList.splice(index, 1);
+    setSelectedGrade(newGradeList);
+  };
+
+  const branchOptions = branchList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.branch?.id}>
+        {each?.branch?.branch_name}
+      </Option>
+    );
+  });
+
+  const gradeOptions = gradeList?.map((each) => {
+    return (
+      <Option key={each?.grade_id} value={each?.grade_id}>
+        {each?.grade__grade_name}
+      </Option>
+    );
+  });
+
+  const handleDate = (value) => {
+    console.log(value);
+    if (value) {
+      setStartDate(moment(value[0]).format('YYYY-MM-DD'))
+      setEndDate(moment(value[1]).format('YYYY-MM-DD'))
+      setDates([moment(value[0]) , moment(value[1])])
+    }
+  }
+
+  const handleDescription = (e) => {
+    console.log(e.target.value);
+    setHolidayDesc(e.target.value)
+  }
+
   return (
     <>
       <Layout>
-        <div className='profile_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Add Holiday' isAcademicYearVisible={true} />
+        <div className='col-md-12'>
+          <Breadcrumb separator='>'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey'>
+              Calendar
+            </Breadcrumb.Item>
+            <Breadcrumb.Item className='th-black-1'>
+              Add Holiday
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          {/* <CommonBreadcrumbs componentName='Add Holiday' isAcademicYearVisible={true} /> */}
         </div>
-        <form>
+
+        <Form ref={formRef}>
           <Grid container direction='row' spacing={2} className={classes.root}>
-            <Grid item md={2} xs={12}>
-              <Autocomplete
-                multiple
-                limitTags={2}
-                style={{ width: '90%' }}
-                size='small'
-                onChange={handleBranch}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedBranch || []}
-                options={branchList || []}
-                getOptionLabel={(option) => option?.branch_name || ''}
-                getOptionSelected={(option, value) =>
-                  option?.id == value?.id
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={2} xs={12}>
-              <Autocomplete
-                multiple
-                style={{ width: '100%' }}
-                size='small'
-                limitTags={2}
-                onChange={handleGrade}
-                id='grade_id'
-                className='dropdownIcon'
-                value={selectedGrade || []}
-                options={gradeList || []}
-                getOptionLabel={(option) => option?.grade__grade_name || ''}
-                getOptionSelected={(option, value) => option?.grade_id == value?.grade_id}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Grid container direction='row'>
-            <Grid item md={12} xs={12} style={{marginLeft:'26px', width:'96%'}}>
-              <Divider />
-            </Grid>
-          </Grid>
-          <Grid
-            container
-            direction='row'
-            spacing={2}
-            className={classes.root}
-            alignItems='center'
-          >
-            <Grid item xs={12} sm={2} className='date-range-holiday'>
-              <LocalizationProvider dateAdapter={MomentUtils}>
-                <DateRangePicker
-                  minDate={minStartDate ? new Date(minStartDate) : undefined}
-                  maxDate={maxStartDate ? new Date(maxStartDate) : undefined}
-                  startText='Select-date-range'
-                  value={dateRangeTechPer}
-                  onChange={(newValue) => {                  
-                    setDateRangeTechPer(newValue);
-                  }}
-                  renderInput={({ inputProps, ...startProps }, endProps) => {
-                    return (
-                      <>
-                        <TextField
-                          {...startProps}
-                          inputProps={{
-                            ...inputProps,
-                            value: `${moment(inputProps.value).format(
-                              'DD/MM/YYYY'
-                            )} - ${moment(endProps.inputProps.value).format(
-                              'DD/MM/YYYY'
-                            )}`,
-                            readOnly: true,
-                            endAdornment: (
-                              <IconButton>
-                                <DateRangeIcon
-                                  style={{ width: '35px' }}
-                                  color='primary'
-                                />
-                              </IconButton>
-                            ),
-                          }}
-                          size='small'
-                        />
-                      </>
+
+            <div className='col-md-4'>
+              <span className='th-grey th-14'>Branch*</span>
+              <Form.Item name='branch'>
+                <Select
+                  mode='multiple'
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                  placement='bottomRight'
+                  placeholder="Select Branch"
+                  showArrow={true}
+                  suffixIcon={<DownOutlined className='th-grey' />}
+                  maxTagCount={2}
+                  value={selectedBranch}
+                  dropdownMatchSelectWidth={false}
+                  onSelect={(e) => {
+                    handleSelectBranch(
+                      e,
+                      branchList?.map((item) => item.branch?.id),
+                      branchList?.map((item) => item?.id),
                     );
                   }}
-                />
-              </LocalizationProvider>
-            </Grid>
+                  onDeselect={(e, value) => {
+                    handleDeSelectBranch(value);
+                  }}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {branchList?.length > 0 && (
+                    <>
+                      <Option key={0} value={'all'}>
+                        All
+                      </Option>
+                    </>
+                  )}
+                  {branchOptions}
+                </Select>
+              </Form.Item>
+            </div>
+            <div className='col-md-4'>
+              <span className='th-grey th-14'>Grades*</span>
+              <Form.Item name='grade'>
+                <Select
+                  mode='multiple'
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                  placement='bottomRight'
+                  placeholder="Select Grade"
+                  showArrow={true}
+                  suffixIcon={<DownOutlined className='th-grey' />}
+                  maxTagCount={2}
+                  dropdownMatchSelectWidth={false}
+                  onSelect={(e) => {
+                    handleSelectGrade(
+                      e,
+                      gradeList?.map((item) => item.grade_id)
+                    );
+                  }}
+                  onDeselect={(e, value) => {
+                    handleDeSelectGrade(value);
+                  }}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {gradeList.length > 1 && (
+                    <>
+                      <Option key={0} value={'all'}>
+                        All
+                      </Option>
+                    </>
+                  )}
+                  {gradeOptions}
+                </Select>
+              </Form.Item>
+            </div>
 
-            <Grid item md={4} lg={2} sm={3} xs={12}>
-              <TextField
-                variant='outlined'
-                size='small'
-                id='eventname'
-                label='Holiday Name'
-                value={holidayName}
-                fullWidth
-                onChange={handleChangeHoliday}
-                inputProps={{
-                  maxLength: 25,
-                }}
-              />
-            </Grid>
+            <div className='col-md-4'>
+              <span className='th-grey th-14'>Select Date Range*</span>
+              <Form.Item name='date'>
+                <RangePicker
+                  value={dates}
+                  onChange={handleDate}
+                  />
+              </Form.Item>
+            </div>
+
+            <div className='col-md-4'>
+              <span className='th-grey th-14'>Holiday Name*</span>
+              <Form.Item name='holiday_name'>
+                <Input placeholder="Select Holiday Name" onChange={handleChangeHoliday} />
+              </Form.Item>
+            </div>
+
           </Grid>
-
+          <Grid container direction='row' spacing={2} className={classes.root}>
+            <div className='col-md-6'>
+              <span className='th-grey th-14'>Holiday Description*</span>
+              <Form.Item name='holiday_desc'>
+                <TextArea showCount maxLength={1000} value={holidayDesc} onChange={handleDescription} style={{ height: '200px' }} />
+              </Form.Item>
+            </div>
+          </Grid>
           <Grid container direction='row'>
-            <Grid item md={12} xs={12} style={{marginLeft:'26px', width:'96%'}}>
+            <Grid item md={12} xs={12} style={{ marginLeft: '26px', width: '96%' }}>
               <Divider />
             </Grid>
           </Grid>
 
-          <Grid container direction='row' className={classes.root}>
-            <Grid item md={6} xs={12}>
-              <TextField
-                id='outlined-multiline-static'
-                label='Add Holiday Description'
-                labelwidth='170'
-                name='description'
-                fullWidth
-                onChange={handleChangeHolidayDesc}
-                value={holidayDesc}
-                multiline
-                rows={5}
-                variant='outlined'
-              />
-            </Grid>
-          </Grid>
+
+
+
           <Grid container direction='row' className={classes.root}>
             <div className={classes.button}>
-              <Button variant='contained' onClick={onunHandleClearAll} style={{margin:'5px'}}>
+              <Button variant='contained' onClick={onunHandleClearAll} style={{ margin: '5px' }}>
                 Clear All
               </Button>
               <Button
-              style={{margin:'5px'}}
+                style={{ margin: '5px' }}
                 variant='contained'
                 color='primary'
                 onClick={handleBackButtonClick}
@@ -566,7 +591,7 @@ const HolidayMark = () => {
                 Go Back
               </Button>
               <Button
-              style={{margin:'5px'}}
+                style={{ margin: '5px' }}
                 variant='contained'
                 type='submit'
                 value='Submit'
@@ -577,7 +602,7 @@ const HolidayMark = () => {
               </Button>
             </div>
           </Grid>
-        </form>
+        </Form>
         {loading && <Loader />}
       </Layout>
     </>

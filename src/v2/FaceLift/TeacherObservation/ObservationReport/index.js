@@ -12,6 +12,7 @@ import {
   Form,
   message,
   Input,
+  Radio,
 } from 'antd';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
@@ -36,16 +37,14 @@ const ObservationReport = () => {
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const [gradeID, setGradeID] = useState([]);
-  const [sectionID, setSectionID] = useState();
+  const [gradeID, setGradeID] = useState(null);
+  const [sectionID, setSectionID] = useState(null);
   const [subjectID, setSubjectID] = useState();
   const [sectionMappingID, setSectionMappingID] = useState([]);
   const [moduleId, setModuleId] = useState();
   const [teacherName, setTeacherName] = useState('');
-
-  // useEffect(() => {
-  //   observationGet();
-  // }, []);
+  const [studentName, setStudentName] = useState('');
+  const [tableView, setTableView] = useState('teacher');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -72,13 +71,24 @@ const ObservationReport = () => {
   }, [moduleId]);
 
   const handleSearch = () => {
-    observationGet({
-      teacher_name__icontains: teacherName,
-      subject_map__section_mapping__grade_id: gradeID,
-      subject_map__section_mapping__section_id: sectionID,
-      subject_map__section_mapping__acad_session__branch_id: selectedBranch?.branch?.id,
-      subject_map__subject_id: subjectID,
-    });
+    if (tableView === 'teacher') {
+      observationGet({
+        teacher_name__icontains: teacherName,
+        subject_map__section_mapping__grade_id: gradeID,
+        subject_map__section_mapping__section_id: sectionID,
+        subject_map__section_mapping__acad_session__branch_id: selectedBranch?.branch?.id,
+        subject_map__subject_id: subjectID,
+        is_student: false,
+      });
+    } else {
+      observationGet({
+        subject_map__section_mapping__grade_id: gradeID,
+        subject_map__section_mapping__section_id: sectionID,
+        subject_map__section_mapping__acad_session__branch_id: selectedBranch?.branch?.id,
+        student_name__icontains: studentName,
+        is_student: true,
+      });
+    }
   };
 
   const observationGet = (params = {}) => {
@@ -177,6 +187,10 @@ const ObservationReport = () => {
       setSubjectID(e.value);
     }
   };
+  const handleTableView = (e) => {
+    setTableView(e.value);
+    setData([]);
+  };
   const gradeOptions = gradeDropdown?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each?.grade_id}>
@@ -211,7 +225,11 @@ const ObservationReport = () => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700'>Teacher Name</span>,
+      title: (
+        <span className='th-white th-fw-700'>
+          {tableView === 'teacher' ? 'Teacher Name' : 'Student Name'}
+        </span>
+      ),
       dataIndex: 'teacher_name',
       render: (data) => <span className='th-black-1 th-16'>{data}</span>,
     },
@@ -264,7 +282,7 @@ const ObservationReport = () => {
     <React.Fragment>
       <Layout>
         <div className='row py-3 px-2'>
-          <div className='col-md-12' style={{ zIndex: 2 }}>
+          <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
@@ -303,7 +321,9 @@ const ObservationReport = () => {
                     <Select
                       className='th-width-100 th-br-6'
                       onChange={(e, value) => handleSection(value)}
-                      placeholder='Section'
+                      placeholder={
+                        tableView === 'student' && gradeID ? 'Section*' : 'Section'
+                      }
                       allowClear
                       onClear={handleClearSection}
                       showSearch
@@ -341,14 +361,46 @@ const ObservationReport = () => {
                 </div>
 
                 <div className='col-md-2 py-2'>
-                  <Form.Item name='teachername'>
-                    <Input
-                      placeholder='Teacher Name'
-                      onChange={(e) => setTeacherName(e.target.value)}
-                    />
+                  <Form.Item name='applicable_for'>
+                    <Select
+                      placeholder='Applicable for'
+                      showSearch
+                      optionFilterProp='children'
+                      onChange={(e, value) => {
+                        handleTableView(value);
+                      }}
+                      className='th-width-100 th-br-6'
+                      defaultValue='teacher'
+                    >
+                      <Option key={'2'} value={'teacher'}>
+                        {'For Teacher'}
+                      </Option>
+                      <Option key={'1'} value={'student'}>
+                        {'For Student'}
+                      </Option>
+                    </Select>
                   </Form.Item>
                 </div>
 
+                {tableView === 'teacher' ? (
+                  <div className='col-md-2 py-2'>
+                    <Form.Item name='teachername'>
+                      <Input
+                        placeholder='Teacher Name'
+                        onChange={(e) => setTeacherName(e.target.value)}
+                      />
+                    </Form.Item>
+                  </div>
+                ) : (
+                  <div className='col-md-2 py-2'>
+                    <Form.Item name='studentname'>
+                      <Input
+                        placeholder='Student Name'
+                        onChange={(e) => setStudentName(e.target.value)}
+                      />
+                    </Form.Item>
+                  </div>
+                )}
                 <div className='col-md-2 py-2'>
                   <Button type='primary' className='w-100' onClick={handleSearch}>
                     Search

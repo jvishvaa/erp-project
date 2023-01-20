@@ -75,6 +75,7 @@ export default {
     staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
     staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
     gradeWise: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-wise-data/`,
+    calendarEventsEvent: `${msReportsUrl}/api/reports/v1/events/`,
   },
   teacherDashboard: {
     todaysAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/attendance-today/`,
@@ -213,6 +214,8 @@ export default {
     blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
     checkBMIApi: `${newBlogURL}/api/check_student/`,
     diaryActivities: `${newBlogURL}/api/diary_activities/`,
+    getSchoolWallApi: `${newBlogURL}/api/school_wall/`,
+    whatsAppChatGetApi: `${baseFinanceURL}/apiV1/whatsup-log/`,
   },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
