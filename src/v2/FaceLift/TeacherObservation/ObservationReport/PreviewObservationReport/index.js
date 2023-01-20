@@ -89,9 +89,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                   {!previewData?.is_student ? "TEACHER'S NAME" : 'STUDENT NAME'}
                 </td>
                 <td className='th-width-33 text-uppercase py-1'>
-                  {previewData?.is_student
-                    ? previewData?.student_name
-                    : previewData?.teacher_name}
+                  {previewData?.teacher_name}
                 </td>
                 <td className='th-width-12 th-fw-600 py-1'>OBSERVATION DATE</td>
                 <td className='th-width-33 text-uppercase py-1'>{previewData?.date}</td>
@@ -101,9 +99,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                   ERP ID
                 </td>
                 <td className='text-uppercase py-1' colSpan={1}>
-                  {previewData?.is_student
-                    ? previewData?.student_erp
-                    : previewData?.teacher_erp}
+                  {previewData?.teacher_erp}
                 </td>
                 <td colSpan={1} className='th-fw-600 py-1'>
                   REPORT CREATION DATE

@@ -129,10 +129,13 @@ const ObservationArea = () => {
 
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
-    if (updateValues.observation_area_name) {
+    if (updateValues.observation_area_name && updateValues.levels) {
       const valuess = new FormData();
       valuess.append('observation_area_name', updateValues.observation_area_name);
-      valuess.append('is_student', updateValues.is_student);
+      valuess.append(
+        'is_student',
+        updateValues.is_student ? updateValues.is_student : false
+      );
       valuess.append('levels', updateValues.levels?.toString());
 
       if (!editId) {
@@ -146,7 +149,7 @@ const ObservationArea = () => {
             onClose();
             setTableView(updateValues.is_student ? 'student' : 'teacher');
             observationGet({
-              is_student: updateValues.is_student === 'teacher' ? false : true,
+              is_student: updateValues.is_student ? true : false,
             });
           })
           .catch((error) => {
@@ -159,7 +162,7 @@ const ObservationArea = () => {
             onClose();
             setTableView(updateValues.is_student ? 'student' : 'teacher');
             observationGet({
-              is_student: updateValues.is_student === 'teacher' ? false : true,
+              is_student: updateValues.is_student ? true : false,
             });
           })
           .catch((error) => {
@@ -356,7 +359,11 @@ const ObservationArea = () => {
               </Radio.Group>
             </Form.Item>
 
-            <Form.Item name='levels' label='Select User Level'>
+            <Form.Item
+              name='levels'
+              label='Select User Level'
+              rules={[{ required: true, message: 'Please select userlevels' }]}
+            >
               <Select
                 mode='multiple'
                 allowClear={true}
