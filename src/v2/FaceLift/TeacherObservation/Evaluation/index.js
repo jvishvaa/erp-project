@@ -142,7 +142,7 @@ const Evaluation = () => {
         is_student: false,
         reviewed_by: role_details?.erp_user_id,
       };
-    } else if (studentErp) {
+    } else if (studentErp && subjectID) {
       var obj = {
         acad_session: selectedBranch?.id,
         date: moment().format('YYYY-MM-DD'),
