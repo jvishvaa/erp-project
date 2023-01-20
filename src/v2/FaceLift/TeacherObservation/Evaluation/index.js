@@ -138,7 +138,7 @@ const Evaluation = () => {
         score: _.sumBy(flatttenData, 'score'),
         report: JSON.stringify(modifiedData),
         subject_map: subjectID,
-        section_mapping: sectionID,
+        // section_mapping: sectionID,
         is_student: false,
         reviewed_by: role_details?.erp_user_id,
       };
@@ -147,13 +147,13 @@ const Evaluation = () => {
         acad_session: selectedBranch?.id,
         date: moment().format('YYYY-MM-DD'),
         erp_user: studentId,
-        student_name: studentName,
-        student_erp: studentErp,
+        teacher_name: studentName,
+        teacher_erp: studentErp,
         remark: overallRemarks,
         score: _.sumBy(flatttenData, 'score'),
         report: JSON.stringify(modifiedData),
-        // subject_map: subjectID,
-        section_mapping: sectionID,
+        subject_map: subjectID,
+        // section_mapping: sectionID,
         student: studentId,
         is_student: true,
         reviewed_by: role_details?.erp_user_id,
@@ -539,26 +539,26 @@ const Evaluation = () => {
                   {sectionOptions}
                 </Select>
               </div>
-              {tableView === 'teacher' ? (
-                <div className='col-md-3 py-2'>
-                  <Select
-                    className='th-width-100 th-br-6'
-                    onChange={(e, value) => handleSubject(value)}
-                    placeholder='Select Subject*'
-                    allowClear
-                    showSearch
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    value={subjectID}
-                  >
-                    {subjectOptions}
-                  </Select>
-                </div>
-              ) : null}
+
+              <div className='col-md-3 py-2'>
+                <Select
+                  className='th-width-100 th-br-6'
+                  onChange={(e, value) => handleSubject(value)}
+                  placeholder='Select Subject*'
+                  allowClear
+                  showSearch
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  value={subjectID}
+                >
+                  {subjectOptions}
+                </Select>
+              </div>
+
               {tableView === 'teacher' ? (
                 <div className='col-md-3 py-2'>
                   <Select

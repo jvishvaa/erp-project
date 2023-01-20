@@ -81,16 +81,13 @@ const ObservationReport = () => {
         is_student: false,
       });
     } else {
-      if (gradeID && !sectionID) {
-        message.error('Please select all required fields!');
-      } else {
-        observationGet({
-          grade: gradeID,
-          section_mapping: sectionID,
-          student_name__icontains: studentName,
-          is_student: true,
-        });
-      }
+      observationGet({
+        subject_map__section_mapping__grade_id: gradeID,
+        subject_map__section_mapping__section_id: sectionID,
+        subject_map__section_mapping__acad_session__branch_id: selectedBranch?.branch?.id,
+        student_name__icontains: studentName,
+        is_student: true,
+      });
     }
   };
 
@@ -191,7 +188,7 @@ const ObservationReport = () => {
     }
   };
   const handleTableView = (e) => {
-    setTableView(e.target.value);
+    setTableView(e.value);
     setData([]);
   };
   const gradeOptions = gradeDropdown?.map((each) => {
@@ -233,7 +230,7 @@ const ObservationReport = () => {
           {tableView === 'teacher' ? 'Teacher Name' : 'Student Name'}
         </span>
       ),
-      dataIndex: tableView === 'teacher' ? 'teacher_name' : 'student_name',
+      dataIndex: 'teacher_name',
       render: (data) => <span className='th-black-1 th-16'>{data}</span>,
     },
     {
@@ -295,12 +292,6 @@ const ObservationReport = () => {
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <div className='col-md-3 text-right th-radio'>
-            <Radio.Group onChange={handleTableView} value={tableView} buttonStyle='solid'>
-              <Radio.Button value={'teacher'}>Teacher</Radio.Button>
-              <Radio.Button value={'student'}>Student</Radio.Button>
-            </Radio.Group>
-          </div>
 
           <div className='col-md-12 px-0 mt-3'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
@@ -348,29 +339,48 @@ const ObservationReport = () => {
                   </Form.Item>
                 </div>
 
-                {tableView === 'teacher' ? (
-                  <div className='col-md-2 py-2'>
-                    <Form.Item name='subject'>
-                      <Select
-                        placeholder='Select Subject'
-                        showSearch
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                        onChange={(e, value) => {
-                          handleSubject(value);
-                        }}
-                        className='th-width-100 th-br-6'
-                      >
-                        {subjectOptions}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                ) : null}
+                <div className='col-md-2 py-2'>
+                  <Form.Item name='subject'>
+                    <Select
+                      placeholder='Select Subject'
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => {
+                        handleSubject(value);
+                      }}
+                      className='th-width-100 th-br-6'
+                    >
+                      {subjectOptions}
+                    </Select>
+                  </Form.Item>
+                </div>
+
+                <div className='col-md-2 py-2'>
+                  <Form.Item name='applicable_for'>
+                    <Select
+                      placeholder='Applicable for'
+                      showSearch
+                      optionFilterProp='children'
+                      onChange={(e, value) => {
+                        handleTableView(value);
+                      }}
+                      className='th-width-100 th-br-6'
+                      defaultValue='teacher'
+                    >
+                      <Option key={'2'} value={'teacher'}>
+                        {'For Teacher'}
+                      </Option>
+                      <Option key={'1'} value={'student'}>
+                        {'For Student'}
+                      </Option>
+                    </Select>
+                  </Form.Item>
+                </div>
 
                 {tableView === 'teacher' ? (
                   <div className='col-md-2 py-2'>

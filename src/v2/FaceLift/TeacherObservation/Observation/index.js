@@ -356,7 +356,11 @@ const Observation = () => {
             </div>
             <div className='col-md-12'>
               <Form.Item label='Applicable for' name='is_student' defaultValue={false}>
-                <Radio.Group value={isStudent} onChange={handleApplicableFor}>
+                <Radio.Group
+                  value={isStudent}
+                  onChange={handleApplicableFor}
+                  defaultValue={false}
+                >
                   <Radio value={false}> Teacher </Radio>
                   <Radio value={true}> Student </Radio>
                 </Radio.Group>
