@@ -48,6 +48,7 @@ import axios from 'axios';
 import CreateDiary from 'v2/FaceLift/Diary/DiaryNew/CreateDiary';
 import DiaryMain from 'v2/FaceLift/Diary';
 import StudentAssessmentDashboard from 'v2/FaceLift/AssessmentDashboard/studentAssessmentDashboard';
+import StudentSideVisualActivity from 'containers/newBlog/StudentSideVisualActivity';
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -164,6 +165,9 @@ const V2Router = () => {
                         </Route>
                         <Route path='/student/phycial/activity'>
                           {({ match }) => <StudentSidePhysicalActivity match={match} />}
+                        </Route>
+                        <Route path='/student/visual/activity'>
+                          {({ match }) => <StudentSideVisualActivity match={match} />}
                         </Route>
                         <Route path='blog-activity-view'>
                           {({ match }) => <BlogActivityView match={match} />}

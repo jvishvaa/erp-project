@@ -691,6 +691,7 @@ const PublicSpeakingWall = () => {
           <Drawer
             anchor='right'
             maxWidth={maxWidth}
+            zIndex={1300}
             open={view}
             onClose={handleCloseViewMore}
             aria-labelledby='alert-dialog-title'
