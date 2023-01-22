@@ -460,6 +460,10 @@ import Filters from 'containers/assessment-central/create-question-paper-new/fil
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig'
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
 import CalendarV2 from 'containers/attendance/CalendarEventHoliday';
+import VisualActivity from 'containers/newBlog/VisualActivity';
+import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
+import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
+
 // const [theme, setTheme] = useState(() => themeGenerator());
 
 const V1Router = [
@@ -1482,7 +1486,15 @@ const V1Router = [
   <Route exact path='/physical/activity/review'>
     {({ match }) => <PhysicalActivityReview match={match} />}
   </Route>,
-
+    <Route exact path='/visual/activity'>
+    {({ match }) => <VisualActivity match={match} />}
+  </Route>,
+  <Route exact path='/visual/activity/create'>
+      {({ match }) => <VisualActivityCreate match={match} />}
+  </Route>,
+  <Route exact path='/visual/activity/review'>
+      {({ match }) => <VisualActivityReview match={match} />}
+  </Route>,
   <Route exact path='/blog/publicspeaking'>
     {({ match }) => <PublicSpeakingWall match={match} />}
   </Route>,

@@ -467,6 +467,11 @@ import CreatequestionPaperNew from 'containers/assessment-central/create-questio
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
 import CalendarV2 from 'containers/attendance/CalendarEventHoliday';
+import VisualActivity from 'containers/newBlog/VisualActivity';
+import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
+import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
+import StudentSideVisualActivity from 'containers/newBlog/StudentSideVisualActivity';
+
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
@@ -546,6 +551,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route path='/student/phycial/activity'>
                               {({ match }) => <StudentSidePhysicalActivity match={match} />}
+                            </Route>
+                            <Route path='/student/visual/activity'>
+                              {({ match }) => <StudentSideVisualActivity match={match} />}
                             </Route>
                             <Route path='blog-activity-view'>
                               {({ match }) => <BlogActivityView match={match} />}
@@ -712,6 +720,15 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/physical/activity/review'>
                               {({ match }) => <PhysicalActivityReview match={match} />}
+                            </Route>
+                            <Route exact path='/visual/activity'>
+                              {({ match }) => <VisualActivity match={match} />}
+                            </Route>
+                            <Route exact path='/visual/activity/create'>
+                              {({ match }) => <VisualActivityCreate match={match} />}
+                            </Route>
+                            <Route exact path='/visual/activity/review'>
+                              {({ match }) => <VisualActivityReview match={match} />}
                             </Route>
                             <Route exact path='/blog/wall/central/redirect'>
                               {({ match }) => <CentralBlogRedirection match={match} />}

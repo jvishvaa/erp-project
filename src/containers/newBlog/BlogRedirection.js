@@ -122,6 +122,7 @@ const BlogWallRedirect = () => {
   const [periodData,setPeriodData] = useState([]);
   const [loading,setLoading]= useState(false);
   const [subId,setSubId] = useState('');
+  const [visualId,setVisualId] = useState('');
   const [blogSubId,setBlogSubId] = useState('');
   const [publicSubId,setPublicSubId] = useState('');
 
@@ -206,6 +207,8 @@ const BlogWallRedirect = () => {
         .then((result) => {
           const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
           setSubId(physicalData[0]?.id)
+          const visualData = result?.data?.result.filter((item) => item?.name.toLowerCase() == "visual art")
+          setVisualId(visualData[0]?.id)
           const blogActivityData = result?.data?.result.filter((item) => item?.name == "Blog Activity")
           setBlogSubId(blogActivityData[0]?.id)
           const publicActivityData = result?.data?.result.filter((item) => item?.name == "Public Speaking")
@@ -238,6 +241,15 @@ const BlogWallRedirect = () => {
 
   }
 
+  const handleVisualPath =() =>{
+    history.push({
+      pathname: '/student/visual/activity',
+      state : {
+        subActiveId: visualId,
+      }
+    })
+  }
+
 
   const handleExplore = (data) => {
     if (data?.name == "Blog Activity") {
@@ -259,6 +271,11 @@ const BlogWallRedirect = () => {
       );
 
       handlePhysicalActivity()
+    }else if(data?.name.toLowerCase() === "visual art"){
+      localStorage.setItem('VisualActivityId',
+      JSON.stringify(visualId)
+      );
+      handleVisualPath()
     }
   }
 

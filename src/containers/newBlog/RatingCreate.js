@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect,useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -6,6 +6,8 @@ import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loader from '../../components/loader/loader';
+import { Drawer as AntDrawer, Button as AntButton, Input, Select, Space, Modal as AntModal, Divider as AntDivider } from 'antd';
+import { DeleteFilled, DeleteOutlined, EditOutlined, DownOutlined, CheckOutlined, PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 
@@ -164,11 +166,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+const visualOptionData = [
+  { name: "good", id: 1 },
+  { name: "can do better", id: 2 }
+]
+
 const RatingCreate = () => {
   const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
-
+  const { Option } = Select;
   const [moduleId, setModuleId] = React.useState();
   const [month, setMonth] = React.useState('1');
   const [status, setStatus] = React.useState('');
@@ -191,8 +199,8 @@ const RatingCreate = () => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [accordianBulkFilter, setAccordianBulkFilter] = useState(false);
   const [creativityType, setCreativityType] = useState('');
-  const [loading,setLoading] = useState(false)
-  const [showPhy,setShowPhy] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [showPhy, setShowPhy] = useState(false);
 
   const [score1, setScore1] = useState('');
   const [creativity, setCreativity] = useState('');
@@ -208,7 +216,17 @@ const RatingCreate = () => {
   const [inputList, setInputList] = useState([{ name: '', rating: '', score: null }]);
 
   const [isDisabled, setIsDisabled] = useState(false);
+  const [viewParameterFlag, setViewParameterFlag] = useState(false);
+  const [antDrawer, setAntDrawer] = useState(false)
+  const [visualInputlList, setVisualInputList] = useState([{ name: '',score:null }]);
+  const [selectedOption, setSelectedOption] = useState('')
+  const [onOptionVisible, setOnOptionVisible] = useState(false)
+  const [onOptionModal, setOnOptionModal] = useState(false)
+  const [optionTitleSelected, setOptionTitle] = useState('')
+  const [optionList, setOptionList] = useState([{ name: '', score: null, status: false }]);
+  const [visualActivity, setVisualActivity] = useState('')
 
+  console.log(optionTitleSelected, 'jk')
   //   useEffect(() => {
   //     if (inputList.length > 0) {
   //       inputList[inputList.length - 1].input === ''
@@ -293,6 +311,10 @@ const RatingCreate = () => {
     setViewing(false);
   };
 
+  const handleParameterClose = () => {
+    setViewParameterFlag(false)
+  }
+
   const branchViewed = () => {
     setBranchView(false);
     setBranchSearch(true);
@@ -334,7 +356,7 @@ const RatingCreate = () => {
   const [ActivityType, setActivityType] = useState();
 
   const handleActivityTypeSubmit = () => {
-    if(!ActivityType?.name){
+    if (!ActivityType?.name) {
       setAlert('error', 'Please Enter Activity Type')
       return;
     }
@@ -344,12 +366,11 @@ const RatingCreate = () => {
       return
     }
     let body = {
-      sub_type:ActivityType?.sub_type,
+      sub_type: ActivityType?.sub_type,
       activity_type: ActivityType?.name,
       grading_scheme:
-        // name: scoreType,
         inputList,
-      
+
     };
     setLoading(true)
     axios
@@ -385,7 +406,7 @@ const RatingCreate = () => {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
-      .then((response) => { 
+      .then((response) => {
         setActivityCategory(response.data.result);
         setLoading(false)
       });
@@ -411,8 +432,8 @@ const RatingCreate = () => {
   };
   const handleInputRating = (event, index) => {
     const { value } = event.target;
-    if(value > 5 || value < 0){
-      setAlert('error','Please Enter Number In Between 0 to 5')
+    if (value > 5 || value < 0) {
+      setAlert('error', 'Please Enter Number In Between 0 to 5')
       return
     }
     const newInputList = [...inputList];
@@ -432,11 +453,19 @@ const RatingCreate = () => {
     setInputList(newInputList);
   };
   const [viewing, setViewing] = useState(false);
+
+  const viewParameter = () => {
+    // setViewParameterFlag(true)
+    setAntDrawer(true)
+  }
+  const viewOption = () => {
+    setOnOptionVisible(true)
+  }
   const viewDisplay = () => {
     setViewing(true);
   };
 
-  const handleCreateTemplate = () =>{
+  const handleCreateTemplate = () => {
     history.push(
       '/blog/templates'
     );
@@ -452,154 +481,389 @@ const RatingCreate = () => {
   //   setSearch(event.target.value);
   // }
 
-  const handleActivity = (e,value) => {
-     setSearch(value)
+  const handleActivity = (e, value) => {
+    setSearch(value)
   }
-  
+
   useEffect(() => {
-    if(ActivityType?.name == "Physical Activity"){
+    if (ActivityType?.name == "Physical Activity") {
       setShowPhy(true)
-    }else{
+    } else {
       setShowPhy(false)
     }
-  },[ActivityType])
+  }, [ActivityType])
+
+  const onCloseAnt = () => {
+    setAntDrawer(false)
+    setOnOptionVisible(false)
+  }
+
+  const handleVisualInputApp = () => {
+    setVisualInputList([
+      ...visualInputlList,
+      {
+        name: '',
+        score:null,
+      },
+    ])
+  };
+
+
+  const handleVisualOption = (event, index) => {
+    let newInputList = [...visualInputlList]
+    newInputList[index].option = value;
+    setVisualInputList(newInputList)
+  }
+
+  const handleRemoveVisual = (index) => {
+    let newList = [...visualInputlList]
+    newList.splice(index, 1);
+    setVisualInputList(newList)
+  }
+
+  const handleVisualTypeSubmit = () => {
+    let uniqueValues = new Set(visualInputlList.map((e) => e.name));
+    if (uniqueValues.size < visualInputlList.length) {
+      setAlert('error', 'Duplicate Name Found');
+      return
+    }
+
+    //API call
+  }
+
+
+  //Visual Option dropdown
+  const visulaOptions = visualOptionData?.map((each) => {
+    return (
+      <Option value={each?.name} key={each?.id}>
+        {each?.name}
+      </Option>
+    )
+  })
+
+  const handleVisualChange = (e, value) => {
+    if (e) {
+      setSelectedOption(value?.value)
+    } else {
+      setSelectedOption('')
+    }
+  }
+
+  const onOptionModalFun = () => {
+    setOnOptionModal(true)
+  }
+
+  const activityOption = activityCategory.map((each) => {
+    return (
+      <Option value={each?.name} key={each?.id}>
+        {each?.name}
+      </Option>
+    )
+  })
+
+  const handleActivityAnt = (e, value) => {
+    setVisualActivity("")
+    if (value) {
+      setVisualActivity(value)
+    }
+  }
+
+  const handleOptionInputAdd = (e, value) => {
+    setOptionList([
+      ...optionList,
+      {
+        name: '',
+        score: null,
+        status: false
+      },
+    ])
+  };
+
+  const handleOptionInput = (event, index) => {
+    console.log(index)
+    if (event) {
+      const { value } = event.target;
+      const newInputList = [...optionList]
+      newInputList[index].name = value;
+      setOptionList(newInputList)
+    }
+  }
+
+  const handleMarksInput = (event, index) => {
+    const { value } = event.target;
+    let newInputList = [...optionList]
+    newInputList[index].score = value;
+    setOptionList(newInputList)
+  }
+
+  const handleOptionSubmit = () => {
+    const arr1 = visualInputlList?.map((obj) =>{
+      return {...obj,rating: optionList}
+      return obj
+    })
+    // let uniqueValues = new Set(optionList.map((e) => e?.option));
+    // if(uniqueValues.size < optionList?.length){
+    //   setAlert('error','Duplicate Name FOund')
+    //   return
+    // }
+    let body = {
+      activity_type: ActivityType?.name,
+      grading_scheme: arr1
+
+    };
+
+    setLoading(true)
+    axios
+      .post(`${endpoints.newBlog.visualOptionSubmit}`,
+        body,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res)
+        setLoading(false)
+        setAlert('success', 'Option Created Successfully')
+      })
+      .catch((error) => {
+        setLoading(false)
+        console.log(error)
+      })
+  }
+
+  const handleOptionTitle = (e) => {
+    const { value } = e.target
+    setOptionTitle(value)
+
+  }
+
+  const handleOptionDelete = (index) => {
+    let newList = [...optionList]
+    newList.splice(index, 1)
+    setOptionList(newList)
+
+  }
+
+  const handleQuestion =(event,index) =>{
+    if(event){
+      const {value} = event.target;
+      const newInputList = [...visualInputlList]
+      newInputList[index].name = value
+      setVisualInputList(newInputList)
+    }
+  }
+
+
+
   return (
     <div>
-      {loading && <Loader/>}
+      {loading && <Loader />}
 
-    <Layout>
-      <Grid
-        container
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingLeft: '22px',
-          paddingRight: '15px',
-          paddingBottom: '15px',
-        }}
-      >
-        <Grid item xs={4} md={4}>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' />}
-            aria-label='breadcrumb'
-          >
-            <Typography color='textPrimary' variant='h6'>
-              <strong>Activity</strong>
-            </Typography>
-            <Typography
-              color='textPrimary'
-              style={{ fontWeight: 'bold', fontSize: '22px' }}
-            >
-              Create Rating
-            </Typography>
-          </Breadcrumbs>
-        </Grid>
-      </Grid>
-
-      {/* <div style={{ width: '85%' }}> */}
-      <Grid container item md={12} sm={12} xs={12}>
-        <Grid item spacing={3} md={6}>
-          <Grid item md={6} style={{margin:'0 6%'}}>
-            <Autocomplete
-              size='small'
-              fullWidth
-              onChange={handleActivity}
-              // id='branch_id'
-              className='dropdownIcon'
-              value={search}
-              options={activityCategory || []}
-              getOptionLabel={(option) => option?.name || ''}
-              // getOptionSelected={(option, value) => option?.branch?.id == value?.branch?.id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Activity Type'
-                  placeholder='Activity Type'
-                  required
-                />
-              )}
-            />
-          </Grid>
-        </Grid>
-
-        {/* </div> */}
-        <Grid item md={6} container justifyContent='flex-end'>
-          <Grid item md={3} container justifyContent='flex-end'>
-            <Button variant='contained' color='primary' onClick={handleCreateTemplate}>
-              {' '}
-              Add Template
-            </Button>
-          </Grid>
-          <Grid item md={3} container justifyContent='center'>
-            <Button variant='contained' color='primary' onClick={viewDisplay}>
-              Add
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-
-      <Paper className={`${classes.root} common-table`} id='singleStudent'>
-        <TableContainer
-          className={`table table-shadow view_users_table ${classes.container}`}
+      <Layout>
+        <Grid
+          container
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            paddingLeft: '22px',
+            paddingRight: '15px',
+            paddingBottom: '15px',
+          }}
         >
-          <Table stickyHeader aria-label='sticky table'>
-            <TableHead className={`${classes.columnHeader} table-header-row`}>
-              <TableRow>
-                <TableCell className={classes.tableCell} style={{ maxWidth: '1px' }}>
-                  S No.
-                </TableCell>
-                <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
-                <TableCell className={classes.tableCell}>Sub-Type Activity</TableCell>
-                <TableCell className={classes.tableCell}>Criteria Name</TableCell>
+          <Grid item xs={4} md={4}>
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize='small' />}
+              aria-label='breadcrumb'
+            >
+              <Typography color='textPrimary' variant='h6'>
+                <strong>Activity</strong>
+              </Typography>
+              <Typography
+                color='textPrimary'
+                style={{ fontWeight: 'bold', fontSize: '22px' }}
+              >
+                Create Rating
+              </Typography>
+            </Breadcrumbs>
+          </Grid>
+        </Grid>
 
-                <TableCell className={classes.tableCell}>Rating </TableCell>
-                  {search?.name == "Physical Activity" ? (
-                    ""
-                  ):(
-                    <TableCell className={classes.tableCell}>Score </TableCell>
-                  )}
-              </TableRow>
-            </TableHead>
-            {activityCategory
-              ?.filter((response) =>
-                response?.name?.toLowerCase()?.includes(search?.name?.toLowerCase())
-              )
-              .map((response, index) => (
-                <TableBody>
-                  <TableRow
-                    hover
-                    role='checkbox'
-                    tabIndex={-1}
-                    // key={`user_table_index${i}`}
-                  >
-                    <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                    <TableCell className={classes.tableCells}>{response.name}</TableCell>
-                    <TableCell className={classes.tableCells}>{response.sub_type ? response.sub_type : <b style={{color:'red'}}>NA</b>}</TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {response?.grading_scheme.map((obj) => (
-                        <div>{obj.name}</div>
-                      ))}
-                    </TableCell>{' '}
-                    <TableCell className={classes.tableCells}>
-                      <Typography>
-                        {response?.grading_scheme.map((obj) => (
-                          <div>{obj.rating}</div>
-                        ))}
-                      </Typography>
+        {/* <div style={{ width: '85%' }}> */}
+        <Grid container item md={12} sm={12} xs={12}>
+          <Grid item spacing={3} md={6}>
+            <Grid item md={6} style={{ margin: '0 6%' }}>
+              <Autocomplete
+                size='small'
+                fullWidth
+                onChange={handleActivity}
+                // id='branch_id'
+                className='dropdownIcon'
+                value={search}
+                options={activityCategory || []}
+                getOptionLabel={(option) => option?.name || ''}
+                // getOptionSelected={(option, value) => option?.branch?.id == value?.branch?.id}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Activity Type'
+                    placeholder='Activity Type'
+                    required
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+
+          {/* </div> */}
+          <Grid item md={6} container justifyContent='flex-end'>
+            <Grid item md={3} container justifyContent='flex-end'>
+              <Button variant='contained' color='primary' onClick={handleCreateTemplate}>
+                {' '}
+                Add Template
+              </Button>
+            </Grid>
+            <Grid item md={3} container justifyContent='center'>
+              <Button variant='contained' color='primary' onClick={viewParameter}>
+                Add Parameter
+              </Button>
+            </Grid>
+            <Grid item md={3} container justifyContent='center'>
+              <Button variant='contained' color='primary' onClick={viewOption}>
+                Add Option
+              </Button>
+            </Grid>
+            <Grid item md={3} container justifyContent='center'>
+              <Button variant='contained' color='primary' onClick={viewDisplay}>
+                Add
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        {search?.name === "Visual Activity" ? (
+          <Paper className={`${classes.root} common-table`} id='singleStudent'>
+            <TableContainer
+              className={`table table-shadow view_users_table ${classes.container}`}
+            >
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead className={`${classes.columnHeader} table-header-row`}>
+                  <TableRow>
+                    <TableCell className={classes.tableCell} style={{ maxWidth: '1px' }}>
+                      S No.
                     </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      <Typography>
-                        {response?.grading_scheme.map((obj) => (
-                          <div>{obj.score}</div>
-                        ))}
-                      </Typography>
-                    </TableCell>
+                    <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
+                    <TableCell className={classes.tableCell}>Question</TableCell>
+                    <TableCell className={classes.tableCell}>Action</TableCell>
                   </TableRow>
-                </TableBody>
-              ))}
-          </Table>
-          {/* <TablePagination
+                </TableHead>
+                {activityCategory
+                  ?.filter((response) =>
+                    response?.name?.toLowerCase()?.includes(search?.name?.toLowerCase())
+                  )
+                  .map((response, index) => (
+                    <TableBody>
+                      <TableRow
+                        hover
+                        role='checkbox'
+                        tabIndex={-1}
+                      // key={`user_table_index${i}`}
+                      >
+                        <TableCell className={classes.tableCells}>{index + 1}</TableCell>
+                        <TableCell className={classes.tableCells}>{response.name}</TableCell>
+                        <TableCell className={classes.tableCells}>{response.sub_type ? response.sub_type : <b style={{ color: 'red' }}>NA</b>}</TableCell>
+                        <TableCell className={classes.tableCells}>
+                          <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                            <DeleteOutlined style={{ cursor: 'pointer' }} />
+                            <EditOutlined style={{ cursor: 'pointer' }} />
+                          </div>
+                        </TableCell>{' '}
+                      </TableRow>
+                    </TableBody>
+                  ))}
+              </Table>
+              {/* <TablePagination
+             component='div'
+             // count={totalCount}
+             // rowsPerPage={limit}
+             // page={Number(currentPage) - 1}
+             // onChangePage={(e, page) => {
+             // handlePagination(e, page + 1);
+             // }}
+             rowsPerPageOptions={false}
+             className='table-pagination'
+             classes={{
+               spacer: classes.tablePaginationSpacer,
+               toolbar: classes.tablePaginationToolbar,
+             }}
+           /> */}
+            </TableContainer>
+          </Paper>
+
+        ) : (
+          <Paper className={`${classes.root} common-table`} id='singleStudent'>
+            <TableContainer
+              className={`table table-shadow view_users_table ${classes.container}`}
+            >
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead className={`${classes.columnHeader} table-header-row`}>
+                  <TableRow>
+                    <TableCell className={classes.tableCell} style={{ maxWidth: '1px' }}>
+                      S No.
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
+                    <TableCell className={classes.tableCell}>Sub-Type Activity</TableCell>
+                    <TableCell className={classes.tableCell}>Criteria Name</TableCell>
+
+                    <TableCell className={classes.tableCell}>Rating </TableCell>
+                    {search?.name == "Physical Activity" ? (
+                      ""
+                    ) : (
+                      <TableCell className={classes.tableCell}>Score </TableCell>
+                    )}
+                  </TableRow>
+                </TableHead>
+                {activityCategory
+                  ?.filter((response) =>
+                    response?.name?.toLowerCase()?.includes(search?.name?.toLowerCase())
+                  )
+                  .map((response, index) => (
+                    <TableBody>
+                      <TableRow
+                        hover
+                        role='checkbox'
+                        tabIndex={-1}
+                      // key={`user_table_index${i}`}
+                      >
+                        <TableCell className={classes.tableCells}>{index + 1}</TableCell>
+                        <TableCell className={classes.tableCells}>{response.name}</TableCell>
+                        <TableCell className={classes.tableCells}>{response.sub_type ? response.sub_type : <b style={{ color: 'red' }}>NA</b>}</TableCell>
+                        <TableCell className={classes.tableCells}>
+                          {response?.grading_scheme.map((obj) => (
+                            <div>{obj.name}</div>
+                          ))}
+                        </TableCell>{' '}
+                        <TableCell className={classes.tableCells}>
+                          <Typography>
+                            {response?.grading_scheme.map((obj) => (
+                              <div>{obj.rating}</div>
+                            ))}
+                          </Typography>
+                        </TableCell>
+                        <TableCell className={classes.tableCells}>
+                          <Typography>
+                            {response?.grading_scheme.map((obj) => (
+                              <div>{obj.score}</div>
+                            ))}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  ))}
+              </Table>
+              {/* <TablePagination
             component='div'
             // count={totalCount}
             // rowsPerPage={limit}
@@ -614,29 +878,32 @@ const RatingCreate = () => {
               toolbar: classes.tablePaginationToolbar,
             }}
           /> */}
-        </TableContainer>
-      </Paper>
+            </TableContainer>
+          </Paper>
 
-      <Dialog
-        // open={deleteModel}
-        open={viewing}
-        maxWidth={maxWidth}
-        onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <div
-          style={{
-            marginLeft: '37px',
-            marginTop: '13px',
-            marginBottom: '12px',
-            marginRight: '28px',
-          }}
+        )}
+
+
+        <Dialog
+          // open={deleteModel}
+          open={viewing}
+          maxWidth={maxWidth}
+          onClose={handleClose}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
         >
-          <div style={{ fontSize: '28px', fontWeight: 'bold', width: '46vw' }}>Create Rating</div>
-          <Divider />
-          <div style={{ marginTop: '8px' }}>
-            {/* <TextField
+          <div
+            style={{
+              marginLeft: '37px',
+              marginTop: '13px',
+              marginBottom: '12px',
+              marginRight: '28px',
+            }}
+          >
+            <div style={{ fontSize: '28px', fontWeight: 'bold', width: '46vw' }}>Create Rating</div>
+            <Divider />
+            <div style={{ marginTop: '8px' }}>
+              {/* <TextField
               label='Activity Type'
               size='small'
               type='text'
@@ -652,117 +919,387 @@ const RatingCreate = () => {
                 </MenuItem>
               ))}
             </TextField> */}
-            <Autocomplete
-              size='small'
-              style={{width:'45%'}}
-              onChange={(e,value) => setActivityType(value)}
-              // id='branch_id'
-              className='dropdownIcon'
-              value={ActivityType}
-              options={activityCategory || []}
-              getOptionLabel={(option) => option?.name || ''}
-              // getOptionSelected={(option, value) => option?.branch?.id == value?.branch?.id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Activity Type'
-                  placeholder='Activity Type'
-                  required
-                />
-              )}
-            />
-          
-          </div>
-          {ActivityType?.name == "Physical Activity" ? (
-            <div style={{width:'73vh', fontWeight: 400, marginTop:'10px', paddingLeft:'10px'}}>
-              Sub-Activity Type :<b style={{color:'blue'}}> {ActivityType?.sub_type} </b>
+              <Autocomplete
+                size='small'
+                style={{ width: '45%' }}
+                onChange={(e, value) => setActivityType(value)}
+                // id='branch_id'
+                className='dropdownIcon'
+                value={ActivityType}
+                options={activityCategory || []}
+                getOptionLabel={(option) => option?.name || ''}
+                // getOptionSelected={(option, value) => option?.branch?.id == value?.branch?.id}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Activity Type'
+                    placeholder='Activity Type'
+                    required
+                  />
+                )}
+              />
+
             </div>
-          ) : ""}
-          {inputList
-            ? inputList.map((input, index) => (
-                <>
-                  <div style={{ marginTop: '1rem', display:'flex' }}>
-                    <TextField
-                      label='Criteria Name'
-                      size='small'
-                      type='text'
-                      onChange={(event) => handleInputCreativity(event, index)}
-                      variant='outlined'
-                    />
-                    &nbsp;&nbsp;&nbsp;
-                    {showPhy ? (
-                      ""
-                    ) : (
-                      <>
-                      <TextField
-                        label='Rating'
-                        size='small'
-                        type='number'
-                        // value={rating1}
-                        onChange={(event) => handleInputRating(event, index)}
-                        // onInput={(e) => {
-                        //   e.target.value = Math.max(0, parseInt(e.target.value))
-                        //     .toString()
-                        //     .slice(0, 1);
-                        // }}
-                        // onChange={(event) => handleInputChange(event, index)}
-                        variant='outlined'
+
+            {ActivityType?.name == "Physical Activity" ? (
+              <div style={{ width: '73vh', fontWeight: 400, marginTop: '10px', paddingLeft: '10px' }}>
+                Sub-Activity Type :<b style={{ color: 'blue' }}> {ActivityType?.sub_type} </b>
+              </div>
+            ) : ""}
+            {ActivityType?.name === "Visual Art" ? (
+              <div className='row m-2'>
+                <AntDivider orientation="left" plain>
+                  Add Question
+                </AntDivider>
+                {visualInputlList ? visualInputlList.map((input, index) => (
+                  <>
+                    <div className='col-10'>
+                      <Input
+                        placeholder='Question'
+                        width={100}
+                        onChange={(event) => handleQuestion(event,index)}
                       />
-                      &nbsp;&nbsp;&nbsp;
-                      <TextField
-                        label='Score'
-                        size='small'
-                        type='number'
-                        // onInput={(e) => {
-                        //   e.target.value = Math.max(0, parseInt(e.target.value))
-                        //     .toString()
-                        //     .slice(0, 1);
-                        // }}
-                        // onChange={(e) => activityScore(e)}
-                        // onChange={(event) => handleInputChange(event, index)}
-                        // onChange={(e) => activityScore1(e)}
-                        onChange={(event) => handleInputChange1(event, index)}
-                        variant='outlined'
+                    </div>
+                    <div className='col-2'>
+                      <DeleteFilled onClick={() => handleRemoveVisual(index)} style={{ cursor: 'pointer' }} />
+                    </div>
+
+                  </>
+                )) : (
+                  "No Item In The List"
+                )}
+
+                <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
+                  <AntButton icon={<PlusOutlined />} type="primary" onClick={handleVisualInputApp} >Add</AntButton>
+                </div>
+                <AntDivider orientation="left" plain>
+                  Add Options
+                </AntDivider>
+                {optionList ? optionList.map((input, index) => (
+                  <div className='row'>
+                    <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
+                      <Input
+                        placeholder='Option'
+                        width={100}
+                        onChange={(event) => handleOptionInput(event, index)}
                       />
-                      </>
-                    )}
-                    <Button
-                      style={{ marginLeft: '12px' }}
-                      color='primary'
-                      variant='contained'
-                      onClick={() => handleRemoveItem(index)}
-                    >
-                      Delete
-                    </Button>
+                    </div>
+                    <div className='col-3' style={{ padding: '0.5rem 0rem' }}>
+                      <Input
+                        placeholder='Marks'
+                        width={100}
+                        onChange={(event) => handleMarksInput(event, index)}
+                      />
+                    </div>
+                    <div className='col-3'>
+                      <DeleteFilled style={{ cursor: 'pointer' }} onClick={() => handleOptionDelete(index)} />
+                    </div>
                   </div>
-                </>
-              ))
-            : 'No item in the list '}
-          &nbsp;&nbsp;&nbsp;
-          <Button
-            onClick={handleListAdd}
-            disabled={isDisabled}
-            style={{ marginTop: '1rem' }}
-            variant='contained'
-            color='primary'
-            
-          >
-            Add
-          </Button>
-          &nbsp;&nbsp;
-          <Button
-            variant='contained'
-            size='small'
-            color='primary'
-            onClick={handleActivityTypeSubmit}
-            style={{ marginTop: '1rem' }}
-          >
-            Submit
-          </Button>
-        </div>
-      </Dialog>
-    </Layout>
+
+                )) : (
+                  "No Option In The List"
+                )}
+                <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
+                  <AntButton
+                    icon={<PlusOutlined />}
+                    onClick={handleOptionInputAdd}
+                  >
+                    Add Button
+                  </AntButton>
+                </div>
+                <div className='col-12'
+                >
+                  <AntButton onClick={handleOptionSubmit}>
+                    Submit
+                  </AntButton>
+
+                </div>
+              </div>
+            ) : (
+              <>
+                {inputList
+                  ? inputList.map((input, index) => (
+                    <>
+                      <div style={{ marginTop: '1rem', display: 'flex' }}>
+                        <TextField
+                          label='Criteria Name'
+                          size='small'
+                          type='text'
+                          onChange={(event) => handleInputCreativity(event, index)}
+                          variant='outlined'
+                        />
+                        &nbsp;&nbsp;&nbsp;
+                        {showPhy ? (
+                          ""
+                        ) : (
+                          <>
+                            <TextField
+                              label='Rating'
+                              size='small'
+                              type='number'
+                              // value={rating1}
+                              onChange={(event) => handleInputRating(event, index)}
+                              // onInput={(e) => {
+                              //   e.target.value = Math.max(0, parseInt(e.target.value))
+                              //     .toString()
+                              //     .slice(0, 1);
+                              // }}
+                              // onChange={(event) => handleInputChange(event, index)}
+                              variant='outlined'
+                            />
+                            &nbsp;&nbsp;&nbsp;
+                            <TextField
+                              label='Score'
+                              size='small'
+                              type='number'
+                              // onInput={(e) => {
+                              //   e.target.value = Math.max(0, parseInt(e.target.value))
+                              //     .toString()
+                              //     .slice(0, 1);
+                              // }}
+                              // onChange={(e) => activityScore(e)}
+                              // onChange={(event) => handleInputChange(event, index)}
+                              // onChange={(e) => activityScore1(e)}
+                              onChange={(event) => handleInputChange1(event, index)}
+                              variant='outlined'
+                            />
+                          </>
+                        )}
+                        <Button
+                          style={{ marginLeft: '12px' }}
+                          color='primary'
+                          variant='contained'
+                          onClick={() => handleRemoveItem(index)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </>
+                  ))
+                  : 'No item in the list '}
+                &nbsp;&nbsp;&nbsp;
+                <Button
+                  onClick={handleListAdd}
+                  disabled={isDisabled}
+                  style={{ marginTop: '1rem' }}
+                  variant='contained'
+                  color='primary'
+
+                >
+                  Add
+                </Button>
+                &nbsp;&nbsp;
+                <Button
+                  variant='contained'
+                  size='small'
+                  color='primary'
+                  onClick={handleActivityTypeSubmit}
+                  style={{ marginTop: '1rem' }}
+                >
+                  Submit
+                </Button>
+              </>
+
+
+            )}
+          </div>
+
+
+        </Dialog>
+
+
+        <AntDrawer
+          title={`Add Parameters`}
+          zIndex={1300}
+          placement="right"
+          width={window.innerWidth < 768 ? '90vw' : '450px'}
+          // size='default'
+          onClose={onCloseAnt}
+          visible={antDrawer}
+          // closable={false}
+          open={antDrawer}
+        // extra={
+        //   <Space>
+        //     <Button onClick={onClose}>Cancel</Button>
+        //     <Button type="primary" onClick={onClose}>
+        //       OK
+        //     </Button>
+        //   </Space>
+        // }
+        >
+
+          <div className='action-filed'>
+            {visualInputlList ? visualInputlList.map((input, index) => (
+              <>
+                <div className='row' style={{ marginTop: '1rem', display: 'flex' }}>
+                  <div className='col-6'>
+
+                  </div>
+                  <div className='col-4'>
+                    <Select
+                      className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                      bordered={true}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      // value={selectedCategoryName}
+                      placement='bottomRight'
+                      placeholder='Select Option'
+                      suffixIcon={<DownOutlined className='th-black-1' />}
+                      dropdownMatchSelectWidth={false}
+                      //  onChange={(e, val) => handleGradeChange(e, val)}
+                      onChange={(e, val) => handleVisualChange(e, val)}
+                      allowClear
+
+                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
+                    >
+                      {visulaOptions}
+
+                    </Select>
+                  </div>
+                  <div className='col-2'>
+                    <DeleteFilled onClick={() => handleRemoveVisual(index)} style={{ cursor: 'pointer' }} />
+                  </div>
+
+                </div>
+              </>
+            )) : "No Item In The List"}
+            <div style={{ padding: '0.5rem 0rem' }}>
+              <AntButton type="primary" onClick={handleVisualInputApp} >Add</AntButton>
+
+            </div>
+            <div style={{ padding: '0.5rem 0rem', display: 'flex', alignItem: 'center', justifyContent: 'end' }}>
+              <AntButton type="primary">Submit</AntButton>
+            </div>
+
+          </div>
+        </AntDrawer>
+        <AntDrawer
+          title={`Options`}
+          zIndex={1300}
+          placement="right"
+          width={window.innerWidth < 768 ? '90vw' : '450px'}
+          // size='default'
+          onClose={onCloseAnt}
+          visible={onOptionVisible}
+          open={onOptionVisible}
+          extra={
+            <Space>
+              <AntButton
+                icon={<PlusOutlined />}
+                onClick={onOptionModalFun}
+              >Add Options</AntButton>
+            </Space>
+          }
+        >
+
+          <div className='action-filed'>
+            {visualInputlList ? visualInputlList.map((input, index) => (
+              <>
+                <div className='row' style={{ marginTop: '1rem', display: 'flex' }}>
+                  <div className='col-6'>
+
+                  </div>
+                  <div className='col-4'>
+                    <Select
+                      className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                      bordered={true}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      // value={selectedCategoryName}
+                      placement='bottomRight'
+                      placeholder='Select Option'
+                      suffixIcon={<DownOutlined className='th-black-1' />}
+                      dropdownMatchSelectWidth={false}
+                      //  onChange={(e, val) => handleGradeChange(e, val)}
+                      onChange={(e, val) => handleVisualChange(e, val)}
+                      allowClear
+
+                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
+                    >
+                      {visulaOptions}
+
+                    </Select>
+                  </div>
+                  <div className='col-2'>
+                    <DeleteFilled onClick={() => handleRemoveVisual(index)} style={{ cursor: 'pointer' }} />
+                  </div>
+
+                </div>
+              </>
+            )) : "No Item In The List"}
+            <div style={{ padding: '0.5rem 0rem' }}>
+              <AntButton type="primary" onClick={handleVisualInputApp} >Add</AntButton>
+
+            </div>
+            <div style={{ padding: '0.5rem 0rem', display: 'flex', alignItem: 'center', justifyContent: 'end' }}>
+              <AntButton type="primary">Submit</AntButton>
+            </div>
+
+          </div>
+        </AntDrawer>
+        <AntModal
+          title="Add Options"
+          centered
+          open={onOptionModal}
+          visible={onOptionModal}
+          // onOk={() => setOnOptionModal(false)}
+          onCancel={() => setOnOptionModal(false)}
+        // width={1000}
+        >
+          <div style={{ border: '1px solid black', margin: '0.5rem 0rem' }}>
+            <div className='col-10' style={{ padding: '0.5rem 0rem' }}>
+              <Input
+                placeholder='Question'
+                width={100}
+              // onChange={(e, value) => setOptionTitle(value)}
+              // onChange={(e) => handleOptionTitle(e)}
+
+
+              />
+            </div>
+            <div className='col-2'>
+            </div>
+            {optionList ? optionList.map((input, index) => (
+              <div className='row'>
+                {/* <Space> */}
+
+                <div className='col-6' style={{ padding: '0.5rem 0rem' }} >
+                  <Input
+                    placeholder='Option'
+                    width={100}
+                    onChange={(event) => handleOptionInput(event, index)}
+                  />
+                </div>
+                <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
+                  <Input
+                    placeholder='Marks'
+                    width={100}
+                    onChange={(event) => handleMarksInput(event, index)}
+                  />
+                </div>
+                {/* </Space> */}
+              </div>
+            )) : "No Item In The List"}
+            <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
+              <AntButton
+                icon={<PlusOutlined />}
+                onClick={handleOptionInputAdd}
+              >
+                Add Button
+              </AntButton>
+            </div>
+            <div className='col-12'
+            // onClick={handleOptionSubmit}
+            >
+              <AntButton onClick={handleOptionSubmit}>
+                Submit
+              </AntButton>
+
+            </div>
+
+          </div>
+        </AntModal>
+
+      </Layout>
     </div>
   );
 };

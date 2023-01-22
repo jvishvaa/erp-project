@@ -195,10 +195,11 @@ const CentralBlogRedirection = () => {
   // const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
   // const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
-  const [periodData,setPeriodData] = useState([]);
-  const [subId,setSubId] = useState('')
-  const [blogSubId,setBlogSubId] = useState('')
-  const [loading,setLoading]= useState(false);
+  const [periodData, setPeriodData] = useState([]);
+  const [subId, setSubId] = useState('')
+  const [blogSubId, setBlogSubId] = useState('')
+  const [visualSubId, setVisualSubId] = useState('')
+  const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [blogLoginId, setBlogLoginId] = useState('')
 
@@ -210,7 +211,7 @@ const CentralBlogRedirection = () => {
 
   const handlePublicSpeaking = () => {
     history.push({
-      pathname:'/physical/activity',
+      pathname: '/physical/activity',
       state: {
         subActiveId: subId,
       }
@@ -218,117 +219,142 @@ const CentralBlogRedirection = () => {
   }
 
 
-  const handleBlogActivity = () =>{
+  const handleBlogActivity = () => {
     history.push({
-      pathname:'/blog/blogview',
+      pathname: '/blog/blogview',
       state: {
-        blogLoginId : blogLoginId,
+        blogLoginId: blogLoginId,
+      }
+    })
+  }
+
+
+  const handleVisualActivityRoute = () => {
+    history.push({
+      pathname: '/visual/activity',
+      state: {
+        subActiveId: visualSubId,
       }
     })
   }
 
   const periodDataAPI = () => {
-      setLoading(true)
-      axiosInstance
-        .get(`${endpoints.newBlog.blogRedirectApi}`, {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
-        .then((result) => {
-          setLoading(false)
-          setPeriodData(result?.data?.result)
-          const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
-          setSubId(physicalData[0]?.id)
-          const blogActivityData = result?.data?.result.filter((item) => item?.name == "Blog Activity")
-          setBlogSubId(blogActivityData[0]?.id)
-          // localStorage.setItem(
-          //   'PhysicalActivityId',
-          //   JSON.stringify(physicalData[0]?.id)
-          // );
+    setLoading(true)
+    axiosInstance
+      .get(`${endpoints.newBlog.blogRedirectApi}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((result) => {
+        setLoading(false)
+        setPeriodData(result?.data?.result)
+        const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
+        setSubId(physicalData[0]?.id)
+        const blogActivityData = result?.data?.result.filter((item) => item?.name == "Blog Activity")
+        setBlogSubId(blogActivityData[0]?.id)
+        const visualActivityData = result?.data?.result.filter((item) => item?.name.toLowerCase() === "visual art")
+        setVisualSubId(visualActivityData[0]?.id)
+        // localStorage.setItem(
+        //   'PhysicalActivityId',
+        //   JSON.stringify(physicalData[0]?.id)
+        // );
 
-        })
-        .catch((err) => {
-          setLoading(false)
-        })
+      })
+      .catch((err) => {
+        setLoading(false)
+      })
     // }
   };
 
-  useEffect(() =>{
+  useEffect(() => {
     periodDataAPI()
-  },[])
+  }, [])
 
 
 
   const handleExplore = (data) => {
     let dataLower = data?.name.toLowerCase()
-    if (dataLower == "blog wall" || dataLower == "blog writing" ||  dataLower == "blog writting" ) {
+    if (dataLower == "blog wall" || dataLower == "blog writing" || dataLower == "blog writting") {
       // handleBlogWriting()
       return
     } else if (dataLower === "public speaking") {
-        // handlePublicSpeaking()
-        // return
-    } else if(dataLower === "physical activity") {
+      // handlePublicSpeaking()
+      // return
+    } else if (dataLower === "physical activity") {
       localStorage.setItem(
         'PhysicalActivityId',
         JSON.stringify(subId)
       );
-        handlePublicSpeaking()
-        return
-    }else if(dataLower === "art writting" || dataLower === "blog activity"){
+      handlePublicSpeaking()
+      return
+    } else if (dataLower === "art writting" || dataLower === "blog activity") {
       localStorage.setItem(
         'BlogActivityId',
         JSON.stringify(blogSubId)
       );
-      if(user_level === 2 || user_level === 8 || user_level === 11){
+      if (user_level === 2 || user_level === 8 || user_level === 11) {
         handleBlogActivity()
         return
-      }else if(user_level === 13){
-       
+      } else if (user_level === 13) {
+
         handleBlogWriting()
         return
       }
       return
-    }else{
+    } else if (dataLower === "visual art") {
+      localStorage.setItem('VisualActivityId',
+        JSON.stringify(visualSubId)
+      );
+      if (user_level === 2 || user_level === 6 || user_level === 11) {
+        handleVisualActivityRoute()
+        return
+      } else if (user_level === 13) {
+        setAlert('error', "Yet to set route")
+        return
+      }
+
+    }
+    else {
       setAlert('error', 'Level Does Not Exist')
       return
     }
   }
 
-  useEffect(() =>{
+  useEffect(() => {
     localStorage.setItem('PhysicalActivityId', '');
     getActivitySession()
     ActvityLocalStorage()
-  },[])
+  }, [])
 
 
-  const getActivitySession = () =>{
+  const getActivitySession = () => {
     setLoading(true)
     axios
-    .post(`${endpoints.newBlog.activitySessionLogin}`,
-    {},
-      {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-          Authorization: `${token}`,
-        },
+      .post(`${endpoints.newBlog.activitySessionLogin}`,
+        {},
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+            Authorization: `${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setBlogLoginId(response?.data?.result)
+        localStorage.setItem(
+          'ActivityManagementSession',
+          JSON.stringify(response?.data?.result)
+        );
+
+        setLoading(false)
+
+      })
+      .catch((err) => {
+
+        console.log(err)
       }
-    )
-    .then((response) => {
-      setBlogLoginId(response?.data?.result)
-      localStorage.setItem(
-        'ActivityManagementSession',
-        JSON.stringify(response?.data?.result)
-      );
-
-      setLoading(false)
-      
-    })
-    .catch((err) =>{
-
-      console.log(err)
-    }
-    )
+      )
   }
 
   const ActvityLocalStorage = () => {
@@ -356,18 +382,18 @@ const CentralBlogRedirection = () => {
   };
 
   const getSubjectIcon = (value) => {
-    switch(value) {
-      case 'Blog Activity' :
+    switch (value) {
+      case 'Blog Activity':
         return image2;
-      case 'Public Speaking' : 
+      case 'Public Speaking':
         return image1;
-      case 'Physical Activity' :
+      case 'Physical Activity':
         return image1;
-      case 'actiivtytype' : 
+      case 'actiivtytype':
         return image1;
-      default : 
-          return ""
-        
+      default:
+        return ""
+
     }
   };
 
@@ -375,95 +401,95 @@ const CentralBlogRedirection = () => {
   return (
     <React.Fragment>
       <div>
-      {loading && <Loader/>}
-      <Layout>
-        {''}
-        <div className='row th-16 py-3 px-2'>
-          <div className='col-md-8' style={{ zIndex: 2 }}>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                Activities Management
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className='row'>
-            <div className='col-12' style={{ fontWeight: 'bold' }}>
-              <Divider orientation="left" orientationMargin="0" style={{ fontSize: '22px' }}>Activities</Divider>
+        {loading && <Loader />}
+        <Layout>
+          {''}
+          <div className='row th-16 py-3 px-2'>
+            <div className='col-md-8' style={{ zIndex: 2 }}>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+                  Activities Management
+                </Breadcrumb.Item>
+              </Breadcrumb>
             </div>
-            <div className='row p-3' style={{ height: 500, overflowY: 'scroll' }}>
-              {periodData &&
-                periodData?.map((each,index) =>
-                  // each?.data?.map((item) => (
-                  <div className='col-md-4 pl-0 mt-2'>
-                    <div
-                      className='th-br-10 th-bg-grey dummy-background'
-                    >
-                      <div className='row p-3'>
-                        <div className='col-4 th-br-5' style={{display:'flex', flexWrap:'wrap'}}>
-                          <img
-                            src={getSubjectIcon(each?.name)}
-                            // src={getSubjectIcon((each?.subject_name).toLowerCase())}
-                            style={{height:'153px', width:'153px', backgroundSize:'cover', backgroundPosition:'center', backgroundRepeat:'no-repeat', borderRadius:'7px'}}
-                            alt="Icon"
+            <div className='row'>
+              <div className='col-12' style={{ fontWeight: 'bold' }}>
+                <Divider orientation="left" orientationMargin="0" style={{ fontSize: '22px' }}>Activities</Divider>
+              </div>
+              <div className='row p-3' style={{ height: 500, overflowY: 'scroll' }}>
+                {periodData &&
+                  periodData?.map((each, index) =>
+                    // each?.data?.map((item) => (
+                    <div className='col-md-4 pl-0 mt-2'>
+                      <div
+                        className='th-br-10 th-bg-grey dummy-background'
+                      >
+                        <div className='row p-3'>
+                          <div className='col-4 th-br-5' style={{ display: 'flex', flexWrap: 'wrap' }}>
+                            <img
+                              src={getSubjectIcon(each?.name)}
+                              // src={getSubjectIcon((each?.subject_name).toLowerCase())}
+                              style={{ height: '153px', width: '153px', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', borderRadius: '7px' }}
+                              alt="Icon"
                             // className='mb-1'
-                          />
-                        </div>
-                        <div className='col-8'>
-                          <div className='row -3 align-item-center th-black-1 '>
-                            <div className='col-12 pl-0'>
-                              <span className='th-18 th-fw-700 text-capitalize'>
-                                {each?.name}
-                              </span>
-                              <p className='th-12 th-fw-200'>
-                                {each?.count} Activity
-                              </p>
+                            />
+                          </div>
+                          <div className='col-8'>
+                            <div className='row -3 align-item-center th-black-1 '>
+                              <div className='col-12 pl-0'>
+                                <span className='th-18 th-fw-700 text-capitalize'>
+                                  {each?.name}
+                                </span>
+                                <p className='th-12 th-fw-200'>
+                                  {each?.count} Activity
+                                </p>
+                              </div>
+
+                            </div>
+                            <div className='row -3 th-bg-pink align-item-center th-br-5'>
+                              <div className='col-12 pl-0'>
+                                <span className='th-12 th-fw-500 ml-2 text-capitalize th-blue-1'>
+                                  Recently Added
+                                </span>
+                                <p className='th-12 th-fw-200 ml-2'>
+                                  {each?.title}
+                                </p>
+                              </div>
+
+                            </div>
+                            <div className='row -3 align-item-center'>
+                              <div className='col-6 pl-0'>
+                                <span className='th-12 th-fw-400 text-capitalize' style={{ color: 'grey' }}>
+                                  Last Updated
+                                </span>
+                                <p className='th-12 th-fw-200'>
+                                  {/* 2/04/2022, 5:30 PM */}
+                                  {moment(each?.last_update).format('ll')}
+                                </p>
+                              </div>
+                              <div className='col-6 pl-0' style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '0px 0px' }}>
+                                <Button type="primary"
+                                  onClick={() => handleExplore(each)}
+                                >
+                                  Explore &gt;
+                                </Button>
+                              </div>
+
                             </div>
 
                           </div>
-                          <div className='row -3 th-bg-pink align-item-center th-br-5'>
-                            <div className='col-12 pl-0'>
-                              <span className='th-12 th-fw-500 ml-2 text-capitalize th-blue-1'>
-                                Recently Added
-                              </span>
-                              <p className='th-12 th-fw-200 ml-2'>
-                                {each?.title}
-                              </p>
-                            </div>
-
-                          </div>
-                          <div className='row -3 align-item-center'>
-                            <div className='col-6 pl-0'>
-                              <span className='th-12 th-fw-400 text-capitalize' style={{ color: 'grey' }}>
-                                Last Updated
-                              </span>
-                              <p className='th-12 th-fw-200'>
-                                {/* 2/04/2022, 5:30 PM */}
-                                {moment(each?.last_update).format('ll')}
-                              </p>
-                            </div>
-                            <div className='col-6 pl-0' style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '0px 0px' }}>
-                              <Button type="primary"
-                               onClick={() => handleExplore(each)}
-                               >
-                                Explore &gt;
-                              </Button>
-                            </div>
-
-                          </div>
-
                         </div>
                       </div>
                     </div>
-                  </div>
-                )
+                  )
 
-              }
+                }
+              </div>
+
             </div>
 
           </div>
-
-        </div>
-      </Layout>
+        </Layout>
 
       </div>
     </React.Fragment>

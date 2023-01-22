@@ -187,6 +187,7 @@ const AdminCreateBlog = () => {
   const [isPhysicalActivity, setIsPhysicalActivity] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   const [subActivityName, setSubActivityName] = useState([])
+  const [isVisualActivity,setIsVisualActivity] = useState(false);
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -208,6 +209,7 @@ const AdminCreateBlog = () => {
     setSelectedGrade([])
     setSelectedSection([])
     setIsPhysicalActivity(false)
+    setIsVisualActivity(false)
     if (value) {
       setSubActivityName(value)
       setIsPhysicalActivity(true)
@@ -231,6 +233,8 @@ const AdminCreateBlog = () => {
       setActivityName(value);
       if (value?.name == "Physical Activity") {
         setIsPhysicalActivity(true)
+      }else if(value?.name ==="Visual Act"){
+        setIsVisualActivity(true)
       }
     }
   };
@@ -552,7 +556,12 @@ const AdminCreateBlog = () => {
             history.push('/physical/activity')
             return
 
-          } else {
+          }else if(isVisualActivity == true){
+            history.push('visual/activity')
+            return
+          } 
+          
+          else{
             history.push('/blog/blogview');
             return
           }
