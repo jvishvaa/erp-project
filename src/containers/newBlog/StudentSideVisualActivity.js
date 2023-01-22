@@ -463,7 +463,7 @@ const StudentSideVisualActivity = () => {
         axios
             .get(
                 // `${endpoints.newBlog.studentSideApi}?user_id=${408}&activity_type=${ActivityId}&activity_detail_id=null&is_reviewed=True&is_submitted=True&update=True`,
-                `${endpoints.newBlog.studentSideApi}?user_id=${userIdLocal?.id}&activity_type=${ActivityId}&activity_detail_id=$null&is_reviewed=True&is_submitted=True&update=True`,
+                `${endpoints.newBlog.studentSideApi}?user_id=${userIdLocal?.id}&activity_type=${ActivityId}&activity_detail_id=null&is_reviewed=True&is_submitted=True&update=True`,
                 {
                     headers: {
                         'X-DTS-HOST': X_DTS_HOST,
