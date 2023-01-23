@@ -116,6 +116,10 @@ const HolidayMark = () => {
       setAlert('warning', 'Select Grade');
       return;
     }
+    if (startDate == undefined) {
+      setAlert('warning', 'Select Date');
+      return;
+    }
     if (isEdit) {
       axiosInstance
         .put(endpoints.academics.getHoliday, {
@@ -313,11 +317,20 @@ const HolidayMark = () => {
   }, [gradeList]);
 
   const onunHandleClearAll = (e) => {
-    setSelectedBranch();
-    setSelectedGrade();
+    setSelectedBranch([]);
+    setSelectedGrade([]);
     setHolidayName('');
     setHolidayDesc('');
-    setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
+    setStartDate()
+    setEndDate()
+    setDates()
+    formRef.current.setFieldsValue({
+      branch: [],
+      grade: [],
+      date: '',
+      holiday_desc: '',
+      holiday_name: ''
+    })
   };
   const handleAcademicYear = (event, value) => {
     if (value) {
@@ -579,23 +592,24 @@ const HolidayMark = () => {
 
           <Grid container direction='row' className={classes.root}>
             <div className={classes.button}>
-              <Button variant='contained' onClick={onunHandleClearAll} style={{ margin: '5px' }}>
+              <Button variant='contained' onClick={onunHandleClearAll} style={{ margin: '5px' }}
+                type='primary'
+                className='th-br-6 th-bg-primary th-pointer th-white'
+              >
                 Clear All
               </Button>
               <Button
                 style={{ margin: '5px' }}
-                variant='contained'
-                color='primary'
+                type='primary'
+                className='th-br-6 th-bg-primary th-pointer th-white'
                 onClick={handleBackButtonClick}
               >
                 Go Back
               </Button>
               <Button
                 style={{ margin: '5px' }}
-                variant='contained'
-                type='submit'
-                value='Submit'
-                color='primary'
+                type='primary'
+                className='th-br-6 th-bg-primary th-pointer th-white'
                 onClick={handleSubmit}
               >
                 Save Holiday
