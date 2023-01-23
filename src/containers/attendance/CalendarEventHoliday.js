@@ -319,7 +319,11 @@ const CalendarV2 = () => {
         newBranchList.splice(index, 1);
         setSelectedBranch(newBranchList);
         console.log(newBranchList);
-        getGrades(newBranchList)
+        if(newBranchList?.length > 0){
+            getGrades(newBranchList)
+        } else if(newBranchList?.length == 0){
+            setGradeList([])
+          }
     };
 
 
@@ -742,7 +746,7 @@ const CalendarV2 = () => {
                                                 holidays?.length > 0 ?
                                                     holidays?.map((item) => (
                                                         <>
-                                                            <div className='col-lg-4 col-md-6 pl-0 mt-2'>
+                                                            <div className='col-lg-4 col-md-6 mt-2'>
                                                                 <div
                                                                     className='th-br-20 th-bg-grey period-card'
                                                                     style={{ border: '1px solid #d9d9d9' }}
@@ -818,7 +822,7 @@ const CalendarV2 = () => {
                                                                 </div>
                                                             </div>
                                                         </>
-                                                    )) : <div style={{ width: '100%', marginTop: '3%' }}> <Empty /></div>
+                                                    )) : <div style={{ width: '100%' }}> <Empty /></div>
                                             }
                                         </div>
                                     </TabPane>
@@ -1029,7 +1033,7 @@ const CalendarV2 = () => {
                                                                 </div>
                                                             </div>
                                                         </>
-                                                    )) : <div style={{ width: '100%', marginTop: '3%' }}> <Empty /></div>
+                                                    )) : <div style={{ width: '100%' }}> <Empty /></div>
                                             }
                                         </div>
                                     </TabPane>
