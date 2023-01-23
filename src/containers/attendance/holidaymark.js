@@ -398,7 +398,11 @@ const HolidayMark = () => {
     newBranchList.splice(index, 1);
     setSelectedBranch(newBranchList);
     console.log(newBranchList);
-    getGrades(newBranchList)
+    if(newBranchList?.length > 0){
+      getGrades(newBranchList)
+  } else if(newBranchList?.length == 0){
+    setGradeList([])
+  }
   };
 
   const handleSelectGrade = (value, arr) => {
