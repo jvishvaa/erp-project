@@ -81,8 +81,8 @@ const EventsMark = () => {
   const [selectedSection, setSelectedSection] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [dates, setDates] = useState(null);
-  const [ category , setCategory ] = useState([])
-  const [ selectedCategory ,  setSelectedCategory ] = useState()
+  const [category, setCategory] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState()
   const handleChangeHoliday = (event) => {
     setHolidayName(event.target.value);
   };
@@ -94,8 +94,8 @@ const EventsMark = () => {
     console.log(e);
     e.preventDefault();
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-    let branches = branchList.filter(item => selectedBranch.includes(item?.branch?.id))
-    console.log(branches);
+    let branches = branchList?.filter(item => selectedBranch?.includes(item?.branch?.id))
+    console.log(selectedCategory);
 
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
@@ -109,12 +109,20 @@ const EventsMark = () => {
       setAlert('warning', 'Enter Holiday Description');
       return;
     }
-    if (selectedBranch.length == 0) {
+    if (selectedBranch?.length == 0) {
       setAlert('warning', 'Select Branch');
       return;
     }
-    if (selectedGrade.length == 0) {
+    if (selectedGrade?.length == 0) {
       setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (startDate == undefined) {
+      setAlert('warning', 'Select Date');
+      return;
+    }
+    if (selectedCategory == undefined) {
+      setAlert('warning', 'Select Event Category');
       return;
     }
     if (isEdit) {
@@ -169,7 +177,7 @@ const EventsMark = () => {
     }
   };
   const handleBackButtonClick = (e) => {
-    
+
     history.push({
       pathname: '/attendance-calendar/teacher-view',
       state: {
@@ -242,7 +250,7 @@ const EventsMark = () => {
         setCategory(res?.data?.data)
       })
       .catch((error) => {
-      message.error('Failed To Fetch Categories')
+        message.error('Failed To Fetch Categories')
       });
   };
 
@@ -331,11 +339,22 @@ const EventsMark = () => {
   }, [gradeList]);
 
   const onunHandleClearAll = (e) => {
-    setSelectedBranch();
-    setSelectedGrade();
+    setSelectedBranch([]);
+    setSelectedGrade([]);
     setHolidayName('');
     setHolidayDesc('');
-    setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
+    setStartDate()
+    setEndDate()
+    setDates()
+    setSelectedCategory()
+    formRef.current.setFieldsValue({
+      branch: [],
+      grade: [],
+      date: '',
+      holiday_desc: '',
+      category: '',
+      holiday_name: ''
+    })
   };
   const handleAcademicYear = (event, value) => {
     if (value) {
@@ -445,11 +464,11 @@ const EventsMark = () => {
 
   const categoryOptions = category?.map((each) => {
     return (
-        <Option key={each?.id} value={each?.id}>
-           {each?.event_category_name}
-        </Option>
+      <Option key={each?.id} value={each?.id}>
+        {each?.event_category_name}
+      </Option>
     );
-});
+  });
 
   const handleDate = (value) => {
     console.log(value);
@@ -612,7 +631,7 @@ const EventsMark = () => {
             <div className='col-md-4'>
               <span className='th-grey th-14'>Event Name*</span>
               <Form.Item name='holiday_name'>
-                <Input placeholder="Select Holiday Name" onChange={handleChangeHoliday} />
+                <Input placeholder="Select Event Name" onChange={handleChangeHoliday} />
               </Form.Item>
             </div>
 
@@ -636,23 +655,22 @@ const EventsMark = () => {
 
           <Grid container direction='row' className={classes.root}>
             <div className={classes.button}>
-              <Button variant='contained' onClick={onunHandleClearAll} style={{ margin: '5px' }}>
+              <Button variant='contained' onClick={onunHandleClearAll} style={{ margin: '5px' }} type='primary'
+                className='th-br-6 th-bg-primary th-pointer th-white' >
                 Clear All
               </Button>
               <Button
                 style={{ margin: '5px' }}
-                variant='contained'
-                color='primary'
+                type='primary'
+                className='th-br-6 th-bg-primary th-pointer th-white'
                 onClick={handleBackButtonClick}
               >
                 Go Back
               </Button>
               <Button
                 style={{ margin: '5px' }}
-                variant='contained'
-                type='submit'
-                value='Submit'
-                color='primary'
+                type='primary'
+                className='th-br-6 th-bg-primary th-pointer th-white'
                 onClick={handleSubmit}
               >
                 Save Event

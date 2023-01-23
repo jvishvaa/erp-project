@@ -3,7 +3,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import Loader from '../../components/loader/loader';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
-import { Breadcrumb, Tabs, Tooltip, Select, Input, Button, message, Form, Empty, DatePicker, Card, Segmented, Badge ,Popover } from 'antd';
+import { Breadcrumb, Tabs, Tooltip, Select, Input, Button, message, Form, Empty, DatePicker, Card, Segmented, Badge, Popover } from 'antd';
 import HolidayIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/holiday.png'
 import EventIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/event.png'
 import { IconButton } from '@material-ui/core';
@@ -115,7 +115,7 @@ const CalendarV2 = () => {
     const categoryOptions = category?.map((each) => {
         return (
             <Option key={each?.id} value={each?.id}>
-               {each?.event_category_name}
+                {each?.event_category_name}
             </Option>
         );
     });
@@ -368,16 +368,22 @@ const CalendarV2 = () => {
         let branches = branchList.filter(item => selectedBranch.includes(item?.branch?.id))
         let acad_session = branches?.map((item) => item?.id)
         console.log(acad_session);
-        console.log(branches, 'selected Branches');
+        console.log(selectedBranch , selectedGrade , user_level, 'selected Branches');
         if (segment == 1) {
-
-            getHoliday({
-                session_year: acad_session.toString(),
-                grade: selectedGrade,
-                start_date: startDate,
-                end_date: endDate
-            })
+            if(startDate == undefined || endDate  == undefined || selectedBranch?.length == 0 || selectedGrade?.length == 0 ) {
+                message.error('Please Select All Fields')
+            } else {
+                getHoliday({
+                    session_year: acad_session.toString(),
+                    grade: selectedGrade,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            }
         } else {
+            if(startDate == undefined || endDate  == undefined || selectedBranch?.length == 0 || selectedGrade?.length == 0 ) {
+                message.error('Please Select All Mandatory Fields')
+            } else {
             getEvents({
                 session_year_id: selectedAcademicYear?.id,
                 acad_session: acad_session.toString(),
@@ -387,6 +393,7 @@ const CalendarV2 = () => {
                 level: user_level,
                 event_category: selectedCategory
             })
+        }
         }
     }
 
@@ -597,7 +604,7 @@ const CalendarV2 = () => {
     }
 
     const historyData = history?.location?.state?.payload
- 
+
 
 
     return (
@@ -624,405 +631,415 @@ const CalendarV2 = () => {
 
                     {loading && <Loader />}
 
-                        <div className='row'>
-                            <div className='col-12'>
-                                <div className='th-tabs th-bg-white'>
-                                    <Tabs type='card' onChange={handleSegment} defaultActiveKey={segment}>
-                                        <TabPane tab='Holiday' key={1}>
-                                            <div className='cardsevents' >
-                                                <Form ref={formRef} style={{ width: '100%' }} >
-                                                    <Grid container direction='row' spacing={2} className={classes.root}>
+                    <div className='row'>
+                        <div className='col-12'>
+                            <div className='th-tabs th-bg-white'>
+                                <Tabs type='card' onChange={handleSegment} defaultActiveKey={segment}>
+                                    <TabPane tab='Holiday' key={1}>
+                                        <div className='cardsevents' >
+                                            <Form ref={formRef} style={{ width: '100%' }} >
+                                                <Grid container direction='row' spacing={2} className={classes.root}>
 
-                                                        <div className='col-md-3'>
-                                                            <span className='th-grey th-14'>Branch*</span>
-                                                            <Form.Item name='branch'>
-                                                                <Select
-                                                                    mode='multiple'
-                                                                    getPopupContainer={(trigger) => trigger.parentNode}
-                                                                    className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                                                                    placement='bottomRight'
-                                                                    placeholder="Select Branch"
-                                                                    showArrow={true}
-                                                                    suffixIcon={<DownOutlined className='th-grey' />}
-                                                                    maxTagCount={2}
-                                                                    value={selectedBranch}
-                                                                    dropdownMatchSelectWidth={false}
-                                                                    onSelect={(e) => {
-                                                                        handleSelectBranch(
-                                                                            e,
-                                                                            branchList?.map((item) => item.branch?.id),
-                                                                            branchList?.map((item) => item?.id),
-                                                                        );
-                                                                    }}
-                                                                    onDeselect={(e, value) => {
-                                                                        handleDeSelectBranch(value);
-                                                                    }}
-                                                                    filterOption={(input, options) => {
-                                                                        return (
-                                                                            options.children
-                                                                                .toLowerCase()
-                                                                                .indexOf(input.toLowerCase()) >= 0
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    {branchList?.length > 0 && (
-                                                                        <>
-                                                                            <Option key={0} value={'all'}>
-                                                                                All
-                                                                            </Option>
-                                                                        </>
-                                                                    )}
-                                                                    {branchOptions}
-                                                                </Select>
-                                                            </Form.Item>
-                                                        </div>
-                                                        <div className='col-md-3'>
-                                                            <span className='th-grey th-14'>Grades*</span>
-                                                            <Form.Item name='grade'>
-                                                                <Select
-                                                                    allowClear
-                                                                    placeholder='Select Grade'
-                                                                    showSearch
-                                                                    optionFilterProp='children'
-                                                                    filterOption={(input, options) => {
-                                                                        return (
-                                                                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                                        );
-                                                                    }}
-                                                                    onChange={(e) => {
-                                                                        handleGrade(e);
-                                                                    }}
-                                                                    onClear={handleClearGrade}
-                                                                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                                                >
-                                                                    {gradeOptions}
-                                                                </Select>
-                                                            </Form.Item>
-                                                        </div>
+                                                    <div className='col-md-3'>
+                                                        <span className=' th-14 font-weight-bold th-grey'>Branch*</span>
+                                                        <Form.Item name='branch'>
+                                                            <Select
+                                                                mode='multiple'
+                                                                getPopupContainer={(trigger) => trigger.parentNode}
+                                                                className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                                                                placement='bottomRight'
+                                                                placeholder="Select Branch"
+                                                                showArrow={true}
+                                                                suffixIcon={<DownOutlined className='th-grey' />}
+                                                                maxTagCount={2}
+                                                                value={selectedBranch}
+                                                                dropdownMatchSelectWidth={false}
+                                                                onSelect={(e) => {
+                                                                    handleSelectBranch(
+                                                                        e,
+                                                                        branchList?.map((item) => item.branch?.id),
+                                                                        branchList?.map((item) => item?.id),
+                                                                    );
+                                                                }}
+                                                                onDeselect={(e, value) => {
+                                                                    handleDeSelectBranch(value);
+                                                                }}
+                                                                filterOption={(input, options) => {
+                                                                    return (
+                                                                        options.children
+                                                                            .toLowerCase()
+                                                                            .indexOf(input.toLowerCase()) >= 0
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {branchList?.length > 0 && (
+                                                                    <>
+                                                                        <Option key={0} value={'all'}>
+                                                                            All
+                                                                        </Option>
+                                                                    </>
+                                                                )}
+                                                                {branchOptions}
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </div>
+                                                    <div className='col-md-3'>
+                                                        <span className='th-14 font-weight-bold th-grey'>Grades*</span>
+                                                        <Form.Item name='grade'>
+                                                            <Select
+                                                                allowClear
+                                                                placeholder='Select Grade'
+                                                                showSearch
+                                                                optionFilterProp='children'
+                                                                filterOption={(input, options) => {
+                                                                    return (
+                                                                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                                    );
+                                                                }}
+                                                                onChange={(e) => {
+                                                                    handleGrade(e);
+                                                                }}
+                                                                onClear={handleClearGrade}
+                                                                className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                                            >
+                                                                {gradeOptions}
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </div>
 
-                                                        <div className='col-md-3'>
-                                                            <span className='th-grey th-14'>Select Date Range*</span>
-                                                            <Form.Item name='date'>
-                                                                <RangePicker
-                                                                    value={dates}
-                                                                    onChange={handleDate}
-                                                                />
-                                                            </Form.Item>
-                                                        </div>
+                                                    <div className='col-md-3'>
+                                                        <span className='font-weight-bold th-14 th-grey'>Select Date Range*</span>
+                                                        <Form.Item name='date'>
+                                                            <RangePicker
+                                                                value={dates}
+                                                                onChange={handleDate}
+                                                            />
+                                                        </Form.Item>
+                                                    </div>
 
-                                                        <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={filterData} >
-                                                            <Button style={{ width: '100%' }}>Filter</Button>
-                                                        </div>
-                                                        {user_level != 13 ?
-                                                            <>
-                                                                <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
-                                                                    <Button>Add Holiday</Button>
-                                                                </div>
-                                                                {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
+                                                    <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={filterData} >
+                                                        <Button 
+                                                          type='primary'
+                                                          className='th-br-6 th-bg-primary th-pointer th-white'>Filter</Button>
+                                                    </div>
+                                                    {user_level != 13 ?
+                                                        <>
+                                                            <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
+                                                                <Button
+                                                                    type='primary'
+                                                                    className='th-br-6 th-bg-primary th-pointer th-white'
+                                                                >Add Holiday</Button>
+                                                            </div>
+                                                            {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
                                                                 <Button>Add Event</Button>
                                                             </div> */}
-                                                            </> : ''}
-                                                    </Grid>
+                                                        </> : ''}
+                                                </Grid>
 
-                                                </Form>
+                                            </Form>
 
-                                                {
-                                                    holidays?.length > 0 ?
-                                                        holidays?.map((item) => (
-                                                            <>
-                                                                <div className='col-lg-4 col-md-6 pl-0 mt-2'>
+                                            {
+                                                holidays?.length > 0 ?
+                                                    holidays?.map((item) => (
+                                                        <>
+                                                            <div className='col-lg-4 col-md-6 pl-0 mt-2'>
+                                                                <div
+                                                                    className='th-br-20 th-bg-grey period-card'
+                                                                    style={{ border: '1px solid #d9d9d9' }}
+                                                                >
                                                                     <div
-                                                                        className='th-br-20 th-bg-grey period-card'
-                                                                        style={{ border: '1px solid #d9d9d9' }}
+                                                                        className='row p-3 th-bg-pink align-items-center th-black-1'
+                                                                        style={{ borderRadius: '20px 20px 0 0' }}
                                                                     >
-                                                                        <div
-                                                                            className='row p-3 th-bg-pink align-items-center th-black-1'
-                                                                            style={{ borderRadius: '20px 20px 0 0' }}
-                                                                        >
-                                                                            <div className='col-8 pl-0 text-truncate' style={{ display: 'flex', alignItems: 'center' }} >
-                                                                                <img
-                                                                                    src={HolidayIcon}
-                                                                                    height='30'
-                                                                                    className='mb-1'
-                                                                                    alt='icon'
-                                                                                />
-                                                                                <Tooltip
-                                                                                    placement='topLeft'
-                                                                                    title={item?.title}
-                                                                                >
-                                                                                    <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                                                                                        {item?.title}
-                                                                                    </span>
-                                                                                </Tooltip>
+                                                                        <div className='col-8 pl-0 text-truncate' style={{ display: 'flex', alignItems: 'center' }} >
+                                                                            <img
+                                                                                src={HolidayIcon}
+                                                                                height='30'
+                                                                                className='mb-1'
+                                                                                alt='icon'
+                                                                            />
+                                                                            <Tooltip
+                                                                                placement='topLeft'
+                                                                                title={item?.title}
+                                                                            >
+                                                                                <span className='th-18 th-fw-700 ml-2 text-capitalize'>
+                                                                                    {item?.title}
+                                                                                </span>
+                                                                            </Tooltip>
+                                                                        </div>
+                                                                        <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
+                                                                            <Popover
+                                                                                content={() => handleAction(item)}
+                                                                                trigger='click'
+                                                                            >
+                                                                                <Button icon={<MoreOutlined />} />
+                                                                            </Popover>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className='row pl-2 pt-4'>
+                                                                        <div className='th-fw-600 col-2 px-0'>
+                                                                            <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                                                                Date :
                                                                             </div>
-                                                                            <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
+                                                                        </div>
+                                                                        <div className='col-8 text-truncate px-3'>
+                                                                            {`${moment(item?.holiday_start_date).format('DD-MM-YYYY')} - ${moment(item?.holiday_end_date).format('DD-MM-YYYY')}`}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div
+                                                                        className='row pl-2 pt-1 d-flex justify-content-between'
+                                                                        style={{
+                                                                            height: 60,
+                                                                        }}
+                                                                    >
+                                                                        <div className='th-fw-600 col-4 px-0'>
+                                                                            <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                                                                Description :
+                                                                            </div>
+                                                                        </div>
+                                                                        <Tooltip
+                                                                            placement='topLeft'
+                                                                            title={item?.description}
+                                                                        >
+                                                                            {item?.description ? (
+                                                                                <div className='col-8 pl-2 th-truncate'>
+                                                                                    <div>
+                                                                                        <div className='text-truncate text-capitalize mt-1 px-2 mx-3'>
+                                                                                            {item?.description},
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </Tooltip>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    )) : <div style={{ width: '100%', marginTop: '3%' }}> <Empty /></div>
+                                            }
+                                        </div>
+                                    </TabPane>
+                                    <TabPane tab='Events' key={2}>
+                                        <div className='cardsevents' >
+                                            <Form ref={formRef} style={{ width: '100%' }} >
+                                                <Grid container direction='row' spacing={2} className={classes.root}>
+
+                                                    <div className='col-md-3'>
+                                                        <span className='font-weight-bold th-grey th-14'>Branch*</span>
+                                                        <Form.Item name='branch'>
+                                                            <Select
+                                                                mode='multiple'
+                                                                getPopupContainer={(trigger) => trigger.parentNode}
+                                                                className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                                                                placement='bottomRight'
+                                                                placeholder="Select Branch"
+                                                                showArrow={true}
+                                                                suffixIcon={<DownOutlined className='th-grey' />}
+                                                                maxTagCount={2}
+                                                                value={selectedBranch}
+                                                                dropdownMatchSelectWidth={false}
+                                                                onSelect={(e) => {
+                                                                    handleSelectBranch(
+                                                                        e,
+                                                                        branchList?.map((item) => item.branch?.id),
+                                                                        branchList?.map((item) => item?.id),
+                                                                    );
+                                                                }}
+                                                                onDeselect={(e, value) => {
+                                                                    handleDeSelectBranch(value);
+                                                                }}
+                                                                filterOption={(input, options) => {
+                                                                    return (
+                                                                        options.children
+                                                                            .toLowerCase()
+                                                                            .indexOf(input.toLowerCase()) >= 0
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {branchList?.length > 0 && (
+                                                                    <>
+                                                                        <Option key={0} value={'all'}>
+                                                                            All
+                                                                        </Option>
+                                                                    </>
+                                                                )}
+                                                                {branchOptions}
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </div>
+                                                    <div className='col-md-3'>
+                                                        <span className='font-weight-bold th-grey th-14'>Grades*</span>
+                                                        <Form.Item name='grade'>
+                                                            <Select
+                                                                allowClear
+                                                                placeholder='Select Grade'
+                                                                showSearch
+                                                                optionFilterProp='children'
+                                                                filterOption={(input, options) => {
+                                                                    return (
+                                                                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                                    );
+                                                                }}
+                                                                onChange={(e) => {
+                                                                    handleGrade(e);
+                                                                }}
+                                                                onClear={handleClearGrade}
+                                                                className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                                            >
+                                                                {gradeOptions}
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </div>
+
+                                                    <div className='col-md-3'>
+                                                        <span className='font-weight-bold th-grey th-14'>Select Date Range*</span>
+                                                        <Form.Item name='date'>
+                                                            <RangePicker
+                                                                value={dates}
+                                                                onChange={handleDate}
+                                                            />
+                                                        </Form.Item>
+                                                    </div>
+                                                    <div className='col-md-3'>
+                                                        <span className='font-weight-bold th-grey th-14'>Category*</span>
+                                                        <Form.Item name='category'>
+                                                            <Select
+                                                                allowClear
+                                                                placeholder='Select Category'
+                                                                showSearch
+                                                                optionFilterProp='children'
+                                                                filterOption={(input, options) => {
+                                                                    return (
+                                                                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                                    );
+                                                                }}
+                                                                onChange={(e) => {
+                                                                    handleCategory(e);
+                                                                }}
+                                                                // onClear={handleClearGrade}
+                                                                className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                                            >
+                                                                {categoryOptions}
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </div>
+
+                                                    <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={filterData} >
+                                                        <Button
+                                                          type='primary'
+                                                          className='th-br-6 th-bg-primary th-pointer th-white'>Filter</Button>
+                                                    </div>
+                                                    {user_level != 13 ?
+                                                        <>
+                                                            {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
+                                                                <Button>Add Holiday</Button>
+                                                            </div> */}
+                                                            <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
+                                                                <Button
+                                                                type='primary'
+                                                                className='th-br-6 th-bg-primary th-pointer th-white'
+                                                                >Add Event</Button>
+                                                            </div>
+                                                        </> : ''}
+                                                </Grid>
+                                            </Form>
+                                            {
+                                                events?.length > 0 ?
+                                                    events?.map((item) => (
+                                                        <>
+                                                            <div className='col-lg-4 col-md-6 pl-0 mt-2'>
+                                                                <div
+                                                                    className='th-br-20 th-bg-grey period-card'
+                                                                    style={{ border: '1px solid #d9d9d9' }}
+                                                                >
+                                                                    <div
+                                                                        className='row p-3 th-bg-pink align-items-center th-black-1'
+                                                                        style={{ borderRadius: '20px 20px 0 0' }}
+                                                                    >
+                                                                        <div className='col-8 pl-0 text-truncate' style={{ display: 'flex', alignItems: 'center' }} >
+                                                                            <img
+                                                                                src={EventIcon}
+                                                                                height='30'
+                                                                                className='mb-1'
+                                                                                alt='icon'
+                                                                            />
+                                                                            <Tooltip
+                                                                                placement='topLeft'
+                                                                                title={item?.event_name}
+                                                                            >
+                                                                                <span className='th-18 th-fw-700 ml-2 text-capitalize'>
+                                                                                    {item?.event_name}
+                                                                                </span>
+                                                                            </Tooltip>
+                                                                        </div>
+                                                                        <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
+                                                                            {item?.event_category_name ? <Badge count={item?.event_category_name} style={{ marginRight: '8%' }} /> : ''}
+                                                                            {item?.is_enabled ?
                                                                                 <Popover
-                                                                                    content={() => handleAction(item)}
+                                                                                    content={() => handleActionEvent(item)}
                                                                                     trigger='click'
                                                                                 >
                                                                                     <Button icon={<MoreOutlined />} />
                                                                                 </Popover>
-                                                                            </div>
+                                                                                : ''}
                                                                         </div>
-
-                                                                        <div className='row pl-2 pt-4'>
-                                                                            <div className='th-fw-600 col-2 px-0'>
-                                                                                <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
-                                                                                    Date :
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className='col-8 text-truncate px-3'>
-                                                                                {`${moment(item?.holiday_start_date).format('DD-MM-YYYY')} - ${moment(item?.holiday_end_date).format('DD-MM-YYYY')}`}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div
-                                                                            className='row pl-2 pt-1'
-                                                                            style={{
-                                                                                height: 60,
-                                                                            }}
-                                                                        >
-                                                                            <div className='th-fw-600 col-2 px-0'>
-                                                                                <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
-                                                                                    Description :
-                                                                                </div>
-                                                                            </div>
-                                                                            <Tooltip
-                                                                                placement='topLeft'
-                                                                                title={item?.description}
-                                                                            >
-                                                                                {item?.description ? (
-                                                                                    <div className='col-10 pl-2 th-truncate'>
-                                                                                        <div>
-                                                                                            <div className='text-truncate text-capitalize mt-1 px-2'>
-                                                                                                {item?.description},
-                                                                                            </div>
-
-                                                                                        </div>
-                                                                                    </div>
-                                                                                ) : null}
-                                                                            </Tooltip>
-                                                                        </div>
-
                                                                     </div>
-                                                                </div>
-                                                            </>
-                                                        )) : <div style={{ width: '100%', marginTop: '3%' }}> <Empty /></div>
-                                                }
-                                            </div>
-                                        </TabPane>
-                                        <TabPane tab='Events' key={2}>
-                                            <div className='cardsevents' >
-                                                <Form ref={formRef} style={{ width: '100%' }} >
-                                                    <Grid container direction='row' spacing={2} className={classes.root}>
 
-                                                        <div className='col-md-3'>
-                                                            <span className='th-grey th-14'>Branch*</span>
-                                                            <Form.Item name='branch'>
-                                                                <Select
-                                                                    mode='multiple'
-                                                                    getPopupContainer={(trigger) => trigger.parentNode}
-                                                                    className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                                                                    placement='bottomRight'
-                                                                    placeholder="Select Branch"
-                                                                    showArrow={true}
-                                                                    suffixIcon={<DownOutlined className='th-grey' />}
-                                                                    maxTagCount={2}
-                                                                    value={selectedBranch}
-                                                                    dropdownMatchSelectWidth={false}
-                                                                    onSelect={(e) => {
-                                                                        handleSelectBranch(
-                                                                            e,
-                                                                            branchList?.map((item) => item.branch?.id),
-                                                                            branchList?.map((item) => item?.id),
-                                                                        );
-                                                                    }}
-                                                                    onDeselect={(e, value) => {
-                                                                        handleDeSelectBranch(value);
-                                                                    }}
-                                                                    filterOption={(input, options) => {
-                                                                        return (
-                                                                            options.children
-                                                                                .toLowerCase()
-                                                                                .indexOf(input.toLowerCase()) >= 0
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    {branchList?.length > 0 && (
-                                                                        <>
-                                                                            <Option key={0} value={'all'}>
-                                                                                All
-                                                                            </Option>
-                                                                        </>
-                                                                    )}
-                                                                    {branchOptions}
-                                                                </Select>
-                                                            </Form.Item>
-                                                        </div>
-                                                        <div className='col-md-3'>
-                                                            <span className='th-grey th-14'>Grades*</span>
-                                                            <Form.Item name='grade'>
-                                                                <Select
-                                                                    allowClear
-                                                                    placeholder='Select Grade'
-                                                                    showSearch
-                                                                    optionFilterProp='children'
-                                                                    filterOption={(input, options) => {
-                                                                        return (
-                                                                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                                        );
-                                                                    }}
-                                                                    onChange={(e) => {
-                                                                        handleGrade(e);
-                                                                    }}
-                                                                    onClear={handleClearGrade}
-                                                                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                                                >
-                                                                    {gradeOptions}
-                                                                </Select>
-                                                            </Form.Item>
-                                                        </div>
-
-                                                        <div className='col-md-3'>
-                                                            <span className='th-grey th-14'>Select Date Range*</span>
-                                                            <Form.Item name='date'>
-                                                                <RangePicker
-                                                                    value={dates}
-                                                                    onChange={handleDate}
-                                                                />
-                                                            </Form.Item>
-                                                        </div>
-                                                        <div className='col-md-3'>
-                                                            <span className='th-grey th-14'>Category*</span>
-                                                            <Form.Item name='category'>
-                                                                <Select
-                                                                    allowClear
-                                                                    placeholder='Select Category'
-                                                                    showSearch
-                                                                    optionFilterProp='children'
-                                                                    filterOption={(input, options) => {
-                                                                        return (
-                                                                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                                        );
-                                                                    }}
-                                                                    onChange={(e) => {
-                                                                        handleCategory(e);
-                                                                    }}
-                                                                    // onClear={handleClearGrade}
-                                                                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                                                >
-                                                                    {categoryOptions}
-                                                                </Select>
-                                                            </Form.Item>
-                                                        </div>
-
-                                                        <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={filterData} >
-                                                            <Button style={{ width: '100%' }}>Filter</Button>
-                                                        </div>
-                                                        {user_level != 13 ?
-                                                            <>
-                                                                {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
-                                                                <Button>Add Holiday</Button>
-                                                            </div> */}
-                                                                <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
-                                                                    <Button>Add Event</Button>
-                                                                </div>
-                                                            </> : ''}
-                                                    </Grid>
-                                                </Form>
-                                                {
-                                                    events?.length > 0 ?
-                                                        events?.map((item) => (
-                                                            <>
-                                                                <div className='col-lg-4 col-md-6 pl-0 mt-2'>
+                                                                    <div className='row pl-2 pt-4'>
+                                                                        <div className='th-fw-600 col-2 px-0'>
+                                                                            <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                                                                Date :
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className='col-8 text-truncate px-3'>
+                                                                            {`${moment(item?.start_time).format('DD-MM-YYYY')} - ${moment(item?.end_time).format('DD-MM-YYYY')}`}
+                                                                        </div>
+                                                                    </div>
                                                                     <div
-                                                                        className='th-br-20 th-bg-grey period-card'
-                                                                        style={{ border: '1px solid #d9d9d9' }}
+                                                                        className='row pl-2 pt-1 d-flex justify-content-between'
+                                                                        style={{
+                                                                            height: 60,
+                                                                        }}
                                                                     >
-                                                                        <div
-                                                                            className='row p-3 th-bg-pink align-items-center th-black-1'
-                                                                            style={{ borderRadius: '20px 20px 0 0' }}
-                                                                        >
-                                                                            <div className='col-8 pl-0 text-truncate' style={{ display: 'flex', alignItems: 'center' }} >
-                                                                                <img
-                                                                                    src={EventIcon}
-                                                                                    height='30'
-                                                                                    className='mb-1'
-                                                                                    alt='icon'
-                                                                                />
-                                                                                <Tooltip
-                                                                                    placement='topLeft'
-                                                                                    title={item?.event_name}
-                                                                                >
-                                                                                    <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                                                                                        {item?.event_name}
-                                                                                    </span>
-                                                                                </Tooltip>
-                                                                            </div>
-                                                                            <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
-                                                                                {item?.event_category_name ? <Badge count={item?.event_category_name} style={{marginRight: '8%'}} /> : ''}
-                                                                                {item?.is_enabled ?
-                                                                                    <Popover
-                                                                                        content={() => handleActionEvent(item)}
-                                                                                        trigger='click'
-                                                                                    >
-                                                                                        <Button icon={<MoreOutlined />} />
-                                                                                    </Popover>
-                                                                                    : ''}
+                                                                        <div className='th-fw-600 col-4 px-0'>
+                                                                            <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                                                                Description :
                                                                             </div>
                                                                         </div>
-
-                                                                        <div className='row pl-2 pt-4'>
-                                                                            <div className='th-fw-600 col-2 px-0'>
-                                                                                <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
-                                                                                    Date :
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className='col-8 text-truncate px-3'>
-                                                                                {`${moment(item?.start_time).format('DD-MM-YYYY')} - ${moment(item?.end_time).format('DD-MM-YYYY')}`}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div
-                                                                            className='row pl-2 pt-1'
-                                                                            style={{
-                                                                                height: 60,
-                                                                            }}
+                                                                        <Tooltip
+                                                                            placement='topLeft'
+                                                                            title={item?.description}
                                                                         >
-                                                                            <div className='th-fw-600 col-2 px-0'>
-                                                                                <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
-                                                                                    Description :
-                                                                                </div>
-                                                                            </div>
-                                                                            <Tooltip
-                                                                                placement='topLeft'
-                                                                                title={item?.description}
-                                                                            >
-                                                                                {item?.description ? (
-                                                                                    <div className='col-10 pl-2 th-truncate'>
-                                                                                        <div>
-                                                                                            <div className='text-truncate px-2 text-capitalize'>
-                                                                                                {item?.description},
-                                                                                            </div>
-
+                                                                            {item?.description ? (
+                                                                                <div className='col-8 pl-2 th-truncate'>
+                                                                                    <div>
+                                                                                        <div className='text-truncate px-2 text-capitalize'>
+                                                                                            {item?.description},
                                                                                         </div>
-                                                                                    </div>
-                                                                                ) : null}
-                                                                            </Tooltip>
-                                                                        </div>
 
+                                                                                    </div>
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </Tooltip>
                                                                     </div>
+
                                                                 </div>
-                                                            </>
-                                                        )) : <div style={{ width: '100%', marginTop: '3%' }}> <Empty /></div>
-                                                }
-                                            </div>
-                                        </TabPane>
-                                    </Tabs>
-                                </div>
+                                                            </div>
+                                                        </>
+                                                    )) : <div style={{ width: '100%', marginTop: '3%' }}> <Empty /></div>
+                                            }
+                                        </div>
+                                    </TabPane>
+                                </Tabs>
                             </div>
                         </div>
-
-
                     </div>
+
+
+                </div>
             </Layout>
         </>
     );
