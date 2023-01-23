@@ -78,17 +78,17 @@ const DiaryStats = () => {
                     className='th-black-2 pt-1 th-12'
                     style={{ borderTop: '1px solid #d9d9d9' }}
                   >
-                    {diaryStats.diary_count > 0 ? (
+                    {diaryStats?.diary_count > 0 ? (
                       <div>
                         <span className='th-fw-500'>
-                          {diaryStats.diary_count}{' '}
-                          {diaryStats.diary_count == 1 ? 'Diary' : 'Diaries'}
+                          {diaryStats?.diary_count}{' '}
+                          {diaryStats?.diary_count == 1 ? 'Diary' : 'Diaries'}
                         </span>{' '}
                         assigned with{' '}
                         <span className='th-fw-500'>
                           {' '}
-                          {diaryStats.homework_count}{' '}
-                          {diaryStats.homework_count == 1 ? 'Homework' : 'Homeworks'}{' '}
+                          {diaryStats?.homework_count?.homeworks}{' '}
+                          {diaryStats?.homework_count?.homeworks == 1 ? 'Homework' : 'Homeworks'}{' '}
                         </span>
                       </div>
                     ) : (
