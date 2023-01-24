@@ -291,7 +291,7 @@ const StudentAssessmentDashboard = () => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700'>Percentage</span>,
+      title: <span className='th-white th-fw-700'>Percentage(%)</span>,
       width: '15%',
       align: 'center',
       render: (data) => (
