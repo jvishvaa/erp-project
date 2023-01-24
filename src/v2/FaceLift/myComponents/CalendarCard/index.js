@@ -23,7 +23,8 @@ const CalendarCard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [allEvent, setAllEvent] = useState([])
   const [modData, setModData] = useState()
-
+  const user_level =
+  JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
   const modalopen = (item) => {
     setIsModalOpen(true)
     setModData(item)
@@ -76,37 +77,41 @@ const CalendarCard = () => {
       })
       .catch((error) => console.log(error));
   };
-  let monthHolidays = [];
 
-  if (holidaysData) {
-    holidaysData.map((holiday, index) => {
-      for (
-        var date = moment(holiday.holiday_start_date);
-        date.isSameOrBefore(holiday.holiday_end_date);
-        date.add(1, 'days')
-      ) {
-        if (!monthHolidays.includes(date.format('YYYY-MM-DD')))
-          monthHolidays.push(date.format('YYYY-MM-DD'));
-      }
-    });
-  }
   const handleMonthChange = (value) => {
     setMonthStartDate(moment(value).startOf('month').format('YYYY-MM-DD'));
     setMonthEndDate(moment(value).endOf('month').format('YYYY-MM-DD'));
   };
-
+  let userDetails = JSON.parse(localStorage.getItem('userDetails')) || '';
+  // let grade_id = userDetails?.role_details?.grades[0]?.grade_id
+  // console.log(grade_id);
   useEffect(() => {
     if (selectedBranch) {
-      fetchHolidaysData({
-        start_date: monthStartDate,
-        end_date: monthEndDate,
-        session_year: selectedBranch?.id,
-      });
-      fetchEventsData({
-        start_date: monthStartDate,
-        end_date: monthEndDate,
-        session_year: selectedBranch?.id,
-      });
+      if(user_level == 13) {
+        fetchHolidaysData({
+          start_date: monthStartDate,
+          end_date: monthEndDate,
+          session_year: selectedBranch?.id,
+          grade: userDetails?.role_details?.grades[0]?.grade_id
+        });
+        fetchEventsData({
+          start_date: monthStartDate,
+          end_date: monthEndDate,
+          session_year: selectedBranch?.id,
+          grade: userDetails?.role_details?.grades[0]?.grade_id
+        });
+      } else {
+        fetchHolidaysData({
+          start_date: monthStartDate,
+          end_date: monthEndDate,
+          session_year: selectedBranch?.id,
+        });
+        fetchEventsData({
+          start_date: monthStartDate,
+          end_date: monthEndDate,
+          session_year: selectedBranch?.id,
+        });
+      }
     }
   }, [monthStartDate, monthEndDate, selectedBranch]);
   let holidayEach = [];
@@ -132,7 +137,22 @@ const CalendarCard = () => {
   }, [holidaysData, eventssData])
 
   console.log(allEvent, 'alll');
+  let monthHolidays = [];
 
+  if (allEvent) {
+    allEvent.map((holiday, index) => {
+      for (
+        var date = moment(holiday.start_time);
+        date.isSameOrBefore(holiday.end_time);
+        date.add(1, 'days')
+      ) {
+        if (!monthHolidays.includes(date.format('YYYY-MM-DD')))
+          monthHolidays.push({ date: date.format('YYYY-MM-DD') , prog: holiday?.is_holiday});
+      }
+    });
+  }
+
+  console.log(monthHolidays , 'month');
   return (
     <div className='th-bg-white th-br-5 mt-3' >
       <div
@@ -175,9 +195,14 @@ const CalendarCard = () => {
             onClickMonth={(value, event) => handleMonthChange(value)}
             tileClassName={({ date, view }) => {
               if (
-                monthHolidays.find((item) => item === moment(date).format('YYYY-MM-DD'))
+                monthHolidays.find((item) => (item?.date === moment(date).format('YYYY-MM-DD')) && (item?.prog == true)) 
               ) {
                 return 'th-holiday';
+              }
+              if (
+                monthHolidays.find((item) => (item?.date === moment(date).format('YYYY-MM-DD')) && (item?.prog == undefined)) 
+              ) {
+                return 'th-events';
               }
             }}
             calendarType='US'

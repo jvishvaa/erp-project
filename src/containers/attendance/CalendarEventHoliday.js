@@ -83,7 +83,7 @@ const CalendarV2 = () => {
     const [sectionList, setSectionList] = useState([]);
     const [selectedSection, setSelectedSection] = useState([]);
     const [isEdit, setIsEdit] = useState(false);
-    const [segment, setSegment] = useState(1)
+    const [segment, setSegment] = useState('1')
     const [dates, setDates] = useState(null);
     const user_level =
         JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
@@ -440,6 +440,15 @@ const CalendarV2 = () => {
         console.log(e);
     }
 
+    useEffect(() => {
+        console.log(history);
+        if(history?.location?.state?.backButtonStatus == true){
+            setSegment( history?.location?.state?.payload?.segment)
+            history.replace()
+        }
+        console.log(segment);
+    },[history])
+
 
     const handleDeleteHoliday = (item) => {
         console.log(item);
@@ -638,8 +647,8 @@ const CalendarV2 = () => {
                     <div className='row'>
                         <div className='col-12'>
                             <div className='th-tabs th-bg-white'>
-                                <Tabs type='card' onChange={handleSegment} defaultActiveKey={segment}>
-                                    <TabPane tab='Holiday' key={1}>
+                                <Tabs type='card' onChange={handleSegment} activeKey={segment} >
+                                    <TabPane tab='Holiday' key={'1'}>
                                         <div className='cardsevents' >
                                             <Form ref={formRef} style={{ width: '100%' }} >
                                                 <Grid container direction='row' spacing={2} className={classes.root}>
@@ -826,7 +835,7 @@ const CalendarV2 = () => {
                                             }
                                         </div>
                                     </TabPane>
-                                    <TabPane tab='Events' key={2}>
+                                    <TabPane tab='Events' key={'2'}>
                                         <div className='cardsevents' >
                                             <Form ref={formRef} style={{ width: '100%' }} >
                                                 <Grid container direction='row' spacing={2} className={classes.root}>
