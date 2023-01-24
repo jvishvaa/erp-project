@@ -433,11 +433,11 @@ const CentralBlogRedirection = () => {
                         className='th-br-10 th-bg-grey dummy-background'
                       >
                         <div className='row p-3'>
-                          <div className='col-4 th-br-5' style={{ display: 'flex', flexWrap: 'wrap' }}>
+                          <div className='col-4 th-br-5 image-blog'>
                             <img
                               src={getSubjectIcon(each?.name)}
                               // src={getSubjectIcon((each?.subject_name).toLowerCase())}
-                              style={{ height: '153px', width: '153px', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', borderRadius: '7px' }}
+                              // style={{backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', borderRadius: '7px' }}
                               alt="Icon"
                             // className='mb-1'
                             />
