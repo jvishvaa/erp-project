@@ -456,6 +456,11 @@ const HolidayMark = () => {
     setHolidayDesc(e.target.value)
   }
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current < moment().subtract(1, 'day')
+  };
+
   return (
     <>
       <Layout>
@@ -565,6 +570,7 @@ const HolidayMark = () => {
                 <RangePicker
                   value={dates}
                   onChange={handleDate}
+                  disabledDate={disabledDate}
                   />
               </Form.Item>
             </div>

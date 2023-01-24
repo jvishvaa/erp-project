@@ -494,6 +494,11 @@ const EventsMark = () => {
     console.log(e);
   }
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current < moment().subtract(1, 'day')
+  };
+
   return (
     <>
       <Layout>
@@ -605,6 +610,7 @@ const EventsMark = () => {
                 <RangePicker
                   value={dates}
                   onChange={handleDate}
+                  disabledDate={disabledDate}
                 />
               </Form.Item>
             </div>
