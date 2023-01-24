@@ -617,8 +617,11 @@ const CalendarV2 = () => {
     }
 
     const historyData = history?.location?.state?.payload
-
-
+    const handleTooltip = (item) => {
+        return <div style={{maxHeight: '30vh' , overflowX: 'scroll' , overflowX: 'hidden'}} >
+            {item}
+        </div>
+    }
 
     return (
         <>
@@ -813,7 +816,8 @@ const CalendarV2 = () => {
                                                                         </div>
                                                                         <Tooltip
                                                                             placement='topLeft'
-                                                                            title={item?.description}
+                                                                            // title={item?.description}
+                                                                            title={handleTooltip(item?.description)}
                                                                         >
                                                                             {item?.description ? (
                                                                                 <div className='col-8 pl-2 th-truncate'>
@@ -1024,7 +1028,7 @@ const CalendarV2 = () => {
                                                                         </div>
                                                                         <Tooltip
                                                                             placement='topLeft'
-                                                                            title={item?.description}
+                                                                            title={handleTooltip(item?.description)}
                                                                         >
                                                                             {item?.description ? (
                                                                                 <div className='col-8 pl-2 th-truncate'>
