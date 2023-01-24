@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
-import { Select, Modal, Badge, Card } from 'antd';
+import { Select, Modal, Badge, Card , Tooltip } from 'antd';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import './index.css';
@@ -140,7 +140,7 @@ const CalendarCard = () => {
         style={{ borderRadius: '5px 5px 0 0 ' }}
       >
         <div className='col-2 th-fw-500 th-16' style={{ display: 'flex', alignItems: 'center' }} >Calendar</div>
-        <div className='col-2 text right' style={{ padding: '5px' }} >
+        {/* <div className='col-2 text right' style={{ padding: '5px' }} >
           <Select
             className='th-bg-white th-br-4 th-fw-500 th-14 th-select'
             bordered={false}
@@ -153,7 +153,7 @@ const CalendarCard = () => {
             <Option value={'month'}>Monthly</Option>
             <Option value={'year'}>Yearly</Option>
           </Select>
-        </div>
+        </div> */}
       </div>
       <div className='shadow-sm p-2'>
         <div className='row' >
@@ -177,7 +177,7 @@ const CalendarCard = () => {
               if (
                 monthHolidays.find((item) => item === moment(date).format('YYYY-MM-DD'))
               ) {
-                return 'th-green';
+                return 'th-holiday';
               }
             }}
             calendarType='US'
@@ -186,9 +186,9 @@ const CalendarCard = () => {
             }
             className='th-calendar calendar-card'
           />
-          <div style={{ width: '50%' }} >
+          <div style={{ width: '50%' }} className='listholiday' >
             <Card
-              title="List of Events and Holidays"
+              title="Events and Holidays"
               className='event_holiday'
               bordered={false}
               style={{
@@ -197,13 +197,13 @@ const CalendarCard = () => {
                 fontSize: '14px'
               }}
             >
-              <div style={{ overflow: 'hidden', overflowY: 'scroll', maxHeight: '27vh' }} >
+              <div style={{ overflow: 'hidden', overflowY: 'scroll', maxHeight: '50vh' }} >
                 {allEvent && allEvent?.map((item) => (
                   <div className='row' onClick={() => modalopen(item)} >
                     <div className='row mt-2 mb-2' style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', cursor: 'pointer', width: '90%' }}>
                       <div style={{ background: item?.is_holiday ? '#89DDF1' : '#E089F1', width: '2%', height: '5vh' }} ></div>
-                      <Badge count={moment(item?.start_time).format('DD')} style={{ background: item?.is_holiday ? '#89DDF1' : '#E089F1' }} className='mx-1 th-10' />
-                      <p style={{ margin: '0px', fontSize: '13px' }} className='text-truncate col-md-6 p-0 text-capitalize' >{item?.event_name}</p>
+                      <Badge count={`${moment(item?.start_time).format('DD')}-${moment(item?.end_time).format('DD')}`} style={{ background: item?.is_holiday ? '#89DDF1' : '#E089F1' }} className='mx-1 th-10' />
+                      <Tooltip title={item?.event_name}><p style={{ margin: '0px', fontSize: '13px' }} className='text-truncate col-3 p-0 text-capitalize' >{item?.event_name}</p></Tooltip>
                     </div>
                     <div className='d-flex align-items-center th-10'><RightOutlined /></div>
                   </div>
@@ -213,15 +213,15 @@ const CalendarCard = () => {
           </div>
         </div>
         <div className='row mt-3 justify-content-start th-14 th-fw-400 px-2 pt-2 pb-1'>
-          <div className='d-flex justify-content-start mx-1'>
+          <div className='col-4 row'>
             <div style={{ width: '2vh', height: '2vh', background: '#89DDF1' ,  }} className='mt-1' ></div>
-            <div className='py-1 th-13 mx-1' style={{ color: '#89DDF1' }} >
+            <div className='th-13 mx-1' style={{ color: '#89DDF1' , paddingTop: '0px'}} >
               {monthHolidays.length == 0 ? 'No' : monthHolidays.length} Holidays
             </div>
           </div>
-          <div className='d-flex justify-content-start'>
+          <div className='col-4 row'>
             <div style={{ width: '2vh', height: '2vh', background: '#E089F1' }} className='mt-1'></div>
-            <div className='py-1 th-13' style={{ color: '#E089F1' }}>
+            <div className='th-13 mx-1' style={{ color: '#E089F1' , paddingTop: '0px'}}>
               {eventssData.length == 0 ? 'No' : eventssData.length} Events
             </div>
           </div>
