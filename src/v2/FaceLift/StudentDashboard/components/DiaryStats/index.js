@@ -4,10 +4,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { Timeline, message, Spin } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-// import diary from 'v2/Assets/dashboardIcons/studentDashboardIcons/diaryIcon.svg';
+import { message, Spin } from 'antd';
 import diaryBG from 'v2/Assets/dashboardIcons/studentDashboardIcons/diary.png';
 
 const DiaryStats = () => {
@@ -48,75 +45,62 @@ const DiaryStats = () => {
 
   return (
     <div className='th-bg-white th-br-5 py-1 px-0 shadow-sm'>
-      {
-        loading ? (
-          <div className='d-flex justify-content-center align-items-center'>
-            <Spin tip='Loading...'></Spin>
-          </div>
-        ) : (
-          // Object.keys(diaryStats)?.length > 0 ? (
-          <>
-            <div className='row pr-2 align-items-center'>
-              <div
-                className='col-3 px-0 '
-                style={{
-                  backgroundImage: `url(${diaryBG})`,
-                  height: 85,
-                  backgroundSize: 'cover',
-                  // backgroundRepeat: 'no-repeat',
-                  // width: 80,
-                }}
-              >
-                &nbsp;
-                {/* <img src={diaryBG} style={{ width: '100%' }} />{' '} */}
-              </div>
-              <div className='col-8 px-0'>
-                {/* <div className='d-flex align-items-center justify-content-between'> */}
-                <div className='py-2'>
-                  <div className='th-black-1 th-fw-500 pb-1'> Today's Diary</div>
-                  <div
-                    className='th-black-2 pt-1 th-12'
-                    style={{ borderTop: '1px solid #d9d9d9' }}
-                  >
-                    {diaryStats?.diary_count > 0 ? (
-                      <div>
-                        <span className='th-fw-500'>
-                          {diaryStats?.diary_count}{' '}
-                          {diaryStats?.diary_count == 1 ? 'Diary' : 'Diaries'}
-                        </span>{' '}
-                        assigned with{' '}
-                        <span className='th-fw-500'>
-                          {' '}
-                          {diaryStats?.homework_count?.homeworks}{' '}
-                          {diaryStats?.homework_count?.homeworks == 1 ? 'Homework' : 'Homeworks'}{' '}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className='th-14 th-black-2'>No Diaries Assigned Today</div>
-                    )}
-                  </div>
-                </div>
-                {/* </div> */}
-              </div>
-              <div className='col-1 px-0 text-right'>
-                <div>
-                  <span
-                    className='th-grey th-20 th-pointer'
-                    onClick={() => history.push('/diary/student')}
-                  >
-                    &gt;
-                  </span>
+      {loading ? (
+        <div className='d-flex justify-content-center align-items-center'>
+          <Spin tip='Loading...'></Spin>
+        </div>
+      ) : (
+        <>
+          <div
+            className='row pr-2 align-items-center th-pointer'
+            onClick={() => history.push('/diary/student')}
+          >
+            <div
+              className='col-3 px-0 '
+              style={{
+                backgroundImage: `url(${diaryBG})`,
+                height: 85,
+                backgroundSize: 'cover',
+              }}
+            >
+              &nbsp;
+            </div>
+            <div className='col-8 px-0'>
+              <div className='py-2'>
+                <div className='th-black-1 th-fw-500 pb-1'> Today's Diary</div>
+                <div
+                  className='th-black-2 pt-1 th-12'
+                  style={{ borderTop: '1px solid #d9d9d9' }}
+                >
+                  {diaryStats?.diary_count > 0 ? (
+                    <div>
+                      <span className='th-fw-500'>
+                        {diaryStats?.diary_count}{' '}
+                        {diaryStats?.diary_count == 1 ? 'Diary' : 'Diaries'}
+                      </span>{' '}
+                      assigned with{' '}
+                      <span className='th-fw-500'>
+                        {' '}
+                        {diaryStats?.homework_count?.homeworks}{' '}
+                        {diaryStats?.homework_count?.homeworks == 1
+                          ? 'Homework'
+                          : 'Homeworks'}{' '}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className='th-14 th-black-2'>No Diaries Assigned Today</div>
+                  )}
                 </div>
               </div>
             </div>
-          </>
-        )
-        // ) : (
-        //   <div className='d-flex justify-content-center mt-5'>
-        //     <img src={NoDataIcon} />
-        //   </div>
-        // )
-      }
+            <div className='col-1 px-0 text-right'>
+              <div>
+                <span className='th-grey th-20'>&gt;</span>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

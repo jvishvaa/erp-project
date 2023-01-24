@@ -6,13 +6,14 @@ import { message, Spin, Timeline, Tag, Avatar, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import NoClassIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/noclass.png';
 import '../../index.css';
 
 const TodaysClass = () => {
   const myRef = useRef();
   let periodNumber = 0;
-  const [todaysClassData, setTodaysClassData] = useState();
+  const [todaysClassData, setTodaysClassData] = useState([]);
+  const [todaysAttendance, setTodaysAttendance] = useState();
   const [loading, setLoading] = useState(false);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -29,7 +30,8 @@ const TodaysClass = () => {
       })
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          setTodaysClassData(response?.data?.result);
+          setTodaysAttendance(response?.data?.result?.todays_attendance);
+          setTodaysClassData(response?.data?.result?.classes);
         }
         setLoading(false);
       })
@@ -77,41 +79,50 @@ const TodaysClass = () => {
           <div className='d-flex align-items-center'>
             <div>Today's Class </div>
           </div>
-          <div className='row align-items-center py-2'>
-            <span className='th-black-1 th-fw-600'>{moment().format('dddd')}</span>
-            <span className='th-12 th-grey ml-2'>{moment().format('Do MMM  YYYY')}</span>
-            <div className='th-12 th-br-4 th-white ml-2 px-2 py-1'>
-              <div
-                className='th-fw-600 text-capitalize'
-                style={{
-                  color:
-                    todaysClassData?.todays_attendance === 'Holiday'
-                      ? '#7cb5ec'
-                      : todaysClassData?.todays_attendance === 'present'
-                      ? '#09a23a'
-                      : todaysClassData?.todays_attendance === 'absent'
-                      ? '#f8222f'
-                      : '#c6c6c6',
-                }}
-              >
-                {todaysClassData?.todays_attendance}
-              </div>
+          <div className='row align-items-center justify-content-between py-2'>
+            <div>
+              <span className='th-black-1 th-14 th-fw-600'>
+                {moment().format('dddd')}
+              </span>
+              <span className='th-12 th-grey ml-2'>
+                {moment().format('Do MMM  YYYY')}
+              </span>
             </div>
+            {!loading && todaysAttendance !== 'N/A' ? (
+              <div className='d-flex align-item-center align-items-center th-12 ml-2 '>
+                <span className='mr-2'>Today's Attendance :</span>
+                <div
+                  className='th-fw-600 th-br-8 text-capitalize th-white px-2 py-1'
+                  style={{
+                    backgroundColor:
+                      todaysAttendance === 'Holiday'
+                        ? '#7cb5ec'
+                        : todaysAttendance === 'present'
+                        ? '#09a23a'
+                        : todaysAttendance === 'absent'
+                        ? '#f8222f'
+                        : '#c6c6c6',
+                  }}
+                >
+                  {todaysAttendance}
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
       <div
         className='py-3 mt-2 th-timeline'
-        style={{ height: 300, overflowY: 'auto', overflowX: 'hidden' }}
+        style={{ height: 265, overflowY: 'auto', overflowX: 'hidden' }}
       >
         {loading ? (
           <div className='th-width-100 d-flex align-items-center justify-content-center'>
             <Spin tip='Loading...'></Spin>
           </div>
-        ) : todaysClassData?.classes?.length > 0 ? (
+        ) : todaysClassData?.length > 0 ? (
           <>
             <Timeline mode='left' style={{ width: '100%' }}>
-              {todaysClassData?.classes.map((item, index) => {
+              {todaysClassData?.map((item, index) => {
                 if (item.type !== 'Break') {
                   periodNumber += 1;
                 }
@@ -124,7 +135,7 @@ const TodaysClass = () => {
                         } th-fw-500 mt-2 mt-md-0`}
                         style={{ fontSize: window.innerWidth < 768 ? '8px' : '12px' }}
                       >
-                        {moment(item?.start_time, 'hh::mm A').format('hh:mm A')} <br /> to
+                        {moment(item?.start_time, 'hh:mm A').format('hh:mm A')} <br /> to
                         <br />
                         {moment(item?.end_time, 'hh:mm A').format('hh:mm A')}{' '}
                       </div>
@@ -149,9 +160,9 @@ const TodaysClass = () => {
                       ref={getPeriodStatus(item) == 'ongoing' ? myRef : null}
                     >
                       {item?.type == 'Break' ? (
-                        <div className='col-12 th-16 text-center'>
-                          <div className='my-4 my-md-3 th-fw-600 text-uppercase'>
-                            {item?.type}
+                        <div className='row th-16 text-center'>
+                          <div className=' col-8 my-4 my-md-3 th-fw-600 text-uppercase'>
+                            <div className='pl-4'>{item?.type}</div>
                           </div>
                         </div>
                       ) : (
@@ -249,8 +260,8 @@ const TodaysClass = () => {
             </Timeline>
           </>
         ) : (
-          <div className='d-flex w-100 justify-content-center align-items-center'>
-            <img src={NoDataIcon} />
+          <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
+            <img src={NoClassIcon} style={{ height: '150px', objectFit: 'cover' }} />
           </div>
         )}
       </div>

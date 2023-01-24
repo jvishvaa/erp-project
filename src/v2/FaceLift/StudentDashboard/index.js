@@ -29,8 +29,10 @@ const StudentDashboardNew = () => {
   };
 
   useEffect(() => {
-    fetchConfigStatus({ branch_id: selectedBranch.branch.id });
-  }, [window.location.pathname]);
+    if (selectedBranch) {
+      fetchConfigStatus({ branch_id: selectedBranch?.branch?.id });
+    }
+  }, [selectedBranch]);
   return (
     <Layout>
       <div className=''>
