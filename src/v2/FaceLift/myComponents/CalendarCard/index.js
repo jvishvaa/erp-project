@@ -222,7 +222,7 @@ const CalendarCard = () => {
                 fontSize: '14px'
               }}
             >
-              <div style={{ overflow: 'hidden', overflowY: 'scroll', maxHeight: '50vh' }} >
+              <div style={{ overflow: 'hidden', overflowY: 'scroll', maxHeight: '35vh' }} >
                 {allEvent && allEvent?.map((item) => (
                   <div className='row' onClick={() => modalopen(item)} >
                     <div className='row mt-2 mb-2' style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', cursor: 'pointer', width: '90%' }}>
