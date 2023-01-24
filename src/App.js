@@ -2256,7 +2256,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/online-books/'>
                               {({ match }) => <NewEbookView match={match} />}
                             </Route>
-
                             <Route path='/bmi/view'>
                               {({ match }) => <ViewBMI match={match} />}
                             </Route>

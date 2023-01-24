@@ -158,8 +158,13 @@ const HolidayMark = () => {
           handleBackButtonClick();
         })
         .catch((error) => {
+          console.log(error?.response , error , 'err');
+          if (error.response?.data?.status_code === 422){
+          setAlert('error', error.response.data?.message);
+          }else {
+            setAlert('error', 'something went wrong');
+          }
           setLoading(false);
-          setAlert('error', 'something went wrong');
         });
     }
   };
@@ -456,12 +461,17 @@ const HolidayMark = () => {
     setHolidayDesc(e.target.value)
   }
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current < moment().subtract(1, 'day')
+  };
+
   return (
     <>
       <Layout>
         <div className='col-md-12'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey'>
+            <Breadcrumb.Item className='th-grey'>
               Calendar
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1'>
@@ -565,6 +575,7 @@ const HolidayMark = () => {
                 <RangePicker
                   value={dates}
                   onChange={handleDate}
+                  disabledDate={disabledDate}
                   />
               </Form.Item>
             </div>

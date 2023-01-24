@@ -274,7 +274,17 @@ const CreatePostActivity = () => {
         if (!boardId) {
             setAlert('error', 'Please Select Branch')
             return;
-        } else {
+        } else if(!activityId){
+            setAlert('error','Please Select Activity Level')
+            return
+        }else if(!description){
+            setAlert('error','Please Add Description')
+            return
+        }else if(!title){
+            setAlert('error','Please Add Title')
+            return
+        }
+        else {
             setShowUploadModal(true);
         }
     };

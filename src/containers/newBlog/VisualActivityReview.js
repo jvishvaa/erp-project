@@ -214,7 +214,7 @@ const VisualActivityReview = () => {
       setLoading(false)
       return
     } else if(subjectId == undefined){
-      setAlert('error', 'Please Select Subject');
+      setAlert('error', 'Please Select Section');
       setLoading(false)
       return
     } 

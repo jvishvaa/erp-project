@@ -44,6 +44,12 @@
   font-size: 14px;
 }
 
+.listholiday .ant-card-head {
+  padding: 0px !important;
+}
+.listholiday .ant-card-body {
+  padding: 0px !important;
+}
 .th-calendar .react-calendar__month-view__days {
   height: 228px;
   overflow-y: auto;

@@ -102,11 +102,11 @@ const EventsMark = () => {
       return;
     }
     if (!holidayName) {
-      setAlert('warning', 'Enter Holiday Name');
+      setAlert('warning', 'Enter Event Name');
       return;
     }
     if (!holidayDesc) {
-      setAlert('warning', 'Enter Holiday Description');
+      setAlert('warning', 'Enter Event Description');
       return;
     }
     if (selectedBranch?.length == 0) {
@@ -147,7 +147,11 @@ const EventsMark = () => {
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', 'something went wrong');
+          if (error.response?.data?.status_code === 422){
+            setAlert('error', error.response.data?.message);
+            }else {
+              setAlert('error', 'something went wrong');
+            }
         });
     } else {
       axiosInstance
@@ -172,7 +176,11 @@ const EventsMark = () => {
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', 'something went wrong');
+          if (error.response?.data?.status_code === 422){
+            setAlert('error', error.response.data?.message);
+            }else {
+              setAlert('error', 'something went wrong');
+            }
         });
     }
   };
@@ -494,12 +502,17 @@ const EventsMark = () => {
     console.log(e);
   }
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current < moment().subtract(1, 'day')
+  };
+
   return (
     <>
       <Layout>
         <div className='col-md-12'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey'>
+            <Breadcrumb.Item className='th-grey'>
               Calendar
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1'>
@@ -605,6 +618,7 @@ const EventsMark = () => {
                 <RangePicker
                   value={dates}
                   onChange={handleDate}
+                  disabledDate={disabledDate}
                 />
               </Form.Item>
             </div>
