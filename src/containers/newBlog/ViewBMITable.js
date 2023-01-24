@@ -31,6 +31,8 @@ const ViewBMITableCustom = (props) => {
     const [checkBMIData, setCheckBMIData] = useState([])
     const [height, setHeight] = useState('')
     const [weight, setWeight] = useState('')
+    const [age, setAge] = useState(null)
+    const [remarks,setRemarks] = useState('')
     const [bmi, setBmi] = useState('')
     const [bmiDetails, setBmiDetails] = useState([])
     const [editData, setEditData] = useState([])
@@ -97,6 +99,8 @@ const ViewBMITableCustom = (props) => {
             showModal()
             setHeight(data?.bmi_details?.height)
             setWeight(data?.bmi_details?.weight)
+            setAge(data?.bmi_details?.age)
+            setRemarks(data?.bmi_details?.remarks)
             setBmi(data?.bmi_details?.bmi)
             setEditData(data)
 
@@ -146,11 +150,19 @@ const ViewBMITableCustom = (props) => {
             }else if(!weight){
                 message.error("Please Add Weight");
                 return
+            }else if(!age){
+                message.error("Please Add Age")
+                return
+            }else if(!remarks){
+                message.error("Please Add Remarks");
+                return
             }else{
                 const requestData = {
                     id: editData?.bmi_details?.id,
                     height: height,
                     weight: weight,
+                    age:age,
+                    remarks:remarks,
                     bmi: bmi,
                 };
                 const options = {
@@ -189,11 +201,16 @@ const ViewBMITableCustom = (props) => {
             }else if(!weight){
                 message.error("Please Add Weight");
                 return
+            }else if(!age){
+                message.error("Please Add Age");
+                return
             }else{
                 const requestData = {
                     student_id: checkBMIData?.id,
                     height: height,
                     weight: weight,
+                    age:age,
+                    remarks:remarks,
                     bmi: bmi,
                 };
                 const options = {
@@ -248,6 +265,20 @@ const ViewBMITableCustom = (props) => {
             key: 'weight',
             align: 'center',
             render: (text, row, index) => <a>{row?.bmi_details?.weight}</a>
+        },
+        {
+            title: <span className='th-white th-fw-700 '>Age</span>,
+            dataIndex: 'weight',
+            key: 'weight',
+            align: 'center',
+            render: (text, row, index) => <a>{row?.bmi_details?.age}</a>
+        },
+        {
+            title: <span className='th-white th-fw-700 '>Remarks</span>,
+            dataIndex: 'weight',
+            key: 'weight',
+            align: 'center',
+            render: (text, row, index) => <a>{row?.bmi_details?.remarks}</a>
         },
         {
             title: <span className='th-white th-fw-700 '>BMI</span>,
@@ -323,6 +354,8 @@ const ViewBMITableCustom = (props) => {
             setBmi('')
             setHeight('')
             setWeight('')
+            setAge(null)
+            setRemarks('')
             showModal()
             setLoading(true)
             axios
@@ -372,8 +405,8 @@ const ViewBMITableCustom = (props) => {
         }
     };
 
-    const calculateBMI = (height, weight) => {
-        if (height && weight) {
+    const calculateBMI = (height, weight,age) => {
+        if (height && weight && age) {
             let parseHeight = parseInt(height)
             let parseWeight = parseInt(weight)
             if (parseHeight === "" || isNaN(parseHeight)) {
@@ -382,9 +415,12 @@ const ViewBMITableCustom = (props) => {
             } else if (parseWeight === "" || isNaN(parseWeight)) {
                 setAlert('error', 'Provide a valid weight')
                 return
-            } else {
+            }
+            else {
                 let bmi = (weight / ((height * height) / 10000)).toFixed(2)
                 setBmi(bmi)
+                setAlert('success',"BMI Calculated Successfully")
+                return
             }
         } else {
 
@@ -392,19 +428,23 @@ const ViewBMITableCustom = (props) => {
     }
 
     useEffect(() => {
-        if (height && weight) {
-            calculateBMI(height, weight)
+        if (height && weight && age) {
+            calculateBMI(height, weight, age)
             return
         } else {
             // setBmi('')
         }
-    }, [height, weight])
+    }, [height, weight,age])
 
     const handleInputBMI = (event, target) => {
         if (target == 'height') {
             setHeight(event.target.value)
         } else if (target == 'weight') {
             setWeight(event.target.value)
+        }else if(target == 'age'){
+            setAge(event.target.value)
+        }else if(target == 'remarks'){
+            setRemarks(event.target.value)
         }
     }
 
@@ -437,6 +477,12 @@ const ViewBMITableCustom = (props) => {
                     </Col>
                     <Col span={8}>
                         <Input style={{ margin: '0.5rem', width: 'auto' }} value={weight} onChange={(event) => handleInputBMI(event, 'weight')} placeholder="Weight(in kg)" />
+                    </Col>
+                    <Col span={8}>
+                        <Input style={{ margin: '0.5rem', width: 'auto' }} value={age} onChange={(event) => handleInputBMI(event, 'age')} placeholder="Age" />
+                    </Col>
+                    <Col span={8}>
+                        <Input style={{ margin: '0.5rem', width: 'auto' }} value={remarks} onChange={(event) => handleInputBMI(event, 'remarks')} placeholder="Remarks" />
                     </Col>
                     <Col span={8}>
                         <Input style={{ margin: '0.5rem', width: 'auto' }} value={bmi} placeholder="BMI" disabled='true' />

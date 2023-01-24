@@ -94,7 +94,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { UserOutlined } from '@ant-design/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import image1 from "../../assets/images/gp1.png";
-import image2 from "../../assets/images/gp2.png"
+import image2 from "../../assets/images/gp2.png";
+import visualImage from "../../assets/images/visual art.jpg";
 
 const drawerWidth = 350;
 const { TabPane } = Tabs;
@@ -297,20 +298,25 @@ const CentralBlogRedirection = () => {
         handleBlogActivity()
         return
       } else if (user_level === 13) {
-
         handleBlogWriting()
         return
+      }else{
+        setAlert('error','Permission Denied')
+        return
       }
-      return
+      
     } else if (dataLower === "visual art") {
       localStorage.setItem('VisualActivityId',
         JSON.stringify(visualSubId)
       );
-      if (user_level === 2 || user_level === 6 || user_level === 11) {
+      if (user_level === 2 || user_level === 6 || user_level === 11 || user_level === 8 ) {
         handleVisualActivityRoute()
         return
       } else if (user_level === 13) {
-        setAlert('error', "Yet to set route")
+        setAlert('error', "Permission Denied")
+        return
+      }else{
+        setAlert('error', "Permission Denied")
         return
       }
 
@@ -391,6 +397,8 @@ const CentralBlogRedirection = () => {
         return image1;
       case 'actiivtytype':
         return image1;
+      case 'Visual Art':
+        return visualImage;
       default:
         return ""
 

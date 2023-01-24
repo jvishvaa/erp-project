@@ -84,7 +84,7 @@ const UploadModalBlog = (props) => {
     showUploadList: false,
     disabled: false,
     multiple: true,
-    accept: '.jpeg,.jpg,.png,.pdf,.mp4',
+    accept: '.jpeg,.jpg,.png,.mp4',
     onRemove: (file) => {
       const index = fileList.indexOf(file);
       const newFileList = fileList.slice();
@@ -93,7 +93,7 @@ const UploadModalBlog = (props) => {
     },
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
-      if (['jpeg', 'jpg', 'png', 'pdf', 'mp4', 'mpeg'].includes(type)) {
+      if (['jpeg', 'jpg', 'png','mp4', 'mpeg'].includes(type)) {
         if (file[0]?.size > 58085272) {
           setFileSizeError(true);
         } else {
@@ -185,7 +185,7 @@ const UploadModalBlog = (props) => {
             >
               Browse Files
             </Button>
-            <p className='pt-2'>Accepted Files [images,pdf,mp3,mp4]</p>
+            <p className='pt-2'>Accepted Files [images,mp4]</p>
           </Dragger>
           {fileTypeError && (
             <div className='row pt-3 justify-content-center th-red'>
