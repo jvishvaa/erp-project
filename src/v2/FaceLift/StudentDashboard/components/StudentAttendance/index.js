@@ -176,9 +176,6 @@ const StudentAttendance = (props) => {
                   )}
                 />
               </div>
-              {/* <div className='th-primary th-pointer'>
-              
-              </div> */}
               <div
                 className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
                 style={{ outline: '1px solid #d9d9d9' }}
