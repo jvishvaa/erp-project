@@ -662,7 +662,7 @@ const CalendarV2 = () => {
                                                             <Select
                                                                 mode='multiple'
                                                                 getPopupContainer={(trigger) => trigger.parentNode}
-                                                                className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                                                                className='th-grey th-bg-grey th-br-4 w-100 text-left'
                                                                 placement='bottomRight'
                                                                 placeholder="Select Branch"
                                                                 showArrow={true}
