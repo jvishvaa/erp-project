@@ -155,7 +155,7 @@ const CalendarCard = () => {
 
   console.log(monthHolidays, 'month');
   return (
-    <div className='th-bg-white th-br-5 mt-3' style={{ height: '460px' }}>
+    <div className='th-bg-white th-br-5 mt-3'>
       <div className='row' style={{ borderRadius: '5px 5px 0 0 ' }}>
         <div
           className='col-2 th-fw-500 th-16'
@@ -178,7 +178,7 @@ const CalendarCard = () => {
           </Select>
         </div>  */}
       </div>
-      <div className='shadow-sm p-2'>
+      <div className='shadow-sm p-2' style={{ height: '420px' }}>
         <div className='row'>
           <Calendar
             value={new Date()}
@@ -232,7 +232,7 @@ const CalendarCard = () => {
                 fontSize: '14px',
               }}
             >
-              <div style={{ overflow: 'hidden', overflowY: 'scroll', maxHeight: '35vh' }}>
+              <div style={{ overflow: 'hidden', overflowY: 'scroll', height: '30vh' }}>
                 {allEvent &&
                   allEvent?.map((item) => (
                     <div className='row' onClick={() => modalopen(item)}>

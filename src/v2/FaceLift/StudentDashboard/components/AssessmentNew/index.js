@@ -180,6 +180,15 @@ const Assessment = () => {
                       <div className='col-6 text-center px-0'>{item?.average} %</div>
                     </div>
                   ))}
+                  <div className='row justify-content-end mt-2'>
+                    <div
+                      className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
+                      style={{ outline: '1px solid #d9d9d9' }}
+                      onClick={() => history.push('/student-assessment-dashboard')}
+                    >
+                      View Details
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div
@@ -276,7 +285,7 @@ const Assessment = () => {
                           </div>
                           <div className='col-9 text-right th-fw-500'>
                             <span className=' mr-2'>
-                              {moment(item?.date, 'hh:mm A').format('DD-MM-YYYY')}
+                              {moment(item?.date).format('DD-MM-YYYY')}
                             </span>
                             <span>{moment(item?.time, 'hh:mm A').format('hh:mm A')}</span>
                           </div>
