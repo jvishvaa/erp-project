@@ -18,7 +18,8 @@ import { Rating } from '@material-ui/lab';
 import { Breadcrumb, Tabs, Button, Divider } from 'antd';
 import moment from 'moment';
 import image1 from "../../assets/images/gp1.png";
-import image2 from "../../assets/images/gp2.png"
+import image2 from "../../assets/images/gp2.png";
+import visualImage from "../../assets/images/visual art.jpg";
 
 const drawerWidth = 350;
 const { TabPane } = Tabs;
@@ -289,6 +290,8 @@ const BlogWallRedirect = () => {
         return image2;
       case 'actiivtytype' : 
         return image1;
+      case 'Visual Art':
+        return visualImage;
       default : 
           return ""
         
