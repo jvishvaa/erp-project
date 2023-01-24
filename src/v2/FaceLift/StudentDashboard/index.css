@@ -21,7 +21,7 @@
     width: 15% !important;
     text-align: center !important;
 }
-.th-assessment-progress .ant-progress > .ant-progress-inner .ant-progress-circle-gradient{
-  width: 220px !important;
-  height: 220px !important;
+
+.th-assessment-progress .ant-progress-circle .ant-progress-text{
+  top: 35% !important;
 }

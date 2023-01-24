@@ -20,18 +20,18 @@ const CalendarCard = () => {
   );
   const [holidaysData, setHolidaysData] = useState([]);
   const [eventssData, setEventsData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [allEvent, setAllEvent] = useState([])
-  const [modData, setModData] = useState()
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [allEvent, setAllEvent] = useState([]);
+  const [modData, setModData] = useState();
 
   const modalopen = (item) => {
-    setIsModalOpen(true)
-    setModData(item)
-  }
+    setIsModalOpen(true);
+    setModData(item);
+  };
   const modalClose = () => {
-    setIsModalOpen(false)
-    setModData()
-  }
+    setIsModalOpen(false);
+    setModData();
+  };
 
   const [monthStartDate, setMonthStartDate] = useState(
     moment().startOf('month').format('YYYY-MM-DD')
@@ -110,7 +110,7 @@ const CalendarCard = () => {
     }
   }, [monthStartDate, monthEndDate, selectedBranch]);
   let holidayEach = [];
-  let allData = []
+  let allData = [];
   useEffect(() => {
     if (holidaysData && eventssData) {
       holidaysData.map((item) =>
@@ -120,27 +120,28 @@ const CalendarCard = () => {
           end_time: item?.holiday_end_date,
           description: item?.description,
           id: item?.id,
-          is_holiday: true
+          is_holiday: true,
         })
-      )
-      allData = [...eventssData, ...holidayEach]
+      );
+      allData = [...eventssData, ...holidayEach];
       console.log(allData, 'holiday');
-      setAllEvent(allData)
+      setAllEvent(allData);
       console.log(allEvent, 'allusel');
-
     }
-  }, [holidaysData, eventssData])
+  }, [holidaysData, eventssData]);
 
   console.log(allEvent, 'alll');
 
   return (
-    <div className='th-bg-white th-br-5 mt-3' >
-      <div
-        className='row'
-        style={{ borderRadius: '5px 5px 0 0 ' }}
-      >
-        <div className='col-2 th-fw-500 th-16' style={{ display: 'flex', alignItems: 'center' }} >Calendar</div>
-        <div className='col-2 text right' style={{ padding: '5px' }} >
+    <div className='th-bg-white th-br-5 mt-3' style={{ height: '460px' }}>
+      <div className='row' style={{ borderRadius: '5px 5px 0 0 ' }}>
+        <div
+          className='col-2 th-fw-500 th-16'
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          Calendar
+        </div>
+        <div className='col-2 text right' style={{ padding: '5px' }}>
           <Select
             className='th-bg-white th-br-4 th-fw-500 th-14 th-select'
             bordered={false}
@@ -156,7 +157,7 @@ const CalendarCard = () => {
         </div>
       </div>
       <div className='shadow-sm p-2'>
-        <div className='row' >
+        <div className='row'>
           <Calendar
             value={new Date()}
             next2Label={null}
@@ -186,61 +187,103 @@ const CalendarCard = () => {
             }
             className='th-calendar calendar-card'
           />
-          <div style={{ width: '50%' }} >
+          <div style={{ width: '50%' }}>
             <Card
-              title="List of Events and Holidays"
+              title='List of Events and Holidays'
               className='event_holiday'
               bordered={false}
               style={{
                 width: '90%',
                 margin: '0 auto',
-                fontSize: '14px'
+                fontSize: '14px',
               }}
             >
-              <div style={{ overflow: 'hidden', overflowY: 'scroll', maxHeight: '27vh' }} >
-                {allEvent && allEvent?.map((item) => (
-                  <div className='row' onClick={() => modalopen(item)} >
-                    <div className='row mt-2 mb-2' style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', cursor: 'pointer', width: '90%' }}>
-                      <div style={{ background: item?.is_holiday ? '#89DDF1' : '#E089F1', width: '2%', height: '5vh' }} ></div>
-                      <Badge count={moment(item?.start_time).format('DD')} style={{ background: item?.is_holiday ? '#89DDF1' : '#E089F1' }} className='mx-1 th-10' />
-                      <p style={{ margin: '0px', fontSize: '13px' }} className='text-truncate col-md-6 p-0 text-capitalize' >{item?.event_name}</p>
+              <div style={{ overflow: 'hidden', overflowY: 'scroll', maxHeight: '27vh' }}>
+                {allEvent &&
+                  allEvent?.map((item) => (
+                    <div className='row' onClick={() => modalopen(item)}>
+                      <div
+                        className='row mt-2 mb-2'
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                          cursor: 'pointer',
+                          width: '90%',
+                        }}
+                      >
+                        <div
+                          style={{
+                            background: item?.is_holiday ? '#89DDF1' : '#E089F1',
+                            width: '2%',
+                            height: '5vh',
+                          }}
+                        ></div>
+                        <Badge
+                          count={moment(item?.start_time).format('DD')}
+                          style={{ background: item?.is_holiday ? '#89DDF1' : '#E089F1' }}
+                          className='mx-1 th-10'
+                        />
+                        <p
+                          style={{ margin: '0px', fontSize: '13px' }}
+                          className='text-truncate col-md-6 p-0 text-capitalize'
+                        >
+                          {item?.event_name}
+                        </p>
+                      </div>
+                      <div className='d-flex align-items-center th-10'>
+                        <RightOutlined />
+                      </div>
                     </div>
-                    <div className='d-flex align-items-center th-10'><RightOutlined /></div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </Card>
           </div>
         </div>
         <div className='row mt-3 justify-content-start th-14 th-fw-400 px-2 pt-2 pb-1'>
           <div className='d-flex justify-content-start mx-1'>
-            <div style={{ width: '2vh', height: '2vh', background: '#89DDF1' ,  }} className='mt-1' ></div>
-            <div className='py-1 th-13 mx-1' style={{ color: '#89DDF1' }} >
+            <div
+              style={{ width: '2vh', height: '2vh', background: '#89DDF1' }}
+              className='mt-1'
+            ></div>
+            <div className='py-1 th-13 mx-1' style={{ color: '#89DDF1' }}>
               {monthHolidays.length == 0 ? 'No' : monthHolidays.length} Holidays
             </div>
           </div>
           <div className='d-flex justify-content-start'>
-            <div style={{ width: '2vh', height: '2vh', background: '#E089F1' }} className='mt-1'></div>
+            <div
+              style={{ width: '2vh', height: '2vh', background: '#E089F1' }}
+              className='mt-1'
+            ></div>
             <div className='py-1 th-13' style={{ color: '#E089F1' }}>
               {eventssData.length == 0 ? 'No' : eventssData.length} Events
             </div>
           </div>
         </div>
       </div>
-      <Modal title={modData?.event_name} visible={isModalOpen} onCancel={modalClose} footer={false} className='event_holidaymod' >
+      <Modal
+        title={modData?.event_name}
+        visible={isModalOpen}
+        onCancel={modalClose}
+        footer={false}
+        className='event_holidaymod'
+      >
         <div className='p-1' style={{ background: '#F8F8F8' }}>
-          <div style={{ minHeight: '30vh', margin: '4%' }}   >
-            <div className='row d-flex justify-content-between th-13' >
-              <div className='font-weight-bold'>Start Date : {moment(modData?.start_time).format('DD-MM-YYYY')}</div>
-              <div className='font-weight-bold'>End Date : {moment(modData?.end_time).format('DD-MM-YYYY')}</div>
+          <div style={{ minHeight: '30vh', margin: '4%' }}>
+            <div className='row d-flex justify-content-between th-13'>
+              <div className='font-weight-bold'>
+                Start Date : {moment(modData?.start_time).format('DD-MM-YYYY')}
+              </div>
+              <div className='font-weight-bold'>
+                End Date : {moment(modData?.end_time).format('DD-MM-YYYY')}
+              </div>
             </div>
-            <div className='row mt-1' >
-              <div className='col-md-3 p-0 font-weight-bold' >Description :</div>
+            <div className='row mt-1'>
+              <div className='col-md-3 p-0 font-weight-bold'>Description :</div>
               <div className='col-md-9 p-0'>{modData?.description}</div>
             </div>
           </div>
-          <div>
-          </div>
+          <div></div>
         </div>
       </Modal>
     </div>

@@ -146,7 +146,7 @@ const StudentDashboardConfigOn = () => {
         <div className='col-md-4 th-custom-col-padding'>
           <DiaryStats />
           <CalendarCard />
-          <Announcement scrollHeight={'330px'} />
+          <Announcement scrollHeight={'530px'} />
         </div>
       </div>
     </div>

@@ -20,12 +20,12 @@ const MyCalendar = (props) => {
       <Tooltip
         title={
           <div>
-            <div>{eventInfo.timeText}</div>
-            <div>{eventInfo.event.title}</div>
+            <div>{eventInfo?.timeText}</div>
+            <div>{eventInfo?.event?.title}</div>
           </div>
         }
       >
-        {eventInfo.event.title}
+        {eventInfo?.event?.title}
       </Tooltip>
     );
   };
