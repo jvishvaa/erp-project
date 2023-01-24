@@ -11,45 +11,68 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
   const [branchName, setBranchName] = useState('');
   const [branchCode, setBranchCode] = useState('');
   const [address, setAddress] = useState('');
+  const [legalDetails, setLegalDetails] = useState({
+    legalName: '',
+    legalContact: '',
+    legalEmail: '',
+  });
   const [file, setFile] = useState();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(file != undefined){
-    setLoading(true);
-    const request = new FormData();
-    request.append('branch_name',branchName)
-    request.append('branch_code', branchCode)
-    request.append('address',address)
-    if(file){
-      request.append('logo', file)
-    }
-    axiosInstance
-      .post(endpoints.masterManagement.createBranch,
-        request
-      )
-      .then((result) => {
-        if (result.data.status_code >= 200 && result.data.status_code <= 299) {
-          setBranchName('');
-          setBranchCode('');
-          setAddress('');
+    const isLegalDetails = Object.values(legalDetails).every((x) => x === '');
+    if (isLegalDetails) {
+      setLoading(true);
+      const request = new FormData();
+      request.append('branch_name', branchName);
+      request.append('branch_code', branchCode);
+      request.append('address', address);
+      request.append('legal_name', JSON.stringify(legalDetails));
+      if (file) {
+        request.append('logo', file);
+      }
+      axiosInstance
+        .post(endpoints.masterManagement.createBranch, request)
+        .then((result) => {
+          if (result.data.status_code >= 200 && result.data.status_code <= 299) {
+            setBranchName('');
+            setBranchCode('');
+            setAddress('');
+            setLoading(false);
+            setAlert('success', result.data.msg || result.data.message);
+            handleGoBack();
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.msg || result.data.message);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          setAlert('success', result.data.msg || result.data.message);
-          handleGoBack();
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.msg || result.data.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.response.data.message || error.response.data.msg);
-      });
+          setAlert('error', error.response.data.message || error.response.data.msg);
+        });
     } else {
-      setAlert('error', "Please Select File");
+      setAlert('error', 'Please enter all required fields');
+    }
+  };
 
+  const handleLegalDetails = (e, key) => {
+    if (key === 'legalName') {
+      setLegalDetails((prevState) => ({
+        ...prevState,
+        legalName: e,
+      }));
+    } else if (key === 'legalContact') {
+      setLegalDetails((prevState) => ({
+        ...prevState,
+        legalContact: e,
+      }));
+    } else {
+      setLegalDetails((prevState) => ({
+        ...prevState,
+        legalEmail: e,
+      }));
     }
   };
 
@@ -71,6 +94,21 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               required
             />
           </Grid>
+
+          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+            <TextField
+              id='legalName'
+              style={{ width: '100%' }}
+              label='Legal Name'
+              variant='outlined'
+              size='small'
+              value={legalDetails?.legalName}
+              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 50 }}
+              name='legalName'
+              onChange={(e) => handleLegalDetails(e.target.value, 'legalName')}
+              required
+            />
+          </Grid>
         </Grid>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
@@ -84,6 +122,20 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               inputProps={{ pattern: '^[0-9]+$', maxLength: 3 }}
               name='branchcode'
               onChange={(e) => setBranchCode(e.target.value)}
+              required
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+            <TextField
+              id='legalContact'
+              style={{ width: '100%' }}
+              label='Legal Contact'
+              variant='outlined'
+              size='small'
+              value={legalDetails?.legalContact}
+              name='legalContact'
+              onChange={(e) => handleLegalDetails(e.target.value, 'legalContact')}
               required
             />
           </Grid>
@@ -106,9 +158,22 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               required
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={5}>
+
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+            <TextField
+              id='legalEmail'
+              style={{ width: '100%' }}
+              label='Legal Email'
+              type='email'
+              variant='outlined'
+              size='small'
+              value={legalDetails?.legalEmail}
+              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 50 }}
+              name='legalEmail'
+              onChange={(e) => handleLegalDetails(e.target.value, 'legalEmail')}
+              required
+            />
+
             <input
               id='upload'
               label='Upload Logo'
@@ -118,13 +183,20 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               // value={viewFile}
               name='File'
               type='file'
+              className='mt-4'
               onChange={(e) => setFile(e.target.files[0])}
             />
           </Grid>
         </Grid>
       </div>
       <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '10px' }}>
-        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
+        <Grid
+          xsOffset={6}
+          item
+          xs={6}
+          sm={2}
+          className={isMobile ? '' : 'addEditButtonsPadding'}
+        >
           <Button
             variant='contained'
             className='labelColor'
