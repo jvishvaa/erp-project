@@ -274,14 +274,14 @@ const CreatePostActivity = () => {
         if (!boardId) {
             setAlert('error', 'Please Select Branch')
             return;
-        } else if(!activityId){
-            setAlert('error','Please Select Activity Level')
+        }else if(!activityLevel){
+            setAlert('error', 'Please Select Activity Level')
+            return;
+        }else if(!title){
+            setAlert('error','Please Add Title')
             return
         }else if(!description){
             setAlert('error','Please Add Description')
-            return
-        }else if(!title){
-            setAlert('error','Please Add Title')
             return
         }
         else {
@@ -361,6 +361,7 @@ const CreatePostActivity = () => {
                                                     placeholder='Select Activity Level'
                                                     showSearch
                                                     // disabled={user_level == 13}
+                                                    
                                                     optionFilterProp='children'
                                                     filterOption={(input, options) => {
                                                         return (

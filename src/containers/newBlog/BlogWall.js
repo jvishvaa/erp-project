@@ -1005,14 +1005,27 @@ const BlogWall = () => {
                                 <span>{item?.branch?.name}</span>
                               </div>
                               <Badge.Ribbon text={item?.view_level} color="orange">
+                              {item?.content?.file_type === "video/mp4" ? (
+                                   <CardMedia
+                                   // className={classes.media}
+                                   className='card-media-design'
+                                   component='video'
+                                   image={item?.content?.s3_url}
+                                   style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%', position: 'relative', display: 'inline-block' }}
+                                   alt="Dummy Image"
+                                   title="Blog View"
+                                 />
+                              ):(
                                 <CardMedia
                                   // className={classes.media}
                                   className='card-media-design'
+                                 
                                   image={item?.content?.s3_url}
                                   style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%', position: 'relative', display: 'inline-block' }}
                                   alt="Dummy Image"
                                   title="Blog View"
                                 />
+                              )}
                                 <span class="badge bg-light text-dark" style={{ position: 'absolute', bottom: '10px', right: '0.5rem', padding: '0.5rem' }}>+{item?.content_count}More</span>
 
                               </Badge.Ribbon>
@@ -1597,7 +1610,7 @@ const BlogWall = () => {
 
         ) : ""}
 
-        {!loading && listCount > 0 && (
+        {/* {!loading && listCount > 0 && (
           <div className='text-center'>
             <Pagination
               current={pageNumber}
@@ -1609,7 +1622,7 @@ const BlogWall = () => {
               total={listCount}
             />
           </div>
-        )}
+        )} */}
 
       </>
     );
