@@ -79,7 +79,10 @@ const Assessment = () => {
     }
   }, [selectedAcademicYear]);
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 mt-3 shadow-sm'>
+    <div
+      className='th-bg-white th-br-5 py-3 px-2 mt-3 shadow-sm mb-3'
+      style={{ height: '845px' }}
+    >
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
           Assessment Details
