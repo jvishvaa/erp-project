@@ -7,6 +7,7 @@ import moment from 'moment';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import NoExamIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/notest.png';
 import redSmiley from 'v2/Assets/dashboardIcons/studentDashboardIcons/red.png';
 import yellowSmiley from 'v2/Assets/dashboardIcons/studentDashboardIcons/yellow.png';
 import lightGreenSmiley from 'v2/Assets/dashboardIcons/studentDashboardIcons/lightGreen.png';
@@ -17,26 +18,10 @@ const Assessment = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  // const [upcomingAssessmentData, setUpcomingAssessmentData] = useState([]);
-  const [performanceData, setPerformanceData] = useState({
-    // top_performance_subjects: [
-    //   { subject: 'Subject 1', average: '35' },
-    //   { subject: 'Subject 2', average: '34' },
-    // ],
-    // below_performance_subjects: [
-    //   { subject: 'Subject 3', average: '35' },
-    //   { subject: 'Subject 4', average: '34' },
-    // ],
-    // overall_performance: { overall_performance: '78' },
-  });
+  const [performanceData, setPerformanceData] = useState({});
   const [loadingPerformance, setLoadingPerformance] = useState(false);
   const [loadingAssessments, setLoadingAssessments] = useState(false);
   const [upcomingAssessmentData, setUpcomingAssessmentData] = useState([]);
-  // const upcomingAssessmentData = [
-  //   { subject: 'Subject 1', marks: '30', date: '09-01-2022', time: '02:30 PM' },
-  //   { subject: 'Subject 1', marks: '30', date: '09-01-2022', time: '02:30 PM' },
-  //   { subject: 'Subject 1', marks: '30', date: '09-01-2022', time: '02:30 PM' },
-  // ];
   const getAssessmentRemarks = (average) => {
     return average <= 50
       ? redSmiley
@@ -128,7 +113,6 @@ const Assessment = () => {
                   type='dashboard'
                   percent={performanceData?.overall_performance?.overall_performance}
                   gapDegree={180}
-                  strokeLinecap='round'
                   strokeColor={{
                     '0%': '#F32D2D',
                     '40%': '#FFC700',
@@ -136,7 +120,7 @@ const Assessment = () => {
                     '100%': '#10B479',
                   }}
                   status='active'
-                  width='260px'
+                  width='330px'
                   strokeWidth='4'
                   format={() => (
                     <div className='mt-3'>
@@ -180,47 +164,77 @@ const Assessment = () => {
                   )}
                 />
               </div>
-
-              <div className='row th-bg-grey p-2 th-br-8' style={{ marginTop: '-40px' }}>
+              {performanceData?.subjects_performance ? (
                 <div
-                  className='col-6 px-1 pr-2'
-                  style={{ borderRight: '1px solid #d9d9d9' }}
+                  className='row th-bg-grey p-2 th-br-8'
+                  style={{ marginTop: '-100px' }}
                 >
-                  <div className='th-fw-500 th-green-2 text-center mb-2'>
-                    Top Performance
+                  <div className='th-fw-500 th-green-2 row justify-content-center mb-2'>
+                    Performance
                   </div>
-                  {performanceData?.top_performance_subjects?.map((item) => (
+                  {performanceData?.subjects_performance?.map((item) => (
                     <div className='row py-2 th-12 th-black-2'>
-                      <div className='col-9 text-truncate'>
+                      <div className='col-6 text-truncate text-center'>
                         <Tooltip title={item?.subject}>{item?.subject}</Tooltip>
                       </div>
-                      <div className='col-3 text-center px-0'>{item?.average} %</div>
+                      <div className='col-6 text-center px-0'>{item?.average} %</div>
                     </div>
                   ))}
-                </div>
-                <div className='col-6 px-0 pl-2'>
-                  <div className='th-fw-500 th-yellow text-center mb-2'>
-                    Below Performance
+                  <div className='row justify-content-end mt-2'>
+                    <div
+                      className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
+                      style={{ outline: '1px solid #d9d9d9' }}
+                      onClick={() => history.push('/student-assessment-dashboard')}
+                    >
+                      View Details
+                    </div>
                   </div>
-                  {performanceData?.below_performance_subjects?.map((item) => (
-                    <div className='row py-2 th-12 th-black-2 '>
-                      <div className='col-9 text-truncate'>
-                        <Tooltip title={item?.subject}>{item?.subject}</Tooltip>
-                      </div>
-                      <div className='col-3 text-center px-0'>{item.average} %</div>
-                    </div>
-                  ))}
                 </div>
-                <div className='row justify-content-end mt-2'>
+              ) : (
+                <div
+                  className='row th-bg-grey p-2 th-br-8'
+                  style={{ marginTop: '-100px' }}
+                >
                   <div
-                    className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
-                    style={{ outline: '1px solid #d9d9d9' }}
-                    onClick={() => history.push('/student-assessment-dashboard')}
+                    className='col-6 px-1 pr-2'
+                    style={{ borderRight: '1px solid #d9d9d9' }}
                   >
-                    View Details
+                    <div className='th-fw-500 th-green-2 text-center mb-2'>
+                      Top Performance
+                    </div>
+                    {performanceData?.top_performance_subjects?.map((item) => (
+                      <div className='row py-2 th-12 th-black-2'>
+                        <div className='col-9 text-truncate'>
+                          <Tooltip title={item?.subject}>{item?.subject}</Tooltip>
+                        </div>
+                        <div className='col-3 text-center px-0'>{item?.average} %</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className='col-6 px-0 pl-2'>
+                    <div className='th-fw-500 th-yellow text-center mb-2'>
+                      Below Performance
+                    </div>
+                    {performanceData?.below_performance_subjects?.map((item) => (
+                      <div className='row py-2 th-12 th-black-2 '>
+                        <div className='col-9 text-truncate'>
+                          <Tooltip title={item?.subject}>{item?.subject}</Tooltip>
+                        </div>
+                        <div className='col-3 text-center px-0'>{item.average} %</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className='row justify-content-end mt-2'>
+                    <div
+                      className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
+                      style={{ outline: '1px solid #d9d9d9' }}
+                      onClick={() => history.push('/student-assessment-dashboard')}
+                    >
+                      View Details
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </>
           ) : (
             <div className='d-flex w-100  justify-content-center align-items-center'>
@@ -271,7 +285,7 @@ const Assessment = () => {
                           </div>
                           <div className='col-9 text-right th-fw-500'>
                             <span className=' mr-2'>
-                              {moment(item?.date, 'DD-MM-YYYY').format('DD/MM/YYYY')}
+                              {moment(item?.date).format('DD-MM-YYYY')}
                             </span>
                             <span>{moment(item?.time, 'hh:mm A').format('hh:mm A')}</span>
                           </div>
@@ -283,7 +297,8 @@ const Assessment = () => {
               </>
             ) : (
               <div className='d-flex w-100 justify-content-center align-items-center'>
-                <div className='th-black-2 th-12 th-fw-500'> No Upcoming Assessments</div>
+                {/* <div className='th-black-2 th-12 th-fw-500'> No Upcoming Assessments</div> */}
+                <img src={NoExamIcon} style={{ objectFit: 'contain', height: '120px' }} />
               </div>
             )}
             <div className='row justify-content-end align-items-center mt-2'>

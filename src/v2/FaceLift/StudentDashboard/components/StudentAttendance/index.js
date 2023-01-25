@@ -36,10 +36,12 @@ const StudentAttendance = (props) => {
   const options = {
     chart: {
       type: 'column',
+      style: {
+        fontFamily: 'Inter, sans-serif',
+      },
     },
     title: {
-      text: 'Last 3 Month Attendance',
-      align: 'left',
+      text: '',
     },
     dataLabels: {
       enabled: true,
@@ -70,6 +72,7 @@ const StudentAttendance = (props) => {
           align: 'center',
           style: {
             fontSize: '8px',
+            color: '#20c51c',
           },
         },
         // pointWidth: 20,
@@ -88,6 +91,8 @@ const StudentAttendance = (props) => {
           align: 'center',
           style: {
             fontSize: '8px',
+            color: '#F32D2D',
+            textShadow: null,
           },
         },
         // pointWidth: 20,
@@ -138,38 +143,22 @@ const StudentAttendance = (props) => {
         <div className='col-md-12'>
           <div
             className='d-flex justify-content-between mt-3 p-2 '
-            style={{ background: '#F8F8F8', borderRadius: 6 }}
+            // style={{ background: '#F8F8F8', borderRadius: 6 }}
           >
-            <div className='th-black-2'>Today's</div>
-
-            <div
-              className='th-fw-600 text-capitalize'
-              style={{
-                color:
-                  attendanceData?.today_attendance === 'Holiday'
-                    ? '#7cb5ec'
-                    : attendanceData?.today_attendance === 'present'
-                    ? '#09a23a'
-                    : attendanceData?.today_attendance === 'absent'
-                    ? '#f8222f'
-                    : '#c6c6c6',
-              }}
-            >
-              {attendanceData?.today_attendance}
-            </div>
+            <div className='th-black-2'>Last 3 Months Attendance</div>
           </div>
         </div>
         <div className='my-2 p-2'>
           <HighchartsReact
             highcharts={Highcharts}
             options={options}
-            containerProps={{ style: { height: '300px' } }}
+            containerProps={{
+              style: { height: '300px' },
+            }}
           />
         </div>
         <div className='my-2 '>
-          <div className='col-md-12 th-16 mt-2 th-fw-500 th-black-1'>
-            Total Attendance
-          </div>
+          <div className='col-md-12 th-14 mt-2 th-black-1'>Total Attendance</div>
           <div className='col-md-12'>
             <div
               className='d-flex justify-content-between align-items-center p-2 '
@@ -187,9 +176,6 @@ const StudentAttendance = (props) => {
                   )}
                 />
               </div>
-              {/* <div className='th-primary th-pointer'>
-              
-              </div> */}
               <div
                 className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
                 style={{ outline: '1px solid #d9d9d9' }}

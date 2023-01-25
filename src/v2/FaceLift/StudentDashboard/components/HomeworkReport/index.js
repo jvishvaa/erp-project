@@ -4,9 +4,9 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { Button, message, Spin } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import { message, Spin } from 'antd';
+import { RiseOutlined, FallOutlined } from '@ant-design/icons';
+import NoHWIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/noHW.png';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import moment from 'moment';
@@ -51,10 +51,15 @@ const HomeworkReport = () => {
       text:
         'Overall' +
         '<br />' +
-        `${(
-          (homeworkReportData?.total_submitted / homeworkReportData?.total_assigned) *
-          100
-        ).toFixed(2)}%`,
+        `${
+          homeworkReportData?.total_assigned == 0
+            ? 0
+            : (
+                (homeworkReportData?.total_submitted /
+                  homeworkReportData?.total_assigned) *
+                100
+              ).toFixed(2)
+        }%`,
       y: 18,
       style: { fontWight: '800', color: '#32334a ', fontFamily: 'Inter, sans-serif' },
     },
@@ -70,7 +75,7 @@ const HomeworkReport = () => {
     },
     tooltip: {
       formatter: function () {
-        return '<b>' + this.point.name + '</b>: ' + this.y + ' %';
+        return '<b>' + this.point.name + '</b>: ' + this.percentage.toFixed(2) + ' %';
       },
     },
     series: [
@@ -105,11 +110,11 @@ const HomeworkReport = () => {
         <div className='th-width-100 text-center mt-5'>
           <Spin tip='Loading...'></Spin>
         </div>
-      ) : Object.keys(homeworkReportData).length > 0 ? (
+      ) : homeworkReportData.total_assigned > 0 ? (
         <div className='th-custom-col-padding'>
           <div className='row px-2'>
             <div className='col-12 px-md-0 text-center'>
-              <div className='d-flex justify-content-center'>
+              <div className='d-flex justify-content-between'>
                 <div>
                   <HighchartsReact
                     highcharts={Highcharts}
@@ -139,11 +144,11 @@ const HomeworkReport = () => {
 
           <div className='d-flex justify-content-between align-items-center px-2'>
             {homeworkReportData?.cur_month_performance !== null && (
-              <div
-                className={`th-black-1 ${window.innerWidth < 768 ? 'th-12' : 'th-13'}`}
-              >
+              <div className={`th-black-1 th-12`}>
                 <div>
-                  % Completion this Month - {homeworkReportData?.cur_month_performance} %
+                  % Submission in this Month(
+                  {moment().format('MMM')}) - {homeworkReportData?.cur_month_performance}{' '}
+                  %
                 </div>
                 <div>
                   <span
@@ -153,12 +158,14 @@ const HomeworkReport = () => {
                         : 'th-red'
                     }`}
                   >
+                    {homeworkReportData?.monthly_performance > 0 ? (
+                      <RiseOutlined className='mr-1' />
+                    ) : (
+                      <FallOutlined className='mr-1' />
+                    )}
                     {homeworkReportData?.monthly_performance} %{' '}
                   </span>
-                  since
-                  <span className='th-fw-600 ml-2'>
-                    {moment().subtract(1, 'month').format('MMMM YYYY')}
-                  </span>
+                  since previous Month
                 </div>
               </div>
             )}
@@ -174,7 +181,7 @@ const HomeworkReport = () => {
         </div>
       ) : (
         <div className='d-flex justify-content-center mt-5'>
-          <img src={NoDataIcon} />
+          <img src={NoHWIcon} style={{ height: '120px', objectFit: 'cover' }} />
         </div>
       )}
     </div>
