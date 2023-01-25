@@ -1783,7 +1783,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                       {activityData.map((item) => (
                         <div className='col-4 px-1 mb-2'>
                           <div className='th-bg-grey py-1 px-2 th-br-6'>
-                            {item?.activity_type?.name === 'Public SPeaking' && (
+                            {item?.activity_type?.name === 'Public Speaking' && (
                               <div className='row th-black-2 align-items-center py-1'>
                                 <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
                                   <span>Status </span>
@@ -1800,6 +1800,31 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                     } text-capitalize`}
                                   >
                                     {item?.state}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                            {item?.activity_type?.name === 'Physical Activity' && (
+                              <div className='row th-black-2 align-items-center py-1'>
+                                <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
+                                  <span>Status </span>
+                                  <span>:&nbsp;</span>
+                                </div>
+                                <div className='col-8 pl-1 text-capitalize'>
+                                  <span
+                                    className={`${
+                                      moment(moment(), 'hh:mm A').isBefore(
+                                        moment(item?.submission_date, 'hh:mm A')
+                                      )
+                                        ? 'th-primary'
+                                        : 'th-green'
+                                    } text-capitalize`}
+                                  >
+                                    {moment(moment(), 'hh:mm A').isBefore(
+                                      moment(item?.submission_date, 'hh:mm A')
+                                    )
+                                      ? 'Upcoming'
+                                      : 'Completed'}
                                   </span>
                                 </div>
                               </div>
