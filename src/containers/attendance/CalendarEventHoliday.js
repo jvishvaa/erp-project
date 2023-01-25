@@ -4,8 +4,8 @@ import Loader from '../../components/loader/loader';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import { Breadcrumb, Tabs, Tooltip, Select, Input, Button, message, Form, Empty, DatePicker, Card, Segmented, Badge, Popover } from 'antd';
-import HolidayIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/holiday.png'
-import EventIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/event.png'
+import HolidayIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/holidayNew.png'
+import EventIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/eventNew.png'
 import { IconButton } from '@material-ui/core';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import 'react-calendar/dist/Calendar.css';
@@ -850,7 +850,7 @@ const CalendarV2 = () => {
                                                             <Select
                                                                 mode='multiple'
                                                                 getPopupContainer={(trigger) => trigger.parentNode}
-                                                                className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                                                                className='th-grey th-bg-grey th-br-4 w-100 text-left'
                                                                 placement='bottomRight'
                                                                 placeholder="Select Branch"
                                                                 showArrow={true}
