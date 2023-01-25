@@ -101,7 +101,7 @@ export default {
     assessment: `${msReportsUrlNew}/api/acad_performance/v1/student-assesment-report-dash/`,
     studentAnnualAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-annual-attreport/`,
     studentMonthlyAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-monthly-attreport/`,
-    studentUpcomingHolidays: `${msReportsUrl}/api/reports/v1/stu-upcoming-holydays/`,
+    studentUpcomingHolidays: `${msReportsUrl}/api/reports/v2/stu-upcoming-holydays/`,
     assessmentPerformance: `${msReportsUrl}/api/reports/student_performance/`,
     upcomingAssessment: `${msReportsUrl}/api/reports/upcoming_exam/`,
     homeworkReport: `${msReportsUrl}/api/reports/dashboard_student_hw_performance/`,
