@@ -626,7 +626,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/blog/create',
     },
     {
-      name: 'Blog Wall',
+      name: 'School Wall',
       Path:'/blog/wall',
     },
     {

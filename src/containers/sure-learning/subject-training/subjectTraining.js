@@ -216,7 +216,7 @@ const SubjectTraining = () => {
         .then((res) => {
           console.log(res, 'academic');
           setGradeList(res.data.course_type);
-          // setSubjectList(res.data.course_sub_type)
+          setSubjectList(res.data.course_sub_type)
         })
         .catch((error) => {
           setAlert('error', 'Something Wrong!');
@@ -239,7 +239,7 @@ const SubjectTraining = () => {
         })
         .then((res) => {
           console.log(res, 'subject');
-          setSubjectList(res.data);
+          // setSubjectList(res.data);
         })
         .catch((error) => {
           setAlert('error', 'Something Wrong!');
@@ -253,7 +253,7 @@ const SubjectTraining = () => {
     if (value) {
       axios
         .get(
-          `${endpoints.sureLearning.volume}?grade_id=${selectedGrade?.id}&subject_id=${value?.subject_fk?.id}`,
+          `${endpoints.sureLearning.volume}?grade_id=${selectedGrade?.id}&subject_id=${value?.id}`,
           {
             headers: {
               Authorization: `Bearer ${udaanToken}`,
@@ -343,7 +343,7 @@ const SubjectTraining = () => {
     if (selectedGrade && selectedVolume && selectedSubject) {
       axios
         .get(
-          `${endpoints.sureLearning.filterSubject}?subject=${selectedSubject?.subject_fk?.id}&grade=${selectedGrade?.id}&subject_training=true&volume_id=${selectedVolume?.id}`,
+          `${endpoints.sureLearning.filterSubject}?subject=${selectedSubject?.id}&grade=${selectedGrade?.id}&subject_training=true&volume_id=${selectedVolume?.id}`,
           {
             headers: {
               Authorization: `Bearer ${udaanToken}`,
@@ -410,7 +410,7 @@ const SubjectTraining = () => {
                 className='dropdownIcon'
                 value={selectedSubject || ''}
                 options={subjectList || ''}
-                getOptionLabel={(option) => option?.subject_fk?.sub_type_name || ''}
+                getOptionLabel={(option) => option?.sub_type_name || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField

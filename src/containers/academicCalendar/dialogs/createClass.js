@@ -133,6 +133,7 @@ const CreateClass = ({
 
   const handlePeriod = (e, value) => {
     setSelectedPeriod(value);
+    setSelectedSubject();
   };
 
   const handleDuration = (e) => {
@@ -162,7 +163,6 @@ const CreateClass = ({
     } else {
       setAlert('error', 'Class must be between 06:00AM - 10:30PM');
     }
-
   };
 
   const handleAcademicYear = (event, value) => {
@@ -191,7 +191,8 @@ const CreateClass = ({
       setSelectedBranch(ids);
       setSelectedbranchIds(selectedId);
       callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
+        `${endpoints.academics.grades}?session_year=${
+          selectedAcademicYear?.id
         }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
         'gradeList'
       );
@@ -219,7 +220,8 @@ const CreateClass = ({
       setSelectedGrade(ids);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
         }&branch_id=${selectedbranchIds}&grade_id=${selectedId.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -233,8 +235,8 @@ const CreateClass = ({
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.section_id);
-      const sectionid = value.map((each) => each?.id)
-      setSectionId(sectionid)
+      const sectionid = value.map((each) => each?.id);
+      setSectionId(sectionid);
       setSelectedSection(ids);
       setSelectedSectionIds(selectedId);
     }
@@ -437,8 +439,8 @@ const CreateClass = ({
                   selected: selectAll
                     ? true
                     : selectedUsers.length
-                      ? selectedUsers[pageno - 1].selected.includes(items.user_id)
-                      : false,
+                    ? selectedUsers[pageno - 1].selected.includes(items.user_id)
+                    : false,
                 });
               });
 
@@ -583,11 +585,10 @@ const CreateClass = ({
             toggleCreateClass();
             handleClear();
             setLoading(false);
-            setSelectAll(true)
+            setSelectAll(true);
             selectionArray = [];
-            setSelectedUsers([])
-          }
-          else {
+            setSelectedUsers([]);
+          } else {
             setAlert('error', result?.data?.message);
           }
           setLoading(false);

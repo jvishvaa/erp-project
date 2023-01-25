@@ -250,11 +250,25 @@ const StudentSidePhysicalActivity = () => {
             render: (text, row, index) => <a>{row?.bmi_details?.weight}</a>
         },
         {
+            title: <span className='th-white th-fw-700 '>Age</span>,
+            dataIndex: 'age',
+            key: 'age',
+            align: 'center',
+            render: (text, row, index) => <a>{row?.bmi_details?.age}</a>
+        },
+        {
             title: <span className='th-white th-fw-700 '>BMI</span>,
             dataIndex: 'bmi',
             key: 'bmi',
             align: 'center',
             render: (text, row, index) => <a>{row?.bmi_details?.bmi}</a>
+        },
+        {
+            title: <span className='th-white th-fw-700 '>Remarks</span>,
+            dataIndex: 'remarks',
+            key: 'remarks',
+            align: 'center',
+            render: (text, row, index) => <a>{row?.bmi_details?.remarks}</a>
         },
         {
             title: <span className='th-white th-fw-700 '>Date</span>,

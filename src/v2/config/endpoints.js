@@ -26,17 +26,16 @@ export default {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
   },
   newEbook: {
-    ebookGrade : '/academic/ebook_mapped_grades_v1/',
-    ebookSubject : '/academic/ebook_mapped_subjects/',
+    ebookGrade: '/academic/ebook_mapped_grades_v1/',
+    ebookSubject: '/academic/ebook_mapped_subjects/',
     ebookList: `/academic/v1/ebook_school_wise_filter/`,
     ebookDefault: `/academic/v1/ebook_school_wise_default/`,
     ebookClose: '/academic/v1/ebook_user/',
-    ebook_ibook_count: '/academic/v1/ebook_ibook_count/'
+    ebook_ibook_count: '/academic/v1/ebook_ibook_count/',
   },
-  newibook:{
+  newibook: {
     ibookList: '/academic/v1/ibook_school_wise_filter/',
-    ibookDefault :'/academic/v1/ibook_school_wise_default/',
-
+    ibookDefault: '/academic/v1/ibook_school_wise_default/',
   },
   academics: {
     subjects: '/erp_user/subject/',
@@ -76,6 +75,7 @@ export default {
     staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
     staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
     gradeWise: `${msReportsUrl}/api/acad_performance/v2/curriculam-grade-wise-data/`,
+    calendarEventsEvent: `${msReportsUrl}/api/reports/v1/events/`,
   },
   teacherDashboard: {
     todaysAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/attendance-today/`,
@@ -94,13 +94,26 @@ export default {
     sectionwiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections-students/`,
   },
   studentDashboard: {
+    checkConfigStatus: `${msReportsUrl}/api/acad_performance/get-dashboard-cfg/`,
     todaysClasses: `${msOriginUrl}/api/oncls/v1/student-oncls/`,
     pendingHomework: `${msReportsUrlNew}/api/acad_performance/v1/student-hw-report-dash/`,
     pendingClasswork: `${msReportsUrlNew}/api/acad_performance/v1/student-cw-report-dash/`,
     assessment: `${msReportsUrlNew}/api/acad_performance/v1/student-assesment-report-dash/`,
     studentAnnualAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-annual-attreport/`,
     studentMonthlyAttendanceReport: `${msReportsUrl}/api/reports/v1/stu-monthly-attreport/`,
-    studentUpcomingHolidays: `${msReportsUrl}/api/reports/v1/stu-upcoming-holydays/`,
+    studentUpcomingHolidays: `${msReportsUrl}/api/reports/v2/stu-upcoming-holydays/`,
+    assessmentPerformance: `${msReportsUrl}/api/reports/student_performance/`,
+    upcomingAssessment: `${msReportsUrl}/api/reports/upcoming_exam/`,
+    homeworkReport: `${msReportsUrl}/api/reports/dashboard_student_hw_performance/`,
+    diaryStats: `${msReportsUrl}/api/reports/diary_homework_count/`,
+    todaysTimeTable: `${msReportsUrl}/api/reports/retrieve_daily_periods/`,
+  },
+  assessmentDashboard: {
+    studentMonthwiseAssessment: `${msReportsUrl}/api/acad_performance/month-wise-assessment-report/`,
+    studentSubjectwiseAssessment: `${msReportsUrl}/api/acad_performance/subject-wise-assessment-report/`,
+    studentTestwiseAssessment: `${msReportsUrl}/api/acad_performance/test-wise-assessment-report/`,
+    studentTestDetail: `${msReportsUrl}/api/acad_performance/test-detail-report/`,
+    assessmentConfig: `${msReportsUrl}/api/acad_performance/get-dashboard-cfg/`,
   },
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
@@ -207,6 +220,9 @@ export default {
     blogListDropApi: `${newBlogURL}/api/activity_dropdown/`,
     blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
     checkBMIApi: `${newBlogURL}/api/check_student/`,
+    diaryActivities: `${newBlogURL}/api/diary_activities/`,
+    getSchoolWallApi: `${newBlogURL}/api/school_wall/`,
+    whatsAppChatGetApi: `${baseFinanceURL}/apiV1/whatsup-log/`,
   },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
