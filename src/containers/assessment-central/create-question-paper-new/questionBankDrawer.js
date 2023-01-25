@@ -225,12 +225,12 @@ const QuestionBankDrawer = ({
     let quesindex1 = marksselection.findIndex((item) => item?.question_id === question?.id)
     if(quesindex !== -1){
         let questionMark = testMarks
-        questionMark[quesindex].question_mark = [parseInt(e.target.value),0]
+        questionMark[quesindex].question_mark = [parseFloat(e.target.value),0]
         SettestMarks(questionMark)
     }
     if(quesindex1 !== -1){
       let questionMark = marksselection
-      questionMark[quesindex1].question_mark = [parseInt(e.target.value),0]
+      questionMark[quesindex1].question_mark = [parseFloat(e.target.value),0]
       // SettestMarks(questionMark)
       setSelectionMarks(questionMark);
     } else {

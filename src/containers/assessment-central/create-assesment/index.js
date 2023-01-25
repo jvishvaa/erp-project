@@ -238,7 +238,7 @@ const CreateAssesment = ({
   useEffect(() => {
     if (isEdit && groupList.length && EditData?.group_id !== null) {
       let filteredgroup = groupList.filter((item) => item?.id === EditData?.group_id);
-      handleGroup('', filteredgroup);
+      handleGroup('', filteredgroup[0]);
     }
   }, [groupList]);
 
@@ -483,10 +483,10 @@ const CreateAssesment = ({
     setSelectedGroupData({});
     setSelectedGroupId('');
     if (value) {
-      const sections = value[0]?.group_section_mapping?.map((i) => i?.section_mapping_id);
+      const sections = value?.group_section_mapping?.map((i) => i?.section_mapping_id);
       setGroupSectionMappingId(sections);
-      setSelectedGroupData(value[0]);
-      setSelectedGroupId(value[0]?.id);
+      setSelectedGroupData(value);
+      setSelectedGroupId(value?.id);
     }
   };
 
