@@ -356,10 +356,10 @@ const CreatequestionPaperNew = () => {
           };
           if (!questionPaperWise) {
             // let marks = sec.test_marks?.forEach((item) => {
-            //   totalMark += parseInt(item?.question_mark[0]);
+            //   totalMark += parseFloat(item?.question_mark[0]);
             // });
             for (let i = 0; i < sec?.mandatory_questions; i++) {
-              totalMark += parseInt(sec?.test_marks[i].question_mark[0]);
+              totalMark += parseFloat(sec?.test_marks[i].question_mark[0]);
             }
           }
           sec.questions.forEach((question) => {
@@ -386,8 +386,8 @@ const CreatequestionPaperNew = () => {
         return setAlert('error', 'Please Enter instructions');
       }
       if (
-        (!questionPaperWise && totalMark < parseInt(max_Marks)) ||
-        totalMark > parseInt(max_Marks)
+        (!questionPaperWise && totalMark < parseFloat(max_Marks)) ||
+        totalMark > parseFloat(max_Marks)
       ) {
         return setAlert('error', 'Selected Marks not Matched with Maximum Marks');
       }
@@ -543,10 +543,10 @@ const CreatequestionPaperNew = () => {
           };
           if (!questionPaperWise) {
             for (let i = 0; i < sec?.mandatory_questions; i++) {
-              totalMark += parseInt(sec?.test_marks[i].question_mark[0]);
+              totalMark += parseFloat(sec?.test_marks[i].question_mark[0]);
             }
             // let marks = sec.test_marks?.forEach((item) => {
-            //   totalMark += parseInt(item?.question_mark[0]);
+            //   totalMark += parseFloat(item?.question_mark[0]);
             // });
           }
           sec.questions.forEach((question) => {
@@ -574,8 +574,8 @@ const CreatequestionPaperNew = () => {
       }
 
       if (
-        (!questionPaperWise && totalMark < parseInt(max_Marks)) ||
-        totalMark > parseInt(max_Marks)
+        (!questionPaperWise && totalMark < parseFloat(max_Marks)) ||
+        totalMark > parseFloat(max_Marks)
       ) {
         return setAlert('error', 'Selected Marks not Matched with Maximum Marks');
       }
@@ -880,7 +880,11 @@ const CreatequestionPaperNew = () => {
               pattern='\d*'
               maxLength={3}
               className='w-20 mx-2 text-center'
-              onChange={(e) => setMaxMarks(e.target.value)}
+              onChange={(e) => {
+                if(e.target.value.includes('.')){
+                  setAlert('error','Decimal not Accepted !')
+                }
+                setMaxMarks(e.target.value)}}
             />
             {/* </div> */}
           </div>
@@ -904,7 +908,12 @@ const CreatequestionPaperNew = () => {
                   type='text'
                   pattern='\d*'
                   maxLength={3}
-                  onChange={(e) => setQp_wise_Marks(e.target.value)}
+                  onChange={(e) =>{
+                    if(e.target.value.includes('.')){
+                      setAlert('error','Decimal not Accepted !')
+                    }
+                    setQp_wise_Marks(e.target.value)}
+                  } 
                 />
               </div>
             )}
