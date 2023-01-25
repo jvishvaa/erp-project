@@ -16,6 +16,7 @@ import {
   Popconfirm,
   Select,
   InputNumber,
+  Radio,
 } from 'antd';
 import { PlusOutlined, EditOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
@@ -29,11 +30,28 @@ const Observation = () => {
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isStudent, setIsStudent] = useState(false);
+  const [tableView, setTableView] = useState('teacher');
 
   useEffect(() => {
-    observationGet();
-    getObservationArea({ status: true });
+    observationGet({ is_student: tableView === 'teacher' ? false : true });
+    getObservationArea({
+      status: true,
+      is_student: tableView === 'teacher' ? false : true,
+    });
+  }, [tableView]);
+  useEffect(() => {
+    getObservationArea({
+      status: true,
+      is_student: tableView === 'teacher' ? false : true,
+    });
   }, []);
+  useEffect(() => {
+    getObservationArea({
+      status: true,
+      is_student: isStudent,
+    });
+  }, [isStudent]);
 
   const observationGet = (params = {}) => {
     setLoading(true);
@@ -76,10 +94,12 @@ const Observation = () => {
     setDrawerOpen(true);
     axios.get(`${endpoints.observationName.observationGet}${id}/`).then((res) => {
       formRef.current.setFieldsValue({
-        observation: res.data.observation,
-        observation_area: res.data?.observation_area?.id,
-        score: res.data.score,
+        observation: res.data.result.observation,
+        observation_area: res.data?.result.observation_area?.id,
+        score: res.data.result.score,
+        is_student: res.data.result.is_student,
       });
+      setIsStudent(res.data.result.is_student);
     });
   };
 
@@ -90,7 +110,7 @@ const Observation = () => {
     axios
       .put(`${endpoints.observationName.observationGet}${id}/`, body)
       .then((res) => {
-        observationGet();
+        observationGet({ is_student: tableView === 'teacher' ? false : true });
       })
       .catch((error) => console.log(error));
   };
@@ -101,7 +121,7 @@ const Observation = () => {
       .then((result) => {
         if (result.status === 204) {
           message.success('Successfully Deleted');
-          observationGet();
+          observationGet({ is_student: tableView === 'teacher' ? false : true });
         } else {
           message.error('Something went wrong');
         }
@@ -122,11 +142,15 @@ const Observation = () => {
 
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
-    if (updateValues.observation) {
+    if (updateValues.observation && updateValues.observation_area && updateValues.score) {
       const valuess = new FormData();
       valuess.append('observation', updateValues.observation);
       valuess.append('score', updateValues.score);
       valuess.append('observation_area', updateValues.observation_area);
+      valuess.append(
+        'is_student',
+        updateValues.is_student ? updateValues.is_student : false
+      );
       if (!editId) {
         valuess.append('status', true);
       }
@@ -135,8 +159,11 @@ const Observation = () => {
         axios
           .put(`${endpoints.observationName.observationGet}${editId}/`, valuess)
           .then((result) => {
-            observationGet();
             onClose();
+            setTableView(updateValues.is_student ? 'student' : 'teacher');
+            observationGet({
+              is_student: updateValues.is_student ? true : false,
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -145,8 +172,11 @@ const Observation = () => {
         axios
           .post(`${endpoints.observationName.observationGet}`, valuess)
           .then((result) => {
-            observationGet();
             onClose();
+            setTableView(updateValues.is_student ? 'student' : 'teacher');
+            observationGet({
+              is_student: updateValues.is_student ? true : false,
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -155,6 +185,15 @@ const Observation = () => {
     } else {
       message.error('Enter All Required fields');
     }
+  };
+
+  const handleApplicableFor = (e) => {
+    setIsStudent(e.target.value);
+    formRef.current.resetFields(['observation_area']);
+  };
+
+  const handleTableView = (e) => {
+    setTableView(e.target.value);
   };
   const columns = [
     {
@@ -240,13 +279,20 @@ const Observation = () => {
     <React.Fragment>
       <Layout>
         <div className='row py-3 px-2'>
-          <div className='col-md-12' style={{ zIndex: 2 }}>
+          <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>Observation</Breadcrumb.Item>
             </Breadcrumb>
+          </div>
+
+          <div className='col-md-3 text-right th-radio'>
+            <Radio.Group onChange={handleTableView} value={tableView} buttonStyle='solid'>
+              <Radio.Button value={'teacher'}>Teacher</Radio.Button>
+              <Radio.Button value={'student'}>Student</Radio.Button>
+            </Radio.Group>
           </div>
 
           <div className='row mt-3'>
@@ -312,12 +358,32 @@ const Observation = () => {
               </Form.Item>
             </div>
             <div className='col-md-12'>
+              <Form.Item label='Applicable for' name='is_student' defaultValue={false}>
+                <Radio.Group
+                  value={isStudent}
+                  onChange={handleApplicableFor}
+                  defaultValue={false}
+                >
+                  <Radio value={false}> Teacher </Radio>
+                  <Radio value={true}> Student </Radio>
+                </Radio.Group>
+              </Form.Item>
+            </div>
+            <div className='col-md-12'>
               <Form.Item
                 name='observation_area'
                 label='Select Observation Area'
                 rules={[{ required: true, message: 'Please Select Observation Area' }]}
               >
-                <Select placeholder='Select Observation Area'>
+                <Select
+                  showSearch
+                  placeholder='Select Observation Area'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
                   {observationAreaOptions}
                 </Select>
               </Form.Item>

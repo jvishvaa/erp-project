@@ -279,11 +279,6 @@ const PhysicalActivity = () => {
     // setAssigneds([])
     setUnAssigneds([])
     if (value?.length) {
-      // value =
-      //   value.filter(({ id }) => id === 'all').length === 1
-      //     ? [...branchList].filter(({ id }) => id !== 'all')
-      //     : value;
-      // console.log(value.id, 'value');
       setSelectedBranch(value);
     }
   };
@@ -515,7 +510,6 @@ const PhysicalActivity = () => {
 
   },[window.location.pathname, moduleId])
 
-  console.log(unassingeds,'@@')
 
   function callApi(api,key) {
     axiosInstance
@@ -693,7 +687,6 @@ const fetchSubActivityListData = () => {
     })
     .then((result) =>{
       setLoading(false)
-      console.log(result?.data?.result,'sub')
       setSubActivityListData(result?.data?.result)
     })
 }

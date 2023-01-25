@@ -11,6 +11,7 @@ import {
   Drawer,
   DatePicker,
   Spin,
+  Tag,
   Checkbox,
 } from 'antd';
 import {
@@ -39,6 +40,7 @@ import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import AssessmentIcon from 'v2/Assets/dashboardIcons/diaryIcons/AssessmentIcon.svg';
 import _ from 'lodash';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 let boardFilterArr = [
   'orchids.letseduvate.com',
   'localhost:3000',
@@ -55,6 +57,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const dispatch = useDispatch();
+  // const { erp } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [branchID, setBranchID] = useState(selectedBranch?.branch?.id);
@@ -115,7 +118,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [showPeriodInfoModal, setShowPeriodInfoModal] = useState(false);
   const [currentPeriodPanel, setCurrentPeriodPanel] = useState(0);
   const [currentPanel, setCurrentPanel] = useState(null);
-
   const [addedPeriods, setAddedPeriods] = useState([]);
   const [editAddedPeriods, setEditAddedPeriods] = useState([]);
   const [editRemovedPeriods, setEditRemovedPeriods] = useState([]);
@@ -126,6 +128,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [addingUpcomingPeriod, setAddingUpcomingPeriod] = useState(false);
   const [todaysAssessment, setTodaysAssessment] = useState([]);
   const [upcomingAssessment, setUpcomingAssessment] = useState([]);
+  const [activityData, setActivityData] = useState([]);
 
   const questionModify = (questions) => {
     let arr = [];
@@ -545,6 +548,24 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject_id: e.value,
         date: moment().format('YYYY-MM-DD'),
       });
+      if (e.children.includes('Physical Activity')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: gradeID,
+          section_id: sectionID,
+          start_date: moment().format('YYYY-MM-DD'),
+          type: 'pa',
+        });
+      } else if (e.children.includes('Public Speaking')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: gradeID,
+          section_id: sectionID,
+          start_date: moment().format('YYYY-MM-DD'),
+          type: 'ps',
+          // erp: erp,
+        });
+      }
     }
   };
 
@@ -661,6 +682,21 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       });
   };
 
+  const fetchActivityData = (params = {}) => {
+    axios
+      .get(`${endpoints.newBlog.diaryActivities}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setActivityData(response?.data?.result);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
   const checkAssignedHomework = (params = {}) => {
     axios
       .get(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, { params: { ...params } })
@@ -1022,6 +1058,23 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject_id: editSubject?.subject_id,
         date: moment(editData?.created_at).format('YYYY-MM-DD'),
       });
+      if (editSubject?.subject_name.includes('Physical Activity')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: editData?.grade_id,
+          section_id: editData?.section_id,
+          start_date: moment(editData?.created_at).format('YYYY-MM-DD'),
+          type: 'pa',
+        });
+      } else if (editSubject?.subject_name.includes('Public Speaking')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: editData?.grade_id,
+          section_id: editData?.section_id,
+          start_date: moment(editData?.created_at).format('YYYY-MM-DD'),
+          type: 'ps',
+        });
+      }
     }
   }, []);
 
@@ -1124,6 +1177,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     allowClear
                     onClear={handleClearGrade}
                     showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
@@ -1143,6 +1197,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleSection(value)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     placeholder='Section'
                     allowClear
                     onClear={handleClearSection}
@@ -1165,6 +1220,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleSubject(value)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     placeholder='Subject'
                     allowClear
                     onClear={handleClearSubject}
@@ -1706,6 +1762,106 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                       </div>
                     </div>
                   )}
+                {activityData.length > 0 && subjectID && (
+                  <div
+                    className='row mx-3 th-br-6 mt-3'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    <div
+                      className='col-12 th-bg-blue-1 px-1'
+                      style={{ borderRadius: '6px 6px 0px 0px' }}
+                    >
+                      <div className='row py-1 align-items-center'>
+                        <img src={AssessmentIcon} className='mr-2 mb-1' />{' '}
+                        <span className='th-fw-500'>Activities</span>
+                      </div>
+                    </div>
+                    <div
+                      className='row py-1'
+                      style={{ maxHeight: '25vh', overflowY: 'scroll' }}
+                    >
+                      {activityData.map((item) => (
+                        <div className='col-4 px-1 mb-2'>
+                          <div className='th-bg-grey py-1 px-2 th-br-6'>
+                            {item?.activity_type?.name === 'Public Speaking' && (
+                              <div className='row th-black-2 align-items-center py-1'>
+                                <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
+                                  <span>Status </span>
+                                  <span>:&nbsp;</span>
+                                </div>
+                                <div className='col-8 pl-1 text-capitalize'>
+                                  <span
+                                    className={`${
+                                      item?.state == 'completed'
+                                        ? 'th-green'
+                                        : item?.state == 'ongoing'
+                                        ? 'th-red th-fw-600'
+                                        : 'th-primary'
+                                    } text-capitalize`}
+                                  >
+                                    {item?.state}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                            {item?.activity_type?.name === 'Physical Activity' && (
+                              <div className='row th-black-2 align-items-center py-1'>
+                                <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
+                                  <span>Status </span>
+                                  <span>:&nbsp;</span>
+                                </div>
+                                <div className='col-8 pl-1 text-capitalize'>
+                                  <span
+                                    className={`${
+                                      moment(moment(), 'hh:mm A').isBefore(
+                                        moment(item?.submission_date, 'hh:mm A')
+                                      )
+                                        ? 'th-primary'
+                                        : 'th-green'
+                                    } text-capitalize`}
+                                  >
+                                    {moment(moment(), 'hh:mm A').isBefore(
+                                      moment(item?.submission_date, 'hh:mm A')
+                                    )
+                                      ? 'Upcoming'
+                                      : 'Completed'}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                            <div className='row th-black-2 align-items-center py-1'>
+                              <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
+                                <span>Activity Type</span>
+                                <span>:&nbsp;</span>
+                              </div>
+                              <div className='col-8 pl-1 text-truncate'>
+                                <Tag color='green'>{item?.activity_type?.name}</Tag>
+                              </div>
+                            </div>
+                            <div className='row th-black-2 align-items-center py-1'>
+                              <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
+                                <span>Title</span>
+                                <span>:&nbsp;</span>
+                              </div>
+                              <div className='col-8 pl-1 text-truncate'>
+                                {item?.name ? item?.name : item?.title}
+                              </div>
+                            </div>
+                            {/* <div className='row th-black-2 align-items-center py-1'>
+                              <div className='col-4 d-flex justify-content-between px-0 th-black-1 th-fw-500'>
+                                <span>Scheduled At</span>
+                                <span>:&nbsp;</span>
+                              </div>
+                              <div className='col-8 pl-1 text-truncate th-12'>
+                                {moment(item?.test_date).format('DD/MM/YYYY HH:mm a')}
+                              </div>
+                            </div> */}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <div className='row py-2'>
                   <div className='col-3 th-black-2'>Note (Optional)</div>
                   <div className='col-12 py-2'>
@@ -1776,6 +1932,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     // disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleChapter(value)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     placeholder={
                       chapterName ? (
                         <div className='th-black-2'>{chapterName}</div>
@@ -1806,6 +1963,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     // disabled={isDiaryEdit}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleKeyConcept(value)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     placeholder={
                       keyConceptName ? (
                         <div className='th-black-2'>{keyConceptName}</div>

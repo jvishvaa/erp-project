@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import RatingScale from './RatingScale';
 import Loader from 'components/loader/loader';
 
-// import Rating from '@material-ui/lab/Rating';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import './styles.scss';
@@ -89,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 240,
     objectFit: 'cover',
-    width:'45%'
+    width: '45%'
   },
   container: {
     maxHeight: '70vh',
@@ -178,7 +177,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   dialogue: {
-    width:'750px !important',
+    width: '750px !important',
 
   }
 }));
@@ -191,21 +190,18 @@ const columns = [
     width: '75%',
     align: 'left',
     render: (text, row) => {
-      return(
+      return (
         row.criterion
       )
 
-    } 
+    }
   },
   {
     title: <span className='th-white th-fw-600'>Remarks</span>,
-    // dataIndex: 'attendance',
     width: '25%',
     align: 'center',
-    // key: 'total',
-    // id: 2,
     render: (text, row) => (
-        row?.levels?.filter((item) => item.status == true )[0].name      
+      row?.levels?.filter((item) => item.status == true)[0].name
     )
   },
 ];
@@ -237,26 +233,21 @@ const PublicSpeakingWall = () => {
   const [publish, setPublish] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
   const [readMore, setReadMore] = useState(true)
-  const [flag,setFlag] = useState(false)
-  const [currentDate,setCurrentDate] =useState('')
-  const [userData , setUserData] = useState()
-  const [loading,setLoading] = useState(false);
-  const [page,setPage] = useState(1)
-  const [totalPage,setTotalPage] = useState(0);
+  const [flag, setFlag] = useState(false)
+  const [currentDate, setCurrentDate] = useState('')
+  const [userData, setUserData] = useState()
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(0);
   const [open, setOpen] = React.useState(false);
   const [totalPublicSpeaking, setTotalPublicSpeaking] = useState([]);
-  const [videoDetails,setVideoDetails] = useState([]);
-  const [videoData,setVideoData] = useState('')
-  const [marksData,setMarksData] = useState([]);
+  const [videoDetails, setVideoDetails] = useState([]);
+  const [videoData, setVideoData] = useState('')
+  const [marksData, setMarksData] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [totalPublish, setTotalPublish] = useState([]);
 
 
-  // useEffect(() => {
-  //   setValues({
-  //     rating: DEFAULT_RATING,
-  //   });
-  // }, []);
 
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
@@ -267,34 +258,6 @@ const PublicSpeakingWall = () => {
 
 
   let array = [];
-  const getRatingView = (data) => {
-    setLoading(true)
-    axios
-      .get(
-        `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        response.data.map((obj) => {
-          let temp = {};
-          temp['id'] = obj?.id;
-          temp['name'] = obj?.level.name;
-          temp['remarks'] = obj?.remarks;
-          temp['given_rating'] = obj?.given_rating;
-          temp['level'] = obj?.level?.rating;
-          array.push(temp);
-        });
-        setRatingReview(array);
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  };
   const expandMore = () => {
     setSubmit(false);
   };
@@ -321,35 +284,12 @@ const PublicSpeakingWall = () => {
       });
   };
 
-  const ActvityLocalStorage = () => {
-    setLoading(true)
-    axios
-      .post(
-        `${endpoints.newBlog.activityWebLogin}`,
-        {},
-        {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        localStorage.setItem(
-          'ActivityManagement',
-          JSON.stringify(response?.data?.result)
-        );
-        setUserData(response?.data?.result)
-        getActivitySession();
-        setLoading(false);
-      });
-  };
   const [assinged, setAssigned] = useState([]);
 
-  useEffect(() =>{
+  useEffect(() => {
     // getAssinged()
     getTotalPublicSpeaking()
-  },[page])
+  }, [page])
 
   const getAssinged = async () => {
     setLoading(true)
@@ -365,51 +305,51 @@ const PublicSpeakingWall = () => {
       )
       .then((response) => {
         var today = new Date().toISOString();
-        const output = today?.slice(0,19);
+        const output = today?.slice(0, 19);
         setCurrentDate(output)
         setAssigned(response?.data?.result);
         setPage(response?.data?.page)
         setTotalPage(response?.data?.total)
         setLoading(false)
-        
+
       });
   };
 
-  useEffect(() => {
-    // ActvityLocalStorage();
-  }, []);
+
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalReview, setTotalReview] = useState([]);
 
 
 
   const getTotalPublicSpeaking = async () => {
-    setLoading(true)
-    axios
-      .get(
-        `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response, 'response');
-        setTotalPublicSpeaking(response?.data?.result)
-        setLoading(false);
-      });
+    if (User_id) {
+      setLoading(true)
+      axios
+        .get(
+          `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response, 'response');
+          setTotalPublicSpeaking(response?.data?.result)
+          setLoading(false);
+        });
+    }
   };
-  
+
 
 
   useEffect(() => {
-    if(userData)
-  getAssinged();
-  }, [value,userData]);
+    if (userData)
+      getAssinged();
+  }, [value, userData]);
   const [view, setView] = useState(false);
   const [previewData, setPreviewData] = useState();
-  const [imageData,setImageData] = useState('')
+  const [imageData, setImageData] = useState('')
   const handleCloseViewMore = () => {
     setView(false);
   };
@@ -429,46 +369,46 @@ const PublicSpeakingWall = () => {
   };
 
 
-  const handleClose =() => {
+  const handleClose = () => {
     setView(false);
   }
 
   const handleClickOpen = (e) => {
-    if(e?.asset?.state == "processed"){  
+    if (e?.asset?.state == "processed") {
       let data = JSON.parse(e?.grading?.grade_scheme_markings)
       setMarksData(data)
-          axios
-            .get(
-              `${endpoints.newBlog.studentPSContentApi}?asset_id=${e?.asset?.id}`,
-              {
-                headers: {
-                  'X-DTS-HOST': X_DTS_HOST,
-                },
-              }
-            )
-            .then((response) => {
-              console.log(response, 'response 1');
-              setVideoDetails(response?.data?.result)
-              setVideoData(response?.data?.result?.signed_URL)
-              setLoading(false);
-              setOpen(true);
-            });
-            return
-    }else if(e?.asset == null){
+      axios
+        .get(
+          `${endpoints.newBlog.studentPSContentApi}?asset_id=${e?.asset?.id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response, 'response 1');
+          setVideoDetails(response?.data?.result)
+          setVideoData(response?.data?.result?.signed_URL)
+          setLoading(false);
+          setOpen(true);
+        });
+      return
+    } else if (e?.asset == null) {
       setAlert('error', 'Student Not Yet Submitted !')
       return
 
-    }else {
+    } else {
       setAlert('error', 'Student Not Yet Submitted')
       return
 
     }
 
 
-   
+
   };
 
-  const handleGoBack = () =>{
+  const handleGoBack = () => {
     history.goBack()
   }
 
@@ -483,142 +423,114 @@ const PublicSpeakingWall = () => {
   return (
 
     <div>
-      {loading && <Loader/>}
-    <Layout>
-       <div className='layout-container-div ebookscroll' style={{
-        // background: 'white',
-        height: '90vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-      }}>
-      <Grid
-        container
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingLeft: '22px',
-          paddingRight: '15px',
-          paddingBottom: '15px',
-        }}
-      >
-        <Grid item xs={4} md={4} style={{display:'flex', alignItems:'center'}}>
-          {/* <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' style={{color:'black'}} />}
-            aria-label='breadcrumb'
+      {loading && <Loader />}
+      <Layout>
+        <div className='layout-container-div ebookscroll' style={{
+          // background: 'white',
+          height: '90vh',
+          overflowX: 'hidden',
+          overflowY: 'scroll',
+        }}>
+          <Grid
+            container
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              paddingLeft: '22px',
+              paddingRight: '15px',
+              paddingBottom: '15px',
+            }}
           >
-            <Typography color='textPrimary' style={{fontSize: '22px', fontWeight:'bolder'}}>My Activities</Typography>
-          </Breadcrumbs> */}
-          <div>
-          <IconButton aria-label="back" onClick={handleGoBack}>
-           <KeyboardBackspaceIcon style={{fontSize:'20px', color:'black'}}/>
-          </IconButton>
-          </div>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/blog/wall/redirect' className='th-grey th-16'>
-                My Blogs
-              </Breadcrumb.Item>
-              <Breadcrumb.Item href='' className='th-grey th-16'>
-                Public Speaking
-              </Breadcrumb.Item>
-            </Breadcrumb>
-        </Grid>
-      </Grid>
+            <Grid item xs={4} md={4} style={{ display: 'flex', alignItems: 'center' }}>
+              <div>
+                <IconButton aria-label="back" onClick={handleGoBack}>
+                  <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
+                </IconButton>
+              </div>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item href='/blog/wall/redirect' className='th-grey th-16'>
+                  My Blogs
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href='' className='th-grey th-16'>
+                  Public Speaking
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </Grid>
+          </Grid>
 
-      <Grid container>
-        <Grid item md={12} xs={12} className={classes.tabStatic}>
-          <Tabs
-            onChange={handleTab}
-            textColor='primary'
-            indicatorColor='primary'
-            // className={ classes.tabsFont}
-            value={value}
-          >
-            <Tab
-              label='Public Speaking'
-              classes={{
-                selected: classes.selected2,
-              }}
-              className={value === 0 ? classes.tabsFont : classes.tabsFont1}
-              onClick ={getTotalPublicSpeaking}
-            />
+          <Grid container>
+            <Grid item md={12} xs={12} className={classes.tabStatic}>
+              <Tabs
+                onChange={handleTab}
+                textColor='primary'
+                indicatorColor='primary'
+                // className={ classes.tabsFont}
+                value={value}
+              >
+                <Tab
+                  label='Public Speaking'
+                  classes={{
+                    selected: classes.selected2,
+                  }}
+                  className={value === 0 ? classes.tabsFont : classes.tabsFont1}
+                  onClick={getTotalPublicSpeaking}
+                />
 
-          </Tabs>
-          <Divider className={classes.dividerColor} />
-        </Grid>
-      </Grid>
-      {value == 0  && (
-        <>
-         <Paper className={`${classes.root} common-table`} id='singleStudent'>
-         <TableContainer
-           className={`table table-shadow view_users_table ${classes.container}`}
-         >
-           <Table stickyHeader aria-label='sticky table'>
-             <TableHead className={`${classes.columnHeader} table-header-row`}>
-               <TableRow>
-                 <TableCell
-                   className={classes.tableCell}
-                   style={{ whiteSpace: 'nowrap' }}
-                 >
-                   S No.
-                 </TableCell>
-                 <TableCell className={classes.tableCell}>Title</TableCell>
-                 <TableCell className={classes.tableCell}>Submitted On</TableCell>
-                 <TableCell style={{ width: '252px' }} className={classes.tableCell}>
-                   Action
-                 </TableCell>
-               </TableRow>
-             </TableHead>
-             {totalPublicSpeaking?.map((response, index) => (
-               <TableBody>
-                 <TableRow
-                   hover
-                   role='checkbox'
-                   tabIndex={-1}
-                   // key={`user_table_index${i}`}
-                 >
-                   <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                   <TableCell className={classes.tableCells}>{response?.group?.activity?.name}</TableCell>
-                   <TableCell className={classes.tableCells}>
-                     {`${moment(response?.scheduled_time).format('DD-MM-YYYY')}`}
-                   </TableCell>
-                   {/* <TableCell className={classes.tableCells}>
-                     {response?.creator?.name}
-                   </TableCell> */}
-                   <TableCell className={classes.tableCells}>
-                     <Button
-                       variant='outlined'
-                       size='small'
-                       className={classes.buttonColor2}
-                      onClick={() => handleClickOpen(response)}
-                     >
-                       View More
-                     </Button>{' '}
-                     &nbsp;&nbsp;
-                     {/* <Button
-                       variant='outlined'
-                       size='small'
-                       className={classes.buttonColor2}
-                      //  onClick={() => handlePreview(response)}
-                     >
-                       Preview
-                     </Button> */}
-                     &nbsp;&nbsp;
-                     {/* <Button
-                       variant='outlined'
-                       size='small'
-                       // style={{whiteSpace: 'nowrap'}}
-
-                       className={classes.buttonColor2}
-                       onClick={viewed}
-                     >
-                       View{' '}
-                     </Button>{' '} */}
-                   </TableCell>
-                 </TableRow>
-               </TableBody>
-             ))}
-           </Table>
-           {/* <TablePagination
+              </Tabs>
+              <Divider className={classes.dividerColor} />
+            </Grid>
+          </Grid>
+          {value == 0 && (
+            <>
+              <Paper className={`${classes.root} common-table`} id='singleStudent'>
+                <TableContainer
+                  className={`table table-shadow view_users_table ${classes.container}`}
+                >
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className={`${classes.columnHeader} table-header-row`}>
+                      <TableRow>
+                        <TableCell
+                          className={classes.tableCell}
+                          style={{ whiteSpace: 'nowrap' }}
+                        >
+                          S No.
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>Title</TableCell>
+                        <TableCell className={classes.tableCell}>Submitted On</TableCell>
+                        <TableCell style={{ width: '252px' }} className={classes.tableCell}>
+                          Action
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    {totalPublicSpeaking?.map((response, index) => (
+                      <TableBody>
+                        <TableRow
+                          hover
+                          role='checkbox'
+                          tabIndex={-1}
+                        >
+                          <TableCell className={classes.tableCells}>{index + 1}</TableCell>
+                          <TableCell className={classes.tableCells}>{response?.group?.activity?.name}</TableCell>
+                          <TableCell className={classes.tableCells}>
+                            {`${moment(response?.scheduled_time).format('DD-MM-YYYY')}`}
+                          </TableCell>
+                          <TableCell className={classes.tableCells}>
+                            <Button
+                              variant='outlined'
+                              size='small'
+                              className={classes.buttonColor2}
+                              onClick={() => handleClickOpen(response)}
+                            >
+                              View More
+                            </Button>{' '}
+                            &nbsp;&nbsp;
+                            &nbsp;&nbsp;
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    ))}
+                  </Table>
+                  {/* <TablePagination
              component='div'
              count={totalCountAssigned}
              rowsPerPage={limitAssigned}
@@ -633,396 +545,385 @@ const PublicSpeakingWall = () => {
                toolbar: classes.tablePaginationToolbar,
              }}
            /> */}
-         </TableContainer>
-        </Paper>
-        {videoData ? (
-          <Drawer
-          anchor='right'
-          maxWidth={maxWidth}
-          open={open}
-          onClose={handleCloseDialog}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <div style={{ width: '100%', marginTop: '20px' }}>
-            <div style={{display:'flex', justifyContent:'space-between',}}>
-            <div style={{ fontSize: '24px', marginLeft:'15px' }}>
-              <strong>Preview</strong>
-            </div>
-            <div style={{ fontSize: '24px', cursor:'pointer' }}>
-              <strong onClick={handleCloseDialog}>
-                <CancelRoundedIcon  style={{ fontSize: 30 , marginRight:'10px'}}/>
-              </strong>
-            </div>
-  
-            </div>
-            <Divider />
-  
-            <Grid container direction='row' justifyContent='center'>
-              <Grid item>
-                <div
-                  style={{
-                    border: '1px solid #813032',
-                    width: '583px',
-                    background: 'white',
-                    height: 'auto',
-                    borderRadius:'10px',
-                    margin:'5px'
-                  }}
+                </TableContainer>
+              </Paper>
+              {videoData ? (
+                <Drawer
+                  anchor='right'
+                  maxWidth={maxWidth}
+                  open={open}
+                  onClose={handleCloseDialog}
+                  aria-labelledby='alert-dialog-title'
+                  aria-describedby='alert-dialog-description'
                 >
-                  <div
-                    style={{
-                      background: 'white',
-                      width: '554px',
-                      marginLeft: '13px',
-                      marginTop: '5px',
-                    }}
-                  >
-                    <div>
-                      <img
-                        src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                        width='130'
-                        alt='image'
-                      />
-                      
+                  <div style={{ width: '100%', marginTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', }}>
+                      <div style={{ fontSize: '24px', marginLeft: '15px' }}>
+                        <strong>Preview</strong>
+                      </div>
+                      <div style={{ fontSize: '24px', cursor: 'pointer' }}>
+                        <strong onClick={handleCloseDialog}>
+                          <CancelRoundedIcon style={{ fontSize: 30, marginRight: '10px' }} />
+                        </strong>
+                      </div>
+
                     </div>
+                    <Divider />
+
+                    <Grid container direction='row' justifyContent='center'>
+                      <Grid item>
+                        <div
+                          style={{
+                            border: '1px solid #813032',
+                            width: '583px',
+                            background: 'white',
+                            height: 'auto',
+                            borderRadius: '10px',
+                            margin: '5px'
+                          }}
+                        >
+                          <div
+                            style={{
+                              background: 'white',
+                              width: '554px',
+                              marginLeft: '13px',
+                              marginTop: '5px',
+                            }}
+                          >
+                            <div>
+                              <img
+                                src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                                width='130'
+                                alt='image'
+                              />
+
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              background: 'white',
+                              width: '502px',
+                              marginLeft: '34px',
+                              marginTop: '16px',
+                              height: 'auto',
+                            }}
+                          >
+                            <div
+                              style={{ paddingTop: '7px', fontWeight: 'bold', display: 'flex', justifyContent: 'center' }}
+                            >
+                            </div>
+                            <div
+                              style={{
+                                paddingLeft: '30px',
+                                paddingTop: '10px',
+                                paddingBottom: '5px',
+                                fontWeight: 'bold',
+                              }}
+                            >
+                              <span style={{ fontWeight: 'normal' }}>
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              background: 'white',
+                              width: '502px',
+                              marginLeft: '34px',
+                              height: 'auto',
+                              marginTop: '12px',
+                              marginBottom: '29px',
+                            }}
+                          >
+                            <div style={{ padding: '5px' }}>
+                              <div
+                                style={{
+                                  backgroundSize: "contain",
+                                  position: "relative",
+                                  backgroundRepeat: "no-repeat",
+                                  backgroundPosition: "center",
+                                  backgroundColor: "rgba(244 245 247 / 25%)",
+                                  height: "683px",
+                                }}
+
+                              >
+                                <video width="500" height="600" controls >
+                                  <source src={`${videoData}`} type="video/mp4" />
+                                  Your browser does not support HTML video.
+                                </video>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Grid>
+                      <Grid item>
+                        <div style={{ margin: '10px', background: '#E3F2FD', borderRadius: '10px', padding: '5px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <span style={{ fontSize: '20px', marginBottom: '15px' }}> Student Marks </span>
+                          </div>
+                          <div>
+                            <div className='col-12' style={{ padding: '10px' }}>
+                              <TableAnt
+                                className='th-table'
+                                columns={columns}
+                                // rowKey={(record) => record?.erp_id}
+                                loading={loading}
+                                dataSource={marksData}
+                                pagination={false}
+                                rowClassName={(record, index) =>
+                                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                                }
+                                scroll={{ x: 'max-content' }}
+                              />
+                            </div>
+                          </div>
+
+                        </div>
+                      </Grid>
+                    </Grid>
                   </div>
-  
+                </Drawer>
+
+              ) : ''}
+            </>
+          )}
+          <Drawer
+            anchor='right'
+            maxWidth={maxWidth}
+            zIndex={1300}
+            open={view}
+            onClose={handleCloseViewMore}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <div style={{ width: '100%', marginTop: '72px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', }}>
+                <div style={{ fontSize: '24px' }}>
+                  <strong>Preview</strong>
+                </div>
+                <div style={{ fontSize: '24px', cursor: 'pointer' }}>
+                  <strong onClick={handleClose}>X</strong>
+                </div>
+
+              </div>
+              <Divider />
+
+              <Grid container direction='row' justifyContent='center'>
+                <Grid item>
                   <div
                     style={{
+                      border: '1px solid #813032',
+                      width: '583px',
                       background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
-                      marginTop: '16px',
                       height: 'auto',
                     }}
                   >
                     <div
-                      style={{paddingTop: '7px', fontWeight: 'bold', display:'flex', justifyContent:'center'}}
+                      style={{
+                        background: 'white',
+                        width: '554px',
+                        marginLeft: '13px',
+                        marginTop: '5px',
+                      }}
                     >
-                      {/* <span style={{ fontWeight: 'normal', fontSize:'20px' }}>
-                       
-                      Uploaded Video
-                      </span> */}
+                      <div>
+                        <img
+                          src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                          width='130'
+                          alt='image'
+                        />
+
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        background: 'white',
+                        width: '502px',
+                        marginLeft: '34px',
+                        marginTop: '16px',
+                        height: 'auto',
+                      }}
+                    >
+                      <div
+                        style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
+                      >
+                        <span style={{ fontWeight: 'normal' }}>
+                          Title: {previewData?.activity_detail?.title}
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          paddingLeft: '30px',
+                          paddingTop: '10px',
+                          paddingBottom: '5px',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        <span style={{ fontWeight: 'normal' }}>
+                          Description: {previewData?.activity_detail?.description}
+                        </span>
+                      </div>
                     </div>
                     <div
                       style={{
-                        paddingLeft: '30px',
-                        paddingTop: '10px',
-                        paddingBottom: '5px',
-                        fontWeight: 'bold',
+                        background: 'white',
+                        width: '502px',
+                        marginLeft: '34px',
+                        height: 'auto',
+                        marginTop: '12px',
+                        marginBottom: '29px',
                       }}
                     >
-                      <span style={{ fontWeight: 'normal' }}>
-                        {/* Description: {previewData?.activity_detail?.description} */}
-                      </span>
+                      <div style={{ padding: '5px' }}>
+                        <div
+                          style={{
+                            background: `url(${previewData?.template?.template_path})`,
+                            backgroundSize: "contain",
+                            position: "relative",
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundColor: "rgba(244 245 247 / 25%)",
+                            height: "683px",
+                          }}
+
+                        >
+                          <div className="certificate-text-center certificate-input-box" style={{ top: `calc(279px + ${imageData[0]?.x_cordinate.concat('px')})`, left: `calc(232px + ${imageData[0]?.y_cordinate.concat('px')})` }}>
+                            <textarea className="certificate-box" style={{
+                              width: `${imageData[0]?.width}px`,
+                              height: `${imageData[0]?.height}px`, top: `${imageData[0]?.x_cordinate}px`, left: `${imageData[0]?.y_cordinate}px`
+                            }} value={previewData?.submitted_work?.html_text} placeholder="type text here..." />
+
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  {/* {console.log(previewData,"DP")} */}
-                  <div
-                    style={{
-                      background: 'white',
-                      width: '502px',
-                      marginLeft: '34px',
-                      height: 'auto',
-                      marginTop: '12px',
-                      marginBottom: '29px',
-                    }}
-                  >
-                    <div style={{padding: '5px'}}>
+                </Grid>
+                <Grid item>
+                  {submit == false ? (
+                    <div style={{ paddingLeft: '10px' }}>Review</div>
+                  ) : (
+                    <div style={{ paddingLeft: '8px' }}>Edit Review</div>
+                  )}
+                  {submit == false && (
                     <div
-          style={{
-            // background: `url(${previewData?.template?.template_path})`,
-            backgroundSize: "contain",
-            position: "relative",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            backgroundColor: "rgba(244 245 247 / 25%)",
-      height: "683px",
-          }}
-  
-        >
-                         <video width="500" height="600" controls >
-                      <source src={`${videoData}`} type="video/mp4"/>
-                      Your browser does not support HTML video.
-                      {/* <track
-                      src={videoDetails?.signed_URL}
-                      kind="captions"
-                      srcLang="en"
-                      label="english_captions"
-                    /> */}
-                  </video>
-             
-        </div>
-                    </div>
-                  </div>
-                </div>
-              </Grid>
-              <Grid item>
-                <div style={{margin:'10px', background:'#E3F2FD', borderRadius:'10px', padding:'5px'}}>
-                  <div style={{display:'flex', justifyContent:'center'}}>
-                  <span style={{fontSize:'20px',marginBottom: '15px'}}> Student Marks </span>
-                  </div>
-                  <div>
-                  <div className='col-12' style={{padding:'10px'}}>
-                      <TableAnt
-                        className='th-table'
-                        columns={columns}
-                        // rowKey={(record) => record?.erp_id}
-                        loading={loading}
-                        dataSource={marksData}
-                        pagination={false}
-                        rowClassName={(record, index) =>
-                          index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                        }
-                        scroll={{ x: 'max-content' }}
-                      />
-                    </div>
-                  </div>
+                      style={{
+                        border: '1px solid #707070',
+                        width: '295px',
+                        height: 'auto',
+                        marginLeft: '11px',
+                        marginRight: '10px',
+                      }}
+                    >
+                      {ratingReview?.map((obj, index) => {
+                        return (
+                          <div
+                            key={index}
+                            style={{
+                              paddingLeft: '15px',
+                              paddingRight: '15px',
+                              paddingTop: '5px',
+                            }}
+                          >
+                            <div
+                              key={index}
+                              style={{ display: 'flex', justifyContent: 'space-between' }}
+                            >
+                              {' '}
+                              {obj?.name}
+                              <StyledRating
+                                name={`rating${index}`}
+                                size='small'
+                                readOnly
+                                // rating={obj?.given_rating}
+                                defaultValue={obj?.given_rating}
+                                precision={0.1}
+                                max={parseInt(obj?.level)}
+                                onChange={(event, newValue) =>
+                                  handleInputCreativityOne(event, newValue, index)
+                                }
+                              />
+                            </div>
+                            {/* {obj} */}
+                            <div>
+                              <TextField
+                                id='outlined-basic'
+                                size='small'
+                                disabled
+                                variant='outlined'
+                                value={obj?.remarks}
+                                style={{ width: '264px' }}
+                                onChange={(event) => handleInputCreativity(event, index)}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
 
-                </div>
-              </Grid>
-            </Grid>
-          </div>
-        </Drawer>
-
-        ): ''}
-        </>
-      )}
-      <Drawer
-        anchor='right'
-        maxWidth={maxWidth}
-        open={view}
-        onClose={handleCloseViewMore}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <div style={{ width: '100%', marginTop: '72px' }}>
-          <div style={{display:'flex', justifyContent:'space-between',}}>
-          <div style={{ fontSize: '24px' }}>
-            <strong>Preview</strong>
-          </div>
-          <div style={{ fontSize: '24px', cursor:'pointer' }}>
-            <strong onClick={handleClose}>X</strong>
-          </div>
-
-          </div>
-          <Divider />
-
-          <Grid container direction='row' justifyContent='center'>
-            <Grid item>
-              <div
-                style={{
-                  border: '1px solid #813032',
-                  width: '583px',
-                  background: 'white',
-                  height: 'auto',
-                }}
-              >
-                <div
-                  style={{
-                    background: 'white',
-                    width: '554px',
-                    marginLeft: '13px',
-                    marginTop: '5px',
-                  }}
-                >
-                  <div>
-                    <img
-                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                      width='130'
-                      alt='image'
-                    />
-                    
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    background: 'white',
-                    width: '502px',
-                    marginLeft: '34px',
-                    marginTop: '16px',
-                    height: 'auto',
-                  }}
-                >
-                  <div
-                    style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
-                  >
-                    <span style={{ fontWeight: 'normal' }}>
-                      Title: {previewData?.activity_detail?.title}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      paddingLeft: '30px',
-                      paddingTop: '10px',
-                      paddingBottom: '5px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    <span style={{ fontWeight: 'normal' }}>
-                      Description: {previewData?.activity_detail?.description}
-                    </span>
-                  </div>
-                </div>
-                {console.log(previewData,"DP")}
-                <div
-                  style={{
-                    background: 'white',
-                    width: '502px',
-                    marginLeft: '34px',
-                    height: 'auto',
-                    marginTop: '12px',
-                    marginBottom: '29px',
-                  }}
-                >
-                  <div style={{padding: '5px'}}>
-                  <div
-        style={{
-          background: `url(${previewData?.template?.template_path})`,
-          backgroundSize: "contain",
-          position: "relative",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundColor: "rgba(244 245 247 / 25%)",
-    height: "683px",
-        }}
-
-      >
-        <div className="certificate-text-center certificate-input-box" style={{top:`calc(279px + ${imageData[0]?.x_cordinate.concat('px')})`, left:`calc(232px + ${imageData[0]?.y_cordinate.concat('px')})`}}>
-          <textarea className="certificate-box" style={{width:`${imageData[0]?.width}px`,
-    height:`${imageData[0]?.height}px`,top:`${imageData[0]?.x_cordinate}px`, left: `${imageData[0]?.y_cordinate}px`}} value={previewData?.submitted_work?.html_text} placeholder="type text here..." />
-         
-        </div>
-      </div>
-                  </div>
-                </div>
-              </div>
-            </Grid>
-            <Grid item>
-              {submit == false ? (
-                <div style={{ paddingLeft: '10px' }}>Review</div>
-              ) : (
-                <div style={{ paddingLeft: '8px' }}>Edit Review</div>
-              )}
-              {submit == false && (
-                <div
-                  style={{
-                    border: '1px solid #707070',
-                    width: '295px',
-                    height: 'auto',
-                    marginLeft: '11px',
-                    marginRight: '10px',
-                  }}
-                >
-                  {ratingReview?.map((obj, index) => {
-                    return (
                       <div
-                        key={index}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          marginRight: '10px',
+                          marginLeft: '6px',
+                          marginBottom: '15px',
+                          marginTop: '32px',
+                        }}
+                      ></div>
+                    </div>
+                  )}
+
+                  {submit == true && (
+                    <div
+                      style={{
+                        border: '1px solid #707070',
+                        width: '318px',
+                        height: 'auto',
+                        marginLeft: '8px',
+                        marginRight: '4px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                        <ExpandMoreIcon onClick={expandMore} />
+                      </div>
+                      <div
                         style={{
                           paddingLeft: '15px',
                           paddingRight: '15px',
                           paddingTop: '5px',
                         }}
                       >
-                        <div
-                          key={index}
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
-                        >
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           {' '}
-                          {obj?.name}
-                          <StyledRating
-                            name={`rating${index}`}
-                            size='small'
-                            readOnly
-                            // rating={obj?.given_rating}
-                            defaultValue={obj?.given_rating}
-                            precision={0.1}
-                            max={parseInt(obj?.level)}
-                            onChange={(event, newValue) =>
-                              handleInputCreativityOne(event, newValue, index)
-                            }
+                          Overall
+                          <RatingScale
+                            name='simple-controlled'
+                            defaultValue={DEFAULT_RATING}
+                            onChange={(event, value) => {
+                              setValues((prev) => ({ ...prev, rating: value }));
+                            }}
                           />
                         </div>
-                        {/* {obj} */}
-                        <div>
-                          <TextField
-                            id='outlined-basic'
-                            size='small'
-                            disabled
-                            variant='outlined'
-                            value={obj?.remarks}
-                            style={{ width: '264px' }}
-                            onChange={(event) => handleInputCreativity(event, index)}
-                          />
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            paddingBottom: '9px',
+                          }}
+                        >
+                          Review Submitted
                         </div>
                       </div>
-                    );
-                  })}
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginRight: '10px',
-                      marginLeft: '6px',
-                      marginBottom: '15px',
-                      marginTop: '32px',
-                    }}
-                  ></div>
-                </div>
-              )}
-
-              {submit == true && (
-                <div
-                  style={{
-                    border: '1px solid #707070',
-                    width: '318px',
-                    height: 'auto',
-                    marginLeft: '8px',
-                    marginRight: '4px',
-                  }}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                    <ExpandMoreIcon onClick={expandMore} />
-                  </div>
-                  <div
-                    style={{
-                      paddingLeft: '15px',
-                      paddingRight: '15px',
-                      paddingTop: '5px',
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      {' '}
-                      Overall
-                      <RatingScale
-                        name='simple-controlled'
-                        defaultValue={DEFAULT_RATING}
-                        onChange={(event, value) => {
-                          setValues((prev) => ({ ...prev, rating: value }));
-                        }}
-                      />
                     </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        paddingBottom: '9px',
-                      }}
-                    >
-                      Review Submitted
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Grid>
-          </Grid>
+                  )}
+                </Grid>
+              </Grid>
+            </div>
+          </Drawer>
         </div>
-      </Drawer>
-      </div>
-    </Layout>
+      </Layout>
 
     </div>
   );
