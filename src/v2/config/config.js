@@ -85,6 +85,8 @@ const stage = {
     xAPIKey: 'vikash@12345#1231',
     baseEvent: 'http://events.letseduvate.com/',
     newBlogURL: 'https://activities.letseduvate.com',
+    msReportsUrl: 'https://reports.qa.letseduvate.com',
+    msReportsUrlNew: 'https://reports.qa.letseduvate.com',
   },
 };
 

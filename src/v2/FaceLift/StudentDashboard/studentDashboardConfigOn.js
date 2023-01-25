@@ -16,7 +16,7 @@ import { UsergroupAddOutlined } from '@ant-design/icons';
 import FeeReminderBanner from '../FeeReminderBanner/FeeReminderBanner';
 import { useSelector } from 'react-redux';
 import ENVCONFIG from 'config/config';
-import StudentAttendance from './components/StudentAttendance';
+import StudentAttendanceNew from './components/StudentAttendanceNew';
 
 const StudentDashboardConfigOn = () => {
   const [showDoodle, setShowDoodle] = useState(false);
@@ -138,7 +138,7 @@ const StudentDashboardConfigOn = () => {
               {/* <PendingHomework /> */}
               <HomeworkReport />
               <div className='mt-3'>
-                <StudentAttendance />
+                <StudentAttendanceNew />
               </div>
             </div>
           </div>
@@ -146,7 +146,7 @@ const StudentDashboardConfigOn = () => {
         <div className='col-md-4 th-custom-col-padding'>
           <DiaryStats />
           <CalendarCard />
-          <Announcement scrollHeight={'540px'} />
+          <Announcement scrollHeight={'545px'} />
         </div>
       </div>
     </div>
