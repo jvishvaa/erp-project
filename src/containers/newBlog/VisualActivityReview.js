@@ -387,7 +387,7 @@ const VisualActivityReview = () => {
               </div>
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                  Visual Activities
+                  Visual Art
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                   Review

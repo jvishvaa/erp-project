@@ -1002,7 +1002,7 @@ const BlogWall = () => {
                             </CardActionArea>
                             <CardActionArea style={{ padding: '5px' }}>
                               <div className='col-12' style={{ display: 'flex', alignItems: 'center', padding: 0, margin: '0.5rem 0rem' }} >
-                                <span>{item?.branch?.name}</span>
+                                <span style={{fontSize:'12px'}}>{item?.branch?.name}</span>
                               </div>
                               <Badge.Ribbon text={item?.view_level} color="orange">
                               {item?.content?.file_type === "video/mp4" ? (
@@ -1037,7 +1037,7 @@ const BlogWall = () => {
                                   </Avatar>
                                 </div>
                                 <div style={{ padding: '0 0.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                  <div style={{ fontWeight: 600, fontSize: '16px' }}>
+                                  <div style={{ fontWeight: 600, fontSize: '14px' }}>
                                     {item?.name}
                                   </div>
                                 </div>
@@ -1062,14 +1062,14 @@ const BlogWall = () => {
                           >
                             <CardActionArea style={{ padding: '8px' }}>
                               <div className='col-12' style={{ display: 'flex', alignItems: 'center', padding: 0, margin: '0.5rem 0rem' }}>
-                                <div className='col-2' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <div className='col-2' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0.5rem' }}>
                                   <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
 
                                   </Avatar>
                                 </div>
                                 <div className='col-10' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 0 }}>
                                   <span style={{ fontSize: '10px', color: 'blue', fontWeight: 'bold' }}>{item?.grade?.name}</span>
-                                  <span style={{ fontSize: '16px', color: 'grey', fontWeight: 'bold' }}>{item?.name}</span>
+                                  <span style={{ fontSize: '13px', color: 'grey', fontWeight: 'bold' }}>{item?.name}</span>
                                 </div>
                               </div>
                               <Badge.Ribbon text={item?.publish_level} color="orange">
