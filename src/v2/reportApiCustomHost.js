@@ -3,6 +3,8 @@ if (
   window.location.href.includes('ui-revamp1')
 ) {
   var X_DTS_HOST = 'qa.olvorchidnaigaon.letseduvate.com';
+} else if (window.location.href.includes('test')) {
+  var X_DTS_HOST = 'orchids.letseduvate.com';
 } else {
   var X_DTS_HOST = window.location.host;
 }
