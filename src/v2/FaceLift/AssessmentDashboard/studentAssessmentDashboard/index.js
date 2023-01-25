@@ -29,8 +29,12 @@ const StudentAssessmentDashboard = () => {
   const [testLoader, setTestLoader] = useState(false);
   const [testDetailLoader, setTestDetailLoader] = useState(false);
   const [loading, setLoading] = useState(null);
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(
+    moment().subtract(30, 'days').startOf('day').format('YYYY-MM-DD')
+  );
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+
+  const [overallSelected, setOverallSelected] = useState(true);
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -55,7 +59,12 @@ const StudentAssessmentDashboard = () => {
           if (response?.data?.dashboard_enabled) {
             fetchMonthWiseAssessment({ acad_session: selectedBranch.id });
             fetchSubjectWiseAssessment({ acad_session: selectedBranch.id });
-            fetchTestWiseAssessment({ acad_session: selectedBranch.id, page_size: 50 });
+            fetchTestWiseAssessment({
+              acad_session: selectedBranch.id,
+              page_size: 500,
+              start_date: startDate,
+              end_date: endDate,
+            });
           }
           setLoading(false);
         }
@@ -136,6 +145,17 @@ const StudentAssessmentDashboard = () => {
 
   const handleSubjectSelection = (selectedSubject) => {
     setSelectedSubject(selectedSubject?.test__subjects__id);
+    setOverallSelected(selectedSubject === 'overall' ? true : false);
+
+    fetchTestWiseAssessment({
+      acad_session: selectedBranch.id,
+      page_size: 500,
+
+      start_date: startDate,
+      end_date: endDate,
+      subject_id:
+        selectedSubject === 'overall' ? null : selectedSubject?.test__subjects__id,
+    });
   };
 
   useEffect(() => {
@@ -179,9 +199,10 @@ const StudentAssessmentDashboard = () => {
       if (value[0] && value[1]) {
         fetchTestWiseAssessment({
           acad_session: selectedBranch.id,
-          page_size: 50,
+          page_size: 500,
           start_date: value[0].format('YYYY-MM-DD'),
           end_date: value[1].format('YYYY-MM-DD'),
+          subject_id: selectedSubject === 'overall' ? null : selectedSubject,
         });
       }
     }
@@ -268,15 +289,23 @@ const StudentAssessmentDashboard = () => {
   const testColumns = [
     {
       title: <span className='th-white th-fw-700'>Test Name</span>,
-      width: '40%',
+      width: '30%',
       align: 'left',
       render: (data) => (
-        <span className='th-black-1 th-16 text-capitalize'>{data?.test_name}</span>
+        <span className='th-black-1 th-14 text-capitalize'>{data?.test_name}</span>
       ),
     },
+
+    {
+      title: <span className='th-white th-fw-700'>Test Type</span>,
+      width: '15%',
+      align: 'center',
+      render: (data) => <span className='th-black-1 th-16'>{data?.test_type}</span>,
+    },
+
     {
       title: <span className='th-white th-fw-700'>Total Marks</span>,
-      width: '20%',
+      width: '15%',
       align: 'center',
       render: (data) => (
         <span className='th-black-1 th-16'>{data?.marks_data?.total_marks}</span>
@@ -377,10 +406,11 @@ const StudentAssessmentDashboard = () => {
                     <div
                       className='py-2 px-2 th-br-6 th-pointer'
                       style={{
-                        outline: '2px solid #1b4ccb',
+                        outline: overallSelected ? '2px solid #1b4ccb' : 'none',
                         backgroundColor: '#e9e9e9',
                         minHeight: '210px',
                       }}
+                      onClick={() => handleSubjectSelection('overall')}
                     >
                       <div className='text-center'>
                         <div className='pb-4 th-20 th-fw-500 th-black-1'>
@@ -435,14 +465,12 @@ const StudentAssessmentDashboard = () => {
                   <RangePicker
                     allowClear={false}
                     bordered={false}
-                    // placement='bottomRight'
                     showToday={false}
-                    // suffixIcon={<DownOutlined />}
-                    defaultValue={[moment(), moment()]}
+                    defaultValue={[moment(startDate), moment(endDate)]}
                     onChange={(value) => handleDateChange(value)}
                     className='th-br-4'
                     separator={'to'}
-                    format={'DD/MM/YYYY'}
+                    // format={'DD/MM/YYYY'}
                   />
                 </div>
                 <div className='col-md-12'>
@@ -454,7 +482,7 @@ const StudentAssessmentDashboard = () => {
                     columns={testColumns}
                     dataSource={testWiseAssessment}
                     pagination={false}
-                    scroll={{ x: 'max-content', y: 200 }}
+                    scroll={{ y: 300 }}
                     loading={testLoader}
                   />
                 </div>
