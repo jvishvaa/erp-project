@@ -169,7 +169,10 @@ const VisualPendingReview = (props) => {
                 setLoading(false)
                 erpAPI()
                 setAlert('success', ' Review Submitted Successfully');
-            });
+            })
+            .catch((error) => {
+                setLoading(false)
+            })
     };
 
     const [dataId, setDataId] = useState();
@@ -232,7 +235,10 @@ const VisualPendingReview = (props) => {
                 props.setFlag(false);
                 setAlert('success', response?.data?.message)
                 setLoading(false);
-            });
+            })
+            .catch((error) =>{
+                setLoading(false)
+            })
 
     }
 
@@ -315,6 +321,7 @@ const VisualPendingReview = (props) => {
             })
             .then((response) => {
                 showReview(response?.data?.result)
+                setLoading(false)
             })
             .catch((error) => {
                 setLoading(false)

@@ -96,6 +96,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import image1 from "../../assets/images/gp1.png";
 import image2 from "../../assets/images/gp2.png";
 import visualImage from "../../assets/images/visual art.jpg";
+import physicalImage from "../../assets/images/physical activity.jpg"
 
 const drawerWidth = 350;
 const { TabPane } = Tabs;
@@ -394,7 +395,7 @@ const CentralBlogRedirection = () => {
       case 'Public Speaking':
         return image1;
       case 'Physical Activity':
-        return image1;
+        return physicalImage;
       case 'actiivtytype':
         return image1;
       case 'Visual Art':
