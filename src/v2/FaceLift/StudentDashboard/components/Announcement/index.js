@@ -48,7 +48,7 @@ const Announcements = (props) => {
   }, [selectedAcademicYear]);
 
   return (
-    <div className='th-bg-white th-br-5 py-3 mt-3 px-2 shadow-sm'>
+    <div className='th-bg-white th-br-5 py-3 mt-3 px-2 shadow-sm mb-3'>
       <div className='col-md-12 mt-2 pb-2 th-black-1 th-16 th-fw-500 '>
         <span className=''>Announcements </span>
       </div>

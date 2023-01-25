@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import Announcement from './components/Announcement';
-import CalendarCard from '../myComponents/CalendarCard';
+import CalendarCard from './components/Calendar';
 import PendingHomework from './components/PendingHomework';
 import Assessment from './components/Assessment';
 import TodaysClass from './components/TodaysClass';
