@@ -194,6 +194,39 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 </span>
               </>
             )}
+            {item?.activity_type?.name == 'Physical Activity' && isStudentDiary && (
+              <>
+                Status :&nbsp;
+                <span
+                  className={`${
+                    item?.asset_state ? 'th-green' : 'th-red th-fw-600'
+                  } text-capitalize`}
+                >
+                  {' '}
+                  {item?.asset_state ? 'Completed' : 'Ongoing'}
+                </span>
+              </>
+            )}
+            {item?.activity_type?.name == 'Physical Activity' && !isStudentDiary && (
+              <>
+                Status :&nbsp;
+                <span
+                  className={`${
+                    moment(moment(), 'hh:mm A').isBefore(
+                      moment(item?.submission_date, 'hh:mm A')
+                    )
+                      ? 'th-primary'
+                      : 'th-green'
+                  } text-capitalize`}
+                >
+                  {moment(moment(), 'hh:mm A').isBefore(
+                    moment(item?.submission_date, 'hh:mm A')
+                  )
+                    ? 'Upcoming'
+                    : 'Completed'}
+                </span>
+              </>
+            )}
           </div>
           <div className='col-6 text-right th-12 pr-0'>
             <Tag color='green'>{item?.activity_type?.name}</Tag>
@@ -394,7 +427,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
   const fetchActivityData = (params = {}) => {
     axios
       .get(`${endpoints.newBlog.diaryActivities}`, {
-        params: { ...params },
+        params: { ...params, ...(isStudentDiary ? { erp: erp } : {}) },
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -483,7 +516,6 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           section_id: diary?.section_id,
           start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
           type: 'pa',
-          erp: erp,
         });
       } else if (subject.subject_name.includes('Public Speaking')) {
         fetchActivityData({
@@ -492,7 +524,6 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           section_id: diary?.section_id,
           start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
           type: 'ps',
-          erp: erp,
         });
       }
     }
