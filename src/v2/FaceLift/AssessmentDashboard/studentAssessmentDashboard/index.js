@@ -59,7 +59,12 @@ const StudentAssessmentDashboard = () => {
           if (response?.data?.dashboard_enabled) {
             fetchMonthWiseAssessment({ acad_session: selectedBranch.id });
             fetchSubjectWiseAssessment({ acad_session: selectedBranch.id });
-            fetchTestWiseAssessment({ acad_session: selectedBranch.id, page_size: 500 });
+            fetchTestWiseAssessment({
+              acad_session: selectedBranch.id,
+              page_size: 500,
+              start_date: startDate,
+              end_date: endDate,
+            });
           }
           setLoading(false);
         }
