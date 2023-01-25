@@ -196,6 +196,9 @@ export default function TeacherAttendance(props) {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const user_level = userData?.user_level;
+  const selectedBranchStudent = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
   const [notificationType , setNotificationType] = useState('')
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -258,9 +261,9 @@ export default function TeacherAttendance(props) {
               setModuleId(item.child_id);
 
               if (user_level == 11 && item.child_id) {
-                let selectedId = userData?.role_details?.branch[0]?.id;
-                setSelectedBranch(userData?.role_details?.branch[0]);
-                setSelectedBranchIds(selectedId);
+                let selectedId = selectedBranchStudent?.branch?.id;
+                setSelectedBranch(selectedBranchStudent);
+                setSelectedBranchIds(selectedBranchStudent?.branch?.id);
 
                 callApi(
                   `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId}&module_id=${item.child_id}`,
