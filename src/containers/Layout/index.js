@@ -1110,7 +1110,7 @@ const Layout = ({ children, history }) => {
         history.push('/blog/createactivitytype');
         break;
       }
-      case 'Blog Wall': {
+      case 'School Wall': {
         history.push('/blog/wall');
         break;
       }
