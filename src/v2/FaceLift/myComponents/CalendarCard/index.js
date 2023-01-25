@@ -151,8 +151,9 @@ const CalendarCard = () => {
       }
     });
   }
-
-  console.log(monthHolidays , 'month');
+  let holidayCount = monthHolidays.filter((item) => item?.prog == true)
+  let eventCount = monthHolidays.filter((item) => item?.prog == undefined)
+  console.log(monthHolidays.filter((item) => item?.prog == undefined) , 'month');
   return (
     <div className='th-bg-white th-br-5 mt-3' >
       <div
@@ -241,13 +242,13 @@ const CalendarCard = () => {
           <div className='col-4 row'>
             <div style={{ width: '2vh', height: '2vh', background: '#89DDF1' ,  }} className='mt-1' ></div>
             <div className='th-13 mx-1' style={{ color: '#89DDF1' , paddingTop: '0px'}} >
-              {monthHolidays.length == 0 ? 'No' : monthHolidays.length} Holidays
+              {holidayCount.length == 0 ? 'No' : holidayCount.length} Holidays
             </div>
           </div>
           <div className='col-4 row'>
             <div style={{ width: '2vh', height: '2vh', background: '#E089F1' }} className='mt-1'></div>
             <div className='th-13 mx-1' style={{ color: '#E089F1' , paddingTop: '0px'}}>
-              {eventssData.length == 0 ? 'No' : eventssData.length} Events
+              {eventCount.length == 0 ? 'No' : eventCount.length} Events
             </div>
           </div>
         </div>
