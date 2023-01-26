@@ -118,7 +118,7 @@ deploy_stage:
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=8096
-      - export REACT_APP_UI_ENV=PROD
+      - export REACT_APP_UI_ENV=STAGE
       - sudo service uwsgi restart
       - sudo -E bash -c "set \"CI=false\" &&  npm run build"
       # - sudo service uwsgi start
