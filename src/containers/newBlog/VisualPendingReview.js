@@ -236,7 +236,7 @@ const VisualPendingReview = (props) => {
                 setAlert('success', response?.data?.message)
                 setLoading(false);
             })
-            .catch((error) =>{
+            .catch((error) => {
                 setLoading(false)
             })
 
@@ -383,7 +383,6 @@ const VisualPendingReview = (props) => {
     }
 
     const handleRemark = (value, id) => {
-
         const arr1 = ratingReview?.map((obj) => {
             let newObj = obj?.remarks
             if (obj.id === id) {
@@ -418,10 +417,11 @@ const VisualPendingReview = (props) => {
         const fil = files[0] || '';
         if (fil.name.lastIndexOf('.mp4') > 0 || fil.name.lastIndexOf('.jpeg') > 0 || fil.name.lastIndexOf('.jpg') > 0) {
             setFile(fil);
+            return
         } else {
             setAlert(
                 'error',
-                'Only excel file is acceptable either with .xls or .xlsx extension'
+                'Only Video & Image File is acceptable .'
             );
 
             setFile(null);
@@ -432,19 +432,25 @@ const VisualPendingReview = (props) => {
 
 
     const uploadFile = () => {
-        const formData = new FormData();
-        formData.append('image', file)
-        formData.append('booking_id', bookingID)
+        if (file !== null) {
+            const formData = new FormData();
+            formData.append('image', file)
+            formData.append('booking_id', bookingID)
 
-        axios.post(`${endpoints.newBlog.uploadVisualFile}`, formData, {
-            headers: {
-                'X-DTS-HOST': X_DTS_HOST,
-            },
-        })
-            .then((res) => {
+            axios.post(`${endpoints.newBlog.uploadVisualFile}`, formData, {
+                headers: {
+                    'X-DTS-HOST': X_DTS_HOST,
+                },
             })
-            .catch((err) => {
-            })
+                .then((res) => {
+                })
+                .catch((err) => {
+                })
+
+        } else {
+            setAlert('error', "Please Upload File")
+            return
+        }
 
     }
 
@@ -650,6 +656,7 @@ const VisualPendingReview = (props) => {
                                                         <Input
                                                             type='file'
                                                             inputRef={fileRef}
+                                                            accept="image/x-png,image/gif,image/jpeg,image/jpeg,video/mp4"
                                                             inputProps={{ accept: '.mp4,.jpeg,.png' }}
                                                             onChange={handleFileChange}
                                                         />

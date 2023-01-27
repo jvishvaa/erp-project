@@ -4,17 +4,25 @@ import React, {
     useEffect,
     useContext
 } from 'react';
-import { Button as ButtonAnt, Table, Modal, Row, Col, Input,message } from 'antd';
+import { Button as ButtonAnt, Table, Modal, Row, Col, Input, message,Select } from 'antd';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
-import { FileAddOutlined, EditOutlined, CloudDownloadOutlined, EyeOutlined } from '@ant-design/icons';
+import { FileAddOutlined, EditOutlined, CloudDownloadOutlined, EyeOutlined, DownOutlined,CheckOutlined } from '@ant-design/icons';
 import endpoints from '../../config/endpoints';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import axios from 'axios';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+// import Select from 'containers/Finance/src/ui/select';
+
+const bmiRemarkData =[
+    {name:"Under Nourished", id: 1},
+    {name:"Healthy Weight", id: 2},
+    {name:"Over Nourished", id: 3}
+]
 
 
 const ViewBMITableCustom = (props) => {
+    const {Option} = Select;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [openBigModal, setOpenBigModal] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -32,11 +40,12 @@ const ViewBMITableCustom = (props) => {
     const [height, setHeight] = useState('')
     const [weight, setWeight] = useState('')
     const [age, setAge] = useState(null)
-    const [remarks,setRemarks] = useState('')
+    const [remarks, setRemarks] = useState('')
     const [bmi, setBmi] = useState('')
     const [bmiDetails, setBmiDetails] = useState([])
     const [editData, setEditData] = useState([])
     const [rowData, setRowData] = useState([])
+    const [selectedStudentDetails, setSelectedStudentsDetails] = useState([])
 
 
 
@@ -55,6 +64,17 @@ const ViewBMITableCustom = (props) => {
             dataIndex: 'erp_id',
             key: 'erp_id',
             align: 'center'
+        },
+        {
+            title: <span className='th-white th-fw-700 '>Gender</span>,
+            dataIndex: 'gender',
+            key: 'gender',
+            align: 'center',
+            render: (text,row,index) => {
+                return(
+                    <p>{row?.gender === "1" ? "Male" : "Female"}</p>
+                )
+            }
         },
         {
             title: <span className='th-white th-fw-700 '>Action</span>,
@@ -144,32 +164,32 @@ const ViewBMITableCustom = (props) => {
 
     const handleOk = () => {
         if (isEdit) {
-            if(!height){
+            if (!height) {
                 message.error("Please Add Height");
                 return
-            }else if(!weight){
+            } else if (!weight) {
                 message.error("Please Add Weight");
                 return
-            }else if(!age){
+            } else if (!age) {
                 message.error("Please Add Age")
                 return
-            }else if(!remarks){
+            } else if (!remarks) {
                 message.error("Please Add Remarks");
                 return
-            }else{
+            } else {
                 const requestData = {
                     id: editData?.bmi_details?.id,
                     height: height,
                     weight: weight,
-                    age:age,
-                    remarks:remarks,
+                    age: age,
+                    remarks: remarks,
                     bmi: bmi,
                 };
                 const options = {
                     headers: {
                         'X-DTS-HOST': X_DTS_HOST,
                         Authorization: `${token}`,
-    
+
                     }
                 }
                 axios
@@ -180,14 +200,14 @@ const ViewBMITableCustom = (props) => {
                             setIsEdit(false)
                             setIsModalOpen(false);
                             showBMITable(editData?.student)
-    
-    
+
+
                         } else {
                             setAlert('error', res?.data?.message)
                             setIsModalOpen(false);
-    
+
                         }
-    
+
                     })
 
 
@@ -195,22 +215,22 @@ const ViewBMITableCustom = (props) => {
 
 
         } else {
-            if(!height){
+            if (!height) {
                 message.error("Please Add Height");
                 return
-            }else if(!weight){
+            } else if (!weight) {
                 message.error("Please Add Weight");
                 return
-            }else if(!age){
+            } else if (!age) {
                 message.error("Please Add Age");
                 return
-            }else{
+            } else {
                 const requestData = {
                     student_id: checkBMIData?.id,
                     height: height,
                     weight: weight,
-                    age:age,
-                    remarks:remarks,
+                    age: age,
+                    remarks: remarks,
                     bmi: bmi,
                 };
                 const options = {
@@ -226,13 +246,13 @@ const ViewBMITableCustom = (props) => {
                             setAlert('success', res?.data?.message)
                             setIsEdit(false)
                             setIsModalOpen(false);
-    
+
                         } else {
                             setAlert('error', res?.data?.message)
                             setIsModalOpen(false);
-    
+
                         }
-    
+
                     })
 
             }
@@ -350,7 +370,9 @@ const ViewBMITableCustom = (props) => {
     }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
 
     const CheckBMIFun = (data) => {
+        setSelectedStudentsDetails([])
         if (data) {
+            setSelectedStudentsDetails(data)
             setBmi('')
             setHeight('')
             setWeight('')
@@ -375,7 +397,9 @@ const ViewBMITableCustom = (props) => {
 
     }
     const EditCheckBMIFun = (data) => {
+        setSelectedStudentsDetails([])
         if (data) {
+            setSelectedStudentsDetails(data)
             setLoading(true)
             axios
                 .get(`${endpoints.newBlog.checkBMIApi}?erp_id=${data?.erp_id}&user_level=${13}`, {
@@ -405,7 +429,7 @@ const ViewBMITableCustom = (props) => {
         }
     };
 
-    const calculateBMI = (height, weight,age) => {
+    const calculateBMI = (height, weight, age) => {
         if (height && weight && age) {
             let parseHeight = parseInt(height)
             let parseWeight = parseInt(weight)
@@ -419,7 +443,7 @@ const ViewBMITableCustom = (props) => {
             else {
                 let bmi = (weight / ((height * height) / 10000)).toFixed(2)
                 setBmi(bmi)
-                setAlert('success',"BMI Calculated Successfully")
+                setAlert('success', "BMI Calculated Successfully")
                 return
             }
         } else {
@@ -434,19 +458,28 @@ const ViewBMITableCustom = (props) => {
         } else {
             // setBmi('')
         }
-    }, [height, weight,age])
+    }, [height, weight, age])
 
     const handleInputBMI = (event, target) => {
         if (target == 'height') {
             setHeight(event.target.value)
         } else if (target == 'weight') {
             setWeight(event.target.value)
-        }else if(target == 'age'){
+        } else if (target == 'age') {
             setAge(event.target.value)
-        }else if(target == 'remarks'){
-            setRemarks(event.target.value)
+        } else if (target == 'remarks') {
+            setRemarks(event)
         }
     }
+
+
+    const bmiRemarksListOptions = bmiRemarkData?.map((each) => {
+        return(
+            <Option key={each?.name} value={each?.name}>
+                {each?.name}
+            </Option>
+        )
+    })
 
 
     return (
@@ -456,7 +489,7 @@ const ViewBMITableCustom = (props) => {
                     {totalSubmitted?.length !== 0 ? (
 
                         <Table
-                            style={{ maxHeight: '60vh',OverflowY: 'auto'}}
+                            style={{ maxHeight: '60vh', OverflowY: 'auto' }}
                             className='th-table'
                             rowClassName={(record, index) => `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                             }
@@ -472,6 +505,14 @@ const ViewBMITableCustom = (props) => {
             </div>
             <Modal title={isEdit === true ? "EDIT BMI" : "ADD BMI"} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} visible={isModalOpen} okText={'Submit'} width={1000} centered>
                 <Row style={{ padding: '0.5rem 1rem' }}>
+                    <Col span={24}>
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0.5rem' }}>
+                            <span> Name : {selectedStudentDetails?.student_name}</span>
+                            <span>Gender : {selectedStudentDetails?.gender === "1" ? "Male" : "Female"}</span>
+                        </div>
+                    </Col>
+                </Row>
+                <Row style={{ padding: '0.5rem 1rem' }}>
                     <Col span={8}>
                         <Input style={{ margin: '0.5rem', width: 'auto' }} onChange={(event) => handleInputBMI(event, 'height')} value={height} placeholder="Height(in cm)" />
                     </Col>
@@ -482,7 +523,25 @@ const ViewBMITableCustom = (props) => {
                         <Input style={{ margin: '0.5rem', width: 'auto' }} value={age} onChange={(event) => handleInputBMI(event, 'age')} placeholder="Age" />
                     </Col>
                     <Col span={8}>
-                        <Input style={{ margin: '0.5rem', width: 'auto' }} value={remarks} onChange={(event) => handleInputBMI(event, 'remarks')} placeholder="Remarks" />
+                        {/* <Input style={{ margin: '0.5rem', width: 'auto' }} value={remarks} onChange={(event) => handleInputBMI(event, 'remarks')} placeholder="Remarks" /> */}
+                        <Select
+                            // className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                            bordered={true}
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            // value={selectedCategoryName}
+                            style={{width:'80%', padding:'0.5rem'}}
+                            placement='bottomRight'
+                            placeholder='Select Blog List'
+                            suffixIcon={<DownOutlined className='th-black-1' />}
+                            dropdownMatchSelectWidth={false}
+                            // onChange={(e, val) => handleBlogListChange(e, val)}
+                            onChange={(event) => handleInputBMI(event, 'remarks')}
+                            // allowClear
+
+                            menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
+                        >
+                            {bmiRemarksListOptions}
+                        </Select>
                     </Col>
                     <Col span={8}>
                         <Input style={{ margin: '0.5rem', width: 'auto' }} value={bmi} placeholder="BMI" disabled='true' />

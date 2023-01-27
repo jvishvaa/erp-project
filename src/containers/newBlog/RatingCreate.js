@@ -419,7 +419,6 @@ const RatingCreate = () => {
             temp['va_rating'] = obj?.grading_scheme.map((item) => JSON.parse(item?.va_rating));
             array.push(temp);
           })
-          debugger
           setActivityCategory(array);
           setLoading(false)
       });
@@ -772,7 +771,8 @@ const RatingCreate = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
                     <TableCell className={classes.tableCell}>Question</TableCell>
-                    {/* <TableCell className={classes.tableCell}>Options</TableCell> */}
+                    <TableCell className={classes.tableCell}>Options</TableCell>
+                    <TableCell className={classes.tableCell}>Score</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -782,7 +782,6 @@ const RatingCreate = () => {
                   )
                   .map((response, index) => (
                     <>
-                    {console.log(response?.va_rating.map((item) => item),'va')}
                     <TableBody>
                       <TableRow
                         hover
@@ -793,14 +792,18 @@ const RatingCreate = () => {
                         <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                         <TableCell className={classes.tableCells}>{response.name}</TableCell>
                         <TableCell className={classes.tableCells}>{response?.question.map((item) => <p> {item} </p>)} </TableCell>
-                        {/* <TableCell className={classes.tableCells}> */}
+                        <TableCell className={classes.tableCells}>
                           {/* <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <DeleteOutlined style={{ cursor: 'pointer' }} />
                             <EditOutlined style={{ cursor: 'pointer' }} />
                           </div> */}
                           {/* NA */}
-                          {/* {response?.va_rating.map((item) => item?.name)} */}
-                        {/* </TableCell>{' '} */}
+                          {/* {response?.va_rating)} */}
+                          {response?.va_rating[0].map((item) =><p>{item?.name}</p> )}
+                        </TableCell>{' '}
+                        <TableCell className={classes.tableCells}>
+                        {response?.va_rating[0].map((item) =><p>{item?.score}</p> )}
+                        </TableCell>
                       </TableRow>
                     </TableBody>
                     </>
