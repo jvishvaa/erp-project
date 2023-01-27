@@ -157,7 +157,7 @@ const StudentAttendance = (props) => {
             }}
           />
         </div>
-        <div className='my-2 '>
+        <div className='my-4 '>
           <div className='col-md-12 th-14 mt-2 th-black-1'>Total Attendance</div>
           <div className='col-md-12'>
             <div

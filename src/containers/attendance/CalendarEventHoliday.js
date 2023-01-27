@@ -239,6 +239,7 @@ const CalendarV2 = () => {
         setSelectedGrade([]);
         setHolidayName('');
         setHolidayDesc('');
+        setGradeList([])
         setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
         setStartDate()
         setEndDate()
