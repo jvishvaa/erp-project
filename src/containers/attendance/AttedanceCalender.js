@@ -999,7 +999,7 @@ const AttedanceCalender = () => {
     };
 
     history.push({
-      pathname: '/holidaymarking',
+      pathname: '/holidaymarkingOld',
       state: {
         payload: payload,
         isEdit: false,
@@ -1019,7 +1019,7 @@ const AttedanceCalender = () => {
     };
 
     history.push({
-      pathname: '/eventmarking',
+      pathname: '/eventmarkingOld',
       state: {
         payload: payload,
         isEdit: false,
@@ -1059,7 +1059,7 @@ const AttedanceCalender = () => {
     };
 
     history.push({
-      pathname: '/holidaymarking',
+      pathname: '/holidaymarkingOld',
       state: {
         data: holidayData,
         payload: payload,
@@ -1084,7 +1084,7 @@ const AttedanceCalender = () => {
     };
 
     history.push({
-      pathname: '/eventmarking',
+      pathname: '/eventmarkingOld',
       state: {
         data: eventData,
         payload: payload,

@@ -460,6 +460,10 @@ import Filters from 'containers/assessment-central/create-question-paper-new/fil
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig'
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
 import CalendarV2 from 'containers/attendance/CalendarEventHoliday';
+import TeacherCalendar from 'containers/attendance/teacherCalendar';
+import EventsMarkOld from 'containers/attendance/eventsmarkOld';
+import HolidayMarkOld from 'containers/attendance/holidayMarkOld';
+
 import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
@@ -1369,10 +1373,10 @@ const V1Router = [
     {({ match }) => <MarkAttedance match={match} />}
   </Route>,
   <Route exact path='/attendance-calendar/teacher-view'>
-    {({ match }) => <CalendarV2 match={match} />}
+    {({ match }) => <TeacherCalendar match={match} />}
   </Route>,
   <Route exact path='/attendance-calendar/student-view'>
-    {({ match }) => <CalendarV2 match={match} />}
+    {({ match }) => <TeacherCalendar match={match} />}
   </Route>,
   <Route exact path='/teacher-view/attendance'>
     {({ match }) => <Attendance match={match} />}
@@ -1623,6 +1627,12 @@ const V1Router = [
   <Route path='/successrefer'>{({ match }) => <ReferSuccess match={match} />}</Route>,
   <Route path='/holidaymarking'>{({ match }) => <HolidayMark match={match} />}</Route>,
   <Route path='/eventmarking'>{({ match }) => <EventsMark match={match} />}</Route>,
+  <Route path='/holidaymarkingOld'>
+  {({ match }) => <HolidayMarkOld match={match} />}
+</Route>,
+<Route path='/eventmarkingOld'>
+  {({ match }) => <EventsMarkOld match={match} />}
+</Route>,
   <Route path='/student_count_report'>
     {({ match }) => <StudentCountReport match={match} />}
   </Route>,
