@@ -145,9 +145,9 @@ const options = [
 
 const columns = [
   {
-    title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
-    width: '75%',
-    align: 'left',
+    title: <span className='th-white pl-sm-0 th-fw-600'>Criteria</span>,
+    width: '50%',
+    align: 'center',
     render: (text, row) => {
       return (
         row?.criterion
@@ -633,7 +633,7 @@ const BlogWall = () => {
       setReloadData(prop)
     }
     axios
-      .get(`${endpoints.newBlog.whatsAppChatGetApi}?erp_id=${data?.erp}&created_at__date__gte=${prop !== null ? prop?.created_at__date__gte : reloadData?.created_at__date__gte}&created_at__date__lte=${prop !== null ? prop?.created_at__date__lte : reloadData?.created_at__date__lte}`, {
+      .get(`${endpoints.newBlog.whatsAppChatGetApi}?erp_id=${data?.erp}&created_at__date__gte=${prop !== null ? prop?.created_at__date__gte : reloadData?.created_at__date__gte}&created_at__date__lte=${prop !== null ? prop?.created_at__date__lte : reloadData?.created_at__date__lte}&activity_id=${prop !== null ? prop?.activity : reloadData?.activity}`, {
         headers: {
           'HOST': X_DTS_HOST,
           Authorization: `Bearer ${token}`,
@@ -642,6 +642,7 @@ const BlogWall = () => {
       .then((response) => {
         setLoading(false)
         setChatDetails(response?.data)
+        // setChatDetails(dummyChatDetails)
 
 
       })
@@ -804,18 +805,18 @@ const BlogWall = () => {
           />
 
         </picture>
-        : <video key={index} controls style={{width:'70px',height:'40px'}}>
-            <source data-srcSet={product?.props?.children?.props?.thumb}  
+        : <video key={index} controls style={{ width: '70px', height: '40px' }}>
+          <source data-srcSet={product?.props?.children?.props?.thumb}
             type="video/mp4"
-            width="70px" height="40px" 
-            />
-            {/* <img
+            width="70px" height="40px"
+          />
+          {/* <img
             key={product?.props?.children?.key}
             src={product?.props?.children?.props?.thumb}
             alt={product?.props?.children?.props?.alt}
             height="70"
           /> */}
-          </video>)
+        </video>)
     return (thumbList)
 
   }
@@ -837,9 +838,10 @@ const BlogWall = () => {
         )
         .then((response) => {
           setVideoDetailsPub(response?.data?.result)
-          getWhatsAppDetails(response?.data?.result)
+          // setPublicActivityId(response?.data?.result?.activity)
           setVideoUrl(response?.data?.result?.signed_URL)
           setOpenModalPublic(true)
+          getWhatsAppDetails(response?.data?.result)
           setLoading(false);
           // setOpen(true);
         });
@@ -1139,7 +1141,7 @@ const BlogWall = () => {
                               </div>
                               <CardMedia
                                 className={classes.media}
-                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
+                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%'}}
                                 component="video"
                                 controls={false}
                                 src={item?.asset?.signed_URL}
@@ -1244,26 +1246,26 @@ const BlogWall = () => {
               </div>
               <Divider />
               <div className='col-12'>
-                <div className='col-12' style={{ display: 'flex', alignItems: 'center' }}>
+                <div className='col-12' style={{ display: 'flex', alignItems: 'center' , padding:'0.5rem 0'}}>
                   <div className='col-6'>
                     <span style={{ fontSize: '18px', fontWeight: 'bold' }}> <CommentOutlined style={{ color: 'blue', fontSize: '20px', paddingRight: '0.5rem' }} />Comments</span>
                   </div>
                   <div className='col-6' style={{ display: 'flex', justifyContent: 'end' }}>
-                    <span> <Button type="primary" shape="circle" onClick={() => reloadButton()} icon={<RedoOutlined />} /></span>
+                    <span> <Button shape="circle" size='small' onClick={() => reloadButton()} icon={<RedoOutlined />} /></span>
                   </div>
                 </div>
                 <Divider style={{ margin: 0, padding: '0.5rem' }} />
-                <div style={{ padding: '0.5rem 1rem', border: '2px solid #4800c9', borderRadius: '10px', margin: '0.5rem 0rem' }}>
+                <div style={{ padding: '0.5rem 1rem', borderRadius: '10px', margin: '0.5rem 0rem' }}>
                   {chatDetails.length !== 0 ? (
                     <>
                       {chatDetails.map((item, index) => {
-                        if (item?.sent_by === "USER") {
+                        if (item?.is_reply == true) {
                           return (
                             <div className=' col-12 comment-header'>
-                              <div className='col-2'> <UserOutlined style={{ fontSize: '18px', background: '#4800c9', color: 'white', borderRadius: '20px', padding: '0.5rem' }} /> </div>
-                              <div className='col-8'>
-
-                                <span key={item?.index}>{item.message}</span>
+                              <div className='col-2' style={{display:'flex', justifyContent:'center', alignItem:'center'}}> <UserOutlined style={{ fontSize: '18px', color: 'white', borderRadius: '20px', padding: '0.5rem', background: '#4800c9' }} /> </div>
+                              <div className='col-8' style={{ color: 'black', padding: '0.5rem', background: '#f2f2f2',wordWrap:'break-word',  borderRadius: '0px 15px 15px 15px',float: 'left'}}>
+                                <span style={{fontWeight:'bold', fontSize:'13px'}}>{item?.name}</span>
+                                <p  style={{margin:'0px', fontSize:'12px'}} key={item?.index}>{item.message}</p>
                               </div>
                               <div className='col-2'>
                                 {item?.media_link !== null ? (
