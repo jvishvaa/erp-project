@@ -239,6 +239,7 @@ const CalendarV2 = () => {
         setSelectedGrade([]);
         setHolidayName('');
         setHolidayDesc('');
+        setGradeList([])
         setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
         setStartDate()
         setEndDate()
@@ -654,7 +655,7 @@ const CalendarV2 = () => {
                                     <TabPane tab='Holiday' key={'1'}>
                                         <div className='cardsevents' >
                                             <Form ref={formRef} style={{ width: '100%' }} >
-                                                <Grid container direction='row' spacing={2} className={classes.root}>
+                                                <Grid container direction='row' spacing={2} className={classes.root} style={{padding: '0px'}} >
 
                                                     <div className='col-md-3'>
                                                         <span className=' th-14 font-weight-bold th-grey'>Branch*</span>
@@ -788,13 +789,14 @@ const CalendarV2 = () => {
                                                                                 content={() => handleAction(item)}
                                                                                 trigger='click'
                                                                             >
-                                                                                <Button icon={<MoreOutlined />} />
+                                                                                <MoreOutlined />
+                                                                                {/* <Button icon={<MoreOutlined />} /> */}
                                                                             </Popover>
                                                                         </div>
                                                                     </div>
 
                                                                     <div className='row pl-2 pt-4'>
-                                                                        <div className='th-fw-600 col-2 px-0'>
+                                                                        <div className='th-fw-600 col-4 px-0'>
                                                                             <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
                                                                                 Date :
                                                                             </div>
@@ -822,7 +824,7 @@ const CalendarV2 = () => {
                                                                             {item?.description ? (
                                                                                 <div className='col-8 pl-2 th-truncate'>
                                                                                     <div>
-                                                                                        <div className='text-truncate text-capitalize mt-1 px-2 mx-3'>
+                                                                                        <div className='text-truncate text-capitalize mt-1 mx-2'>
                                                                                             {item?.description},
                                                                                         </div>
 
@@ -842,7 +844,7 @@ const CalendarV2 = () => {
                                     <TabPane tab='Events' key={'2'}>
                                         <div className='cardsevents' >
                                             <Form ref={formRef} style={{ width: '100%' }} >
-                                                <Grid container direction='row' spacing={2} className={classes.root}>
+                                                <Grid container direction='row' spacing={2} className={classes.root} style={{padding: '0px'}}>
 
                                                     <div className='col-md-3'>
                                                         <span className='font-weight-bold th-grey th-14'>Branch*</span>
@@ -967,7 +969,7 @@ const CalendarV2 = () => {
                                                 events?.length > 0 ?
                                                     events?.map((item) => (
                                                         <>
-                                                            <div className='col-lg-4 col-md-6 pl-0 mt-2'>
+                                                            <div className='col-lg-4 col-md-6 mt-2'>
                                                                 <div
                                                                     className='th-br-20 th-bg-grey period-card'
                                                                     style={{ border: '1px solid #d9d9d9' }}
@@ -999,14 +1001,15 @@ const CalendarV2 = () => {
                                                                                     content={() => handleActionEvent(item)}
                                                                                     trigger='click'
                                                                                 >
-                                                                                    <Button icon={<MoreOutlined />} />
+                                                                                    <MoreOutlined />
+                                                                                    {/* <Button icon={<MoreOutlined />} /> */}
                                                                                 </Popover>
                                                                                 : ''}
                                                                         </div>
                                                                     </div>
 
                                                                     <div className='row pl-2 pt-4'>
-                                                                        <div className='th-fw-600 col-2 px-0'>
+                                                                        <div className='th-fw-600 col-4 px-0'>
                                                                             <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
                                                                                 Date :
                                                                             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
-import { Select, Modal, Badge, Card, Tooltip } from 'antd';
+import { Select, Modal, Badge, Card, Tooltip, Empty } from 'antd';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import './index.css';
@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import HolidayIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/holidayNew.png';
+import EventIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/eventNew.png';
 
 const { Option } = Select;
 
@@ -75,6 +77,28 @@ const CalendarCard = () => {
         }
       })
       .catch((error) => console.log(error));
+  };
+
+  const handleTitle = (data) => {
+    return (
+      <div>
+        {data?.is_holiday == true ? (
+          <div className='row'>
+            {' '}
+            <img
+              src={HolidayIcon}
+              style={{ height: '4vh' }}
+              className='mr-1'
+            /> Holiday{' '}
+          </div>
+        ) : (
+          <div className='row'>
+            {' '}
+            <img src={EventIcon} className='mr-1' style={{ height: '4vh' }} /> Events{' '}
+          </div>
+        )}
+      </div>
+    );
   };
 
   const handleMonthChange = (value) => {
@@ -152,14 +176,17 @@ const CalendarCard = () => {
       }
     });
   }
-  let holidayCount = monthHolidays.filter((item) => item?.prog == true)
-  let eventCount = monthHolidays.filter((item) => item?.prog == undefined)
-  console.log(monthHolidays.filter((item) => item?.prog == undefined) , 'month');
+  let holidayCount = monthHolidays.filter((item) => item?.prog == true);
+  let eventCount = monthHolidays.filter((item) => item?.prog == undefined);
+  console.log(
+    monthHolidays.filter((item) => item?.prog == undefined),
+    'month'
+  );
   return (
     <div className='th-bg-white th-br-5 mt-3'>
       <div className='row' style={{ borderRadius: '5px 5px 0 0 ' }}>
         <div
-          className='col-2 th-fw-500 th-16'
+          className='col-2 th-fw-500 th-16 py-3'
           style={{ display: 'flex', alignItems: 'center' }}
         >
           Calendar
@@ -233,66 +260,80 @@ const CalendarCard = () => {
                 fontSize: '14px',
               }}
             >
-              <div style={{ overflow: 'hidden', overflowY: 'scroll', height: '30vh' }}>
-                {allEvent &&
-                  allEvent?.map((item) => (
-                    <div className='row' onClick={() => modalopen(item)}>
+              {allEvent?.length > 0 ? (
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    overflowY: 'scroll',
+                    height: '30vh',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {allEvent &&
+                    allEvent?.map((item) => (
                       <div
-                        className='row mt-2 mb-2'
+                        className='row mb-2 py-1'
                         style={{
-                          display: 'flex',
-                          justifyContent: 'flex-start',
-                          alignItems: 'center',
-                          cursor: 'pointer',
-                          width: '90%',
+                          borderLeft: item?.is_holiday
+                            ? '5px solid #89DDF1'
+                            : '5px solid #E089F1',
                         }}
+                        onClick={() => modalopen(item)}
                       >
-                        <div
-                          style={{
-                            background: item?.is_holiday ? '#89DDF1' : '#E089F1',
-                            width: '2%',
-                            height: '5vh',
-                          }}
-                        ></div>
-                        <Badge
-                          count={`${moment(item?.start_time).format('DD')}-${moment(
+                        <div className='col-4 px-0 pt-1'>
+                          <div
+                            style={{
+                              background: item?.is_holiday ? '#89DDF1' : '#E089F1',
+                            }}
+                            className='mx-1 th-10 th-white th-br-4 text-center'
+                          >{`${moment(item?.start_time).format('DD')}-${moment(
                             item?.end_time
-                          ).format('DD')}`}
-                          style={{ background: item?.is_holiday ? '#89DDF1' : '#E089F1' }}
-                          className='mx-1 th-10'
-                        />
-                        <Tooltip title={item?.event_name}>
-                          <p
-                            style={{ margin: '0px', fontSize: '13px' }}
-                            className='text-truncate col-3 p-0 text-capitalize'
-                          >
-                            {item?.event_name}
-                          </p>
-                        </Tooltip>
+                          ).format('DD')}`}</div>
+                        </div>
+                        <div className='col-8 px-0 text-truncate text-capitalize'>
+                          <Tooltip title={item?.event_name} placement='bottomLeft'>
+                            <span style={{ margin: '0px', fontSize: '13px' }}>
+                              {item?.event_name}
+                            </span>
+                          </Tooltip>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-              </div>
+                    ))}
+                </div>
+              ) : (
+                <div className='mt-5'>
+                  <Empty
+                    description={<span>No Holiday & Events</span>}
+                    image={HolidayIcon}
+                  />
+                </div>
+              )}
             </Card>
           </div>
         </div>
-        <div className='row mt-3 justify-content-start th-14 th-fw-400 px-2 pt-2 pb-1'>
+        <div className='row justify-content-start th-14 th-fw-400 px-2 pt-2 pb-1'>
           <div className='col-4 row'>
-            <div style={{ width: '2vh', height: '2vh', background: '#89DDF1' ,  }} className='mt-1' ></div>
-            <div className='th-13 mx-1' style={{ color: '#89DDF1' , paddingTop: '0px'}} >
+            <div
+              style={{ width: '2vh', height: '2vh', background: '#89DDF1' }}
+              className='mt-1'
+            ></div>
+            <div className='th-13 mx-1' style={{ color: '#89DDF1', paddingTop: '0px' }}>
               {holidayCount.length == 0 ? 'No' : holidayCount.length} Holidays
             </div>
           </div>
           <div className='col-4 row'>
-            <div style={{ width: '2vh', height: '2vh', background: '#E089F1' }} className='mt-1'></div>
-            <div className='th-13 mx-1' style={{ color: '#E089F1' , paddingTop: '0px'}}>
+            <div
+              style={{ width: '2vh', height: '2vh', background: '#E089F1' }}
+              className='mt-1'
+            ></div>
+            <div className='th-13 mx-1' style={{ color: '#E089F1', paddingTop: '0px' }}>
               {eventCount.length == 0 ? 'No' : eventCount.length} Events
             </div>
           </div>
         </div>
       </div>
       <Modal
-        title={modData?.event_name}
+        title={handleTitle(modData)}
         visible={isModalOpen}
         onCancel={modalClose}
         footer={false}
@@ -307,6 +348,10 @@ const CalendarCard = () => {
               <div className='font-weight-bold'>
                 End Date : {moment(modData?.end_time).format('DD-MM-YYYY')}
               </div>
+            </div>
+            <div className='row mt-1'>
+              <div className='col-md-3 p-0 font-weight-bold'>Title :</div>
+              <div className='col-md-9 p-0'>{modData?.event_name}</div>
             </div>
             <div className='row mt-1'>
               <div className='col-md-3 p-0 font-weight-bold'>Description :</div>

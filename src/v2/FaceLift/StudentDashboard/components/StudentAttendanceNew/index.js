@@ -136,7 +136,7 @@ const StudentAttendance = (props) => {
 
   return (
     <>
-      <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm mb-1'>
+      <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm mb-3'>
         <div className='row justify-content-between'>
           <div className='col-12 th-16 mt-2 th-fw-500 th-black-1 pr-0'>My Attendance</div>
         </div>
@@ -157,7 +157,7 @@ const StudentAttendance = (props) => {
             }}
           />
         </div>
-        <div className='my-2 '>
+        <div className='my-4 '>
           <div className='col-md-12 th-14 mt-2 th-black-1'>Total Attendance</div>
           <div className='col-md-12'>
             <div
