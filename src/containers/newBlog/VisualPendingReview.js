@@ -154,25 +154,31 @@ const VisualPendingReview = (props) => {
     };
     const [submit, setSubmit] = useState(false);
     const submitReview = () => {
-        setView(false);
-        let body = ratingReview
-        setLoading(true)
-        axios
-            .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
-                headers: {
-                    'X-DTS-HOST': X_DTS_HOST,
-                },
-            })
-            .then((response) => {
-                uploadFile()
-                setView(false)
-                setLoading(false)
-                erpAPI()
-                setAlert('success', ' Review Submitted Successfully');
-            })
-            .catch((error) => {
-                setLoading(false)
-            })
+        if (file !== null) {
+            setView(false);
+            let body = ratingReview
+            setLoading(true)
+            axios
+                .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
+                    headers: {
+                        'X-DTS-HOST': X_DTS_HOST,
+                    },
+                })
+                .then((response) => {
+                    uploadFile()
+                    setView(false)
+                    setLoading(false)
+                    erpAPI()
+                    setAlert('success', ' Review Submitted Successfully');
+                })
+                .catch((error) => {
+                    setLoading(false)
+                })
+
+        } else {
+            setAlert('error', "Please Upload File")
+            return
+        }
     };
 
     const [dataId, setDataId] = useState();
@@ -320,8 +326,14 @@ const VisualPendingReview = (props) => {
                 }
             })
             .then((response) => {
-                showReview(response?.data?.result)
-                setLoading(false)
+                if(response?.data?.status_code === 200){
+                    showReview(response?.data?.result)
+                    setLoading(false)
+                }
+                else if (response?.data?.status_code === 500) {
+                    setAlert('error', response?.data?.message)
+                    setLoading(false)
+                }
             })
             .catch((error) => {
                 setLoading(false)
