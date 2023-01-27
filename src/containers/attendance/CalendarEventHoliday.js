@@ -730,6 +730,7 @@ const CalendarV2 = () => {
                                                             <RangePicker
                                                                 value={dates}
                                                                 onChange={handleDate}
+                                                                style={{width: '100%'}}
                                                             />
                                                         </Form.Item>
                                                     </div>
@@ -919,6 +920,7 @@ const CalendarV2 = () => {
                                                             <RangePicker
                                                                 value={dates}
                                                                 onChange={handleDate}
+                                                                style={{width: '100%'}}
                                                             />
                                                         </Form.Item>
                                                     </div>
