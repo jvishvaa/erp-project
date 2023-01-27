@@ -18,6 +18,7 @@ const Assessment = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
   const [performanceData, setPerformanceData] = useState({});
   const [loadingPerformance, setLoadingPerformance] = useState(false);
   const [loadingAssessments, setLoadingAssessments] = useState(false);
@@ -81,7 +82,7 @@ const Assessment = () => {
   return (
     <div
       className='th-bg-white th-br-5 py-3 px-2 mt-3 shadow-sm mb-3'
-      style={{ height: '845px' }}
+      style={{ height: userLevel == 13 ? '875px' : '845px' }}
     >
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
