@@ -21,10 +21,10 @@ import endpoints from '../../config/endpoints';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import { Rating } from '@material-ui/lab';
-import { Breadcrumb, Tabs, Select, DatePicker, Pagination, Button, Modal, Badge, Tooltip, Table as TableAnt } from 'antd';
+import { Breadcrumb, Tabs, Select, DatePicker, Pagination, Button, Modal, Badge, Tooltip, Table as TableAnt,Avatar } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { Divider } from 'antd';
@@ -1011,7 +1011,7 @@ const BlogWall = () => {
                                    className='card-media-design'
                                    component='video'
                                    image={item?.content?.s3_url}
-                                   style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%', position: 'relative', display: 'inline-block' }}
+                                   style={{ border: '1px solid lightgray', borderRadius: '10px', width: '100%', position: 'relative', display: 'inline-block' }}
                                    alt="Dummy Image"
                                    title="Blog View"
                                  />
@@ -1021,20 +1021,19 @@ const BlogWall = () => {
                                   className='card-media-design'
                                  
                                   image={item?.content?.s3_url}
-                                  style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%', position: 'relative', display: 'inline-block' }}
+                                  style={{ border: '1px solid lightgray', borderRadius: '10px', width: '100%', position: 'relative', display: 'inline-block' }}
                                   alt="Dummy Image"
                                   title="Blog View"
                                 />
                               )}
-                                <span class="badge bg-light text-dark" style={{ position: 'absolute', bottom: '10px', right: '0.5rem', padding: '0.5rem' }}>+{item?.content_count}More</span>
+                                <span class="badge bg-light text-dark" style={{ position: 'absolute', bottom: '10px', right: '0.5rem', padding: '0.5rem' }}><FileImageOutlined /> {' '}+{item?.content_count} More</span>
 
                               </Badge.Ribbon>
                             </CardActionArea>
                             <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection: 'column' }}>
-                              <div style={{ display: 'flex', width: '100%', padding: '0.5rem 0rem' }}>
+                              <div style={{ display: 'flex', width: '100%' }}>
                                 <div>
-                                  <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                                  </Avatar>
+                                  <Avatar size={40} icon={<UserOutlined />} />
                                 </div>
                                 <div style={{ padding: '0 0.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                   <div style={{ fontWeight: 600, fontSize: '14px' }}>
@@ -1061,16 +1060,30 @@ const BlogWall = () => {
                             className='card-design'
                           >
                             <CardActionArea style={{ padding: '8px' }}>
-                              <div className='col-12' style={{ display: 'flex', alignItems: 'center', padding: 0, margin: '0.5rem 0rem' }}>
-                                <div className='col-2' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0.5rem' }}>
-                                  <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-
-                                  </Avatar>
+                              {/* <div className='col-12' style={{ display: 'flex', alignItems: 'center', padding: 0, margin: '0.5rem 0rem' }}>
+                                <div className='col-3' 
+                                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+                                >
+                                   <Avatar size={40} icon={<UserOutlined />} />
                                 </div>
-                                <div className='col-10' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 0 }}>
+                                <div className='col-9' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
                                   <span style={{ fontSize: '10px', color: 'blue', fontWeight: 'bold' }}>{item?.grade?.name}</span>
                                   <span style={{ fontSize: '13px', color: 'grey', fontWeight: 'bold' }}>{item?.name}</span>
                                 </div>
+                              </div> */}
+                              <div style={{display:'flex', padding:'0.5rem 0rem'}}>
+                                <div>
+                                  <Avatar size={40} icon={<UserOutlined/>}/>
+                                </div>
+                                <div style={{padding:'0px 0.5rem',display:'flex',justifyContent:'flex-end', flexDirection:'column'}}>
+                                    <div style={{fontSize:'10px', color:'blue', fontWeight:'bold'}}>
+                                        {item?.grade?.name}
+                                    </div>
+                                    <div style={{fontSize:'13px', color:'grey', fontWeight:'bold'}}>
+                                        {item?.name}
+                                    </div>
+                                </div>
+
                               </div>
                               <Badge.Ribbon text={item?.publish_level} color="orange">
                                 <CardMedia
@@ -1122,7 +1135,7 @@ const BlogWall = () => {
                             <CardActionArea style={{ padding: '8px' }}>
                               <div className='col-12' style={{ display: 'flex', alignItems: 'center', padding: 0, margin: '0.5rem 0rem' }} >
 
-                                <span>{selectedBranch?.branch?.branch_name}</span>
+                                <span style={{fontSize:'12px'}}>{selectedBranch?.branch?.branch_name}</span>
                               </div>
                               <CardMedia
                                 className={classes.media}
@@ -1135,11 +1148,12 @@ const BlogWall = () => {
                             <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection: 'column' }}>
                               <div style={{ display: 'flex', width: '100%', padding: '0.5rem 0rem' }}>
                                 <div>
-                                  <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                                  </Avatar>
+                                  {/* <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                                  </Avatar> */}
+                                   <Avatar size={40} icon={<UserOutlined />} />
                                 </div>
                                 <div style={{ padding: '0 0.5rem' }}>
-                                  <div style={{ fontSize: '12px', color: 'blue' }}>
+                                  <div style={{ fontSize: '10px', color: 'blue' }}>
                                     {item.grade}
                                   </div>
                                   <div style={{ fontWeight: 600, fontSize: '16px' }}>
@@ -1412,8 +1426,9 @@ const BlogWall = () => {
                 <div>
                   <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem' }}>
                     <div style={{ padding: '5px' }}>
-                      <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                      </Avatar>
+                      {/* <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                      </Avatar> */}
+                       <Avatar size={40} icon={<UserOutlined />} />
                     </div>
                     <div style={{ padding: '0 0.5rem' }}>
                       <div style={{ fontWeight: 600, fontSize: '16px' }}>
@@ -1542,7 +1557,7 @@ const BlogWall = () => {
             onOk={() => setOpenModal(false)}
             onCancel={() => setOpenModal(false)}
             width={'80vw'}
-            style={{ top: 20 }}
+            // style={{ top: 20 }}
             footer={null}
             closeIcon={
               <CloseOutlined />
@@ -1588,7 +1603,7 @@ const BlogWall = () => {
                   })}
                 </Carousel>
               </div>
-              <div className='col-3'>
+              <div className='col-3' style={{height:'614px'}}>
                 <div className='col-12 post-description'>
                   <div className='col-3 post-avatar'>
                     <Avatar size="large" icon={<UserOutlined />} />

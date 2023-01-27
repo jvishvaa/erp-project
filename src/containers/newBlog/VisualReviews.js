@@ -287,7 +287,7 @@ const VisualReviews = (props) => {
       <Drawer
         anchor='right'
         // maxWidth={maxWidth}
-        style={{border:'1px solid black', width:'100px'}}
+        style={{width:'100px'}}
         open={view}
         onClose={handleCloseViewMore}
         aria-labelledby='alert-dialog-title'

@@ -6,7 +6,7 @@
 
 
 .filter-container-tab button {
-  margin-right: 1rem;
+  margin-right: 0.5rem;
   min-width: 5rem;
   padding: 0.5rem 1rem;
   border: none;
@@ -16,8 +16,9 @@
   border: 2px solid rgb(65, 98, 168);
   font-weight: bold;
   cursor: pointer;
-  /* margin-top: 2rem; */
+  margin-top: 0.5rem;
   font-size: 14px;
+  /* margin: 0.5rem 0rem; */
 
 
 }
@@ -55,12 +56,22 @@ button.active {
   width:100%;
   object-fit:cover;
   transition: 0.5s all ease-in-out;
+  overflow: hidden;
+}
+
+/* .card-media-design img {
+  transition: transform .5s ease;
+} */
+
+/* [3] Finally, transforming the image when container gets hovered */
+.card-media-design:hover {
+  transform: scale(1.5);
 }
 
 
-.card-media-design :hover {
+/* .card-media-design :hover {
    transform: scale(1.5);
-}
+} */
 
 .dummy-background {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -370,6 +381,7 @@ button.active {
     /* border: 1px solid saddlebrown; */
     color: gray;
     font-size: 15px;
+    height: 70%;
   }
 
   .public-speaking-content {

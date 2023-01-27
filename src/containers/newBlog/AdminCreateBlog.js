@@ -530,7 +530,7 @@ const AdminCreateBlog = () => {
       formData.append('branch_ids', branchIds);
       formData.append('grade_ids', gradeIds);
       formData.append('section_ids', sectionIds);
-      formData.append('is_draft', false);
+      formData.append('is_draft', physicalId ? false : true);
       formData.append('template_type', "template");
       formData.append('template_id', checked);
       formData.append('round_count', selectedRoundID);
