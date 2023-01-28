@@ -1193,8 +1193,11 @@ const BlogWall = () => {
           title="Public Speaking"
           centered
           visible={openModalPublic}
+          destroyOnClose={true}
           onOk={() => setOpenModalPublic(false)}
-          onCancel={() => setOpenModalPublic(false)}
+          onCancel={() => {
+            setOpenModalPublic(false)
+          }}
           width={'80vw'}
           footer={null}
           closeIcon={
@@ -1304,6 +1307,7 @@ const BlogWall = () => {
           onOk={() => setOpenAttachment(false)}
           onCancel={() => setOpenAttachment(false)}
           width={'80vw'}
+          destroyOnClose={true}
           // bodyStyle={{ height: "90vh" }}
           footer={null}
           closeIcon={
@@ -1561,6 +1565,7 @@ const BlogWall = () => {
             onOk={() => setOpenModal(false)}
             onCancel={() => setOpenModal(false)}
             width={'80vw'}
+            destroyOnClose={true}
             // style={{ top: 20 }}
             footer={null}
             closeIcon={
