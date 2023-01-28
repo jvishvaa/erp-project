@@ -124,7 +124,10 @@ const AttedanceCalender = () => {
   let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
   let studentDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const sessionId = JSON.parse(sessionStorage.getItem('acad_session')) || {};
-  const selectedBranchLocal = JSON.parse(sessionStorage.getItem('selected_branch')) || {};
+  // const selectedBranchLocal = JSON.parse(sessionStorage.getItem('selected_branch')) || {};
+  const selectedBranchLocal = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const multiBranchIdLocal = JSON.parse(sessionStorage.getItem('branch_list'))
 
