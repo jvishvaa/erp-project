@@ -658,7 +658,7 @@ const VisualActivityCreate = () => {
                             Activity
                         </Breadcrumb.Item>
                         <Breadcrumb.Item href='' className='th-grey th-16'>
-                            Create Visual Activity
+                            Create Visual Art
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
@@ -669,7 +669,7 @@ const VisualActivityCreate = () => {
                         style={{ borderRadius: '1px', color: 'white' }}
                         disabled
                     >
-                        Create Visual Activity
+                        Create Visual Art
                     </Button>
                     <Divider className={classes.dividerColor} />
                 </div>
