@@ -585,7 +585,7 @@ const ViewBMITableCustom = (props) => {
           </div>
           <div className='col-12' style={{ padding: '1rem 1rem' }}>
             <Table
-              style={{ maxHeight: '50vh', overflowY: 'auto' }}
+              //   style={{ maxHeight: '50vh', overflowY: 'auto' }}
               className='th-table'
               rowClassName={(record, index) =>
                 `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
@@ -594,6 +594,7 @@ const ViewBMITableCustom = (props) => {
               loading={loading}
               columns={columnsBigTable}
               dataSource={bmiDetails}
+              scroll={{ y: 300 }}
             />
           </div>
         </div>
