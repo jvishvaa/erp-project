@@ -620,7 +620,7 @@ const VisualPendingReview = (props) => {
                                                 >
                                                     {ratingReview?.map((obj, index) => {
                                                         return (
-                                                            <div className='row' style={{ display: 'flex' }}>
+                                                            <div className='row' style={{ display: 'flex', padding:'0.5rem 0rem' }}>
                                                                 <div className='col-6' key={index}>
                                                                     <div
                                                                         key={index}
@@ -629,7 +629,7 @@ const VisualPendingReview = (props) => {
                                                                         {obj?.name}
                                                                     </div>
                                                                 </div>
-                                                                <div className='col-6'>
+                                                                <div className='col-6' style={{padding:'0.5rem 0rem'}}>
                                                                     <Select
                                                                         className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
                                                                         bordered={true}
