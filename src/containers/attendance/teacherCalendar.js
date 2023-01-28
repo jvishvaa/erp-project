@@ -24,6 +24,9 @@ const TeacherCalendar = () => {
                     setConfigOn(true);
                     setLoading(false);
 
+                } else {
+                    setConfigOn(false);
+                    setLoading(false);
                 }
             })
             .catch((error) => {
