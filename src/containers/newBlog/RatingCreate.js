@@ -71,6 +71,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Remarks from 'containers/dashboard/TeacherDashboardTwo/ClassworkHomework/Remarks';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -218,7 +219,7 @@ const RatingCreate = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [viewParameterFlag, setViewParameterFlag] = useState(false);
   const [antDrawer, setAntDrawer] = useState(false)
-  const [visualInputlList, setVisualInputList] = useState([{ name: '',score:null }]);
+  const [visualInputlList, setVisualInputList] = useState([{ name: '', score: null }]);
   const [selectedOption, setSelectedOption] = useState('')
   const [onOptionVisible, setOnOptionVisible] = useState(false)
   const [onOptionModal, setOnOptionModal] = useState(false)
@@ -399,6 +400,7 @@ const RatingCreate = () => {
 
   const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
+    let array = []
     setLoading(true)
     axios
       .get(`${endpoints.newBlog.getActivityType}`, {
@@ -407,8 +409,18 @@ const RatingCreate = () => {
         },
       })
       .then((response) => {
-        setActivityCategory(response.data.result);
-        setLoading(false)
+          response.data.result.map((obj) => {
+            let temp = {}
+            temp['id'] = obj?.id;
+            temp['grading_scheme_id'] = obj?.grading_scheme_id;
+            temp['name'] = obj?.name;
+            temp['grading_scheme'] =obj?.grading_scheme;
+            temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
+            temp['va_rating'] = obj?.grading_scheme.map((item) => JSON.parse(item?.va_rating));
+            array.push(temp);
+          })
+          setActivityCategory(array);
+          setLoading(false)
       });
   };
   useEffect(() => {
@@ -503,7 +515,7 @@ const RatingCreate = () => {
       ...visualInputlList,
       {
         name: '',
-        score:null,
+        score: null,
       },
     ])
   };
@@ -516,8 +528,12 @@ const RatingCreate = () => {
   }
 
   const handleRemoveVisual = (index) => {
-    let newList = [...visualInputlList]
-    newList.splice(index, 1);
+    // let newList = [...visualInputlList]
+    // newList.splice(index, 1);
+    // setVisualInputList(newList)
+    const indexList = visualInputlList.indexOf(index)
+    const newList = [...visualInputlList]
+    newList.splice(indexList, 1)
     setVisualInputList(newList)
   }
 
@@ -597,8 +613,8 @@ const RatingCreate = () => {
   }
 
   const handleOptionSubmit = () => {
-    const arr1 = visualInputlList?.map((obj) =>{
-      return {...obj,rating: optionList}
+    const arr1 = visualInputlList?.map((obj) => {
+      return { ...obj, rating: optionList }
       return obj
     })
     // let uniqueValues = new Set(optionList.map((e) => e?.option));
@@ -625,7 +641,10 @@ const RatingCreate = () => {
       .then((res) => {
         console.log(res)
         setLoading(false)
-        setAlert('success', 'Option Created Successfully')
+        setAlert('success', 'Created Successfully')
+        setActivityType('');
+        handleClose();
+        getActivityCategory();
       })
       .catch((error) => {
         setLoading(false)
@@ -639,20 +658,26 @@ const RatingCreate = () => {
 
   }
 
-  const handleOptionDelete = (index) => {
-    let newList = [...optionList]
-    newList.splice(index, 1)
+  const handleOptionDelete = (id, index) => {
+    let newOptionList = [...optionList]
+    let newList = newOptionList.filter((item) => item?.name !== id?.name)
     setOptionList(newList)
-
   }
 
-  const handleQuestion =(event,index) =>{
-    if(event){
-      const {value} = event.target;
+  const handleQuestion = (event, index) => {
+    if (event) {
+      const { value } = event.target;
       const newInputList = [...visualInputlList]
       newInputList[index].name = value
       setVisualInputList(newInputList)
     }
+  }
+
+
+  const handleRemoveVisualQuestion = (id, index) => {
+    let newVisualList = [...visualInputlList]
+    const newList = newVisualList.filter((item) => item?.name !== id?.name)
+    setVisualInputList(newList)
   }
 
 
@@ -726,16 +751,6 @@ const RatingCreate = () => {
               </Button>
             </Grid>
             <Grid item md={3} container justifyContent='center'>
-              <Button variant='contained' color='primary' onClick={viewParameter}>
-                Add Parameter
-              </Button>
-            </Grid>
-            <Grid item md={3} container justifyContent='center'>
-              <Button variant='contained' color='primary' onClick={viewOption}>
-                Add Option
-              </Button>
-            </Grid>
-            <Grid item md={3} container justifyContent='center'>
               <Button variant='contained' color='primary' onClick={viewDisplay}>
                 Add
               </Button>
@@ -743,7 +758,7 @@ const RatingCreate = () => {
           </Grid>
         </Grid>
 
-        {search?.name === "Visual Activity" ? (
+        {(search?.name === "Visual Activity") || (search?.name === "Visual Art") ? (
           <Paper className={`${classes.root} common-table`} id='singleStudent'>
             <TableContainer
               className={`table table-shadow view_users_table ${classes.container}`}
@@ -756,14 +771,17 @@ const RatingCreate = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
                     <TableCell className={classes.tableCell}>Question</TableCell>
-                    <TableCell className={classes.tableCell}>Action</TableCell>
+                    <TableCell className={classes.tableCell}>Options</TableCell>
+                    <TableCell className={classes.tableCell}>Score</TableCell>
                   </TableRow>
                 </TableHead>
+
                 {activityCategory
                   ?.filter((response) =>
                     response?.name?.toLowerCase()?.includes(search?.name?.toLowerCase())
                   )
                   .map((response, index) => (
+                    <>
                     <TableBody>
                       <TableRow
                         hover
@@ -773,15 +791,22 @@ const RatingCreate = () => {
                       >
                         <TableCell className={classes.tableCells}>{index + 1}</TableCell>
                         <TableCell className={classes.tableCells}>{response.name}</TableCell>
-                        <TableCell className={classes.tableCells}>{response.sub_type ? response.sub_type : <b style={{ color: 'red' }}>NA</b>}</TableCell>
+                        <TableCell className={classes.tableCells}>{response?.question.map((item) => <p> {item} </p>)} </TableCell>
                         <TableCell className={classes.tableCells}>
-                          <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                          {/* <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <DeleteOutlined style={{ cursor: 'pointer' }} />
                             <EditOutlined style={{ cursor: 'pointer' }} />
-                          </div>
+                          </div> */}
+                          {/* NA */}
+                          {/* {response?.va_rating)} */}
+                          {response?.va_rating[0].map((item) =><p>{item?.name}</p> )}
                         </TableCell>{' '}
+                        <TableCell className={classes.tableCells}>
+                        {response?.va_rating[0].map((item) =><p>{item?.score}</p> )}
+                        </TableCell>
                       </TableRow>
                     </TableBody>
+                    </>
                   ))}
               </Table>
               {/* <TablePagination
@@ -852,13 +877,13 @@ const RatingCreate = () => {
                             ))}
                           </Typography>
                         </TableCell>
-                        <TableCell className={classes.tableCells}>
+                        {/* <TableCell className={classes.tableCells}>
                           <Typography>
                             {response?.grading_scheme.map((obj) => (
                               <div>{obj.score}</div>
                             ))}
                           </Typography>
-                        </TableCell>
+                        </TableCell> */}
                       </TableRow>
                     </TableBody>
                   ))}
@@ -948,21 +973,23 @@ const RatingCreate = () => {
               </div>
             ) : ""}
             {ActivityType?.name === "Visual Art" ? (
-              <div className='row m-2'>
-                <AntDivider orientation="left" plain>
-                  Add Question
+              <div className='row m-2' style={{width:'650px'}}>
+                <AntDivider orientation="left" plain style={{alignItems:'flex-start'}}>
+                  Add Questions
                 </AntDivider>
                 {visualInputlList ? visualInputlList.map((input, index) => (
                   <>
-                    <div className='col-10'>
+                    <div className='col-10 question-visual'
+                    >
                       <Input
                         placeholder='Question'
                         width={100}
-                        onChange={(event) => handleQuestion(event,index)}
+                        value={input?.name}
+                        onChange={(event) => handleQuestion(event, index)}
                       />
                     </div>
-                    <div className='col-2'>
-                      <DeleteFilled onClick={() => handleRemoveVisual(index)} style={{ cursor: 'pointer' }} />
+                    <div className='col-2 delete-visual-icon'>
+                      <DeleteFilled onClick={() => handleRemoveVisualQuestion(input, index)} style={{ cursor: 'pointer', fontSize: '18px', color: 'darkblue' }} />
                     </div>
 
                   </>
@@ -970,30 +997,34 @@ const RatingCreate = () => {
                   "No Item In The List"
                 )}
 
-                <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
-                  <AntButton icon={<PlusOutlined />} type="primary" onClick={handleVisualInputApp} >Add</AntButton>
+                <div className='col-12 padding-style'
+
+                >
+                  <AntButton type="primary" icon={<PlusOutlined />} onClick={handleVisualInputApp} >Add Question</AntButton>
                 </div>
-                <AntDivider orientation="left" plain>
+                <AntDivider orientation="left" plain style={{alignItems:'flex-start'}}>
                   Add Options
                 </AntDivider>
                 {optionList ? optionList.map((input, index) => (
                   <div className='row'>
                     <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
                       <Input
+                        value={input?.name}
                         placeholder='Option'
                         width={100}
                         onChange={(event) => handleOptionInput(event, index)}
                       />
                     </div>
-                    <div className='col-3' style={{ padding: '0.5rem 0rem' }}>
+                    <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
                       <Input
                         placeholder='Marks'
+                        value={input?.score}
                         width={100}
                         onChange={(event) => handleMarksInput(event, index)}
                       />
                     </div>
-                    <div className='col-3'>
-                      <DeleteFilled style={{ cursor: 'pointer' }} onClick={() => handleOptionDelete(index)} />
+                    <div className='col-3 delete-visual-icon'>
+                      <DeleteFilled style={{ cursor: 'pointer', fontSize: '18px', color: 'darkblue' }} onClick={() => handleOptionDelete(input, index)} />
                     </div>
                   </div>
 
@@ -1004,14 +1035,18 @@ const RatingCreate = () => {
                   <AntButton
                     icon={<PlusOutlined />}
                     onClick={handleOptionInputAdd}
+                    type="primary"
                   >
-                    Add Button
+                    Add Option
                   </AntButton>
                 </div>
-                <div className='col-12'
+                <div className='col-12 padding-style'
                 >
-                  <AntButton onClick={handleOptionSubmit}>
+                  <AntButton type="primary" onClick={handleOptionSubmit}>
                     Submit
+                  </AntButton>
+                  <AntButton type="danger" onClick={handleClose} style={{ marginLeft: '0.5rem' }}>
+                    Cancel
                   </AntButton>
 
                 </div>

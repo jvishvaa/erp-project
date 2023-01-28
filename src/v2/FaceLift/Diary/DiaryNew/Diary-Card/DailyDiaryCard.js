@@ -1188,7 +1188,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               <div className='row th-black-1 th-fw-600 px-2 py-1 th-18'>Homework</div>
               <div className='col-12 px-1'>
                 <div className='row th-bg-blue-2 th-br-6'>
-                  {diary?.teacher_report?.homework ? (
+                  {diary?.hw_due_date ? (
                     <>
                       <div className='row pt-1'>
                         <div className='col-12 pr-0 th-black-1'>Title</div>

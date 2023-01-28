@@ -766,7 +766,7 @@ const branchOptions = boardListData?.map((each) => {
           </div>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                Visual Activity
+                Visual Art
               </Breadcrumb.Item>
             </Breadcrumb>
         </div>
@@ -775,7 +775,7 @@ const branchOptions = boardListData?.map((each) => {
             size={'large'}
             onClick={createPush}
             >
-              Create Visual Activity
+              Create Visual Art
             </ButtonAnt>
         </div>
         <div className='row'>
