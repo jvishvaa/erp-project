@@ -161,9 +161,13 @@ const Sections = ({
       return marks;
     }else return 0;
   };
-  let marks = useEffect(() => {
-    if(!isEdit){
+  useEffect(() => {
+    if(!isEdit && section){
       handleOptionalQuestion(section?.questions?.length, '');
+    }else if(isEdit && section){
+        if(section?.questions?.length < section?.mandatory_questions){
+          handleOptionalQuestion(section?.questions?.length, '');
+        }
     }
   }, [section?.questions?.length]);
 
