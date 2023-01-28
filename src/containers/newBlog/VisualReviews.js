@@ -405,6 +405,9 @@ const VisualReviews = (props) => {
                   </div>
                 </div>
                 <Divider style={{ margin: '1.5rem 0.5rem' }} />
+                <div className='col-12' style={{display:'flex', justifyContent :'center', alignItem:'center', fontSize:'16px', fontWeight:600}}>
+                  <span>Remarks</span>
+                </div>
                 <div
                   style={{
                     background: 'white',
@@ -423,13 +426,14 @@ const VisualReviews = (props) => {
                             border: '1px solid #707070',
                             borderRadius: '10px',
                             height: 'auto',
+                            background:'rgb(244, 245, 249)',
                             padding: '0.5rem'
                           }}
                         >
                           {ratingReview?.map((obj, index) => {
                             return (
                               <div className='row' style={{ display: 'flex' }}>
-                                <div className='col-6' key={index}>
+                                <div className='col-6' style={{padding:'0.5rem 0rem'}} key={index}>
                                   <div
                                     key={index}
                                     style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
@@ -437,7 +441,7 @@ const VisualReviews = (props) => {
                                     {obj?.name}
                                   </div>
                                 </div>
-                                <div className='col-6'>
+                                <div className='col-6' style={{padding:'0.5rem 0rem'}}>
                                   <Select
                                     className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
                                     bordered={true}

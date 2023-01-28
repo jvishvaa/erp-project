@@ -810,12 +810,12 @@ const StudentSideVisualActivity = () => {
                                                 </div>
                                             </div>
                                             <Divider style={{ margin: '1.5rem 0.5rem' }} />
-                                            <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '34px', paddingTop: '10px' }}>Review</div>
+                                            <div style={{ display: 'flex', justifyContent: 'center', fontSize: '17px',paddingTop: '10px' }}>Remarks</div>
                                             <div
                                                 style={{
 
                                                     // width: '502px',
-                                                    marginLeft: '34px',
+                                                    // marginLeft: '34px',
                                                     height: 'auto',
                                                     marginTop: '12px',
                                                     marginBottom: '29px',

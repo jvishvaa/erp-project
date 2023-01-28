@@ -973,7 +973,7 @@ const RatingCreate = () => {
               </div>
             ) : ""}
             {ActivityType?.name === "Visual Art" ? (
-              <div className='row m-2'>
+              <div className='row m-2' style={{width:'650px'}}>
                 <AntDivider orientation="left" plain style={{alignItems:'flex-start'}}>
                   Add Questions
                 </AntDivider>
