@@ -320,11 +320,11 @@ const CalendarV2 = () => {
         newBranchList.splice(index, 1);
         setSelectedBranch(newBranchList);
         console.log(newBranchList);
-        if(newBranchList?.length > 0){
+        if (newBranchList?.length > 0) {
             getGrades(newBranchList)
-        } else if(newBranchList?.length == 0){
+        } else if (newBranchList?.length == 0) {
             setGradeList([])
-          }
+        }
     };
 
 
@@ -373,9 +373,9 @@ const CalendarV2 = () => {
         let branches = branchList.filter(item => selectedBranch.includes(item?.branch?.id))
         let acad_session = branches?.map((item) => item?.id)
         console.log(acad_session);
-        console.log(selectedBranch , selectedGrade , user_level, 'selected Branches');
+        console.log(selectedBranch, selectedGrade, user_level, 'selected Branches');
         if (segment == 1) {
-            if(startDate == undefined || endDate  == undefined || selectedBranch?.length == 0 || selectedGrade?.length == 0 ) {
+            if (startDate == undefined || endDate == undefined || selectedBranch?.length == 0 || selectedGrade?.length == 0) {
                 message.error('Please Select All Fields')
             } else {
                 getHoliday({
@@ -386,19 +386,19 @@ const CalendarV2 = () => {
                 })
             }
         } else {
-            if(startDate == undefined || endDate  == undefined || selectedBranch?.length == 0 || selectedGrade?.length == 0 ) {
+            if (startDate == undefined || endDate == undefined || selectedBranch?.length == 0 || selectedGrade?.length == 0) {
                 message.error('Please Select All Mandatory Fields')
             } else {
-            getEvents({
-                session_year_id: selectedAcademicYear?.id,
-                acad_session: acad_session.toString(),
-                grade: selectedGrade,
-                start_date: startDate,
-                end_date: endDate,
-                level: user_level,
-                event_category: selectedCategory
-            })
-        }
+                getEvents({
+                    session_year_id: selectedAcademicYear?.id,
+                    acad_session: acad_session.toString(),
+                    grade: selectedGrade,
+                    start_date: startDate,
+                    end_date: endDate,
+                    level: user_level,
+                    event_category: selectedCategory
+                })
+            }
         }
     }
 
@@ -443,12 +443,12 @@ const CalendarV2 = () => {
 
     useEffect(() => {
         console.log(history);
-        if(history?.location?.state?.backButtonStatus == true){
-            setSegment( history?.location?.state?.payload?.segment)
+        if (history?.location?.state?.backButtonStatus == true) {
+            setSegment(history?.location?.state?.payload?.segment)
             history.replace()
         }
         console.log(segment);
-    },[history])
+    }, [history])
 
 
     const handleDeleteHoliday = (item) => {
@@ -619,7 +619,7 @@ const CalendarV2 = () => {
 
     const historyData = history?.location?.state?.payload
     const handleTooltip = (item) => {
-        return <div style={{maxHeight: '30vh' , overflowX: 'scroll' , overflowX: 'hidden'}} >
+        return <div style={{ maxHeight: '30vh', overflowX: 'scroll', overflowX: 'hidden' }} >
             {item}
         </div>
     }
@@ -655,7 +655,7 @@ const CalendarV2 = () => {
                                     <TabPane tab='Holiday' key={'1'}>
                                         <div className='cardsevents' >
                                             <Form ref={formRef} style={{ width: '100%' }} >
-                                                <Grid container direction='row' spacing={2} className={classes.root} style={{padding: '0px'}} >
+                                                <Grid container direction='row' spacing={2} className={classes.root} style={{ padding: '0px' }} >
 
                                                     <div className='col-md-3'>
                                                         <span className=' th-14 font-weight-bold th-grey'>Branch*</span>
@@ -730,124 +730,127 @@ const CalendarV2 = () => {
                                                             <RangePicker
                                                                 value={dates}
                                                                 onChange={handleDate}
-                                                                style={{width: '100%'}}
+                                                                style={{ width: '100%' }}
                                                             />
                                                         </Form.Item>
                                                     </div>
                                                     <div className='col-md-2 d-flex'>
-                                                    <div  style={{ display: 'flex', alignItems: 'center' , marginRight: '5px' }} onClick={filterData} >
-                                                        <Button 
-                                                          type='primary'
-                                                          className='th-br-6 th-bg-primary th-pointer th-white'>Filter</Button>
-                                                    </div>
-                                                    {user_level != 13 ?
-                                                        <>
-                                                            <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
-                                                                <Button
-                                                                    type='primary'
-                                                                    className='th-br-6 th-bg-primary th-pointer th-white'
-                                                                >Add Holiday</Button>
-                                                            </div>
-                                                            {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
+                                                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }} onClick={filterData} >
+                                                            <Button
+                                                                type='primary'
+                                                                className='th-br-6 th-bg-primary th-pointer th-white'>Filter</Button>
+                                                        </div>
+                                                        {user_level != 13 ?
+                                                            <>
+                                                                <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
+                                                                    <Button
+                                                                        type='primary'
+                                                                        className='th-br-6 th-bg-primary th-pointer th-white'
+                                                                    >Add Holiday</Button>
+                                                                </div>
+                                                                {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
                                                                 <Button>Add Event</Button>
                                                             </div> */}
-                                                        </> : ''}
+                                                            </> : ''}
                                                     </div>
 
                                                 </Grid>
 
                                             </Form>
+                                            <div className='w-100 d-flex flex-wrap' style={{minHeight: '55vh'}} >
 
-                                            {
-                                                holidays?.length > 0 ?
-                                                    holidays?.map((item) => (
-                                                        <>
-                                                            <div className='col-lg-4 col-md-6 mt-2'>
-                                                                <div
-                                                                    className='th-br-20 th-bg-grey period-card'
-                                                                    style={{ border: '1px solid #d9d9d9' }}
-                                                                >
+                                                {
+                                                    holidays?.length > 0 ?
+                                                        holidays?.map((item) => (
+                                                            <>
+                                                                <div className='col-lg-4 col-md-6 mt-2'>
                                                                     <div
-                                                                        className='row p-3 th-bg-pink align-items-center th-black-1'
-                                                                        style={{ borderRadius: '20px 20px 0 0' }}
+                                                                        className='th-br-20 th-bg-grey period-card'
+                                                                        style={{ border: '1px solid #d9d9d9' }}
                                                                     >
-                                                                        <div className='col-8 pl-0 text-truncate' style={{ display: 'flex', alignItems: 'center' }} >
-                                                                            <img
-                                                                                src={HolidayIcon}
-                                                                                height='30'
-                                                                                className='mb-1'
-                                                                                alt='icon'
-                                                                            />
+                                                                        <div
+                                                                            className='row p-3 th-bg-pink align-items-center th-black-1'
+                                                                            style={{ borderRadius: '20px 20px 0 0' }}
+                                                                        >
+                                                                            <div className='col-8 pl-0 text-truncate' style={{ display: 'flex', alignItems: 'center' }} >
+                                                                                <img
+                                                                                    src={HolidayIcon}
+                                                                                    height='30'
+                                                                                    className='mb-1'
+                                                                                    alt='icon'
+                                                                                />
+                                                                                <Tooltip
+                                                                                    placement='topLeft'
+                                                                                    title={item?.title}
+                                                                                >
+                                                                                    <span className='th-18 th-fw-700 ml-2 text-capitalize'>
+                                                                                        {item?.title}
+                                                                                    </span>
+                                                                                </Tooltip>
+                                                                            </div>
+                                                                            <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
+                                                                                <Popover
+                                                                                    content={() => handleAction(item)}
+                                                                                    trigger='click'
+                                                                                >
+                                                                                    <MoreOutlined />
+                                                                                    {/* <Button icon={<MoreOutlined />} /> */}
+                                                                                </Popover>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div className='row pl-2 pt-4'>
+                                                                            <div className='th-fw-600 col-4 px-0'>
+                                                                                <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                                                                    Date :
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className='col-8 text-truncate px-3'>
+                                                                                {`${moment(item?.holiday_start_date).format('DD-MM-YYYY')} - ${moment(item?.holiday_end_date).format('DD-MM-YYYY')}`}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                            className='row pl-2 pt-1 d-flex justify-content-between'
+                                                                            style={{
+                                                                                height: 60,
+                                                                            }}
+                                                                        >
+                                                                            <div className='th-fw-600 col-4 px-0'>
+                                                                                <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                                                                    Description :
+                                                                                </div>
+                                                                            </div>
                                                                             <Tooltip
                                                                                 placement='topLeft'
-                                                                                title={item?.title}
+                                                                                // title={item?.description}
+                                                                                title={handleTooltip(item?.description)}
                                                                             >
-                                                                                <span className='th-18 th-fw-700 ml-2 text-capitalize'>
-                                                                                    {item?.title}
-                                                                                </span>
+                                                                                {item?.description ? (
+                                                                                    <div className='col-8 pl-2 th-truncate'>
+                                                                                        <div>
+                                                                                            <div className='text-truncate text-capitalize mt-1 mx-2'>
+                                                                                                {item?.description},
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ) : null}
                                                                             </Tooltip>
                                                                         </div>
-                                                                        <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
-                                                                            <Popover
-                                                                                content={() => handleAction(item)}
-                                                                                trigger='click'
-                                                                            >
-                                                                                <MoreOutlined />
-                                                                                {/* <Button icon={<MoreOutlined />} /> */}
-                                                                            </Popover>
-                                                                        </div>
-                                                                    </div>
 
-                                                                    <div className='row pl-2 pt-4'>
-                                                                        <div className='th-fw-600 col-4 px-0'>
-                                                                            <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
-                                                                                Date :
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className='col-8 text-truncate px-3'>
-                                                                            {`${moment(item?.holiday_start_date).format('DD-MM-YYYY')} - ${moment(item?.holiday_end_date).format('DD-MM-YYYY')}`}
-                                                                        </div>
                                                                     </div>
-                                                                    <div
-                                                                        className='row pl-2 pt-1 d-flex justify-content-between'
-                                                                        style={{
-                                                                            height: 60,
-                                                                        }}
-                                                                    >
-                                                                        <div className='th-fw-600 col-4 px-0'>
-                                                                            <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
-                                                                                Description :
-                                                                            </div>
-                                                                        </div>
-                                                                        <Tooltip
-                                                                            placement='topLeft'
-                                                                            // title={item?.description}
-                                                                            title={handleTooltip(item?.description)}
-                                                                        >
-                                                                            {item?.description ? (
-                                                                                <div className='col-8 pl-2 th-truncate'>
-                                                                                    <div>
-                                                                                        <div className='text-truncate text-capitalize mt-1 mx-2'>
-                                                                                            {item?.description},
-                                                                                        </div>
-
-                                                                                    </div>
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </Tooltip>
-                                                                    </div>
-
                                                                 </div>
-                                                            </div>
-                                                        </>
-                                                    )) : <div style={{ width: '100%' }}> <Empty /></div>
-                                            }
+                                                            </>
+                                                        )) : <div style={{ width: '100%' }}> <Empty /></div>
+                                                }
+                                            </div>
+
                                         </div>
                                     </TabPane>
                                     <TabPane tab='Events' key={'2'}>
                                         <div className='cardsevents' >
                                             <Form ref={formRef} style={{ width: '100%' }} >
-                                                <Grid container direction='row' spacing={2} className={classes.root} style={{padding: '0px'}}>
+                                                <Grid container direction='row' spacing={2} className={classes.root} style={{ padding: '0px' }}>
 
                                                     <div className='col-md-3'>
                                                         <span className='font-weight-bold th-grey th-14'>Branch*</span>
@@ -922,7 +925,7 @@ const CalendarV2 = () => {
                                                             <RangePicker
                                                                 value={dates}
                                                                 onChange={handleDate}
-                                                                style={{width: '100%'}}
+                                                                style={{ width: '100%' }}
                                                             />
                                                         </Form.Item>
                                                     </div>
@@ -950,26 +953,28 @@ const CalendarV2 = () => {
                                                         </Form.Item>
                                                     </div>
                                                     <div className='col-md-2 d-flex'>
-                                                    <div  style={{ display: 'flex', alignItems: 'center' , marginRight: '5px' }} onClick={filterData} >
-                                                        <Button
-                                                          type='primary'
-                                                          className='th-br-6 th-bg-primary th-pointer th-white'>Filter</Button>
-                                                    </div>
-                                                    {user_level != 13 ?
-                                                        <>
-                                                            {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
+                                                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }} onClick={filterData} >
+                                                            <Button
+                                                                type='primary'
+                                                                className='th-br-6 th-bg-primary th-pointer th-white'>Filter</Button>
+                                                        </div>
+                                                        {user_level != 13 ?
+                                                            <>
+                                                                {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
                                                                 <Button>Add Holiday</Button>
                                                             </div> */}
-                                                            <div  style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
-                                                                <Button
-                                                                type='primary'
-                                                                className='th-br-6 th-bg-primary th-pointer th-white'
-                                                                >Add Event</Button>
-                                                            </div>
-                                                        </> : ''}
-                                                        </div>
+                                                                <div style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
+                                                                    <Button
+                                                                        type='primary'
+                                                                        className='th-br-6 th-bg-primary th-pointer th-white'
+                                                                    >Add Event</Button>
+                                                                </div>
+                                                            </> : ''}
+                                                    </div>
                                                 </Grid>
                                             </Form>
+                                            <div className='w-100 d-flex flex-wrap' style={{minHeight: '50vh'}} >
+
                                             {
                                                 events?.length > 0 ?
                                                     events?.map((item) => (
@@ -1000,13 +1005,13 @@ const CalendarV2 = () => {
                                                                             </Tooltip>
                                                                         </div>
                                                                         <div className='col-4 px-0 th-16 text-right th-fw-700 text-truncate'>
-                                                                            {item?.event_category_name ? <Badge count={item?.event_category_name} style={{ marginRight: '8%' }} /> : ''}
-                                                                            {item?.is_enabled ?
+                                                                            {item?.event_category_name ? <Badge count={item?.event_category_name} className='col-md-7 text-truncate'  style={{ marginRight: '8%' }} /> : ''}
+                                                                            {item?.is_enabled  && user_level != 13 ?
                                                                                 <Popover
                                                                                     content={() => handleActionEvent(item)}
                                                                                     trigger='click'
                                                                                 >
-                                                                                    <MoreOutlined />
+                                                                                    <MoreOutlined className='col-md-3'  />
                                                                                     {/* <Button icon={<MoreOutlined />} /> */}
                                                                                 </Popover>
                                                                                 : ''}
@@ -1056,6 +1061,7 @@ const CalendarV2 = () => {
                                                         </>
                                                     )) : <div style={{ width: '100%' }}> <Empty /></div>
                                             }
+                                            </div>
                                         </div>
                                     </TabPane>
                                 </Tabs>
