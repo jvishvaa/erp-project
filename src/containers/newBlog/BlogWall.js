@@ -1089,7 +1089,8 @@ const BlogWall = () => {
                               </div>
                               <Badge.Ribbon text={item?.publish_level} color="orange">
                                 <CardMedia
-                                  className={classes.media}
+                                  // className={classes.media}
+                                  className='card-media-design'
                                   image={item?.template?.template_path}
                                   style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%', position: 'relative', display: 'inline-block', }}
                                   alt="Image"
@@ -1140,7 +1141,8 @@ const BlogWall = () => {
                                 <span style={{fontSize:'12px'}}>{selectedBranch?.branch?.branch_name}</span>
                               </div>
                               <CardMedia
-                                className={classes.media}
+                                // className={classes.media}
+                                className='card-media-design'
                                 style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%'}}
                                 component="video"
                                 controls={false}

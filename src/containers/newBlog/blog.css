@@ -65,7 +65,7 @@ button.active {
 
 /* [3] Finally, transforming the image when container gets hovered */
 .card-media-design:hover {
-  transform: scale(1.5);
+  transform: scale(1.05);
 }
 
 
