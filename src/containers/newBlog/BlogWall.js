@@ -21,10 +21,10 @@ import endpoints from '../../config/endpoints';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import { Rating } from '@material-ui/lab';
-import { Breadcrumb, Tabs, Select, DatePicker, Pagination, Button, Modal, Badge, Tooltip, Table as TableAnt } from 'antd';
+import { Breadcrumb, Tabs, Select, DatePicker, Pagination, Button, Modal, Badge, Tooltip, Table as TableAnt,Avatar } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { Divider } from 'antd';
@@ -145,9 +145,9 @@ const options = [
 
 const columns = [
   {
-    title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
-    width: '75%',
-    align: 'left',
+    title: <span className='th-white pl-sm-0 th-fw-600'>Criteria</span>,
+    width: '50%',
+    align: 'center',
     render: (text, row) => {
       return (
         row?.criterion
@@ -633,7 +633,7 @@ const BlogWall = () => {
       setReloadData(prop)
     }
     axios
-      .get(`${endpoints.newBlog.whatsAppChatGetApi}?erp_id=${data?.erp}&created_at__date__gte=${prop !== null ? prop?.created_at__date__gte : reloadData?.created_at__date__gte}&created_at__date__lte=${prop !== null ? prop?.created_at__date__lte : reloadData?.created_at__date__lte}`, {
+      .get(`${endpoints.newBlog.whatsAppChatGetApi}?erp_id=${data?.erp}&created_at__date__gte=${prop !== null ? prop?.created_at__date__gte : reloadData?.created_at__date__gte}&created_at__date__lte=${prop !== null ? prop?.created_at__date__lte : reloadData?.created_at__date__lte}&activity_id=${prop !== null ? prop?.activity : reloadData?.activity}`, {
         headers: {
           'HOST': X_DTS_HOST,
           Authorization: `Bearer ${token}`,
@@ -642,6 +642,7 @@ const BlogWall = () => {
       .then((response) => {
         setLoading(false)
         setChatDetails(response?.data)
+        // setChatDetails(dummyChatDetails)
 
 
       })
@@ -804,18 +805,18 @@ const BlogWall = () => {
           />
 
         </picture>
-        : <video key={index} controls style={{width:'70px',height:'40px'}}>
-            <source data-srcSet={product?.props?.children?.props?.thumb}  
+        : <video key={index} controls style={{ width: '70px', height: '40px' }}>
+          <source data-srcSet={product?.props?.children?.props?.thumb}
             type="video/mp4"
-            width="70px" height="40px" 
-            />
-            {/* <img
+            width="70px" height="40px"
+          />
+          {/* <img
             key={product?.props?.children?.key}
             src={product?.props?.children?.props?.thumb}
             alt={product?.props?.children?.props?.alt}
             height="70"
           /> */}
-          </video>)
+        </video>)
     return (thumbList)
 
   }
@@ -837,9 +838,10 @@ const BlogWall = () => {
         )
         .then((response) => {
           setVideoDetailsPub(response?.data?.result)
-          getWhatsAppDetails(response?.data?.result)
+          // setPublicActivityId(response?.data?.result?.activity)
           setVideoUrl(response?.data?.result?.signed_URL)
           setOpenModalPublic(true)
+          getWhatsAppDetails(response?.data?.result)
           setLoading(false);
           // setOpen(true);
         });
@@ -1011,7 +1013,7 @@ const BlogWall = () => {
                                    className='card-media-design'
                                    component='video'
                                    image={item?.content?.s3_url}
-                                   style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%', position: 'relative', display: 'inline-block' }}
+                                   style={{ border: '1px solid lightgray', borderRadius: '10px', width: '100%', position: 'relative', display: 'inline-block' }}
                                    alt="Dummy Image"
                                    title="Blog View"
                                  />
@@ -1021,20 +1023,19 @@ const BlogWall = () => {
                                   className='card-media-design'
                                  
                                   image={item?.content?.s3_url}
-                                  style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%', position: 'relative', display: 'inline-block' }}
+                                  style={{ border: '1px solid lightgray', borderRadius: '10px', width: '100%', position: 'relative', display: 'inline-block' }}
                                   alt="Dummy Image"
                                   title="Blog View"
                                 />
                               )}
-                                <span class="badge bg-light text-dark" style={{ position: 'absolute', bottom: '10px', right: '0.5rem', padding: '0.5rem' }}>+{item?.content_count}More</span>
+                                <span class="badge bg-light text-dark" style={{ position: 'absolute', bottom: '10px', right: '0.5rem', padding: '0.5rem' }}><FileImageOutlined /> {' '}+{item?.content_count} More</span>
 
                               </Badge.Ribbon>
                             </CardActionArea>
                             <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection: 'column' }}>
-                              <div style={{ display: 'flex', width: '100%', padding: '0.5rem 0rem' }}>
+                              <div style={{ display: 'flex', width: '100%' }}>
                                 <div>
-                                  <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                                  </Avatar>
+                                  <Avatar size={40} icon={<UserOutlined />} />
                                 </div>
                                 <div style={{ padding: '0 0.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                   <div style={{ fontWeight: 600, fontSize: '14px' }}>
@@ -1061,20 +1062,35 @@ const BlogWall = () => {
                             className='card-design'
                           >
                             <CardActionArea style={{ padding: '8px' }}>
-                              <div className='col-12' style={{ display: 'flex', alignItems: 'center', padding: 0, margin: '0.5rem 0rem' }}>
-                                <div className='col-2' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0.5rem' }}>
-                                  <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-
-                                  </Avatar>
+                              {/* <div className='col-12' style={{ display: 'flex', alignItems: 'center', padding: 0, margin: '0.5rem 0rem' }}>
+                                <div className='col-3' 
+                                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+                                >
+                                   <Avatar size={40} icon={<UserOutlined />} />
                                 </div>
-                                <div className='col-10' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 0 }}>
+                                <div className='col-9' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
                                   <span style={{ fontSize: '10px', color: 'blue', fontWeight: 'bold' }}>{item?.grade?.name}</span>
                                   <span style={{ fontSize: '13px', color: 'grey', fontWeight: 'bold' }}>{item?.name}</span>
                                 </div>
+                              </div> */}
+                              <div style={{display:'flex', padding:'0.5rem 0rem'}}>
+                                <div>
+                                  <Avatar size={40} icon={<UserOutlined/>}/>
+                                </div>
+                                <div style={{padding:'0px 0.5rem',display:'flex',justifyContent:'flex-end', flexDirection:'column'}}>
+                                    <div style={{fontSize:'10px', color:'blue', fontWeight:'bold'}}>
+                                        {item?.grade?.name}
+                                    </div>
+                                    <div style={{fontSize:'13px', color:'grey', fontWeight:'bold'}}>
+                                        {item?.name}
+                                    </div>
+                                </div>
+
                               </div>
                               <Badge.Ribbon text={item?.publish_level} color="orange">
                                 <CardMedia
-                                  className={classes.media}
+                                  // className={classes.media}
+                                  className='card-media-design'
                                   image={item?.template?.template_path}
                                   style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%', position: 'relative', display: 'inline-block', }}
                                   alt="Image"
@@ -1122,11 +1138,12 @@ const BlogWall = () => {
                             <CardActionArea style={{ padding: '8px' }}>
                               <div className='col-12' style={{ display: 'flex', alignItems: 'center', padding: 0, margin: '0.5rem 0rem' }} >
 
-                                <span>{selectedBranch?.branch?.branch_name}</span>
+                                <span style={{fontSize:'12px'}}>{selectedBranch?.branch?.branch_name}</span>
                               </div>
                               <CardMedia
-                                className={classes.media}
-                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%' }}
+                                // className={classes.media}
+                                className='card-media-design'
+                                style={{ border: '1px solid lightgray', borderRadius: '6px', width: '100%'}}
                                 component="video"
                                 controls={false}
                                 src={item?.asset?.signed_URL}
@@ -1135,11 +1152,12 @@ const BlogWall = () => {
                             <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 1rem', flexDirection: 'column' }}>
                               <div style={{ display: 'flex', width: '100%', padding: '0.5rem 0rem' }}>
                                 <div>
-                                  <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                                  </Avatar>
+                                  {/* <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                                  </Avatar> */}
+                                   <Avatar size={40} icon={<UserOutlined />} />
                                 </div>
                                 <div style={{ padding: '0 0.5rem' }}>
-                                  <div style={{ fontSize: '12px', color: 'blue' }}>
+                                  <div style={{ fontSize: '10px', color: 'blue' }}>
                                     {item.grade}
                                   </div>
                                   <div style={{ fontWeight: 600, fontSize: '16px' }}>
@@ -1175,8 +1193,11 @@ const BlogWall = () => {
           title="Public Speaking"
           centered
           visible={openModalPublic}
+          destroyOnClose={true}
           onOk={() => setOpenModalPublic(false)}
-          onCancel={() => setOpenModalPublic(false)}
+          onCancel={() => {
+            setOpenModalPublic(false)
+          }}
           width={'80vw'}
           footer={null}
           closeIcon={
@@ -1230,26 +1251,26 @@ const BlogWall = () => {
               </div>
               <Divider />
               <div className='col-12'>
-                <div className='col-12' style={{ display: 'flex', alignItems: 'center' }}>
+                <div className='col-12' style={{ display: 'flex', alignItems: 'center' , padding:'0.5rem 0'}}>
                   <div className='col-6'>
                     <span style={{ fontSize: '18px', fontWeight: 'bold' }}> <CommentOutlined style={{ color: 'blue', fontSize: '20px', paddingRight: '0.5rem' }} />Comments</span>
                   </div>
                   <div className='col-6' style={{ display: 'flex', justifyContent: 'end' }}>
-                    <span> <Button type="primary" shape="circle" onClick={() => reloadButton()} icon={<RedoOutlined />} /></span>
+                    <span> <Button shape="circle" size='small' onClick={() => reloadButton()} icon={<RedoOutlined />} /></span>
                   </div>
                 </div>
                 <Divider style={{ margin: 0, padding: '0.5rem' }} />
-                <div style={{ padding: '0.5rem 1rem', border: '2px solid #4800c9', borderRadius: '10px', margin: '0.5rem 0rem' }}>
+                <div style={{ padding: '0.5rem 1rem', borderRadius: '10px', margin: '0.5rem 0rem' }}>
                   {chatDetails.length !== 0 ? (
                     <>
                       {chatDetails.map((item, index) => {
-                        if (item?.sent_by === "USER") {
+                        if (item?.is_reply == true) {
                           return (
                             <div className=' col-12 comment-header'>
-                              <div className='col-2'> <UserOutlined style={{ fontSize: '18px', background: '#4800c9', color: 'white', borderRadius: '20px', padding: '0.5rem' }} /> </div>
-                              <div className='col-8'>
-
-                                <span key={item?.index}>{item.message}</span>
+                              <div className='col-2' style={{display:'flex', justifyContent:'center', alignItem:'center'}}> <UserOutlined style={{ fontSize: '18px', color: 'white', borderRadius: '20px', padding: '0.5rem', background: '#4800c9' }} /> </div>
+                              <div className='col-8' style={{ color: 'black', padding: '0.5rem', background: '#f2f2f2',wordWrap:'break-word',  borderRadius: '0px 15px 15px 15px',float: 'left'}}>
+                                <span style={{fontWeight:'bold', fontSize:'13px'}}>{item?.name}</span>
+                                <p  style={{margin:'0px', fontSize:'12px'}} key={item?.index}>{item.message}</p>
                               </div>
                               <div className='col-2'>
                                 {item?.media_link !== null ? (
@@ -1286,6 +1307,7 @@ const BlogWall = () => {
           onOk={() => setOpenAttachment(false)}
           onCancel={() => setOpenAttachment(false)}
           width={'80vw'}
+          destroyOnClose={true}
           // bodyStyle={{ height: "90vh" }}
           footer={null}
           closeIcon={
@@ -1412,8 +1434,9 @@ const BlogWall = () => {
                 <div>
                   <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem' }}>
                     <div style={{ padding: '5px' }}>
-                      <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                      </Avatar>
+                      {/* <Avatar aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
+                      </Avatar> */}
+                       <Avatar size={40} icon={<UserOutlined />} />
                     </div>
                     <div style={{ padding: '0 0.5rem' }}>
                       <div style={{ fontWeight: 600, fontSize: '16px' }}>
@@ -1542,7 +1565,8 @@ const BlogWall = () => {
             onOk={() => setOpenModal(false)}
             onCancel={() => setOpenModal(false)}
             width={'80vw'}
-            style={{ top: 20 }}
+            destroyOnClose={true}
+            // style={{ top: 20 }}
             footer={null}
             closeIcon={
               <CloseOutlined />
@@ -1588,7 +1612,7 @@ const BlogWall = () => {
                   })}
                 </Carousel>
               </div>
-              <div className='col-3'>
+              <div className='col-3' style={{height:'614px'}}>
                 <div className='col-12 post-description'>
                   <div className='col-3 post-avatar'>
                     <Avatar size="large" icon={<UserOutlined />} />
