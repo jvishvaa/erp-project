@@ -734,8 +734,8 @@ const CalendarV2 = () => {
                                                             />
                                                         </Form.Item>
                                                     </div>
-
-                                                    <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={filterData} >
+                                                    <div className='col-md-2 d-flex'>
+                                                    <div  style={{ display: 'flex', alignItems: 'center' , marginRight: '5px' }} onClick={filterData} >
                                                         <Button 
                                                           type='primary'
                                                           className='th-br-6 th-bg-primary th-pointer th-white'>Filter</Button>
@@ -752,6 +752,8 @@ const CalendarV2 = () => {
                                                                 <Button>Add Event</Button>
                                                             </div> */}
                                                         </> : ''}
+                                                    </div>
+
                                                 </Grid>
 
                                             </Form>
@@ -947,8 +949,8 @@ const CalendarV2 = () => {
                                                             </Select>
                                                         </Form.Item>
                                                     </div>
-
-                                                    <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={filterData} >
+                                                    <div className='col-md-2 d-flex'>
+                                                    <div  style={{ display: 'flex', alignItems: 'center' , marginRight: '5px' }} onClick={filterData} >
                                                         <Button
                                                           type='primary'
                                                           className='th-br-6 th-bg-primary th-pointer th-white'>Filter</Button>
@@ -958,13 +960,14 @@ const CalendarV2 = () => {
                                                             {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
                                                                 <Button>Add Holiday</Button>
                                                             </div> */}
-                                                            <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
+                                                            <div  style={{ display: 'flex', alignItems: 'center' }} onClick={handleAddEvent} >
                                                                 <Button
                                                                 type='primary'
                                                                 className='th-br-6 th-bg-primary th-pointer th-white'
                                                                 >Add Event</Button>
                                                             </div>
                                                         </> : ''}
+                                                        </div>
                                                 </Grid>
                                             </Form>
                                             {
