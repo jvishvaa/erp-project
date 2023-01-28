@@ -697,7 +697,7 @@ const StudentSideVisualActivity = () => {
                 <Drawer
                     anchor='right'
                     // maxWidth={maxWidth}
-                    style={{width: '100px' }}
+                    style={{ width: '100px' }}
                     open={view}
                     onClose={handleCloseViewMore}
                     aria-labelledby='alert-dialog-title'
@@ -810,7 +810,7 @@ const StudentSideVisualActivity = () => {
                                                 </div>
                                             </div>
                                             <Divider style={{ margin: '1.5rem 0.5rem' }} />
-                                            <div style={{ display: 'flex', justifyContent: 'center', fontSize: '17px',paddingTop: '10px' }}>Remarks</div>
+                                            <div style={{ display: 'flex', justifyContent: 'center', fontSize: '17px', paddingTop: '10px' }}>Remarks</div>
                                             <div
                                                 style={{
 
@@ -833,16 +833,16 @@ const StudentSideVisualActivity = () => {
                                                     {ratingReview?.map((obj, index) => {
                                                         return (
                                                             <div className='row' style={{ display: 'flex' }}>
-                                                                <div className='col-6' key={index} style={{padding:'0.5rem 0rem'}}>
+                                                                <div className='col-6' key={index} style={{ padding: '0.5rem 0rem' }}>
                                                                     <div
                                                                         key={index}
                                                                         style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
                                                                     >
-                                                                        {obj?.name}
+                                                                        {index+1}{'. '} {obj?.name}
                                                                     </div>
                                                                 </div>
-                                                                <div className='col-6' style={{padding: '0.5rem 0rem'}}>
-                                                                    <Select
+                                                                <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
+                                                                    {/* <Select
                                                                         className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
                                                                         bordered={true}
                                                                         getPopupContainer={(trigger) => trigger.parentNode}
@@ -871,7 +871,12 @@ const StudentSideVisualActivity = () => {
 
 
 
-                                                                    </Select>
+                                                                    </Select> */}
+                                                                    <Input
+                                                                    placeholder={obj?.remarks.filter((item) => item.status == true)[0].name}
+                                                                    width={100}
+                                                                    disabled
+                                                                    />
                                                                 </div>
                                                             </div>
                                                         )
