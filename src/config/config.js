@@ -96,7 +96,7 @@ const stage = {
     baseUdaan: 'https://udaansurelearning.com/qbox',
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
-    baseURLCentral: 'https://stage.mgmt.letseduvate.com/qbox',
+    baseURLCentral: 'https://mgmt-stage.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     baseEvent: 'http://events.letseduvate.com/',
     newBlogURL: 'https://activities.letseduvate.com',
