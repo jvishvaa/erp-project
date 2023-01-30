@@ -159,32 +159,36 @@ const VisualPendingReview = (props) => {
   };
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
-    // if (file !== null) {
-    setView(false);
-    let body = ratingReview;
-    setLoading(true);
-    axios
-      .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        uploadFile();
-        setView(false);
-        setLoading(false);
-        erpAPI();
-        setAlert('success', ' Review Submitted Successfully');
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
+        let body = [];
+        let checkSelected = ratingReview.every((item) => item.checked)
+        if (!checkSelected) {
+            return setAlert('error', 'Please Select All Options !!')
+        }else{
+            ratingReview.forEach((item) => {
+                let record = {...item};
+                delete record.checked
+                body.push(record)
+            })
+        }
 
-    // } else {
-    //     setAlert('error', "Please Upload File")
-    //     return
-    // }
-  };
+        setLoading(true)
+        axios
+            .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
+                headers: {
+                    'X-DTS-HOST': X_DTS_HOST,
+                },
+            })
+            .then((response) => {
+                uploadFile()
+                setView(false)
+                setLoading(false)
+                erpAPI()
+                setAlert('success', ' Review Submitted Successfully');
+            })
+            .catch((error) => {
+                setLoading(false)
+            })
+};
 
   const [dataId, setDataId] = useState();
 
@@ -395,33 +399,36 @@ const VisualPendingReview = (props) => {
     }
   };
 
-  const handleRemark = (value, id) => {
+const handleRemark = (value, id) => {
     const arr1 = ratingReview?.map((obj) => {
-      let newObj = obj?.remarks;
-      if (obj.id === id) {
-        newObj = obj.remarks.map((item) => {
-          if (item.name === value.children) {
-            return { ...item, status: true };
-          }
-          return item;
-        });
-        return { ...obj, remarks: newObj };
-      }
-      return obj;
-    });
-    setRatingReview(arr1);
+        let newObj = obj?.remarks
+        if (obj.id === id) {
+            newObj = obj.remarks.map((item) => {
+                if (item.name === value.children) {
+                    return { ...item, status: true }
+                } else {
+                    return { ...item, status: false }
+                }
+                return item
+            })
+            return { ...obj, remarks: newObj, checked: true }
+        }
+        return obj
+    })
+    setRatingReview(arr1) 
     // setRemarkedData()
-    let newArr = [];
+    let newArr = []
     arr1.map((obj, index) => {
-      let newTemp = {};
-      newTemp['given_rating'] = obj?.given_rating;
-      newTemp['id'] = obj?.id;
-      newTemp['name'] = obj?.name;
-      newTemp['remarks'] = JSON.stringify(obj?.remarks);
-      newTemp['reviewer_id'] = obj?.reviewer_id;
-      newArr.push(newTemp);
-    });
-  };
+        let newTemp = {}
+        newTemp['given_rating'] = obj?.given_rating;
+        newTemp['id'] = obj?.id;
+        newTemp['name'] = obj?.name;
+        newTemp['remarks'] = JSON.stringify(obj?.remarks);
+        newTemp['reviewer_id'] = obj?.reviewer_id;
+        newArr.push(newTemp)
+    })
+
+}
 
   const handleFileChange = (event) => {
     const { files } = event.target;
