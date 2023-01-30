@@ -1096,6 +1096,7 @@ const BlogWall = () => {
                                   alt="Image"
                                   title="Blog View"
                                 />
+                                <div class="badge" style={{position: 'absolute', top:'20%', left: '12%',padding:'0.5rem', maxWidth:'75%', whiteSpace:'break-spaces', fontSize:'12px', lineHeight:'1.4'}}>{item?.content.length > 150 ? `${item?.content.slice(0,150)}...` : item?.content }</div>
 
                               </Badge.Ribbon>
                             </CardActionArea>

@@ -103,7 +103,6 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               variant='outlined'
               size='small'
               value={legalDetails?.legalName}
-              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 50 }}
               name='legalName'
               onChange={(e) => handleLegalDetails(e.target.value, 'legalName')}
               required
@@ -168,7 +167,6 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               variant='outlined'
               size='small'
               value={legalDetails?.legalEmail}
-              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 50 }}
               name='legalEmail'
               onChange={(e) => handleLegalDetails(e.target.value, 'legalEmail')}
               required

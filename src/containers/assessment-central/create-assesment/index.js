@@ -731,9 +731,16 @@ const CreateAssesment = ({
       const { results = {} } = (await initCreateAssesment(reqObj)) || {};
       if (results?.status_code === 200) {
         setLoading(false);
+
         setAlert('success', results?.message);
         resetForm();
         history.push('/assesment');
+      } else if (results?.status_code === 400) {
+        if (results?.message.includes('not alloted')) {
+          setLoading(false);
+          setAlert('error', results?.message);
+          return;
+        }
       } else {
         setLoading(false);
         if (results?.developer_msg.includes('Sum of total marks')) {
