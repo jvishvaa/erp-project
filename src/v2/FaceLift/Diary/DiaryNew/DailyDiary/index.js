@@ -812,11 +812,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   }, [chapterID]);
 
   const handleAddHomeWork = async () => {
-    if (!homeworkTitle) {
+    if (!homeworkTitle.trim().length) {
       message.error('Please fill Homework Title');
       return;
     }
-    if (!homeworkInstructions) {
+    if (!homeworkInstructions.trim().length) {
       message.error('Please fill Homework Instructions');
       return;
     }
