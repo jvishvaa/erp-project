@@ -382,7 +382,8 @@ const CalendarV2 = () => {
                     session_year: acad_session.toString(),
                     grade: selectedGrade,
                     start_date: startDate,
-                    end_date: endDate
+                    end_date: endDate,
+                    branch_id : selectedBranch.toString(),
                 })
             }
         } else {
@@ -396,7 +397,8 @@ const CalendarV2 = () => {
                     start_date: startDate,
                     end_date: endDate,
                     level: user_level,
-                    event_category: selectedCategory
+                    event_category: selectedCategory,
+                    branch_id : selectedBranch.toString(),
                 })
             }
         }
