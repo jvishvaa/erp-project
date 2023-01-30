@@ -1168,7 +1168,7 @@ const BlogWall = () => {
                               <Divider style={{ padding: "0px", margin: "0px" }} />
                               <div style={{ width: '100%', padding: '5px', fontSize: '12px', fontWeight: 500 }}>
                                 <div>
-                                  {moment(item?.created_at).format("MMM Do YY")}
+                                  {moment(item?.scheduled_time).format("MMM Do YY")}
                                 </div>
                               </div>
                             </CardActions>
