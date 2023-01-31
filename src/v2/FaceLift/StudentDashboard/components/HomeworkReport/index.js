@@ -110,7 +110,7 @@ const HomeworkReport = () => {
         <div className='th-width-100 text-center mt-5'>
           <Spin tip='Loading...'></Spin>
         </div>
-      ) : homeworkReportData.total_assigned > 0 ? (
+      ) : homeworkReportData?.total_assigned > 0 ? (
         <div className='th-custom-col-padding'>
           <div className='row px-2'>
             <div className='col-12 px-md-0 text-center'>

@@ -228,6 +228,8 @@ export default {
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
   principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
 
+  appVersion: `${baseURLCentral}/central-admin/app-versioning/`,
+
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
