@@ -224,7 +224,7 @@ const Assessment = () => {
                         <div className='col-9 text-truncate'>
                           <Tooltip title={item?.subject}>{item?.subject}</Tooltip>
                         </div>
-                        <div className='col-3 text-center px-0'>{item.average} %</div>
+                        <div className='col-3 text-center px-0'>{item?.average} %</div>
                       </div>
                     ))}
                   </div>
