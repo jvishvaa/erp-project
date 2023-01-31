@@ -22,8 +22,12 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const isLegalDetails = Object.values(legalDetails).every((x) => x === '');
-    if (isLegalDetails) {
+
+    if (
+      legalDetails?.legalName &&
+      legalDetails?.legalContact &&
+      legalDetails?.legalEmail
+    ) {
       setLoading(true);
       const request = new FormData();
       request.append('branch_name', branchName);
