@@ -45,6 +45,19 @@
        background: white;
        border: 1px solid black;
   }
+
+  .question-visual{
+    // border: 1px solid red;
+    padding: 0.5rem 0rem;
+  }
+
+  .delete-visual-icon{
+    display: flex;
+    align-items: center;
+  }
+  .padding-style{
+    padding: 0.5rem 0rem;
+  }
   // @media print {
   //   body, page {
   //     margin: 0;

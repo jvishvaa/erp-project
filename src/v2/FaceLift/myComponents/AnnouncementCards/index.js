@@ -17,7 +17,7 @@ const AnnouncementCard = (props) => {
   };
 
   return (
-    <div className=''>
+    <div className='th-pointer'>
       <div
         className='col-md-12 my-2 th-bg-grey th-br-2 p-2'
         style={{ borderLeft: `3px ${getCategoryColor(category)} solid` }}

@@ -1,23 +1,20 @@
-import React, { useState, useRef, useEffect, createRef, useContext } from 'react'
-import { Avatar, Breadcrumb, Button, Spin, Divider, Modal, Form, Select } from 'antd';
+import React, { useState, useRef, createRef, useContext } from 'react'
+import { Breadcrumb, Button, Divider, Form, Select } from 'antd';
+// import type { UploadProps } from 'antd';
 import './blog.css';
-import { CardActionArea, Card, CardHeader, Grid, CardMedia, makeStyles, CardActions, Drawer, TextField } from '@material-ui/core';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import { makeStyles, TextField } from '@material-ui/core';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import IconButton from '@material-ui/core/IconButton';
-import { FormOutlined, UserOutlined, DownOutlined, SearchOutlined, FileProtectOutlined } from '@ant-design/icons';
+import { DownOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import moment from 'moment';
-import CancelIcon from '@material-ui/icons/Cancel';
 import Layout from 'containers/Layout';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import { each } from 'highcharts';
-import { validate } from '@material-ui/pickers';
 import Loader from 'containers/sure-learning/hoc/loader';
+import UploadModalBlog from './UploadModalBlog';
 
 
 
@@ -114,7 +111,6 @@ const CreatePostActivity = () => {
     const [view, setView] = useState(false);
     const [listCount, setListCount] = useState('');
     const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
-    // const history = useHistory();
     const [loading, setLoading] = useState(false);
     const [blogWallList, setBlogWallList] = useState([]);
     const [postList, setPostList] = useState([]);
@@ -127,9 +123,11 @@ const CreatePostActivity = () => {
     const [description, setDescription] = useState('');
     const [activityLevel, setActivityLevel] = useState('')
     const { setAlert } = useContext(AlertNotificationContext);
-    const [assessmentReviewFile, setAssessmentReviewFile] = useState('');
+    const [assessmentReviewFile, setAssessmentReviewFile] = useState([]);
     const [activityId, setActivityId] = useState('')
     const fileRef = useRef()
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [showUploadModal, setShowUploadModal] = useState(false);
 
 
     const handleGoBack = () => {
@@ -196,9 +194,6 @@ const CreatePostActivity = () => {
 
     const dataPost = () => {
         setLoading(true)
-        // const branchIds = selectedBranch.map((obj) => obj?.id);
-        // const gradeIds = selectedGrade.map((obj) => obj?.id);
-        // const sectionIds = selectedSection.map((obj) => obj?.id);
         if (title.length === 0) {
             setLoading(false)
             setAlert('error', 'Please Add Title')
@@ -257,15 +252,46 @@ const CreatePostActivity = () => {
 
 
     const onFileChange = (event) => {
-        console.log(event.target.files[0])
-        setAssessmentReviewFile(event.target.files[0])
-        console.log(URL.createObjectURL(event.target.files[0]))
+        setAssessmentReviewFile(...assessmentReviewFile, event.target.files[0])
     }
 
     const handleClearActivity = () => {
         setActivityId('')
         setActivityLevel("")
     }
+
+    const handleRemoveUploadedFile = (index) => {
+        const newFileList = uploadedFiles.slice();
+        newFileList.splice(index, 1);
+        setUploadedFiles(newFileList);
+    };
+
+    const handleUploadedFiles = (value) => {
+        setUploadedFiles(value);
+    };
+
+    const handleShowModal = () => {
+        if (!boardId) {
+            setAlert('error', 'Please Select Branch')
+            return;
+        }else if(!activityLevel){
+            setAlert('error', 'Please Select Activity Level')
+            return;
+        }else if(!title){
+            setAlert('error','Please Add Title')
+            return
+        }else if(!description){
+            setAlert('error','Please Add Description')
+            return
+        }
+        else {
+            setShowUploadModal(true);
+        }
+    };
+
+    const handleUploadModalClose = () => {
+        setShowUploadModal(false);
+    };
 
 
 
@@ -300,7 +326,6 @@ const CreatePostActivity = () => {
                             <div className='col-12'>
                                 <Form id='filterForm' ref={formRef} layout={'horizontal'}>
                                     <div className='row align-items-center'>
-                                        {/* {boardFilterArr.includes(window.location.host) && ( */}
                                         <div className='col-md-2 col-6 pl-0'>
                                             <div className='mb-2 text-left'>Branch</div>
                                             <Form.Item name='branch'>
@@ -308,7 +333,6 @@ const CreatePostActivity = () => {
                                                     showSearch
                                                     placeholder='Select Branch'
                                                     getPopupContainer={(trigger) => trigger.parentNode}
-                                                    // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                                                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                                                     placement='bottomRight'
                                                     suffixIcon={<DownOutlined className='th-grey' />}
@@ -337,6 +361,7 @@ const CreatePostActivity = () => {
                                                     placeholder='Select Activity Level'
                                                     showSearch
                                                     // disabled={user_level == 13}
+                                                    
                                                     optionFilterProp='children'
                                                     filterOption={(input, options) => {
                                                         return (
@@ -355,8 +380,6 @@ const CreatePostActivity = () => {
                                             </Form.Item>
                                         </div>
                                         <div className='col-12'>
-                                            {/* <div className='row'> */}
-                                            {/* <div className='col-12'> */}
 
                                             <div
                                                 style={{
@@ -399,30 +422,11 @@ const CreatePostActivity = () => {
                                                         variant='outlined'
                                                     />
                                                     <div className='col-12' style={{ display: 'flex', padding: '0.5rem 1rem' }}>
-                                                        <input type="file"
-                                                            accept=".jpeg, .png, .mp4"
-                                                            id="outlined-button-file"
-                                                            // onChange={(e) => handleUpload(e.target.files)}
-                                                            onChange={onFileChange}
-                                                            ref={fileRef}
-                                                        />
-                                                    </div>
-
-                                                    <div className='col-12' style={{ display: 'flex', alignItem: 'center', padding: '0.5rem 1rem', justifyContent: 'center' }}>
-                                                        <Button type="primary"
-                                                            icon={<FileProtectOutlined />}
-                                                            // onClick={goSearch}
-                                                            onClick={dataPost}
-                                                            size={'medium'}>
-                                                            Submit
-                                                        </Button>
+                                                        <Button onClick={handleShowModal} icon={<UploadOutlined />}>Upload</Button>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {/* </div> */}
-
-                                            {/* </div> */}
                                         </div>
 
                                     </div>
@@ -432,6 +436,17 @@ const CreatePostActivity = () => {
                         </div>
 
                     </div>
+
+                    <UploadModalBlog
+                        show={showUploadModal}
+                        branchId={boardId}
+                        title={title}
+                        description={description}
+                        view_level={activityLevel}
+                        user_id={user_id?.id}
+                        handleClose={handleUploadModalClose}
+                        setUploadedFiles={handleUploadedFiles}
+                    />
 
                 </Layout>
 

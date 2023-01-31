@@ -321,7 +321,7 @@ const TimeTable = (props) => {
       end_time: `${moment(selectedEndTime).format('HH:mm:00')}`,
       days: days.map((item) => item.id),
       teacher_id: assignedTeacherID,
-      subject_mapping_id: sectionIdOption,
+      subject_mapping_id: periodType?.type === 'Break' ? null : sectionIdOption,
       tt_id: ttID,
     };
 
@@ -338,6 +338,7 @@ const TimeTable = (props) => {
   const handlePeriodType = (value) => {
     setPeriodType(value);
     setperiodTypeId(value?.id);
+    setSectionIdOption(null);
   };
   return (
     <>

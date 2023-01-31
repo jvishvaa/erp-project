@@ -368,6 +368,7 @@ import ExtraAmtAdjust from 'containers/Finance/src/components/Finance/NegativeBa
 import StudentReport from 'containers/assessment-central/assessment-report-types/student-report/student-report';
 import WeeklyQuizPerformance from 'containers/assessment-central/assessment-report-types/student-report/weekly-quiz-performnace';
 import HolidayMark from 'containers/attendance/holidaymark';
+import HolidayMarkOld from 'containers/attendance/holidayMarkOld';
 import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
 import StudentCountReport from 'containers/student-strength/studentCountReport/index.jsx';
@@ -447,6 +448,7 @@ import V2Router from 'v2RouterConfig/v2Router';
 import Filters from 'containers/assessment-central/create-question-paper-new/filters';
 import { IsV2Checker } from 'v2/isV2Checker';
 import EventsMark from 'containers/attendance/eventsmark';
+import EventsMarkOld from 'containers/attendance/eventsmarkOld';
 import Category from './containers/question-bank/category/category-table';
 import CategoryMapping from './containers/subjectGradeMapping/CategoryMapping';
 import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/ReportConfigTable';
@@ -466,6 +468,12 @@ import ViewBMI from 'containers/newBlog/ViewBMI';
 import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
+import CalendarV2 from 'containers/attendance/CalendarEventHoliday';
+import TeacherCalendar from 'containers/attendance/teacherCalendar';
+import VisualActivity from 'containers/newBlog/VisualActivity';
+import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
+import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
+import StudentSideVisualActivity from 'containers/newBlog/StudentSideVisualActivity';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -546,6 +554,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route path='/student/phycial/activity'>
                               {({ match }) => <StudentSidePhysicalActivity match={match} />}
+                            </Route>
+                            <Route path='/student/visual/activity'>
+                              {({ match }) => <StudentSideVisualActivity match={match} />}
                             </Route>
                             <Route path='blog-activity-view'>
                               {({ match }) => <BlogActivityView match={match} />}
@@ -712,6 +723,15 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/physical/activity/review'>
                               {({ match }) => <PhysicalActivityReview match={match} />}
+                            </Route>
+                            <Route exact path='/visual/activity'>
+                              {({ match }) => <VisualActivity match={match} />}
+                            </Route>
+                            <Route exact path='/visual/activity/create'>
+                              {({ match }) => <VisualActivityCreate match={match} />}
+                            </Route>
+                            <Route exact path='/visual/activity/review'>
+                              {({ match }) => <VisualActivityReview match={match} />}
                             </Route>
                             <Route exact path='/blog/wall/central/redirect'>
                               {({ match }) => <CentralBlogRedirection match={match} />}
@@ -1773,10 +1793,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                               {({ match }) => <MarkAttedance match={match} />}
                             </Route>
                             <Route exact path='/attendance-calendar/teacher-view'>
-                              {({ match }) => <AttedanceCalender match={match} />}
+                              {({ match }) => <TeacherCalendar match={match} />}
                             </Route>
                             <Route exact path='/attendance-calendar/student-view'>
-                              {({ match }) => <AttedanceCalender match={match} />}
+                              {({ match }) => <TeacherCalendar match={match} />}
                             </Route>
                             <Route exact path='/teacher-view/attendance'>
                               {({ match }) => <Attendance match={match} />}
@@ -2004,6 +2024,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route path='/eventmarking'>
                               {({ match }) => <EventsMark match={match} />}
+                            </Route>
+                            <Route path='/holidaymarkingOld'>
+                              {({ match }) => <HolidayMarkOld match={match} />}
+                            </Route>
+                            <Route path='/eventmarkingOld'>
+                              {({ match }) => <EventsMarkOld match={match} />}
                             </Route>
                             <Route path='/student_count_report'>
                               {({ match }) => <StudentCountReport match={match} />}
@@ -2239,7 +2265,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/online-books/'>
                               {({ match }) => <NewEbookView match={match} />}
                             </Route>
-
                             <Route path='/bmi/view'>
                               {({ match }) => <ViewBMI match={match} />}
                             </Route>

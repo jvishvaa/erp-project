@@ -155,13 +155,19 @@ const Sections = ({
   const getMarks = () => {
     let marks = 0;
     for (let i = 0; i < section?.mandatory_questions; i++) {
-      marks += parseInt(section?.test_marks[i]?.question_mark[0]);
+      marks += parseFloat(section?.test_marks[i]?.question_mark[0]);
     }
-    return marks;
+    if(section?.questions?.length > 0){
+      return marks;
+    }else return 0;
   };
-  let marks = useEffect(() => {
-    if(!isEdit){
+  useEffect(() => {
+    if(!isEdit && section){
       handleOptionalQuestion(section?.questions?.length, '');
+    }else if(isEdit && section){
+        if(section?.questions?.length < section?.mandatory_questions){
+          handleOptionalQuestion(section?.questions?.length, '');
+        }
     }
   }, [section?.questions?.length]);
 

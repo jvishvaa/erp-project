@@ -69,7 +69,8 @@ const TeacherTimeTable = () => {
             : `${pType}`
           : item?.period_type_name;
       let tempObj = {
-        title: title,
+        title:
+          title == 'Break' ? title : `${title} ${item?.grade_name} ${item?.section_name}`,
         start: setConvertDate + 'T' + item?.start_time,
         end: setConvertDate + 'T' + item?.end_time,
         extendedProps: item,
@@ -84,9 +85,10 @@ const TeacherTimeTable = () => {
   const endDateOfWeek = moment().endOf('week').format('YYYY-MM-DD');
 
   const handlesetPeriodDetails = (data) => {
-    // Trigger's on clicking
-    setPeriodData(data?.event?.extendedProps);
-    setOpenPeriod(true);
+    if (data?.event?.extendedProps?.period_type_name !== 'Break') {
+      setPeriodData(data?.event?.extendedProps);
+      setOpenPeriod(true);
+    }
   };
 
   useEffect(() => {

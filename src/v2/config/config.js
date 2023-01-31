@@ -22,6 +22,7 @@ const local = {
     msReportsUrlNew: 'https://reports.dev-k8.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
+    newBlogURL: 'https://activities-ms.dev-k8.letseduvate.com',
   },
 };
 const dev = {
@@ -44,6 +45,7 @@ const dev = {
     msReportsUrlNew: 'https://reports.dev-k8.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
+    newBlogURL: 'https://activities-ms.dev-k8.letseduvate.com',
   },
 };
 
@@ -66,6 +68,7 @@ const qa = {
     msReportsUrlNew: 'https://reports.qa.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
+    newBlogURL: 'https://activities-ms.qa.letseduvate.com',
   },
 };
 
@@ -78,9 +81,12 @@ const stage = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
-    baseURLCentral: 'https://stage.mgmt.letseduvate.com/qbox',
+    baseURLCentral: 'https://mgmt-stage.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     baseEvent: 'http://events.letseduvate.com/',
+    newBlogURL: 'https://activities.letseduvate.com',
+    msReportsUrl: 'https://reports.qa.letseduvate.com',
+    msReportsUrlNew: 'https://reports.qa.letseduvate.com',
   },
 };
 
@@ -100,6 +106,7 @@ const prod = {
     msReportsUrlNew: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
+    newBlogURL: 'https://activities.letseduvate.com',
     baseFinanceURL: chechUrl
       ? 'https://orchids.finance.letseduvate.com/qbox'
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
