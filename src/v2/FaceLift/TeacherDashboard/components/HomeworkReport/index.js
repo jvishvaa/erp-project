@@ -1,28 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import ReportsCard from 'v2/FaceLift/myComponents/ReportsCard';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { ReloadOutlined } from '@ant-design/icons';
 import { message, Spin } from 'antd';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import { RiseOutlined, FallOutlined } from '@ant-design/icons';
+import NoHWIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/noHW.png';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import moment from 'moment';
 
-const HomeWorkReport = () => {
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+const HomeworkReport = () => {
+  const history = useHistory();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const selectedBranch = useSelector(
-    (state) => state.commonFilterReducer?.selectedBranch
-  );
-  const [homeworkReportData, setHomeworkReportData] = useState([]);
+  const [homeworkReportData, setHomeworkReportData] = useState({
+    total_assigned: 149,
+    total_submitted: 89,
+    total_evaluation_pending: 19,
+    total_evaluated: 70,
+    total_pending: 60,
+  });
   const [loading, setLoading] = useState(false);
 
   const fetchHomeworkReportData = (params = {}) => {
     setLoading(true);
     axios
-      .get(`${endpoints.teacherDashboard.homeworkReport}`, {
+      .get(`${endpoints.studentDashboard.homeworkReport}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
@@ -40,44 +46,162 @@ const HomeWorkReport = () => {
       });
   };
 
-  const getHomeWorkReportData = () => {
-    if (selectedBranch && selectedAcademicYear)
-      fetchHomeworkReportData({
-        branch_ids: selectedBranch?.branch?.id,
-        session_year_id: selectedAcademicYear?.id,
-        level: user_level,
-      });
+  const optionsOverallPie = {
+    chart: {
+      type: 'pie',
+    },
+    title: {
+      verticalAlign: 'middle',
+      floating: true,
+      text:
+        'Overall' +
+        '<br />' +
+        `${
+          homeworkReportData?.total_assigned == 0
+            ? 0
+            : (
+                (homeworkReportData?.total_submitted /
+                  homeworkReportData?.total_assigned) *
+                100
+              ).toFixed(2)
+        }%`,
+      y: 18,
+      style: { fontWight: '800', color: '#32334a ', fontFamily: 'Inter, sans-serif' },
+    },
+    colors: ['#3AAC45', '#89B4E2 ', '#ff9922', '#f8222f'],
+    credits: {
+      enabled: false,
+    },
+
+    plotOptions: {
+      pie: {
+        shadow: true,
+        cursor: 'pointer',
+      },
+    },
+    tooltip: {
+      formatter: function () {
+        return '<b>' + this.point.name + '</b>: ' + this.percentage.toFixed(2) + ' %';
+      },
+    },
+    series: [
+      {
+        data: [
+          ['Homework Submitted', homeworkReportData?.total_submitted],
+          ['Evaluation Done', homeworkReportData?.total_evaluated],
+          ['Evaluation Pending', homeworkReportData?.total_evaluation_pending],
+          ['Homework Pending', homeworkReportData?.total_pending],
+        ],
+        // size: '100%',
+        innerSize: '75%',
+        showInLegend: false,
+        dataLabels: {
+          enabled: false,
+        },
+      },
+    ],
   };
 
-  useEffect(() => {
-    getHomeWorkReportData();
-  }, []);
+  // useEffect(() => {
+  //   if (selectedAcademicYear)
+  //     fetchHomeworkReportData({
+  //       session_id: selectedAcademicYear?.id,
+  //     });
+  // }, [selectedAcademicYear]);
 
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 260 }}>
+    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 240 }}>
       <div className='row justify-content-between'>
-        <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
-          Homeworks
-          <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-            {/* <ReloadOutlined onClick={getHomeWorkReportData} className='pl-md-3' /> */}
-          </span>
-        </div>
+        <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>Homework Details</div>
       </div>
       {loading ? (
         <div className='th-width-100 text-center mt-5'>
           <Spin tip='Loading...'></Spin>
         </div>
-      ) : homeworkReportData?.length > 0 ? (
-        <div className='my-1 p-2'>
-          <ReportsCard data={homeworkReportData} type='homework' />
+      ) : homeworkReportData?.total_assigned > 0 ? (
+        <div className='th-custom-col-padding'>
+          <div className='row px-2'>
+            <div className='col-12 px-0 text-center'>
+              <div className='d-flex justify-content-between justify-content-sm-around justify-content-lg-between'>
+                <div>
+                  <HighchartsReact
+                    highcharts={Highcharts}
+                    options={optionsOverallPie}
+                    containerProps={{
+                      style: {
+                        height: '200px',
+                        width: window.innerWidth < 892 ? '160px' : '190px',
+                        marginRight: '-30px',
+                      },
+                    }}
+                  />
+                </div>
+                <div className='d-flex flex-column justify-content-center th-fw-500 mr-3'>
+                  <div className='th-grey py-1 d-flex justify-content-between'>
+                    <span>Total Assigned :</span>{' '}
+                    <span>{homeworkReportData?.total_assigned}</span>
+                  </div>
+                  <div className='th-green-2 py-1 d-flex justify-content-between'>
+                    <span>Total Submitted :</span>{' '}
+                    <span>&nbsp;{homeworkReportData?.total_submitted}</span>
+                  </div>
+                  <div className='th-yellow py-1 d-flex justify-content-between'>
+                    <span>Total Evaluated :</span>{' '}
+                    <span>{homeworkReportData?.total_evaluated}</span>
+                  </div>
+                  <div className='th-red py-1 d-flex justify-content-between'>
+                    <span>Total Pending :</span>{' '}
+                    <span>{homeworkReportData?.total_pending}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className='d-flex justify-content-between align-items-center px-2'>
+            {homeworkReportData?.cur_month_performance !== null && (
+              <div className={`th-black-1 th-12`}>
+                <div>
+                  % Submission in this Month(
+                  {moment().format('MMM')}) - {homeworkReportData?.cur_month_performance}{' '}
+                  %
+                </div>
+                <div>
+                  <span
+                    className={`${
+                      homeworkReportData?.monthly_performance > 0
+                        ? 'th-green-2'
+                        : 'th-red'
+                    }`}
+                  >
+                    {homeworkReportData?.monthly_performance > 0 ? (
+                      <RiseOutlined className='mr-1' />
+                    ) : (
+                      <FallOutlined className='mr-1' />
+                    )}
+                    {homeworkReportData?.monthly_performance} %{' '}
+                  </span>
+                  since previous Month
+                </div>
+              </div>
+            )}
+
+            <div
+              className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
+              style={{ outline: '1px solid #d9d9d9' }}
+              onClick={() => history.push('/homework/teacher')}
+            >
+              View Details
+            </div>
+          </div>
         </div>
       ) : (
         <div className='d-flex justify-content-center mt-5'>
-          <img src={NoDataIcon} />
+          <img src={NoHWIcon} style={{ height: '120px', objectFit: 'cover' }} />
         </div>
       )}
     </div>
   );
 };
 
-export default HomeWorkReport;
+export default HomeworkReport;

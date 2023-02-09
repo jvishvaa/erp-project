@@ -23,7 +23,7 @@ const GradeWiseAttendance = () => {
   const history = useHistory();
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
   const [gradewiseAttendanceData, setGradewiseAttendanceData] = useState([]);
-  const [attendanceCountData, setAttendanceCountData] = useState([]);
+  const [attendanceCountData, setAttendanceCountData] = useState();
   const [loading, setLoading] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
@@ -33,10 +33,10 @@ const GradeWiseAttendance = () => {
     }
   };
   useEffect(() => {
-  if(history?.location?.state?.date != undefined ){
-    setDate(history?.location?.state?.date)
-  }
-  },[history])
+    if (history?.location?.state?.date != undefined) {
+      setDate(history?.location?.state?.date);
+    }
+  }, [history]);
 
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
@@ -147,22 +147,6 @@ const GradeWiseAttendance = () => {
         bordered={false}
         style={{ width: '100%' }}
         rowClassName='th-pointer'
-        onRow={(row, rowindex) => {
-          return {
-
-            onClick: (e) =>
-            history.push({
-              pathname: '/sectionwise-attendance',
-              state: {
-                gradeName: record?.grade_name,
-                gradeID: record?.grade_id,
-                sectionName: row?.section_name,
-                sectionID: row?.section_id,
-                date: date,
-              },
-            })
-          }
-        }}
       />
     );
   };
@@ -262,36 +246,43 @@ const GradeWiseAttendance = () => {
           </span>
         </div>
         <div className='row mt-3'>
-          <div className='col-12'>
-            <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
-              <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
-                Total Students:{' '}
-                <span className='th-primary'>{attendanceCountData?.total_strength}</span>
-              </div>
-              <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                Students Present:{' '}
-                <span className='th-green'>{attendanceCountData?.total_present}</span>
-              </div>
-              <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                Students Absent:{' '}
-                <span className='th-fw-500 th-red'>
-                  {attendanceCountData?.total_absent}
-                </span>
-              </div>
-              <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-                Students Marked:{' '}
-                <span className='th-fw-500 th-green'>
-                  {attendanceCountData?.total_marked}
-                </span>
-              </div>
-              <div className='col-md-4 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
-                Students Unmarked:{' '}
-                <span className='th-fw-500 th-red'>
-                  {attendanceCountData?.total_unmarked}
-                </span>
+          {gradewiseAttendanceData.length > 0 && (
+            <div className='col-12'>
+              <div
+                className='row pt-2 align-items-center th-bg-white th-br-8 th-13 th-grey th-fw-500'
+                style={{ outline: '1px solid #d9d9d9' }}
+              >
+                <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
+                  Total Students:{' '}
+                  <span className='th-primary'>
+                    {attendanceCountData?.total_strength}
+                  </span>
+                </div>
+                <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                  Students Present:{' '}
+                  <span className='th-green'>{attendanceCountData?.total_present}</span>
+                </div>
+                <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                  Students Absent:{' '}
+                  <span className='th-fw-500 th-red'>
+                    {attendanceCountData?.total_absent}
+                  </span>
+                </div>
+                <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                  Students Marked:{' '}
+                  <span className='th-fw-500 th-green'>
+                    {attendanceCountData?.total_marked}
+                  </span>
+                </div>
+                <div className='col-md-4 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+                  Students Unmarked:{' '}
+                  <span className='th-fw-500 th-red'>
+                    {attendanceCountData?.total_unmarked}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className='row mt-3'>
@@ -324,7 +315,7 @@ const GradeWiseAttendance = () => {
                   />
                 )
               }
-              scroll={{ x: 'max-content' }}
+              scroll={{ x: gradewiseAttendanceData.length > 0 ? 'max-content' : null }}
             />
           </div>
         </div>

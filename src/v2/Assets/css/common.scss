@@ -62,11 +62,11 @@ body {
 }
 
 .th-holiday {
-  color: #89DDF1
+  color: #89ddf1;
 }
 
 .th-events {
-  color: #E089F1
+  color: #e089f1;
 }
 
 .th-green-1 {
@@ -417,4 +417,20 @@ svg {
 .th-calendar-popover .fc-more-link {
   bottom: 0px !important;
   height: 25px !important;
+}
+
+// Siderbar Styles
+.makeStyles-drawerPaperClose-67,
+.makeStyles-drawerPaper-66 {
+  z-index: 1100 !important;
+}
+
+// TopBar Styles
+.makeStyles-appBar-96 {
+  z-index: 1000 !important;
+}
+@media only screen and (max-width: 992px) {
+  .makeStyles-appBar-96 {
+    z-index: 1200 !important;
+  }
 }

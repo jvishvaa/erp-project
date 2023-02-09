@@ -206,7 +206,10 @@ const CalendarCard = () => {
           </Select>
         </div>  */}
       </div>
-      <div className='shadow-sm p-2' style={{ height: '380px' }}>
+      <div
+        className='shadow-sm p-2'
+        style={{ height: window.innerWidth < 892 ? '470px' : '380px' }}
+      >
         <div className='row'>
           <Calendar
             value={new Date()}

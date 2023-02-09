@@ -1160,6 +1160,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [showPeriodInfoModal]);
 
+  useEffect(() => {
+    if (!history?.location?.state?.data) {
+      setAddedPeriods([]);
+      setUpcomingPeriod({});
+      setClearUpcomingPeriod(true);
+      setClearTodaysTopic(true);
+    }
+  }, [subjectID]);
+
   return (
     <div className='row th-bg-white'>
       <div className='row py-1'>
@@ -1251,11 +1260,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     // style={{ border: '1px solid #d9d9d9' }}
                   >
                     <div className='col-md-5 py-2 th-bg-grey th-br-6 ml-2'>
-                      <div className='row px-2 align-items-center'>
-                        <div className='col-6 px-0 th-black-2 th-fw-600 th-18'>
-                          Today's Topic
-                        </div>
-                        <div className='col-6 text-right pr-0'>
+                      <div className='d-flex justify-content-between px-2 align-items-center'>
+                        <div className=' th-black-2 th-fw-600 th-18'>Today's Topic</div>
+                        <div className=' text-right px-1'>
                           {addedPeriods.length > 0 && (
                             <span
                               className='th-12 px-1 th-primary py-1 th-pointer mr-3 th-br-6'
@@ -1352,7 +1359,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                         ) : null}
                                       </div>
                                       <div
-                                        className='col-1 pr-0'
+                                        className='col-1 px-1'
                                         onClick={() => {
                                           setIsPeriodAdded(false);
                                           setCompletedPeriod(item);
@@ -1432,14 +1439,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     </div>
 
                     <div
-                      className='col-md-5 py-2 th-bg-grey th-br-6 ml-3'
-                      style={{ height: '215px' }}
+                      className='col-md-5 py-2 th-bg-grey th-br-6 ml-2'
+                      style={{ minHeight: '215px' }}
                     >
-                      <div className='row px-2 align-items-center'>
-                        <div className='col-sm-6 col-8 px-0 th-black-2 th-fw-600 th-18'>
+                      <div className='d-flex justify-content-between px-2 align-items-center'>
+                        <div className=' px-0 th-black-2 th-fw-600 th-18'>
                           Upcoming Period
                         </div>
-                        <div className='col-sm-6 col-4 text-right pr-0'>
+                        <div className='text-right px-1'>
                           {!_.isEmpty(upcomingPeriod) ? (
                             <span
                               className='th-12 px-1 th-red py-1 th-pointer th-br-6'

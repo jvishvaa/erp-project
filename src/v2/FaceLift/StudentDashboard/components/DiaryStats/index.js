@@ -60,7 +60,8 @@ const DiaryStats = () => {
               style={{
                 backgroundImage: `url(${diaryBG})`,
                 height: 85,
-                backgroundSize: 'cover',
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
               }}
             >
               &nbsp;
