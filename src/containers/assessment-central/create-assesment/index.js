@@ -158,7 +158,7 @@ const CreateAssesment = ({
       setTestDate(EditData?.test_date);
       setTestDuration(EditData?.test_duration);
       setTotalmarks(EditData?.total_mark);
-      setChecked(!EditData?.is_question_wise)
+      setChecked(!EditData?.is_question_wise);
       initChangeTestFormFields('testName', EditData?.test_name);
       initChangeTestFormFields('testId', EditData?.test_id);
       initChangeTestFormFields('testDate', EditData?.test_date);
@@ -222,7 +222,7 @@ const CreateAssesment = ({
   }, [isEdit, branchDropdown]);
 
   useEffect(() => {
-    if(selectedQuestionPaper && selectedQuestionPaper?.section){
+    if (selectedQuestionPaper && selectedQuestionPaper?.section) {
       // let paperwise = false;
       let test_mark = [];
       let data = selectedQuestionPaper?.section?.forEach((sec) => {
@@ -238,7 +238,7 @@ const CreateAssesment = ({
   useEffect(() => {
     if (isEdit && groupList.length && EditData?.group_id !== null) {
       let filteredgroup = groupList.filter((item) => item?.id === EditData?.group_id);
-      handleGroup('', filteredgroup);
+      handleGroup('', filteredgroup[0]);
     }
   }, [groupList]);
 
@@ -483,10 +483,10 @@ const CreateAssesment = ({
     setSelectedGroupData({});
     setSelectedGroupId('');
     if (value) {
-      const sections = value[0]?.group_section_mapping?.map((i) => i?.section_mapping_id);
+      const sections = value?.group_section_mapping?.map((i) => i?.section_mapping_id);
       setGroupSectionMappingId(sections);
-      setSelectedGroupData(value[0]);
-      setSelectedGroupId(value[0]?.id);
+      setSelectedGroupData(value);
+      setSelectedGroupId(value?.id);
     }
   };
 
@@ -731,12 +731,23 @@ const CreateAssesment = ({
       const { results = {} } = (await initCreateAssesment(reqObj)) || {};
       if (results?.status_code === 200) {
         setLoading(false);
+
         setAlert('success', results?.message);
         resetForm();
         history.push('/assesment');
+      } else if (results?.status_code === 400) {
+        if (results?.message.includes('not alloted')) {
+          setLoading(false);
+          setAlert('error', results?.message);
+          return;
+        }
       } else {
         setLoading(false);
-        setAlert('error', results?.message);
+        if (results?.developer_msg.includes('Sum of total marks')) {
+          setAlert('error', results?.developer_msg);
+        } else {
+          setAlert('success', results?.message);
+        }
       }
     } catch (e) {
       setLoading(false);
@@ -1120,67 +1131,68 @@ const CreateAssesment = ({
                   </div>
                   <div className='question-container'>
                     <div className='sections-container'>
-                      {selectedQuestionPaper && questionPaperDetails?.map((section) => (
-                        <div className='section-container'>
-                          <div className='section-header'>
-                            <div className='left'>
-                              <div className='checkbox'>
-                                <Checkbox
-                                  checked
-                                  onChange={() => {}}
-                                  inputProps={{ 'aria-label': 'primary checkbox' }}
-                                  color='primary'
-                                />
-                              </div>
-                              <div className='section-name'>{`SECTION ${section.name}`}</div>
-                              <div className='ml-2'>
-                                {' '}
-                                {selectedQuestionPaper?.section?.filter(
-                                  (item) => item?.discription == section.name
-                                )[0]?.mandatory_questions
-                                  ? `Mandatory Questions:: 
+                      {selectedQuestionPaper &&
+                        questionPaperDetails?.map((section) => (
+                          <div className='section-container'>
+                            <div className='section-header'>
+                              <div className='left'>
+                                <div className='checkbox'>
+                                  <Checkbox
+                                    checked
+                                    onChange={() => {}}
+                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                    color='primary'
+                                  />
+                                </div>
+                                <div className='section-name'>{`SECTION ${section.name}`}</div>
+                                <div className='ml-2'>
+                                  {' '}
+                                  {selectedQuestionPaper?.section?.filter(
+                                    (item) => item?.discription == section.name
+                                  )[0]?.mandatory_questions
+                                    ? `Mandatory Questions:: 
                                 ${
                                   selectedQuestionPaper?.section?.filter(
                                     (item) => item?.discription == section.name
                                   )[0]?.mandatory_questions
                                 }`
-                                  : null}
+                                    : null}
+                                </div>
                               </div>
-                            </div>
-                            <div className='th-14 th-fw-500 mr-3'>
-                              {selectedQuestionPaper?.section?.filter(
-                                (item) => item?.discription == section.name
-                              )[0]?.instruction
-                                ? `Instructions : 
+                              <div className='th-14 th-fw-500 mr-3'>
+                                {selectedQuestionPaper?.section?.filter(
+                                  (item) => item?.discription == section.name
+                                )[0]?.instruction
+                                  ? `Instructions : 
                                 ${
                                   selectedQuestionPaper?.section?.filter(
                                     (item) => item?.discription == section.name
                                   )[0]?.instruction
                                 }`
-                                : null}
+                                  : null}
+                              </div>
+                            </div>
+
+                            <div className='section-content'>
+                              <div>Total Questions: {section.questions.length} </div>
+                              {section.questions.map((q) => (
+                                <div
+                                  className='question-detail-card-wrapper'
+                                  style={{ width: '100%' }}
+                                >
+                                  <QuestionDetailCard
+                                    createdAt={q?.created_at}
+                                    question={q}
+                                    expanded={marksAssignMode}
+                                    onChangeMarks={handleChangeTestMarks}
+                                    testMarks={testMarks}
+                                    paperchecked={paperchecked}
+                                  />
+                                </div>
+                              ))}
                             </div>
                           </div>
-
-                          <div className='section-content'>
-                            <div>Total Questions: {section.questions.length} </div>
-                            {section.questions.map((q) => (
-                              <div
-                                className='question-detail-card-wrapper'
-                                style={{ width: '100%' }}
-                              >
-                                <QuestionDetailCard
-                                  createdAt={q?.created_at}
-                                  question={q}
-                                  expanded={marksAssignMode}
-                                  onChangeMarks={handleChangeTestMarks}
-                                  testMarks={testMarks}
-                                  paperchecked={paperchecked}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -1244,17 +1256,17 @@ const CreateAssesment = ({
                                 id='testmode'
                                 name='testmode'
                                 onChange={(e, value) => {
-                                  if(value){ 
-                                  formik.setFieldValue('test_mode', value);
-                                  initSetFilter('selectedTestType', value);
-                                  formik.setFieldValue('test_type', '');
-                                  setAssesmentTypes([])
-                                  getAssesmentTypes(value);
-                                  }else{
-                                    formik.setFieldValue('test_mode', '');
-                                  initSetFilter('selectedTestType', '');
+                                  if (value) {
+                                    formik.setFieldValue('test_mode', value);
+                                    initSetFilter('selectedTestType', value);
                                     formik.setFieldValue('test_type', '');
-                                    setAssesmentTypes([])
+                                    setAssesmentTypes([]);
+                                    getAssesmentTypes(value);
+                                  } else {
+                                    formik.setFieldValue('test_mode', '');
+                                    initSetFilter('selectedTestType', '');
+                                    formik.setFieldValue('test_type', '');
+                                    setAssesmentTypes([]);
                                   }
                                 }}
                                 value={formik.values.test_mode}
@@ -1280,9 +1292,9 @@ const CreateAssesment = ({
                                 className='dropdownIcon'
                                 onChange={(e, value) => {
                                   console.log(value);
-                                  if(value){
+                                  if (value) {
                                     formik.setFieldValue('test_type', value);
-                                  }else{
+                                  } else {
                                     formik.setFieldValue('test_type', '');
                                   }
                                   if (
@@ -1399,20 +1411,22 @@ const CreateAssesment = ({
                                     </Button>
                                   </Grid>
                                 )}
-                                {formik?.values?.test_type?.exam_name == 'Quiz' ? '' : 
-                                <div className='d-flex' style={{ marginLeft: '20%' }}>
-                                  <Typography>Section</Typography>
-                                  <Switch
-                                    checked={sectionToggle}
-                                    onChange={handleSectionToggle}
-                                    color='default'
-                                    inputProps={{
-                                      'aria-label': 'checkbox with default color',
-                                    }}
-                                  />
-                                  <Typography>Group</Typography>
-                                </div>
-                                  }
+                                {formik?.values?.test_type?.exam_name == 'Quiz' ? (
+                                  ''
+                                ) : (
+                                  <div className='d-flex' style={{ marginLeft: '20%' }}>
+                                    <Typography>Section</Typography>
+                                    <Switch
+                                      checked={sectionToggle}
+                                      onChange={handleSectionToggle}
+                                      color='default'
+                                      inputProps={{
+                                        'aria-label': 'checkbox with default color',
+                                      }}
+                                    />
+                                    <Typography>Group</Typography>
+                                  </div>
+                                )}
                               </Grid>
                               {sectionToggle ? (
                                 <Grid item xs={12} md={4}>

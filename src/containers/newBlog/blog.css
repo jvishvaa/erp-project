@@ -6,18 +6,20 @@
 
 
 .filter-container-tab button {
-  margin-right: 2rem;
+  margin-right: 0.5rem;
   min-width: 5rem;
   padding: 0.5rem 1rem;
   border: none;
   background: white;
   color: rgb(65, 98, 168);
-  border-radius: 2rem;
+  border-radius: 5px;
   border: 2px solid rgb(65, 98, 168);
   font-weight: bold;
   cursor: pointer;
-  margin-top: 2rem;
+  margin-top: 0.5rem;
   font-size: 14px;
+  /* margin: 0.5rem 0rem; */
+
 
 }
 .filter-container-tab span {
@@ -49,6 +51,28 @@ button.active {
 
 }
 
+.card-media-design {
+  height: 240px !important;
+  width:100%;
+  object-fit:cover;
+  transition: 0.5s all ease-in-out;
+  overflow: hidden;
+}
+
+/* .card-media-design img {
+  transition: transform .5s ease;
+} */
+
+/* [3] Finally, transforming the image when container gets hovered */
+.card-media-design:hover {
+  transform: scale(1.05);
+}
+
+
+/* .card-media-design :hover {
+   transform: scale(1.5);
+} */
+
 .dummy-background {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
@@ -58,6 +82,24 @@ button.active {
     box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
     transition: all 0.3s ease-out;
 }
+
+.image-blog{
+  display: flex;
+  flex-wrap: wrap;
+  width: 60%;
+  height: 155px;
+  /* border: 1px solid red; */
+}
+.image-blog img{
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat ;
+  border-radius: 10px;
+}
+
+
 
 .body {
     /* border:1px solid black; */
@@ -173,8 +215,15 @@ button.active {
     }
 }
 
+.blog-redirect-header{
+  width: 60%;
+  height: 155px;
+
+}
+
 .blog-redirect-card {
-    height: 15vh;
+    /* height: 15vh; */
+    height: 100%;
     width: 100%;
     background-size: cover;
     background-position: center;
@@ -185,7 +234,8 @@ button.active {
 
 @media screen and (max-width: 1500px) {
     .blog-redirect-card {
-        height: 22vh;
+        height: 100%;
+        width: 100%;
     }
 }
 
@@ -210,6 +260,7 @@ button.active {
     padding: 0;
     box-sizing: border-box;
     background-color:#333333;
+    max-height: 80vh;
 
   }
   .carousel-global-inner{
@@ -226,7 +277,7 @@ button.active {
   .carousel {
     display: flex;
     justify-content: center;
-    margin: 0.5rem 1rem;
+    margin: 0.5rem;
   }
 
   .carousel-global .slide {
@@ -235,6 +286,8 @@ button.active {
 
   .carousel .slider-wrapper {
      /* background-color: #333333; */
+     /* border: 2px solid rgb(228, 224, 20); */
+     max-height: 64vh;
   }
 
   .carousel .slide {
@@ -258,7 +311,7 @@ button.active {
 
   .image{
     margin: 0 auto;
-    height: 100%;
+    max-height: 65vh;
     width: auto;
   }
 
@@ -275,7 +328,7 @@ button.active {
 
   @media only screen and (max-width:900px) {
     .carousel{
-      height: 8 0vh;
+      height: 80vh;
     }
   }
 
@@ -302,6 +355,7 @@ button.active {
   .post-description {
     display: flex;
     padding: 0.5rem;
+    align-items: center;
     /* border: 1px solid;  */
   }
   .profile-branch-format{
@@ -317,7 +371,7 @@ button.active {
   }
   .post-profile-description{
     /* border: 1px solid; */
-    padding: 0.5rem;
+    padding: 0px;
   }
 
   .post-description-inner{
@@ -327,6 +381,24 @@ button.active {
     /* border: 1px solid saddlebrown; */
     color: gray;
     font-size: 15px;
+    height: 70%;
+  }
+
+  .public-speaking-content {
+    max-height: 80vh;
+    overflow-y: scroll;
+  }
+
+  .comment-header{
+    /* border-bottom: 1px solid #8080807a; */
+    /* background: #e1e4e9; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    margin: 0.5rem 0;
+    align-items: center;
+    border-radius: 10px;
   }
 
 

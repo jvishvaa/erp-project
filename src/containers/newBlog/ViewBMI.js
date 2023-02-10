@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useContext, createRef } from 'react';
 import { useSelector } from 'react-redux';
 import Layout from 'containers/Layout';
-import {
-  Grid,
-  IconButton
-} from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { Breadcrumb, Button as ButtonAnt, Form, Select, message } from 'antd';
 import { useHistory } from 'react-router-dom';
@@ -14,24 +11,34 @@ import axios from 'v2/config/axios';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Loader from 'components/loader/loader';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { SearchOutlined, DownOutlined, FileAddOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  SearchOutlined,
+  DownOutlined,
+  FileAddOutlined,
+  EditOutlined,
+  EyeOutlined,
+} from '@ant-design/icons';
 import endpoints from '../../config/endpoints';
 import ViewBMITableCustom from './ViewBMITable';
 
 const DEFAULT_RATING = 0;
 
-
 const dummyData = [
   { id: 1, height: 20, weight: 40, bmi: 23, date: '28th Dec' },
   { id: 2, height: 21, weight: 40, bmi: 33, date: '28th Dec' },
   { id: 3, height: 20, weight: 44, bmi: 23, date: '28th Dec' },
+];
 
-]
-
-const tableData = { id: 1, student_name: 'Anam', erp_id: '221313131_OLV', grade: "grade 1", branch: 'Branch 1' }
+const tableData = {
+  id: 1,
+  student_name: 'Anam',
+  erp_id: '221313131_OLV',
+  grade: 'grade 1',
+  branch: 'Branch 1',
+};
 
 const ViewBMI = () => {
-  const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
+  const boardListData = useSelector((state) => state.commonFilterReducer?.branchList);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const formRef = createRef();
   // const classes = useStyles();
@@ -41,9 +48,11 @@ const ViewBMI = () => {
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [branchList, setBranchList] = useState([]);
-  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  const branch_update_user =
+    JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
-  const newBranches = JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
+  const newBranches =
+    JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
   const user_level = dataes?.user_level;
   const [moduleId, setModuleId] = useState();
   const [view, setView] = useState(false);
@@ -59,7 +68,7 @@ const ViewBMI = () => {
     history.push('/blog/blogview');
   };
   const [title, setTitle] = useState('');
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [boardId, setBoardId] = useState();
   const { Option } = Select;
   const [gradeId, setGradeId] = useState();
@@ -73,14 +82,13 @@ const ViewBMI = () => {
   const [subjectName, setSubjectName] = useState();
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [targetData, setTargetData] = useState([])
-  const [sourceData, setSourceData] = useState([])
+  const [targetData, setTargetData] = useState([]);
+  const [sourceData, setSourceData] = useState([]);
   const [loadingInner, setLoadingInner] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openBigModal, setOpenBigModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [boardName, setBoardName] = useState('')
-
+  const [boardName, setBoardName] = useState('');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -92,8 +100,7 @@ const ViewBMI = () => {
         ) {
           item.child_module.forEach((item) => {
             if (
-              item.child_name === 'Blog Activity'
-              &&
+              item.child_name === 'Blog Activity' &&
               window.location.pathname === '/bmi/view'
             ) {
               setModuleId(item.child_id);
@@ -117,7 +124,7 @@ const ViewBMI = () => {
       title: <span className='th-white th-fw-700 '>ERP ID</span>,
       dataIndex: 'erp_id',
       key: 'erp_id',
-      align: 'center'
+      align: 'center',
     },
     {
       title: <span className='th-white th-fw-700 '>Action</span>,
@@ -127,7 +134,8 @@ const ViewBMI = () => {
       render: (text, row, index) => (
         <>
           <span style={{ margin: '0.5rem 1rem' }}>
-            <ButtonAnt type="primary"
+            <ButtonAnt
+              type='primary'
               icon={<FileAddOutlined />}
               size={'medium'}
               onClick={() => CheckBMIFun(row)}
@@ -136,7 +144,8 @@ const ViewBMI = () => {
             </ButtonAnt>
           </span>
           <span style={{ margin: '0.5rem 1rem' }}>
-            <ButtonAnt type="primary"
+            <ButtonAnt
+              type='primary'
               icon={<EyeOutlined />}
               size={'medium'}
               onClick={showBigModal}
@@ -145,7 +154,7 @@ const ViewBMI = () => {
             </ButtonAnt>
           </span>
         </>
-      )
+      ),
     },
   ];
 
@@ -161,19 +170,19 @@ const ViewBMI = () => {
       title: <span className='th-white th-fw-700 '>Weight(in kgs)</span>,
       dataIndex: 'weight',
       key: 'weight',
-      align: 'center'
+      align: 'center',
     },
     {
       title: <span className='th-white th-fw-700 '>BMI</span>,
       dataIndex: 'bmi',
       key: 'bmi',
-      align: 'center'
+      align: 'center',
     },
     {
       title: <span className='th-white th-fw-700 '>Date</span>,
       dataIndex: 'date',
       key: 'date',
-      align: 'center'
+      align: 'center',
     },
     {
       title: <span className='th-white th-fw-700 '>Action</span>,
@@ -183,22 +192,22 @@ const ViewBMI = () => {
       render: (data) => (
         <>
           <span style={{ margin: '0.5rem 1rem' }}>
-            <ButtonAnt type="primary"
+            <ButtonAnt
+              type='primary'
               icon={<EditOutlined />}
               size={'medium'}
               onClick={editModal}
-            // onClick={showModal}
+              // onClick={showModal}
             >
               Edit
             </ButtonAnt>
           </span>
         </>
-      )
+      ),
     },
   ];
 
   const fetchBranches = () => {
-
     const transformedData = newBranches?.branches?.map((obj) => ({
       id: obj.id,
       branch_name: obj.name,
@@ -207,92 +216,79 @@ const ViewBMI = () => {
       branch_name: 'Select All',
       id: 'all',
     });
-  }
+  };
   useEffect(() => {
-
     fetchBranches();
-  }, [])
+  }, []);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const editModal = () => {
-    showModal()
-    setIsEdit(true)
-
-  }
+    showModal();
+    setIsEdit(true);
+  };
 
   const showBigModal = () => {
-    setOpenBigModal(true)
-  }
+    setOpenBigModal(true);
+  };
 
   const handleOk = () => {
     setIsModalOpen(false);
-    setIsEdit(false)
+    setIsEdit(false);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setIsEdit(false)
+    setIsEdit(false);
   };
 
-
-
   const handleBranch = (event, value) => {
-    setSelectedBranch([])
-    setSelectedGrade([])
+    setSelectedBranch([]);
+    setSelectedGrade([]);
     if (value?.length) {
-      const branchIds = value.map((obj) => obj?.id)
+      const branchIds = value.map((obj) => obj?.id);
       setSelectedBranch(value);
       if (branchIds) {
-        setLoading(true)
+        setLoading(true);
         axios
-          .get(`${endpoints.newBlog.activityGrade}?branch_ids=${branchIds}`,
-            {
-              headers: {
-                'X-DTS-HOST': X_DTS_HOST,
-              },
-            })
-          .then((response) => {
-            setGradeList(response?.data?.result)
-            setLoading(false)
+          .get(`${endpoints.newBlog.activityGrade}?branch_ids=${branchIds}`, {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
           })
-
+          .then((response) => {
+            setGradeList(response?.data?.result);
+            setLoading(false);
+          });
       }
-
     }
-
-
   };
 
   const handleGoBack = () => {
-    history.goBack()
-  }
+    history.goBack();
+  };
 
   const goSearch = () => {
-    setLoading(true)
+    setLoading(true);
     if (boardId === undefined) {
       setAlert('error', 'Please Select Branch');
-      setLoading(false)
-      return
+      setLoading(false);
+      return;
     } else if (gradeId == undefined) {
       setAlert('error', 'Please Select Grade');
-      setLoading(false)
-      return
+      setLoading(false);
+      return;
     } else if (subjectId == undefined) {
       setAlert('error', 'Please Select Section');
-      setLoading(false)
-      return
-    }
-
-    else {
+      setLoading(false);
+      return;
+    } else {
       setFlag(true);
-      setLoading(false)
+      setLoading(false);
     }
-
-  }
-
+  };
 
   const handleClearBoard = () => {
     setBoardId('');
@@ -306,16 +302,14 @@ const ViewBMI = () => {
     );
   });
 
-
   const handleBoard = (e, value) => {
     formRef.current.setFieldsValue({
       grade: null,
-      subject: null
-    })
+      subject: null,
+    });
     if (value) {
       setBoardId(value?.value);
-      setBoardName(value?.children)
-
+      setBoardName(value?.children);
     }
   };
 
@@ -332,10 +326,9 @@ const ViewBMI = () => {
 
   useEffect(() => {
     if (moduleId && boardId) {
-
-      fetchGradeData()
+      fetchGradeData();
     }
-  }, [boardId])
+  }, [boardId]);
 
   const fetchGradeData = () => {
     const params = {
@@ -360,16 +353,15 @@ const ViewBMI = () => {
   };
 
   useEffect(() => {
-    if (gradeId !== "") {
+    if (gradeId !== '') {
       fetchSubjectData({
         session_year: selectedAcademicYear?.id,
         branch_id: boardId,
         module_id: moduleId,
         grade_id: gradeId,
       });
-
     }
-  }, [gradeId])
+  }, [gradeId]);
 
   const fetchSubjectData = (params = {}) => {
     if (gradeId) {
@@ -385,7 +377,6 @@ const ViewBMI = () => {
         .catch((error) => {
           message.error(error.message);
         });
-
     }
   };
 
@@ -425,8 +416,6 @@ const ViewBMI = () => {
     }
   };
 
-
-
   const erpData = () => {
     axios
       .get(`${endpoints.userManagementBlog.getUserLevel}`, {
@@ -434,10 +423,8 @@ const ViewBMI = () => {
           'X-Api-Key': 'vikash@12345#1231',
         },
       })
-      .then((res) => {
-
-      })
-  }
+      .then((res) => {});
+  };
 
   const branchOptions = boardListData?.map((each) => {
     return (
@@ -447,7 +434,6 @@ const ViewBMI = () => {
     );
   });
 
-
   const erpAPI = () => {
     axios
       .get(`${endpoints.newBlog.erpDataStudentsAPI}?section_mapping_id=${subjectName}`, {
@@ -456,53 +442,47 @@ const ViewBMI = () => {
         },
       })
       .then((response) => {
-        setSourceData(response?.data?.result)
-        setTotalSubmitted(response?.data?.result)
+        setSourceData(response?.data?.result);
+        setTotalSubmitted(response?.data?.result);
         // ActivityManagement(response?.data?.result)
         setFlag(false);
-        setAlert('success', response?.data?.message)
+        setAlert('success', response?.data?.message);
         setLoading(false);
       });
-
-  }
-
+  };
 
   const CheckBMIFun = (data) => {
     if (data) {
-      showModal()
-      setLoading(true)
+      showModal();
+      setLoading(true);
       axios
         .get(`${endpoints.newBlog.checkBMIApi}?erp_id=${data?.erp_id}&user_level=${13}`, {
           headers: {
             Authorization: `${token}`,
             'X-DTS-HOST': X_DTS_HOST,
-          }
+          },
         })
         .then((response) => {
-          setAlert('success', response?.data?.message)
+          setAlert('success', response?.data?.message);
           setLoading(false);
-        })
-
+        });
     }
-
-  }
-
+  };
 
   const getTotalSubmitted = () => {
     // if (props) {
-    setLoading(true)
-    erpAPI()
-    setLoading(false)
+    setLoading(true);
+    erpAPI();
+    setLoading(false);
 
     // }
   };
 
-
   useEffect(() => {
     if (boardId === undefined || gradeId === undefined) {
-      setTotalSubmitted([])
+      setTotalSubmitted([]);
     }
-  }, [boardId, gradeId, flag])
+  }, [boardId, gradeId, flag]);
 
   useEffect(() => {
     if (flag) {
@@ -512,11 +492,7 @@ const ViewBMI = () => {
 
   const goDownload = () => {
     //will implement soon
-  }
-
-
-
-
+  };
 
   return (
     <div>
@@ -526,24 +502,31 @@ const ViewBMI = () => {
           container
           direction='row'
         > */}
-          <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
-            <div className='col-md-8' style={{ zIndex: 2, display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
-              <div>
-                <IconButton aria-label="back" onClick={handleGoBack}>
-                  <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
-                </IconButton>
-              </div>
-              <Breadcrumb separator='>'>
-                <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                  Physical Activities
-                </Breadcrumb.Item>
-                <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                  BMI List
-                </Breadcrumb.Item>
-              </Breadcrumb>
-
+        <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
+          <div
+            className='col-md-8'
+            style={{
+              zIndex: 2,
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0.5rem',
+            }}
+          >
+            <div>
+              <IconButton aria-label='back' onClick={handleGoBack}>
+                <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
+              </IconButton>
             </div>
-          </Grid>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+                Physical Activities
+              </Breadcrumb.Item>
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+                BMI List
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+        </Grid>
         {/* </Grid> */}
         <div className='row' style={{ padding: '0.5rem' }}>
           <div className='col-12'>
@@ -568,8 +551,7 @@ const ViewBMI = () => {
                       optionFilterProp='children'
                       filterOption={(input, options) => {
                         return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                          0
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
                     >
@@ -583,7 +565,7 @@ const ViewBMI = () => {
                   <Form.Item name='grade'>
                     <Select
                       allowClear
-                      placeholder='Select Name'
+                      placeholder='Select Grade'
                       showSearch
                       disabled={user_level == 13}
                       optionFilterProp='children'
@@ -626,23 +608,40 @@ const ViewBMI = () => {
                     </Select>
                   </Form.Item>
                 </div>
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3' style={{ display: 'flex', alignItem: 'center' }}>
-                  <ButtonAnt type="primary"
+                <div
+                  className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3'
+                  style={{ display: 'flex', alignItem: 'center' }}
+                >
+                  <ButtonAnt
+                    type='primary'
                     icon={<SearchOutlined />}
                     onClick={goSearch}
-                    size={'medium'}>
+                    size={'medium'}
+                  >
                     Search
                   </ButtonAnt>
                 </div>
               </div>
             </Form>
           </div>
-
         </div>
-        <ViewBMITableCustom style={{border:'1px solid red'}} selectedBranch={boardId} selectedBoardName={boardName} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedGradeName={gradeName} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />
+        <ViewBMITableCustom
+          style={{ border: '1px solid red' }}
+          selectedBranch={boardId}
+          selectedBoardName={boardName}
+          setValue={setValue}
+          value={value}
+          handleChange={handleChange}
+          selectedGrade={gradeId}
+          selectedGradeName={gradeName}
+          selectedSubject={subjectId}
+          setSubjectName={subjectName}
+          flag={flag}
+          setFlag={setFlag}
+        />
       </Layout>
     </div>
-  )
-}
+  );
+};
 
 export default ViewBMI;

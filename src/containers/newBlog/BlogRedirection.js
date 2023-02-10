@@ -18,7 +18,9 @@ import { Rating } from '@material-ui/lab';
 import { Breadcrumb, Tabs, Button, Divider } from 'antd';
 import moment from 'moment';
 import image1 from "../../assets/images/gp1.png";
-import image2 from "../../assets/images/gp2.png"
+import image2 from "../../assets/images/gp2.png";
+import visualImage from "../../assets/images/visual art.jpg";
+import physicalImage from "../../assets/images/physical activity.jpg";
 
 const drawerWidth = 350;
 const { TabPane } = Tabs;
@@ -122,6 +124,7 @@ const BlogWallRedirect = () => {
   const [periodData,setPeriodData] = useState([]);
   const [loading,setLoading]= useState(false);
   const [subId,setSubId] = useState('');
+  const [visualId,setVisualId] = useState('');
   const [blogSubId,setBlogSubId] = useState('');
   const [publicSubId,setPublicSubId] = useState('');
 
@@ -206,6 +209,8 @@ const BlogWallRedirect = () => {
         .then((result) => {
           const physicalData = result?.data?.result.filter((item) => item?.name == "Physical Activity")
           setSubId(physicalData[0]?.id)
+          const visualData = result?.data?.result.filter((item) => item?.name.toLowerCase() == "visual art")
+          setVisualId(visualData[0]?.id)
           const blogActivityData = result?.data?.result.filter((item) => item?.name == "Blog Activity")
           setBlogSubId(blogActivityData[0]?.id)
           const publicActivityData = result?.data?.result.filter((item) => item?.name == "Public Speaking")
@@ -238,6 +243,15 @@ const BlogWallRedirect = () => {
 
   }
 
+  const handleVisualPath =() =>{
+    history.push({
+      pathname: '/student/visual/activity',
+      state : {
+        subActiveId: visualId,
+      }
+    })
+  }
+
 
   const handleExplore = (data) => {
     if (data?.name == "Blog Activity") {
@@ -259,6 +273,11 @@ const BlogWallRedirect = () => {
       );
 
       handlePhysicalActivity()
+    }else if(data?.name.toLowerCase() === "visual art"){
+      localStorage.setItem('VisualActivityId',
+      JSON.stringify(visualId)
+      );
+      handleVisualPath()
     }
   }
 
@@ -269,9 +288,11 @@ const BlogWallRedirect = () => {
       case 'Public Speaking' : 
         return image1;
       case 'Physical Activity' :
-        return image2;
+        return physicalImage;
       case 'actiivtytype' : 
         return image1;
+      case 'Visual Art':
+        return visualImage;
       default : 
           return ""
         
@@ -306,7 +327,7 @@ const BlogWallRedirect = () => {
                       className='th-br-10 th-bg-grey dummy-background'
                     >
                       <div className='row p-3'>
-                        <div className='col-4 th-br-5'>
+                        <div className='col-4 blog-redirect-header'>
                           <img
                             src={getSubjectIcon(each?.name)}
                             alt="Icon"

@@ -124,7 +124,10 @@ const AttedanceCalender = () => {
   let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
   let studentDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const sessionId = JSON.parse(sessionStorage.getItem('acad_session')) || {};
-  const selectedBranchLocal = JSON.parse(sessionStorage.getItem('selected_branch')) || {};
+  // const selectedBranchLocal = JSON.parse(sessionStorage.getItem('selected_branch')) || {};
+  const selectedBranchLocal = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const multiBranchIdLocal = JSON.parse(sessionStorage.getItem('branch_list'))
 
@@ -999,7 +1002,7 @@ const AttedanceCalender = () => {
     };
 
     history.push({
-      pathname: '/holidaymarking',
+      pathname: '/holidaymarkingOld',
       state: {
         payload: payload,
         isEdit: false,
@@ -1019,7 +1022,7 @@ const AttedanceCalender = () => {
     };
 
     history.push({
-      pathname: '/eventmarking',
+      pathname: '/eventmarkingOld',
       state: {
         payload: payload,
         isEdit: false,
@@ -1059,7 +1062,7 @@ const AttedanceCalender = () => {
     };
 
     history.push({
-      pathname: '/holidaymarking',
+      pathname: '/holidaymarkingOld',
       state: {
         data: holidayData,
         payload: payload,
@@ -1084,7 +1087,7 @@ const AttedanceCalender = () => {
     };
 
     history.push({
-      pathname: '/eventmarking',
+      pathname: '/eventmarkingOld',
       state: {
         data: eventData,
         payload: payload,

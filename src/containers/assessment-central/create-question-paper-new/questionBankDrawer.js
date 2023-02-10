@@ -217,20 +217,33 @@ const QuestionBankDrawer = ({
   };
 
   const handleMarkstosection = () => {
-    dispatch(addMarksToSection(testMarks, questionId, section?.name));
-  };
+    let finalTestMarks = [...testMarks]
+    if(testMarks.length === 0){
+    SettestMarks(marksselection)
+    dispatch(addMarksToSection(marksselection, questionId, section?.name));
+    }else{
+      let alreadySelectedIds = testMarks?.map((item) => item?.question_id)
+      let data =  marksselection?.forEach((value) =>{
+        if(!alreadySelectedIds.includes(value?.question_id)){
+          finalTestMarks.push(value)
+        }
+      }
+      )
+        dispatch(addMarksToSection(finalTestMarks, questionId, section?.name));
+
+    }  };
 
   const handleMarks = (e,question,index) => {
     let quesindex = testMarks.findIndex((item) => item?.question_id === question?.id)
     let quesindex1 = marksselection.findIndex((item) => item?.question_id === question?.id)
-    if(quesindex !== -1){
-        let questionMark = testMarks
-        questionMark[quesindex].question_mark = [parseInt(e.target.value),0]
-        SettestMarks(questionMark)
-    }
+    // if(quesindex !== -1){
+    //     let questionMark = testMarks
+    //     questionMark[quesindex].question_mark = [parseFloat(e.target.value),0]
+    //     SettestMarks(questionMark)
+    // }
     if(quesindex1 !== -1){
       let questionMark = marksselection
-      questionMark[quesindex1].question_mark = [parseInt(e.target.value),0]
+      questionMark[quesindex1].question_mark = [parseFloat(e.target.value),0]
       // SettestMarks(questionMark)
       setSelectionMarks(questionMark);
     } else {
@@ -242,7 +255,7 @@ const QuestionBankDrawer = ({
         is_central: question?.is_central,
         ques_type: 1,
       };
-      SettestMarks([...testMarks, marks]);
+      // SettestMarks([...testMarks, marks]);
       setSelectionMarks([...marksselection, marks]);
     }
   }

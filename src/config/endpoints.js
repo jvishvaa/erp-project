@@ -980,6 +980,11 @@ export default {
     checkBMIApi: `${newBlogURL}/api/check_student/`,
     addBMIApi : `${newBlogURL}/api/add_bmi/`,
     getStudentBMIApi: `${newBlogURL}/api/get_bmi/`,
+    getSchoolWallApi: `${newBlogURL}/api/school_wall/`,
+    whatsAppChatGetApi: `${baseFinanceURL}/apiV1/whatsup-log/`,
+    visualOptionSubmit: `${newBlogURL}/api/activity_type_create/`,
+    uploadVisualFile: `${newBlogURL}/api/upload_activity_content/`,
+    showVisualMedia: `${newBlogURL}/api/uploaded_content/`,
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
