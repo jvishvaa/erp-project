@@ -760,7 +760,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
             );
         });
 
-        const teacherOptions = selectedCoTeacherOpt?.map((each) => {
+        const teacherOptions =isTeacher == false && selectedCoTeacherOpt?.map((each) => {
             return (
                 <Option key={each?.id} value={each?.user_id}>
                     {each?.name}
