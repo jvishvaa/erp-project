@@ -26,6 +26,7 @@ import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 import edxtag from '../../../../assets/images/edxtag.jpeg';
 import APIREQUEST from '../../../../config/apiRequest';
 import ZOOMICON from '../../../../assets/images/zoom.png';
+import GoogleIcon from 'assets/images/google.png';
 
 const JoinClass = (props) => {
   const { setLoading, getClassName, historicalData } = props;
@@ -817,7 +818,7 @@ const DetailCardView = ({
                       <img
                         style={{ maxHeight: '50px', background: 'white' }}
                         src={
-                          fullData?.join_url?.includes('edxstream') ? edxtag : ZOOMICON
+                          fullData?.join_url?.includes('edxstream') ? edxtag : fullData?.join_url?.includes('google') ? GoogleIcon : ZOOMICON
                         }
                       />
                     )}
