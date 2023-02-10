@@ -490,3 +490,42 @@
 .message_log_wrapper-coordinator .create_group_filter_container .homework_block_wrapper .MuiGrid-grid-xs-12{
   display: flex !important;
 }
+
+.tablewrap {
+  overflow-x:scroll;
+  width:100%; 
+
+.tableCon {
+  table-layout: fixed; 
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+.tableR {
+  border-top: 1px solid #ccc;
+}
+.tableD, .tableH {
+  vertical-align: top;
+  text-align: center;
+  width:170px;
+  padding: 5px;
+}
+.fixedcol {
+  position:sticky;
+  background: white;
+  z-index: 1;
+}
+.fixedcol:first-child {
+  left:0;
+  width:180px;
+}
+
+}
+
+.submissionDrawer{
+  .submitionTable{
+    margin: 5px !important;
+    border: 5px groove black !important;
+    border-collapse: collapse;
+  }
+}

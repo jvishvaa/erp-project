@@ -731,6 +731,15 @@ export default {
     HWPendingStudentList: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/homework-pending-count/`,
     submittedHWalldata: `${baseURL}/academic/homework-submitted-data/`,
   },
+  homeworknew: {
+    todaysHomework: `${msReportsUrl}/api/reports/v2/student_homework_today/view/`,
+    pendingHomework: `${msReportsUrl}/api/reports/v2/student_homework_pending/view/`,
+    submittedHomework: `${msReportsUrl}/api/reports/v2/student_homework_sumbitted/view/`,
+    evaluatedHomework: `${msReportsUrl}/api/reports/v2/student_homework_evaluated/view/`,
+    overallReport: `${msReportsUrl}/api/reports/v2/student_homework_overall_dashboard/view/`,
+    studentSubjectWise: `${msReportsUrl}/api/reports/v2/student_homework_subjectwise_performance/view/`,
+    overallHwCompletion: `${msReportsUrl}/api/reports/v2/student_homework_overall_hw_completion_report/view/`,
+  },
   teacherDashboardTwo: {
     teacherOverview: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/branch-wise-hw-cw-status/`,
     branchDetails: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/branch-wise-student-attendance/`,
