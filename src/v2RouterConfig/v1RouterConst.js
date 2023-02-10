@@ -48,6 +48,9 @@ import HomeworkAdmin from 'containers/homework/homework-admin';
 import AddHomework from 'containers/homework/teacher-homework/add-homework';
 import BulkUpload from 'containers/user-management/bulk-upload/bulk-upload';
 import CoordinatorHomework from 'containers/homework/coordinator-homework';
+import CoordinatorTeacherHomeworkv2 from 'containers/homework/coordinator-homework/newMgmtView';
+import CheckCoordinatorHW from 'containers/homework/coordinator-homework/coordinatorhwconfig';
+import TeacherHwConfig from 'containers/homework/teacher-homework/teacherHwConfig';
 import AddHomeworkCoord from 'containers/homework/coordinator-homework/add-homework';
 import LessonReport from 'containers/lesson-plan/lesson-plan-report';
 import LessonPlan from 'containers/lesson-plan/lesson-plan-view';
@@ -459,6 +462,9 @@ import NewEbookView from 'containers/ebooks/NewEbook';
 import Filters from 'containers/assessment-central/create-question-paper-new/filters';
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig'
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
+import AddHomeworkCordNew from 'containers/homework/coordinator-homework/newAddHomework'
+import StudentHomeworkNew from 'containers/homework/student-homework/studentSide';
+import Studentanalytics from 'containers/homework/student-homework/studentanalytics';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -776,7 +782,7 @@ const V1Router = [
     {({ match }) => <StudentHomework match={match} />}
   </Route>,
   <Route exact path='/homework/teacher'>
-    {({ match }) => <TeacherHomework match={match} />}
+    {({ match }) => <TeacherHwConfig match={match} />}
   </Route>,
 
   <Route exact path='/report-table-test'>
@@ -791,9 +797,15 @@ const V1Router = [
   <Route exact path='/homework/admin'>
     {({ match }) => <HomeworkAdmin match={match} />}
   </Route>,
-  <Route exact path='/homework/coordinator'>
-    {({ match }) => <CoordinatorHomework match={match} />}
-  </Route>,
+   <Route exact path='/homework/coordinator'>
+   {({ match }) => <CheckCoordinatorHW match={match} />}
+ </Route>,
+  // <Route exact path='/homework/coordinator'>
+  //   {({ match }) => <CoordinatorTeacherHomeworkv2 match={match} />}
+  // </Route>,
+  <Route exact path='/homework/addhomework/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'>
+  {({ match }) => <AddHomeworkCordNew match={match} />}
+</Route>,
   <Route
     exact
     path='/homework/cadd/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'
@@ -960,7 +972,7 @@ const V1Router = [
     {({ match }) => <StudentHomework match={match} />}
   </Route>,
   <Route exact path='/homework/teacher'>
-    {({ match }) => <TeacherHomework match={match} />}
+    {({ match }) => <TeacherHwConfig match={match} />}
   </Route>,
   <Route exact path='/homework/add/:date/:subject/:id'>
     {({ match }) => <AddHomework match={match} />}
@@ -1785,6 +1797,12 @@ const V1Router = [
     {({ match }) => <StudentMarkNew match={match} />}
   </Route>,
   <Route path='/online-books/'>{({ match }) => <NewEbookView match={match} />}</Route>,
+  <Route path='/student-view-new'>
+  {({ match }) => <StudentHomeworkNew match={match} />}
+</Route>,
+  <Route path='/student-analytics'>
+  {({ match }) => <Studentanalytics match={match} />}
+</Route>,
 
   <Route path='*'>
     <ErrorBoundary404 HomeButton={true} />
