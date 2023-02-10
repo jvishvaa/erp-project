@@ -92,8 +92,10 @@ const selectedBranch = useSelector(
 
   const handleAdd = (each) => {
     console.log(each , props);
-    history.push(
-      `/homework/addhomework/${each?.date}/${selectedAcademicYear?.id}/${props?.branch}/${props?.grade}/${each?.subject_name}/${each?.subject_id}/${props?.teacherid}`
+    history.push({
+      pathname: `/homework/addhomework/${each?.date}/${selectedAcademicYear?.id}/${props?.branch}/${props?.grade}/${each?.subject_name}/${each?.subject_id}/${props?.teacherid}`,
+      state: props      
+    }
     );
   }
 

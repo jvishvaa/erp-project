@@ -25,7 +25,7 @@ const CheckCoordinatorHW = () => {
       })
       .then((response) => {
         if (response.status === 200) {
-          setConfigOn(response?.data?.dashboard_enabled);
+          // setConfigOn(response?.data?.dashboard_enabled);
         }
       })
       .catch((error) => console.log(error));

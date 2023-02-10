@@ -49,6 +49,7 @@ import $ from 'jquery';
 import './styles.scss';
 import {
     fetchCoordinateTeacherHomeworkDetails,
+    fetchTeacherHomeworkDetails,
     setSelectedHomework,
     fetchStudentsListForTeacherHomework,
     setTeacherUserIDCoord,
@@ -142,6 +143,7 @@ function getDaysBefore(date, amount) {
 const CoordinatorTeacherHomeworkv2 = withRouter(
     ({
         getCoordinateTeacherHomeworkDetails,
+        getTeacherHomeworkDetails,
         onSetSelectedFilters,
         onResetSelectedFilters,
         selectedFilters,
@@ -232,7 +234,44 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         const [selectSub, setSelectSub] = useState(false)
         const themeContext = useTheme();
         const isMobile = useMediaQuery(themeContext.breakpoints.down('md'));
-        const [ isTeacher , setIsTeacher ] = useState(false)
+        const [isTeacher, setIsTeacher] = useState(false)
+
+        console.log(history?.location?.state, 'history')
+        useEffect(() => {
+            if (history != undefined) {
+                const historyData = history?.location?.state
+                setGradeDisplay(historyData?.grade)
+                setSectionDisplay(historyData?.sectionId)
+                setSectionMap(historyData?.sectionMapping)
+                setselectedCoTeacherOptValue(historyData?.teacherid)
+                if (history?.location?.state?.isTeacher == true) {
+                    getTeacherHomeworkDetails(
+                        historyData?.moduleId,
+                        selectedAcademicYear?.id,
+                        selectedBranch?.branch?.id,
+                        historyData?.grade,
+                        historyData?.sectionMapping,
+                        historyData?.sectionId,
+                        startDate,
+                        endDate,
+                    )
+                } else {
+                    if (selectedCoTeacherOptValue != undefined) {
+                        getCoordinateTeacherHomeworkDetails(
+                            historyData?.moduleId,
+                            selectedAcademicYear?.id,
+                            selectedBranch?.branch?.id,
+                            historyData?.grade,
+                            historyData?.sectionMapping,
+                            historyData?.sectionId,
+                            startDate,
+                            endDate,
+                            historyData?.teacherid
+                        );
+                    }
+                }
+            }
+        }, [history])
 
 
         useEffect(() => {
@@ -246,28 +285,24 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                         item.child_module.forEach((item) => {
                             if (item.child_name === 'Management View') {
                                 setTeacherModuleId(item?.child_id);
-                            } 
+                            }
                             if (item.child_name === 'Teacher Homework') {
                                 setTeacherModuleId(item?.child_id);
                                 setIsTeacher(true)
-                            } 
+                                setSelectedCoTeacherOpt(userDetails?.user_id)
+                            }
                         });
                     }
                 });
             }
         }, []);
 
-        useEffect(() => {
-            if(isTeacher == true){
-                setTeacherModuleId()
-            }
-        },[isTeacher])
 
         useEffect(() => {
             formRef.current.setFieldsValue({
-                date: [moment(startDate) ,moment(endDate)]
+                date: [moment(startDate), moment(endDate)]
             })
-        },[endDate])
+        }, [endDate])
 
         useEffect(() => {
             if (teacherModuleId) {
@@ -743,19 +778,34 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
         useEffect(() => {
             if (gradeDisplay && sectionMap && endDate) {
-                getCoordinateTeacherHomeworkDetails(
-                    teacherModuleId,
-                    selectedAcademicYear?.id,
-                    selectedBranch?.branch?.id,
-                    gradeDisplay,
-                    sectionMap,
-                    sectionDisplay,
-                    startDate,
-                    endDate,
-                    selectedCoTeacherOptValue
-                );
+                if (isTeacher == true) {
+                    getTeacherHomeworkDetails(
+                        teacherModuleId,
+                        selectedAcademicYear?.id,
+                        selectedBranch?.branch?.id,
+                        gradeDisplay,
+                        sectionMap,
+                        sectionDisplay,
+                        startDate,
+                        endDate,
+                    )
+                } else {
+                    if (selectedCoTeacherOptValue != undefined) {
+                        getCoordinateTeacherHomeworkDetails(
+                            teacherModuleId,
+                            selectedAcademicYear?.id,
+                            selectedBranch?.branch?.id,
+                            gradeDisplay,
+                            sectionMap,
+                            sectionDisplay,
+                            startDate,
+                            endDate,
+                            selectedCoTeacherOptValue
+                        );
+                    }
+                }
             }
-        }, [selectedCoTeacherOptValue, endDate])
+        }, [selectedCoTeacherOptValue, endDate, sectionMap])
 
         useEffect(() => {
             console.log(dates);
@@ -850,29 +900,30 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                                             />
                                         </Form.Item>
                                     </div>
-                                    <div className='col-md-3'>
-                                        <span className='th-grey th-14'>Teacher*</span>
-                                        <Form.Item name='teacher'>
-                                            <Select
-                                                allowClear
-                                                placeholder='Select Teacher'
-                                                showSearch
-                                                optionFilterProp='children'
-                                                filterOption={(input, options) => {
-                                                    return (
-                                                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                    );
-                                                }}
-                                                onChange={(e, value) => {
-                                                    handleTeacher(e, value);
-                                                }}
-                                                // onClear={handleClearGrade}
-                                                className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                            >
-                                                {teacherOptions}
-                                            </Select>
-                                        </Form.Item>
-                                    </div>
+                                    {isTeacher == true ? '' :
+                                        <div className='col-md-3'>
+                                            <span className='th-grey th-14'>Teacher*</span>
+                                            <Form.Item name='teacher'>
+                                                <Select
+                                                    allowClear
+                                                    placeholder='Select Teacher'
+                                                    showSearch
+                                                    optionFilterProp='children'
+                                                    filterOption={(input, options) => {
+                                                        return (
+                                                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                        );
+                                                    }}
+                                                    onChange={(e, value) => {
+                                                        handleTeacher(e, value);
+                                                    }}
+                                                    // onClear={handleClearGrade}
+                                                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                                >
+                                                    {teacherOptions}
+                                                </Select>
+                                            </Form.Item>
+                                        </div>}
                                 </Form>
                             </Grid>
 
@@ -880,22 +931,22 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
                             <div className='create_group_filter_container'>
                                 <Divider style={{ margin: '10px 0' }} />
-                                <div className='d-flex justify-content-between' style={{marginBottom: '10px'}} >
+                                <div className='d-flex justify-content-between' style={{ marginBottom: '10px' }} >
                                     <div className='d-flex col-md-6'  >
                                         <div className='row mx-1 '>
-                                            <img src={HomeworkAssigned} style={{ width: '30px', height: '30px' , background: '#E5FAF1' , padding: '5px' }} alt='homeworkAssigned' />
+                                            <img src={HomeworkAssigned} style={{ width: '30px', height: '30px', background: '#E5FAF1', padding: '5px' }} alt='homeworkAssigned' />
                                             <div className='mx-2 d-flex align-items-center' >Submitted</div>
                                         </div>
                                         <div className='row mx-1'>
-                                            <img src={HomeworkSubmit} alt='homeworkAssigned' style={{ width: '30px', height: '30px' , background: '#FFF0C9' , padding: '5px'}} />
+                                            <img src={HomeworkSubmit} alt='homeworkAssigned' style={{ width: '30px', height: '30px', background: '#FFF0C9', padding: '5px' }} />
                                             <div className='mx-2 d-flex align-items-center'>Pending</div>
                                         </div>
                                         <div className='row mx-1'>
-                                            <img src={HomeworkEvaluate} alt='homeworkAssigned' style={{ width: '30px', height: '30px' , background: '#E8F2FD' , padding: '5px' }} />
+                                            <img src={HomeworkEvaluate} alt='homeworkAssigned' style={{ width: '30px', height: '30px', background: '#E8F2FD', padding: '5px' }} />
                                             <div className='mx-2 d-flex align-items-center'>Evaluated</div>
                                         </div>
                                     </div>
-                                    <div style={{display: 'flex' , alignItems: 'center' , fontSize: '13px'}} >
+                                    <div style={{ display: 'flex', alignItems: 'center', fontSize: '13px' }} >
                                         {endDate != undefined ? <div>{`Date Range Selected : ${startDate} TO ${endDate}`}</div> : ''}
                                     </div>
                                 </div>
@@ -922,7 +973,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
                                                 {homeworkCols?.length > 0 ?
                                                     <WeeklyTable homeworkCols={homeworkCols} homeworkRows={homeworkRows} branch={selectedBranch?.branch?.id} grade={gradeDisplay} sectionMapping={sectionMap} sectionId={sectionDisplay}
-                                                        teacherid={selectedCoTeacherOptValue} moduleId={teacherModuleId} startDate={startDate} endDate={endDate} />
+                                                        teacherid={selectedCoTeacherOptValue} moduleId={teacherModuleId} startDate={startDate} endDate={endDate} isTeacher={isTeacher} />
                                                     : homeworkCols?.length == 0 ? <div style={{ minHeight: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
                                                         <Empty />
                                                     </div> : ''}
@@ -978,6 +1029,29 @@ const mapDispatchToProps = (dispatch) => ({
                 startDate,
                 endDate,
                 selectedTeacherUser_id
+            )
+        );
+    },
+    getTeacherHomeworkDetails: (
+        teacherModuleId,
+        acadYear,
+        branch,
+        grade,
+        sectionId,
+        section,
+        startDate,
+        endDate,
+    ) => {
+        dispatch(
+            fetchTeacherHomeworkDetails(
+                teacherModuleId,
+                acadYear,
+                branch,
+                grade,
+                sectionId,
+                section,
+                startDate,
+                endDate,
             )
         );
     },

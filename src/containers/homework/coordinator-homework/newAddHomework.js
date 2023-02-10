@@ -108,6 +108,8 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
   };
   const formRef = createRef();
 
+  const propData = history?.location?.state
+
 
 
   const validateHomework = () => {
@@ -158,7 +160,17 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
       try {
         const response = await onAddHomework(reqObj);
         setAlert('success', 'Homework added');
-        history.push('/homework/coordinator/');
+        if(propData?.isTeacher == true){
+          history.push({
+            pathname: '/homework/teacher/',
+            state: propData
+          });  
+        } else {
+          history.push({
+            pathname: '/homework/coordinator/',
+            state: propData
+          });
+        }
       } catch (error) {
         setAlert('error', 'Failed to add homework');
       }
@@ -213,6 +225,9 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Management View') {
+              setTeacherModuleId(item.child_id);
+            }
+            if (item.child_name === 'Teacher Homework') {
               setTeacherModuleId(item.child_id);
             }
             // if (item.child_name === 'Management View') {

@@ -469,6 +469,7 @@ import CalendarV2 from 'containers/attendance/CalendarEventHoliday';
 import TeacherCalendar from 'containers/attendance/teacherCalendar';
 import EventsMarkOld from 'containers/attendance/eventsmarkOld';
 import HolidayMarkOld from 'containers/attendance/holidayMarkOld';
+import StudentHwConfig from 'containers/homework/student-homework/StudentHwConfig';
 
 import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
@@ -787,7 +788,7 @@ const V1Router = [
     {({ match }) => <AddHomework match={match} />}
   </Route>,
   <Route exact path='/homework/student'>
-    {({ match }) => <StudentHomework match={match} />}
+    {({ match }) => <StudentHwConfig match={match} />}
   </Route>,
   <Route exact path='/homework/teacher'>
     {({ match }) => <TeacherHwConfig match={match} />}
@@ -977,7 +978,7 @@ const V1Router = [
     {({ match }) => <OnlineAttendanceTeacherView match={match} />}
   </Route>,
   <Route exact path='/homework/student'>
-    {({ match }) => <StudentHomework match={match} />}
+    {({ match }) => <StudentHwConfig match={match} />}
   </Route>,
   <Route exact path='/homework/teacher'>
     {({ match }) => <TeacherHwConfig match={match} />}

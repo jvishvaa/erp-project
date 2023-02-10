@@ -54,6 +54,7 @@ import {
     message, Tabs, Badge, Drawer, Form, DatePicker, Breadcrumb, Divider, Button,
     Empty, Checkbox
 } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
 const useStyles = makeStyles((theme) => ({
     attachmentIcon: {
         color: '#ff6b6b',
@@ -791,18 +792,19 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         <div className='create_group_filter_container'>
             <div style={{ width: '90%', margin: '0 auto' }} >
                 <div
-                    className='th-br-5 p-4 my-2'
-                    style={{ background: '#EEF2F8', width: '100%' }}
+                    className='th-br-5 p-4 my-2 d-flex'
+                    style={{ background: '#EEF2F8', width: '100%' , cursor: 'pointer' }}
                     onClick={handleHomeworkCancel}
                 >
-                    All Homeworks
+                    <LeftOutlined className='d-flex align-items-center' style={{color: '#535BA0'}} />
+                    <p className='th-14 mx-2 my-0 d-flex align-items-center' style={{color: '#535BA0', fontWeight: '600'}} >Back To Homework</p>
                 </div>
                 <div
                     className='th-br-5 p-4 my-2'
                     style={{ background: '#F1F7FF', width: '100%' }}
                 >
                     <div className='d-flex justify-content-between'>
-                        <div> Subject {subjectName}</div>
+                        <div className='th-fw-600'> Subject : {subjectName}</div>
                         <div>Creation Date : {date}</div>
                     </div>
                 </div>

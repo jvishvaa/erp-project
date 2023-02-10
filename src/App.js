@@ -52,6 +52,7 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import CoordinatorTeacherHomeworkv2 from './containers/homework/coordinator-homework/newMgmtView';
 import CheckCoordinatorHW from 'containers/homework/coordinator-homework/coordinatorhwconfig';
 import TeacherHwConfig from 'containers/homework/teacher-homework/teacherHwConfig';
+import StudentHwConfig from 'containers/homework/student-homework/StudentHwConfig';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
@@ -951,7 +952,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                               {({ match }) => <AddHomework match={match} />}
                             </Route>
                             <Route exact path='/homework/student'>
-                              {({ match }) => <StudentHomework match={match} />}
+                              {({ match }) => <StudentHwConfig match={match} />}
                             </Route>
                             <Route exact path='/homework/teacher'>
                               {({ match }) => <TeacherHwConfig match={match} />}
@@ -1160,7 +1161,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                               )}
                             </Route>
                             <Route exact path='/homework/student'>
-                              {({ match }) => <StudentHomework match={match} />}
+                              {({ match }) => <StudentHwConfig match={match} />}
                             </Route>
                             <Route exact path='/homework/teacher'>
                               {({ match }) => <TeacherHwConfig match={match} />}

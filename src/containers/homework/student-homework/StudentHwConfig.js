@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
-import CoordinatorHomework from 'containers/homework/coordinator-homework';
-import TeacherHomework from 'containers/homework/teacher-homework';
-import CoordinatorTeacherHomeworkv2 from 'containers/homework/coordinator-homework/newMgmtView';
+import StudentHomework from 'containers/homework/student-homework/student-homework';
+import StudentHomeworkNew from 'containers/homework/student-homework/studentSide';
+
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 import { IsV2Checker } from 'v2/isV2Checker';
 
-const TeacherHwConfig = () => {
+const StudentHwConfig = () => {
   const [configOn, setConfigOn] = useState(true);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -39,9 +39,9 @@ const TeacherHwConfig = () => {
   }, [selectedBranch]);
   return (
    <>
-        {configOn ? <CoordinatorTeacherHomeworkv2 /> : <TeacherHomework />}
+        {configOn ? <StudentHomeworkNew /> : <StudentHomework />}
     </>
   );
 };
 
-export default TeacherHwConfig;
+export default StudentHwConfig;
