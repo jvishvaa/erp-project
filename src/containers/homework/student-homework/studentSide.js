@@ -350,6 +350,10 @@ const StudentHomeworkNew = withRouter(({
         }
     }
 
+    const goback = () => {
+        history.push('/homework/student')
+    }
+
     return (
         <>
             <Layout>
@@ -357,6 +361,7 @@ const StudentHomeworkNew = withRouter(({
                     <Breadcrumb separator='>'>
                         <Breadcrumb.Item
                             className='th-grey th-16 th-pointer'
+                            onClick={() => goback()}
                         >
                             Homework
                         </Breadcrumb.Item>

@@ -109,7 +109,7 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
   const formRef = createRef();
 
   const propData = history?.location?.state
-
+  console.log(propData , 'props');
 
 
   const validateHomework = () => {
@@ -267,6 +267,20 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
   };
   console.log('ppp2', sessionYear, grade, branch);
 
+  const goback = () => {
+    if(propData?.isTeacher == true){
+      history.push({
+        pathname: '/homework/teacher/',
+        state: propData
+      });  
+    } else {
+      history.push({
+        pathname: '/homework/coordinator/',
+        state: propData
+      });
+    }
+  }
+
   const sectionOptions = sections?.map((each) => {
     return (
       <Option key={each?.id} value={each.section_id}>
@@ -288,7 +302,7 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <div className='card row' style={{ margin: '10px auto', width: '90%', padding: '15px', background: '#EEF2F8' }}>
+      <div className='card row' style={{ margin: '10px auto', width: '90%', padding: '15px', background: '#EEF2F8' , cursor: 'pointer' }} onClick={() => goback()} >
         <LeftOutlined style={{ display: 'flex', alignItems: 'center', color: '#535BA0' }} />
         <p style={{ display: 'flex', alignItems: 'center', color: '#535BA0', fontWeight: '600' }} className='th-14 mx-1 my-0' >Back to Homework</p>
       </div>
@@ -385,163 +399,7 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
         </Form>
 
       </div>
-      {/* <div className={`${classes.ahcc} add-homework-container-coordinator`}>
-        <Grid container spacing={2} className='add-homework-inner-container'>
-          <Grid item xs={12} className='add-homework-title-container' md={3}>
-            <div className='nav-cards-container'>
-              <div
-                className={` ${classes.navCard} nav-card`}
-                onClick={() => {
-                  history.push('/homework/coordinator/');
-                }}
-              >
-                <div
-                  className={` ${classes.headerText} text-center non_selected_homework_type_item`}
-                >
-                  All Homeworks
-                </div>
-              </div>
-              <div className={` ${classes.navCard} nav-card`}>
-                <div className={`${classes.headerText} text-center`}>{params.date}</div>
-                <div className={`${classes.headerText} text-center`}>
-                  {params.subject}
-                </div>
-              </div>
-            </div>
-          </Grid>
-
-          <Grid item container xs={12} md={9}>
-            <Grid container style={{ width: '95%', margin: '0 auto' }}>
-              <Grid item xs={12} sm={4} style={{ marginBottom: '20px' }}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleSection}
-                  id='section'
-                  required
-                  multiple
-                  value={sectionDisplay || []}
-                  options={sections || []}
-                  getOptionLabel={(option) => option?.section__section_name || ''}
-                  filterSelectedOptions
-                  className='dropdownIcon'
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Sections'
-                      placeholder='Sections'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4} style={{ margin: '0 20px' }}>
-                <MuiPickersUtilsProvider utils={MomentUtils}>
-                  <KeyboardDatePicker
-                    size='small'
-                    variant='dialog'
-                    format='YYYY-MM-DD'
-                    margin='none'
-                    // className='button'
-                    className='dropdownIcon'
-                    id='date-picker'
-                    label='Due Date'
-                    inputVariant='outlined'
-                    fullWidth
-                    value={dateValue}
-                    onChange={handleDateChange}
-                    // className='dropdown'
-                    style={{ width: '100%' }}
-                    KeyboardButtonProps={{
-                      'aria-label': 'change date',
-                    }}
-                  />
-                </MuiPickersUtilsProvider>
-              </Grid>
-              <Grid item xs={12} className='form-field'>
-                <FormControl variant='outlined' fullWidth size='small'>
-                  <InputLabel htmlFor='component-outlined'>Title</InputLabel>
-                  <OutlinedInput
-                    id='title'
-                    name='title'
-                    // onChange={() => {}}
-                    inputProps={{ maxLength: 20 }}
-                    label='Title'
-                    autoFocus
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                  />
-                  <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} className='form-field'>
-                <FormControl variant='outlined' fullWidth size='small'>
-                  <InputLabel htmlFor='component-outlined'>Description</InputLabel>
-                  <OutlinedInput
-                    id='description'
-                    name='description'
-                    onChange={(e) => {
-                      setDescription(e.target.value);
-                    }}
-                    inputProps={{ maxLength: 150 }}
-                    multiline
-                    rows={4}
-                    rowsMax={6}
-                    label='Description'
-                  />
-                  <FormHelperText style={{ color: 'red' }}>
-                    {errors.description}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              {questions.map((question, index) => (
-                <QuestionCard
-                  key={question.id}
-                  question={question}
-                  index={index}
-                  addNewQuestion={addNewQuestion}
-                  handleChange={handleChange}
-                  removeQuestion={removeQuestion}
-                  sessionYear={sessionYear}
-                  branch={branch}
-                  grade={grade}
-                  subject={params?.id}
-                />
-              ))}
-
-              <Grid container item xs={12}>
-                <Grid item xs={12} md={6} className='form-field'>
-                  <div className='finish-btn-container'>
-                    <StyledOutlinedButton
-                      startIcon={<AddCircleOutlineIcon color='primary' />}
-                      onClick={() => {
-                        setQueIndexCounter(queIndexCounter + 1);
-                        addNewQuestion(queIndexCounter + 1);
-                      }}
-                      fullWidth
-                    >
-                      Add Another Question
-                    </StyledOutlinedButton>
-                  </div>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <div className='finish-btn-container'>
-                    <Button
-                      style={{ color: 'white', width: '100%' }}
-                      color='primary'
-                      variant='contained'
-                      onClick={handleAddHomeWork}
-                    >
-                      Finish
-                    </Button>
-                  </div>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </div> */}
+    
     </Layout>
   );
 };

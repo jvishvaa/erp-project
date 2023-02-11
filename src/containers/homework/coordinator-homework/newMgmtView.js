@@ -58,7 +58,7 @@ import {
 } from '../../../redux/actions';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import HomeworkRow from './homework-row';
-import ViewHomework from './view-homework';
+import ViewHomeworkNew from './evaluatehw';
 import ViewHomeworkSubmission from './view-homework-submission';
 import { Tabs, Tab } from '../../../components/custom-tabs';
 import hwEvaluatedIcon from '../../../assets/images/hw-evaluated.svg';
@@ -175,7 +175,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
         const formRef = createRef();
 
-        const [activeView, setActiveView] = useState('list-homework');
+        const [activeView, setActiveView] = useState(false);
         const classes = useStyles();
         const { setAlert } = useContext(AlertNotificationContext);
         const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -215,10 +215,11 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         const [dates, setDates] = useState(null);
         const [value, setValue] = useState(null);
         const [viewHomework, setViewHomework] = useState({
-            subjectId: '',
+            studentHomeworkId: '',
             date: '',
             subjectName: '',
         });
+
 
         const [receivedHomework, setReceivedHomework] = useState({
             studentHomeworkId: '',
@@ -236,15 +237,14 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         const isMobile = useMediaQuery(themeContext.breakpoints.down('md'));
         const [isTeacher, setIsTeacher] = useState(false)
 
-        console.log(history?.location?.state, 'history')
         useEffect(() => {
-            if (history != undefined) {
+            if (history !== undefined) {
                 const historyData = history?.location?.state
-                setGradeDisplay(historyData?.grade)
-                setSectionDisplay(historyData?.sectionId)
-                setSectionMap(historyData?.sectionMapping)
-                setselectedCoTeacherOptValue(historyData?.teacherid)
                 if (history?.location?.state?.isTeacher == true) {
+                    setGradeDisplay(historyData?.grade)
+                    setSectionDisplay(historyData?.sectionId)
+                    setSectionMap(historyData?.sectionMapping)
+                    setselectedCoTeacherOptValue(historyData?.teacherid)
                     getTeacherHomeworkDetails(
                         historyData?.moduleId,
                         selectedAcademicYear?.id,
@@ -257,6 +257,10 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                     )
                 } else {
                     if (selectedCoTeacherOptValue != undefined) {
+                        setGradeDisplay(historyData?.grade)
+                        setSectionDisplay(historyData?.sectionId)
+                        setSectionMap(historyData?.sectionMapping)
+                        setselectedCoTeacherOptValue(historyData?.teacherid)
                         getCoordinateTeacherHomeworkDetails(
                             historyData?.moduleId,
                             selectedAcademicYear?.id,
@@ -289,7 +293,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                             if (item.child_name === 'Teacher Homework') {
                                 setTeacherModuleId(item?.child_id);
                                 setIsTeacher(true)
-                                setSelectedCoTeacherOpt(userDetails?.user_id)
+                                setselectedCoTeacherOptValue(userDetails?.user_id)
                             }
                         });
                     }
@@ -304,88 +308,10 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
             })
         }, [endDate])
 
-        useEffect(() => {
-            if (teacherModuleId) {
-                const managementTeacher = JSON.parse(localStorage.getItem('managementTeacher'));
-                // handleBranch("", managementTeacher?.selectedBranch);
-                // handleGrade("", managementTeacher?.selectedGrade);
-                // handleSection("", managementTeacher?.selectedSection);
-                // handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
-                // let teacherModuleId=managementTeacher?.teacherModuleId;
-            }
-        }, [teacherModuleId]);
-        useEffect(() => {
-            if (selectedBranch && gradeDisplay && sectionDisplay) {
-                const managementTeacher = JSON.parse(localStorage.getItem('managementTeacher'));
-                handleCoordinateTeacher("", managementTeacher?.selectedTeacher);
-            }
-        }, [selectedBranch, gradeDisplay, sectionDisplay])
+      
 
 
-        const handleViewHomework = ({
-            date,
-            subject: subjectName,
-            subjectId,
-            homeworkId,
-        }) => {
-            setViewHomework({
-                subjectId,
-                date,
-                subjectName,
-                homeworkId,
-            });
-            setActiveView('view-homework');
-        };
-
-        const handleSelectCol = (col, view) => {
-            const { homeworkId, subjectId, sectionId, coord_selected_teacher_id } = col;
-            fetchStudentLists(homeworkId, subjectId, sectionId, coord_selected_teacher_id, col?.date);
-            setSelectedCol(col);
-            if (isMobile) {
-                setActiveView('card-view');
-            }
-            onSetSelectedHomework(col);
-        };
-
-        const handleChangeActiveView = (view) => {
-            setActiveView(view);
-        };
-
-        const handleViewReceivedHomework = (studentHomeworkId) => {
-            setReceivedHomework({
-                studentHomeworkId,
-                date: selectedCol.date,
-                subject: selectedCol.subject,
-            });
-            handleChangeActiveView('view-received-homework');
-        };
-
-        const handleCloseView = () => {
-            setViewHomework({
-                subjectId: '',
-                date: '',
-                subjectName: '',
-            });
-            setReceivedHomework({
-                studentHomeworkId: '',
-                date: '',
-                subjectName: '',
-            });
-            setSelectedCol({});
-            setActiveView('list-homework');
-        };
-
-        const navigateToAddScreen = ({
-            date,
-            subject,
-            subjectId,
-            selectedTeacherByCoordinatorToCreateHw,
-        }) => {
-            history.push(
-                `/homework/cadd/${date}/${subject}/${subjectId}/${selectedTeacherByCoordinatorToCreateHw}`
-            );
-        };
-
+          
         useEffect(() => {
             const [startDate, endDate] = dateRange;
             if (teacherModuleId) {
@@ -459,7 +385,9 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
         const getTeacherListApiFilter = async (sectionmap) => {
             const [startDate, endDate] = dateRange;
-            setselectedCoTeacherOptValue([])
+            if(isTeacher == false ){
+                setselectedCoTeacherOptValue([])
+            }
 
             try {
                 setLoading(true);
@@ -479,32 +407,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                     setSelectedTeacherUser_id(result.data.result[0]?.user_id);
                     setFirstTeacherUserIdOnloadCordinatorHomewok(result.data.result[0]);
 
-                    if (selectedTeacherByCoordinatorToCreateHw !== false) {
-                        let myResult = result.data.result.filter(
-                            (item) => item?.user_id == selectedTeacherByCoordinatorToCreateHw
-                        );
-
-                        newCoorTechID = myResult[0]?.user_id;
-                        setselectedCoTeacherOptValue(myResult[0]);
-                        setSelectedTeacherUser_id(newCoorTechID);
-                        setFirstTeacherUserIdOnloadCordinatorHomewok(myResult[0]);
-                    }
-
-                    if (activeView === 'list-homework') {
-                        if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
-                            getCoordinateTeacherHomeworkDetails(
-                                teacherModuleId,
-                                selectedAcademicYear.id,
-                                selectedBranch.branch.id,
-                                gradeDisplay.grade_id,
-                                sectionDisplay.id,
-                                sectionDisplay.section_id,
-                                startDate.format('YYYY-MM-DD'),
-                                endDate.format('YYYY-MM-DD'),
-                                newCoorTechID
-                            );
-                        }
-                    }
+                  
                     setLoading(false);
                 } else {
                     setAlert('error', result.data.message);
@@ -517,77 +420,6 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
         };
 
-        const handleCoordinateTeacher = (e, value) => {
-            // console.log("value123",value,teacherModuleId);
-            // console.log("value1234",teacherModuleId)
-            // const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
-            if (value?.user_id > 0 && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
-                setFirstTeacherUserIdOnloadCordinatorHomewok(value);
-                setSelectedTeacherUser_id(value?.user_id);
-                setselectedCoTeacherOptValue(value);
-                getCoordinateTeacherHomeworkDetails(
-                    teacherModuleId,
-                    selectedAcademicYear?.id,
-                    selectedBranch?.branch?.id,
-                    gradeDisplay?.grade_id,
-                    sectionDisplay?.id,
-                    sectionDisplay?.section_id,
-                    startDate,
-                    endDate,
-                    value?.user_id
-                );
-            }
-            setData(value);
-        };
-
-        const downloadGetTeacherPerformanceListApi = async () => {
-            const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-            if (selectedBranch?.branch?.id && selectedTeacherByCoordinatorToCreateHw) {
-                try {
-                    setLoading(true);
-                    if (startDateTechPer && startDateTechPer) {
-                        const dwURL = `${endpoints.coordinatorTeacherHomeworkApi.getTecherPerformance
-                            }?start_date=${startDateTechPer.format(
-                                'YYYY-MM-DD'
-                            )}&end_date=${endDateTechPer.format(
-                                'YYYY-MM-DD'
-                            )}&user_id=${selectedTeacherByCoordinatorToCreateHw
-                            }&branch_mp_id=${selectedBranch.id}`;
-
-                        const result = await axiosInstance.get(dwURL, {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                            responseType: 'blob', //important
-                        });
-                        if (result.status === 200) {
-                            setLoading(false);
-                            const downloadUrl = window.URL.createObjectURL(new Blob([result.data]));
-                            const link = document.createElement('a');
-                            link.href = downloadUrl;
-                            link.setAttribute(
-                                'download',
-                                'Teacher_performance_' +
-                                startDateTechPer.format('YYYY-MM-DD') +
-                                '_' +
-                                endDateTechPer.format('YYYY-MM-DD') +
-                                '.xls'
-                            ); //any other extension
-                            document.body.appendChild(link);
-                            link.click();
-                            link.remove();
-                            setAlert('success', 'File downloaded successfully');
-                        }
-                    }
-                } catch (error) {
-                    setAlert('error', error.message);
-                    setLoading(false);
-                }
-            }
-            else {
-                setAlert('warning', 'Please select Filters');
-            }
-        };
 
         const renderRef = useRef(0);
 
@@ -653,26 +485,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                 })
         }
 
-        const handleGrade = (event, value) => {
-            const managementTeacher = JSON.parse(localStorage.getItem('managementTeacher'));
-            setSectionDisplay([]);
-            setSections([]);
-            setGradeDisplay([]);
-            setSelectedCoTeacherOpt([]);
-            setselectedCoTeacherOptValue([]);
-            setSelectedTeacherUser_id('');
-            if (value && value.length !== 0) {
-                setGradeDisplay(value);
-                setLoading(true);
-                onSetSelectedFilters({
-                    year: selectedAcademicYear,
-                    branch: selectedBranch,
-                    grade: value,
-                    section: '',
-                });
-
-            }
-        };
+   
 
         const handleGradeant = (e) => {
             if (e) {
@@ -743,7 +556,6 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
 
 
-
         const gradeOptions = grades?.map((each) => {
             return (
                 <Option key={each?.grade_id} value={each?.grade_id}>
@@ -777,7 +589,8 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         }
 
         useEffect(() => {
-            if (gradeDisplay && sectionMap && endDate) {
+            if (gradeDisplay && sectionMap && endDate != null) {
+                console.log(startDate , endDate , "hitt");
                 if (isTeacher == true) {
                     getTeacherHomeworkDetails(
                         teacherModuleId,
@@ -805,7 +618,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                     }
                 }
             }
-        }, [selectedCoTeacherOptValue, endDate, sectionMap])
+        }, [selectedCoTeacherOptValue, endDate, sectionMap , sectionDisplay])
 
         useEffect(() => {
             console.log(dates);
@@ -813,6 +626,35 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                 handleDate(dates)
             }
         }, [dates])
+
+        const getData = () => {
+            if (isTeacher == true) {
+                getTeacherHomeworkDetails(
+                    teacherModuleId,
+                    selectedAcademicYear?.id,
+                    selectedBranch?.branch?.id,
+                    gradeDisplay,
+                    sectionMap,
+                    sectionDisplay,
+                    startDate,
+                    endDate,
+                )
+            } else {
+                if (selectedCoTeacherOptValue != undefined) {
+                    getCoordinateTeacherHomeworkDetails(
+                        teacherModuleId,
+                        selectedAcademicYear?.id,
+                        selectedBranch?.branch?.id,
+                        gradeDisplay,
+                        sectionMap,
+                        sectionDisplay,
+                        startDate,
+                        endDate,
+                        selectedCoTeacherOptValue
+                    );
+                }
+            }
+        }
 
 
 
@@ -833,10 +675,21 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
             }
         };
 
+        const handleDoneEvaluate = () => {
+            setActiveView(false)
+            setViewHomework({
+                studentHomeworkId: '',
+                date: '',
+                subjectName: '',
+            })
+            getData()
+        }
+
         return (
             <>
                 {loading ? <Loading message='Loading...' /> : null}
                 <Layout>
+                    {activeView == false ?
                     <div className=' teacher-homework-coordinator message_log_wrapper-coordinator'>
                         <CommonBreadcrumbs componentName='Homework' isAcademicYearVisible={true} />
                         <div className='message_log_white_wrapper'>
@@ -973,7 +826,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
                                                 {homeworkCols?.length > 0 ?
                                                     <WeeklyTable homeworkCols={homeworkCols} homeworkRows={homeworkRows} branch={selectedBranch?.branch?.id} grade={gradeDisplay} sectionMapping={sectionMap} sectionId={sectionDisplay}
-                                                        teacherid={selectedCoTeacherOptValue} moduleId={teacherModuleId} startDate={startDate} endDate={endDate} isTeacher={isTeacher} />
+                                                        teacherid={selectedCoTeacherOptValue} moduleId={teacherModuleId} startDate={startDate} endDate={endDate} isTeacher={isTeacher} setViewHomework={setViewHomework} setActiveView={setActiveView} />
                                                     : homeworkCols?.length == 0 ? <div style={{ minHeight: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
                                                         <Empty />
                                                     </div> : ''}
@@ -983,7 +836,15 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> :
+                    <div>
+                    {activeView === true && (
+                <ViewHomeworkNew
+                  homework={viewHomework}
+                  onClose={handleDoneEvaluate}
+                />
+              )}
+                    </div> }
                 </Layout>
             </>
         );
