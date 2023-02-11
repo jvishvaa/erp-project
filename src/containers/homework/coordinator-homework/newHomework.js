@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef, createRef } from 'react';
-import { Avatar, Divider, Table, Drawer, Tabs, Collapse, Button, message } from 'antd';
+import { Avatar, Divider, Table, Drawer, Tabs, Collapse, Button, message, Empty } from 'antd';
 import moment from 'moment';
 import { groupBy } from 'lodash';
 import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, CalendarOutlined, MoreOutlined } from '@ant-design/icons';
@@ -26,6 +26,7 @@ import endpoints from 'config/endpoints';
 import './attachment.scss';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './styles.scss';
+import OnlineSub from 'assets/images/online.png'
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
 
@@ -80,6 +81,26 @@ const SubmissionData = withRouter(({
             dataIndex: 'first_name',
             key: 'user_id'
         },
+        {
+            title: '',
+            align: 'center',
+            width: '30%',
+            key: 'icon',
+            render: (text, row) => (
+                <>
+                    {row?.hw_submission_mode == "Online Submission" ?
+                        <span
+                            onClick={(e) =>
+                                handleSubView(row)
+                            }
+                            className='d-flex justify-content-between th-pointer'
+                        >
+                            <img src={OnlineSub} style={{ height: '30px', width: '30px', marginTop: '5px' }} />
+                            <div className='th-13 p-2 th-br-5' style={{ border: '1px solid #d1d1d1' }} >View</div>
+                        </span> : ''}
+                </>
+            )
+        },
     ];
 
     useEffect(() => {
@@ -127,7 +148,7 @@ const SubmissionData = withRouter(({
                     message.success(result.data.message);
                     setSelectedRowKeys([])
                     console.log(result.data.message);
-               
+
                     fetchStudentLists(props?.submitData?.hw_data?.data?.hw_id, props?.submitData?.hw_data?.subject_id, props?.submitData?.props?.sectionMapping, props?.submitData?.props?.teacherid, props?.submitData?.hw_data?.date);
                 })
                 .catch((error) => {
@@ -159,7 +180,7 @@ const SubmissionData = withRouter(({
                 .put(endpoints.homework.submitToUnsubmit, temPayload)
                 .then((result) => {
                     message.success(result.data.message);
-              
+
                     fetchStudentLists(props?.submitData?.hw_data?.data?.hw_id, props?.submitData?.hw_data?.subject_id, props?.submitData?.props?.sectionMapping, props?.submitData?.props?.teacherid, props?.submitData?.hw_data?.date);
                     getDataStudent = [];
                     allData = []
@@ -174,6 +195,16 @@ const SubmissionData = withRouter(({
         } else {
             message.error('Please select Users')
         }
+    }
+
+    const handleSubView = (row) => {
+       let arr =  props?.setViewHomework({
+            studentHomeworkId: row?.student_homework_id,
+            date: props?.submitData?.hw_data?.date,
+            subjectName: props?.submitData?.hw_data?.subject_name,
+        })
+        let changeac = props?.setActiveView(true)
+        let closedrawer = props?.onCloseDrawer()
     }
 
     return (
@@ -290,47 +321,51 @@ const SubmissionData = withRouter(({
             <Tabs onChange={handleSegment} activeKey={segment} style={{ fontSize: '10px', fontWeight: '600' }} >
                 <TabPane tab={`Not Submitted(${unSubmittedStudents?.length ? unSubmittedStudents?.length : "0"})`} key={'1'} style={{ color: '#F1DA89' }}  >
                     <div style={{ width: '100%' }}  >
-                        <Table rowSelection={{ ...rowSelection }}
-                            columns={columns} dataSource={unSubmittedStudents}
-                            rowKey={(record) => record?.user_id}
-                            className=' th-homework-table-head-bg '
-                            pagination={false}
-                            rowClassName='submitionTable '
-                        />
+                        {unSubmittedStudents?.length > 0 ?
+                            <Table rowSelection={{ ...rowSelection }}
+                                columns={columns} dataSource={unSubmittedStudents}
+                                rowKey={(record) => record?.user_id}
+                                className=' th-homework-table-head-bg '
+                                pagination={false}
+                                rowClassName='submitionTable '
+                            /> : <div className='mt-5'> <Empty /> </div>}
                     </div>
                 </TabPane>
                 <TabPane tab={`Submitted(${submittedStudents?.length ? submittedStudents?.length : "0"})`} key={'2'} >
                     <div style={{ width: '100%' }} >
-                        <Table rowSelection={{ ...rowSelection }}
-                            columns={columns} dataSource={submittedStudents}
-                            rowKey={(record) => record?.student_homework_id}
-                            // className='th-table'
-                            pagination={false}
-                            rowClassName='submitionTable'
-                            className=' th-homework-table-head-bg '
-                        />
+                        {submittedStudents?.length > 0 ?
+                            <Table rowSelection={{ ...rowSelection }}
+                                columns={columns} dataSource={submittedStudents}
+                                rowKey={(record) => record?.student_homework_id}
+                                // className='th-table'
+                                pagination={false}
+                                rowClassName='submitionTable'
+                                className=' th-homework-table-head-bg '
+                            /> : <div className='mt-5'> <Empty /> </div>}
                     </div>
                 </TabPane>
                 <TabPane tab={`Absent(${absentList?.length ? absentList?.length : "0"})`} key={'3'}  >
-                    <Table rowSelection={{ ...rowSelection }}
-                        columns={columns} dataSource={absentList}
-                        rowKey={(record) => record?.user_id}
-                        // className='th-table'
-                        pagination={false}
-                        rowClassName='submitionTable'
-                        className=' th-homework-table-head-bg '
-                    />
-                </TabPane>
-                <TabPane tab={`Evaluated(${evaluatedStudents?.length ? evaluatedStudents?.length : "0"})`} key={'4'} >
-                    <div style={{ width: '100%' }} >
+                    {absentList?.length > 0 ?
                         <Table rowSelection={{ ...rowSelection }}
-                            columns={columns} dataSource={evaluatedStudents}
+                            columns={columns} dataSource={absentList}
                             rowKey={(record) => record?.user_id}
                             // className='th-table'
                             pagination={false}
                             rowClassName='submitionTable'
                             className=' th-homework-table-head-bg '
-                        />
+                        /> : <div className='mt-5'> <Empty /> </div>}
+                </TabPane>
+                <TabPane tab={`Evaluated(${evaluatedStudents?.length ? evaluatedStudents?.length : "0"})`} key={'4'} >
+                    <div style={{ width: '100%' }} >
+                        {evaluatedStudents?.length > 0 ?
+                            <Table rowSelection={{ ...rowSelection }}
+                                columns={columns} dataSource={evaluatedStudents}
+                                rowKey={(record) => record?.user_id}
+                                // className='th-table'
+                                pagination={false}
+                                rowClassName='submitionTable'
+                                className=' th-homework-table-head-bg '
+                            /> : <div className='mt-5' > <Empty /> </div>}
                     </div>
                 </TabPane>
 

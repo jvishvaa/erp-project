@@ -97,8 +97,8 @@ const GroupedChart = (props) => {
         yField: 'value',
         seriesField: 'type',
         isGroup: true,
-        minColumnWidth: 15,
-        maxColumnWidth: 15,
+        // minColumnWidth: 15,
+        maxColumnWidth: 50,
         padding: 50,
         width: 400,
         height: 300,
@@ -106,7 +106,8 @@ const GroupedChart = (props) => {
             layout: 'horizontal',
             position: 'bottom'
         },
-        dodgePadding: 0,
+        // dodgePadding: 1,
+        // intervalPadding: 0,
         colorField: 'type',
         color: ({ type }) => {
             if (type === 'Total Assigned') {

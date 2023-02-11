@@ -94,7 +94,17 @@ const selectedBranch = useSelector(
     console.log(each , props);
     history.push({
       pathname: `/homework/addhomework/${each?.date}/${selectedAcademicYear?.id}/${props?.branch}/${props?.grade}/${each?.subject_name}/${each?.subject_id}/${props?.teacherid}`,
-      state: props      
+      state: {
+        branch: props?.branch,
+        endDate: props?.endDate,
+        isTeacher: props?.isTeacher,
+        moduleId: props?.moduleId,
+        sectionId: props?.sectionId,
+        sectionMapping: props?.sectionMapping,
+        startDate: props?.startDate,
+        teacherid: props?.teacherid,
+        grade: props?.grade
+      }
     }
     );
   }
@@ -164,7 +174,7 @@ const selectedBranch = useSelector(
         </table>
       </div >
       <Drawer  placement="right" onClose={onCloseDrawer} closable={false} visible={openDrawer} width={500} >
-        <SubmissionData submitData={submitData} filterData={props} onCloseDrawer={onCloseDrawer} />
+        <SubmissionData submitData={submitData} filterData={props} onCloseDrawer={onCloseDrawer} setViewHomework={props?.setViewHomework} setActiveView={props?.setActiveView}  />
       </Drawer>
     </>
   )
