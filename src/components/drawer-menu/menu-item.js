@@ -700,6 +700,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Assign Teacher',
       Path: '/sure-learning/assign-teacher',
     },
+    {
+      name: 'File Category',
+      Path: '/file-category',
+    },
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);
