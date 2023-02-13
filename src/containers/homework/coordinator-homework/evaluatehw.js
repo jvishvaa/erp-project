@@ -643,15 +643,15 @@ const ViewHomeworkNew = withRouter(
                                     </div>
                                 </div>
                                 <div className='col-md-4 d-flex'>
-                                    <div className='col-md-6 d-flex justify-content-end'>
-                                        <Button variant='contained' className='disabled-btn' onClick={onClose}>
+                                    <div className=' d-flex justify-content-end'>
+                                        <Button variant='contained' type='secondary'  onClick={onClose}>
                                             Cancel
                                         </Button>
                                     </div>
-                                    <div className='col-md-6'>
+                                    <div className='mx-2'>
                                         <Button
                                             variant='contained'
-                                            color='primary'
+                                            type='primary'
                                             onClick={handleFinalEvaluationForHomework}
                                         >
                                             EVALUATION DONE

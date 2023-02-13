@@ -140,6 +140,16 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
   };
 
   const handleAddHomeWork = async () => {
+    console.log(name , description , sectionDisplay , dateValue , questions , 'filter');
+    if(name == undefined || name == ''){
+      return message.error('Please Add Title')
+    }
+    if(description == undefined || description == ''){
+      return message.error('Please Add Description')
+    }
+    if(sectionDisplay?.length == 0){
+      message.error('Please Select Section')
+    }
     const isFormValid = validateHomework();
     if (isFormValid) {
       const reqObj = {
@@ -334,7 +344,7 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
               <div className='m-0 text-left th-fw-600 th-14'>Due Date</div>
               <Form.Item name='date'>
                 <DatePicker value={dateValue}
-                  onChange={handleDateChange} defaultValue={moment()}  />
+                  onChange={handleDateChange} defaultValue={moment()} style={{textAlign: 'left'}} disabledDate={(current) => current.isBefore(moment().subtract(1,"day"))} className='dueDateaddHw' />
               </Form.Item>
             </div>
             <div className='p-0 mx-1 w-25'>
@@ -391,7 +401,7 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
             }} >
               Add Another Question
             </Button>
-            <Button className='mx-1' onClick={handleAddHomeWork}>
+            <Button className='mx-1' onClick={handleAddHomeWork} type='primary'>
               Submit
             </Button>
           </div>

@@ -57,7 +57,7 @@ const SubmissionData = withRouter(({
     selectedHomeworkDetails,
     ...props }) => {
 
-    const [segment, setSegment] = useState('1')
+    const [segment, setSegment] = useState()
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [collapse, setCollapse] = useState()
     const selectedAcademicYear = useSelector(
@@ -73,7 +73,18 @@ const SubmissionData = withRouter(({
         </div>
     }
 
-    console.log(props, 'prop');
+    let submitdata = props?.submitData
+    useEffect(() => {
+        if (submitdata?.tab == "not-submitted") {
+            setSegment('1')
+        }
+        if (submitdata?.tab == "evaluated") {
+            setSegment('4')
+        }
+        if (submitdata?.tab == "submitted") {
+            setSegment('2')
+        }
+    }, [props?.submitData])
 
     const columns = [
         {
@@ -223,31 +234,32 @@ const SubmissionData = withRouter(({
                     >
                         <Panel header={collapse == 1 ?
                             <div>
-                                <span className='th-12 th-fw-400' style={{ color: '#A0A0A1' }} >Instruction</span>
-                                <p className='th-12 th-fw-400 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }} >{selectedHomeworkDetails?.description}</p>
+                                <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Instruction</span>
+                                <p className='th-14 th-fw-400 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' , margin: '0px' }} >{selectedHomeworkDetails?.description}</p>
                             </div>
                             : <div style={{ width: '300px' }} ><p className='th-12 th-fw-400 text-truncate m-0' style={{ color: '#556778' }} >{selectedHomeworkDetails?.description}</p></div>} key="1">
                             <div>
-                                <span className='th-12 th-fw-400' style={{ color: '#A0A0A1' }} >title</span>
-                                <p className='th-12 th-fw-400 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }} >{selectedHomeworkDetails?.homework_name}</p>
+                                <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Title</span>
+                                <p className='th-14 th-fw-400 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }} >{selectedHomeworkDetails?.homework_name}</p>
                             </div>
                             <div ref={scrollableContainer}>
 
-                                <span className='th-12 th-fw-400' style={{ color: '#A0A0A1' }} >Question</span>
+                                <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Question</span>
 
                                 {/* question attachment */}
                                 <div className='view-homework-container-coordinator'  >
                                     {selectedHomeworkDetails && selectedHomeworkDetails?.hw_questions?.map((question, index) => (
                                         <div
                                             className='homework-question-container-coordinator'
+                                            style={{margin: '0 auto'}}
                                             key={`homework_student_question_${index}`}
                                         >
                                             <div className='homework-question' style={{ border: '0px' }} >
-                                                <div className='th-12 th-fw-400 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }}>{question.question}</div>
+                                                <div className='th-12 th-fw-600 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }}>{question.question}</div>
                                             </div>
                                             <div className='attachments-container'>
                                                 {question.question_files.length > 0 && (
-                                                    <p style={{ color: '#A0A0A1' }} className='th-11 p-2 m-0'>
+                                                    <p style={{ color: '#A0A0A1' }} className='th-12 p-2 m-0'>
                                                         Attachments
                                                     </p>
                                                 )}
@@ -327,7 +339,9 @@ const SubmissionData = withRouter(({
                                 rowKey={(record) => record?.user_id}
                                 className=' th-homework-table-head-bg '
                                 pagination={false}
-                                rowClassName='submitionTable '
+                                rowClassName={(record, index) =>
+                                    `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                }
                             /> : <div className='mt-5'> <Empty /> </div>}
                     </div>
                 </TabPane>
@@ -337,33 +351,50 @@ const SubmissionData = withRouter(({
                             <Table rowSelection={{ ...rowSelection }}
                                 columns={columns} dataSource={submittedStudents}
                                 rowKey={(record) => record?.student_homework_id}
-                                // className='th-table'
                                 pagination={false}
-                                rowClassName='submitionTable'
+                                rowClassName={(record, index) =>
+                                    `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                }
                                 className=' th-homework-table-head-bg '
                             /> : <div className='mt-5'> <Empty /> </div>}
                     </div>
                 </TabPane>
                 <TabPane tab={`Absent(${absentList?.length ? absentList?.length : "0"})`} key={'3'}  >
                     {absentList?.length > 0 ?
-                        <Table rowSelection={{ ...rowSelection }}
+                        <Table
                             columns={columns} dataSource={absentList}
                             rowKey={(record) => record?.user_id}
-                            // className='th-table'
                             pagination={false}
-                            rowClassName='submitionTable'
+                            rowClassName={(record, index) =>
+                                `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                            }
                             className=' th-homework-table-head-bg '
                         /> : <div className='mt-5'> <Empty /> </div>}
                 </TabPane>
                 <TabPane tab={`Evaluated(${evaluatedStudents?.length ? evaluatedStudents?.length : "0"})`} key={'4'} >
                     <div style={{ width: '100%' }} >
                         {evaluatedStudents?.length > 0 ?
-                            <Table rowSelection={{ ...rowSelection }}
+                            <Table
                                 columns={columns} dataSource={evaluatedStudents}
                                 rowKey={(record) => record?.user_id}
-                                // className='th-table'
                                 pagination={false}
-                                rowClassName='submitionTable'
+                                rowClassName={(record, index) =>
+                                    `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                }
+                                className=' th-homework-table-head-bg '
+                            /> : <div className='mt-5' > <Empty /> </div>}
+                    </div>
+                </TabPane>
+                <TabPane tab={`Un-Evaluated(${unevaluatedStudents?.length ? unevaluatedStudents?.length : "0"})`} key={'5'} >
+                    <div style={{ width: '100%' }} >
+                        {unevaluatedStudents?.length > 0 ?
+                            <Table
+                                columns={columns} dataSource={unevaluatedStudents}
+                                rowKey={(record) => record?.user_id}
+                                rowClassName={(record, index) =>
+                                    `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                }
+                                pagination={false}
                                 className=' th-homework-table-head-bg '
                             /> : <div className='mt-5' > <Empty /> </div>}
                     </div>
@@ -371,13 +402,22 @@ const SubmissionData = withRouter(({
 
             </Tabs>
             {segment == 1 ?
-                <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '90%' }} >
-                    <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
-                </div>
+                <>
+                    {unSubmittedStudents?.length > 0 ?
+                        <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '90%' }} >
+                            <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
+                        </div> : ''}
+                </>
                 : segment == 2 ?
-                    <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '90%' }} >
-                        <Button onClick={handleSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Unsubmit</Button>
-                    </div> : ''}
+                    <>
+                        {submittedStudents?.length > 0 ?
+                            <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '90%' }} >
+                                <Button onClick={handleSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Unsubmit</Button>
+                            </div>
+                            : ''}
+                    </>
+                    : ''}
+
         </div>
     )
 }

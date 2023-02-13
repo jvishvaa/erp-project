@@ -238,7 +238,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         const [isTeacher, setIsTeacher] = useState(false)
 
         useEffect(() => {
-            if (history !== undefined) {
+            if (history != undefined && history?.location?.state?.moduleId) {
                 const historyData = history?.location?.state
                 if (history?.location?.state?.isTeacher == true) {
                     setGradeDisplay(historyData?.grade)
@@ -329,7 +329,6 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
             try {
                 setLoading(true);
-                // alert(2, startDate, endDate);
                 const result = await axiosInstance.get(`${endpoints.coordinatorTeacherHomeworkApi.getAllTeacherList}?section_mapping=${sectionMap}&module_id=${teacherModuleId}`,
                     {
                         headers: {
@@ -337,24 +336,22 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                         },
                     }
                 );
-                // const resultOptions = [];
                 if (result.status === 200) {
                     setSelectedCoTeacherOpt(result.data.result);
-                    // setselectedCoTeacherOptValue(result.data.result[0]);
                     let newCoorTechID = result?.data?.result[0]?.user_id;
                     setSelectedTeacherUser_id(result.data.result[0]?.user_id);
                     setFirstTeacherUserIdOnloadCordinatorHomewok(result.data.result[0]);
 
-                    if (selectedTeacherByCoordinatorToCreateHw !== false) {
-                        let myResult = result.data.result.filter(
-                            (item) => item?.user_id == selectedTeacherByCoordinatorToCreateHw
-                        );
+                    // if (selectedTeacherByCoordinatorToCreateHw !== false) {
+                    //     let myResult = result.data.result.filter(
+                    //         (item) => item?.user_id == selectedTeacherByCoordinatorToCreateHw
+                    //     );
 
-                        newCoorTechID = myResult[0]?.user_id;
-                        setselectedCoTeacherOptValue(myResult[0]);
-                        setSelectedTeacherUser_id(newCoorTechID);
-                        setFirstTeacherUserIdOnloadCordinatorHomewok(myResult[0]);
-                    }
+                    //     newCoorTechID = myResult[0]?.user_id;
+                    //     setselectedCoTeacherOptValue(myResult[0]);
+                    //     setSelectedTeacherUser_id(newCoorTechID);
+                    //     setFirstTeacherUserIdOnloadCordinatorHomewok(myResult[0]);
+                    // }
 
                     if (activeView === 'list-homework') {
                         if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
