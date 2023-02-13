@@ -173,7 +173,7 @@ const selectedBranch = useSelector(
 
         </table>
       </div >
-      <Drawer  placement="right" onClose={onCloseDrawer} closable={false} visible={openDrawer} width={500} >
+      <Drawer  placement="right" onClose={onCloseDrawer} closable={false} visible={openDrawer} width={700} >
         <SubmissionData submitData={submitData} filterData={props} onCloseDrawer={onCloseDrawer} setViewHomework={props?.setViewHomework} setActiveView={props?.setActiveView}  />
       </Drawer>
     </>
