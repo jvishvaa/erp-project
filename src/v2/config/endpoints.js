@@ -224,6 +224,12 @@ export default {
     getSchoolWallApi: `${newBlogURL}/api/school_wall/`,
     whatsAppChatGetApi: `${baseFinanceURL}/apiV1/whatsup-log/`,
   },
+  fileDrive: {
+    fileList: `/schools/school_file_list/`,
+    editFileList: `/schools/school_file_details`,
+    verifyFile: `/schools/verify_filename`,
+    fileCategory: `/schools/school_category`,
+  },
 
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
   principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
