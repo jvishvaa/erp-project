@@ -16,6 +16,7 @@ import {
 import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import { EditOutlined, CloseCircleOutlined, FolderOpenOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
 
 const { TextArea } = Input;
 
@@ -26,6 +27,13 @@ const FileDrive = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [editId, setEditId] = useState(null);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+
+  const branchId = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch?.branch?.id
+  );
 
   const fetchFileCategory = (params = {}) => {
     setLoading(true);
@@ -44,7 +52,10 @@ const FileDrive = () => {
   };
 
   useEffect(() => {
-    fetchFileCategory({ is_delete: false });
+    fetchFileCategory({
+      branch_id: branchId,
+      acad_session_id: selectedBranch?.id,
+    });
   }, []);
 
   const onOpenDrawer = () => {
@@ -66,13 +77,18 @@ const FileDrive = () => {
         updateValues.description ? updateValues.description : ''
       );
 
+      valuess.append('branch', branchId);
+      valuess.append('acad_session', selectedBranch?.id);
+
       if (editId) {
         axios
           .put(`${endpoints.fileDrive.fileCategory}/${editId}`, valuess)
           .then((result) => {
             onCloseDrawer();
-
-            fetchFileCategory();
+            fetchFileCategory({
+              branch_id: branchId,
+              acad_session_id: selectedBranch?.id,
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -83,7 +99,10 @@ const FileDrive = () => {
           .then((result) => {
             onCloseDrawer();
 
-            fetchFileCategory();
+            fetchFileCategory({
+              branch_id: branchId,
+              acad_session_id: selectedBranch?.id,
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -111,7 +130,10 @@ const FileDrive = () => {
       .then((result) => {
         if (result.status === 204) {
           message.success('Successfully Deleted');
-          fetchFileCategory();
+          fetchFileCategory({
+            branch_id: branchId,
+            acad_session_id: selectedBranch?.id,
+          });
         } else {
           message.error('Something went wrong');
         }
@@ -173,7 +195,7 @@ const FileDrive = () => {
               onClick={() =>
                 history.push({
                   pathname: '/file-drive',
-                  state: { categoryId: data.id },
+                  state: { categoryId: data.id, categoryName: data?.name },
                 })
               }
             >
@@ -191,7 +213,12 @@ const FileDrive = () => {
         <div className='row pt-3'>
           <div className='col-md-12'>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item className='th-black-1 th-16'>File Drive</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-grey th-16 th-pointer'>
+                File Drive
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16'>
+                File Category
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className='col-md-12 mt-3'>
