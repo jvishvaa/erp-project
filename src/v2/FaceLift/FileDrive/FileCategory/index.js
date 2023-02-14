@@ -20,13 +20,15 @@ import { useSelector } from 'react-redux';
 
 const { TextArea } = Input;
 
-const FileDrive = () => {
+const FileCategory = () => {
   const history = useHistory();
   const formRef = useRef();
   const [loading, setLoading] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(null);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -40,8 +42,9 @@ const FileDrive = () => {
     axios
       .get(`${endpoints.fileDrive.fileCategory}/`, { params: { ...params } })
       .then((response) => {
-        if (response?.data) {
-          setCategoryData(response?.data?.result);
+        if (response?.data?.status_code === 200) {
+          setCategoryData(response?.data?.data?.results);
+          setTotalCount(response.data?.data?.count);
         }
         setLoading(false);
       })
@@ -55,6 +58,8 @@ const FileDrive = () => {
     fetchFileCategory({
       branch_id: branchId,
       acad_session_id: selectedBranch?.id,
+      page_size: 20,
+      page: currentPage,
     });
   }, []);
 
@@ -69,6 +74,15 @@ const FileDrive = () => {
 
   const handleSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
+
+    if (updateValues.name?.length > 100) {
+      message.error('Name length should not exceed 100 character');
+      return;
+    }
+    if (updateValues.description?.length > 300) {
+      message.error('Description length should not exceed 300 character');
+      return;
+    }
     if (updateValues.name) {
       const valuess = new FormData();
       valuess.append('name', updateValues.name);
@@ -85,10 +99,14 @@ const FileDrive = () => {
           .put(`${endpoints.fileDrive.fileCategory}/${editId}`, valuess)
           .then((result) => {
             onCloseDrawer();
+
             fetchFileCategory({
               branch_id: branchId,
               acad_session_id: selectedBranch?.id,
+              page_size: 20,
+              page: currentPage,
             });
+            message.success('Category updated successfully');
           })
           .catch((error) => {
             console.log(error);
@@ -102,6 +120,8 @@ const FileDrive = () => {
             fetchFileCategory({
               branch_id: branchId,
               acad_session_id: selectedBranch?.id,
+              page_size: 20,
+              page: currentPage,
             });
           })
           .catch((error) => {
@@ -118,8 +138,8 @@ const FileDrive = () => {
     setShowDrawer(true);
     axios.get(`${endpoints.fileDrive.fileCategory}/${id}`).then((res) => {
       formRef.current.setFieldsValue({
-        name: res.data.result.name,
-        description: res.data?.result.description,
+        name: res.data.data?.name,
+        description: res.data?.data?.description,
       });
     });
   };
@@ -133,6 +153,8 @@ const FileDrive = () => {
           fetchFileCategory({
             branch_id: branchId,
             acad_session_id: selectedBranch?.id,
+            page_size: 20,
+            page: currentPage,
           });
         } else {
           message.error('Something went wrong');
@@ -145,7 +167,7 @@ const FileDrive = () => {
 
   const columns = [
     {
-      title: <span className='th-white th-fw-700 '>S. No.</span>,
+      title: <span className='th-white th-fw-700 '>Sl. No.</span>,
 
       align: 'center',
       render: (value, item, index) => (
@@ -245,8 +267,22 @@ const FileDrive = () => {
                     columns={columns}
                     rowKey={(record) => record?.id}
                     dataSource={categoryData}
-                    pagination={false}
-                    // scroll={{ y: '400px' }}
+                    pagination={{
+                      total: totalCount,
+                      pageSize: 20,
+                      current: currentPage,
+
+                      onChange: (current) => {
+                        setCurrentPage(current);
+                        fetchFileCategory({
+                          branch_id: branchId,
+                          acad_session_id: selectedBranch?.id,
+                          page_size: 20,
+                          page: current,
+                        });
+                      },
+                    }}
+                    scroll={{ x: window.innerWidth > 600 ? '100%' : 'max-content' }}
                   />
                 </div>
               </div>
@@ -294,7 +330,7 @@ const FileDrive = () => {
           </div>
 
           <div className='col-md-12'>
-            <Form.Item name='description' label='Enter Description'>
+            <Form.Item name='description' label='Enter Description (Max 300 characters)'>
               <TextArea placeholder='Enter Description' rows={4} />
             </Form.Item>
           </div>
@@ -304,4 +340,4 @@ const FileDrive = () => {
   );
 };
 
-export default FileDrive;
+export default FileCategory;

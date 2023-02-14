@@ -26,7 +26,7 @@ const FileFolder = () => {
       .get(`${endpoints.fileDrive.fileCategory}/`, { params: { ...params } })
       .then((response) => {
         if (response?.data) {
-          setCategoryData(response?.data?.result);
+          setCategoryData(response?.data?.data?.results);
         }
         setLoading(false);
       })
