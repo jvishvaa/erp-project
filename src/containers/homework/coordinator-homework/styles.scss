@@ -532,7 +532,10 @@
     width: 100%;
   }
 }
-
+.ant-dropdown-placement-bottomRight{
+  position: absolute !important;
+  z-index: 10000 !important;
+} 
 .dueDateaddHw{
   #date{
     text-align: center;
