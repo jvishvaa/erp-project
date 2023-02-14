@@ -672,6 +672,9 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         const onOpenChange = (open) => {
             if (open) {
                 setDates([null, null]);
+                formRef.current.setFieldsValue({
+                    date: [null, null]
+                })
             } else {
                 setDates(null);
             }
