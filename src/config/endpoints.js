@@ -66,6 +66,7 @@ export default {
     buttonStatus: `/assessment/check-sys-config/?config_key=config_properties&config_type=json`,
     checkQuizUser : `/assessment/get-start-quiz-user-levels-access/`,
     startQuiz : '/assessment/v2/test/',
+    homeworkConfig: '/assessment/check-sys-config/?config_key=hw_enhancement',
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
