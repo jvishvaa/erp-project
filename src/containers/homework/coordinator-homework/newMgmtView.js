@@ -313,7 +313,11 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
             })
         }, [endDate])
 
-      
+      useEffect(() => {
+        if(activeView == false){
+            onResetSelectedData()
+        }
+      },[activeView])
 
 
           
@@ -682,6 +686,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
         const handleDoneEvaluate = () => {
             setActiveView(false)
+            onResetSelectedData()
             setViewHomework({
                 studentHomeworkId: '',
                 date: '',
@@ -691,6 +696,15 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         }
 
         const onSearch = (value) => console.log(value);
+
+        const handleClearGrade = () => {
+            setSectionDisplay()
+            setSectionMap()
+            onResetSelectedData()
+            formRef.current.setFieldsValue({
+                section: ''
+            })
+        }
 
         return (
             <>
@@ -718,7 +732,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                                                 onChange={(e) => {
                                                     handleGradeant(e);
                                                 }}
-                                                // onClear={handleClearGrade}
+                                                onClear={handleClearGrade}
                                                 className='w-100 text-left th-black-1 th-bg-white th-br-4'
                                             >
                                                 {gradeOptions}

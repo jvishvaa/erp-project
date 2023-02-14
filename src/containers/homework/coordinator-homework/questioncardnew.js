@@ -667,8 +667,8 @@ const QuestionCardNew = ({
                                         </>
                                         )}
                                     </div>
-                                    <div className='col-md-7 d-flex p-0 '>
-                                        <div className='card' style={{ padding: '10px', width: '135px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <div className='col-md-9 d-flex p-0 align-items-center'>
+                                        <div className='card' style={{ padding: '10px', width: '135px', display: 'flex', justifyContent: 'center', alignItems: 'center',height: '35px' }}>
                                             <Checkbox
                                                 onChange={(e) => {
                                                     setEnableAttachments(e.target.checked);
@@ -678,7 +678,7 @@ const QuestionCardNew = ({
                                             >File Upload</Checkbox>
                                         </div>
                                         {enableAttachments && (
-                                            <div className='card row' style={{ padding: '10px', width: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' , marginRight: '20px' }}
+                                            <div className='card row' style={{ padding: '5px', width: '200px',height: '35px', display: 'flex', justifyContent: 'center', marginRight: '20px' }}
                                             >
                                                 <div className='th-13'>Max. No of Files</div>
                                                 <Select
@@ -698,14 +698,14 @@ const QuestionCardNew = ({
                                                 </Select>
                                             </div>
                                         )}
-                                        <div className='card' style={{ padding: '10px', width: '135px', display: 'flex', justifyContent: 'center', alignItems: 'center',  color: 'white' }}>
+                                        <div className='card' style={{ padding: '10px', width: '135px',height: '35px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' , background: '#2B61CA' }}>
                                             <Checkbox
                                                 onChange={(e) => {
                                                     setpentool(e.target.checked);
                                                 }}
                                                 checked={pentool}
                                                 value={pentool}
-                                                style={{ fontSize: '13px'}}
+                                                style={{ fontSize: '13px' , color: 'white' }}
                                             >Pen Tool</Checkbox>
                                         </div>
                                         <div className='d-flex align-items-center' >
@@ -720,6 +720,7 @@ const QuestionCardNew = ({
                                         </div>
                                     </div> */}
                                 </div>
+                                <div className='my-2 th-12'>Accepted :  jpg,png,pdf,mp4</div>
                             </Grid>
                             {attachmentPreviews.length > 0 && (
                                 <Grid item xs={12} className='attachments-grid'>
@@ -860,7 +861,7 @@ const QuestionCardNew = ({
                                 </Grid>
                             )}
                         </Grid>
-                       
+
                     </CardContent>
                 </Card>
             </Grid>
@@ -905,7 +906,7 @@ const QuestionCardNew = ({
                                         <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
                                         <Button
                                             variant='contained'
-                                            color='primary'
+                                            type='primary'
                                             onClick={() => removeQuestion(index)}
                                             style={{ float: 'right' }}
                                         >
@@ -1056,6 +1057,16 @@ const QuestionCardNew = ({
                         >
                             Filter
                         </Button>
+                        <Button
+                            className='mr-3 mx-2'
+                            variant='contained'
+                            onClick={() => {
+                                setShowDrawer(false);
+                                assignResource([]);
+                            }}
+                        >
+                            Back
+                        </Button>
                     </Grid>
                 </Grid>
                 <Grid
@@ -1155,21 +1166,12 @@ const QuestionCardNew = ({
                         })
                     ) : (
                         <Grid className='mt-4 text-center th-width-100'>
-                            <Typography>Please select filters to get resoures</Typography>
+                            <Typography>Please select filters to get Resources</Typography>
                         </Grid>
                     )}
                 </Grid>
                 <Grid className='mt-3'>
-                    <Button
-                        className='mr-3'
-                        variant='contained'
-                        onClick={() => {
-                            setShowDrawer(false);
-                            assignResource([]);
-                        }}
-                    >
-                        Back
-                    </Button>
+
                     {resourcesData && (
                         <Button
                             variant='contained'

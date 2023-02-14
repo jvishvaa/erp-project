@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef, createRef } from 'react';
-import { Avatar, Badge, Drawer , Input} from 'antd';
+import { Avatar, Badge, Drawer , Input , Tooltip} from 'antd';
 import moment from 'moment';
 import { groupBy } from 'lodash';
 import { PlusOutlined, CheckSquareOutlined, CheckOutlined, EditOutlined, CalendarOutlined, MoreOutlined } from '@ant-design/icons';
@@ -154,21 +154,27 @@ const selectedBranch = useSelector(
                             <div  >
                               <PlusOutlined style={{ fontSize: '25px', color: '#959595', background: '#e1e1e1', borderRadius: '5px', cursor: 'pointer' }} onClick={() => handleAdd(each)} />
                             </div> : each?.data?.hw_evaluated != undefined ? <div className='d-flex justify-content-between flex-wrap'>
+                              <Tooltip title={`Submitted (${each?.data?.student_submitted})`} >
                               <div className='w-25' style={{ cursor: 'pointer' }} >
                                 <Badge count={each?.data?.student_submitted} showZero color='#9DDEBA' style={{ cursor: 'pointer' }} size='small' >
                                   <img src={HomeworkAssigned} alt='hwAssign' style={{ width: '30px', height: '30px', background: '#E5FAF1', padding: '5px' }} onClick={() => showDrawer(each, 'submitted')} />
                                 </Badge>
                               </div>
+                              </Tooltip>
+                              <Tooltip title={`Not-Submitted (${each?.data?.student_submitted})`} >
                               <div className='w-25' style={{ cursor: 'pointer' }}>
                                 <Badge count={each?.data?.student_submitted} showZero color='#F1DA89' size='small'>
                                   <img src={HomeworkSubmit} alt='hwsubmit' style={{ width: '30px', height: '30px', background: '#FFF0C9', padding: '5px' }} onClick={() => showDrawer(each, 'not-submitted')} />
                                 </Badge>
                               </div>
+                              </Tooltip>
+                              <Tooltip title={`Evaluated (${each?.data?.hw_evaluated})`} >
                               <div className='w-25' style={{ cursor: 'pointer' }}>
                                 <Badge count={each?.data?.hw_evaluated} showZero color='#9DD6FF' size='small' >
                                   <img src={HomeworkEvaluate} alt='hwev' style={{ width: '30px', height: '30px', background: '#E8F2FD', padding: '5px' }} onClick={() => showDrawer(each, 'evaluated')} />
                                 </Badge>
                               </div>
+                              </Tooltip>
                             </div>
                               : ''}
                         </div>
