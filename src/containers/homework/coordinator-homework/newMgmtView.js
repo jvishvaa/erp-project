@@ -682,6 +682,8 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
             getData()
         }
 
+        const onSearch = (value) => console.log(value);
+
         return (
             <>
                 {loading ? <Loading message='Loading...' /> : null}
@@ -823,7 +825,8 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
                                                 {homeworkCols?.length > 0 ?
                                                     <WeeklyTable homeworkCols={homeworkCols} homeworkRows={homeworkRows} branch={selectedBranch?.branch?.id} grade={gradeDisplay} sectionMapping={sectionMap} sectionId={sectionDisplay}
-                                                        teacherid={selectedCoTeacherOptValue} moduleId={teacherModuleId} startDate={startDate} endDate={endDate} isTeacher={isTeacher} setViewHomework={setViewHomework} setActiveView={setActiveView} />
+                                                        teacherid={selectedCoTeacherOptValue} moduleId={teacherModuleId} startDate={startDate} endDate={endDate} 
+                                                        isTeacher={isTeacher} setViewHomework={setViewHomework} setActiveView={setActiveView} onSearch={onSearch} />
                                                     : homeworkCols?.length == 0 ? <div style={{ minHeight: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
                                                         <Empty />
                                                     </div> : ''}

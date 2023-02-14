@@ -20,6 +20,7 @@ import axiosInstance from 'config/axios';
 import './studentSide.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { Bar } from '@ant-design/plots';
+import { Column } from '@ant-design/plots';
 import {
     CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined,
     DownOutlined, CalendarOutlined, MoreOutlined
@@ -250,24 +251,36 @@ const StudentAnalytics = withRouter(({
 
     const config = {
         data,
-        xField: 'subject_wise_percentage',
-        yField: 'subject__subject_name',
+        yField: 'subject_wise_percentage',
+        xField: 'subject__subject_name',
         seriesField: 'subject__subject_name',
         // isPercent: 'true',
         // isStack: 'true',
         width: 400,
         height: 150,
-        minColumnWidth: 30,
-        maxColumnWidth: 30,
+      
         legend: false,
+        xAxis: {
+            label: {
+              autoRotate: true,
+            },
+          },
+        barBackground: {
+            style: {
+                opacity : '0.9'
+            }
+        },        
         label: {
             position: 'middle',
             content: (item) => {
                 return `${item.subject_wise_percentage.toFixed(2)}%`;
             },
-            layout: [
-
-            ],
+            style:{
+                opacity: 100,
+                fill: '#000000',
+                fontSize: 12,
+                fontWeight: 600,
+            }
         },
     };
 
@@ -343,7 +356,7 @@ const StudentAnalytics = withRouter(({
                     <div className='col-md-8'>
                         <div className='card w-100'>
                             <div className='row p-2 justify-content-between' >
-                                <div className='th-13 th-fw-600 p-2'>Overall Homework Completion</div>
+                                <div className='th-13 th-fw-600 p-2'>Subjectwise Homework Completion</div>
                                 <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
                                     <Form ref={formRef}>
                                         <Form.Item name='month'>
@@ -368,7 +381,7 @@ const StudentAnalytics = withRouter(({
                             <div className='p-4' >
                                 {console.log(pending, 'pend')}
                                 {pending?.length > 0 ?
-                                    <Bar {...config} /> : <div style={{marginBottom: '20px'}} > <Empty /></div>}
+                                    <Column {...config} /> : <div style={{marginBottom: '20px'}} > <Empty /></div>}
                             </div>
 
                         </div>
@@ -378,25 +391,10 @@ const StudentAnalytics = withRouter(({
                 <div className='col-md-12 mt-2'>
                     <div className='card w-100'>
                         <div className='row p-2 justify-content-between' >
-                            <div className='th-13 th-fw-600 p-2'>Overall Homework Completion</div>
+                            <div className='th-13 th-fw-600 p-2'>Monthwise Homework Completion</div>
                             <div >
                                 <Form ref={formRefOverall} className='d-flex justify-content-between' >
-                                    <Form.Item name='monthOverall' className='px-2'>
-                                        <Select
-                                            placeholder='Month'
-                                            optionFilterProp='children'
-                                            filterOption={(input, options) => {
-                                                return (
-                                                    options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                );
-                                            }}
-                                            onChange={changeMonthOverall}
-                                            className='w-100 text-left th-black-1 th-bg-grey th-br-4 mx-2'
-                                            bordered={false}
-                                        >
-                                            {monthOptions}
-                                        </Select>
-                                    </Form.Item>
+                                   
                                     <Form.Item name='subject'>
                                         <Select
                                             placeholder='Subject'

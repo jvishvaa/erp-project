@@ -64,7 +64,7 @@ const StudentHomeworkNew = withRouter(({
     const [evaluatedData, setEvaluatedData] = useState([])
     const history = useHistory();
     const [hwSelect, setHwSelect] = useState(false)
-    const [loading , setLoading ] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [homeworkSubmission, setHomeworkSubmission] = useState({
         isOpen: false,
         subjectId: '',
@@ -73,6 +73,12 @@ const StudentHomeworkNew = withRouter(({
         status: 1,
         isEvaluated: false,
     });
+
+    const [todaySubject , setTodaySubject] = useState([])
+    const [pendingSubject , setPendingSubject] = useState([])
+    const [submitSubject , setSubmitSubject] = useState([])
+    const [evaluatedSubject , setEvaluatedSubject] = useState([])
+
 
 
     const selectedAcademicYear = useSelector(
@@ -117,8 +123,8 @@ const StudentHomeworkNew = withRouter(({
     }, [])
 
     useEffect(() => {
-        if (acad_session_id && endDate != undefined) {
-            console.log(acad_session_id, 'acadd');
+        if (acad_session_id && endDate != undefined && endDate != 'Invalid date') {
+            console.log(acad_session_id,endDate, 'acadd');
             getTodayshw({
                 acad_session_id: acad_session_id
             })
@@ -139,7 +145,7 @@ const StudentHomeworkNew = withRouter(({
     }, [acad_session_id, endDate])
 
     useEffect(() => {
-        if (acad_session_id && endDate != undefined && hwSelect == false) {
+        if (acad_session_id && endDate != undefined && endDate != 'Invalid date' && hwSelect == false) {
             console.log(acad_session_id, 'acadd');
             getTodayshw({
                 acad_session_id: acad_session_id
@@ -172,6 +178,7 @@ const StudentHomeworkNew = withRouter(({
             .then((res) => {
                 console.log(res);
                 setToday(res.data.result)
+                setTodaySubject(res.data.result)
             })
             .catch((error) => {
                 message.error(error.message);
@@ -188,6 +195,7 @@ const StudentHomeworkNew = withRouter(({
             .then((res) => {
                 console.log(res);
                 setPending(res.data.result)
+                setPendingSubject(res.data.result)
             })
             .catch((error) => {
                 message.error(error.message);
@@ -204,6 +212,7 @@ const StudentHomeworkNew = withRouter(({
             .then((res) => {
                 console.log(res);
                 setSubmit(res.data.result)
+                setSubmitSubject(res.data.result)
             })
             .catch((error) => {
                 message.error(error.message);
@@ -220,6 +229,7 @@ const StudentHomeworkNew = withRouter(({
             .then((res) => {
                 console.log(res);
                 setEvaluated(res.data.result)
+                setEvaluatedSubject(res.data.result)
             })
             .catch((error) => {
                 message.error(error.message);
@@ -232,12 +242,14 @@ const StudentHomeworkNew = withRouter(({
         }
         const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
         const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
-
         return !!tooEarly || !!tooLate;
     };
     const onOpenChange = (open) => {
         if (open) {
             setDates([null, null]);
+            formRef.current.setFieldsValue({
+                date: [null, null]
+            })
         } else {
             setDates(null);
         }
@@ -328,14 +340,14 @@ const StudentHomeworkNew = withRouter(({
     const handleHw = (item, tab) => {
         console.log(item);
         setHwSelect(true)
-        if(tab == 1 || tab == 2){
+        if (tab == 1 || tab == 2) {
 
             setHomeworkSubmission({
                 isOpen: true,
                 homeworkId: item?.id,
                 date: moment(item?.uploaded_at).format('DD-MM-YYYY'),
                 subjectName: item?.subject__subject_name,
-                status: 1 ,
+                status: 1,
                 isEvaluated: false,
             });
         } else {
@@ -344,7 +356,7 @@ const StudentHomeworkNew = withRouter(({
                 homeworkId: item?.homework_id,
                 date: item?.uploaded_date,
                 subjectName: item?.homework__subject__subject_name,
-                status: tab == 4 ? 3 : 2 ,
+                status: tab == 4 ? 3 : 2,
                 isEvaluated: tab == 4 ? true : false,
             });
         }
@@ -352,6 +364,56 @@ const StudentHomeworkNew = withRouter(({
 
     const goback = () => {
         history.push('/homework/student')
+    }
+
+    const handleSubjectFilter = (sub) => {
+        console.log(sub , pendingData , submitData , evaluatedData);
+        if (sub != 'all') {
+            if (acad_session_id && endDate != undefined && hwSelect == false) {
+                console.log(acad_session_id, 'acadd');
+                getTodayshw({
+                    acad_session_id: acad_session_id,
+                    subject_id: sub?.subject_id
+                })
+                getPendingshw({
+                    acad_session_id: acad_session_id,
+                    start_date: startDate,
+                    end_date: endDate,
+                    subject_id: sub?.subject_id
+                })
+                getSubmitshw({
+                    start_date: startDate,
+                    end_date: endDate,
+                    subject_id: sub?.subject_id
+                })
+                getEvaluatedshw({
+                    start_date: startDate,
+                    end_date: endDate,
+                    subject_id: sub?.subject_id
+                })
+            }
+        }
+        if (sub == 'all') {
+            if (acad_session_id && endDate != undefined && hwSelect == false) {
+                console.log(acad_session_id, 'acadd');
+                getTodayshw({
+                    acad_session_id: acad_session_id,
+                })
+                getPendingshw({
+                    acad_session_id: acad_session_id,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+                getSubmitshw({
+                    start_date: startDate,
+                    end_date: endDate
+                })
+                getEvaluatedshw({
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            }
+        }
     }
 
     return (
@@ -370,7 +432,7 @@ const StudentHomeworkNew = withRouter(({
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
-                <Divider  />
+                <Divider />
                 {hwSelect == false ?
                     <>
                         <Form ref={formRef} style={{ width: '90%', display: 'flex', margin: '0 auto' }} direction='row' >
@@ -389,10 +451,30 @@ const StudentHomeworkNew = withRouter(({
                         </Form>
                         <div style={{ width: '90%', margin: '0 auto' }} className='d-flex justify-content-between' >
                             <div className='col-md-8 my-4 p-0' >
-                                <Button>All Subject</Button>
-                                {today?.subjects?.map((sub) => (
-                                    <Button className='mx-1'>{sub?.subject_name}</Button>
-                                ))}
+                                <Button type='primary' onClick={() => handleSubjectFilter('all')} className='m-1'>All Subject</Button>
+                                {segment == 1 ? <>
+                                    {todaySubject?.subjects?.map((sub) => (
+                                        <Button className='m-1' type='primary' onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
+                                    ))}
+                                </> :
+                                    segment == 2 ?
+                                        <>
+                                            {pendingSubject?.subjects?.map((sub) => (
+                                                <Button className='m-1' type='primary' onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
+                                            ))}
+                                        </> :
+                                        segment == 3 ?
+                                            <>
+                                                {submitSubject?.subjects?.map((sub) => (
+                                                    <Button className='m-1' type='primary' onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
+                                                ))}
+                                            </> :
+                                            segment == 4 ?
+                                                <>
+                                                    {evaluatedSubject?.subjects?.map((sub) => (
+                                                        <Button className='m-1' type='primary' onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
+                                                    ))}
+                                                </> : ''}
                             </div>
                             <div className='col-md-4 mt-4 justify-content-end d-flex'>
                                 <Button onClick={viewanalytics} style={{ background: '#F19325', color: 'white' }} >View Analytics</Button>
@@ -415,7 +497,7 @@ const StudentHomeworkNew = withRouter(({
                                                                         <p className='th-14 th-fw-600 m-0' >{item?.subject__subject_name}</p>
                                                                         <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#EE6065' }}>Due Date : {moment(item?.last_submission_dt).format('DD-MM-YYYY')}</div>
                                                                     </div>
-                                                                    <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto' , cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
+                                                                    <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
                                                                         <div className='th-14'>{item?.homework_name}</div>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
@@ -441,7 +523,7 @@ const StudentHomeworkNew = withRouter(({
                                         <div>
                                             {pendingData?.length > 0 ?
                                                 <div>
-                                                    <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{pending?.no_of_home_works} Homework Assigned</div>
+                                                    <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{pending?.no_of_home_works} Homework Pending</div>
                                                     <Divider className='my-2' />
                                                     <div className='d-flex flex-wrap p-3'   >
                                                         {pendingData?.map((item) => (
@@ -483,7 +565,7 @@ const StudentHomeworkNew = withRouter(({
                                         <div>
                                             {submitData?.length > 0 ?
                                                 <div>
-                                                    <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{submit?.no_of_home_works} Homework Assigned</div>
+                                                    <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{submit?.no_of_home_works} Homework Submitted</div>
                                                     <Divider className='my-2' />
                                                     <div className='d-flex flex-wrap p-3'   >
                                                         {submitData?.map((item) => (
@@ -496,7 +578,7 @@ const StudentHomeworkNew = withRouter(({
                                                                             <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#626161' }}>{moment(item?.submitted_at).format('DD-MM-YYYY')}</div>
                                                                         </div>
                                                                     </div>
-                                                                    <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto' , cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
+                                                                    <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
                                                                         <div className='th-14'>{item?.homework__homework_name}</div>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
@@ -522,7 +604,7 @@ const StudentHomeworkNew = withRouter(({
                                         <div>
                                             {evaluatedData?.length > 0 ?
                                                 <div>
-                                                    <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{evaluated?.no_of_home_works} Homework Assigned</div>
+                                                    <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{evaluated?.no_of_home_works} Homework Evaluated</div>
                                                     <Divider className='my-2' />
                                                     <div className='d-flex flex-wrap p-3'   >
                                                         {evaluatedData?.map((item) => (
@@ -535,7 +617,7 @@ const StudentHomeworkNew = withRouter(({
                                                                             <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#626161' }}>{moment(item?.submitted_at).format('DD-MM-YYYY')}</div>
                                                                         </div>
                                                                     </div>
-                                                                    <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto' , cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
+                                                                    <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
                                                                         <div className='th-14'>{item?.homework__homework_name}</div>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
@@ -562,9 +644,9 @@ const StudentHomeworkNew = withRouter(({
                         </div>
                     </>
                     :
-                 <HomeworkSubmissionNew
-                    homeworkSubmission={homeworkSubmission} setHomeworkSubmission={setHomeworkSubmission} setHwSelect={setHwSelect} setLoading={setLoading}
-                /> }
+                    <HomeworkSubmissionNew
+                        homeworkSubmission={homeworkSubmission} setHomeworkSubmission={setHomeworkSubmission} setHwSelect={setHwSelect} setLoading={setLoading}
+                    />}
             </Layout >
 
         </>
