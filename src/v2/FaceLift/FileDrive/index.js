@@ -90,7 +90,7 @@ const FileDrive = () => {
       .get(`${endpoints.fileDrive.fileCategory}/`, { params: { ...params } })
       .then((response) => {
         if (response?.data) {
-          setFileCategory(response?.data?.result);
+          setFileCategory(response?.data?.data?.results);
         }
       })
       .catch((error) => {
@@ -273,7 +273,7 @@ const FileDrive = () => {
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-grey th-16 th-pointer'
-                onClick={() => history.push('/file-folder')}
+                onClick={() => history.push('/file-category')}
               >
                 File Category
               </Breadcrumb.Item>

@@ -55,6 +55,7 @@ import {
   Settings,
   ShopTwo,
   Store,
+  PermMedia,
 } from '@material-ui/icons';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined';
@@ -294,6 +295,10 @@ const menuIcon = (name) => {
     }
     case 'Teacher Attendance': {
       icon = <EventNoteIcon />;
+      break;
+    }
+    case 'File Drive': {
+      icon = <PermMedia />;
       break;
     }
 
