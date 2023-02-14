@@ -620,6 +620,7 @@ const ViewHomeworkNew = withRouter(
                                                     setRemark(e.target.value);
                                                 }}
                                                 value={remark}
+                                                inputProps={{ maxLength: 15 }}
                                             />
                                         </FormControl>
                                     </div>
@@ -639,6 +640,7 @@ const ViewHomeworkNew = withRouter(
                                                     setScore(e.target.value);
                                                 }}
                                                 value={score}
+                                                inputProps={{ maxLength: 5 }}
                                             />
                                         </FormControl>
                                     </div>

@@ -1047,7 +1047,7 @@ const QuestionCardNew = ({
                     <Grid item xs={12} sm={4}>
                         <Button
                             variant='contained'
-                            color='primary'
+                            type='primary'
                             startIcon={<SearchIcon />}
                             onClick={() => {
                                 fetchResources();
@@ -1173,7 +1173,7 @@ const QuestionCardNew = ({
                     {resourcesData && (
                         <Button
                             variant='contained'
-                            color='primary'
+                            type='primary'
                             onClick={() => {
                                 setShowDrawer(false);
                                 assignResource([...selectedResources]);

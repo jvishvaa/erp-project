@@ -448,7 +448,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
               Add Another Question
             </Button>
             <Button className='mx-1' onClick={handleAddHomeWork} type='primary'>
-              Submit
+              {propData?.isEdit ? "Update" : 'Submit' }
             </Button>
           </div>
 

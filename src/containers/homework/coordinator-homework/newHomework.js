@@ -67,7 +67,7 @@ const SubmissionData = withRouter(({
         (state) => state.commonFilterReducer?.selectedBranch
     );
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [ checkEdit , setCheckEdit ] = useState(false)
+    const [checkEdit, setCheckEdit] = useState(false)
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -101,10 +101,10 @@ const SubmissionData = withRouter(({
         Isyesterday = moment(selectedHomeworkDetails?.date).isSame(yesterdayDate, 'day');
 
         console.log(IsToday, Isyesterday, 'today');
-        if(IsToday){
+        if (IsToday) {
             setCheckEdit(true)
             console.log('hit today');
-        } else if(Isyesterday){
+        } else if (Isyesterday) {
             setCheckEdit(true)
             console.log("hit yes");
         } else {
@@ -113,7 +113,7 @@ const SubmissionData = withRouter(({
     }
 
     useEffect(() => {
-       checkValid()
+        checkValid()
     }, [selectedHomeworkDetails])
 
     const handleCancel = () => {
@@ -122,7 +122,7 @@ const SubmissionData = withRouter(({
     const scrollableContainer = createRef();
     const getTitle = () => {
         return <div>
-            {segment == 1 ? `Select All (${unSubmittedStudents?.length})` : segment == 2 ? `Select All (${submittedStudents?.length})` : segment == 4 ? `Select All (${evaluatedStudents?.length})` : ''}
+            {segment == 1 ? `Select All (${unSubmittedStudents?.length})` : segment == 2 ? `Select All (${submittedStudents?.length})` : segment == 3 ? `Select All (${absentList?.length})` : segment == 4 ? `Select All (${evaluatedStudents?.length})` :  segment == 5 ? `Select All (${unevaluatedStudents?.length})` : ''}
         </div>
     }
 
@@ -294,12 +294,16 @@ const SubmissionData = withRouter(({
                 <div className='d-flex justify-content-between p-3' >
                     <span className='font-weight-bold th-14'>{props?.submitData?.hw_data?.subject_name}</span>
                     <div className='col-md-3 d-flex justify-content-between'>
-                        { checkEdit == true ? 
-                        <div className='d-flex' >
-                        <EditOutlined className='th-20' style={{ cursor: 'pointer' }} onClick={handleEdit} />
-                        <DeleteOutlined className='th-20 mx-4' style={{ cursor: 'pointer' }} onClick={showModal} />
-                        </div> : '' }
-                        <CloseCircleOutlined className='th-20 mx-2' style={{ cursor: 'pointer' , float: 'right' }} onClick={props?.onCloseDrawer} />
+                        <div className='col-md-6' >
+                            {checkEdit == true ?
+                                <div className='d-flex' >
+                                    <EditOutlined className='th-20' style={{ cursor: 'pointer' }} onClick={handleEdit} />
+                                    <DeleteOutlined className='th-20 mx-4' style={{ cursor: 'pointer' }} onClick={showModal} />
+                                </div> : ''}
+                        </div>
+                        <div className='d-flex justify-content-end' >
+                            <CloseCircleOutlined className='th-20 mx-2' style={{ cursor: 'pointer', float: 'right' }} onClick={props?.onCloseDrawer} />
+                        </div>
                     </div>
                 </div>
                 <span className='th-13 th-fw-600' style={{ color: '#A0A0A1', width: '95%', margin: '0 auto' }} >Homework Details</span>
@@ -321,13 +325,13 @@ const SubmissionData = withRouter(({
                             </div>
                             <div>
                                 <div className='d-flex justify-content-between'>
-                                <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Due Date</span>
-                                <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Creation Date</span>
+                                    <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Due Date</span>
+                                    <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Creation Date</span>
 
                                 </div>
-                                <div style={{ color: '#556778', background: '#F4F9FF', padding: '5px', display:'flex', justifyContent:'space-between' }}>
-                                <p className='th-14 th-fw-600 m-0'  >{moment(selectedHomeworkDetails?.date).format('DD-MM-YYYY')}</p>
-                                <p className='th-14 th-fw-600 m-0' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }} >{moment(selectedHomeworkDetails?.last_submission_dt).format('DD-MM-YYYY')}</p>
+                                <div style={{ color: '#556778', background: '#F4F9FF', padding: '5px', display: 'flex', justifyContent: 'space-between' }}>
+                                    <p className='th-14 th-fw-600 m-0'  >{moment(selectedHomeworkDetails?.date).format('DD-MM-YYYY')}</p>
+                                    <p className='th-14 th-fw-600 m-0' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }} >{moment(selectedHomeworkDetails?.last_submission_dt).format('DD-MM-YYYY')}</p>
 
                                 </div>
                             </div>
@@ -340,10 +344,10 @@ const SubmissionData = withRouter(({
                                     {selectedHomeworkDetails && selectedHomeworkDetails?.hw_questions?.map((question, index) => (
                                         <div
                                             className='homework-question-container-coordinator'
-                                            style={{ margin: '0 auto' }}
+                                            style={{ margin: '0' , width: '100%' }}
                                             key={`homework_student_question_${index}`}
                                         >
-                                            <div className='homework-question' style={{ border: '0px' }} >
+                                            <div className='homework-question' style={{ border: '0px' , width: '100%' }} >
                                                 <div className='th-12 th-fw-600 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }}>{question.question}</div>
                                             </div>
                                             <div className='attachments-container'>
@@ -449,8 +453,10 @@ const SubmissionData = withRouter(({
                     </div>
                 </TabPane>
                 <TabPane tab={`Absent(${absentList?.length ? absentList?.length : "0"})`} key={'3'}  >
+                <div style={{ width: '100%' }} >
                     {absentList?.length > 0 ?
                         <Table
+                        rowSelection={{ ...rowSelection }}
                             columns={columns} dataSource={absentList}
                             rowKey={(record) => record?.user_id}
                             pagination={false}
@@ -459,6 +465,7 @@ const SubmissionData = withRouter(({
                             }
                             className=' th-homework-table-head-bg '
                         /> : <div className='mt-5'> <Empty /> </div>}
+                        </div>
                 </TabPane>
                 <TabPane tab={`Evaluated(${evaluatedStudents?.length ? evaluatedStudents?.length : "0"})`} key={'4'} >
                     <div style={{ width: '100%' }} >
@@ -493,21 +500,29 @@ const SubmissionData = withRouter(({
             {segment == 1 ?
                 <>
                     {unSubmittedStudents?.length > 0 ?
-                        <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '90%' }} >
+                        <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
                             <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
                         </div> : ''}
                 </>
                 : segment == 2 ?
                     <>
                         {submittedStudents?.length > 0 ?
-                            <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '90%' }} >
+                            <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
                                 <Button onClick={handleSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Unsubmit</Button>
+                            </div>
+                            : ''}
+                    </>
+                    : segment == 3 ?
+                    <>
+                        {absentList?.length > 0 ?
+                            <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
+                                <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
                             </div>
                             : ''}
                     </>
                     : ''}
             <Modal title="Delete Homework" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <p>{`Confirm Delete Homework ${selectedHomeworkDetails?.homework_name}`}</p>
+                <p style={{padding: '25px'}}>{`Confirm Delete Homework ${selectedHomeworkDetails?.homework_name} ?`}</p>
             </Modal>
         </div>
     )

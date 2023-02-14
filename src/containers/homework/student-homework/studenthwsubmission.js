@@ -821,6 +821,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         fontWeight: 'bold',
                                         textTransform: 'capitalize',
                                     }}
+                                    className='p-3 m-0'
                                 >
                                     Instructions : {desc}
                                 </span>
@@ -1337,7 +1338,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                 <div className='bulkUploadButton'>
                                     <Button
                                         variant='contained'
-                                        color='primary'
+                                        type='primary'
                                         // style={{ color: 'white' }}
                                         component='label'
                                         size='medium'
@@ -1551,18 +1552,18 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     )}
                                 </>
                             ) : null}
-                            <div style={{ width: '100%' }}>
-                                {
+                            <div style={{ width: '100%'  , display: 'flex' , justifyContent: 'flex-end' }}>
+                                <div>
                                     <Button
                                         variant='contained'
-                                        className='cancelButton labelColor homework_submit_button_cancel'
+                                        className='cancelButton labelColor homework_submit_button_cancel mx-2'
                                         size='medium'
-                                        style={{ width: '15%', marginLeft: '85%' }}
                                         onClick={handleHomeworkCancel}
-                                    >
+                                        >
                                         {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
                                     </Button>
-                                }
+                                </div>
+                                        
                                 {!isupdate && homeworkSubmission.status === 2 && (
                                     <Button
                                         variant='contained'
@@ -1590,6 +1591,20 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         Delete
                                     </Button>
                                 )}
+                                {homeworkSubmission.status === 1 && (
+                                <div>
+                                    <Button
+                                        variant='contained'
+                                        style={{ color: 'white' }}
+                                        onClick={handleHomeworkSubmit}
+                                        type='primary'
+                                        size='medium'
+                                        className='mx-2 '
+                                    >
+                                        Submit
+                                    </Button>
+                                </div>
+                            )}
                                 <Dialog id={id} open={open} onClose={handleClose}>
                                     <DialogTitle id='draggable-dialog-title'>Delete</DialogTitle>
                                     <DialogContent>
@@ -1615,19 +1630,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     </DialogActions>
                                 </Dialog>
                             </div>
-                            {homeworkSubmission.status === 1 && (
-                                <div>
-                                    <Button
-                                        variant='contained'
-                                        style={{ color: 'white', width: '100%' }}
-                                        onClick={handleHomeworkSubmit}
-                                        type='primary'
-                                        size='medium'
-                                    >
-                                        Submit
-                                    </Button>
-                                </div>
-                            )}
+                            
                         </div>
                     </div>
                 </div>

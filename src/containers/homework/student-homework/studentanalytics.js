@@ -27,6 +27,8 @@ import {
 } from '@ant-design/icons';
 import Atachment from 'assets/images/attachmenticon.svg'
 import GroupedChart from './yearlyAnalytics';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -66,10 +68,10 @@ const StudentAnalytics = withRouter(({
     const [evaluated, setEvaluated] = useState([])
     const [evaluatedData, setEvaluatedData] = useState([])
 
-    const [ subject , setSubject ] = useState()
+    const [subject, setSubject] = useState()
     const [data, setData] = useState([])
     const [curMonth, setCurMonth] = useState()
-    const [curMonthOverall , setCurMonthOverall ] = useState()
+    const [curMonthOverall, setCurMonthOverall] = useState()
     let month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     let monthData = []
     let tempData = month?.map((each, index) => {
@@ -141,7 +143,7 @@ const StudentAnalytics = withRouter(({
             getOverallReport({
                 acad_session_id: acad_session_id
             })
-     
+
         }
     }, [acad_session_id])
 
@@ -158,9 +160,9 @@ const StudentAnalytics = withRouter(({
                 acad_session_id: acad_session_id,
                 month: curMonth
             })
-          formRef.current.setFieldsValue({
-            month: moment(curMonth , 'MM').format('MMM')
-          })
+            formRef.current.setFieldsValue({
+                month: moment(curMonth, 'MM').format('MMM')
+            })
         }
     }, [curMonth])
 
@@ -240,7 +242,7 @@ const StudentAnalytics = withRouter(({
             });
     };
 
- 
+
 
     const getpercent = (percent) => {
         return <div>
@@ -258,24 +260,24 @@ const StudentAnalytics = withRouter(({
         // isStack: 'true',
         width: 400,
         height: 150,
-      
+
         legend: false,
         xAxis: {
             label: {
-              autoRotate: true,
+                autoRotate: true,
             },
-          },
+        },
         barBackground: {
             style: {
-                opacity : '0.9'
+                opacity: '0.9'
             }
-        },        
+        },
         label: {
             position: 'middle',
             content: (item) => {
                 return `${item.subject_wise_percentage.toFixed(2)}%`;
             },
-            style:{
+            style: {
                 opacity: 100,
                 fill: '#000000',
                 fontSize: 12,
@@ -284,38 +286,85 @@ const StudentAnalytics = withRouter(({
         },
     };
 
-    const changeSubject = (e , value) => {
+    const optionsOverallPie = {
+        chart: {
+            type: 'pie',
+        },
+
+        title: {
+            verticalAlign: 'middle',
+            floating: true,
+            text:
+                'Overall' +
+                '<br />' +
+                `${today?.overall_persentage ? today?.overall_persentage.toFixed(2) : 0
+                }%`,
+            y: 18,
+            style: { fontWight: '800', color: '#32334a ', fontFamily: 'Inter, sans-serif' },
+        },
+        colors: ['#3AAC45', '#ff9922'],
+        credits: {
+            enabled: false,
+        },
+
+        plotOptions: {
+            pie: {
+                shadow: true,
+            },
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b>: ' + this.percentage.toFixed(2) + ' %';
+            },
+        },
+        series: [
+            {
+                data: [
+                    ['Total Assigned', today?.total_assigned],
+                    ['Total Submitted', today?.total_submitted],
+                ],
+                // size: '100%',
+                innerSize: '85%',
+                showInLegend: false,
+                dataLabels: {
+                    enabled: false,
+                },
+            },
+        ],
+    };
+
+    const changeSubject = (e, value) => {
         setSubject(value?.value)
     }
 
     useEffect(() => {
-        if(subject != null && curMonthOverall){
+        if (subject != null && curMonthOverall) {
             getYearly({
                 acad_session_id: acad_session_id,
                 month: curMonthOverall,
                 subject_id: subject
             })
         }
-    },[subject , curMonthOverall])
+    }, [subject, curMonthOverall])
 
     useEffect(() => {
-        if(pending?.length > 0 && curMonthOverall){
+        if (pending?.length > 0 && curMonthOverall) {
             getYearly({
                 acad_session_id: acad_session_id,
                 month: curMonthOverall,
                 subject_id: pending[0]?.subject_id
             })
             formRefOverall.current.setFieldsValue({
-                monthOverall : moment(curMonthOverall , 'MM').format('MMM'),
+                monthOverall: moment(curMonthOverall, 'MM').format('MMM'),
                 subject: pending[0]?.subject__subject_name
             })
             setSubject(pending[0]?.subject_id)
         }
-    },[pending])
+    }, [pending])
 
     useEffect(() => {
 
-    },[])
+    }, [])
 
 
 
@@ -339,16 +388,25 @@ const StudentAnalytics = withRouter(({
                     <div className='col-md-4' >
                         <div className='card w-100'>
                             <div className='th-13 th-fw-600 p-2'>Overall Homework Completion</div>
-                            <div className='col-md-12 row justify-content-center my-5 pb-2'>
-                                <div className='cl-md-6'>
-                                    <Progress type="circle" percent={today?.overall_persentage} format={(percent) => getpercent(percent)} strokeColor={{
-                                        '0%': '#5BAD45',
-                                        '100%': '#5BAD45',
-                                    }} />
+                            <div className='d-flex justify-content-between mb-4'>
+                                <div className='col-md-6'>
+                                    <HighchartsReact
+                                        highcharts={Highcharts}
+                                        options={optionsOverallPie}
+                                        containerProps={{
+                                            style: { height: '200px', width: '190px' },
+                                        }}
+                                    />
                                 </div>
-                                <div className='col-md-6 d-flex justify-content-center align-items-center flex-column' >
-                                    <div className='th-15' style={{ color: '#A8A8A8' }}>Total Assigned : {today?.total_assigned}</div>
-                                    <div className='th-15' style={{ color: '#597CD6' }}>Total Submitted : {today?.total_submitted}</div>
+                                <div className='col-md-6 d-flex justify-content-center flex-column'>
+                                <div className='th-yellow py-1 d-flex th-13  px-1'>
+                                        <span>Total Assigned :</span>{' '}
+                                        <span>{today?.total_assigned}</span>
+                                    </div>
+                                    <div className='th-green-2 py-1 d-flex  th-13  px-1 '>
+                                        <span>Total Submitted :</span>{' '}
+                                        <span>&nbsp;{today?.total_submitted}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -381,7 +439,7 @@ const StudentAnalytics = withRouter(({
                             <div className='p-4' >
                                 {console.log(pending, 'pend')}
                                 {pending?.length > 0 ?
-                                    <Column {...config} /> : <div style={{marginBottom: '20px'}} > <Empty /></div>}
+                                    <Column {...config} /> : <div style={{ marginBottom: '20px' }} > <Empty /></div>}
                             </div>
 
                         </div>
@@ -394,7 +452,7 @@ const StudentAnalytics = withRouter(({
                             <div className='th-13 th-fw-600 p-2'>Monthwise Homework Completion</div>
                             <div >
                                 <Form ref={formRefOverall} className='d-flex justify-content-between' >
-                                   
+
                                     <Form.Item name='subject'>
                                         <Select
                                             placeholder='Subject'
@@ -414,8 +472,8 @@ const StudentAnalytics = withRouter(({
                                 </Form>
                             </div>
                         </div>
-                        <div className='p-3' style={{width: '70%'}} >
-                        <GroupedChart data={submit} />
+                        <div className='p-3' style={{ width: '70%' }} >
+                            <GroupedChart data={submit} />
                         </div>
                     </div>
                 </div>
