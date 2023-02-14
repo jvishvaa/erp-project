@@ -55,6 +55,7 @@ import {
     setTeacherUserIDCoord,
     setSelectedCoFilters,
     resetSelectedCoFilters,
+    resetSelectedFilters
 } from '../../../redux/actions';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import HomeworkRow from './homework-row';
@@ -161,6 +162,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         selectedTeacherByCoordinatorToCreateHw,
         setFirstTeacherUserIdOnloadCordinatorHomewok,
         absentList,
+        onResetSelectedData,
         ...props
     }) => {
         //const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
@@ -238,43 +240,44 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
         const [isTeacher, setIsTeacher] = useState(false)
 
         useEffect(() => {
-            if (history != undefined && history?.location?.state?.moduleId) {
-                const historyData = history?.location?.state
-                if (history?.location?.state?.isTeacher == true) {
-                    setGradeDisplay(historyData?.grade)
-                    setSectionDisplay(historyData?.sectionId)
-                    setSectionMap(historyData?.sectionMapping)
-                    setselectedCoTeacherOptValue(historyData?.teacherid)
-                    getTeacherHomeworkDetails(
-                        historyData?.moduleId,
-                        selectedAcademicYear?.id,
-                        selectedBranch?.branch?.id,
-                        historyData?.grade,
-                        historyData?.sectionMapping,
-                        historyData?.sectionId,
-                        startDate,
-                        endDate,
-                    )
-                } else {
-                    if (selectedCoTeacherOptValue != undefined) {
-                        setGradeDisplay(historyData?.grade)
-                        setSectionDisplay(historyData?.sectionId)
-                        setSectionMap(historyData?.sectionMapping)
-                        setselectedCoTeacherOptValue(historyData?.teacherid)
-                        getCoordinateTeacherHomeworkDetails(
-                            historyData?.moduleId,
-                            selectedAcademicYear?.id,
-                            selectedBranch?.branch?.id,
-                            historyData?.grade,
-                            historyData?.sectionMapping,
-                            historyData?.sectionId,
-                            startDate,
-                            endDate,
-                            historyData?.teacherid
-                        );
-                    }
-                }
-            }
+            onResetSelectedData()
+            // if (history != undefined && history?.location?.state?.moduleId) {
+            //     const historyData = history?.location?.state
+            //     if (history?.location?.state?.isTeacher == true) {
+            //         setGradeDisplay(historyData?.grade)
+            //         setSectionDisplay(historyData?.sectionId)
+            //         setSectionMap(historyData?.sectionMapping)
+            //         setselectedCoTeacherOptValue(historyData?.teacherid)
+            //         getTeacherHomeworkDetails(
+            //             historyData?.moduleId,
+            //             selectedAcademicYear?.id,
+            //             selectedBranch?.branch?.id,
+            //             historyData?.grade,
+            //             historyData?.sectionMapping,
+            //             historyData?.sectionId,
+            //             startDate,
+            //             endDate,
+            //         )
+            //     } else {
+            //         if (selectedCoTeacherOptValue != undefined) {
+            //             setGradeDisplay(historyData?.grade)
+            //             setSectionDisplay(historyData?.sectionId)
+            //             setSectionMap(historyData?.sectionMapping)
+            //             setselectedCoTeacherOptValue(historyData?.teacherid)
+            //             getCoordinateTeacherHomeworkDetails(
+            //                 historyData?.moduleId,
+            //                 selectedAcademicYear?.id,
+            //                 selectedBranch?.branch?.id,
+            //                 historyData?.grade,
+            //                 historyData?.sectionMapping,
+            //                 historyData?.sectionId,
+            //                 startDate,
+            //                 endDate,
+            //                 historyData?.teacherid
+            //             );
+            //         }
+            //     }
+            // }
         }, [history])
 
 
@@ -289,11 +292,13 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                         item.child_module.forEach((item) => {
                             if (item.child_name === 'Management View') {
                                 setTeacherModuleId(item?.child_id);
+                                onResetSelectedData()
                             }
                             if (item.child_name === 'Teacher Homework') {
                                 setTeacherModuleId(item?.child_id);
                                 setIsTeacher(true)
                                 setselectedCoTeacherOptValue(userDetails?.user_id)
+                                onResetSelectedData()
                             }
                         });
                     }
@@ -927,6 +932,8 @@ const mapDispatchToProps = (dispatch) => ({
     },
     onSetSelectedFilters: (data) => { dispatch(setSelectedCoFilters(data)) },
     onResetSelectedFilters: () => { dispatch(resetSelectedCoFilters()) },
+    onResetSelectedData: () => { dispatch(resetSelectedFilters()) },
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoordinatorTeacherHomeworkv2);

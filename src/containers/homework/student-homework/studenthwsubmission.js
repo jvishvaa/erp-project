@@ -54,7 +54,7 @@ import {
     message, Tabs, Badge, Drawer, Form, DatePicker, Breadcrumb, Divider, Button,
     Empty, Checkbox
 } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import { LeftOutlined , UploadOutlined } from '@ant-design/icons';
 const useStyles = makeStyles((theme) => ({
     attachmentIcon: {
         color: '#ff6b6b',
@@ -1342,6 +1342,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         component='label'
                                         size='medium'
                                         onClick={handleBulkNotification}
+                                        icon={<UploadOutlined />}
                                     >
                                         Bulk Upload
                                         {bulkDataDisplay?.length < maxCount ||
@@ -1556,7 +1557,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         variant='contained'
                                         className='cancelButton labelColor homework_submit_button_cancel'
                                         size='medium'
-                                        style={{ width: '15%', marginLeft: '80%' }}
+                                        style={{ width: '15%', marginLeft: '85%' }}
                                         onClick={handleHomeworkCancel}
                                     >
                                         {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}

@@ -364,8 +364,8 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
         <p style={{ display: 'flex', alignItems: 'center', color: '#535BA0', fontWeight: '600' }} className='th-14 mx-1 my-0' >Back to Homework</p>
       </div>
       <div className='card row' style={{ margin: '10px auto', width: '80%', padding: '15px', background: '#EEF2F8' }}>
-        <p style={{ color: '#535BA0' }} className='th-14 col-md-6' >Subject : {params.subject}</p>
-        <p style={{ color: '#535BA0', display: 'flex', justifyContent: 'flex-end' }} className='th-14 col-md-6' >Creation Date : {params.date}</p>
+        <p style={{ color: '#535BA0' }} className='th-14 col-md-6 th-fw-600' >Subject : {params.subject}</p>
+        <p style={{ color: '#535BA0', display: 'flex', justifyContent: 'flex-end' }} className='th-14 col-md-6 th-fw-600' >Creation Date : {moment(params.date).format('DD-MM-YYYY')}</p>
 
       </div>
       <div className='card row' style={{ margin: '10px auto', width: '80%', padding: '15px' }}>

@@ -295,7 +295,7 @@ const SubmissionData = withRouter(({
                     <span className='font-weight-bold th-14'>{props?.submitData?.hw_data?.subject_name}</span>
                     <div className='col-md-3 d-flex justify-content-between'>
                         { checkEdit == true ? 
-                        <div>
+                        <div className='d-flex' >
                         <EditOutlined className='th-20' style={{ cursor: 'pointer' }} onClick={handleEdit} />
                         <DeleteOutlined className='th-20 mx-4' style={{ cursor: 'pointer' }} onClick={showModal} />
                         </div> : '' }
@@ -318,6 +318,18 @@ const SubmissionData = withRouter(({
                             <div>
                                 <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Title</span>
                                 <p className='th-14 th-fw-400 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }} >{selectedHomeworkDetails?.homework_name}</p>
+                            </div>
+                            <div>
+                                <div className='d-flex justify-content-between'>
+                                <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Due Date</span>
+                                <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Creation Date</span>
+
+                                </div>
+                                <div style={{ color: '#556778', background: '#F4F9FF', padding: '5px', display:'flex', justifyContent:'space-between' }}>
+                                <p className='th-14 th-fw-600 m-0'  >{moment(selectedHomeworkDetails?.date).format('DD-MM-YYYY')}</p>
+                                <p className='th-14 th-fw-600 m-0' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }} >{moment(selectedHomeworkDetails?.last_submission_dt).format('DD-MM-YYYY')}</p>
+
+                                </div>
                             </div>
                             <div ref={scrollableContainer}>
 

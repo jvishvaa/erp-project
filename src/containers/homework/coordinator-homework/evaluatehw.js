@@ -128,7 +128,7 @@ const ViewHomeworkNew = withRouter(
         const [score, setScore] = useState(null);
         const [homeworkId, setHomeworkId] = useState(null);
         const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
-
+        const [ disableEv , setDisableEv ] = useState(true)
         const scrollableContainer = useRef(null);
 
         const handleScroll = (dir) => {
@@ -196,6 +196,7 @@ const ViewHomeworkNew = withRouter(
             try {
                 await evaluateHomework(id, reqData);
                 setAlert('success', 'Saved Successfully');
+                setDisableEv(false)
             } catch (e) {
                 setAlert('error', 'Evaluation failed');
             }
@@ -653,6 +654,7 @@ const ViewHomeworkNew = withRouter(
                                             variant='contained'
                                             type='primary'
                                             onClick={handleFinalEvaluationForHomework}
+                                            disabled={disableEv}
                                         >
                                             EVALUATION DONE
                                         </Button>
