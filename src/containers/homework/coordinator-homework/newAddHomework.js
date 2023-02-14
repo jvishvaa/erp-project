@@ -13,11 +13,11 @@ import {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 import Layout from '../../Layout';
 import QuestionCard from '../../../components/question-card';
-import { addHomeWorkCoord, setSelectedHomework } from '../../../redux/actions';
+import { addHomeWorkCoord, setSelectedHomework ,addHomeWork} from '../../../redux/actions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -73,7 +73,8 @@ const StyledOutlinedButton = withStyles((theme) => ({
 const { Option } = Select;
 
 
-const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
+const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHomework, selectedHomeworkDetails }) => {
+  const location = useLocation();
   const classes = useStyles();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -97,19 +98,48 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
   const history = useHistory();
   const params = useParams();
   const themeContext = useTheme();
+  const propData = history?.location?.state;
   const sessionYear = params.session_year;
   const branch = params.branch;
   const grade = params.grade;
   const [date, setDate] = useState(new Date());
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
+  const [hwId, sethwId] = useState(propData?.viewHomework?.hw_data?.data?.hw_id);
 
   const handleDateChange = (event, value) => {
     setDateValue(value);
   };
   const formRef = createRef();
 
-  const propData = history?.location?.state
-  console.log(propData , 'props');
+  console.log(propData, 'props');
+  console.log(selectedHomeworkDetails, 'history');
+  console.log();
+
+  useEffect(() => {
+    if (propData.isEdit) {
+      formRef.current.setFieldsValue({
+        title: selectedHomeworkDetails?.homework_name,
+        instruction: selectedHomeworkDetails?.description,
+        date: moment(selectedHomeworkDetails?.last_submission_dt)
+      })
+
+
+      setName(selectedHomeworkDetails?.homework_name);
+      setDateValue(selectedHomeworkDetails?.last_submission_dt)
+      setDescription(selectedHomeworkDetails?.description);
+
+      const que = selectedHomeworkDetails?.hw_questions?.map((data) => ({
+        id: cuid(),
+        is_attachment_enable: data.is_attachment_enable,
+        max_attachment: data.max_attachment,
+        penTool: data.is_pen_editor_enable,
+        question: data.question,
+        attachments: data.question_files,
+      }));
+      setQuestions(que);
+    }
+    console.log(formRef.current, 'form');
+  }, [selectedHomeworkDetails, propData ]);
 
 
   const validateHomework = () => {
@@ -140,14 +170,14 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
   };
 
   const handleAddHomeWork = async () => {
-    console.log(name , description , sectionDisplay , dateValue , questions , 'filter');
-    if(name == undefined || name == ''){
+    console.log(name, description, sectionDisplay, dateValue, questions, 'filter');
+    if (name == undefined || name == '') {
       return message.error('Please Add Title')
     }
-    if(description == undefined || description == ''){
+    if (description == undefined || description == '') {
       return message.error('Please Add Description')
     }
-    if(sectionDisplay?.length == 0){
+    if (sectionDisplay?.length == 0) {
       message.error('Please Select Section')
     }
     const isFormValid = validateHomework();
@@ -168,13 +198,19 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
         user_id: params.coord_selected_teacher_id,
       };
       try {
-        const response = await onAddHomework(reqObj);
+        if(propData?.isEdit == true){
+          const response = await onAddHomeworkedit(reqObj , propData?.isEdit , hwId);
+        setAlert('success', 'Homework Updated');  
+        }else {
+          const response = await onAddHomework(reqObj );
+        setAlert('success', 'Homework Added');  
+        }
         setAlert('success', 'Homework added');
-        if(propData?.isTeacher == true){
+        if (propData?.isTeacher == true) {
           history.push({
             pathname: '/homework/teacher/',
             state: propData
-          });  
+          });
         } else {
           history.push({
             pathname: '/homework/coordinator/',
@@ -278,11 +314,11 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
   console.log('ppp2', sessionYear, grade, branch);
 
   const goback = () => {
-    if(propData?.isTeacher == true){
+    if (propData?.isTeacher == true) {
       history.push({
         pathname: '/homework/teacher/',
         state: propData
-      });  
+      });
     } else {
       history.push({
         pathname: '/homework/coordinator/',
@@ -298,6 +334,17 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
       </Option>
     );
   });
+
+  let sectionsEdit = sectionOptions.filter((item) => item?.props?.value == propData?.viewHomework?.filterData?.sectionId)
+  console.log(sectionsEdit, sectionOptions , 'sec');
+  useEffect(() => {
+    if(propData?.isEdit){
+      handleSection(null,sectionsEdit)
+    }
+    formRef.current.setFieldsValue({
+      section: sectionsEdit?.map((item) => item?.props?.children)
+    })
+  },[sections])
   return (
     <Layout>
       <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
@@ -312,7 +359,7 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <div className='card row' style={{ margin: '10px auto', width: '90%', padding: '15px', background: '#EEF2F8' , cursor: 'pointer' }} onClick={() => goback()} >
+      <div className='card row' style={{ margin: '10px auto', width: '90%', padding: '15px', background: '#EEF2F8', cursor: 'pointer' }} onClick={() => goback()} >
         <LeftOutlined style={{ display: 'flex', alignItems: 'center', color: '#535BA0' }} />
         <p style={{ display: 'flex', alignItems: 'center', color: '#535BA0', fontWeight: '600' }} className='th-14 mx-1 my-0' >Back to Homework</p>
       </div>
@@ -323,28 +370,26 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
       </div>
       <div className='card row' style={{ margin: '10px auto', width: '80%', padding: '15px' }}>
         <Form ref={formRef} style={{ width: '100%' }} >
+          <p className='th-14 m-0 th-fw-600' >Title</p>
           <Form.Item name='title'>
-            <div>
-              <p className='th-14 m-0 th-fw-600' >Title</p>
-              <Input placeholder="Enter Title" className='th-br-5' onChange={(e) => {
-                setName(e.target.value);
-              }} style={{ background: '#EEF2F8' }} />
-            </div>
+            <Input placeholder="Enter Title" className='th-br-5' onChange={(e) => {
+              setName(e.target.value);
+            }} style={{ background: '#EEF2F8' }} />
           </Form.Item>
-          <Form.Item name='instruction'>
-            <div>
-              <p className='th-14 m-0 th-fw-600' >Instruction</p>
+          <div>
+            <p className='th-14 m-0 th-fw-600' >Instruction</p>
+            <Form.Item name='instruction'>
               <Input placeholder="Enter Instruction" className='th-br-5' onChange={(e) => {
                 setDescription(e.target.value);
               }} style={{ background: '#EEF2F8' }} />
-            </div>
-          </Form.Item>
+            </Form.Item>
+          </div>
           <div className='row' >
             <div className='p-0'>
               <div className='m-0 text-left th-fw-600 th-14'>Due Date</div>
               <Form.Item name='date'>
                 <DatePicker value={dateValue}
-                  onChange={handleDateChange} defaultValue={moment()} style={{textAlign: 'left'}} disabledDate={(current) => current.isBefore(moment().subtract(1,"day"))} className='dueDateaddHw' />
+                  onChange={handleDateChange} defaultValue={moment()} style={{ textAlign: 'left' }} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} className='dueDateaddHw' />
               </Form.Item>
             </div>
             <div className='p-0 mx-1 w-25'>
@@ -378,10 +423,11 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
           </div>
           <Form.Item name='question'>
             <div>
-              {questions.map((question, index) => (
+              {questions?.map((question, index) => (
                 <QuestionCardNew
                   key={question.id}
                   question={question}
+                  isEdit={propData.isEdit}
                   index={index}
                   addNewQuestion={addNewQuestion}
                   handleChange={handleChange}
@@ -409,16 +455,20 @@ const AddHomeworkCordNew = ({ onAddHomework, onSetSelectedHomework }) => {
         </Form>
 
       </div>
-    
+
     </Layout>
   );
 };
 
 const mapStateToProps = (state) => ({
   selectedHomework: state.teacherHomework.selectedHomework,
+  selectedHomeworkDetails: state.teacherHomework.selectedHomeworkDetails,
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  onAddHomeworkedit: (reqObj , isEdit , hwId) => {
+    return dispatch(addHomeWork(reqObj, isEdit , hwId));
+  },
   onAddHomework: (reqObj) => {
     return dispatch(addHomeWorkCoord(reqObj));
   },

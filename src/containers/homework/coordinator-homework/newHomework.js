@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, useRef, createRef } from 'react';
-import { Avatar, Divider, Table, Drawer, Tabs, Collapse, Button, message, Empty } from 'antd';
+import { Avatar, Divider, Table, Drawer, Tabs, Collapse, Button, message, Empty, Modal } from 'antd';
 import moment from 'moment';
 import { groupBy } from 'lodash';
-import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, CalendarOutlined, MoreOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
 import HomeworkAssigned from 'v2/Assets/images/hwassign.png';
 import HomeworkSubmit from 'v2/Assets/images/hwsubmit.png';
 import HomeworkEvaluate from 'v2/Assets/images/task.png';
@@ -66,6 +66,59 @@ const SubmissionData = withRouter(({
     const selectedBranch = useSelector(
         (state) => state.commonFilterReducer?.selectedBranch
     );
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [ checkEdit , setCheckEdit ] = useState(false)
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        axiosInstance
+            .delete(
+                `${endpoints.homework.hwDelete}${selectedHomeworkDetails?.id}/hw-questions/`
+            )
+            .then((result) => {
+                if (result.data.status_code === 200) {
+                    message.success(result.data?.message);
+                    setIsModalOpen(false);
+                    let closeDraw = props?.onCloseDrawer()
+                } else {
+                    message.error(result.data?.message);
+                }
+            })
+            .catch((error) => {
+                message.error("error1");
+            });
+    };
+
+    var todayDate = moment();
+    var yesterdayDate = moment().subtract(1, 'day');
+
+    let IsToday = false;
+    let Isyesterday = false;
+
+    const checkValid = () => {
+        IsToday = moment(selectedHomeworkDetails?.date).isSame(todayDate, 'day');
+        Isyesterday = moment(selectedHomeworkDetails?.date).isSame(yesterdayDate, 'day');
+
+        console.log(IsToday, Isyesterday, 'today');
+        if(IsToday){
+            setCheckEdit(true)
+            console.log('hit today');
+        } else if(Isyesterday){
+            setCheckEdit(true)
+            console.log("hit yes");
+        } else {
+            setCheckEdit(false)
+        }
+    }
+
+    useEffect(() => {
+       checkValid()
+    }, [selectedHomeworkDetails])
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
     const scrollableContainer = createRef();
     const getTitle = () => {
         return <div>
@@ -209,7 +262,7 @@ const SubmissionData = withRouter(({
     }
 
     const handleSubView = (row) => {
-       let arr =  props?.setViewHomework({
+        let arr = props?.setViewHomework({
             studentHomeworkId: row?.student_homework_id,
             date: props?.submitData?.hw_data?.date,
             subjectName: props?.submitData?.hw_data?.subject_name,
@@ -218,12 +271,36 @@ const SubmissionData = withRouter(({
         let closedrawer = props?.onCloseDrawer()
     }
 
+    let viewHomework = {
+        hw_data: props?.submitData?.hw_data,
+        filterData: {
+            sectionId: props?.submitData?.props?.sectionId,
+            sectionMapping: props?.submitData?.props?.sectionMapping,
+            teacherid: props?.submitData?.props?.teacherid
+        }
+    }
+
+    const handleEdit = () => {
+        console.log(props, selectedHomeworkDetails, 'prop edit');
+        history.push({
+            pathname: `/homework/addhomework/${props?.submitData?.hw_data?.date}/${selectedAcademicYear?.id}/${props?.submitData?.hw_data?.branch}/${props?.submitData?.hw_data?.grade}/${props?.submitData?.hw_data?.subject_name}/${props?.submitData?.hw_data?.subject_id}/${props?.submitData?.props?.teacherid}`,
+            state: { isEdit: true, viewHomework: viewHomework },
+        })
+    }
+
     return (
         <div className='submissionDrawer' >
             <div className='card w-100 ' style={{ background: '#F0F2F5', borderRadius: '10px' }}>
                 <div className='d-flex justify-content-between p-3' >
                     <span className='font-weight-bold th-14'>{props?.submitData?.hw_data?.subject_name}</span>
-                    <CloseCircleOutlined className='th-20' style={{ cursor: 'pointer' }} onClick={props?.onCloseDrawer} />
+                    <div className='col-md-3 d-flex justify-content-between'>
+                        { checkEdit == true ? 
+                        <div>
+                        <EditOutlined className='th-20' style={{ cursor: 'pointer' }} onClick={handleEdit} />
+                        <DeleteOutlined className='th-20 mx-4' style={{ cursor: 'pointer' }} onClick={showModal} />
+                        </div> : '' }
+                        <CloseCircleOutlined className='th-20 mx-2' style={{ cursor: 'pointer' , float: 'right' }} onClick={props?.onCloseDrawer} />
+                    </div>
                 </div>
                 <span className='th-13 th-fw-600' style={{ color: '#A0A0A1', width: '95%', margin: '0 auto' }} >Homework Details</span>
                 <div className='card' style={{ width: '95%', margin: '0 auto', marginBottom: '15px' }} >
@@ -235,7 +312,7 @@ const SubmissionData = withRouter(({
                         <Panel header={collapse == 1 ?
                             <div>
                                 <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Instruction</span>
-                                <p className='th-14 th-fw-400 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' , margin: '0px' }} >{selectedHomeworkDetails?.description}</p>
+                                <p className='th-14 th-fw-400 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px', margin: '0px' }} >{selectedHomeworkDetails?.description}</p>
                             </div>
                             : <div style={{ width: '300px' }} ><p className='th-12 th-fw-400 text-truncate m-0' style={{ color: '#556778' }} >{selectedHomeworkDetails?.description}</p></div>} key="1">
                             <div>
@@ -251,7 +328,7 @@ const SubmissionData = withRouter(({
                                     {selectedHomeworkDetails && selectedHomeworkDetails?.hw_questions?.map((question, index) => (
                                         <div
                                             className='homework-question-container-coordinator'
-                                            style={{margin: '0 auto'}}
+                                            style={{ margin: '0 auto' }}
                                             key={`homework_student_question_${index}`}
                                         >
                                             <div className='homework-question' style={{ border: '0px' }} >
@@ -417,7 +494,9 @@ const SubmissionData = withRouter(({
                             : ''}
                     </>
                     : ''}
-
+            <Modal title="Delete Homework" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <p>{`Confirm Delete Homework ${selectedHomeworkDetails?.homework_name}`}</p>
+            </Modal>
         </div>
     )
 }
