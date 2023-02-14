@@ -87,6 +87,7 @@
     "react-h5-audio-player": "^3.7.0",
     "react-helmet": "^6.1.0",
     "react-highcharts": "^16.1.0",
+    "react-highlight-words": "^0.20.0",
     "react-hook-form": "^7.0.4",
     "react-html-parser": "^2.0.2",
     "react-infinite-scroll-component": "^6.1.0",

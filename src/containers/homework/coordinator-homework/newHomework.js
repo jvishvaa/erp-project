@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, useRef, createRef } from 'react';
-import { Avatar, Divider, Table, Drawer, Tabs, Collapse, Button, message, Empty, Modal } from 'antd';
+import { Avatar, Divider, Table, Drawer, Tabs, Collapse, Button, message, Empty, Modal , Input, Space} from 'antd';
 import moment from 'moment';
 import { groupBy } from 'lodash';
-import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import HomeworkAssigned from 'v2/Assets/images/hwassign.png';
 import HomeworkSubmit from 'v2/Assets/images/hwsubmit.png';
 import HomeworkEvaluate from 'v2/Assets/images/task.png';
@@ -28,6 +28,8 @@ import './attachment.scss';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './styles.scss';
 import OnlineSub from 'assets/images/online.png'
+import Highlighter from 'react-highlight-words';
+
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
 
@@ -124,7 +126,7 @@ const SubmissionData = withRouter(({
     };
     const scrollableContainer = createRef();
     const getTitle = () => {
-        return <div>
+        return <div >
             {segment == 1 ? `Select All (${unSubmittedStudents?.length})` : segment == 2 ? `Select All (${submittedStudents?.length})` : segment == 3 ? `Select All (${absentList?.length})` : segment == 4 ? `Select All (${evaluatedStudents?.length})` :  segment == 5 ? `Select All (${unevaluatedStudents?.length})` : ''}
         </div>
     }
@@ -142,11 +144,126 @@ const SubmissionData = withRouter(({
         }
     }, [props?.submitData])
 
+
+    // search start
+
+    const [searchText, setSearchText] = useState("");
+    const [searchedColumn, setSearchedColumn] = useState("");
+    const searchInput = useRef(null);
+  
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+      confirm();
+      setSearchText(selectedKeys[0]);
+      setSearchedColumn(dataIndex);
+    };
+  
+    const handleReset = (clearFilters) => {
+      clearFilters();
+      setSearchText("");
+    };
+  
+    const getColumnSearchProps = (dataIndex) => ({
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters
+      }) => (
+        <div
+          style={{
+            padding: 8,
+            
+          }}
+        >
+          <Input
+            ref={searchInput}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            // onKeyDown={(e) => e.stopPropagation()}
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{
+              marginBottom: 8,
+              display: "block"
+            }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{
+                width: 90
+              }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => clearFilters && handleReset(clearFilters)}
+              size="small"
+              style={{
+                width: 90
+              }}
+            >
+              Reset
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                confirm({
+                  closeDropdown: false
+                });
+                setSearchText(selectedKeys[0]);
+                setSearchedColumn(dataIndex);
+              }}
+            >
+              Filter
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined
+          style={{
+            color: filtered ? "#1890ff" : undefined,
+            fontSize: '20px'
+          }}
+        />
+      ),
+      className: 'filterSearch',
+      onFilter: (value, record) =>
+        record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{
+              backgroundColor: "#ffc069",
+              padding: 0
+            }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text ? text.toString() : ""}
+          />
+        ) : (
+          text
+        )
+    });
+    // searchh end
     const columns = [
         {
             title: getTitle(),
             dataIndex: 'first_name',
-            key: 'user_id'
+            key: 'user_id',
+            ...getColumnSearchProps('first_name'),
         },
         {
             title: '',
