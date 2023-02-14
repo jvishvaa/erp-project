@@ -22,6 +22,7 @@ import {
 import Attachment from './attachment';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import endpoints from 'config/endpoints';
 import './attachment.scss';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -71,6 +72,8 @@ const SubmissionData = withRouter(({
     const showModal = () => {
         setIsModalOpen(true);
     };
+  const { setAlert } = useContext(AlertNotificationContext);
+
     const handleOk = () => {
         axiosInstance
             .delete(
@@ -209,10 +212,10 @@ const SubmissionData = withRouter(({
             axiosInstance
                 .put(`academic/${props?.submitData?.hw_data?.data?.hw_id}/homework-unsubmitted-submitted/`, selectedRowKeys)
                 .then((result) => {
-                    message.success(result.data.message);
+                    // message.success(result.data.message);
                     setSelectedRowKeys([])
                     console.log(result.data.message);
-
+                    setAlert('success', result.data.message);
                     fetchStudentLists(props?.submitData?.hw_data?.data?.hw_id, props?.submitData?.hw_data?.subject_id, props?.submitData?.props?.sectionMapping, props?.submitData?.props?.teacherid, props?.submitData?.hw_data?.date);
                 })
                 .catch((error) => {
@@ -243,8 +246,8 @@ const SubmissionData = withRouter(({
             axiosInstance
                 .put(endpoints.homework.submitToUnsubmit, temPayload)
                 .then((result) => {
-                    message.success(result.data.message);
-
+                    // message.success(result.data.message);
+                    setAlert('success', result.data.message);
                     fetchStudentLists(props?.submitData?.hw_data?.data?.hw_id, props?.submitData?.hw_data?.subject_id, props?.submitData?.props?.sectionMapping, props?.submitData?.props?.teacherid, props?.submitData?.hw_data?.date);
                     getDataStudent = [];
                     allData = []
@@ -294,13 +297,14 @@ const SubmissionData = withRouter(({
                 <div className='d-flex justify-content-between p-3' >
                     <span className='font-weight-bold th-14'>{props?.submitData?.hw_data?.subject_name}</span>
                     <div className='col-md-3 d-flex justify-content-between'>
+                        {submittedStudents?.length > 0 ?
                         <div className='col-md-6' >
                             {checkEdit == true ?
                                 <div className='d-flex' >
                                     <EditOutlined className='th-20' style={{ cursor: 'pointer' }} onClick={handleEdit} />
                                     <DeleteOutlined className='th-20 mx-4' style={{ cursor: 'pointer' }} onClick={showModal} />
                                 </div> : ''}
-                        </div>
+                        </div> : ''}
                         <div className='d-flex justify-content-end' >
                             <CloseCircleOutlined className='th-20 mx-2' style={{ cursor: 'pointer', float: 'right' }} onClick={props?.onCloseDrawer} />
                         </div>

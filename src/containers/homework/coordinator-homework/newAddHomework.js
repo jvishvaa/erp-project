@@ -178,7 +178,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
       return message.error('Please Add Description')
     }
     if (sectionDisplay?.length == 0) {
-      message.error('Please Select Section')
+      return message.error('Please Select Section')
     }
     const isFormValid = validateHomework();
     if (isFormValid) {
@@ -374,14 +374,14 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
           <Form.Item name='title'>
             <Input placeholder="Enter Title" className='th-br-5' onChange={(e) => {
               setName(e.target.value);
-            }} style={{ background: '#EEF2F8' }} />
+            }} style={{ background: '#EEF2F8' }} maxLength={30} />
           </Form.Item>
           <div>
             <p className='th-14 m-0 th-fw-600' >Instruction</p>
             <Form.Item name='instruction'>
               <Input placeholder="Enter Instruction" className='th-br-5' onChange={(e) => {
                 setDescription(e.target.value);
-              }} style={{ background: '#EEF2F8' }} />
+              }} style={{ background: '#EEF2F8' }} maxLength={100} />
             </Form.Item>
           </div>
           <div className='row' >
@@ -447,7 +447,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
             }} >
               Add Another Question
             </Button>
-            <Button className='mx-1' onClick={handleAddHomeWork} type='primary'>
+            <Button className='mx-2' onClick={handleAddHomeWork} type='primary'>
               {propData?.isEdit ? "Update" : 'Submit' }
             </Button>
           </div>
