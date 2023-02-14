@@ -698,22 +698,27 @@ const QuestionCardNew = ({
                                                 </Select>
                                             </div>
                                         )}
-                                        <div className='card' style={{ padding: '10px', width: '135px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#38466A', color: 'white' }}>
+                                        <div className='card' style={{ padding: '10px', width: '135px', display: 'flex', justifyContent: 'center', alignItems: 'center',  color: 'white' }}>
                                             <Checkbox
                                                 onChange={(e) => {
                                                     setpentool(e.target.checked);
                                                 }}
                                                 checked={pentool}
                                                 value={pentool}
-                                                style={{ color: 'white' , fontSize: '13px'}}
+                                                style={{ fontSize: '13px'}}
                                             >Pen Tool</Checkbox>
                                         </div>
-                                    </div>
-                                    <div className='col-md-2 p-0 d-flex justify-content-end' >
-                                        <div className='card' onClick={handleResourcesDrawerOpen} style={{ padding: '10px', width: '135px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#38466A', color: 'white' }}>
-                                            <div className='th-13'>Resources</div>
+                                        <div className='d-flex align-items-center' >
+                                            <Button onClick={handleResourcesDrawerOpen} type='primary' >
+                                                Resources
+                                            </Button>
                                         </div>
                                     </div>
+                                    {/* <div className='col-md-2 p-0 d-flex justify-content-end' >
+                                        <div className='card' onClick={handleResourcesDrawerOpen} style={{ padding: '10px', width: '135px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <div className='th-13'>Resources</div>
+                                        </div>
+                                    </div> */}
                                 </div>
                             </Grid>
                             {attachmentPreviews.length > 0 && (
