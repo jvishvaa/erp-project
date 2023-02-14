@@ -51,6 +51,7 @@ import StudentAssessmentDashboard from 'v2/FaceLift/AssessmentDashboard/studentA
 import StudentSideVisualActivity from 'containers/newBlog/StudentSideVisualActivity';
 import FileDrive from 'v2/FaceLift/FileDrive';
 import FileCategory from 'v2/FaceLift/FileDrive/FileCategory';
+import FileFolder from 'v2/FaceLift/FileDrive/FileFolder';
 
 const V2Router = () => {
   useEffect(() => {
@@ -238,6 +239,9 @@ const V2Router = () => {
                         </Route>
                         <Route exact path='/file-category'>
                           {({ match }) => <FileCategory match={match} />}
+                        </Route>
+                        <Route exact path='/file-folder'>
+                          {({ match }) => <FileFolder match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

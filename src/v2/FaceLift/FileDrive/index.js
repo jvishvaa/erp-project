@@ -14,6 +14,7 @@ import {
   Input,
   Radio,
   Empty,
+  Spin,
 } from 'antd';
 import Layout from 'containers/Layout';
 import { useSelector } from 'react-redux';
@@ -35,6 +36,8 @@ const FileDrive = () => {
   const [editId, setEditId] = useState(null);
   const [editedFile, setEditedFile] = useState(null);
   const [duplicateType, setDuplicateType] = useState(1);
+  const [fileSizeConfig, setFileSizeConfig] = useState(null);
+  const [fileKey, setFileKey] = useState(Date.now());
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -43,7 +46,17 @@ const FileDrive = () => {
   const branchId = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch?.branch?.id
   );
+
+  const getSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(parseFloat(bytes / Math.pow(k, i))) + ' ' + sizes[i];
+  };
+
   const categoryId = history.location.state?.categoryId;
+  const categoryName = history.location.state?.categoryName;
 
   const fetchFileList = (params = {}) => {
     setLoading(true);
@@ -84,45 +97,93 @@ const FileDrive = () => {
         message.error('error', error?.message);
       });
   };
+
+  const checkFileSize = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data) {
+          setFileSizeConfig(response?.data?.result[0]);
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
-    fetchFileList({ category: categoryId, branch_id: branchId });
-    fetchFileCategory({ is_delete: false });
+    fetchFileList({
+      category: categoryId,
+      branch_id: branchId,
+      acad_session_id: selectedBranch?.id,
+    });
+    fetchFileCategory({
+      is_delete: false,
+      branch_id: branchId,
+      acad_session_id: selectedBranch?.id,
+    });
   }, []);
 
   const onOpenDrawer = () => {
     setShowDrawer(true);
+    checkFileSize({ config_key: 'school_file_drive_size' });
   };
   const onCloseDrawer = () => {
     setShowDrawer(false);
     setIsDuplicate(false);
     setEditId(null);
-    formRef.current.resetFields();
+    // formRef.current.resetFields();
   };
 
   const handleFile = (e) => {
-    setUploadFile(e.target.files[0]);
-    verifyFile({
-      branch_id: branchId,
-      acad_session_id: selectedBranch?.id,
-      file_name: e.target.files[0]?.name.split('.')[0],
-    });
+    if (Number(fileSizeConfig) >= e.target.files[0].size) {
+      setUploadFile(e.target.files[0]);
+      verifyFile({
+        branch_id: branchId,
+        acad_session_id: selectedBranch?.id,
+        file_name: e.target.files[0]?.name.split('.')[0],
+        category_id: categoryId,
+      });
+    } else {
+      message.error(`File size should not exceed ${getSize(fileSizeConfig)}`);
+      // setFileKey(Date.now());
+    }
   };
 
   const handleSubmit = () => {
+    setLoading(true);
     if (editId) {
-      const valuess = new FormData();
       const updateValues = formRef.current.getFieldsValue();
-      valuess.append('file_name', updateValues.file_name);
-      valuess.append('category', updateValues?.category);
-      axios
-        .put(`${endpoints.fileDrive.editFileList}/${editId}`, valuess)
-        .then((result) => {
-          onCloseDrawer();
-          fetchFileList({ category: categoryId, branch_id: branchId });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (updateValues.file_name) {
+        const valuess = new FormData();
+
+        valuess.append('file_name', updateValues.file_name);
+        valuess.append('category', updateValues?.category);
+        axios
+          .put(`${endpoints.fileDrive.editFileList}/${editId}`, valuess)
+          .then((result) => {
+            onCloseDrawer();
+            message.success('File edited successfully');
+            fetchFileList({
+              category: categoryId,
+              branch_id: branchId,
+              acad_session_id: selectedBranch?.id,
+            });
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            message.error(error.message);
+            setLoading(false);
+          });
+      } else {
+        message.error('Please enter name!');
+        setLoading(false);
+      }
     } else {
       if (uploadFile) {
         const valuess = new FormData();
@@ -147,14 +208,22 @@ const FileDrive = () => {
           .then((result) => {
             onCloseDrawer();
 
-            fetchFileList({ category: categoryId, branch_id: branchId });
+            setLoading(false);
+            fetchFileList({
+              category: categoryId,
+              branch_id: branchId,
+              acad_session_id: selectedBranch?.id,
+            });
             message.success('File Uploaded Successfully!');
           })
           .catch((error) => {
+            message.error(error.message);
             console.log(error);
+            setLoading(false);
           });
       } else {
         message.error('Please select all required fields!');
+        setLoading(false);
       }
     }
   };
@@ -163,8 +232,13 @@ const FileDrive = () => {
     axios
       .delete(`${endpoints.fileDrive.editFileList}/${id}`)
       .then((res) => {
-        fetchFileList({ category: categoryId, branch_id: branchId });
+        fetchFileList({
+          category: categoryId,
+          branch_id: branchId,
+          acad_session_id: selectedBranch?.id,
+        });
         message.success('File Deleted Successfully!');
+        onCloseDrawer();
       })
       .catch((err) => {
         console.log(err);
@@ -183,8 +257,6 @@ const FileDrive = () => {
     });
   };
 
-  console.log(uploadFile, fileCategory, selectedCategory, isDuplicate, 'upload fileee');
-
   const categoryOptions = fileCategory?.map((each) => {
     return (
       <Option key={each?.id} value={each.id}>
@@ -201,11 +273,14 @@ const FileDrive = () => {
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-grey th-16 th-pointer'
-                onClick={() => history.push('/file-category')}
+                onClick={() => history.push('/file-folder')}
               >
                 File Category
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>File Drive</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-grey th-16'>File Drive</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16'>
+                {categoryName}
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className='col-md-12 mt-3'>
@@ -285,96 +360,116 @@ const FileDrive = () => {
               onClick={() => {
                 handleSubmit();
               }}
+              loading={loading}
             >
               Submit
             </Button>
           </div>
         }
       >
-        <Form id='filterForm' ref={formRef} layout={'vertical'}>
-          {/* {editId ? ( */}
-          <Form.Item
-            name='category'
-            label='Select Category'
-            rules={[{ required: true, message: 'Please Select Category' }]}
-          >
-            <Select
-              allowClear={true}
-              className='th-grey th-bg-grey th-br-4 w-100 text-left'
-              placement='bottomRight'
-              showArrow={true}
-              dropdownMatchSelectWidth={false}
-              filterOption={(input, options) => {
-                return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-              }}
-              placeholder='Select Category'
-              onChange={(e) => {
-                setSelectedCategory(e);
-              }}
-            >
-              {categoryOptions}
-            </Select>
-          </Form.Item>
-          {/* ) : null} */}
-          {editId ? (
-            <Form.Item name='file_name' label='Enter File Name'>
-              <Input className='w-100' placeholder='Enter File Name' />
-            </Form.Item>
-          ) : null}
+        {loading ? (
+          <div className='py-5 text-center'>
+            <Spin />
+          </div>
+        ) : (
+          <>
+            <Form id='filterForm' ref={formRef} layout={'vertical'}>
+              {editId ? (
+                <Form.Item
+                  name='category'
+                  label='Select Category'
+                  rules={[{ required: true, message: 'Please Select Category' }]}
+                >
+                  <Select
+                    allowClear={true}
+                    className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                    placement='bottomRight'
+                    showArrow={true}
+                    dropdownMatchSelectWidth={false}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    placeholder='Select Category'
+                    onChange={(e) => {
+                      setSelectedCategory(e);
+                    }}
+                  >
+                    {categoryOptions}
+                  </Select>
+                </Form.Item>
+              ) : null}
+              {editId ? (
+                <Form.Item
+                  name='file_name'
+                  label='Enter File Name'
+                  rules={[{ required: true, message: 'Please Enter File Name' }]}
+                >
+                  <Input className='w-100' placeholder='Enter File Name' />
+                </Form.Item>
+              ) : null}
 
-          {!editId ? (
-            <Form.Item
-              name='file'
-              label='Upload File'
-              rules={[{ required: true, message: 'Please Select File' }]}
-            >
-              <input
-                className='mt-3'
-                type='file'
-                id='file'
-                onChange={(e) => handleFile(e)}
-              />
-            </Form.Item>
-          ) : null}
-        </Form>
-        {editId ? (
-          <div>
-            <FileCard
-              isEdited={true}
-              eachFile={editedFile}
-              version={'Current Version'}
-              isCurrent={true}
-            />
-            {editedFile?.version?.map((eachEditedFile, index) => {
-              return (
+              {!editId ? (
+                <>
+                  <Form.Item
+                    name='file'
+                    label={`Upload File (Max file size ${getSize(fileSizeConfig)})`}
+                    rules={[{ required: true, message: 'Please Select File' }]}
+                  >
+                    <input
+                      className='mt-3'
+                      type='file'
+                      id='file'
+                      onChange={(e) => handleFile(e)}
+                      key={fileKey}
+                    />
+                  </Form.Item>
+                </>
+              ) : null}
+            </Form>
+            {editId ? (
+              <div>
                 <FileCard
                   isEdited={true}
-                  eachFile={eachEditedFile}
-                  version={'Version ' + (index + 1)}
+                  eachFile={editedFile}
+                  version={'Current Version'}
+                  isCurrent={true}
+                  handleDelete={handleDelete}
                 />
-              );
-            })}
-          </div>
-        ) : null}
+                {editedFile?.version?.map((eachEditedFile, index) => {
+                  return (
+                    <FileCard
+                      isEdited={true}
+                      eachFile={eachEditedFile}
+                      version={'Version ' + (index + 1)}
+                      handleDelete={handleDelete}
+                    />
+                  );
+                })}
+              </div>
+            ) : null}
 
-        {isDuplicate === 'True' && uploadFile && !editId ? (
-          <div>
-            {uploadFile?.name} already exists in this location. Do you want to update the
-            existing file with a new version or keep both files? Replacing the file won't
-            change sharing settings.
-            <div className='mt-2'>
-              <Radio.Group
-                onChange={(e) => {
-                  setDuplicateType(e.target.value);
-                }}
-                value={duplicateType}
-              >
-                <Radio value={1}>Update existing file</Radio>
-                <Radio value={2}>Keep both files</Radio>
-              </Radio.Group>
-            </div>
-          </div>
-        ) : null}
+            {isDuplicate === 'True' && uploadFile && !editId ? (
+              <div>
+                {uploadFile?.name} already exists in this location. Do you want to update
+                the existing file with a new version or keep both files? Replacing the
+                file won't change sharing settings.
+                <div className='mt-2'>
+                  <Radio.Group
+                    onChange={(e) => {
+                      setDuplicateType(e.target.value);
+                    }}
+                    value={duplicateType}
+                  >
+                    <Radio value={1}>Update existing file</Radio>
+                    <Radio value={2}>Keep both files</Radio>
+                  </Radio.Group>
+                </div>
+              </div>
+            ) : null}
+          </>
+        )}
       </Drawer>
     </Layout>
   );

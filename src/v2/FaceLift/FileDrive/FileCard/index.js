@@ -63,7 +63,15 @@ const FileCard = (props) => {
   return (
     <>
       {!props.isEdited ? (
-        <Badge.Ribbon text={eachFile?.category?.name} color='#e2eaff'>
+        <Badge.Ribbon
+          text={
+            eachFile?.category?.name?.length > 20
+              ? eachFile?.category?.name?.substring(0, 20) + '..'
+              : eachFile?.category?.name
+          }
+          title={eachFile?.category?.name}
+          color='#e2eaff'
+        >
           <Card
             className='th-file-upload-card'
             style={{
@@ -93,11 +101,11 @@ const FileCard = (props) => {
               <EditOutlined key='edit' onClick={(e) => props.handleEdit(eachFile.id)} />,
 
               <Popconfirm
-                key='delete'
+                key='delete1'
                 title='Sure to delete?'
                 onConfirm={(e) => props.handleDelete(eachFile.id)}
               >
-                <DeleteOutlined key='delete' />
+                <DeleteOutlined key='delete1' />
               </Popconfirm>,
             ]}
           >
@@ -152,13 +160,10 @@ const FileCard = (props) => {
                       }}
                     />,
 
-                    <Popconfirm
+                    <DeleteOutlined
                       key='delete'
-                      title='Sure to delete?'
-                      onConfirm={(e) => props.handleDelete(eachFile.id)}
-                    >
-                      <DeleteOutlined key='delete' />
-                    </Popconfirm>,
+                      onClick={(e) => props.handleDelete(eachFile.id)}
+                    />,
                   ]
             }
           >
