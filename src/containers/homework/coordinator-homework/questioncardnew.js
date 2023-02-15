@@ -90,6 +90,7 @@ const QuestionCardNew = ({
     grade,
     branch,
     subject,
+    queIndexCounter
 }) => {
     const classes = useStyles();
     const selectedAcademicYear = useSelector(
@@ -147,6 +148,7 @@ const QuestionCardNew = ({
             attachmentsRef.current.scrollLeft += 150;
         }
     };
+
 
     useEffect(() => {
         if (edit) {
@@ -619,16 +621,14 @@ const QuestionCardNew = ({
                                             value={questionData}
                                         // disabled={true}
                                         />
-                                        <FormHelperText style={{ color: 'red' }}>
-                                            {question.errors?.question}
-                                        </FormHelperText>
+                                        
                                     </FormControl>
                                 </Grid>
                                 <Divider />
                                 <div className='row'>
                                     <div className='col-md-2 card'
                                         onClick={() => fileUploadInput.current.click()}
-                                        style={{ padding: '10px' }}
+                                        style={{ padding: '5px' , height: '35px' , cursor: 'pointer' }}
                                     >
                                         <input
                                             className='file-upload-input'
@@ -658,10 +658,10 @@ const QuestionCardNew = ({
                                                     <FileAddOutlined color='primary'
                                                         onClick={() => fileUploadInput.current.click()}
                                                         title='Attach files'
-                                                        style={{ color: 'primary', fontSize: '25px' }}
+                                                        style={{ color: 'primary', fontSize: '14px' }}
                                                     />
                                                 </Badge>
-                                                <span className='th-13' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Attach Files</span>
+                                                <span className='th-13 mx-2' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Attach Files</span>
                                             </div>
                                             {/* <span className='th-12'>Accepted: jpg,png,pdf,mp4</span> */}
                                         </>
@@ -698,14 +698,14 @@ const QuestionCardNew = ({
                                                 </Select>
                                             </div>
                                         )}
-                                        <div className='card' style={{ padding: '10px', width: '135px',height: '35px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' , background: '#2B61CA' }}>
+                                        <div className='card' style={{ padding: '10px', width: '135px',height: '35px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                             <Checkbox
                                                 onChange={(e) => {
                                                     setpentool(e.target.checked);
                                                 }}
                                                 checked={pentool}
                                                 value={pentool}
-                                                style={{ fontSize: '13px' , color: 'white' }}
+                                                style={{ fontSize: '13px'  }}
                                             >Pen Tool</Checkbox>
                                         </div>
                                         <div className='d-flex align-items-center' >
@@ -720,7 +720,7 @@ const QuestionCardNew = ({
                                         </div>
                                     </div> */}
                                 </div>
-                                <div className='my-2 th-12'>Accepted :  jpg,png,pdf,mp4</div>
+                                <div className='my-2 th-12'>Accepted : jpeg,jpg,mp3,mp4,pdf,png</div>
                             </Grid>
                             {attachmentPreviews.length > 0 && (
                                 <Grid item xs={12} className='attachments-grid'>
@@ -868,9 +868,9 @@ const QuestionCardNew = ({
             {!window.location.pathname.includes('/diary/') && (
                 <Grid item xs={12}>
                     <Grid item xs={12} className='question-btn-container' />
-                    {index > 0 && (
+                    {queIndexCounter > 0 && index >= 0 && (
                         <Grid item xs={12} className='question-btn-container'>
-                            <div className='question-btn-inner-container '>
+                            <div className='question-btn-inner-container d-flex justify-content-end '>
                                 <Button
                                     variant='contained'
                                     color='default'
@@ -879,7 +879,7 @@ const QuestionCardNew = ({
                                         handleClick();
                                     }}
                                     title='Remove Question'
-                                    className='btn remove-question-btn'
+                                    className='btn remove-question-btn w-25'
                                 >
                                     Remove question
                                 </Button>

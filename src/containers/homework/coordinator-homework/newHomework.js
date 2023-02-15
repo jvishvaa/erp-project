@@ -229,7 +229,7 @@ const SubmissionData = withRouter(({
       filterIcon: (filtered) => (
         <SearchOutlined
           style={{
-            color: filtered ? "#1890ff" : undefined,
+            color: filtered ? "#1890ff" : 'black',
             fontSize: '20px'
           }}
         />
@@ -263,13 +263,13 @@ const SubmissionData = withRouter(({
             title: getTitle(),
             dataIndex: 'first_name',
             key: 'user_id',
-            ...getColumnSearchProps('first_name'),
         },
         {
-            title: '',
-            align: 'center',
+            title: 'Search User',
+            align: 'right',
             width: '30%',
             key: 'icon',
+            ...getColumnSearchProps('first_name'),
             render: (text, row) => (
                 <>
                     {row?.hw_submission_mode == "Online Submission" ?
@@ -336,11 +336,11 @@ const SubmissionData = withRouter(({
                     fetchStudentLists(props?.submitData?.hw_data?.data?.hw_id, props?.submitData?.hw_data?.subject_id, props?.submitData?.props?.sectionMapping, props?.submitData?.props?.teacherid, props?.submitData?.hw_data?.date);
                 })
                 .catch((error) => {
-                    message.error('something went wrong');
+                    setAlert('error','something went wrong');
                     console.log(error);
                 });
         } else {
-            message.error('Please select Users')
+            setAlert('error','Please Select Users');
         }
     }
 
@@ -371,13 +371,14 @@ const SubmissionData = withRouter(({
                     temPayload = []
                 })
                 .catch((error) => {
-                    message.error('something went wrong');
+                    setAlert('error','something went wrong');
                     getDataStudent = [];
                     allData = []
                     temPayload = []
                 });
         } else {
-            message.error('Please select Users')
+            setAlert('error','Please Select Users');
+
         }
     }
 
@@ -414,15 +415,18 @@ const SubmissionData = withRouter(({
                 <div className='d-flex justify-content-between p-3' >
                     <span className='font-weight-bold th-14'>{props?.submitData?.hw_data?.subject_name}</span>
                     <div className='col-md-3 d-flex justify-content-between'>
+                        <div className='col-md-6 mx-1'>
+
                         {submittedStudents?.length == 0 ?
-                        <div className='col-md-6' >
+                        <div >
                             {checkEdit == true ?
                                 <div className='d-flex' >
                                     <EditOutlined className='th-20' style={{ cursor: 'pointer' }} onClick={handleEdit} />
-                                    <DeleteOutlined className='th-20 mx-4' style={{ cursor: 'pointer' }} onClick={showModal} />
+                                    <DeleteOutlined className='th-20 mx-3' style={{ cursor: 'pointer' }} onClick={showModal} />
                                 </div> : ''}
                         </div> : ''}
-                        <div className='d-flex justify-content-end' >
+                        </div>
+                        <div className='d-flex justify-content-end col-md-6 p-0' >
                             <CloseCircleOutlined className='th-20 mx-2' style={{ cursor: 'pointer', float: 'right' }} onClick={props?.onCloseDrawer} />
                         </div>
                     </div>

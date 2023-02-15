@@ -120,12 +120,7 @@ const selectedBranch = useSelector(
           <thead  >
             <tr className='tableR'>
               <th className='fixedcol tableH' style={{verticalAlign: 'middle'}} >
-                  <Search
-                    placeholder="Subject"
-                    allowClear
-                    size='small'
-                    onSearch={onSearch}
-                    />
+                  <div className='th-14 th-fw-600'>Subject</div>
               </th>
               {homeworkRows?.length > 0 && homeworkRows?.map((item) => (
                 <th className='tableH'>

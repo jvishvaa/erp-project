@@ -103,7 +103,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
   const branch = params.branch;
   const grade = params.grade;
   const [date, setDate] = useState(new Date());
-  const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
+  const [dateValue, setDateValue] = useState(moment(params.date).format('YYYY-MM-DD'));
   const [hwId, sethwId] = useState(propData?.viewHomework?.hw_data?.data?.hw_id);
 
   const handleDateChange = (event, value) => {
@@ -179,6 +179,9 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
     }
     if (sectionDisplay?.length == 0) {
       return message.error('Please Select Section')
+    }
+    if(questions.filter((item) => item?.question == '')?.length > 0){
+      return message.error('Please Add Questions')
     }
     const isFormValid = validateHomework();
     if (isFormValid) {
@@ -389,7 +392,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
               <div className='m-0 text-left th-fw-600 th-14'>Due Date</div>
               <Form.Item name='date'>
                 <DatePicker value={dateValue}
-                  onChange={handleDateChange} defaultValue={moment()} style={{ textAlign: 'left' }} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} className='dueDateaddHw' />
+                  onChange={handleDateChange} defaultValue={moment(params.date)} style={{ textAlign: 'left' }} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} className='dueDateaddHw' />
               </Form.Item>
             </div>
             <div className='p-0 mx-1 w-25'>
@@ -436,6 +439,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
                   branch={branch}
                   grade={grade}
                   subject={params?.id}
+                  queIndexCounter={queIndexCounter}
                 />
               ))}
             </div>
