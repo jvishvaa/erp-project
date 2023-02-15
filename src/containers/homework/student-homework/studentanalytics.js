@@ -67,11 +67,17 @@ const StudentAnalytics = withRouter(({
     const [submitData, setSubmitData] = useState([])
     const [evaluated, setEvaluated] = useState([])
     const [evaluatedData, setEvaluatedData] = useState([])
-
+    const [moduleId, setModuleId] = useState();
     const [subject, setSubject] = useState()
     const [data, setData] = useState([])
     const [curMonth, setCurMonth] = useState()
     const [curMonthOverall, setCurMonthOverall] = useState()
+    const selectedAcademicYear = useSelector(
+        (state) => state.commonFilterReducer?.selectedYear
+    );
+    const selectedBranch = useSelector(
+        (state) => state.commonFilterReducer?.selectedBranch
+    );
     let month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     let monthData = []
     let tempData = month?.map((each, index) => {
@@ -82,6 +88,25 @@ const StudentAnalytics = withRouter(({
         monthData.push(obj)
     })
     console.log(monthData);
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+    useEffect(() => {
+        if (NavData && NavData.length) {
+            NavData.forEach((item) => {
+                if (
+                    item.parent_modules === 'Homework' &&
+                    item.child_module &&
+                    item.child_module.length > 0
+                ) {
+                    item.child_module.forEach((item) => {
+                        if (item.child_name === 'Student Homework') {
+                            setModuleId(item?.child_id);
+                        }
+                    });
+                }
+            });
+        }
+    }, []);
 
     const monthOptions = monthData?.map((each) => {
         return (
@@ -99,13 +124,6 @@ const StudentAnalytics = withRouter(({
         );
     });
 
-
-    const selectedAcademicYear = useSelector(
-        (state) => state.commonFilterReducer?.selectedYear
-    );
-    const selectedBranch = useSelector(
-        (state) => state.commonFilterReducer?.selectedBranch
-    );
     const acad_session_id = selectedBranch?.id
     const formRef = createRef();
     const formRefOverall = createRef();
@@ -242,6 +260,22 @@ const StudentAnalytics = withRouter(({
             });
     };
 
+    const subjectDrop = () => {
+        axiosInstance
+            .get(`${endpoints.academics.subjects}?session_year=${
+                selectedAcademicYear?.id
+              }&branch=${selectedBranch?.branch?.id}&module_id=${moduleId}`)
+            .then((res) => {
+                console.log(res);
+                // setToday(res.data.result)
+            })
+            .catch((error) => {
+                message.error(error.message);
+            });
+    };
+
+
+
 
 
     const getpercent = (percent) => {
@@ -297,8 +331,15 @@ const StudentAnalytics = withRouter(({
             text:
                 'Overall' +
                 '<br />' +
-                `${today?.overall_persentage ? today?.overall_persentage.toFixed(2) : 0
-                }%`,
+                `${
+                    today?.total_assigned == 0
+                      ? 0
+                      : (
+                          (today?.total_submitted /
+                          today?.total_assigned) *
+                          100
+                        ).toFixed(2)
+                  }%`,
             y: 18,
             style: { fontWight: '800', color: '#32334a ', fontFamily: 'Inter, sans-serif' },
         },
@@ -320,8 +361,8 @@ const StudentAnalytics = withRouter(({
         series: [
             {
                 data: [
-                    ['Total Assigned', today?.total_assigned],
                     ['Total Submitted', today?.total_submitted],
+                    ['Total Pending', today?.total_pending],
                 ],
                 // size: '100%',
                 innerSize: '85%',
@@ -399,13 +440,17 @@ const StudentAnalytics = withRouter(({
                                     />
                                 </div>
                                 <div className='col-md-6 d-flex justify-content-center flex-column'>
-                                <div className='th-yellow py-1 d-flex th-13  px-1'>
+                                <div className='th-grey py-1 d-flex th-13  px-1'>
                                         <span>Total Assigned :</span>{' '}
                                         <span>{today?.total_assigned}</span>
                                     </div>
                                     <div className='th-green-2 py-1 d-flex  th-13  px-1 '>
                                         <span>Total Submitted :</span>{' '}
                                         <span>&nbsp;{today?.total_submitted}</span>
+                                    </div>
+                                    <div className='th-yellow py-1 d-flex th-13  px-1'>
+                                        <span>Total Pending :</span>{' '}
+                                        <span>{today?.total_pending}</span>
                                     </div>
                                 </div>
                             </div>

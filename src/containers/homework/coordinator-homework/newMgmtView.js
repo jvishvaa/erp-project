@@ -570,7 +570,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
             );
         });
 
-        const sectionOptions = sections?.map((each) => {
+        let sectionOptions = sections?.map((each) => {
             return (
                 <Option key={each?.id} value={each?.section_id}>
                     {each?.section__section_name}
@@ -704,6 +704,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
             formRef.current.setFieldsValue({
                 section: ''
             })
+            setSections([])
         }
 
         return (

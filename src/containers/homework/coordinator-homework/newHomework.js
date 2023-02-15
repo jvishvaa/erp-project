@@ -455,8 +455,8 @@ const SubmissionData = withRouter(({
 
                                 </div>
                                 <div style={{ color: '#556778', background: '#F4F9FF', padding: '5px', display: 'flex', justifyContent: 'space-between' }}>
-                                    <p className='th-14 th-fw-600 m-0'  >{moment(selectedHomeworkDetails?.date).format('DD-MM-YYYY')}</p>
                                     <p className='th-14 th-fw-600 m-0' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }} >{moment(selectedHomeworkDetails?.last_submission_dt).format('DD-MM-YYYY')}</p>
+                                    <p className='th-14 th-fw-600 m-0'  >{moment(selectedHomeworkDetails?.date).format('DD-MM-YYYY')}</p>
 
                                 </div>
                             </div>
@@ -465,7 +465,7 @@ const SubmissionData = withRouter(({
                                 <span className='th-14 th-fw-600' style={{ color: '#A0A0A1' }} >Question</span>
 
                                 {/* question attachment */}
-                                <div className='view-homework-container-coordinator'  >
+                                <div className='view-homework-container-coordinator viewquestioncon'  >
                                     {selectedHomeworkDetails && selectedHomeworkDetails?.hw_questions?.map((question, index) => (
                                         <div
                                             className='homework-question-container-coordinator'
@@ -548,7 +548,7 @@ const SubmissionData = withRouter(({
                     </Collapse>
                 </div>
             </div>
-            <Tabs onChange={handleSegment} activeKey={segment} style={{ fontSize: '10px', fontWeight: '600' }} >
+            <Tabs onChange={handleSegment} activeKey={segment} style={{ fontSize: '10px', fontWeight: '600' }} className='userTableSub' >
                 <TabPane tab={`Not Submitted(${unSubmittedStudents?.length ? unSubmittedStudents?.length : "0"})`} key={'1'} style={{ color: '#F1DA89' }}  >
                     <div style={{ width: '100%' }}  >
                         {unSubmittedStudents?.length > 0 ?
