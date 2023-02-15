@@ -118,7 +118,7 @@ const selectedBranch = useSelector(
       <div className='tablewrap' >
         <table style={{ minHeight: '50vh' }} className="tableCon" >
           <thead  >
-            <tr className='tableR'>
+            <tr className='tableR headerarea '>
               <th className='fixedcol tableH' style={{verticalAlign: 'middle'}} >
                   <div className='th-14 th-fw-600'>Subject</div>
               </th>
@@ -156,9 +156,9 @@ const selectedBranch = useSelector(
                                 </Badge>
                               </div>
                               </Tooltip>
-                              <Tooltip title={`Not-Submitted (${each?.data?.student_submitted})`} >
+                              <Tooltip title={`Not-Submitted (${each?.data?.pending_count})`} >
                               <div className='w-25' style={{ cursor: 'pointer' }}>
-                                <Badge count={each?.data?.student_submitted} showZero color='#F1DA89' size='small'>
+                                <Badge count={each?.data?.pending_count} showZero color='#F1DA89' size='small'>
                                   <img src={HomeworkSubmit} alt='hwsubmit' style={{ width: '30px', height: '30px', background: '#FFF0C9', padding: '5px' }} onClick={() => showDrawer(each, 'not-submitted')} />
                                 </Badge>
                               </div>

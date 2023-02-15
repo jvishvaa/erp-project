@@ -79,7 +79,7 @@ const StudentHomeworkNew = withRouter(({
     const [submitSubject , setSubmitSubject] = useState([])
     const [evaluatedSubject , setEvaluatedSubject] = useState([])
     const [SubjectSelected , setSubjectSelected ] = useState('all')
-
+    const [dueDate , setDeuDate ] = useState()
 
     const selectedAcademicYear = useSelector(
         (state) => state.commonFilterReducer?.selectedYear
@@ -342,6 +342,7 @@ const StudentHomeworkNew = withRouter(({
 
     const handleHw = (item, tab) => {
         console.log(item);
+        setDeuDate(item?.last_submission_dt)
         setHwSelect(true)
         if (tab == 1 || tab == 2) {
 
@@ -670,7 +671,7 @@ const StudentHomeworkNew = withRouter(({
                     </>
                     :
                     <HomeworkSubmissionNew
-                        homeworkSubmission={homeworkSubmission} setHomeworkSubmission={setHomeworkSubmission} setHwSelect={setHwSelect} setLoading={setLoading}
+                        homeworkSubmission={homeworkSubmission} setHomeworkSubmission={setHomeworkSubmission} setHwSelect={setHwSelect} setLoading={setLoading} dueDate={dueDate} setDeuDate={setDeuDate}
                     />}
             </Layout >
 

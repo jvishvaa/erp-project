@@ -492,7 +492,7 @@
 }
 
 .tablewrap {
-  overflow-x:scroll;
+  // overflow-x:scroll;
   width:100%; 
 
 .tableCon {
@@ -500,6 +500,7 @@
   width: 100%;
   border-collapse: collapse;
   background: white;
+  position: relative;
 }
 .tableR {
   border-top: 1px solid #ccc;
@@ -511,13 +512,20 @@
   padding: 5px;
 }
 .fixedcol {
-  position:sticky;
-  background: white;
-  z-index: 1;
+  // position:sticky;
+  // background: white;
+  // z-index: 1;
 }
-.fixedcol:first-child {
-  left:0;
-  width:180px;
+// .fixedcol:first-child {
+//   left:0;
+//   width:180px;
+// }
+
+.headerarea{
+  position: sticky;
+  top: -10px !important;
+  background: white;
+  z-index: 1000;
 }
 
 }
@@ -540,4 +548,18 @@
   #date{
     text-align: center;
   }
+}
+
+.userTableSub{
+  .ant-tabs-content-holder{
+    height: 450px;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+}
+
+.viewquestioncon{
+  height: 200px;
+  overflow: hidden;
+  overflow-y: scroll;
 }

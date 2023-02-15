@@ -55,6 +55,7 @@ import {
     Empty, Checkbox
 } from 'antd';
 import { LeftOutlined , UploadOutlined } from '@ant-design/icons';
+import moment from 'moment';
 const useStyles = makeStyles((theme) => ({
     attachmentIcon: {
         color: '#ff6b6b',
@@ -170,7 +171,7 @@ const StyledButton = withStyles({
 
 const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     const classes = useStyles();
-    const { homeworkSubmission, setHomeworkSubmission, setLoading, setHwSelect } =
+    const { homeworkSubmission, setHomeworkSubmission, setLoading, setHwSelect , dueDate , setDeuDate } =
         props || {};
     const { isOpen, subjectId, date, subjectName, isEvaluated } = homeworkSubmission || {};
     const [isQuestionWise, setIsQuestionWise] = useState(false);
@@ -203,6 +204,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     const fileUploadInput = useRef(null);
 
     // const [quesComments, setQuesComments] = useState([]);
+    console.log(history ,props);
     const handleHomeworkSubmit = () => {
         let count = 0;
         if (isQuestionWise)
@@ -269,6 +271,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     const handleHomeworkCancel = () => {
         // setDisplayRatingBox(false);
         setHwSelect(false)
+        setDeuDate()
         setHomeworkSubmission((prev) => ({
             ...prev,
             isOpen: false,
@@ -787,6 +790,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             .put(`${endpoints.homework.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`)
             .then((result) => { });
     };
+
+   
 
     return (
         <div className='create_group_filter_container'>
@@ -1553,7 +1558,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                 </>
                             ) : null}
                             <div style={{ width: '100%'  , display: 'flex' , justifyContent: 'flex-end' }}>
-                                <div>
+                                {/* <div>
                                     <Button
                                         variant='contained'
                                         className='cancelButton labelColor homework_submit_button_cancel mx-2'
@@ -1562,7 +1567,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         >
                                         {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
                                     </Button>
-                                </div>
+                                </div> */}
                                         
                                 {!isupdate && homeworkSubmission.status === 2 && (
                                     <Button
@@ -1593,6 +1598,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                 )}
                                 {homeworkSubmission.status === 1 && (
                                 <div>
+                                    {moment(dueDate).isBefore(moment(), 'day') == false ?
+
                                     <Button
                                         variant='contained'
                                         style={{ color: 'white' }}
@@ -1602,7 +1609,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         className='mx-2 '
                                     >
                                         Submit
-                                    </Button>
+                                    </Button> : <p className='th-red th-fw-600 th-14'>Submission Date Expired</p>
+                                    }
                                 </div>
                             )}
                                 <Dialog id={id} open={open} onClose={handleClose}>
