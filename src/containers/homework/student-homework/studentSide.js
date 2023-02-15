@@ -78,7 +78,7 @@ const StudentHomeworkNew = withRouter(({
     const [pendingSubject , setPendingSubject] = useState([])
     const [submitSubject , setSubmitSubject] = useState([])
     const [evaluatedSubject , setEvaluatedSubject] = useState([])
-
+    const [SubjectSelected , setSubjectSelected ] = useState('all')
 
 
     const selectedAcademicYear = useSelector(
@@ -112,14 +112,17 @@ const StudentHomeworkNew = withRouter(({
     console.log(acad_session_id, 'acadd');
     const dateToday = moment()
     const startDay = moment().subtract(1, "w")
+    const dateFrom = moment().subtract(3,'d')
+    const dateTo = moment().add(3,'d')
+
     console.log(startDay, 'start');
     useEffect(() => {
-        setDates([moment(startDay), moment()])
+        setDates([moment(dateFrom), moment(dateTo)])
         formRef.current.setFieldsValue({
-            date: [moment(startDay), moment()]
+            date: [moment(dateFrom), moment(dateTo)]
         })
-        setStartDate(moment(startDay).format('YYYY-MM-DD'))
-        setEndDate(moment().format('YYYY-MM-DD'))
+        setStartDate(moment(dateFrom).format('YYYY-MM-DD'))
+        setEndDate(moment(dateTo).format('YYYY-MM-DD'))
     }, [])
 
     useEffect(() => {
@@ -367,6 +370,7 @@ const StudentHomeworkNew = withRouter(({
     }
 
     const handleSubjectFilter = (sub) => {
+        setSubjectSelected(sub)
         console.log(sub , pendingData , submitData , evaluatedData);
         if (sub != 'all') {
             if (acad_session_id && endDate != undefined && hwSelect == false) {
@@ -451,28 +455,48 @@ const StudentHomeworkNew = withRouter(({
                         </Form>
                         <div style={{ width: '90%', margin: '0 auto' }} className='d-flex justify-content-between' >
                             <div className='col-md-8 my-4 p-0' >
-                                <Button type='primary' onClick={() => handleSubjectFilter('all')} className='m-1'>All Subject</Button>
+                                <Button  onClick={() => handleSubjectFilter('all')} className={`${
+                                            SubjectSelected == 'all' ? 'th-button-active' : 'th-button'
+                                          }  th-pointer m-1 th-br-5`}>All Subject</Button>
                                 {segment == 1 ? <>
                                     {todaySubject?.subjects?.map((sub) => (
-                                        <Button className='m-1' type='primary' onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
+                                        <Button 
+                                        className={`${
+                                            sub?.subject_id == SubjectSelected?.subject_id ? 'th-button-active' : 'th-button'
+                                          } th-pointer m-1 th-br-5`} 
+                                        
+                                         onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
                                     ))}
                                 </> :
                                     segment == 2 ?
                                         <>
                                             {pendingSubject?.subjects?.map((sub) => (
-                                                <Button className='m-1' type='primary' onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
+                                                <Button 
+                                                className={`${
+                                                    sub?.subject_id == SubjectSelected?.subject_id ? 'th-button-active' : 'th-button'
+                                                  } th-pointer m-1 th-br-5`}  
+                                                 onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
                                             ))}
                                         </> :
                                         segment == 3 ?
                                             <>
                                                 {submitSubject?.subjects?.map((sub) => (
-                                                    <Button className='m-1' type='primary' onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
+                                                    <Button 
+                                                    className={`${
+                                                        sub?.subject_id == SubjectSelected?.subject_id ? 'th-button-active' : 'th-button'
+                                                      } th-pointer m-1 th-br-5`}  
+
+                                                     onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
                                                 ))}
                                             </> :
                                             segment == 4 ?
                                                 <>
                                                     {evaluatedSubject?.subjects?.map((sub) => (
-                                                        <Button className='m-1' type='primary' onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
+                                                        <Button 
+                                                        className={`${
+                                                            sub?.subject_id == SubjectSelected?.subject_id ? 'th-button-active' : 'th-button'
+                                                          } th-pointer m-1 th-br-5`}  
+                                                        onClick={() => handleSubjectFilter(sub)}>{sub?.subject_name}</Button>
                                                     ))}
                                                 </> : ''}
                             </div>
@@ -489,7 +513,7 @@ const StudentHomeworkNew = withRouter(({
                                                 <div>
                                                     <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{today?.no_of_home_works} Homework Assigned</div>
                                                     <Divider className='my-2' />
-                                                    <div className='d-flex flex-wrap p-3'   >
+                                                    <div className='d-flex flex-wrap p-3' style={{height: '500px' , overflow: 'hidden' , overflowY: 'scroll'}}  >
                                                         {today?.data?.map((item) => (
                                                             <div className='col-lg-4 p-1'>
                                                                 <div className='card w-100' >
@@ -498,8 +522,9 @@ const StudentHomeworkNew = withRouter(({
                                                                         <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#EE6065' }}>Due Date : {moment(item?.last_submission_dt).format('DD-MM-YYYY')}</div>
                                                                     </div>
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
-                                                                        <div className='th-14'>{item?.homework_name}</div>
-                                                                        <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
+                                                                    <div className='th-14 th-fw-600 col-md-2 px-0'>Title:</div>
+                                                                        <div className='th-14 col-md-8 text-truncate'>{item?.homework_name}</div>
+                                                                        <RightOutlined className='th-14 col-md-2' style={{ color: '#8D8D8D' }} />
                                                                     </div>
                                                                     <Divider />
                                                                     <div className='row justify-content-between p-1' style={{ width: '99%', margin: '0 auto' }} >
@@ -507,9 +532,9 @@ const StudentHomeworkNew = withRouter(({
                                                                             <div className='th-11'>Created By </div>
                                                                             <div className='th-11 th-fw-600'>{item?.created_by_staff__erpusers__name} {moment(item?.uploaded_at).format('DD-MM-YYYY hh:mm A')}</div>
                                                                         </div>
-                                                                        <div >
+                                                                        {/* <div >
                                                                             <img src={Atachment} style={{ width: '25px', transform: 'rotate(25deg)' }} />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -525,7 +550,7 @@ const StudentHomeworkNew = withRouter(({
                                                 <div>
                                                     <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{pending?.no_of_home_works} Homework Pending</div>
                                                     <Divider className='my-2' />
-                                                    <div className='d-flex flex-wrap p-3'   >
+                                                    <div className='d-flex flex-wrap p-3'  style={{height: '500px' , overflow: 'hidden' , overflowY: 'scroll'}} >
                                                         {pendingData?.map((item) => (
                                                             <div className='col-lg-4 p-1'>
                                                                 <div className='card w-100' >
@@ -540,7 +565,7 @@ const StudentHomeworkNew = withRouter(({
                                                                         }
                                                                     </div>
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)} >
-                                                                        <div className='th-14'>{item?.homework_name}</div>
+                                                                        <div className='th-14'>Title:{item?.homework_name}</div>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
                                                                     <Divider />
@@ -567,7 +592,7 @@ const StudentHomeworkNew = withRouter(({
                                                 <div>
                                                     <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{submit?.no_of_home_works} Homework Submitted</div>
                                                     <Divider className='my-2' />
-                                                    <div className='d-flex flex-wrap p-3'   >
+                                                    <div className='d-flex flex-wrap p-3' style={{height: '500px' , overflow: 'hidden' , overflowY: 'scroll'}}  >
                                                         {submitData?.map((item) => (
                                                             <div className='col-lg-4 p-1'>
                                                                 <div className='card w-100' >
@@ -579,7 +604,7 @@ const StudentHomeworkNew = withRouter(({
                                                                         </div>
                                                                     </div>
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
-                                                                        <div className='th-14'>{item?.homework__homework_name}</div>
+                                                                        <div className='th-14'>Title:{item?.homework__homework_name}</div>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
                                                                     <Divider />
@@ -606,7 +631,7 @@ const StudentHomeworkNew = withRouter(({
                                                 <div>
                                                     <div className='col-md-12 d-flex justify-content-end th-14 th-fw-500' style={{ color: '#4F4F4F', padding: '10px' }} >{evaluated?.no_of_home_works} Homework Evaluated</div>
                                                     <Divider className='my-2' />
-                                                    <div className='d-flex flex-wrap p-3'   >
+                                                    <div className='d-flex flex-wrap p-3' style={{height: '500px' , overflow: 'hidden' , overflowY: 'scroll'}}  >
                                                         {evaluatedData?.map((item) => (
                                                             <div className='col-lg-4 p-1'>
                                                                 <div className='card w-100' >
@@ -618,7 +643,7 @@ const StudentHomeworkNew = withRouter(({
                                                                         </div>
                                                                     </div>
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
-                                                                        <div className='th-14'>{item?.homework__homework_name}</div>
+                                                                        <div className='th-14'>Title:{item?.homework__homework_name}</div>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
                                                                     <Divider />

@@ -173,7 +173,7 @@ const HomeworkReport = () => {
             <div
               className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
               style={{ outline: '1px solid #d9d9d9' }}
-              onClick={() => history.push('/homework/student')}
+              onClick={() => history.push('/student-analytics')}
             >
               View Details
             </div>
