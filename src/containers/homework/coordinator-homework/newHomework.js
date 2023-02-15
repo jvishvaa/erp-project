@@ -414,7 +414,7 @@ const SubmissionData = withRouter(({
                 <div className='d-flex justify-content-between p-3' >
                     <span className='font-weight-bold th-14'>{props?.submitData?.hw_data?.subject_name}</span>
                     <div className='col-md-3 d-flex justify-content-between'>
-                        {submittedStudents?.length > 0 ?
+                        {submittedStudents?.length == 0 ?
                         <div className='col-md-6' >
                             {checkEdit == true ?
                                 <div className='d-flex' >

@@ -205,7 +205,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
           const response = await onAddHomework(reqObj );
         setAlert('success', 'Homework Added');  
         }
-        setAlert('success', 'Homework added');
+        // setAlert('success', 'Homework added');
         if (propData?.isTeacher == true) {
           history.push({
             pathname: '/homework/teacher/',
