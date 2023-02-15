@@ -1053,7 +1053,6 @@ const QuestionCardNew = ({
                             onClick={() => {
                                 fetchResources();
                             }}
-                            title='Filter'
                         >
                             Filter
                         </Button>
