@@ -151,6 +151,7 @@ const FileDrive = () => {
     } else {
       message.error(`File size should not exceed ${getSize(fileSizeConfig)}`);
       // setFileKey(Date.now());
+      formRef.current.resetFields(['file']);
     }
   };
 
@@ -277,7 +278,6 @@ const FileDrive = () => {
               >
                 File Category
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-grey th-16'>File Drive</Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
                 {categoryName}
               </Breadcrumb.Item>

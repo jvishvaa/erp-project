@@ -109,6 +109,7 @@ const FileCategory = () => {
             message.success('Category updated successfully');
           })
           .catch((error) => {
+            message.error('File category with this name already exists!');
             console.log(error);
           });
       } else {
@@ -125,6 +126,7 @@ const FileCategory = () => {
             });
           })
           .catch((error) => {
+            message.error('File category with this name already exists!');
             console.log(error);
           });
       }
@@ -235,9 +237,6 @@ const FileCategory = () => {
         <div className='row pt-3'>
           <div className='col-md-12'>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item className='th-grey th-16 th-pointer'>
-                File Drive
-              </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
                 File Category
               </Breadcrumb.Item>
