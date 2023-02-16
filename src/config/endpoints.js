@@ -740,6 +740,7 @@ export default {
     overallReport: `${msReportsUrl}/api/reports/v2/student_homework_overall_dashboard/view/`,
     studentSubjectWise: `${msReportsUrl}/api/reports/v2/student_homework_subjectwise_performance/view/`,
     overallHwCompletion: `${msReportsUrl}/api/reports/v2/student_homework_overall_hw_completion_report/view/`,
+    subjectListStudent : `${msReportsUrl}/api/reports/v2/student_subjects/`
   },
   teacherDashboardTwo: {
     teacherOverview: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/branch-wise-hw-cw-status/`,
