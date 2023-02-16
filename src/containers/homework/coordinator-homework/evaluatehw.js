@@ -555,7 +555,7 @@ const ViewHomeworkNew = withRouter(
                                             className='comments-remarks-container'
                                             style={{ display: 'flex', width: '95%', margin: '0 auto' }}
                                         >
-                                            <div className='item comment'>
+                                            {/* <div className='item comment'>
                                                 <FormControl variant='outlined' fullWidth size='small'>
                                                     <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
                                                     <OutlinedInput
@@ -573,7 +573,7 @@ const ViewHomeworkNew = withRouter(
                                                         autoFocus
                                                     />
                                                 </FormControl>
-                                            </div>
+                                            </div> */}
                                             <div className='item'>
                                                 <FormControl variant='outlined' fullWidth size='small'>
                                                     <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
@@ -582,7 +582,7 @@ const ViewHomeworkNew = withRouter(
                                                         name='remarks'
                                                         inputProps={{ maxLength: 150 }}
                                                         multiline
-                                                        rows={3}
+                                                        rows={4}
                                                         rowsMax={4}
                                                         label='Remarks'
                                                         value={collatedQuestionState?.remarks || ''}

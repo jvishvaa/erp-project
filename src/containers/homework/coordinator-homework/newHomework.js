@@ -647,7 +647,7 @@ const SubmissionData = withRouter(({
                     </>
                     : ''}
             <Modal title="Delete Homework" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <p style={{padding: '25px'}}>{`Confirm Delete Homework ${selectedHomeworkDetails?.homework_name} ?`}</p>
+                <p style={{padding: '25px'}}>{`Confirm Delete Homework ?`}</p>
             </Modal>
         </div>
     )

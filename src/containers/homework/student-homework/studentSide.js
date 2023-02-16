@@ -670,9 +670,11 @@ const StudentHomeworkNew = withRouter(({
                         </div>
                     </>
                     :
+                    <>
                     <HomeworkSubmissionNew
                         homeworkSubmission={homeworkSubmission} setHomeworkSubmission={setHomeworkSubmission} setHwSelect={setHwSelect} setLoading={setLoading} dueDate={dueDate} setDeuDate={setDeuDate}
-                    />}
+                        />
+                        </>}
             </Layout >
 
         </>
