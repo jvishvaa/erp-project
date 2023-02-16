@@ -66,6 +66,7 @@ export default {
     buttonStatus: `/assessment/check-sys-config/?config_key=config_properties&config_type=json`,
     checkQuizUser : `/assessment/get-start-quiz-user-levels-access/`,
     startQuiz : '/assessment/v2/test/',
+    homeworkConfig: '/assessment/check-sys-config/?config_key=hw_enhancement',
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
@@ -730,6 +731,16 @@ export default {
     HWPendingData: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/homework-pending-details/`,
     HWPendingStudentList: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/homework-pending-count/`,
     submittedHWalldata: `${baseURL}/academic/homework-submitted-data/`,
+  },
+  homeworknew: {
+    todaysHomework: `${msReportsUrl}/api/reports/v2/student_homework_today/view/`,
+    pendingHomework: `${msReportsUrl}/api/reports/v2/student_homework_pending/view/`,
+    submittedHomework: `${msReportsUrl}/api/reports/v2/student_homework_sumbitted/view/`,
+    evaluatedHomework: `${msReportsUrl}/api/reports/v2/student_homework_evaluated/view/`,
+    overallReport: `${msReportsUrl}/api/reports/v2/student_homework_overall_dashboard/view/`,
+    studentSubjectWise: `${msReportsUrl}/api/reports/v2/student_homework_subjectwise_performance/view/`,
+    overallHwCompletion: `${msReportsUrl}/api/reports/v2/student_homework_overall_hw_completion_report/view/`,
+    subjectListStudent : `${msReportsUrl}/api/reports/v2/student_subjects/`
   },
   teacherDashboardTwo: {
     teacherOverview: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/branch-wise-hw-cw-status/`,

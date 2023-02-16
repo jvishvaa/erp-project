@@ -603,7 +603,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'Blog Activity',
       // Path: '/blog/blogview',
-      Path:'/blog/wall/central/redirect',
+      Path: '/blog/wall/central/redirect',
     },
     {
       name: 'Create Observation',
@@ -627,7 +627,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name: 'School Wall',
-      Path:'/blog/wall',
+      Path: '/blog/wall',
     },
     {
       name: 'My Blogs',
@@ -700,6 +700,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'Assign Teacher',
       Path: '/sure-learning/assign-teacher',
+    },
+    {
+      name: 'File Category',
+      Path: '/file-category',
     },
   ];
 

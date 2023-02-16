@@ -62,11 +62,11 @@ body {
 }
 
 .th-holiday {
-  color: #89DDF1
+  color: #89ddf1;
 }
 
 .th-events {
-  color: #E089F1
+  color: #e089f1;
 }
 
 .th-green-1 {
@@ -417,4 +417,11 @@ svg {
 .th-calendar-popover .fc-more-link {
   bottom: 0px !important;
   height: 25px !important;
+}
+
+.th-file-upload-card .ant-card-body{
+  padding: 10px
+}
+.ant-ribbon-text {
+    color: #6c6c6c;
 }

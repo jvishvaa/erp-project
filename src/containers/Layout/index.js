@@ -1188,6 +1188,11 @@ const Layout = ({ children, history }) => {
         history.push('/curriculum-completion-student-subject/');
         break;
       }
+      case 'File Category': {
+        history.push('/file-category/');
+        break;
+      }
+
       default:
         break;
     }

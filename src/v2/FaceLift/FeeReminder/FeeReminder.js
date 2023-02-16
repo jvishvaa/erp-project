@@ -27,10 +27,15 @@ const FeeReminder = () => {
   };
 
   const handleOk = () => {
-    window.open(
-      `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
-      '_blank'
-    );
+    window.location.href.includes('dheerajinternational')
+      ? window.open(
+          `https://formbuilder.ccavenue.com/live/dheeraj-international-school`,
+          '_blank'
+        )
+      : window.open(
+          `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+          '_blank'
+        );
 
     setOpen(false);
   };
