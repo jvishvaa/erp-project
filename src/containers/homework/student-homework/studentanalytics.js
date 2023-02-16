@@ -118,8 +118,8 @@ const StudentAnalytics = withRouter(({
 
     const subjectOptions = pending?.map((each) => {
         return (
-            <Option key={each?.subject_id} value={each?.subject_id}>
-                {each?.subject__subject_name}
+            <Option key={each?.id} value={each?.id}>
+                {each?.subject_name}
             </Option>
         );
     });
@@ -161,7 +161,9 @@ const StudentAnalytics = withRouter(({
             getOverallReport({
                 acad_session_id: acad_session_id
             })
-
+            getSubject({
+                acad_session_id: acad_session_id
+            })
         }
     }, [acad_session_id])
 
@@ -220,7 +222,6 @@ const StudentAnalytics = withRouter(({
             })
             .then((res) => {
                 console.log(res);
-                setPending(res.data.result)
                 setData(res.data.result)
             })
             .catch((error) => {
@@ -245,45 +246,23 @@ const StudentAnalytics = withRouter(({
     };
     const getSubject = (params = {}) => {
         axiosInstance
-            .get(`${endpoints.academics.subjects}`, {
+            .get(`${endpoints.homeworknew.subjectListStudent}`, {
                 params: { ...params },
-                // headers: {
-                //     'X-DTS-Host': X_DTS_HOST,
-                // }
+                headers: {
+                    'X-DTS-Host': X_DTS_HOST,
+                }
             })
             .then((res) => {
                 console.log(res);
-                // setEvaluated(res.data.result)
+                setPending(res.data.result)
+                setSubject(res?.data?.result)
             })
             .catch((error) => {
                 message.error(error.message);
             });
     };
 
-    const subjectDrop = () => {
-        axiosInstance
-            .get(`${endpoints.academics.subjects}?session_year=${
-                selectedAcademicYear?.id
-              }&branch=${selectedBranch?.branch?.id}&module_id=${moduleId}`)
-            .then((res) => {
-                console.log(res);
-                // setToday(res.data.result)
-            })
-            .catch((error) => {
-                message.error(error.message);
-            });
-    };
-
-
-
-
-
-    const getpercent = (percent) => {
-        return <div>
-            <div className='th-13' style={{ color: '#B7B7B7' }}>Overall</div>
-            <div>{`${percent}%`}</div>
-        </div>
-    }
+ 
 
     const config = {
         data,
@@ -309,7 +288,7 @@ const StudentAnalytics = withRouter(({
         label: {
             position: 'middle',
             content: (item) => {
-                return `${item.subject_wise_percentage.toFixed(2)}%`;
+                return `${item.subject_wise_percentage.toFixed(0)}%`;
             },
             style: {
                 opacity: 100,
@@ -393,19 +372,17 @@ const StudentAnalytics = withRouter(({
             getYearly({
                 acad_session_id: acad_session_id,
                 month: curMonthOverall,
-                subject_id: pending[0]?.subject_id
+                subject_id: pending[0]?.id
             })
             formRefOverall.current.setFieldsValue({
                 monthOverall: moment(curMonthOverall, 'MM').format('MMM'),
-                subject: pending[0]?.subject__subject_name
+                subject: pending[0]?.subject_name
             })
-            setSubject(pending[0]?.subject_id)
+            setSubject(pending[0]?.id)
         }
     }, [pending])
 
-    useEffect(() => {
 
-    }, [])
 
 
 
