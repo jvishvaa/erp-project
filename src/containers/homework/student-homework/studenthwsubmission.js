@@ -663,10 +663,18 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
 
     const handleSaveEvaluatedFile = async (file) => {
         let maxAttachmentArray = resultdata.hw_questions;
+        let totalMaxAttachment = '';
         let result = 0;
-        let totalMaxAttachment = maxAttachmentArray.map((item) => {
-            return (result += item.max_attachment);
-        });
+        console.log(maxAttachmentArray , isupdate , 'max');
+        if(isupdate == true){
+             totalMaxAttachment = maxAttachmentArray?.questions.map((item) => {
+                return (result += item.max_attachment);
+            });    
+        } else if( isupdate == false){
+             totalMaxAttachment = maxAttachmentArray?.map((item) => {
+                return (result += item.max_attachment);
+            });
+        }
 
         if (
             isQuestionWise &&
@@ -791,7 +799,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             .then((result) => { });
     };
 
-   
 
     return (
         <div className='create_group_filter_container'>
@@ -849,6 +856,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             </div>
                             {homeworkSubmission.status === 1 && (
                                 <div className='checkWrapper'>
+                                    {moment(dueDate).isBefore(moment(), 'day') == false ?
                                     <div className='homework_block_questionwise_check'>
                                         <Checkbox
                                             onChange={() => {
@@ -866,7 +874,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         <p className='th-13 th-fw-600 mx-2' >
                                             Upload Question Wise
                                         </p>
-                                    </div>
+                                    </div> : '' }
                                 </div>
                             )}
                         </div>
@@ -970,7 +978,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                     </div>
                                                                 ))}
                                                                 <div
-                                                                    style={{ position: 'absolute', visibility: 'hidden' }}
+                                                                    style={{ position: 'absolute', visibility: 'hidden' , width: '0', height: '0px' }}
                                                                 >
                                                                     <SRLWrapper>
                                                                         {attachmentData[index]?.attachments?.map((url, i) => (
@@ -984,7 +992,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                     e.target.src = placeholder;
                                                                                 }}
                                                                                 alt={`Attachment-${i + 1}`}
-                                                                                style={{ width: '0', height: '0' }}
+                                                                                style={{ width: '0', height: '0px' }}
                                                                             />
                                                                         ))}
                                                                     </SRLWrapper>
@@ -1103,7 +1111,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                         </div>
                                                                     );
                                                             })}
-                                                            <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                                                            <div style={{ position: 'absolute', visibility: 'hidden' , height: '0px' , width: '0px' }}>
                                                                 <SRLWrapper>
                                                                     {question.question_files.map((url, i) => {
                                                                         if (typeof url == 'object') {
@@ -1119,7 +1127,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                             e.target.src = placeholder;
                                                                                         }}
                                                                                         alt={`Attachment-${i + 1}`}
-                                                                                        style={{ width: '0', height: '0' }}
+                                                                                        style={{ width: '0px', height: '0px' }}
                                                                                     />
                                                                                 );
                                                                             });
@@ -1135,7 +1143,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                         e.target.src = placeholder;
                                                                                     }}
                                                                                     alt={`Attachment-${i + 1}`}
-                                                                                    style={{ width: '0', height: '0' }}
+                                                                                    style={{ width: '0px', height: '0px' }}
                                                                                 />
                                                                             );
                                                                     })}
@@ -1252,7 +1260,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                             </>
                                                                         ))}
                                                                         <div
-                                                                            style={{ position: 'absolute', visibility: 'hidden' }}
+                                                                            style={{ position: 'absolute', visibility: 'hidden' , height: '0px' , width: '0px' }}
                                                                         >
                                                                             <SRLWrapper>
                                                                                 {question.submitted_files.map((url, i) => (
@@ -1266,6 +1274,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                             e.target.src = placeholder;
                                                                                         }}
                                                                                         alt={`Attachment-${i + 1}`}
+                                                                                        style={{height: '0px'}}
                                                                                     />
                                                                                 ))}
                                                                             </SRLWrapper>
@@ -1315,6 +1324,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                             e.target.src = placeholder;
                                                                                         }}
                                                                                         alt={`Attachment-${i + 1}`}
+                                                                                        style={{height: '0px'}}
                                                                                     />
                                                                                 ))}
                                                                             </SRLWrapper>
@@ -1340,6 +1350,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
 
 {homeworkSubmission.status === 1 && !isQuestionWise && (
                             <div className='bulkContainer'>
+                                    {moment(dueDate).isBefore(moment(), 'day') == false ?
+                                    <>
                                 <div className='bulkUploadButton'>
                                     <Button
                                         variant='contained'
@@ -1372,6 +1384,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     {' '}
                                     Accepted files: jpeg,jpg,mp3,mp4,pdf,png
                                 </small>
+                                </> : '' }
                                 <div className='bulk_upload_attachments'>
                                     {bulkDataDisplay?.map((file, i) => (
                                         <FileRow
@@ -1511,6 +1524,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                 e.target.src = placeholder;
                                                                             }}
                                                                             alt={`Attachment-${i + 1}`}
+                                                                            style={{height: '0px'}}
                                                                         />
                                                                     ))}
                                                                 </SRLWrapper>
@@ -1608,7 +1622,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         size='medium'
                                         className='mx-2 '
                                     >
-                                        Submit
+                                        {isupdate == true ? 'Update' :  'Submit' }
                                     </Button> : <p className='th-red th-fw-600 th-14'>Submission Date Expired</p>
                                     }
                                 </div>
