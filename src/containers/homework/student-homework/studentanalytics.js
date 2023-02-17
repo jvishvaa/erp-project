@@ -396,7 +396,7 @@ const StudentAnalytics = withRouter(({
                         >
                             Homework
                         </Breadcrumb.Item>
-                        <Breadcrumb.Item className='th-black-1 th-16'>
+                        <Breadcrumb.Item className='th-black-1 th-16 th-pointer' onClick={() => history.push('/homework/student')} >
                             Student Homework
                         </Breadcrumb.Item>
                     </Breadcrumb>
