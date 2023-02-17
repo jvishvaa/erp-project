@@ -174,6 +174,9 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
     if (name == undefined || name == '') {
       return message.error('Please Add Title')
     }
+    if (dateValue == undefined || dateValue == '') {
+      return message.error('Please Add Due Date')
+    }
     if (description == undefined || description == '') {
       return message.error('Please Add Description')
     }
@@ -358,7 +361,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
             Homework
           </Breadcrumb.Item>
           <Breadcrumb.Item className='th-black-1 th-16'>
-            Add Homework
+            {propData?.isEdit ? 'Edit Homework' : 'Add Homework'}
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
