@@ -128,55 +128,79 @@ const StudentHomeworkNew = withRouter(({
     useEffect(() => {
         if (acad_session_id && endDate != undefined && endDate != 'Invalid date') {
             console.log(acad_session_id,endDate, 'acadd');
-            getTodayshw({
-                acad_session_id: acad_session_id
-            })
-            getPendingshw({
-                acad_session_id: acad_session_id,
-                start_date: startDate,
-                end_date: endDate
-            })
-            getSubmitshw({
-                start_date: startDate,
-                end_date: endDate
-            })
-            getEvaluatedshw({
-                start_date: startDate,
-                end_date: endDate
-            })
+
+                getTodayshw({
+                    acad_session_id: acad_session_id,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            if(segment == 2){
+
+                getPendingshw({
+                    acad_session_id: acad_session_id,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            }
+            if(segment == 3){
+
+                getSubmitshw({
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            }
+            if(segment == 4){
+
+                getEvaluatedshw({
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            }
         }
     }, [acad_session_id, endDate])
 
     useEffect(() => {
         if (acad_session_id && endDate != undefined && endDate != 'Invalid date' && hwSelect == false) {
             console.log(acad_session_id, 'acadd');
-            getTodayshw({
-                acad_session_id: acad_session_id
-            })
-            getPendingshw({
-                acad_session_id: acad_session_id,
-                start_date: startDate,
-                end_date: endDate
-            })
-            getSubmitshw({
-                start_date: startDate,
-                end_date: endDate
-            })
-            getEvaluatedshw({
-                start_date: startDate,
-                end_date: endDate
-            })
+
+                getTodayshw({
+                    acad_session_id: acad_session_id,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            if(segment == 2){
+
+                getPendingshw({
+                    acad_session_id: acad_session_id,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            }
+            if(segment == 3){
+
+                getSubmitshw({
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            }
+            if(segment == 4){
+
+                getEvaluatedshw({
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            }
         }
-    }, [hwSelect])
+    }, [hwSelect , segment])
 
 
     const getTodayshw = (params = {}) => {
         axiosInstance
             .get(`${endpoints.homeworknew.todaysHomework}`, {
                 params: { ...params },
-                headers: {
-                    'X-DTS-Host': X_DTS_HOST,
-                }
+                // headers: {
+                //     'X-DTS-Host': X_DTS_HOST,
+                // }
             })
             .then((res) => {
                 console.log(res);
@@ -191,9 +215,9 @@ const StudentHomeworkNew = withRouter(({
         axiosInstance
             .get(`${endpoints.homeworknew.pendingHomework}`, {
                 params: { ...params },
-                headers: {
-                    'X-DTS-Host': X_DTS_HOST,
-                }
+                // headers: {
+                //     'X-DTS-Host': X_DTS_HOST,
+                // }
             })
             .then((res) => {
                 console.log(res);
@@ -208,9 +232,9 @@ const StudentHomeworkNew = withRouter(({
         axiosInstance
             .get(`${endpoints.homeworknew.submittedHomework}`, {
                 params: { ...params },
-                headers: {
-                    'X-DTS-Host': X_DTS_HOST,
-                }
+                // headers: {
+                //     'X-DTS-Host': X_DTS_HOST,
+                // }
             })
             .then((res) => {
                 console.log(res);
@@ -225,9 +249,9 @@ const StudentHomeworkNew = withRouter(({
         axiosInstance
             .get(`${endpoints.homeworknew.evaluatedHomework}`, {
                 params: { ...params },
-                headers: {
-                    'X-DTS-Host': X_DTS_HOST,
-                }
+                // headers: {
+                //     'X-DTS-Host': X_DTS_HOST,
+                // }
             })
             .then((res) => {
                 console.log(res);
@@ -317,20 +341,20 @@ const StudentHomeworkNew = withRouter(({
         return <div>
             {key == 1 ? <div className='row justify-content-between'>
                 <div className='th-14'>Today Assigned</div>
-                <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#7350ff', width: '25px', height: '25px', padding: '3px' }} >{today?.no_of_home_works}</div>
+                <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#7350ff', width: '25px', height: '25px', padding: '3px' }} >{today?.data?.length}</div>
             </div> : key == 2 ?
                 < div className='row justify-content-between'>
                     <div className='th-14'>Pending</div>
-                    <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#DFB340', width: '25px', height: '25px', padding: '3px' }} >{pending?.no_of_home_works}</div>
+                    <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#DFB340', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.pending}</div>
                 </div>
                 : key == 3 ?
                     < div className='row justify-content-between'>
                         <div className='th-14'>Submitted</div>
-                        <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#5DBC7E', width: '25px', height: '25px', padding: '3px' }} >{submit?.no_of_home_works}</div>
+                        <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#5DBC7E', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.submitted}</div>
                     </div> : key == 4 ?
                         < div className='row justify-content-between'>
                             <div className='th-14'>Evaluated</div>
-                            <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#56ABFF', width: '25px', height: '25px', padding: '3px' }} >{evaluated?.no_of_home_works}</div>
+                            <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#56ABFF', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.evaluated}</div>
                         </div> : ''
             }
         </div >
@@ -376,47 +400,69 @@ const StudentHomeworkNew = withRouter(({
         if (sub != 'all') {
             if (acad_session_id && endDate != undefined && hwSelect == false) {
                 console.log(acad_session_id, 'acadd');
-                getTodayshw({
-                    acad_session_id: acad_session_id,
-                    subject_id: sub?.subject_id
-                })
+
+                    getTodayshw({
+                        acad_session_id: acad_session_id,
+                        subject_id: sub?.subject_id
+                    })
+                if(segment == 2){
+
                 getPendingshw({
                     acad_session_id: acad_session_id,
                     start_date: startDate,
                     end_date: endDate,
                     subject_id: sub?.subject_id
                 })
+            }
+            if(segment == 3){
+
                 getSubmitshw({
                     start_date: startDate,
                     end_date: endDate,
                     subject_id: sub?.subject_id
                 })
+            }
+            if(segment == 4){
+
                 getEvaluatedshw({
                     start_date: startDate,
                     end_date: endDate,
                     subject_id: sub?.subject_id
                 })
             }
+            }
         }
         if (sub == 'all') {
             if (acad_session_id && endDate != undefined && hwSelect == false) {
                 console.log(acad_session_id, 'acadd');
-                getTodayshw({
-                    acad_session_id: acad_session_id,
-                })
-                getPendingshw({
-                    acad_session_id: acad_session_id,
-                    start_date: startDate,
-                    end_date: endDate
-                })
-                getSubmitshw({
-                    start_date: startDate,
-                    end_date: endDate
-                })
-                getEvaluatedshw({
-                    start_date: startDate,
-                    end_date: endDate
-                })
+
+                    getTodayshw({
+                        acad_session_id: acad_session_id,
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                if(segment == 2){
+    
+                    getPendingshw({
+                        acad_session_id: acad_session_id,
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                }
+                if(segment == 3){
+    
+                    getSubmitshw({
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                }
+                if(segment == 4){
+    
+                    getEvaluatedshw({
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                }
             }
         }
     }
@@ -522,11 +568,17 @@ const StudentHomeworkNew = withRouter(({
                                                                         <p className='th-14 th-fw-600 m-0' >{item?.subject__subject_name}</p>
                                                                         <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#EE6065' }}>Due Date : {moment(item?.last_submission_dt).format('DD-MM-YYYY')}</div>
                                                                     </div>
+                                                                   {item?.has_submitted == true ? <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto' }} >
+                                                                    <div className='th-14 th-fw-600 col-md-2 px-0'>Title:</div>
+                                                                        <div className='th-14 col-md-8 text-truncate'>{item?.homework_name}</div>
+                                                                        <div style={{color: '#5EBC7E' }} className='th-13' >Submitted</div>
+                                                                    </div> : 
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
                                                                     <div className='th-14 th-fw-600 col-md-2 px-0'>Title:</div>
                                                                         <div className='th-14 col-md-8 text-truncate'>{item?.homework_name}</div>
                                                                         <RightOutlined className='th-14 col-md-2' style={{ color: '#8D8D8D' }} />
                                                                     </div>
+                                                                    }
                                                                     <Divider />
                                                                     <div className='row justify-content-between p-1' style={{ width: '99%', margin: '0 auto' }} >
                                                                         <div >
