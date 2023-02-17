@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect, useRef, createRef } from 'react';
 import {
     message, Tabs, Badge, Drawer, Form, DatePicker, Breadcrumb, Divider, Button,
-    Empty
+    Empty,
+    Tooltip
 } from 'antd';
 import moment from 'moment';
 import { connect, useSelector } from 'react-redux';
@@ -340,21 +341,21 @@ const StudentHomeworkNew = withRouter(({
         console.log(key, "key");
         return <div>
             {key == 1 ? <div className='row justify-content-between'>
-                <div className='th-14'>Today Assigned</div>
-                <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#7350ff', width: '25px', height: '25px', padding: '3px' }} >{today?.data?.length}</div>
+                <div className='th-14'>Today's Assigned</div>
+                <div className='th-13 th-br-30 mx-2 countC' style={{ color: 'white', background: '#7350ff', width: '25px', height: '25px', padding: '3px' }} >{today?.data?.length}</div>
             </div> : key == 2 ?
                 < div className='row justify-content-between'>
                     <div className='th-14'>Pending</div>
-                    <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#DFB340', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.pending}</div>
+                    <div className='th-13 th-br-30 mx-2 countC' style={{ color: 'white', background: '#DFB340', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.pending}</div>
                 </div>
                 : key == 3 ?
                     < div className='row justify-content-between'>
                         <div className='th-14'>Submitted</div>
-                        <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#5DBC7E', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.submitted}</div>
+                        <div className='th-13 th-br-30 mx-2 countC' style={{ color: 'white', background: '#5DBC7E', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.submitted}</div>
                     </div> : key == 4 ?
                         < div className='row justify-content-between'>
                             <div className='th-14'>Evaluated</div>
-                            <div className='th-13 th-br-30 countC' style={{ color: 'white', background: '#56ABFF', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.evaluated}</div>
+                            <div className='th-13 th-br-30 mx-2 countC' style={{ color: 'white', background: '#56ABFF', width: '25px', height: '25px', padding: '3px' }} >{today?.hw_status?.evaluated}</div>
                         </div> : ''
             }
         </div >
@@ -562,20 +563,26 @@ const StudentHomeworkNew = withRouter(({
                                                     <Divider className='my-2' />
                                                     <div className='d-flex flex-wrap p-3' style={{height: '500px' , overflow: 'hidden' , overflowY: 'scroll'}}  >
                                                         {today?.data?.map((item) => (
-                                                            <div className='col-lg-4 p-1'>
+                                                            <div className='col-md-4 p-1'>
                                                                 <div className='card w-100' >
                                                                     <div className='row d-flex justify-content-between p-1' style={{ width: '99%', margin: '0 auto' }}>
-                                                                        <p className='th-14 th-fw-600 m-0' >{item?.subject__subject_name}</p>
+                                                                        <Tooltip title={item?.subject__subject_name}>
+                                                                        <p className='th-14 th-fw-600 m-0 text-truncate' style={{width: '40%'}} >{item?.subject__subject_name}</p>
+                                                                        </Tooltip>
                                                                         <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#EE6065' }}>Due Date : {moment(item?.last_submission_dt).format('DD-MM-YYYY')}</div>
                                                                     </div>
                                                                    {item?.has_submitted == true ? <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto' }} >
                                                                     <div className='th-14 th-fw-600 col-md-2 px-0'>Title:</div>
-                                                                        <div className='th-14 col-md-8 text-truncate'>{item?.homework_name}</div>
+                                                                    <Tooltip title={item?.homework_name}>
+                                                                        <div className='th-14 w-50 text-truncate'>{item?.homework_name}</div>
+                                                                    </Tooltip>
                                                                         <div style={{color: '#5EBC7E' }} className='th-13' >Submitted</div>
                                                                     </div> : 
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
                                                                     <div className='th-14 th-fw-600 col-md-2 px-0'>Title:</div>
-                                                                        <div className='th-14 col-md-8 text-truncate'>{item?.homework_name}</div>
+                                                                    <Tooltip title={item?.homework_name}>
+                                                                        <div className='th-14 w-50 text-truncate'>{item?.homework_name}</div>
+                                                                    </Tooltip>
                                                                         <RightOutlined className='th-14 col-md-2' style={{ color: '#8D8D8D' }} />
                                                                     </div>
                                                                     }
@@ -605,20 +612,24 @@ const StudentHomeworkNew = withRouter(({
                                                     <Divider className='my-2' />
                                                     <div className='d-flex flex-wrap p-3'  style={{height: '500px' , overflow: 'hidden' , overflowY: 'scroll'}} >
                                                         {pendingData?.map((item) => (
-                                                            <div className='col-lg-4 p-1'>
+                                                            <div className='col-md-4 p-1'>
                                                                 <div className='card w-100' >
                                                                     <div className='row d-flex justify-content-between p-1' style={{ width: '99%', margin: '0 auto' }}>
-                                                                        <p className='th-14 th-fw-600 m-0' >{item?.subject__subject_name}</p>
+                                                                        <Tooltip title={item?.subject__subject_name}>
+                                                                        <p className='th-14 th-fw-600 m-0 text-truncate' style={{width: '40%'}} >{item?.subject__subject_name}</p>
+                                                                        </Tooltip>
                                                                         {moment(item?.last_submission_dt).isBefore(moment(), 'day') == true ?
-                                                                            <div style={{ background: '#EE5651', color: 'white', borderRadius: '5px', padding: '3px' }}>
+                                                                            <div style={{ background: '#EE5651', color: 'white', borderRadius: '5px', padding: '3px' , height: '40px' , maxHeight: '40px' }}>
                                                                                 <div className='th-10 th-fw-400 d-flex align-items-center'>Not Submitted</div>
                                                                                 <div className='th-10 th-fw-400 d-flex align-items-center'>Due Date : {moment(item?.last_submission_dt).format('DD-MM-YYYY')}</div>
                                                                             </div> :
-                                                                            <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#EE6065' }}>Due Date : {moment(item?.last_submission_dt).format('DD-MM-YYYY')}</div>
+                                                                            <div className='th-11 th-fw-400 d-flex align-items-start' style={{ color: '#EE6065' , height: '40px' , maxHeight: '40px' }}>Due Date : {moment(item?.last_submission_dt).format('DD-MM-YYYY')}</div>
                                                                         }
                                                                     </div>
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)} >
-                                                                        <div className='th-14'>Title:{item?.homework_name}</div>
+                                                                        <Tooltip title={item?.homework_name}>
+                                                                        <div className='th-14 text-truncate w-75'>Title:{item?.homework_name}</div>
+                                                                        </Tooltip>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
                                                                     <Divider />
@@ -647,17 +658,21 @@ const StudentHomeworkNew = withRouter(({
                                                     <Divider className='my-2' />
                                                     <div className='d-flex flex-wrap p-3' style={{height: '500px' , overflow: 'hidden' , overflowY: 'scroll'}}  >
                                                         {submitData?.map((item) => (
-                                                            <div className='col-lg-4 p-1'>
+                                                            <div className='col-md-4 p-1'>
                                                                 <div className='card w-100' >
                                                                     <div className='row d-flex justify-content-between p-1' style={{ width: '99%', margin: '0 auto' }}>
-                                                                        <p className='th-14 th-fw-600 m-0' >{item?.homework__subject__subject_name}</p>
+                                                                        <Tooltip title={item?.homework__subject__subject_name} >
+                                                                        <p className='th-14 th-fw-600 m-0 text-truncate' style={{width: '40%'}} >{item?.homework__subject__subject_name}</p>
+                                                                        </Tooltip>
                                                                         <div className='d-flex'>
                                                                             <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#5EBC7E' }}>Submitted On : </div>
                                                                             <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#626161' }}>{moment(item?.submitted_at).format('DD-MM-YYYY')}</div>
                                                                         </div>
                                                                     </div>
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
-                                                                        <div className='th-14'>Title:{item?.homework__homework_name}</div>
+                                                                        <Tooltip title={item?.homework__homework_name}>
+                                                                        <div className='th-14 text-truncate w-75'>Title:{item?.homework__homework_name}</div>
+                                                                        </Tooltip>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
                                                                     <Divider />
@@ -686,17 +701,21 @@ const StudentHomeworkNew = withRouter(({
                                                     <Divider className='my-2' />
                                                     <div className='d-flex flex-wrap p-3' style={{height: '500px' , overflow: 'hidden' , overflowY: 'scroll'}}  >
                                                         {evaluatedData?.map((item) => (
-                                                            <div className='col-lg-4 p-1'>
+                                                            <div className='col-md-4 p-1'>
                                                                 <div className='card w-100' >
                                                                     <div className='row d-flex justify-content-between p-1' style={{ width: '99%', margin: '0 auto' }}>
-                                                                        <p className='th-14 th-fw-600 m-0' >{item?.homework__subject__subject_name}</p>
+                                                                        <Tooltip title={item?.homework__subject__subject_name} >
+                                                                        <p className='th-14 th-fw-600 m-0 text-truncate' style={{width: '40%'}} >{item?.homework__subject__subject_name}</p>
+                                                                        </Tooltip>
                                                                         <div className='d-flex'>
                                                                             <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#56ABFF' }}>Evaluated On : </div>
                                                                             <div className='th-11 th-fw-400 d-flex align-items-center' style={{ color: '#626161' }}>{moment(item?.submitted_at).format('DD-MM-YYYY')}</div>
                                                                         </div>
                                                                     </div>
                                                                     <div className='p-1 row justify-content-between' style={{ background: '#F8FAFC', width: '90%', margin: '0 auto', cursor: 'pointer' }} onClick={() => handleHw(item, segment)}>
-                                                                        <div className='th-14'>Title:{item?.homework__homework_name}</div>
+                                                                       <Tooltip title={item?.homework__homework_name}>
+                                                                        <div className='th-14 text-truncate w-75'>Title:{item?.homework__homework_name}</div>
+                                                                       </Tooltip>
                                                                         <RightOutlined className='th-14' style={{ color: '#8D8D8D' }} />
                                                                     </div>
                                                                     <Divider />
