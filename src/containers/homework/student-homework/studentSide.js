@@ -627,9 +627,9 @@ const StudentHomeworkNew = withRouter(({
                                                                             <div className='th-11'>Created By </div>
                                                                             <div className='th-11 th-fw-600'>{item?.created_by_staff__erpusers__name} {moment(item?.uploaded_at).format('DD-MM-YYYY hh:mm A')}</div>
                                                                         </div>
-                                                                        <div >
+                                                                        {/* <div >
                                                                             <img src={Atachment} style={{ width: '25px', transform: 'rotate(25deg)' }} />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -666,9 +666,9 @@ const StudentHomeworkNew = withRouter(({
                                                                             <div className='th-11'>Created By </div>
                                                                             <div className='th-11 th-fw-600'>{item?.homework__created_by_staff__erpusers__name} {moment(item?.homework__uploaded_at).format('DD-MM-YYYY hh:mm A')}</div>
                                                                         </div>
-                                                                        <div >
+                                                                        {/* <div >
                                                                             <img src={Atachment} style={{ width: '25px', transform: 'rotate(25deg)' }} />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -705,9 +705,9 @@ const StudentHomeworkNew = withRouter(({
                                                                             <div className='th-11'>Created By </div>
                                                                             <div className='th-11 th-fw-600'>{item?.homework__created_by_staff__erpusers__name} {moment(item?.homework__uploaded_at).format('DD-MM-YYYY hh:mm A')}</div>
                                                                         </div>
-                                                                        <div >
+                                                                        {/* <div >
                                                                             <img src={Atachment} style={{ width: '25px', transform: 'rotate(25deg)' }} />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
