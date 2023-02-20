@@ -419,9 +419,24 @@ svg {
   height: 25px !important;
 }
 
-.th-file-upload-card .ant-card-body{
-  padding: 10px
+.th-file-upload-card .ant-card-body {
+  padding: 10px;
 }
 .ant-ribbon-text {
-    color: #6c6c6c;
+  color: #6c6c6c;
+}
+// Siderbar Styles
+.makeStyles-drawerPaperClose-67,
+.makeStyles-drawerPaper-66 {
+  z-index: 1100 !important;
+}
+
+// TopBar Styles
+.makeStyles-appBar-96 {
+  z-index: 1000 !important;
+}
+@media only screen and (max-width: 992px) {
+  .makeStyles-appBar-96 {
+    z-index: 1200 !important;
+  }
 }

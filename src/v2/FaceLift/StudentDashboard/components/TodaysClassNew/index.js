@@ -185,14 +185,16 @@ const TodaysClass = () => {
                               <div className='d-none d-sm-block px-0 px-md-2 col-md-2 py-1'>
                                 <span className='th-grey'>Subject</span>
                               </div>
-                              <div className='col-8 px-1 px-md-2 py-1'>
+                              <div className='col-7 col-sm-8 px-1 px-md-2 py-1'>
                                 <div className='th-black-1 th-fw-600 text-truncate'>
                                   <Tooltip title={item?.subject_name}>
                                     {item?.subject_name}
                                   </Tooltip>
                                 </div>
                               </div>
-                              <div className={`col-4 col-md-2 px-0 text-md-right`}>
+                              <div
+                                className={`col-5 col-sm-4 col-md-2 px-0 text-md-right`}
+                              >
                                 <Tag
                                   color={
                                     getPeriodStatus(item) == 'ongoing'
@@ -261,7 +263,7 @@ const TodaysClass = () => {
           </>
         ) : (
           <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
-            <img src={NoClassIcon} style={{ height: '150px', objectFit: 'cover' }} />
+            <img src={NoClassIcon} style={{ height: '120px', objectFit: 'cover' }} />
           </div>
         )}
       </div>

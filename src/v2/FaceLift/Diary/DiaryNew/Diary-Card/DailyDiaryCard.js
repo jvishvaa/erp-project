@@ -212,18 +212,10 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 Status :&nbsp;
                 <span
                   className={`${
-                    moment(moment(), 'hh:mm A').isBefore(
-                      moment(item?.submission_date, 'hh:mm A')
-                    )
-                      ? 'th-primary'
-                      : 'th-green'
+                    moment().isBefore(item?.submission_date) ? 'th-primary' : 'th-green'
                   } text-capitalize`}
                 >
-                  {moment(moment(), 'hh:mm A').isBefore(
-                    moment(item?.submission_date, 'hh:mm A')
-                  )
-                    ? 'Upcoming'
-                    : 'Completed'}
+                  {moment().isBefore(item?.submission_date) ? 'Upcoming' : 'Completed'}
                 </span>
               </>
             )}
@@ -533,7 +525,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
     <>
       <div
         className={`th-br-6 th-bg-white`}
-        style={{ border: '1px solid #d9d9d9', height: 200 }}
+        style={{ border: '1px solid #d9d9d9', minHeight: 200 }}
       >
         <div
           className={`row ${

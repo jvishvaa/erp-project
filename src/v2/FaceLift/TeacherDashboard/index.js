@@ -5,17 +5,14 @@ import Announcement from './components/Announcement';
 import CalendarCard from '../myComponents/CalendarCard';
 import ClassWorkReport from './components/ClassworkReport';
 import HomeWorkReport from './components/HomeworkReport';
-import Blogs from './components/Blogs';
-import Discussions from './components/Discussions';
 import Assessment from './components/Assessment';
 import CurriculumCompletion from './components/CurriculumCompletion';
-import Shortcut from './components/Shortcut';
 import { getRole } from 'v2/generalAnnouncementFunctions';
 import Doodle from 'v2/FaceLift/Doodle/Doodle';
 import { message } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import DiaryReport from '../myComponents/DiaryReport';
+import CurriculumTracker from './components/CurriculumTracker';
 
 const TeacherdashboardNew = () => {
   const [todaysAttendance, setTodaysAttendance] = useState([]);
@@ -33,14 +30,14 @@ const TeacherdashboardNew = () => {
       .catch((error) => message.error('error', error?.message));
   };
 
-  useEffect(() => {
-    fetchDoodle();
-  }, []);
+  // useEffect(() => {
+  //   fetchDoodle();
+  // }, []);
   return (
     <Layout>
       <div className=''>
         <div className='row th-16 py-3 justify-content-between'>
-          <div className='col-md-6 th-black-1 th-20 th-fw-400'>
+          <div className='col-lg-6 th-black-1 th-20 th-fw-400'>
             {' '}
             Good {time < 12 ? 'Morning' : time < 16 ? 'Afternoon' : 'Evening'},
             <span className='text-capitalize pr-2'>{first_name}</span>
@@ -51,20 +48,19 @@ const TeacherdashboardNew = () => {
         <AttendanceReport />
 
         <div className='row pt-3'>
-          <div className='col-md-4 th-custom-col-padding'>
-            <ClassWorkReport />
-            <CalendarCard />
-            {/* <Blogs /> */}
-            {/* <Discussions /> */}
+          <div className='col-lg-4 th-custom-col-padding'>
+            {/* <ClassWorkReport /> */}
+            <CurriculumTracker />
+            {/* <CalendarCard /> */}
           </div>
-          <div className='col-md-4 th-custom-col-padding'>
+          <div className='col-lg-4 th-custom-col-padding'>
             <HomeWorkReport />
-            <CurriculumCompletion />
-            {/* <Shortcut /> */}
-            <DiaryReport />
+            {/* <CurriculumCompletion /> */}
+            {/* <DiaryReport /> */}
           </div>
-          <div className='col-md-4 th-custom-col-padding'>
-            <Assessment />
+          <div className='col-lg-4 th-custom-col-padding'>
+            {/* <Assessment /> */}
+            <CalendarCard />
             <Announcement scrollHeight={'420px'} />
           </div>
         </div>

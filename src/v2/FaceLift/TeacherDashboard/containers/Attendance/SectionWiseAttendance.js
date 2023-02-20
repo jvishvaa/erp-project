@@ -362,35 +362,40 @@ const SectionWiseAttendance = () => {
           </div>
         </div>
         <div className='col-12'>
-          <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
-            <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
-              Total Students:{' '}
-              <span className='th-primary'>{attendanceCountData?.total_students}</span>
+          {!loading && (
+            <div
+              className='row py-2 align-items-center th-bg-white th-br-8 th-13 th-grey th-fw-500'
+              style={{ outline: '1px solid #d9d9d9' }}
+            >
+              <div className='col-md-2 col-6 w-100'>
+                Total Students:{' '}
+                <span className='th-primary'>{attendanceCountData?.total_students}</span>
+              </div>
+              <div className='col-md-2 col-6'>
+                Students Present:{' '}
+                <span className='th-green'>
+                  {attendanceCountData?.present_students_count}
+                </span>
+              </div>
+              <div className='col-md-2 col-6'>
+                Students Absent:{' '}
+                <span className='th-fw-500 th-red'>
+                  {attendanceCountData?.absent_students_count}
+                </span>
+              </div>
+              <div className='col-md-2 col-6'>
+                Students Marked:{' '}
+                <span className='th-green'>{attendanceCountData?.marked_students}</span>
+              </div>
+              <div className='col-md-4 col-12 '>
+                Students Unmarked:{' '}
+                <span className='th-red'>{attendanceCountData?.unmarked_students}</span>
+              </div>
             </div>
-            <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-              Students Present:{' '}
-              <span className='th-green'>
-                {attendanceCountData?.present_students_count}
-              </span>
-            </div>
-            <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-              Students Absent:{' '}
-              <span className='th-fw-500 th-red'>
-                {attendanceCountData?.absent_students_count}
-              </span>
-            </div>
-            <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-              Students Marked:{' '}
-              <span className='th-green'>{attendanceCountData?.marked_students}</span>
-            </div>
-            <div className='col-md-4 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
-              Students Unmarked:{' '}
-              <span className='th-red'>{attendanceCountData?.unmarked_students}</span>
-            </div>
-          </div>
+          )}
 
-          <div className='row pt-2 my-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
-            <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+          <div className='row py-2 my-2 align-items-center th-bg-white th-br-8 th-13 th-grey th-fw-500'>
+            <div className='col-md-3 col-lg-2 col-12 pb-2 pb-sm-0'>
               <Input
                 className='th-bg-grey th-br-4'
                 placeholder='Search a student'
@@ -399,7 +404,7 @@ const SectionWiseAttendance = () => {
                 onChange={(e) => setSearchedValue(e.target.value)}
               />
             </div>
-            <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+            <div className='col-md-3 col-lg-2 col-12 '>
               <Select
                 defaultValue={'All Students'}
                 className='th-grey th-bg-grey th-br-4 w-100'
@@ -430,7 +435,7 @@ const SectionWiseAttendance = () => {
               rowClassName={(record, index) =>
                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
               }
-              scroll={{ x: 'max-content' }}
+              scroll={{ x: attendanceData.length > 0 ? 'max-content' : null }}
             />
           </div>
         </div>

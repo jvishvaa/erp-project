@@ -17,7 +17,22 @@ const CurriculumCompletion = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const [moduleId, setModuleId] = useState('');
-  const [curriculumData, setCurriculumData] = useState([]);
+  const [curriculumData, setCurriculumData] = useState([
+    {
+      subject: 'Trilingual language',
+      grade_name: 'Kindergarden',
+      section_name: 'Sec A',
+      pace: 2,
+      vol_completion: '60%',
+    },
+    {
+      subject: 'Physical Activity',
+      grade_name: 'Pre-Nursery',
+      section_name: 'Sec B',
+      pace: 3,
+      vol_completion: '70%',
+    },
+  ]);
   const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
@@ -32,7 +47,7 @@ const CurriculumCompletion = () => {
       })
       .then((response) => {
         if (response.status === 200) {
-          setCurriculumData(response?.data?.result);
+          // setCurriculumData(response?.data?.result);
           setLoading(false);
         }
       })
@@ -43,8 +58,11 @@ const CurriculumCompletion = () => {
   };
 
   const getCurriculumData = () => {
-    if (selectedAcademicYear && selectedBranch){
-      fetchCurriculumData({ session_year: selectedAcademicYear?.id  , acad_session : selectedBranch?.id});
+    if (selectedAcademicYear && selectedBranch) {
+      fetchCurriculumData({
+        session_year: selectedAcademicYear?.id,
+        acad_session: selectedBranch?.id,
+      });
     }
   };
 
@@ -88,71 +106,74 @@ const CurriculumCompletion = () => {
       ) : curriculumData?.length > 0 ? (
         <div className='my-1 p-2'>
           <div className='th-custom-col-padding'>
-            <div className='px-2'>
-              <div className='row justify-content-between mb-1'>
-                <div className='col-4 th-grey th-fw-400 th-12'>Grade</div>
-                <div className='col-4 th-grey th-fw-400 th-12 text-center'>Subject</div>
-                <div className='col-4 th-grey th-fw-400 th-12 px-0 text-center'>
-                  Avg. Completion %
-                </div>
+            <div className='row justify-content-between align-items-center pb-2'>
+              <div className='col-4 th-grey th-fw-400 th-12 text-center'>Subject</div>
+              <div className='col-4 th-grey th-fw-400 th-12 text-center px-1'>
+                Grade & Section
               </div>
-              <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
-                {curriculumData?.map((item, i) => {
-                  let section = item?.section_name?.charAt(item?.section_name?.length - 1);
-                  return (
+              <div className='col-2 th-grey th-fw-400 th-12 px-0 text-center'>
+                Pace Completion
+              </div>
+              <div className='col-2 th-grey th-fw-400 th-12 px-0 text-center'>Volume</div>
+            </div>
+            <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
+              {curriculumData?.map((item, i) => {
+                let section = item?.section_name?.charAt(item?.section_name?.length - 1);
+                return (
+                  <div className='th-bg-grey mb-2 th-br-6' style={{ cursor: 'pointer' }}>
                     <div
-                      className='th-bg-grey mb-2 th-br-6'
-                      style={{ cursor: 'pointer' }}
+                      className='row justify-content-between py-3 th-br-6 align-items-center'
+                      onClick={() =>
+                        // history.push({
+                        //   pathname: '/curriculum-completion-branchWise',
+                        //   state: {
+                        //     branchData: [selectedBranch],
+                        //     module_id: moduleId,
+                        //     iscurriculam: true,
+                        //   },
+                        // })
+                        history.push({
+                          pathname: `/curriculum-completion-teacher-subject/${selectedBranch?.branch?.id}`,
+                          state: {
+                            branchId: selectedBranch?.branch?.id,
+                            acad_sess_id: selectedBranch?.id,
+                            branchName: selectedBranch?.branch?.branch_name,
+                            acad_session_id: selectedBranch?.session_year?.id,
+                            module_id: moduleId,
+                            central_gs_mapping: item?.central_gs_mapping,
+                            erp_gs_mapping: item?.erp_gs_mapping,
+                            grade_name: item?.grade_name,
+                          },
+                        })
+                      }
                     >
-                      <div
-                        className='row justify-content-between py-3 th-br-6 align-items-center'
-                        onClick={() =>
-                          // history.push({
-                          //   pathname: '/curriculum-completion-branchWise',
-                          //   state: {
-                          //     branchData: [selectedBranch],
-                          //     module_id: moduleId,
-                          //     iscurriculam: true,
-                          //   },
-                          // })
-                          history.push({
-                            pathname: `/curriculum-completion-teacher-subject/${selectedBranch?.branch?.id}`,
-                            state: {
-                              branchId: selectedBranch?.branch?.id,
-                              acad_sess_id: selectedBranch?.id,
-                              branchName: selectedBranch?.branch?.branch_name,
-                              acad_session_id: selectedBranch?.session_year?.id,
-                              module_id: moduleId,
-                              central_gs_mapping: item?.central_gs_mapping,
-                              erp_gs_mapping: item?.erp_gs_mapping,
-                              grade_name: item?.grade_name,
-                            }
-                          })
-                        }
-                      >
-                        <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 text-truncate text-capitalize'>
-                          <Tooltip
-                            placement='top'
-                            title={
-                              <span className='text-capitalize'>
-                                {item?.grade_name} {section}
-                              </span>
-                            }
-                          >
-                            {item?.grade_name} {section}
-                          </Tooltip>
-                        </div>
-                        <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 pl-1 text-center'>
-                          {item?.subject_name}
-                        </div>
-                        <div className='col-4 text-center th-16 th-fw-600 th-green-1 pr-0'>
-                          {item?.completion_percentage}%{' '}
-                        </div>
+                      <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 pl-1 text-center text-truncate'>
+                        <Tooltip placement='topLeft' title={<span>{item?.subject}</span>}>
+                          {item?.subject}
+                        </Tooltip>
+                      </div>
+                      <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 text-truncate text-capitalize text-center'>
+                        <Tooltip
+                          placement='topLeft'
+                          title={
+                            <span>
+                              {item?.grade_name} {section}
+                            </span>
+                          }
+                        >
+                          {item?.grade_name} {section}
+                        </Tooltip>
+                      </div>
+                      <div className='col-2 th-black-1 th-14 th-fw-400 pr-0 pl-1 text-center'>
+                        {item?.pace}
+                      </div>
+                      <div className='col-2 text-center th-14 th-fw-400 th-black-1'>
+                        {item?.vol_completion}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -160,9 +181,8 @@ const CurriculumCompletion = () => {
         <div className='d-flex justify-content-center mt-5'>
           <img src={NoDataIcon} />
         </div>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 };
 

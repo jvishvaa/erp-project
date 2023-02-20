@@ -14,6 +14,7 @@ import imageFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/imageF
 import excelFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/excelFileIcon.svg';
 import pdfFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/pdfFileIcon.svg';
 import moment from 'moment';
+import '../index.css';
 
 const DetailsModal = (props) => {
   const carousel = useRef();
@@ -214,7 +215,7 @@ const DetailsModal = (props) => {
                         <Tooltip
                           placement='bottomLeft'
                           title={
-                            <div>
+                            <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
                               {grades?.map((item) => (
                                 <div>{item}</div>
                               ))}
@@ -244,14 +245,14 @@ const DetailsModal = (props) => {
                         <Tooltip
                           placement='bottomLeft'
                           title={
-                            <div>
+                            <div style={{ maxHeight: '250px', overflowY: 'scroll' }}>
                               {sections?.map((item) => (
                                 <div>{item}</div>
                               ))}
                             </div>
                           }
                           trigger='click'
-                          className='th-pointer'
+                          className='th-pointer list_tooltip'
                           zIndex={2000}
                         >
                           <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
