@@ -252,7 +252,7 @@ const SubmittedQuestionNew = ({
         </div>
       )}
       <div className='comments-remarks-container' style={{ display: 'flex' }}>
-        <div className='item comment'>
+        {/* <div className='item comment'>
           <FormControl variant='outlined' fullWidth size='small'>
             <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
             <OutlinedInput
@@ -267,7 +267,7 @@ const SubmittedQuestionNew = ({
               onChange={(e) => onChangeQuestionsState('comments', e.target.value)}
             />
           </FormControl>
-        </div>
+        </div> */}
         <div className='item'>
           <FormControl variant='outlined' fullWidth size='small'>
             <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
