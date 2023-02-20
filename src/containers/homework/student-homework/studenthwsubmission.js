@@ -1563,10 +1563,10 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         <div className='overallContainer1'>
                             {homeworkSubmission.status === 3 ? (
                                 <>
-                                    {overallScore && (
+                                    {overallScore != 0 && (
                                         <div className='scoreBox'>Overall Score : {overallScore}</div>
                                     )}
-                                    {overallRemark && (
+                                    {overallRemark != '' && (
                                         <div className='remarkBox'>Overall Remark : {overallRemark}</div>
                                     )}
                                 </>
