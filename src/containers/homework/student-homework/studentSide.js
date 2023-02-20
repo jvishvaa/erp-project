@@ -135,32 +135,71 @@ const StudentHomeworkNew = withRouter(({
         if (acad_session_id && endDate != undefined && endDate != 'Invalid date') {
             console.log(acad_session_id, endDate, 'acadd');
 
-            getTodayshw({
-                acad_session_id: acad_session_id,
-                start_date: startDate,
-                end_date: endDate
-            })
-            if (segment == 2) {
+            if (SubjectSelected == 'all') {
 
-                getPendingshw({
+                console.log(acad_session_id, 'acadd');
+                getTodayshw({
                     acad_session_id: acad_session_id,
                     start_date: startDate,
                     end_date: endDate
                 })
-            }
-            if (segment == 3) {
+                if (segment == 2) {
 
-                getSubmitshw({
-                    start_date: startDate,
-                    end_date: endDate
-                })
-            }
-            if (segment == 4) {
+                    getPendingshw({
+                        acad_session_id: acad_session_id,
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                }
+                if (segment == 3) {
 
-                getEvaluatedshw({
+                    getSubmitshw({
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                }
+                if (segment == 4) {
+
+                    getEvaluatedshw({
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                }
+            }
+            if (SubjectSelected != 'all') {
+                getTodayshw({
+                    acad_session_id: acad_session_id,
                     start_date: startDate,
-                    end_date: endDate
+                    end_date: endDate,
+                    subject_id: SubjectSelected?.id
                 })
+
+
+                if (segment == 2) {
+
+                    getPendingshw({
+                        acad_session_id: acad_session_id,
+                        start_date: startDate,
+                        end_date: endDate,
+                        subject_id: SubjectSelected?.id
+                    })
+                }
+                if (segment == 3) {
+
+                    getSubmitshw({
+                        start_date: startDate,
+                        end_date: endDate,
+                        subject_id: SubjectSelected?.id
+                    })
+                }
+                if (segment == 4) {
+
+                    getEvaluatedshw({
+                        start_date: startDate,
+                        end_date: endDate,
+                        subject_id: SubjectSelected?.id
+                    })
+                }
             }
         }
     }, [acad_session_id, endDate])
