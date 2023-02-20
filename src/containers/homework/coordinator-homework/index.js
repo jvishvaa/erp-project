@@ -1350,7 +1350,6 @@ const CoordinatorTeacherHomework = withRouter(
                         unevaluatedStudents={unevaluatedStudents}
                         submittedStudents={submittedStudents}
                         unSubmittedStudents={unSubmittedStudents}
-                        unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
                         onClose={() => {

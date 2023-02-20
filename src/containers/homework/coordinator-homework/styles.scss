@@ -490,3 +490,76 @@
 .message_log_wrapper-coordinator .create_group_filter_container .homework_block_wrapper .MuiGrid-grid-xs-12{
   display: flex !important;
 }
+
+.tablewrap {
+  // overflow-x:scroll;
+  width:100%; 
+
+.tableCon {
+  table-layout: fixed; 
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  position: relative;
+}
+.tableR {
+  border-top: 1px solid #ccc;
+}
+.tableD, .tableH {
+  vertical-align: top;
+  text-align: center;
+  // width:170px;
+  padding: 5px;
+}
+.fixedcol {
+  // position:sticky;
+  // background: white;
+  // z-index: 1;
+}
+// .fixedcol:first-child {
+//   left:0;
+//   width:180px;
+// }
+
+.headerarea{
+  position: sticky;
+  top: -10px !important;
+  background: white;
+  z-index: 1000;
+}
+
+}
+
+.submissionDrawer{
+  .submitionTable{
+    margin: 5px !important;
+    border: 5px groove black !important;
+    border-collapse: collapse;
+  }
+  .ant-collapse-header-text{
+    width: 100%;
+  }
+}
+.ant-dropdown-placement-bottomRight{
+  position: absolute !important;
+  z-index: 10000 !important;
+} 
+.dueDateaddHw{
+  #date{
+    text-align: center;
+  }
+}
+
+.userTableSub{
+  .ant-tabs-content-holder{
+    height: 450px;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+}
+
+.viewquestioncon{
+  height: 200px;
+  overflow: hidden;
+  overflow-y: scroll;
+}

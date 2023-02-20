@@ -145,10 +145,15 @@ const Appbar = ({ children, history, ...props }) => {
   }, [isLogout]);
 
   const handleFinance = () => {
-    window.open(
-      `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
-      '_blank'
-    );
+    window.location.href.includes('dheerajinternational')
+      ? window.open(
+          `https://formbuilder.ccavenue.com/live/dheeraj-international-school`,
+          '_blank'
+        )
+      : window.open(
+          `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+          '_blank'
+        );
   };
 
   const handleTicket = () => {
@@ -386,7 +391,7 @@ const Appbar = ({ children, history, ...props }) => {
       });
     return result;
   };
-  
+
   const handleSwitchChange = (item) => {
     sessionStorage.removeItem('branch_list');
     sessionStorage.removeItem('selected_branch');
