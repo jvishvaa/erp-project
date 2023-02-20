@@ -49,8 +49,8 @@ const Announcements = (props) => {
   }, [selectedAcademicYear]);
 
   return (
-    <div className='th-bg-white th-br-5 pt-3 pb-2 mt-3 px-2 shadow-sm mb-2'>
-      <div className='col-md-12 mt-2 pb-2 th-black-1 th-16 th-fw-400 '>
+    <div className='th-bg-white th-br-5 py-3 mt-3 px-2 shadow-sm mb-2'>
+      <div className='col-md-12 mt-2 pb-2 th-black-1 th-16 th-fw-500 '>
         <span className=''>Announcements </span>
       </div>
       <div
@@ -84,7 +84,7 @@ const Announcements = (props) => {
           </div>
         )}
       </div>
-      <div className='col-md-12 mt-2 text-right'>
+      <div className='col-md-12 mt-1 text-right'>
         <div className='th-primary'>
           {announcementListData?.length > 0 ? (
             <div

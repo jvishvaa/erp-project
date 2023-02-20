@@ -47,7 +47,6 @@ import './styles.scss';
 
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -152,7 +151,7 @@ const AdminViewBlog = () => {
   const [status, setStatus] = React.useState('');
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
 
-  const [selectedBranch, setSelectedBranch] = useState([]);
+  // const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
@@ -191,6 +190,8 @@ const AdminViewBlog = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
 
+  const selectedBranch = useSelector((state) => state.commonFilterReducer?.selectedBranch);
+
   useEffect(() => {
     setLoading(true)
     if (NavData && NavData.length) {
@@ -225,7 +226,7 @@ const AdminViewBlog = () => {
   }, [window.location.pathname]);
 
   const handleBranch = (event, value) => {
-    setSelectedBranch([])
+    // setSelectedBranch([])
     setAssigneds([])
     setUnAssigneds([])
     if (value?.length) {
@@ -234,7 +235,7 @@ const AdminViewBlog = () => {
       //     ? [...branchList].filter(({ id }) => id !== 'all')
       //     : value;
       // console.log(value.id, 'value');
-      setSelectedBranch(value);
+      // setSelectedBranch(value);
     }
   };
 
@@ -372,11 +373,11 @@ const AdminViewBlog = () => {
 
   const [unassingeds, setUnAssigneds] = useState([]);
   const getUnAssinged = () => {
-    const branchIds = selectedBranch.map((obj) => obj.id);
+    // const branchIds = selectedBranch.map((obj) => obj.id);
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}&activity_type=${blogActivityId}`,
+        `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${selectedBranch?.branch?.id}&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}&activity_type=${blogActivityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -399,11 +400,11 @@ const AdminViewBlog = () => {
   };
   const [assingeds, setAssigneds] = useState([]);
   const getAssinged = () => {
-    const branchIds = selectedBranch.map((obj) => obj.id);
+    // const branchIds = selectedBranch.map((obj) => obj.id);
     setLoading(true)
     axios
       .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${blogActivityId}`,
+        `${endpoints.newBlog.Assign}?section_ids=null&user_id=null&branch_ids=${selectedBranch?.branch?.id}&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${blogActivityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -443,11 +444,11 @@ const AdminViewBlog = () => {
   useEffect(() =>{
     if(branch_update_user){
       if(selectedAcademicYear?.id > 0)
-    var branchIds = branch_update_user?.branches?.map((item) => item?.id)
+    // var branchIds = branch_update_user?.branches?.map((item) => item?.id)
     setLoading(true)
     axios
     .get(
-      `${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
+      `${endpoints.newBlog.activityBranch}?branch_ids=${selectedBranch?.branch?.id}`,
       {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
@@ -504,7 +505,7 @@ const AdminViewBlog = () => {
 
 
   useEffect(() => {
-    if(selectedBranch?.length !== 0 && searchFlag){
+    if(selectedBranch){
       if(value === 0){
         getUnAssinged();
         return
@@ -514,7 +515,7 @@ const AdminViewBlog = () => {
         return;
       }
     }
-  }, [value, selectedBranch, searchFlag,currentPageAssigned,currentPageUnassign]);
+  }, [value, selectedBranch,currentPageAssigned,currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
   const handlePreview = (data) => {
     setLoading(true)
@@ -591,15 +592,17 @@ const AdminViewBlog = () => {
     });
   };
 
-  const handleSearch = (event,value) =>{
-    if(selectedBranch?.length === 0){
-      setAlert('error','Please Select Branch')
-      return
-    }else{
-      setSearchFlag(true)
+  // const handleSearch = (event,value) =>{
+  //   if(selectedBranch?.length === 0){
+  //     setAlert('error','Please Select Branch')
+  //     return
+  //   }else{
+  //     setSearchFlag(true)
 
-    }
-  }
+  //   }
+  // }
+
+
 
   const handlePaginationAssign = (event, page) =>{
     setSearchFlag(true)
@@ -722,7 +725,7 @@ const AdminViewBlog = () => {
             ))}
           </TextField>
         </Grid> */}
-        <Grid item md={2}>
+        {/* <Grid item md={2}>
           <Autocomplete
             multiple
             fullWidth
@@ -746,9 +749,9 @@ const AdminViewBlog = () => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         &nbsp;&nbsp;
-        <Grid item md={2}>
+        {/* <Grid item md={2}>
           <Button
             variant='contained'
             color='primary'
@@ -758,7 +761,7 @@ const AdminViewBlog = () => {
           >
             Search
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <Grid container>

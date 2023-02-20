@@ -1,39 +1,27 @@
-import React, { useState, useRef, useEffect, useContext, createRef } from 'react';
+import React, { useState, useEffect, useContext, createRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
-import Loader from '../../components/loader/loader';
 
 import {
   IconButton,
   Divider,
   TextField,
   Button,
-  SvgIcon,
   makeStyles,
   Typography,
   Grid,
-  MenuItem,
-  TextareaAutosize,
   Paper,
   TableCell,
   TableBody,
   TableHead,
   TableRow,
   TableContainer,
-  Table as TableMUI,
-  Drawer,
-  TablePagination,
   InputAdornment,
   DialogActions,
 } from '@material-ui/core';
-// import Modal from '@material-ui/core/Modal';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SearchIcon from '@material-ui/icons/Search';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -42,29 +30,15 @@ import Layout from 'containers/Layout';
 import Close from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
 
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Box from '@material-ui/core/Box';
-import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import ForumIcon from '@material-ui/icons/Forum';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import { useTheme } from '@material-ui/core/styles';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import CloseIcon from '@material-ui/icons/Close';
 import './styles.scss';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { PieChartOutlined, IdcardOutlined, DownOutlined } from '@ant-design/icons';
+import { PieChartOutlined, IdcardOutlined } from '@ant-design/icons';
 import {
   Breadcrumb,
   Button as ButtonAnt,
@@ -76,7 +50,7 @@ import {
   Tooltip,
 } from 'antd';
 
-import { AppstoreAddOutlined, SearchOutlined } from '@ant-design/icons';
+import { AppstoreAddOutlined } from '@ant-design/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -166,26 +140,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const dummyData = [
-  { id: 1, title: 'harsha', date: '28/7' },
-  { id: 2, title: 'harsha2', date: '28/7' },
-];
-
-const subActivityData = [
-  { id: 1, branch_name: 'Cycling', date: '28/7' },
-  { id: 2, branch_name: 'Swimming', date: '28/7' },
-];
-
 const VisualActivity = () => {
   const boardListData = useSelector((state) => state.commonFilterReducer?.branchList);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const formRef = createRef();
+
+  console.log(selectedBranch?.branch?.id, 'pp');
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
-  const branchIdsLocal = role_details?.branch
-    ? role_details?.branch.map((obj) => obj.id)
-    : [];
   const branch_update_user =
     JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const classes = useStyles();
@@ -228,12 +190,9 @@ const VisualActivity = () => {
   const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const physicalActivityId = localStorage?.getItem('VisualActivityId')
-    ? JSON.parse(localStorage.getItem('VisualActivityId'))
+  const localActivityData = localStorage?.getItem('ActivityData')
+    ? JSON.parse(localStorage.getItem('ActivityData'))
     : '';
-  //   const mapPhysicalActivityId = physicalActivityId && physicalActivityId.map((item) => item?.id)
-  //   console.log(mapPhysicalActivityId,'xp2')
-  // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const [subjectData, setSubjectData] = useState([]);
   const token = dataes?.token;
   const user_level = dataes?.user_level;
@@ -244,14 +203,6 @@ const VisualActivity = () => {
   const [subActivityId, setSubActivityId] = useState('');
   const [sudActId, setSubActId] = useState(history?.location?.state?.subActiveId);
   const [subActivityListData, setSubActivityListData] = useState([]);
-
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-  ];
 
   useEffect(() => {
     setLoading(true);
@@ -384,22 +335,12 @@ const VisualActivity = () => {
       value: '12',
     },
   ];
-  const statuss = [
-    { label: 'Assigned', value: '1' },
-    { label: 'Unassigned', value: '2' },
-  ];
 
-  function handleTab(event, newValue) {
-    setValue(newValue);
-  }
   const [view, setViewed] = useState(false);
   const [branchView, setBranchView] = useState(true);
   const [branchSearch, setBranchSearch] = useState(true);
   const [branchList, setBranchList] = useState([]);
 
-  const viewed = () => {
-    setViewed(true);
-  };
   const handleClose = () => {
     setViewed(false);
   };
@@ -411,9 +352,6 @@ const VisualActivity = () => {
     setBranchView(false);
     setBranchSearch(true);
   };
-  const shortList = () => {
-    history.push('/blog/short');
-  };
   const [data, setData] = useState('');
   const handleDate = (data) => {
     setBranchView(true);
@@ -422,10 +360,6 @@ const VisualActivity = () => {
   };
   const [assigned, setAssigned] = useState(false);
   const [userId, setUserId] = useState('');
-  const assignIcon = (response) => {
-    setUserId(response?.id);
-    setAssigned(true);
-  };
   const closeconfirm = () => {
     setAssigned(false);
   };
@@ -443,7 +377,7 @@ const VisualActivity = () => {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
-      .then((response) => {
+      .then(() => {
         setAssigned(false);
         setAlert('success', 'Activity Successfully Assign');
         getUnAssinged();
@@ -459,7 +393,9 @@ const VisualActivity = () => {
     setLoading(true);
     axios
       .get(
-        `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
+        `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${
+          selectedBranch?.branch ? selectedBranch?.branch?.id : branchIds
+        }&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -487,14 +423,15 @@ const VisualActivity = () => {
     getAssinged();
   }, [currentPageAssigned, sudActId, boardId]);
   const getAssinged = () => {
+    const { id } = localActivityData;
     setLoading(true);
     axios
       .get(
         `${
           endpoints.newBlog.physicalActivityListApi
         }?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${
-          sudActId ? sudActId : physicalActivityId
-        }&branch_ids=${boardId ? boardId : branchIdsLocal}`,
+          sudActId ? sudActId?.id : id
+        }&branch_ids=${boardId ? boardId : selectedBranch?.branch?.id}`,
         {
           params: {},
           headers: {
@@ -533,15 +470,16 @@ const VisualActivity = () => {
 
   useEffect(() => {
     if (moduleId && branch_update_user) {
-      if (selectedAcademicYear?.id > 0)
-        var branchIds = branch_update_user?.branches?.map((item) => item?.id);
-      setLoading(true);
+      if (selectedAcademicYear?.id > 0) setLoading(true);
       axios
-        .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`, {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
+        .get(
+          `${endpoints.newBlog.activityBranch}?branch_ids=${selectedBranch?.branch?.id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
         .then((response) => {
           if (response?.data?.status_code === 200) {
             setBranchList(response?.data?.result || []);
@@ -553,15 +491,6 @@ const VisualActivity = () => {
     }
   }, [window.location.pathname, moduleId]);
 
-  function callApi(api, key) {
-    axiosInstance.get(api).then((result) => {
-      if (result.status === 200) {
-        if (key === 'branchList') {
-          setBranchList(result?.data?.data?.results || []);
-        }
-      }
-    });
-  }
   const fetchBranches = async () => {
     const newBranches =
       (await JSON?.parse(localStorage?.getItem('ActivityManagementSession'))) || {};
@@ -604,29 +533,6 @@ const VisualActivity = () => {
   const closePreview = () => {
     setPreview(false);
   };
-  const ActvityLocalStorage = () => {
-    setLoading(true);
-    axios
-      .post(
-        `${endpoints.newBlog.activityWebLogin}`,
-        {},
-        {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        getActivitySession();
-
-        localStorage.setItem(
-          'ActivityManagement',
-          JSON.stringify(response?.data?.result)
-        );
-        setLoading(false);
-      });
-  };
 
   const [activityStorage, setActivityStorage] = useState([]);
   const getActivitySession = () => {
@@ -652,69 +558,15 @@ const VisualActivity = () => {
       });
   };
 
-  const EditActivity = (data) => {
-    history.push({
-      pathname: '/blog/admineditcreateblogs',
-      state: {
-        data,
-      },
-    });
-  };
-
-  const handleSearch = (event, value) => {
-    if (selectedBranch?.length === 0) {
-      setAlert('error', 'Please Select Branch');
-      return;
-    } else {
-      setSearchFlag(true);
-    }
-  };
-
-  const fetchGradeData = () => {
-    const params = {
-      session_year: selectedAcademicYear?.id,
-      branch_id: selectedBranch?.branch?.id,
-      module_id: moduleId,
-    };
-    axios
-      .get(`${endpoints.academics.grades}`, { params })
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          setGradeData(res?.data?.data);
-          if (user_level == 13) {
-            setGradeName(res?.data?.data[0]?.grade__grade_name);
-          }
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
-  };
-
-  const fetchSubjectData = (params = {}) => {
-    axios
-      .get(`${endpoints.lessonPlan.subjects}`, {
-        params: { ...params },
-      })
-      .then((res) => {
-        if (res.data.status_code === 200) {
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
-  };
-
   useEffect(() => {
     fetchSubActivityListData();
   }, []);
 
   const fetchSubActivityListData = () => {
+    const { id } = localActivityData;
     axiosInstance
       .get(
-        `${endpoints.newBlog.subActivityListApi}?type_id=${
-          sudActId ? sudActId : physicalActivityId
-        }`,
+        `${endpoints.newBlog.subActivityListApi}?type_id=${sudActId ? sudActId?.id : id}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -732,67 +584,6 @@ const VisualActivity = () => {
     setIsClickedAssigned(true);
     setCurrentPageAssigned(page);
   };
-  const handlePaginationUnassign = (event, page) => {
-    setSearchFlag(true);
-    setIsClickedUnassign(true);
-    setCurrentPageUnassign(page);
-  };
-
-  const createPushBlogWall = () => {
-    history.push('/blog/wall');
-  };
-
-  const redirectBMI = () => {
-    history.push('/bmi/view');
-  };
-
-  const handleGoBack = () => {
-    history.goBack();
-  };
-  const handleSubActivity = (e) => {
-    setSubActivityId(e);
-    setSubActId(e);
-  };
-
-  const handleClearSubActivity = (e) => {
-    setSubActivityId('');
-  };
-  const handleBoard = (e, value) => {
-    setBoardId(e);
-  };
-  const handleClearBoard = () => {
-    setBoardId('');
-  };
-
-  const gradeOptions = gradeData?.map((each) => {
-    return (
-      <Option key={each?.id} value={each.grade_id}>
-        {each?.grade_name}
-      </Option>
-    );
-  });
-  const subjectOptions = subjectData?.map((each) => {
-    return (
-      <Option key={each?.id} value={each.subject_id}>
-        {each?.subject_name}
-      </Option>
-    );
-  });
-  const branchOptions = boardListData?.map((each) => {
-    return (
-      <Option key={each?.branch?.id} value={each?.branch?.id}>
-        {each?.branch?.branch_name}
-      </Option>
-    );
-  });
-
-  const subActivityOption = subActivityListData?.map((each) => {
-    return (
-      <Option key={each?.id} value={each.id}>
-        {each?.sub_type}
-      </Option>
-    );
-  });
 
   return (
     <div>
@@ -800,19 +591,16 @@ const VisualActivity = () => {
         <div className='px-3'>
           <div className='row '>
             <div className='col-md-6 pl-2'>
-              {/* <div>
-              <IconButton aria-label='back' onClick={handleGoBack}>
-                <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
-              </IconButton>
-            </div> */}
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
-                  OnClick={() => history.goBack()}
+                  onClick={() => history.goBack()}
                   className='th-black th-pointer th-16'
                 >
                   Activity Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item className='th-grey th-16'>Visual Art</Breadcrumb.Item>
+                <Breadcrumb.Item className='th-grey th-16'>
+                  {localActivityData.name}
+                </Breadcrumb.Item>
               </Breadcrumb>
             </div>
             <div className='col-md-6 text-right pr-2'>
@@ -821,132 +609,10 @@ const VisualActivity = () => {
                 onClick={createPush}
                 className='th-button-active th-br-6 text-truncate th-pointer'
               >
-                Create Visual Art
+                Create {localActivityData.name}
               </ButtonAnt>
             </div>
           </div>
-          {/* <div className='row'>
-            <div className='col-12'>
-              <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-                <div className='row align-items-center'>
-                  <div className='col-md-2 col-6 px-0'>
-                    <div className='mb-2 text-left'>Branch</div>
-                    <Form.Item name='branch'>
-                      <Select
-                        showSearch
-                        placeholder='Select Branch'
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                        placement='bottomRight'
-                        suffixIcon={<DownOutlined className='th-grey' />}
-                        dropdownMatchSelectWidth={false}
-                        onChange={(e) => handleBoard(e, value)}
-                        allowClear={true}
-                        onClear={handleClearBoard}
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                      >
-                        {branchOptions}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                  <div
-                    className='col-md-2 col-6 pr-0 px-0 pl-md-3 mt-3'
-                    style={{ display: 'flex', paddingTop: '5px' }}
-                  >
-                    <div className='mb-2 text-left'> </div>
-                  </div>
-                </div>
-              </Form>
-            </div>
-          </div> */}
-          {/* <Paper className={`${classes.root} common-table`} id='singleStudent'>
-          <TableContainer
-            className={`table table-shadow view_users_table ${classes.container}`}
-          >
-            {/* <TableMUI stickyHeader aria-label='sticky table'>
-                <TableHead className={`${classes.columnHeader} table-header-row`}>
-                  <TableRow>
-                    <TableCell
-                      className={classes.tableCell}
-                      style={{ whiteSpace: 'nowrap' }}
-                    >
-                      S No.
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>Topic Name</TableCell>
-                    <TableCell className={classes.tableCell}>Assigned On</TableCell>
-                    <TableCell className={classes.tableCell}>Created By</TableCell>
-                    <TableCell style={{ width: '252px' }} className={classes.tableCell}>
-                      Action
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                {assingeds &&
-                  assingeds?.map((response, index) => (
-                    <TableBody>
-                      <TableRow hover role='checkbox' tabIndex={-1}>
-                        <TableCell className={classes.tableCells}>
-                          {index + 1 + (Number(currentPageAssigned) - 1) * limitAssigned}
-                        </TableCell>
-                        <TableCell className={classes.tableCells}>
-                          {response.title}
-                        </TableCell>
-                        <TableCell className={classes.tableCells}>
-                          {moment(response?.created_at).format('DD-MM-YYYY')}
-                        </TableCell>
-                        <TableCell className={classes.tableCells}>
-                          {response?.creator?.name}
-                        </TableCell>
-                        <TableCell className={classes.tableCells}>
-                          <ButtonAnt
-                            type='primary'
-                            icon={<PieChartOutlined />}
-                            size={'medium'}
-                            onClick={() => viewedAssign(response)}
-                          >
-                            Review
-                          </ButtonAnt>
-                          &nbsp;&nbsp;
-                          <ButtonAnt
-                            type='primary'
-                            icon={<IdcardOutlined />}
-                            size={'medium'}
-                            style={{
-                              backgroundColor: '#ff9800',
-                              border: '1px solid #ff9800',
-                            }}
-                            // onClick={() => viewedAssign(response)}
-                            onClick={() => handlePreview(response)}
-                          >
-                            Preview
-                          </ButtonAnt>
-                          &nbsp;&nbsp;
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  ))}
-              </TableMUI> */}
-          {/* <TablePagination
-              component='div'
-              count={totalCountAssigned}
-              rowsPerPage={limitAssigned}
-              page={Number(currentPageAssigned) - 1}
-              onChangePage={(e, page) => {
-                handlePaginationAssign(e, page + 1);
-              }}
-              rowsPerPageOptions={false}
-              className='table-pagination'
-              classes={{
-                spacer: classes.tablePaginationSpacer,
-                toolbar: classes.tablePaginationToolbar,
-              }}
-            />*/}
           <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>
             <div className='row '>
               <div className='col-12 px-0'>
@@ -963,7 +629,7 @@ const VisualActivity = () => {
                     current: Number(currentPageAssigned),
                     pageSize: limitAssigned,
                     showSizeChanger: false,
-                    onChange: (e, page) => {
+                    onChange: (e) => {
                       console.log('Pagination', e);
                       handlePaginationAssign(e);
                     },
@@ -980,7 +646,7 @@ const VisualActivity = () => {
             footer={false}
             width={500}
             className='th-upload-modal'
-            title='Preview - Visual Art'
+            title={`Preview -${localActivityData.name}`}
           >
             <div className='row th-bg-white p-2 pb-3'>
               <div className='col-12'>

@@ -1,958 +1,494 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
-import Loader from '../../components/loader/loader';
-
-
-import {
-    IconButton,
-    Divider,
-    makeStyles,
-    Grid,
-    Paper,
-    TableCell,
-    TableBody,
-    TableHead,
-    TableRow,
-    TableContainer,
-    Table,
-    Drawer,
-} from '@material-ui/core';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
 import Layout from 'containers/Layout';
-
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import './styles.scss';
-import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { FileProtectOutlined, CloseCircleOutlined, UserOutlined, FundViewOutlined, CloudDownloadOutlined } from '@ant-design/icons';
-import { Breadcrumb, Button as ButtonAnt, Select, Input, Avatar, Modal, Table as TableAnt } from 'antd';
-
-
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        maxWidth: '90vw',
-        width: '95%',
-        margin: '20px auto',
-        marginTop: theme.spacing(4),
-        boxShadow: 'none',
-    },
-    searchTable: {
-        fontSize: '12px',
-        whiteSpace: 'nowrap',
-    },
-    divider: {
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-    },
-    dividerColor: {
-        backgroundColor: `${theme.palette.primary.main} !important`,
-    },
-    container: {
-        maxHeight: '70vh',
-        maxWidth: '90vw',
-    },
-    columnHeader: {
-        color: `${theme.palette.secondary.main} !important`,
-        fontWeight: 600,
-        fontSize: '1rem',
-        backgroundColor: `#ffffff !important`,
-    },
-
-    tableCell: {
-        color: 'black !important',
-        backgroundColor: '#ADD8E6 !important',
-    },
-    tableCells: {
-        color: 'black !important',
-        backgroundColor: '#F0FFFF !important',
-    },
-    vl: {
-        borderLeft: `3px solid ${theme.palette.primary.main}`,
-        height: '45px',
-    },
-    buttonColor: {
-        color: `${theme.palette.primary.main} !important`,
-        // backgroundColor: 'white',
-    },
-    tabStyle: {
-        color: 'white !important',
-        backgroundColor: `${theme.palette.primary.main} !important`,
-    },
-    tabStatic: {
-        position: 'static',
-        paddingLeft: '19px',
-        paddingRight: '39px',
-        paddingTop: '36px',
-    },
-    buttonColor1: {
-        color: 'grey !important',
-        backgroundColor: 'white',
-    },
-    buttonColor2: {
-        color: `${theme.palette.primary.main} !important`,
-        backgroundColor: 'white',
-    },
-    selected1: {
-        background: `${theme.palette.primary.main} !important`,
-        color: 'white !important',
-        borderRadius: '4px',
-    },
-    selected2: {
-        background: `${theme.palette.primary.main} !important`,
-        color: 'white !important',
-        borderRadius: '4px',
-    },
-    tabsFont: {
-        '& .MuiTab-wrapper': {
-            color: 'white',
-            fontWeight: 'bold',
-        },
-    },
-    tabsFont1: {
-        '& .MuiTab-wrapper': {
-            color: 'black',
-            fontWeight: 'bold',
-        },
-    },
-}));
-
-
-// interface DataType {
-//     height: number;
-//     weight: number;
-//     bmi: number;
-//     date: string;
-// }
-
-
-const dummyData = [
-    { id: 1, height: 20, weight: 40, bmi: 23, date: '28th Dec' },
-    { id: 2, height: 21, weight: 40, bmi: 33, date: '28th Dec' },
-    { id: 3, height: 20, weight: 44, bmi: 23, date: '28th Dec' },
-
-]
-
-const tableData = { id: 1, student_name: 'Anam', erp_id: '221313131_OLV', grade: "grade 1", branch: 'Branch 1' }
-
+import {
+  CloseOutlined,
+  UserOutlined,
+  PlayCircleOutlined,
+  FundViewOutlined,
+  PieChartOutlined,
+} from '@ant-design/icons';
+import {
+  Breadcrumb,
+  Table,
+  Tag,
+  Avatar,
+  Tooltip,
+  Drawer,
+  Modal,
+  Space,
+  Button,
+  message,
+} from 'antd';
+import moment from 'moment';
+import ReactPlayer from 'react-player';
 
 const StudentSidePhysicalActivity = () => {
-    const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
-    const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
-    const userIdLocal = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
-    const classes = useStyles();
-    const history = useHistory();
-    const { setAlert } = useContext(AlertNotificationContext);
-    const [gradeData, setGradeData] = useState([]);
-    const [gradeName, setGradeName] = useState();
-    const [moduleId, setModuleId] = React.useState('');
-    const [month, setMonth] = React.useState('1');
-    const [status, setStatus] = React.useState('');
-    const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
-    const [selectedBranch, setSelectedBranch] = useState([]);
-    const [selectedBranchIds, setSelectedBranchIds] = useState('');
-    const [gradeList, setGradeList] = useState([]);
-    const [selectedGrade, setSelectedGrade] = useState([]);
-    const [selectedGradeIds, setSelectedGradeIds] = useState('');
-    const [sectionId, setSectionId] = useState('');
-    const [sectionList, setSectionList] = useState([]);
-    const [selectedSection, setSelectedSection] = useState([]);
-    const [selectedSectionIds, setSelectedSectionIds] = useState('');
-    const [drawer, setDrawer] = useState(false);
-    const [drawers, setDrawers] = useState(false);
-    const [value, setValue] = useState(0);
-    const [maxWidth, setMaxWidth] = React.useState('lg');
-    const [preview, setPreview] = useState(false);
-    const [totalCountUnassign, setTotalCountUnassign] = useState(0);
-    const [currentPageUnassign, setCurrentPageUnassign] = useState(1)
-    const [totalPagesUnassign, setTotalPagesUnassign] = useState(0);
-    const [limitUnassign, setLimitUnassign] = useState(10);
-    const [isClickedUnassign, setIsClickedUnassign] = useState(false);
-    const [totalCountAssigned, setTotalCountAssigned] = useState(0);
-    const [currentPageAssigned, setCurrentPageAssigned] = useState(1)
-    const [boardId, setBoardId] = useState();
-    const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
-    const [limitAssigned, setLimitAssigned] = useState(10);
-    const [isClickedAssigned, setIsClickedAssigned] = useState(false);
-    const [searchFlag, setSearchFlag] = useState(false)
-    const [loading, setLoading] = useState(false);
-    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-    let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
-    const physicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId'))
-    // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
-    const [subjectData, setSubjectData] = useState([]);
-    const erpData = dataes?.erp
-    const token = dataes?.token;
-    const user_level = dataes?.user_level;
-    const { Option } = Select;
-    const selectedAcademicYear = useSelector(
-        (state) => state.commonFilterReducer?.selectedYear
-    );
-    const [subActivityId, setSubActivityId] = useState('')
-    const [sudActId, setSubActId] = useState(history?.location?.state?.subActiveId);
-    const [subActivityListData, setSubActivityListData] = useState([])
-    const ActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId')) || {};
-    const [totalCount, setTotalCount] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
-    const [limit, setLimit] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalSubmitted, setTotalSubmitted] = useState([]);
-    const [dataId, setDataId] = useState();
-    const [ratingReview, setRatingReview] = useState([]);
-    const [openBigModal, setOpenBigModal] = useState(false);
-    const [checkBMIData, setCheckBMIData] = useState([])
-    const [bmiDetails, setBmiDetails] = useState([])
-    useEffect(() => {
-        setLoading(true)
-        if (NavData && NavData.length) {
-            NavData.forEach((item) => {
-                if (
-                    item.parent_modules === 'Activity Management' &&
-                    item.child_module &&
-                    item.child_module.length > 0
-                ) {
-                    item.child_module.forEach((item) => {
-                        if (
-                            item.child_name === 'Blog Activity'
-                            &&
-                            window.location.pathname === '/blog/wall/central/redirect'
-                        ) {
-                            setModuleId(item.child_id);
-                            localStorage.setItem('moduleId', item.child_id);
-                            setLoading(false)
-                        }
-                    });
-                }
-            });
+  const userIdLocal = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
+  const history = useHistory();
+  const activityDetails = history?.location?.state?.activity;
+  const [loading, setLoading] = useState(false);
+  const [ratingReview, setRatingReview] = useState([]);
+
+  const [activityListData, setActivityListData] = useState([]);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState(false);
+  const [showBMIModal, setShowBMIModal] = useState(false);
+  const [studentBMIData, setStudentBMIData] = useState([]);
+
+  const handleCloseViewMore = () => {
+    setShowDrawer(false);
+    setSelectedActivity(null);
+  };
+  const fetchStudentActivityList = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.newBlog.studentSideApi}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        console.log('response', response);
+        if (response?.data?.status_code === 200) {
+          setActivityListData(response?.data?.result);
         }
-    }, [window.location.pathname]);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
 
-    const columnsBigTable = [
-        {
-            title: <span className='th-white th-fw-700 '>Height(in meters)</span>,
-            dataIndex: 'height',
-            key: 'height',
-            align: 'center',
-            render: (text, row, index) => <a>{row?.bmi_details?.height}</a>,
-            // render: (text) => <a>{text}</a>,
+  useEffect(() => {
+    fetchStudentActivityList({
+      user_id: userIdLocal?.id,
+      activity_type: activityDetails?.id.join(','),
+      activity_detail_id: 'null',
+      is_reviewed: 'True',
+      is_submitted: 'True',
+    });
+  }, []);
+  const handleShowReview = (data) => {
+    getRatingView(data?.id);
+    fetchMedia(data?.id);
+    setShowDrawer(true);
+    setSelectedActivity(data);
+  };
+  const handleViewBMIModal = (data) => {
+    fetchBMIData(data?.id);
+  };
+
+  let array = [];
+  const getRatingView = (id) => {
+    axios
+      .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${id}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
         },
-        {
-            title: <span className='th-white th-fw-700 '>Weight(in kgs)</span>,
-            dataIndex: 'weight',
-            key: 'weight',
-            align: 'center',
-            render: (text, row, index) => <a>{row?.bmi_details?.weight}</a>
+      })
+      .then((response) => {
+        response.data.map((obj) => {
+          let temp = {};
+          temp['id'] = obj.id;
+          temp['name'] = obj.level.name;
+          temp['remarks'] = obj.remarks;
+          temp['given_rating'] = obj.given_rating;
+          temp['level'] = obj?.level?.rating;
+          array.push(temp);
+        });
+        setRatingReview(array);
+      });
+  };
+
+  const fetchBMIData = () => {
+    const params = {
+      student_id: userIdLocal?.id,
+    };
+    axios
+      .get(`${endpoints.newBlog.getStudentBMIApi}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
         },
-        {
-            title: <span className='th-white th-fw-700 '>Age</span>,
-            dataIndex: 'age',
-            key: 'age',
-            align: 'center',
-            render: (text, row, index) => <a>{row?.bmi_details?.age}</a>
-        },
-        {
-            title: <span className='th-white th-fw-700 '>BMI</span>,
-            dataIndex: 'bmi',
-            key: 'bmi',
-            align: 'center',
-            render: (text, row, index) => <a>{row?.bmi_details?.bmi}</a>
-        },
-        {
-            title: <span className='th-white th-fw-700 '>Remarks</span>,
-            dataIndex: 'remarks',
-            key: 'remarks',
-            align: 'center',
-            render: (text, row, index) => <a>{row?.bmi_details?.remarks}</a>
-        },
-        {
-            title: <span className='th-white th-fw-700 '>Date</span>,
-            dataIndex: 'date',
-            key: 'date',
-            align: 'center',
-            render: (text, row, index) => <a>{moment(row?.bmi_details?.created_at).format("MMM Do YY")}</a>
-        },
-    ];
-
-
-    const handleCloseViewMore = () => {
-        setView(false);
-    };
-
-    const [view, setView] = useState(false);
-    const [branchView, setBranchView] = useState(true);
-    const [branchSearch, setBranchSearch] = useState(true);
-    const [branchList, setBranchList] = useState([]);
-
-    const [data, setData] = useState('');
-    const [assigned, setAssigned] = useState(false);
-    const [userId, setUserId] = useState('');
-    const todayDate = moment();
-    
-
-
-    const [unassingeds, setUnAssigneds] = useState([]);
-    const getUnAssinged = () => {
-        const branchIds = selectedBranch.map((obj) => obj.id);
-        setLoading(true)
-        axios
-            .get(
-                `${endpoints.newBlog.unAssign}?section_ids=null&user_id=null&branch_ids=${branchIds}&is_draft=true&page=${currentPageUnassign}&page_size=${limitUnassign}`,
-                {
-                    headers: {
-                        'X-DTS-HOST': X_DTS_HOST,
-                    },
-                }
-            )
-            .then((response) => {
-                if (response.status === 200) {
-                    setTotalCountUnassign(response?.data?.total)
-                    setTotalPagesUnassign(response?.data?.page_size)
-                    setCurrentPageUnassign(response?.data?.page)
-                    setLimitUnassign(Number(limitUnassign))
-                    setSearchFlag(false)
-                    setUnAssigneds(response?.data?.result);
-                    setLoading(false)
-                } else {
-                    setLoading(false)
-                }
-            });
-    };
-    const [assingeds, setAssigneds] = useState([]);
-
-    useEffect(() => {
-        getAssinged()
-    }, [currentPageAssigned, sudActId, boardId])
-    const getAssinged = () => {
-        setLoading(true)
-        axios
-            .get(
-                `${endpoints.newBlog.physicalActivityListApi}?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${sudActId ? sudActId : physicalActivityId}`, {
-                params: {
-                    ...(boardId ? { branch_ids: boardId } : {})
-                },
-                headers: {
-                    'X-DTS-HOST': X_DTS_HOST,
-                },
-            }
-            )
-            .then((response) => {
-                if (response?.status == 200) {
-                    setTotalCountAssigned(response?.data?.total)
-                    setTotalPagesAssigned(response?.data?.page_size)
-                    setCurrentPageAssigned(response?.data?.page)
-                    setLimitAssigned(Number(limitAssigned))
-                    setSearchFlag(false)
-                    setAssigneds(response?.data?.result);
-                    // setAssigneds(dummyData)
-                    setLoading(false)
-
-                } else {
-                    setAlert('error', 'Server Issue ')
-                    setLoading(false)
-                }
-            });
-    };
-
-    useEffect(() => {
-        if (moduleId && branch_update_user) {
-            if (selectedAcademicYear?.id > 0)
-                var branchIds = branch_update_user?.branches?.map((item) => item?.id)
-            setLoading(true)
-            axios
-                .get(
-                    `${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
-                    {
-                        headers: {
-                            'X-DTS-HOST': X_DTS_HOST,
-                        },
-                    }
-                )
-                .then((response) => {
-                    if (response?.data?.status_code === 200) {
-                        setBranchList(response?.data?.result || [])
-                        setLoading(false)
-
-                    } else {
-                        setLoading(false)
-                    }
-                });
-        }
-
-    }, [window.location.pathname, moduleId])
-
-
-    const fetchBranches = async () => {
-        const newBranches =
-            (await JSON?.parse(localStorage?.getItem('ActivityManagementSession'))) || {};
-        if (newBranches?.length !== undefined) {
-            const transformedData = newBranches?.branches?.map((obj) => ({
-                id: obj?.id,
-                name: obj?.name,
-            }));
-            transformedData.unshift({
-                name: 'Select All',
-                id: 'all',
-            });
-        }
-    };
-    useEffect(() => {
-        fetchBranches();
-    }, []);
-
-
-    useEffect(() => {
-        if (selectedBranch?.length !== 0 && searchFlag) {
-            getUnAssinged();
-            getAssinged();
-        }
-    }, [value, selectedBranch, searchFlag, currentPageAssigned, currentPageUnassign]);
-    const [previewData, setPreviewData] = useState();
-
-    const [activityStorage, setActivityStorage] = useState([]);
-    const getActivitySession = () => {
-        setLoading(true)
-        axios
-            .post(
-                `${endpoints.newBlog.activitySessionLogin}`,
-                {},
-                {
-                    headers: {
-                        'X-DTS-HOST': X_DTS_HOST,
-                        Authorization: `${token}`,
-                    },
-                }
-            )
-            .then((response) => {
-                setActivityStorage(response.data.result);
-                localStorage.setItem(
-                    'ActivityManagementSession',
-                    JSON.stringify(response?.data?.result)
-                );
-                setLoading(false)
-            });
-    };
-
-
-
-
-
-    useEffect(() => {
-        // fetchBoardListData()
-        fetchSubActivityListData()
-    }, [])
-
-    const fetchSubActivityListData = () => {
-        axiosInstance
-            .get(`${endpoints.newBlog.subActivityListApi}?type_id=${sudActId ? sudActId : physicalActivityId}`, {
-                headers: {
-                    'X-DTS-HOST': X_DTS_HOST,
-                },
-            })
-            .then((result) => {
-                setLoading(false)
-                console.log(result?.data?.result, 'sub')
-                setSubActivityListData(result?.data?.result)
-            })
-    }
-
-    const handleGoBack = () => {
-        history.goBack()
-    }
-
-    useEffect(() => {
-        getTotalSubmitted()
-    }, [])
-
-    const getTotalSubmitted = () => {
-        // if(props){
-        setLoading(true)
-        axios
-            .get(
-                `${endpoints.newBlog.studentSideApi}?user_id=${userIdLocal?.id}&activity_type=${ActivityId}&activity_detail_id=null&is_reviewed=True&is_submitted=True`,
-                {
-                    headers: {
-                        'X-DTS-HOST': X_DTS_HOST,
-                    },
-                }
-            )
-            .then((response) => {
-                setTotalCount(response?.data?.count)
-                setTotalPages(response?.data?.page_size)
-                setCurrentPage(response?.data?.page)
-                setLimit(Number(limit))
-                setAlert('success', response?.data?.message)
-                setTotalSubmitted(response?.data?.result);
-                setLoading(false)
-            })
-            .catch(() => {
-                setLoading(false)
-            })
-
-        // }
-    };
-    let array = []
-    const getRatingView = (data) => {
-        setLoading(true)
-        axios
-            .get(
-                `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`,
-                {
-                    headers: {
-                        'X-DTS-HOST': X_DTS_HOST,
-                    },
-                }
-            )
-            .then((response) => {
-                console.log(response, 'responses');
-                response.data.map((obj, index) => {
-                    let temp = {};
-                    temp['id'] = obj.id;
-                    temp['name'] = obj.level.name;
-                    temp['remarks'] = obj.remarks;
-                    temp['given_rating'] = obj.given_rating;
-                    temp['level'] = obj?.level?.rating;
-                    array.push(temp);
-                });
-                setRatingReview(array);
-                setLoading(false)
-            });
-    };
-
-    const assignPage = (data) => {
-        if (data?.length !== 0) {
-            setView(true);
-            setData(data);
-            setDataId(data?.id);
-            getRatingView(data?.id)
-        }
-    };
-
-    let dummyArr = []
-    const filterRound = (data) => {
-        if (dummyArr.indexOf(data) !== -1) {
-            return ""
+      })
+      .then((response) => {
+        if (response.data?.status_code === 200) {
+          setStudentBMIData(response?.data?.result);
+          setShowBMIModal(true);
         } else {
-            dummyArr.push(data)
-            return data
+          message.error('No BMI record found for the student');
         }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+  const fetchMedia = (id) => {
+    axios
+      .get(`${endpoints.newBlog.showVisualMedia}${id}/`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response.data?.status_code === 200) {
+          setMediaFiles(response?.data?.result);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+  let roundsArray = [];
+  const filterRound = (data) => {
+    if (roundsArray.indexOf(data) !== -1) {
+      return '';
+    } else {
+      roundsArray.push(data);
+      return data;
     }
-
-    const studentViewBMI = () => {
-        checkBMIFun()
-        // setOpenBigModal(true)
-    }
-
-    const checkBMIFun = () => {
-        setLoading(true)
-        axios
-            .get(`${endpoints.newBlog.checkBMIApi}?erp_id=${erpData}&user_level=${13}`, {
-                headers: {
-                    Authorization: `${token}`,
-                    'X-DTS-HOST': X_DTS_HOST,
-                }
-            })
-            .then((response) => {
-                setCheckBMIData(response?.data?.result)
-                showBMITable(response?.data?.result)
-                // setAlert('success', response?.data?.message)
-                setLoading(false);
-            })
-    }
-
-    const goDownload = () => {
-        //will implement soon
-    }
-
-    const showBMITable = (data) => {
-        setLoading(true)
-        axios
-            .get(`${endpoints.newBlog.getStudentBMIApi}?student_id=${data?.id}`, {
-                headers: {
-                    Authorization: `${token}`,
-                    'X-DTS-HOST': X_DTS_HOST,
-                }
-            })
-            .then((res) => {
-                if (res.data?.status_code == 200) {
-                    setBmiDetails(res?.data?.result)
-                    setLoading(false)
-                    setAlert('success', res?.data?.message)
-                    setOpenBigModal(true)
-
-                } else if (res?.data?.status_code == 400) {
-                    setOpenBigModal(false)
-                    setAlert('error', res?.data?.message)
-                    setLoading(false)
-                    setOpenBigModal(false)
-                }
-            })
-
-    }
-
-
-    return (
-        <div>
-            {loading && <Loader />}
-            <Layout>
-                <Grid
-                    container
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        paddingLeft: '22px',
-                    }}
-                >
-                    <div className='col-md-6' style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}>
-                        <div>
-                            <IconButton aria-label="back" onClick={handleGoBack}>
-                                <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
-                            </IconButton>
-                        </div>
-                        <Breadcrumb separator='>'>
-                            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                                Physical Activity List
-                            </Breadcrumb.Item>
-                        </Breadcrumb>
-                    </div>
-                    <div className='col-md-6' style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '0.5rem 2rem', fontWeight: 'bold' }}>
-                        <ButtonAnt
-                            type="primary"
-                            size='medium'
-                            onClick={studentViewBMI}
-                            icon={<FundViewOutlined />}
-                        >
-                            View BMI
-                        </ButtonAnt>
-                    </div>
-                    <Modal
-                        title="BMI Details"
-                        visible={openBigModal}
-                        centered
-                        open={openBigModal}
-                        onOk={() => setOpenBigModal(false)}
-                        onCancel={() => setOpenBigModal(false)}
-                        width={1000}
-                        footer={null}
-                    >
-                        <div className='row'>
-                            <div className='col-12' style={{ padding: '1rem 1rem' }}>
-                                <TableAnt
-                                    className='th-table'
-                                    rowClassName={(record, index) => `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                                    }
-                                    pagination={false}
-                                    // loading={loading}
-                                    columns={columnsBigTable} dataSource={bmiDetails} />
-
-                            </div>
-                        </div>
-                    </Modal>
-                </Grid>
-                <Paper className={`${classes.root} common-table`} id='singleStudent'>
-                    <TableContainer
-                        className={`table table-shadow view_users_table ${classes.container}`}
-                    >
-                        <Table stickyHeader aria-label='sticky table'>
-                            <TableHead className={`${classes.columnHeader} table-header-row`}>
-                                <TableRow>
-                                    <TableCell className={classes.tableCell} style={{ whiteSpace: 'nowrap' }}>
-                                        S No.
-                                    </TableCell>
-                                    <TableCell className={classes.tableCell}>Title</TableCell>
-                                    <TableCell className={classes.tableCell}>ERP ID</TableCell>
-
-                                    <TableCell className={classes.tableCell}>Submission Date</TableCell>
-                                    <TableCell className={classes.tableCell}>Overall Score</TableCell>
-                                    <TableCell className={classes.tableCell}></TableCell>
-
-                                    <TableCell className={classes.tableCell} style={{ width: '261px' }}>
-                                        Actions
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            {totalSubmitted?.map((response, index) => (
-                                <TableBody>
-                                    <TableRow
-                                        hover
-                                        role='checkbox'
-                                        tabIndex={-1}
-                                    >
-                                        <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                                        <TableCell className={classes.tableCells}>
-                                            {' '}
-                                            {response?.activity_detail?.title}
-                                        </TableCell>
-                                        <TableCell className={classes.tableCells}>
-                                            {' '}
-                                            {response?.booked_user?.username}
-                                        </TableCell>
-                                        <TableCell className={classes.tableCells}>
-                                            {' '}
-                                            {response?.submitted_on?.substring(0, 10)}
-                                        </TableCell>
-                                        <TableCell className={classes.tableCells}>
-                                            {response?.user_reviews?.remarks}
-                                        </TableCell>
-                                        <TableCell className={classes.tableCells}>
-                                            {' '}
-                                            {response?.is_bookmarked == true ? (
-                                                <BookmarksIcon style={{ color: 'gray' }} />
-                                            ) : (
-                                                ''
-                                            )}
-                                        </TableCell>
-
-                                        <TableCell className={classes.tableCells}>
-                                            <ButtonAnt
-                                                type="primary"
-                                                icon={<FileProtectOutlined />}
-                                                onClick={() => assignPage(response)}
-                                                size={'medium'}>
-                                                Check Review
-                                            </ButtonAnt>
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            ))}
-                        </Table>
-                        {/* <TablePagination
-                        component='div'
-                        count={totalCount}
-                        rowsPerPage={limit}
-                        page={Number(currentPage) - 1}
-                        onChangePage={(e, page) => {
-                        handlePagination(e, page + 1);
-                        }}
-                        rowsPerPageOptions={false}
-                        className='table-pagination'
-                        classes={{
-                        spacer: classes.tablePaginationSpacer,
-                        toolbar: classes.tablePaginationToolbar,
-                        }}
-                            /> */}
-                    </TableContainer>
-                </Paper>
-
-                <Drawer
-                    anchor='right'
-                    maxWidth={maxWidth}
-                    open={view}
-                    onClose={handleCloseViewMore}
-                    aria-labelledby='alert-dialog-title'
-                    aria-describedby='alert-dialog-description'
-                >
-                    <div style={{ width: '100%', padding: '10px' }}>
-                        <div style={{ fontSize: '24px', marginLeft: '6px', display: 'flex', justifyContent: 'space-between' }}>
-                            <strong>Preview</strong>
-                            <strong onClick={handleCloseViewMore} style={{ cursor: 'pointer', marginRight: '10px' }} >
-                                <CloseCircleOutlined />
-                            </strong>
-                        </div>
-                        <Divider />
-
-                        <Grid container direction='row' justifyContent='center'>
-                            <Grid item>
-                                <div
-                                    style={{
-                                        background: 'white',
-                                        height: 'auto',
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            background: 'white',
-                                            width: '554px',
-                                            marginLeft: '13px',
-                                            marginTop: '5px',
-                                        }}
-                                    >
-                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            <img
-                                                src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                                                width='130'
-                                                alt='image'
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem', alignItems: 'center' }}>
-                                            <div style={{ padding: '5px' }}>
-                                                <Avatar size={40} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                                                </Avatar>
-                                            </div>
-                                            <div style={{ padding: '0 0.5rem' }}>
-                                                <div style={{ fontWeight: 600, fontSize: '16px' }}>
-                                                    {data?.booked_user?.name}
-                                                </div>
-                                                <div style={{ fontWeight: 500, fontSize: '14px' }}>
-                                                    {data?.branch?.name}
-                                                </div>
-                                                <div style={{ fontWeight: 500, fontSize: '12px' }}>
-                                                    {data?.grade?.name}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        style={{
-                                            background: '#f9f9f9',
-                                            // margin: '1rem 2rem',
-                                            padding: '0.5rem 1rem',
-                                            borderRadius: '5px',
-                                            // marginTop: '10px',
-                                            height: 'auto',
-                                            border: '1px solid #dbdbdb',
-                                            width: '36vw',
-                                            overflowY:'auto',
-                                            maxHeight:'16vh',
-                                            margin:'auto'
-
-                                        }}
-                                    >
-                                        <div
-                                            style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
-                                        >
-                                            <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
-                                                Title: {data?.activity_detail?.title}
-                                            </span>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                justifyContent: 'flex-start',
-                                                fontWeight: 'bold',
-                                                paddingLeft: '10px',
-                                                paddingBottom: '10px'
-                                            }}
-                                        >
-                                            <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
-                                                Description: {data?.activity_detail?.description}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <Divider  style={{margin:'1.5rem 0.5rem'}}/>
-                                    <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '17px', paddingLeft: '34px', paddingTop:'10px'}}>Review</div>
-                                    <div
-                                        style={{
-
-                                            width: '502px',
-                                            marginLeft: '34px',
-                                            height: 'auto',
-                                            marginTop: '12px',
-                                            marginBottom: '29px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                border: '1px solid #d9d9d9',
-                                                borderRadius: '5px',
-                                                height: 'auto',
-                                                padding: '0.5rem',
-                                                background: '#f4f5f9',
-                                            }}
-                                        >
-                                            {ratingReview?.map((obj, index) => {
-                                                return (
-                                                    <div
-                                                        key={index}
-                                                        style={{
-                                                            paddingLeft: '15px',
-                                                            paddingRight: '15px',
-                                                            paddingTop: '5px',
-                                                        }}
-                                                    >
-                                                        {obj?.name === 'Overall' ? (
-                                                            ""
-                                                        ) : (
-                                                            <div
-                                                                key={index}
-                                                                style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
-                                                            >
-                                                                {' '}
-                                                                {obj?.name}<b style={{ color: '#53bedd', fontSize: '12px' }}>{filterRound(obj?.level)}</b>
-                                                            </div>
-                                                        )}
-                                                        {/* {obj} */}
-                                                        {obj?.name == 'Overall' ? (
-                                                            ""
-                                                        ) : (
-                                                            <div>
-
-                                                                <Input
-                                                                    placeholder={obj?.name}
-                                                                    value={obj?.remarks}
-
-                                                                />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })}
-                                            {ratingReview?.map((obj, index) => {
-                                                return (
-                                                    <div
-                                                        key={index}
-                                                        style={{
-                                                            paddingLeft: '15px',
-                                                            paddingRight: '15px',
-                                                            paddingTop: '5px',
-                                                        }}
-                                                    >
-                                                        {obj?.name == "Overall" ? (
-                                                            <div>
-                                                                {obj?.name}
-                                                                <Input placeholder={obj?.name}
-                                                                    value={obj?.remarks}
-                                                                />
-                                                            </div>
-
-                                                        ) : (
-                                                            ""
-
-                                                        )}
-                                                    </div>
-
-                                                )
-                                            })}
-
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    marginRight: '10px',
-                                                    marginLeft: '6px',
-                                                    marginBottom: '15px',
-                                                    marginTop: '32px',
-                                                }}
-                                            >
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'row-reverse',
-                                        paddingTop: '9px',
-                                    }}
-                                >
-
-                                    &nbsp;
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </div>
-                </Drawer>
-
-            </Layout>
+  };
+  const columns = [
+    {
+      title: <span className='th-white th-fw-700'>SL No.</span>,
+      align: 'center',
+      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Topic Name</span>,
+      align: 'center',
+      render: (text, row, index) => (
+        <span className='th-black-1'>{row?.activity_detail?.title}</span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Submitted On</span>,
+      dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'>
+          {moment(row?.submitted_on).format('DD-MM-YYYY')}
+        </span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Overall Score</span>,
+      dataIndex: 'creator',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'> {row?.user_reviews?.remarks}</span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Actions</span>,
+      dataIndex: '',
+      align: 'center',
+      width: '25%',
+      render: (text, row) => (
+        <div className='th-black-1 d-flex justify-content-around'>
+          <Tag
+            icon={<PieChartOutlined className='th-14' />}
+            color='geekblue'
+            className='th-br-5 th-pointer py-1'
+            onClick={() => handleShowReview(row)}
+          >
+            <span className='th-fw-500 th-14'>Check Review</span>
+          </Tag>
         </div>
-    );
+      ),
+    },
+  ];
+  const columnsBMI = [
+    {
+      title: <span className='th-white th-fw-700 '>Height(in meters)</span>,
+      key: 'height',
+      align: 'center',
+      render: (text, row, index) => <span>{row?.bmi_details?.height}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Weight(in kgs)</span>,
+      key: 'weight',
+      align: 'center',
+      render: (text, row, index) => <span>{row?.bmi_details?.weight}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Age</span>,
+      key: 'age',
+      align: 'center',
+      render: (text, row, index) => <span>{row?.bmi_details?.age}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>BMI</span>,
+      key: 'bmi',
+      align: 'center',
+      render: (text, row, index) => <span>{row?.bmi_details?.bmi}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Remarks</span>,
+      key: 'remarks',
+      align: 'center',
+      render: (text, row, index) => <span>{row?.bmi_details?.remarks}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Date</span>,
+      key: 'date',
+      align: 'center',
+      render: (text, row, index) => (
+        <span>{moment(row?.bmi_details?.created_at).format('MMM Do YY')}</span>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <Layout>
+        <div className='px-3'>
+          <div className='row align-items-center'>
+            <div className='col-md-6 pl-2'>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item
+                  onClick={() => history.goBack()}
+                  className='th-grey th-pointer th-16'
+                >
+                  Activities Management
+                </Breadcrumb.Item>
+                <Breadcrumb.Item className='th-black th-16'>
+                  {activityDetails?.name}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
+            <div className='col-md-6 text-right'>
+              <Button
+                className='th-button-active th-br-6 text-truncate th-pointer'
+                icon={<FundViewOutlined />}
+                onClick={handleViewBMIModal}
+              >
+                View BMI
+              </Button>
+            </div>
+          </div>
+          <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>
+            <div className='row '>
+              <div className='col-12 px-0'>
+                <Table
+                  columns={columns}
+                  dataSource={activityListData}
+                  className='th-table'
+                  rowClassName={(record, index) =>
+                    `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                  }
+                  loading={loading}
+                  pagination={false}
+                  scroll={{
+                    x: window.innerWidth > 600 ? '100%' : 'max-content',
+                    // y: 600,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <Modal
+            title='BMI Details'
+            className='th-upload-modal'
+            visible={showBMIModal}
+            centered
+            onOk={() => setShowBMIModal(false)}
+            onCancel={() => setShowBMIModal(false)}
+            width={'80vw'}
+            footer={null}
+          >
+            <div className='row'>
+              <div className='col-12' style={{ padding: '1rem 1rem' }}>
+                <Table
+                  className='th-table'
+                  rowClassName={(record, index) =>
+                    `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                  }
+                  pagination={false}
+                  columns={columnsBMI}
+                  dataSource={studentBMIData}
+                />
+              </div>
+            </div>
+          </Modal>
+          <Drawer
+            title={<span className='th-fw-500'>Check Review</span>}
+            placement='right'
+            onClose={handleCloseViewMore}
+            zIndex={1300}
+            visible={showDrawer}
+            width={
+              window.innerWidth < 600 ? '95vw' : mediaFiles?.s3_path ? '70vw' : '35vw'
+            }
+            closable={false}
+            className='th-resources-drawer'
+            extra={
+              <Space>
+                <CloseOutlined onClick={handleCloseViewMore} />
+              </Space>
+            }
+          >
+            <div>
+              <div className='row'>
+                <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
+                  {mediaFiles?.file_type === 'image/jpeg' ||
+                  mediaFiles?.file_type === 'image/png' ? (
+                    <img
+                      src={mediaFiles?.s3_path}
+                      thumb={mediaFiles?.s3_path}
+                      alt={'image'}
+                      width='100%'
+                      height='95%'
+                    />
+                  ) : (
+                    <ReactPlayer
+                      url={mediaFiles?.s3_path}
+                      thumb={mediaFiles?.s3_path}
+                      // key={index}
+                      width='100%'
+                      height='100%'
+                      playIcon={
+                        <Tooltip title='play'>
+                          <Button
+                            style={{
+                              background: 'transparent',
+                              border: 'none',
+                              height: '30vh',
+                              width: '30vw',
+                            }}
+                            shape='circle'
+                            icon={
+                              <PlayCircleOutlined
+                                style={{ color: 'white', fontSize: '70px' }}
+                              />
+                            }
+                          />
+                        </Tooltip>
+                      }
+                      alt={'video'}
+                      controls={true}
+                    />
+                  )}
+                </div>
+                <div
+                  className={`${
+                    mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
+                  } px-0 th-bg-white`}
+                >
+                  <div className='row'>
+                    <div className='col-12 px-1'>
+                      <div>
+                        <img
+                          src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                          alt='image'
+                          style={{
+                            // width: '100%',
+                            height: 130,
+                            objectFit: 'fill',
+                          }}
+                        />
+                      </div>
+                      <div className='d-flex align-items-center pr-1'>
+                        <Avatar
+                          size={50}
+                          aria-label='recipe'
+                          icon={
+                            <UserOutlined
+                              color='#f3f3f3'
+                              style={{ color: '#f3f3f3' }}
+                              twoToneColor='white'
+                            />
+                          }
+                        />
+                        <div className='text-left ml-3'>
+                          <div className=' th-fw-600 th-16'>
+                            {selectedActivity?.booked_user?.name}
+                          </div>
+                          <div className=' th-fw-500 th-14'>
+                            {selectedActivity?.branch?.name}
+                          </div>
+                          <div className=' th-fw-500 th-12'>
+                            {selectedActivity?.grade?.name}
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        className='p-2 mt-3 th-br-5 th-bg-grey'
+                        style={{ outline: '1px solid #d9d9d9' }}
+                      >
+                        <div>
+                          Title :{' '}
+                          <span className='th-fw-600'>
+                            {selectedActivity?.activity_detail?.title}
+                          </span>
+                        </div>
+                        <div>
+                          Instructions :{' '}
+                          <span className='th-fw-400'>
+                            {selectedActivity?.activity_detail?.description}
+                          </span>
+                        </div>
+                      </div>
+                      <div className='mt-3'>
+                        <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                        <div
+                          className='px-1 py-2 th-br-5'
+                          style={{ outline: '1px solid #d9d9d9' }}
+                        >
+                          {ratingReview.map(
+                            (item, index) =>
+                              item?.name !== 'Overall' && (
+                                <>
+                                  <div className='col-12 pl-1 th-fw-600'>
+                                    {filterRound(item?.level)}
+                                  </div>
+                                  <div className='row py-2 my-2 th-bg-white align-items-center justify-content-around th-br-6'>
+                                    <div className='col-12 '>
+                                      <div className=' d-flex justify-content-between th-bg-grey p-2 th-br-6'>
+                                        <div className='th-fw-500 mr-3'>{item?.name}</div>{' '}
+                                        <div>{item?.remarks}</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              )
+                          )}
+                          {ratingReview
+                            .filter((item) => item?.name == 'Overall')
+                            .map((item) => (
+                              <div className='row th-bg-white th-br-6'>
+                                <div className='col-12 py-2 px-0'>
+                                  <div
+                                    className=' th-fw-600'
+                                    style={{ borderBottom: '2px solid #d9d9d9' }}
+                                  >
+                                    Overall
+                                  </div>
+                                </div>
+                                <div className='col-12 py-1 th-fw-600'>
+                                  {item?.remarks}
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Drawer>
+        </div>
+      </Layout>
+    </div>
+  );
 };
 export default StudentSidePhysicalActivity;

@@ -3,29 +3,11 @@ import React, {
   useRef,
   useEffect,
   useContext,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
 } from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
-import Loader from 'components/loader/loader';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import RatingScale from './HoverRating';
-import ReactHtmlParser from 'react-html-parser';
-import Rating from '@material-ui/lab/Rating';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import {
   Button as ButtonAnt,
@@ -45,33 +27,9 @@ import {
   CheckOutlined,
 } from '@ant-design/icons';
 
-import {
-  TablePagination,
-  Grid,
-  // Drawer,
-  Divider,
-  TextField,
-  Dialog,
-} from '@material-ui/core';
 
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
-import axiosInstance from 'config/axios';
-import { fil } from 'date-fns/locale';
+import { makeStyles } from '@material-ui/core/styles';
 
-const DEFAULT_RATING = 0;
-const StyledRating = withStyles((theme) => ({
-  iconFilled: {
-    color: 'yellow',
-  },
-  root: {
-    '& .MuiSvgIcon-root': {
-      color: 'currentColor',
-    },
-  },
-  iconHover: {
-    color: 'yellow',
-  },
-}))(Rating);
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -120,16 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const dummyData = [
-  { id: 1, name: 'harsha', title: 'nadjabjn' },
-  { id: 2, name: 'gjadjga', title: 'bajbjabdjabj' },
-];
 
-const dummyData1 = [
-  { user_id: 9709, name: 'Vinay_04', erp_id: '20217770127_OLV', level: 13 },
-  { user_id: 9707, name: 'Vinay_03', erp_id: '2200366_AYI', level: 13 },
-  { user_id: 970, name: 'Vinay_2', erp_id: '2200365_AYI', level: 13 },
-];
 
 const VisualPendingReview = (props) => {
   const history = useHistory();
@@ -137,7 +86,9 @@ const VisualPendingReview = (props) => {
   const { Option } = Select;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
-  const ActivityId = JSON.parse(localStorage.getItem('VisualActivityId')) || {};
+  const subActivityData = localStorage?.getItem('VisualActivityId')
+    ? JSON.parse(localStorage.getItem('VisualActivityId'))
+    : '';
   const [inputList, setInputList] = useState([{ remarks: '', id: '', given_rating: '' }]);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -163,9 +114,6 @@ const VisualPendingReview = (props) => {
   const [values, setValues] = useState();
   const [loading, setLoading] = useState(false);
   const [publish, setPublish] = useState(false);
-  const createPublish = () => {
-    setPublish(true);
-  };
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
     let body = [];
@@ -187,42 +135,28 @@ const VisualPendingReview = (props) => {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
-      .then((response) => {
+      .then(() => {
         uploadFile();
         setView(false);
         setLoading(false);
         erpAPI();
         setAlert('success', ' Review Submitted Successfully');
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
       });
   };
 
   const [dataId, setDataId] = useState();
 
-  const handleInputCreativity = (event, index) => {
-    let arr = [...ratingReview];
-    arr[index].remarks = event.target.value;
-    setRatingReview(arr);
-  };
-  const handleInputCreativityOne = (event, newValue, index) => {
-    let arr = [...ratingReview];
 
-    arr[index].given_rating = Number(event.target.value);
-    setRatingReview(arr);
-  };
-
-  const expandMore = () => {
-    setSubmit(false);
-  };
 
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
   const functionFilter = (sourceData, targetData) => {
     setLoading(true);
     var finalData = [];
-    sourceData.filter((item, i) => {
+    sourceData.filter((item) => {
       targetData.forEach((ele) => {
         if (ele?.erp_id !== item?.erp_id) {
           finalData.push(item);
@@ -230,7 +164,6 @@ const VisualPendingReview = (props) => {
       });
     });
 
-    let dummyData = [];
     var res = sourceData.filter(
       (item) => !targetData.map((item2) => item2?.erp_id).includes(item?.erp_id)
     );
@@ -259,7 +192,7 @@ const VisualPendingReview = (props) => {
         setAlert('success', response?.data?.message);
         setLoading(false);
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
       });
   };
@@ -267,7 +200,7 @@ const VisualPendingReview = (props) => {
   const ActivityManagement = (sourceData) => {
     axios
       .get(
-        `${endpoints.newBlog.physicalErpReview}?branch_id=${props.selectedBranch}&grade_id=${props.selectedGrade}&section_id=${props.selectedSubject}&activity_id=${ActivityId?.id}`,
+        `${endpoints.newBlog.physicalErpReview}?branch_id=${props.selectedBranch}&grade_id=${props.selectedGrade}&section_id=${props.selectedSubject}&activity_id=${subActivityData?.id}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -280,7 +213,7 @@ const VisualPendingReview = (props) => {
         // functionFilter(sourceData,dummyData1)
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
       });
   };
@@ -309,7 +242,7 @@ const VisualPendingReview = (props) => {
           }
         )
         .then((response) => {
-          response.data.map((obj, index) => {
+          response.data.map((obj) => {
             let temp = {};
             temp['id'] = obj?.id;
             temp['name'] = obj?.level.name;
@@ -324,7 +257,7 @@ const VisualPendingReview = (props) => {
           setLoading(false);
           setView(true);
         })
-        .catch((err) => {
+        .catch(() => {
           setLoading(false);
         });
     }
@@ -336,7 +269,7 @@ const VisualPendingReview = (props) => {
       .get(
         `${endpoints.newBlog.bookingDetailsApi}?erp_id=${
           data?.erp_id
-        }&activity_detail_id=${ActivityId?.id}&user_level=${13}`,
+        }&activity_detail_id=${subActivityData?.id}&user_level=${13}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -353,7 +286,7 @@ const VisualPendingReview = (props) => {
           setLoading(false);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
       });
   };
@@ -376,37 +309,9 @@ const VisualPendingReview = (props) => {
     }
   }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage, props?.value]);
 
-  const classes = useStyles();
-  const ReviewPage = () => {
-    history.push('/blog/addreview');
-  };
-  const calculateOverallRating = () => {
-    let average = 0;
-    let ave = 0;
-    let aver;
-    ratingReview.map((parameter) => {
-      average += parameter.given_rating;
-      ave += Number(parameter.rating);
-      aver = ave - Number('5');
-    });
-    return (average / aver) * 5;
-  };
 
-  const handlePagination = (event, page) => {
-    setIsClicked(true);
-    setCurrentPage(page);
-  };
 
   let dummyArr = [];
-  const filterRound = (data) => {
-    let parseData = JSON.parse(data);
-    if (dummyArr.indexOf(parseData) !== -1) {
-      return '';
-    } else {
-      dummyArr.push(parseData);
-      return parseData;
-    }
-  };
 
   const handleRemark = (value, id) => {
     const arr1 = ratingReview?.map((obj) => {
@@ -427,7 +332,7 @@ const VisualPendingReview = (props) => {
     setRatingReview(arr1);
     // setRemarkedData()
     let newArr = [];
-    arr1.map((obj, index) => {
+    arr1.map((obj) => {
       let newTemp = {};
       newTemp['given_rating'] = obj?.given_rating;
       newTemp['id'] = obj?.id;
@@ -517,67 +422,6 @@ const VisualPendingReview = (props) => {
   ];
   return (
     <>
-      {/* {loading && <Loader />} */}
-      {/* <Paper className={`${classes.root} common-table`} id='singleStudent'>
-        <TableContainer
-          className={`table table-shadow view_users_table ${classes.container}`}
-        >
-          <Table stickyHeader aria-label='sticky table'>
-            <TableHead className={`${classes.columnHeader} table-header-row`}>
-              <TableRow>
-                <TableCell className={classes.tableCell} style={{ whiteSpace: 'nowrap' }}>
-                  S No.
-                </TableCell>
-                <TableCell className={classes.tableCell}>Student Name</TableCell>
-                <TableCell className={classes.tableCell}>ERP ID</TableCell>
-                <TableCell className={classes.tableCell}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            {totalSubmitted?.map((response, index) => (
-              <TableBody>
-                <TableRow
-                  hover
-                  role='checkbox'
-                  tabIndex={-1}
-                  // key={`user_table_index${i}`}
-                >
-                  <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                  <TableCell className={classes.tableCells}>
-                    {response?.student_name}
-                  </TableCell>
-                  <TableCell className={classes.tableCells}>{response?.erp_id}</TableCell>
-                  <TableCell className={classes.tableCells}>
-                    <ButtonAnt
-                      type='primary'
-                      style={{ backgroundColor: '#4caf50', border: '1px solid #4caf50' }}
-                      icon={<MonitorOutlined />}
-                      onClick={() => assignPage(response)}
-                      size={'medium'}
-                    >
-                      Add Review
-                    </ButtonAnt>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            ))}
-          </Table>
-          {/* <TablePagination
-                component='div'
-                count={totalCount}
-                rowsPerPage={limit}
-                page={Number(currentPage) - 1}
-                onChangePage={(e, page) => {
-                handlePagination(e, page + 1);
-                }}
-                rowsPerPageOptions={false}
-                className='table-pagination'
-                classes={{
-                  spacer: classes.tablePaginationSpacer,
-                  toolbar: classes.tablePaginationToolbar,
-                }}
-              /> 
-        </TableContainer>
-      </Paper> */}
       <div className='col-12 px-0'>
         <TableAnt
           columns={columns}
@@ -627,8 +471,8 @@ const VisualPendingReview = (props) => {
                       aria-label='recipe'
                       icon={
                         <UserOutlined
-                          color='#f3f3f3'
-                          style={{ color: '#f3f3f3' }}
+                          color='#F3F3F3'
+                          style={{ color: '#F3F3F3' }}
                           twoToneColor='white'
                         />
                       }
@@ -638,26 +482,11 @@ const VisualPendingReview = (props) => {
                       <div className=' th-fw-500 th-14'>{data?.erp_id}</div>
                     </div>
                   </div>
-                  {/* <div
-                    className='p-2 mt-3 th-br-5 th-bg-grey'
-                    style={{ outline: '1px solid #d9d9d9' }}
-                  >
-                    <div>
-                      Title :{' '}
-                      <span className='th-fw-600'>{data?.activity_detail?.title}</span>
-                    </div>
-                    <div>
-                      Instructions :{' '}
-                      <span className='th-fw-400'>
-                        {data?.activity_detail?.description}
-                      </span>
-                    </div>
-                  </div> */}
                   <div className='mt-3'>
                     <div className='th-fw-500 th-16 mb-2'>Review</div>
                     <div
                       className='px-1 py-2 th-br-5'
-                      style={{ outline: '1px solid #d9d9d9' }}
+                      style={{ outline: '1px solid #D9D9D9' }}
                     >
                       {ratingReview?.map((obj, index) => {
                         return (

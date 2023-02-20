@@ -1,72 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
-import AttendanceReport from './components/AttendanceReport';
-import Announcement from './components/Announcement';
-import CalendarCard from '../myComponents/CalendarCard';
-import ClassWorkReport from './components/ClassworkReport';
-import HomeWorkReport from './components/HomeworkReport';
-import Assessment from './components/Assessment';
-import CurriculumCompletion from './components/CurriculumCompletion';
-import { getRole } from 'v2/generalAnnouncementFunctions';
-import Doodle from 'v2/FaceLift/Doodle/Doodle';
-import { message } from 'antd';
+import TeacherDashboardConfigOff from './TeacherDashboardConfigOff';
+import TeacherDashboardConfigOn from './TeacherDashboardConfigOn';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import CurriculumTracker from './components/CurriculumTracker';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { useSelector } from 'react-redux';
 
-const TeacherdashboardNew = () => {
-  const [todaysAttendance, setTodaysAttendance] = useState([]);
-  const [showDoodle, setShowDoodle] = useState(false);
-  const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
-  const time = new Date().getHours();
-  const fetchDoodle = () => {
+const TeacherDashoboardNew = () => {
+  const [configOn, setConfigOn] = useState(true);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const fetchConfigStatus = (params = {}) => {
     axios
-      .get(`${endpoints.doodle.checkDoodle}?config_key=doodle_availability`)
+      .get(`${endpoints.studentDashboard.checkConfigStatus}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
+      })
       .then((response) => {
-        if (response?.data?.result[0] === 'True') {
-          setShowDoodle(true);
+        if (response.status === 200) {
+          setConfigOn(response?.data?.dashboard_enabled);
         }
       })
-      .catch((error) => message.error('error', error?.message));
+      .catch((error) => console.log(error));
   };
 
-  // useEffect(() => {
-  //   fetchDoodle();
-  // }, []);
+  useEffect(() => {
+    if (selectedBranch) {
+      fetchConfigStatus({ branch_id: selectedBranch?.branch?.id });
+    }
+  }, [selectedBranch]);
   return (
     <Layout>
       <div className=''>
-        <div className='row th-16 py-3 justify-content-between'>
-          <div className='col-lg-6 th-black-1 th-20 th-fw-400'>
-            {' '}
-            Good {time < 12 ? 'Morning' : time < 16 ? 'Afternoon' : 'Evening'},
-            <span className='text-capitalize pr-2'>{first_name}</span>
-            <span className='th-14'>({getRole(user_level)})</span>
-          </div>
-        </div>
-        {showDoodle && <Doodle />}
-        <AttendanceReport />
-
-        <div className='row pt-3'>
-          <div className='col-lg-4 th-custom-col-padding'>
-            {/* <ClassWorkReport /> */}
-            <CurriculumTracker />
-            {/* <CalendarCard /> */}
-          </div>
-          <div className='col-lg-4 th-custom-col-padding'>
-            <HomeWorkReport />
-            {/* <CurriculumCompletion /> */}
-            {/* <DiaryReport /> */}
-          </div>
-          <div className='col-lg-4 th-custom-col-padding'>
-            {/* <Assessment /> */}
-            <CalendarCard />
-            <Announcement scrollHeight={'420px'} />
-          </div>
-        </div>
+        {configOn ? <TeacherDashboardConfigOn /> : <TeacherDashboardConfigOff />}
       </div>
     </Layout>
   );
 };
 
-export default TeacherdashboardNew;
+export default TeacherDashoboardNew;

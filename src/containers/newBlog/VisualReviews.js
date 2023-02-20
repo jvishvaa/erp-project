@@ -1,23 +1,10 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { Button, Grid, TextField, Divider, withStyles } from '@material-ui/core';
-import StarsIcon from '@material-ui/icons/Stars';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
+import React, { useState, useEffect, useContext } from 'react';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 import {
   FileProtectOutlined,
-  CloseCircleOutlined,
   UserOutlined,
-  DownOutlined,
-  CheckOutlined,
   PlayCircleOutlined,
   CloseOutlined,
 } from '@ant-design/icons';
@@ -32,14 +19,8 @@ import {
   Space,
   Input,
 } from 'antd';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Rating from '@material-ui/lab/Rating';
-import RatingScale from './RatingScale';
-import ReactHtmlParser from 'react-html-parser';
-import { TablePagination } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import endpoints from '../../config/endpoints';
-import Loader from 'components/loader/loader';
 import ReactPlayer from 'react-player';
 import moment from 'moment';
 import axios from 'axios';
@@ -94,8 +75,8 @@ const VisualReviews = (props) => {
   const [value, setValue] = React.useState();
   const { Option } = Select;
   const [totalSubmitted, setTotalSubmitted] = useState([]);
-  //   const PhysicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId')) || {};
-  const ActivityId = JSON.parse(localStorage.getItem('VisualActivityId')) || {};
+  //   const PhysicalsubActivityData = JSON.parse(localStorage.getItem('PhysicalsubActivityData')) || {};
+  const subActivityData = JSON.parse(localStorage.getItem('VisualActivityId')) || {};
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [dataId, setDataId] = useState();
@@ -145,7 +126,7 @@ const VisualReviews = (props) => {
 
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&is_submitted=True&update=True&grade_id=${props.selectedGrade}&branch_ids=${props.selectedBranch}&section_ids=${props.selectedSubject}`,
+          `${endpoints.newBlog.studentSideApi}?&user_id=null&activity_detail_id=${subActivityData?.id}&is_reviewed=True&is_submitted=True&update=True&grade_id=${props.selectedGrade}&branch_ids=${props.selectedBranch}&section_ids=${props.selectedSubject}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,

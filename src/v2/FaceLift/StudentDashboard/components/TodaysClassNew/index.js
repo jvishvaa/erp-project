@@ -7,7 +7,6 @@ import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import NoClassIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/noclass.png';
-import '../../index.css';
 
 const TodaysClass = () => {
   const myRef = useRef();
@@ -88,7 +87,7 @@ const TodaysClass = () => {
                 {moment().format('Do MMM  YYYY')}
               </span>
             </div>
-            {!loading && todaysAttendance !== 'N/A' ? (
+            {!loading && todaysAttendance && todaysAttendance !== 'N/A' ? (
               <div className='d-flex align-item-center align-items-center th-12 ml-2 '>
                 <span className='mr-2'>Today's Attendance :</span>
                 <div
@@ -263,7 +262,7 @@ const TodaysClass = () => {
           </>
         ) : (
           <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
-            <img src={NoClassIcon} style={{ height: '120px', objectFit: 'cover' }} />
+            <img src={NoClassIcon} style={{ height: '100px', objectFit: 'cover' }} />
           </div>
         )}
       </div>

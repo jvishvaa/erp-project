@@ -85,6 +85,10 @@ export default {
     classworkReport: `${msReportsUrl}/api/reports/v1/classwork-stats/`,
     homeworkReport: `${msReportsUrl}/api/reports/v1/homework-stats/`,
     curriculumnWidget: `${msReportsUrl}/api/acad_performance/grade-subject-wise-curriculum-completion-widget/`,
+    diaryStats: `${msReportsUrl}/api/reports/teacher_dsh_todays_diary/`,
+    todaysClass: `${msReportsUrl}/api/reports/teacher_retrieve_daily_periods/`,
+    studentsAttendance: `${msReportsUrl}/api/reports/teacher_dsh_st_attendance/`,
+    activities: `${newBlogURL}/api/get_activities_dashboard/`,
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
