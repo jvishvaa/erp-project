@@ -163,7 +163,7 @@ const StudentHomeworkNew = withRouter(({
     useEffect(() => {
         if (acad_session_id && endDate != undefined && endDate != 'Invalid date' && hwSelect == false) {
             console.log(acad_session_id, 'acadd');
-
+            setSubjectSelected('all')
                 getTodayshw({
                     acad_session_id: acad_session_id,
                     start_date: startDate,
@@ -397,15 +397,26 @@ const StudentHomeworkNew = withRouter(({
 
     const handleSubjectFilter = (sub) => {
         setSubjectSelected(sub)
+        
         console.log(sub , pendingData , submitData , evaluatedData);
         if (sub != 'all') {
             if (acad_session_id && endDate != undefined && hwSelect == false) {
                 console.log(acad_session_id, 'acadd');
-
+                    if(segment == 1){       
                     getTodayshw({
                         acad_session_id: acad_session_id,
+                        start_date: startDate,
+                        end_date: endDate,
                         subject_id: sub?.subject_id
                     })
+                } else {
+                    getTodayshw({
+                        acad_session_id: acad_session_id,
+                        start_date: startDate,
+                        end_date: endDate,
+                    })
+                }
+
                 if(segment == 2){
 
                 getPendingshw({
