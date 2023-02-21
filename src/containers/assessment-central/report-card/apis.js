@@ -178,7 +178,7 @@ export const getReportCardStatus = async (page, page_size) => {
   const params = createParams({
     page,
     page_size,
-    acad_session_id: JSON.parse(sessionStorage.getItem('selected_branch')).id,
+    acad_session_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.id,
   });
   try {
     const { data = {} } = await axiosInstance.get(
