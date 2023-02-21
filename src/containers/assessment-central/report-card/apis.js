@@ -1,5 +1,6 @@
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
+import { connect, useSelector } from 'react-redux';
 
 function createParams(params) {
   return `?${Object.entries(params)
@@ -174,7 +175,11 @@ export const getReportCardPipeline = async (page, page_size, searchParams) => {
 
 export const getReportCardStatus = async (page, page_size) => {
   if (!page || !page_size) return;
-  const params = createParams({ page, page_size });
+  const params = createParams({
+    page,
+    page_size,
+    acad_session_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.id,
+  });
   try {
     const { data = {} } = await axiosInstance.get(
       `${endpoints.reportCard.getReportCardStatusList}${params}`
