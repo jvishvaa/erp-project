@@ -990,6 +990,8 @@ export default {
     showVisualMedia: `${newBlogURL}/api/uploaded_content/`,
     submitReaction: `${newBlogURL}/api/create_statistics/`,
     getComments: `${newBlogURL}/api/comment_data/`,
+    activityDelete: `${newBlogURL}/api/del_activity_type/`,
+    bmiRemarksApi: `${newBlogURL}/api/get_category/`,
   },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
