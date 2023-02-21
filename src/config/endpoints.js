@@ -542,6 +542,7 @@ export default {
     reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
     reportCardData: '/assessment/generate-report/',
     reportCardDataNew: '/assessment/report-card-generation/',
+    eypReportCard: '/assessment/eyp-report-card-generation/',
     reportPdf: '/assessment/download-report-pdf/',
     weeklyStudentReport: '/assessment/download-report-student-report/',
     reportConsolidated: '/assessment/download-report-consolidate/',

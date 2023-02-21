@@ -231,14 +231,16 @@ const AssessmentReportFilters = ({
     fetchReportCardData(params);
   };
 
-
   const handleReportfilter = () => {
-    if(!filterData.branch?.id) return setAlert('error', `Please select Branch`);
-    if(!filterData.grade?.grade_id) return setAlert('error', `Please select Grade`);
-    if(!filterData.section?.section_id) return setAlert('error', `Please select Section`)
-    else { setisstudentList(true)
-    setIsFilter(true)}
-  }
+    if (!filterData.branch?.id) return setAlert('error', `Please select Branch`);
+    if (!filterData.grade?.grade_id) return setAlert('error', `Please select Grade`);
+    if (!filterData.section?.section_id)
+      return setAlert('error', `Please select Section`);
+    else {
+      setisstudentList(true);
+      setIsFilter(true);
+    }
+  };
 
   const handleNewPreview = () => {
     let paramObj = {
@@ -724,27 +726,27 @@ const AssessmentReportFilters = ({
         setAlert('error', 'Failed to download attendee list');
       }
     }
-    if (selectedReportType?.id === 3 ) {
-      if(filterData.test?.id){
-      try {
-        const { data } = await axiosInstance.get(
-          `${
-            endpoints.assessmentReportTypes.reportDownloadClassAverage
-          }?test=${JSON.stringify(filterData.test?.id)}`,
-          {
-            responseType: 'arraybuffer',
-          }
-        );
-        const blob = new Blob([data], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        });
-        FileSaver.saveAs(blob, `StudentMarks_Report${new Date()}.xls`);
-      } catch (error) {
-        setAlert('error', 'Failed to download attendee list');
+    if (selectedReportType?.id === 3) {
+      if (filterData.test?.id) {
+        try {
+          const { data } = await axiosInstance.get(
+            `${
+              endpoints.assessmentReportTypes.reportDownloadClassAverage
+            }?test=${JSON.stringify(filterData.test?.id)}`,
+            {
+              responseType: 'arraybuffer',
+            }
+          );
+          const blob = new Blob([data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+          FileSaver.saveAs(blob, `StudentMarks_Report${new Date()}.xls`);
+        } catch (error) {
+          setAlert('error', 'Failed to download attendee list');
+        }
+      } else {
+        setAlert('error', 'Please Select Filters First');
       }
-    } else {
-      setAlert('error','Please Select Filters First')
-    }
     }
     if (selectedReportType?.id === 4 && isFilter) {
       try {
@@ -768,34 +770,34 @@ const AssessmentReportFilters = ({
     }
 
     if (selectedReportType?.id === 6) {
-      if(filterData.test?.id){
-      console.log(groupSelected);
-      const sectionMapIds =
-        groupSelected?.group_section_mapping?.length > 0
-          ? groupSelected?.group_section_mapping.map((i) => i?.section_mapping_id)
-          : '';
-      console.log(sectionMapIds);
-      const reqUrl = sectionToggle
-        ? `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
-            filterData.test?.id
-          )}&section_mapping=${sectionMapIds}`
-        : `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
-            filterData.test?.id
-          )}&section_mapping=${filterData.section?.id}`;
-      try {
-        const { data } = await axiosInstance.get(reqUrl, {
-          responseType: 'arraybuffer',
-        });
-        const blob = new Blob([data], {
-          type: 'application/pdf',
-        });
-        FileSaver.saveAs(blob, `Test_Report${new Date()}.pdf`);
-      } catch (error) {
-        setAlert('error', 'Failed to download attendee list');
+      if (filterData.test?.id) {
+        console.log(groupSelected);
+        const sectionMapIds =
+          groupSelected?.group_section_mapping?.length > 0
+            ? groupSelected?.group_section_mapping.map((i) => i?.section_mapping_id)
+            : '';
+        console.log(sectionMapIds);
+        const reqUrl = sectionToggle
+          ? `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
+              filterData.test?.id
+            )}&section_mapping=${sectionMapIds}`
+          : `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
+              filterData.test?.id
+            )}&section_mapping=${filterData.section?.id}`;
+        try {
+          const { data } = await axiosInstance.get(reqUrl, {
+            responseType: 'arraybuffer',
+          });
+          const blob = new Blob([data], {
+            type: 'application/pdf',
+          });
+          FileSaver.saveAs(blob, `Test_Report${new Date()}.pdf`);
+        } catch (error) {
+          setAlert('error', 'Failed to download attendee list');
+        }
+      } else {
+        setAlert('error', 'Please Select Filters First');
       }
-    } else {
-      setAlert('error','Please Select Filters First')
-    }
     }
 
     if (selectedReportType?.id === 7) {
@@ -871,25 +873,25 @@ const AssessmentReportFilters = ({
       }
     }
     if (selectedReportType?.id === 13) {
-      if(!filterData?.branch) return setAlert('error','Please Select Branch')
-      else if(!filterData?.grade) return setAlert('error','Please Select Grade')
-      else if(!filterData?.subject) return setAlert('error','Please Select Subject')
-      else{
-      try {
-        const { data } = await axiosInstance.get(
-          `${endpoints.assessmentReportTypes.downloadReportTestReport}?academic_year=${selectedAcademicYear?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
-          {
-            responseType: 'arraybuffer',
-          }
-        );
-        const blob = new Blob([data], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        });
-        FileSaver.saveAs(blob, `Consolidated Report Assessment${new Date()}.xls`);
-      } catch (error) {
-        setAlert('error', 'Failed to download attendee list');
+      if (!filterData?.branch) return setAlert('error', 'Please Select Branch');
+      else if (!filterData?.grade) return setAlert('error', 'Please Select Grade');
+      else if (!filterData?.subject) return setAlert('error', 'Please Select Subject');
+      else {
+        try {
+          const { data } = await axiosInstance.get(
+            `${endpoints.assessmentReportTypes.downloadReportTestReport}?academic_year=${selectedAcademicYear?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
+            {
+              responseType: 'arraybuffer',
+            }
+          );
+          const blob = new Blob([data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+          FileSaver.saveAs(blob, `Consolidated Report Assessment${new Date()}.xls`);
+        } catch (error) {
+          setAlert('error', 'Failed to download attendee list');
+        }
       }
-    }
     }
   };
 
@@ -897,7 +899,7 @@ const AssessmentReportFilters = ({
     url = '';
     setPage(1);
     setSelectedERP([]);
-    setGroupSelected()
+    setGroupSelected();
     setIsFilter(false);
     setDropdownData({
       ...dropdownData,
@@ -910,7 +912,7 @@ const AssessmentReportFilters = ({
       erp: [],
     });
     setStartDate(moment().format('YYYY-MM-DD'));
-    setEndDate(moment().format('YYYY-MM-DD'))
+    setEndDate(moment().format('YYYY-MM-DD'));
 
     setFilterData({
       branch: '',
@@ -1022,29 +1024,28 @@ const AssessmentReportFilters = ({
           </>
         ) : (
           <>
-            {(selectedReportType?.id == 6 ||
-              selectedReportType?.id == 3 ) && (
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                  <Autocomplete
-                    style={{ width: '100%' }}
-                    size='small'
-                    onChange={handleGroup}
-                    id='subject'
-                    value={groupSelected || {}}
-                    options={groupList || []}
-                    getOptionLabel={(option) => option?.group_name || ''}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant='outlined'
-                        label='Group'
-                        placeholder='Group'
-                      />
-                    )}
-                  />
-                </Grid>
-              )}
+            {(selectedReportType?.id == 6 || selectedReportType?.id == 3) && (
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleGroup}
+                  id='subject'
+                  value={groupSelected || {}}
+                  options={groupList || []}
+                  getOptionLabel={(option) => option?.group_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Group'
+                      placeholder='Group'
+                    />
+                  )}
+                />
+              </Grid>
+            )}
           </>
         )}
         {(selectedReportType?.id === 4 ||
@@ -1365,7 +1366,7 @@ const AssessmentReportFilters = ({
               </div>
             </Grid>
           )}
-        {selectedReportType?.id === 5  ? (
+        {selectedReportType?.id === 5 ? (
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
               style={{ width: '100%' }}
