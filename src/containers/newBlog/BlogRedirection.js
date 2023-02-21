@@ -77,7 +77,6 @@ const BlogWallRedirect = () => {
         }
       )
       .then((response) => {
-        debugger;
         localStorage.setItem(
           'ActivityManagement',
           JSON.stringify(response?.data?.result)
