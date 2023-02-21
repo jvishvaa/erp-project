@@ -938,16 +938,6 @@ export default {
     classworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/classwork-details/`,
   },
   newBlog: {
-<<<<<<< HEAD
-    activityCreate: `${newBlogURL}/api/activity_detail_create/`,
-    activityWebLogin: `${newBlogURL}/api/web_login/`,
-    activitySessionLogin: `${newBlogURL}/api/update_user_session/`,
-    activityBranch: `${newBlogURL}/api/branches/`,
-    activityGrade: `${newBlogURL}/api/grades/`,
-    activitySection: `${newBlogURL}/api/sections/`,
-    getActivityType: `${newBlogURL}/api/activity_types/`,
-    getTemplates: `${newBlogURL}/api/get_templates/`,
-=======
     activityCreate:`${newBlogURL}/api/activity_detail_create/`,
     activityWebLogin:`${newBlogURL}/api/web_login/`,
     activitySessionLogin:`${newBlogURL}/api/update_user_session/`,
@@ -957,7 +947,6 @@ export default {
     erpSectionmappping: '/erp_user/sectionmapping/',
     getActivityType:`${newBlogURL}/api/activity_types/`,
     getTemplates:`${newBlogURL}/api/get_templates/`,
->>>>>>> b9d8abf93 (v2 theme commit 5)
 
     previewDetails: `${newBlogURL}/api/get_activity_detail/`,
     unAssign: `${newBlogURL}/api/get_activities/`,
