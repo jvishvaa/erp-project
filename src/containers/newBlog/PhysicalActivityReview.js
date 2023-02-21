@@ -1,47 +1,22 @@
-import React, { useState, useRef, useEffect, useContext, createRef } from 'react';
+import React, { useState, useEffect, useContext, createRef } from 'react';
 import { useSelector } from 'react-redux';
 import Layout from 'containers/Layout';
-import {
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  Tab,
-  Box,
-  Divider,
-  Drawer,
-  IconButton
-} from '@material-ui/core';
-// import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import StarsIcon from '@material-ui/icons/Stars';
-import RatingScale from './RatingScale';
+import { Grid, Tab, IconButton } from '@material-ui/core';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Breadcrumb, Button as ButtonAnt, Form, Select, message } from 'antd';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-// import { Autocomplete, Pagination } from '@material-ui/lab';
-import Tabs from '@material-ui/core/Tabs';
-import PropTypes from 'prop-types';
-import PendingReview from './PendingReview';
+import { Breadcrumb, Button as ButtonAnt, Form, Select, message, Tabs,} from 'antd';
+// import Tabs from '@material-ui/core/Tabs';
 import PhysicalPendingReview from './PhysicalPendingReview';
 import PhysicalReviewed from './PhysicalReviews';
-import Published from './Published';
-import NotSubmitted from './NotSubmitted';
-import Reviewed from './Reviewed';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useHistory } from 'react-router-dom';
-import Shortlisted from './Shortlisted_1';
-// import axiosInstance from 'config/axios';
-// import endpoints from 'config/endpoints';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import { NavigateNext as NavigateNextIcon } from '@material-ui/icons'
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Loader from 'components/loader/loader';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { SearchOutlined, DownOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons';
+import zIndex from '@material-ui/core/styles/zIndex';
 
 const DEFAULT_RATING = 0;
 
@@ -92,24 +67,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PhysicalActivityReview = () => {
-  const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
+  const {TabPane} = Tabs;
+  const boardListData = useSelector((state) => state.commonFilterReducer?.branchList);
   const formRef = createRef();
   const classes = useStyles();
   const history = useHistory();
   const [value, setValue] = React.useState(0);
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
-  const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [branchList, setBranchList] = useState([]);
-  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  const branch_update_user =
+    JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
-  const newBranches = JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
+  const newBranches =
+    JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
   const user_level = dataes?.user_level;
   const [moduleId, setModuleId] = useState();
   const [view, setView] = useState(false);
   const [flag, setFlag] = useState(false);
   const [gradeList, setGradeList] = useState([]);
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (event, newValue) => {
@@ -119,9 +96,8 @@ const PhysicalActivityReview = () => {
     history.push('/blog/blogview');
   };
   const [title, setTitle] = useState('');
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [boardId, setBoardId] = useState();
-  // const [boardListData, setBoardListData] = useState([]);
   const { Option } = Select;
   const [gradeId, setGradeId] = useState();
   const [gradeName, setGradeName] = useState();
@@ -130,41 +106,11 @@ const PhysicalActivityReview = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [subjectId, setSubjectId] = useState();
   const [subjectName, setSubjectName] = useState();
-  // console.log(history,"history")
-  // useEffect(() => {
-  //   if (history?.location?.pathname === '/blog/addreview') {
-  //     setTitle(history?.location?.state?.data);
-
-  //   }
-  // }, [history]);
-
-
-
-
-
-  // useEffect(() =>{
-  //   if(moduleId){
-  //     let branchIds = branch_update_user?.branches?.map((item) => item?.id)
-  //     setLoading(true)
-  //     axios
-  //     .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`,
-  //     {
-  //       headers:{
-  //         'X-DTS-HOST' : X_DTS_HOST,
-  //       },
-  //     })
-  //     .then((response) =>{
-  //       if(response?.data?.status_code === 200){
-  //         setBranchList(response?.data?.result|| [])
-  //         setLoading(false)
-
-  //       }
-
-  //     })
-  //   }
-  // },[window.location.pathname, moduleId])
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -176,8 +122,7 @@ const PhysicalActivityReview = () => {
         ) {
           item.child_module.forEach((item) => {
             if (
-              item.child_name === 'Blog Activity'
-              &&
+              item.child_name === 'Blog Activity' &&
               window.location.pathname === '/physical/activity/review'
             ) {
               setModuleId(item.child_id);
@@ -189,62 +134,7 @@ const PhysicalActivityReview = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (NavData && NavData.length) {
-  //     NavData.forEach((item) => {
-  //       if (
-  //         item.parent_modules === 'Activity Management' &&
-  //         item.child_module &&
-  //         item.child_module.length > 0
-  //       ) {
-  //         item.child_module.forEach((item) => {
-  //           if (item.child_name === 'Blog Activity') {
-  //             setModuleId(item.child_id);
-  //           }
-  //         });
-  //       }
-  //     });
-  //   }
-  // }, []);
-
-  // function callApi(api,key){
-  //   setLoading(true)
-  //   axiosInstance
-  //     .get(api)
-  //     .then((result) => {
-  //       if(result.status === 200){
-  //         if (key === 'academicYearList') {
-  //           setAcademicYear(result?.data?.data || []);
-  //           const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
-  //           if (
-  //             window.location.pathname !== '/erp-online-class-student-view' &&
-  //             !viewMoreData?.academic
-  //           )
-  //             callApi(
-  //               `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
-  //               'branchList'
-  //             );
-  //         }
-  //         if(key === 'branchList') {
-  //           setBranchList(result?.data?.data?.results || [])
-  //         }
-  //         if(key === 'gradeList'){
-  //           const gradeData = result?.data?.data || [];
-  //           gradeData.unshift({
-  //             grade_grade_name: 'Select All',
-  //             grade_id:'all',
-  //             id:'all',
-  //           });
-  //           setGradeList(gradeData);
-  //         }
-
-  //       }
-  //       setLoading(false)
-  //     })
-  // }
-
   const fetchBranches = () => {
-
     const transformedData = newBranches?.branches?.map((obj) => ({
       id: obj.id,
       branch_name: obj.name,
@@ -253,79 +143,50 @@ const PhysicalActivityReview = () => {
       branch_name: 'Select All',
       id: 'all',
     });
-    // setBranchList(transformedData);
-  }
-  useEffect(() => {
-
-    fetchBranches();
-  }, [])
-
-  const handleBranch = (event, value) => {
-    setSelectedBranch([])
-    setSelectedGrade([])
-    if (value?.length) {
-      const branchIds = value.map((obj) => obj?.id)
-      // value =
-      //   value.filter(({ id }) => id === 'all').length === 1
-      //     ? [...branchList].filter(({ id }) => id !== 'all')
-      //     : value;
-      //     console.log(value.id,"value");
-      //     // const selectedId = value.map((el) => el?.branch?.id);
-      //     const selectedId = value.map((item) => item?.id)
-      setSelectedBranch(value);
-      // callApi(
-      //   `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
-      //   }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-      //   'gradeList'
-      // );
-      if (branchIds) {
-        setLoading(true)
-        axios
-          .get(`${endpoints.newBlog.activityGrade}?branch_ids=${branchIds}`,
-            {
-              headers: {
-                'X-DTS-HOST': X_DTS_HOST,
-              },
-            })
-          .then((response) => {
-            console.log(response?.data?.result);
-            setGradeList(response?.data?.result)
-            setLoading(false)
-          })
-
-      }
-
-    }
-
-
   };
+  useEffect(() => {
+    fetchBranches();
+  }, []);
+
+  useEffect(() => {
+    if (selectedBranch) {
+      setLoading(true);
+      axios
+        .get(
+          `${endpoints.newBlog.activityGrade}?branch_ids=${selectedBranch?.branch?.id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response?.data?.result);
+          setGradeList(response?.data?.result);
+          setLoading(false);
+        });
+    }
+  }, [selectedBranch]);
 
   const handleGoBack = () => {
-    history.goBack()
-  }
+    history.goBack();
+  };
 
   const goSearch = () => {
-    setLoading(true)
-    if (boardId === undefined) {
-      setAlert('error', 'Please Select Branch');
-      setLoading(false)
-      return
-    } else if (gradeId == undefined) {
-      setAlert('error', 'Please Select Grade');
-      setLoading(false)
-      return
-    } else if(subjectId == undefined){
-      setAlert('error', 'Please Select Subject');
-      setLoading(false)
-      return
-    } 
-    
-    else {
+    setLoading(true);
+    if (gradeId == undefined) {
+      message.error('Please Select Grade')
+      setLoading(false);
+      return;
+    } else if (subjectId == undefined) {
+      message.error('Please Select Subject')
+      setLoading(false);
+      return;
+    } else {
       setFlag(true);
-      setLoading(false)
+      setLoading(false);
     }
-
-  }
+  };
 
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -347,48 +208,36 @@ const PhysicalActivityReview = () => {
     );
   });
 
-
   const handleBoard = (e, value) => {
     formRef.current.setFieldsValue({
       grade: null,
-      subject: null
-    })
+      subject: null,
+    });
     if (value) {
       setBoardId(value?.value);
-
     }
   };
 
   const handleGrade = (item) => {
     formRef.current.setFieldsValue({
       subject: null,
-      // board: null,
     });
-    // setSubjectData([]);
-    // setSubjectId('');
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
-      //   fetchSubjectData({
-      //     session_year: selectedAcademicYear?.id,
-      //     branch_id: selectedBranch?.branch?.id,
-      //     module_id: moduleId,
-      //     grade: item.value,
-      //   });
     }
   };
 
   useEffect(() => {
-    if (moduleId && boardId) {
-
-      fetchGradeData()
+    if (moduleId && selectedBranch) {
+      fetchGradeData();
     }
-  }, [boardId])
+  }, [selectedBranch, moduleId]);
 
   const fetchGradeData = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
-      branch_id: boardId,
+      branch_id: selectedBranch?.branch?.id,
       module_id: moduleId,
     };
     axios
@@ -396,10 +245,7 @@ const PhysicalActivityReview = () => {
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setGradeData(res?.data?.data);
-          // if (user_level == 13) {
-          // setGradeId(res?.data?.data[0]?.grade_id);
           setGradeName(res?.data?.data[0]?.grade__grade_name);
-          // }
         }
       })
       .catch((error) => {
@@ -408,16 +254,15 @@ const PhysicalActivityReview = () => {
   };
 
   useEffect(() => {
-    if (gradeId !== "") {
+    if (gradeId !== '') {
       fetchSubjectData({
         session_year: selectedAcademicYear?.id,
-        branch_id: boardId,
+        branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
         grade_id: gradeId,
       });
-
     }
-  }, [gradeId])
+  }, [gradeId]);
 
   const fetchSubjectData = (params = {}) => {
     if (gradeId) {
@@ -433,7 +278,6 @@ const PhysicalActivityReview = () => {
         .catch((error) => {
           message.error(error.message);
         });
-
     }
   };
 
@@ -447,14 +291,6 @@ const PhysicalActivityReview = () => {
 
   const handleClearGrade = () => {
     setGradeId('');
-    // setGradeName('');
-    // setSubjectId('');
-    // setSubjectName('');
-  };
-
-  const handleClearSubject = () => {
-    // setSubjectId('');
-    // setSubjectName('');
   };
 
   const subjectOptions = subjectData?.map((each) => {
@@ -473,8 +309,6 @@ const PhysicalActivityReview = () => {
     }
   };
 
-
-
   const erpData = () => {
     axios
       .get(`${endpoints.userManagementBlog.getUserLevel}`, {
@@ -483,10 +317,9 @@ const PhysicalActivityReview = () => {
         },
       })
       .then((res) => {
-        console.log(res, 'PP')
-
-      })
-  }
+        console.log(res, 'PP');
+      });
+  };
 
   const branchOptions = boardListData?.map((each) => {
     return (
@@ -498,28 +331,162 @@ const PhysicalActivityReview = () => {
 
   return (
     <div>
-      {loading && <Loader />}
       <Layout>
-        <Grid
-          container
-          direction='row'
-        // style={{ paddingLeft: '22px', paddingRight: '10px' }}
-        >
+        <div className='px-3'>
+          <div className='row'>
+            <div className='col-md-12 pl-2'>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item
+                  href='/blog/wall/central/redirect'
+                  className='th-grey th-400'
+                >
+                  Activity Management
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href='/physical/activity' className='th-grey th-400'>
+                  Physical Activity
+                </Breadcrumb.Item>
+                <Breadcrumb.Item className='th-grey th-400'>
+                  Physical Review
+                </Breadcrumb.Item>
+                <Breadcrumb.Item className='th-black th-400'>
+                  {ActivityId?.title}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
+          </div>
+          <div className='col-12 mt-3 th-br-5 py-3 th-bg-white'>
+            <div className='row'>
+              <div className='col-12'>
+                <span className='th-black th-400 th-bold'>
+                  Topic Name : <b className='th-blue'>{ActivityId?.title}</b>{' '}
+                </span>
+              </div>
+            </div>
+            <div className='row mt-4'>
+              <div className='col-8' style={{zIndex:2}}>
+                <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+                  <div className='row align-items-center'>
+                    <div className='col-md-4 col-6 px-0'>
+                      <div className='mb-2 text-left'>Grade</div>
+                      <Form.Item name='grade'>
+                        <Select
+                          allowClear
+                          placeholder='Select Name'
+                          showSearch
+                          disabled={user_level == 13}
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          onChange={(e, value) => {
+                            handleGrade(value);
+                          }}
+                          onClear={handleClearGrade}
+                          className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                          bordered={true}
+                        >
+                          {gradeOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                    <div className='col-md-4 col-6 pr-0 px-0 pl-md-3'>
+                      <div className='mb-2 text-left'>Section</div>
+                      <Form.Item name='subject'>
+                        <Select
+                          placeholder='Select Section'
+                          showSearch
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          onChange={(e, value) => {
+                            handleSubject(value);
+                          }}
+                          className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                          bordered={true}
+                        >
+                          {subjectOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                    <div
+                      className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3'
+                      style={{ display: 'flex', alignItem: 'center' }}
+                    >
+                      <ButtonAnt
+                        type='primary'
+                        icon={<SearchOutlined />}
+                        onClick={goSearch}
+                        size={'medium'}
+                      >
+                        Search
+                      </ButtonAnt>
+                    </div>
+                  </div>
+                </Form>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-12'>
+                <div className='th-tabs th-activity-tabs th-bg-white'>
+                  <Tabs type='card' onChange={handleChange} defaultActiveKey={value}>
+                    <TabPane tab='PENDING' key='0'>
+                      <PhysicalPendingReview
+                        selectedBranch={selectedBranch?.branch?.id}
+                        setValue={setValue}
+                        value={value}
+                        handleChange={handleChange}
+                        selectedGrade={gradeId}
+                        selectedSubject={subjectId}
+                        setSubjectName={subjectName}
+                        flag={flag}
+                        setFlag={setFlag}
+                      />
+                    </TabPane>
+                    <TabPane tab='REVIEWED' key='1'>
+                      <PhysicalReviewed
+                        selectedBranch={selectedBranch?.branch?.id}
+                        setValue={setValue}
+                        value={value}
+                        handleChange={handleChange}
+                        selectedGrade={gradeId}
+                        selectedSubject={subjectId}
+                        setSubjectName={subjectName}
+                        flag={flag}
+                        setFlag={setFlag}
+                      />
+                    </TabPane>
+                  </Tabs>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+
+      {/* {loading && <Loader />}
+      <Layout>
+        <Grid container direction='row'>
           <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
-            {/* <Breadcrumbs
-            style={{width:'70vw'}}
-            separator={<NavigateNextIcon fontSize='small' style={{color:'black'}} />}
-            aria-label='breadcrumb'
-          >
-            <Typography color='textPrimary' style={{fontSize:'18px'}}>
-              <strong>physical Activity Management</strong>
-            </Typography>
-            <Typography color='textPrimary' style={{fontSize:'18px', fontWeight:'bold'}}>Activity</Typography>
-            <Typography color='textPrimary' style={{fontSize:'18px', fontWeight:'bold'}}>{ActivityId?.title}</Typography>
-          </Breadcrumbs> */}
-            <div className='col-md-8' style={{ zIndex: 2, display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+            <div
+              className='col-md-8'
+              style={{
+                zIndex: 2,
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.5rem',
+              }}
+            >
               <div>
-                <IconButton aria-label="back" onClick={handleGoBack}>
+                <IconButton aria-label='back' onClick={handleGoBack}>
                   <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
                 </IconButton>
               </div>
@@ -534,38 +501,24 @@ const PhysicalActivityReview = () => {
                   {ActivityId?.title}
                 </Breadcrumb.Item>
               </Breadcrumb>
-
             </div>
           </Grid>
         </Grid>
-        {/* <div style={{ marginLeft: '20px', cursor: 'pointer' }} onClick={goBack}>
-          <div>
-            {' '}
-            <ArrowBackIcon style={{ color: '#0000008c' }} />{' '}
-            <span style={{ color: 'gray' }}>Back to</span> &nbsp;
-            <span style={{ color: '#0000008c', fontWeight: 'bold' }}>Blog Home</span>
-          </div>
-        </div> */}
 
         <div
           style={{
-            // background: '#F1F4F6',
             width: '96%',
             height: 'auto',
-            // marginLeft: '19px',
             paddingBottom: '9px',
             paddingTop: '6px',
           }}
         >
           <div style={{ marginLeft: '22px', marginTop: '9px' }}>
             <div style={{ display: 'flex' }}>
-              <div style={{ fontSize: '16px', fontWeight: '400' }}>
-                Topic Name:{' '}
-              </div>
+              <div style={{ fontSize: '16px', fontWeight: '400' }}>Topic Name: </div>
               <div
                 style={{
                   fontSize: '16px',
-                  // background: 'white',
                   fontWeight: 'bold',
                   width: '91%',
                   paddingLeft: '12px',
@@ -576,59 +529,13 @@ const PhysicalActivityReview = () => {
                 {ActivityId?.title}{' '}
               </div>
             </div>
-            {/* <div
-              style={{
-                display: 'flex',
-                color: '#1B689A',
-                marginTop: '13px',
-                fontSize: '14px',
-              }}
-            >
-              <div> Grade:1</div>
-              <div style={{ paddingLeft: '39px' }}> Total Assigned:100</div>
-              <div style={{ paddingLeft: '36px' }}>
-                {' '}
-                Assigned On : {ActivityId?.submission_date?.slice(0, 10)}
-              </div>
-            </div> */}
           </div>
         </div>
 
-        {/* <Grid container spacing={2} style={{ padding: '20px' }}> */}
-        {/* <Grid item md={4} xs={12}> */}
         <div className='row' style={{ padding: '0.5rem' }}>
           <div className='col-12'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
-                {/* {boardFilterArr.includes(window.location.host) && ( */}
-                <div className='col-md-2 col-6 pl-0'>
-                  <div className='mb-2 text-left'>Branch</div>
-                  <Form.Item name='branch'>
-                    <Select
-                      showSearch
-                      placeholder='Select Branch'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      placement='bottomRight'
-                      suffixIcon={<DownOutlined className='th-grey' />}
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, value) => handleBoard(e, value)}
-                      allowClear={true}
-                      onClear={handleClearBoard}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                          0
-                        );
-                      }}
-                    >
-                      {branchOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                {/* )} */}
                 <div className='col-md-2 col-6 px-0'>
                   <div className='mb-2 text-left'>Grade</div>
                   <Form.Item name='grade'>
@@ -669,7 +576,6 @@ const PhysicalActivityReview = () => {
                       onChange={(e, value) => {
                         handleSubject(value);
                       }}
-                      onClear={handleClearSubject}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       bordered={true}
                     >
@@ -677,18 +583,22 @@ const PhysicalActivityReview = () => {
                     </Select>
                   </Form.Item>
                 </div>
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3' style={{ display: 'flex', alignItem: 'center' }}>
-                  <ButtonAnt type="primary"
+                <div
+                  className='col-md-2 col-6 pr-0 px-0 pl-md-3 pt-3'
+                  style={{ display: 'flex', alignItem: 'center' }}
+                >
+                  <ButtonAnt
+                    type='primary'
                     icon={<SearchOutlined />}
                     onClick={goSearch}
-                    size={'medium'}>
+                    size={'medium'}
+                  >
                     Search
                   </ButtonAnt>
                 </div>
               </div>
             </Form>
           </div>
-
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
@@ -698,7 +608,6 @@ const PhysicalActivityReview = () => {
                   onChange={handleChange}
                   textColor='primary'
                   indicatorColor='primary'
-                  // className={ classes.tabsFont}
                   value={value}
                 >
                   <Tab
@@ -708,13 +617,6 @@ const PhysicalActivityReview = () => {
                     }}
                     className={value === 0 ? classes.tabsFont : classes.tabsFont1}
                   />
-                  {/* <Tab
-                    label='Not Submitted'
-                    classes={{
-                      selected: classes.selected1,
-                    }}
-                    className={value === 1 ? classes.tabsFont : classes.tabsFont1}
-                  /> */}
                   <Tab
                     label='Reviewed'
                     classes={{
@@ -722,25 +624,6 @@ const PhysicalActivityReview = () => {
                     }}
                     className={value === 1 ? classes.tabsFont : classes.tabsFont1}
                   />
-                  {/* <Tab
-                        label='Shortlisted'
-                        classes={{
-                        selected: classes.selected1,
-                        }}
-                        className={value === 3 ? classes.tabsFont : classes.tabsFont1}
-                    /> */}
-
-                  {/* { user_level==11 ? "" :
-                  <Tab
-                    label='Published'
-                    classes={{
-                      selected: classes.selected1,
-                    }}
-                    className={value === 4 ? classes.tabsFont : classes.tabsFont1}
-                  />
-                } */}
-
-
                 </Tabs>
               </Grid>
             </Grid>
@@ -748,21 +631,38 @@ const PhysicalActivityReview = () => {
           <div>
             {value == 2 && (
               <div style={{ marginRight: '49px' }}>
-                {/* <StarsIcon style={{ color: '#F7B519' }} /> Published &nbsp;&nbsp;{' '} */}
                 <BookmarksIcon style={{ color: 'gray' }} /> Shortlisted
               </div>
             )}
           </div>
         </div>
-        {value == 0 && <PhysicalPendingReview selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
-        {/* {value == 1 && <NotSubmitted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
-
-        {value == 1 && <PhysicalReviewed selectedBranch={boardId} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={gradeId} selectedSubject={subjectId} setSubjectName={subjectName} flag={flag} setFlag={setFlag} />}
-        {/* {value == 3 && <Shortlisted selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
-        {/* {value == 4 && <Published selectedBranch={selectedBranch} setValue={setValue} value={value} handleChange={handleChange} selectedGrade={selectedGrade} flag={flag} setFlag={setFlag}/>} */}
-
-
-      </Layout>
+        {value == 0 && (
+          <PhysicalPendingReview
+            selectedBranch={selectedBranch?.branch?.id}
+            setValue={setValue}
+            value={value}
+            handleChange={handleChange}
+            selectedGrade={gradeId}
+            selectedSubject={subjectId}
+            setSubjectName={subjectName}
+            flag={flag}
+            setFlag={setFlag}
+          />
+        )}
+        {value == 1 && (
+          <PhysicalReviewed
+            selectedBranch={selectedBranch?.branch?.id}
+            setValue={setValue}
+            value={value}
+            handleChange={handleChange}
+            selectedGrade={gradeId}
+            selectedSubject={subjectId}
+            setSubjectName={subjectName}
+            flag={flag}
+            setFlag={setFlag}
+          />
+        )}
+      </Layout> */}
     </div>
   );
 };

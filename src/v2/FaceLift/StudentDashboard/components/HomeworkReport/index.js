@@ -113,18 +113,22 @@ const HomeworkReport = () => {
       ) : homeworkReportData?.total_assigned > 0 ? (
         <div className='th-custom-col-padding'>
           <div className='row px-2'>
-            <div className='col-12 px-md-0 text-center'>
+            <div className='col-12 px-0 text-center'>
               <div className='d-flex justify-content-between'>
                 <div>
                   <HighchartsReact
                     highcharts={Highcharts}
                     options={optionsOverallPie}
                     containerProps={{
-                      style: { height: '200px', width: '190px', marginRight: '-30px' },
+                      style: {
+                        height: '200px',
+                        width: window.innerWidth < 892 ? '160px' : '190px',
+                        marginRight: '-30px',
+                      },
                     }}
                   />
                 </div>
-                <div className='d-flex flex-column justify-content-center th-fw-500'>
+                <div className='d-flex flex-column justify-content-center th-fw-500 mr-3'>
                   <div className='th-grey py-1 d-flex justify-content-between'>
                     <span>Total Assigned :</span>{' '}
                     <span>{homeworkReportData?.total_assigned}</span>

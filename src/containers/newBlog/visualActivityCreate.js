@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -6,62 +6,26 @@ import {
     Divider,
     TextField,
     Button,
-    SvgIcon,
     makeStyles,
-    Typography,
     Grid,
-    Tooltip,
-    MenuItem,
-    TextareaAutosize,
-    Paper,
-    TableCell,
-    TableBody,
-    TableHead,
-    TableRow,
-    TableContainer,
-    Table,
-    Drawer,
-    TablePagination,
-    Select,
     Dialog,
     DialogTitle,
-    Checkbox,
 } from '@material-ui/core';
-import FormControl from '@material-ui/core/FormControl';
 import Layout from 'containers/Layout';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-import Box from '@material-ui/core/Box';
-import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useHistory } from 'react-router-dom';
-import MyTinyEditor from 'containers/question-bank/create-question/tinymce-editor';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
-import Carousel from "react-elastic-carousel";
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddIcon from '@material-ui/icons/Add';
-import Tab from '@material-ui/core/Tab';
-import TabContext from '@material-ui/lab/TabContext';
-import TabList from '@material-ui/lab/TabList';
-import BackupIcon from '@material-ui/icons/Backup';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { Breadcrumb } from 'antd';
 
-import {
-    fetchBranchesForCreateUser as getBranches,
-    fetchGrades as getGrades,
-    fetchSections as getSections,
-    fetchSubjects as getSubjects,
-} from '../../redux/actions';
 import axios from 'axios';
 import CloseIcon from '@material-ui/icons/Close';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const drawerWidth = 350;
 
@@ -141,12 +105,11 @@ const dummyRound = [
 
 const VisualActivityCreate = () => {
     const classes = useStyles();
-    const themeContext = useTheme();
     let data = JSON.parse(localStorage.getItem('userDetails')) || {};
     const token = data?.token;
     const user_level = data?.user_level;
     const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
-    const visualId = localStorage?.getItem('VisualActivityId') ? JSON.parse(localStorage?.getItem('VisualActivityId')) : '';
+    const localActivityData = localStorage?.getItem('ActivityData') ? JSON.parse(localStorage?.getItem('ActivityData')) : '';
     const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
     const history = useHistory();
     const [branchList, setBranchList] = useState([]);
@@ -193,53 +156,14 @@ const VisualActivityCreate = () => {
         grade: '',
         section: '',
     });
-    const [sudActId, setSubActId] = useState(visualId);
+    const [sudActId, setSubActId] = useState(localActivityData);
     const [selectedSubActivityId, setSelectedSubActivityId] = useState('')
 
     const selectedAcademicYear = useSelector(
         (state) => state.commonFilterReducer?.selectedYear
     );
-    const handleEditorChange = (content, editor) => {
-        setDesc(content);
-    };
 
-    const handleSubActivity = (e, value) => {
-        setVisible(false)
-        setSelectedBranch([])
-        setSelectedGrade([])
-        setSelectedSection([])
-        setIsPhysicalActivity(false)
-        setIsVisualActivity(false)
-        if (value) {
-            setSubActivityName(value)
-            setIsPhysicalActivity(true)
-            setSelectedSubActivityId(value?.id)
-            setVisible(true)
 
-        }
-
-    }
-
-    const handleChangeActivity = (e, value) => {
-        setActivityName([])
-        setSelectedBranch([])
-        setSelectedGrade([])
-        setSelectedSection([])
-        setIsPhysicalActivity(false)
-        setVisible(false)
-        if (value) {
-            setVisible(true)
-            setActivityName(value);
-            if (value?.name == "Physical Activity") {
-                setIsPhysicalActivity(true)
-            } else if (value?.name === "Visual Act") {
-                setIsVisualActivity(true)
-            }
-        }
-    };
-    const handleChangeText = (e, value) => {
-        setChangeText(value);
-    };
 
 
     const fetchBranches = () => {
@@ -303,7 +227,7 @@ const VisualActivityCreate = () => {
 
     const fetchSubActivityListData = () => {
         axiosInstance
-            .get(`${endpoints.newBlog.subActivityListApi}?type_id=${sudActId}`, {
+            .get(`${endpoints.newBlog.subActivityListApi}?type_id=${sudActId?.id}`, {
                 headers: {
                     'X-DTS-HOST': X_DTS_HOST,
                 },
@@ -375,58 +299,21 @@ const VisualActivityCreate = () => {
         }
     };
 
-    const handleRound = (e, value) => {
-        if (value) {
-            setSelectedRound(value)
-            setSelectedRoundID(value?.id)
-        }
-    }
 
     const handleStartDateChange = (val) => {
         setStartDate(val);
     };
-    let branchIdss = selectedBranch.map((obj, index) => obj?.name).join(', ');
+    let branchIdss = selectedBranch.map((obj) => obj?.name).join(', ');
     let branchname = [...branchIdss];
-    let gradeIdss = selectedGrade.map((obj, index) => obj?.name).join(', ');
+    let gradeIdss = selectedGrade.map((obj) => obj?.name).join(', ');
     let gradename = [...gradeIdss];
-    let sectionIdss = selectedSection.map((obj, index) => obj?.name).join(', ');
+    let sectionIdss = selectedSection.map((obj) => obj?.name).join(', ');
     let sectionname = [...sectionIdss];
 
     const PreviewBlog = () => {
         setAssigned(true);
     };
 
-    const onFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
-        setFileUrl(URL.createObjectURL(event.target.files[0]));
-    };
-    const deleteSelectedImage = () => {
-        setFileUrl(null);
-        setSelectedFile(null);
-    };
-    const ActvityLocalStorage = () => {
-        setLoading(true)
-        axios
-            .post(
-                `${endpoints.newBlog.activityWebLogin}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `${token}`,
-                        'X-DTS-HOST': X_DTS_HOST,
-                    },
-                }
-            )
-            .then((response) => {
-                getActivitySession();
-
-                localStorage.setItem(
-                    'ActivityManagement',
-                    JSON.stringify(response?.data?.result)
-                );
-                setLoading(false);
-            });
-    };
     const handleClear = () => {
         setSelectedGrade([]);
         setSelectedBranch([]);
@@ -488,7 +375,7 @@ const VisualActivityCreate = () => {
             formData.append('issue_date', null);
             formData.append('submission_date', startDate + hoursAndMinutes);
             formData.append('image', selectedFile);
-            formData.append('activity_type_id', visualId);
+            formData.append('activity_type_id', localActivityData?.id);
             formData.append('session_year', selectedAcademicYear.session_year);
             formData.append('created_at', startDate + hoursAndMinutes);
             formData.append('created_by', user_id.id);
@@ -506,7 +393,7 @@ const VisualActivityCreate = () => {
                         'X-DTS-HOST': X_DTS_HOST,
                     },
                 })
-                .then((response) => {
+                .then(() => {
                     setLoading(false);
                     setAlert('success', 'Activity Successfully Created');
                     setLoading(false);
@@ -615,16 +502,7 @@ const VisualActivityCreate = () => {
 
     const [checked, setChecked] = React.useState("");
 
-    const handleChange = (event, value) => {
-        setChecked(value);
-    };
 
-    const breakPoints = [
-        { width: 1, itemsToShow: 1 },
-        { width: 550, itemsToShow: 2, itemsToScroll: 2 },
-        { width: 768, itemsToShow: 3 },
-        { width: 1200, itemsToShow: 4 }
-    ];
 
     const handleGoBack = () => {
         history.goBack()
@@ -658,7 +536,7 @@ const VisualActivityCreate = () => {
                             Activity
                         </Breadcrumb.Item>
                         <Breadcrumb.Item href='' className='th-grey th-16'>
-                            Create Visual Art
+                            Create {localActivityData?.name}
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
@@ -669,7 +547,7 @@ const VisualActivityCreate = () => {
                         style={{ borderRadius: '1px', color: 'white' }}
                         disabled
                     >
-                        Create Visual Art
+                        Create {localActivityData?.name}
                     </Button>
                     <Divider className={classes.dividerColor} />
                 </div>

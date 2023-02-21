@@ -41,6 +41,7 @@ const ViewBMITableCustom = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   // const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const {user_id} = JSON.parse(localStorage.getItem('userDetails')) || {};
   let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
   const newBranches =
     JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
@@ -58,6 +59,7 @@ const ViewBMITableCustom = (props) => {
   const [editData, setEditData] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [selectedStudentDetails, setSelectedStudentsDetails] = useState([]);
+  const [bmiRemarks,setBmiRemarks] = useState('')
 
   const columns = [
     {
@@ -408,6 +410,29 @@ const ViewBMITableCustom = (props) => {
     }
   };
 
+
+  const calculateRemarks =(bmiArg,ageArg) =>{
+    if(bmiArg && ageArg){
+      setLoading(true)
+      axios
+      .get(`${endpoints.newBlog.bmiRemarksApi}?age=${ageArg}&bmi=${bmiArg}&user_id=${user_id}`,{
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) =>{
+        // setBmiRemarks()
+        setLoading(false)
+        return
+      })
+      .catch((err) =>{
+        setLoading(false)
+        return
+      })
+
+    }
+  }
+
   const calculateBMI = (height, weight, age) => {
     if (height && weight && age) {
       let parseHeight = parseInt(height);
@@ -421,6 +446,7 @@ const ViewBMITableCustom = (props) => {
       } else {
         let bmi = (weight / ((height * height) / 10000)).toFixed(2);
         setBmi(bmi);
+        calculateRemarks(bmi,age)
         setAlert('success', 'BMI Calculated Successfully');
         return;
       }
@@ -538,15 +564,14 @@ const ViewBMITableCustom = (props) => {
               // className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
               bordered={true}
               getPopupContainer={(trigger) => trigger.parentNode}
-              // value={selectedCategoryName}
-              style={{ width: '72%', padding: '0.5rem' }}
+              defaultValue={bmiRemarks}
+              style={{ width:'81%', padding: '0.5rem' }}
               placement='bottomRight'
               placeholder='Select Remark'
               suffixIcon={<DownOutlined className='th-black-1' />}
               dropdownMatchSelectWidth={true}
-              // onChange={(e, val) => handleBlogListChange(e, val)}
               onChange={(event) => handleInputBMI(event, 'remarks')}
-              // allowClear
+              disabled='true'
 
               menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
             >

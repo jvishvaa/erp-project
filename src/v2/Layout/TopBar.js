@@ -491,10 +491,10 @@ const Appbar = ({ children, history, ...props }) => {
               <Grid
                 container
                 rowSpacing={1}
-                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                // columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 className='align-items-center'
               >
-                <Grid item xs={2} style={{ textAlign: 'center' }}>
+                <Grid item xs={2} sm={2} style={{ textAlign: 'center' }}>
                   <IconButton className={classes.logoMobileContainer}>
                     <img
                       className={classes.logoMObile}
@@ -522,113 +522,126 @@ const Appbar = ({ children, history, ...props }) => {
                 <Grid
                   item
                   xs={6}
+                  sm={6}
+                  style={{
+                    textAlign: 'center',
+                    paddingTop: 10,
+                    display: 'flex',
+                  }}
+                >
+                  {/* <FormControl
+                    variant='standard'
+                    // sx={{ m: 1, minWidth: window.innerWidth < 576 ? 40 : 100 }}
+                    className='flex-row'
+                  > */}
+                  <Select
+                    onChange={handleBranchChange}
+                    value={branch ? branch : branchList ? branchList[0] : ''}
+                    className='th-primary th-bg-white th-br-4 th-12 text-left mr-1 w-50'
+                    // style={{ width: window.innerWidth < 576 ? '80%' : '45%' }}
+                    placement='bottomRight'
+                    bordered={false}
+                    showSearch={true}
+                    suffixIcon={<DownOutlined className='th-primary' />}
+                    dropdownMatchSelectWidth={false}
+                    optionFilterProp='children'
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {branchList?.map((item) => {
+                      return (
+                        <Option value={item?.branch?.branch_name}>
+                          {item?.branch?.branch_name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                  <Select
+                    onChange={handleChange}
+                    value={academicYear}
+                    className='th-primary th-bg-white th-br-4 th-12 text-center'
+                    placement='bottomRight'
+                    bordered={false}
+                    showSearch={true}
+                    suffixIcon={<DownOutlined className='th-primary' />}
+                    dropdownMatchSelectWidth={false}
+                    optionFilterProp='children'
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {academicYearlist?.map((year) => (
+                      <Option value={year.session_year}>{year.session_year}</Option>
+                    ))}
+                  </Select>
+                  {/* </FormControl> */}
+                </Grid>
+                <Grid
+                  item
+                  xs={4}
+                  sm={4}
                   style={{ textAlign: 'center', paddingTop: 10, display: 'flex' }}
                 >
-                  <FormControl
-                    variant='standard'
-                    sx={{ m: 1, minWidth: 100 }}
-                    className='flex-row'
-                  >
-                    <Select
-                      onChange={handleBranchChange}
-                      value={branch ? branch : branchList ? branchList[0] : ''}
-                      className='th-primary th-bg-white th-br-4 th-12 text-left mr-1'
-                      placement='bottomRight'
-                      bordered={false}
-                      showSearch={true}
-                      suffixIcon={<DownOutlined className='th-primary' />}
-                      dropdownMatchSelectWidth={false}
-                      optionFilterProp='children'
-                      filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {branchList?.map((item) => {
-                        return (
-                          <Option value={item?.branch?.branch_name}>
-                            {item?.branch?.branch_name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                    <Select
-                      onChange={handleChange}
-                      value={academicYear}
-                      className='th-primary th-bg-white th-br-4 th-12 text-center'
-                      placement='bottomRight'
-                      bordered={false}
-                      showSearch={true}
-                      suffixIcon={<DownOutlined className='th-primary' />}
-                      dropdownMatchSelectWidth={false}
-                      optionFilterProp='children'
-                      filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {academicYearlist?.map((year) => (
-                        <Option value={year.session_year}>{year.session_year}</Option>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <div className='ml-1 d-flex align-items-center'>
-                {userData?.user_level == 1 ||
-                userData?.user_level == 25 ||
-                userData?.user_level == 13 ||
-                userData?.is_superuser == true ? (
-                  <>
-                    {apps?.finance == true ? (
+                  <div className='ml-3 d-flex align-items-center'>
+                    {userData?.user_level == 1 ||
+                    userData?.user_level == 25 ||
+                    userData?.user_level == 13 ||
+                    userData?.is_superuser == true ? (
+                      <>
+                        {apps?.finance == true ? (
+                          <>
+                            {isMobile ? (
+                              <IconButton
+                                className={classes.grow}
+                                style={{ margin: '0' }}
+                                onClick={handleFinance}
+                              >
+                                <img src={RupeeSymbol} width='24px' />
+                              </IconButton>
+                            ) : null}
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {userData?.user_level == 1 ||
+                    userData?.user_level == 25 ||
+                    userData?.user_level == 13 ||
+                    userData?.is_superuser == true ? (
                       <>
                         {isMobile ? (
                           <IconButton
                             className={classes.grow}
                             style={{ margin: '0' }}
-                            onClick={handleFinance}
+                            onClick={handleTicket}
                           >
-                            <img src={RupeeSymbol} width='24px' />
+                            <LiveHelpIcon />
                           </IconButton>
                         ) : null}
                       </>
                     ) : (
                       <></>
                     )}
-                  </>
-                ) : (
-                  <></>
-                )}
-                {userData?.user_level == 1 ||
-                userData?.user_level == 25 ||
-                userData?.user_level == 13 ||
-                userData?.is_superuser == true ? (
-                  <>
-                    {isMobile ? (
-                      <IconButton
-                        className={classes.grow}
-                        style={{ margin: '0' }}
-                        onClick={handleTicket}
-                      >
-                        <LiveHelpIcon />
-                      </IconButton>
-                    ) : null}
-                  </>
-                ) : (
-                  <></>
-                )}
 
-                <div className={classes.sectionMobile}>
-                  <IconButton
-                    aria-label='show more'
-                    aria-controls={mobileMenuId}
-                    aria-haspopup='true'
-                    onClick={handleMobileMenuOpen}
-                    color='inherit'
-                    className='p-0'
-                  >
-                    <MoreIcon />
-                  </IconButton>
-                </div>
-              </div>
+                    <div className={classes.sectionMobile}>
+                      <IconButton
+                        aria-label='show more'
+                        aria-controls={mobileMenuId}
+                        aria-haspopup='true'
+                        onClick={handleMobileMenuOpen}
+                        color='inherit'
+                        className='p-0'
+                      >
+                        <MoreIcon />
+                      </IconButton>
+                    </div>
+                  </div>
+                </Grid>
+              </Grid>
             </Box>
           )}
           {props.drawerOpen ? (

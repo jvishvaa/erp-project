@@ -264,7 +264,7 @@ const GradewiseDiaryReport = () => {
   return (
     <Layout>
       <div className='row py-3 px-2'>
-        <div className='col-md-4'>
+        <div className='col-md-8'>
           <Breadcrumb separator='>'>
             <Breadcrumb.Item href='/dashboard' className='th-grey th-16 th-pointer'>
               Dashboard
@@ -274,7 +274,7 @@ const GradewiseDiaryReport = () => {
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <div className='col-md-4 mt-3 mt-sm-0 text-right'>
+        <div className='col-md-2 mt-3 mt-sm-0 text-right'>
           <div>
             <Select
               getPopupContainer={(trigger) => trigger.parentNode}
@@ -284,7 +284,7 @@ const GradewiseDiaryReport = () => {
                 return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}
               onChange={handleDiaryType}
-              className='w-50 text-left th-black-1 th-bg-white th-br-6'
+              className='w-100 text-left th-black-1 th-bg-white th-br-6'
               bordered={false}
               value={diaryType.toString()}
             >
@@ -293,7 +293,7 @@ const GradewiseDiaryReport = () => {
             </Select>
           </div>
         </div>
-        <div className='col-md-4 mt-3 mt-sm-0 text-right'>
+        <div className='col-md-2 mt-3 mt-sm-0 text-right'>
           <DatePicker
             disabledDate={(current) => current.isAfter(moment())}
             allowClear={false}

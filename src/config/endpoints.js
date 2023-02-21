@@ -988,6 +988,8 @@ export default {
     visualOptionSubmit: `${newBlogURL}/api/activity_type_create/`,
     uploadVisualFile: `${newBlogURL}/api/upload_activity_content/`,
     showVisualMedia: `${newBlogURL}/api/uploaded_content/`,
+    submitReaction: `${newBlogURL}/api/create_statistics/`,
+    getComments: `${newBlogURL}/api/comment_data/`,
   },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
