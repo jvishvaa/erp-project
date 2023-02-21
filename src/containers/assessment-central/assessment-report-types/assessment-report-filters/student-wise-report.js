@@ -13,7 +13,7 @@ import {
   DialogContent,
   DialogActions,
   DialogTitle,
-  TextareaAutosize
+  TextareaAutosize,
 } from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 
@@ -25,10 +25,9 @@ import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import { generateQueryParamSting } from 'utility-functions';
 import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest';
-import Modal from "@material-ui/core/Modal";
+import Modal from '@material-ui/core/Modal';
 import NoFilterData from 'components/noFilteredData/noFilterData';
-
-
+import EypReportCard from 'containers/assessment-central/assesment-report-card/eypReportCard';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -78,7 +77,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filterData, setReportCardDataNew , setIsFilter, isFilter}) => {
+const StudentWiseReport = ({
+  setisstudentList,
+  isstudentList,
+  setIsPreview,
+  filterData,
+  setReportCardDataNew,
+  setIsFilter,
+  isFilter,
+  eypConfig,
+}) => {
   const [studentList, setStudentList] = useState([]);
   const classes = useStyles();
   const [loading, setIsLoading] = useState(false);
@@ -87,20 +95,23 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [openModal, setOpenModal] = useState(false);
-  const [studentId , setStudentId] = useState()
-  const [teacherRemark , setTeacherRemark] = useState('')
-  const {user_id : teacher_id} = JSON.parse(localStorage.getItem('userDetails'))
-  const [ isEditRemark , setIsEditRemark] = useState(false)
-  const [editId , setEditId] = useState()
+  const [studentId, setStudentId] = useState();
+  const [teacherRemark, setTeacherRemark] = useState('');
+  const { user_id: teacher_id } = JSON.parse(localStorage.getItem('userDetails'));
+  const [isEditRemark, setIsEditRemark] = useState(false);
+  const [editId, setEditId] = useState();
 
   useEffect(() => {
-    if(isFilter || isstudentList)
-    getERP();
-  }, [isFilter,isstudentList]);
+    if (isFilter || isstudentList) getERP();
+  }, [isFilter, isstudentList]);
+
+  useEffect(() => {
+    setStudentList([]);
+  }, [filterData]);
 
   const getERP = () => {
     setIsLoading(true);
-    setIsFilter(false)
+    setIsFilter(false);
     // const {
     //   personal_info: { role = '' },
     // } = userDetails || {};
@@ -135,7 +146,7 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
       }
       return;
     } else {
-        setIsLoading(true);
+      setIsLoading(true);
       let params = `?${generateQueryParamSting({ ...paramObj })}`;
       fetchNewReportCardData(params);
     }
@@ -153,103 +164,126 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
     )
       .then((result) => {
         if (result) {
-        setisstudentList(false)
+          setisstudentList(false);
           console.log(result);
           setReportCardDataNew(result?.data?.result);
           setIsPreview(true);
-        //   setPreviewButton(true);
+          //   setPreviewButton(true);
           setIsLoading(false);
         }
         setIsLoading(false);
-        setisstudentList(false)
+        setisstudentList(false);
       })
 
       .catch((error) => {
-        setAlert('error', error.response.data.message ||  "Error while fetching Report card");
+        setAlert(
+          'error',
+          error.response.data.message || 'Error while fetching Report card'
+        );
         setIsLoading(false);
-        setisstudentList(false)
+        setisstudentList(false);
       });
   };
 
   const handleClose = () => {
-    setOpenModal(false)
-  }
+    setOpenModal(false);
+  };
 
-  const handleRemark =  (id) => {
-    setOpenModal(true)
-    setStudentId(id)
-    setIsLoading(true)
-    let remarks = ''
-    axiosInstance.get(`assessment/teacher-remarks/?teacher=${teacher_id}&student=${id}&acad_session=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}`)
-    .then((res) => {
-        setIsLoading(false)
-        if(res?.data?.status_code === 200){
-          if(res?.data?.result?.length > 0){
-            setTeacherRemark(res?.data?.result[0].remarks)
-            setIsEditRemark(true)
-            setEditId(res?.data?.result[0].id)
-          }else{
-            setTeacherRemark('')
-            setIsEditRemark(false)
+  const handleRemark = (id) => {
+    setOpenModal(true);
+    setStudentId(id);
+    setIsLoading(true);
+    let remarks = '';
+    axiosInstance
+      .get(
+        `assessment/teacher-remarks/?teacher=${teacher_id}&student=${id}&acad_session=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}`
+      )
+      .then((res) => {
+        setIsLoading(false);
+        if (res?.data?.status_code === 200) {
+          if (res?.data?.result?.length > 0) {
+            setTeacherRemark(res?.data?.result[0].remarks);
+            setIsEditRemark(true);
+            setEditId(res?.data?.result[0].id);
+          } else {
+            setTeacherRemark('');
+            setIsEditRemark(false);
           }
-        }else{
-           return setAlert('error' , 'Something went wrong , fetching Remark Failed !')
+        } else {
+          return setAlert('error', 'Something went wrong , fetching Remark Failed !');
         }
-    }).catch((error) => {
-        setIsLoading(false)
-        setAlert('error' , error?.response?.data?.message || error?.response?.data?.msg || 'fetching Remark Failed !')
-    })
-  }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setAlert(
+          'error',
+          error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            'fetching Remark Failed !'
+        );
+      });
+  };
 
   const handleRemarkSubmit = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     let params = {
-        "student":studentId,
-        "teacher":teacher_id,
-        "remarks": teacherRemark,
-        "acad_session" : filterData?.branch?.id,
-        "grade" : filterData?.grade?.grade_id,
-      }
-      if(isEditRemark) {
-        axiosInstance.put(`assessment/teacher-remarks/${editId}/`, params)
+      student: studentId,
+      teacher: teacher_id,
+      remarks: teacherRemark,
+      acad_session: filterData?.branch?.id,
+      grade: filterData?.grade?.grade_id,
+    };
+    if (isEditRemark) {
+      axiosInstance
+        .put(`assessment/teacher-remarks/${editId}/`, params)
         .then((res) => {
-            setIsLoading(false)
-            if(res?.data?.status_code !== 200){
-              setAlert('error', res?.data?.message || 'Remarks Submittion Failed !')
-            }else{
-              handleClose()
-              setAlert('success', res?.data?.message || 'Remarks Submitted Successfully !')
-              setIsEditRemark(false)
-            }
-        }).catch((error) => {
-            setIsLoading(false)
-            setAlert('error' , error?.response?.data?.message || error?.response?.data?.msg || 'Submiting Remarks Failed !')
-        })
-      }else{
-        axiosInstance.post(`assessment/teacher-remarks/`, params)
-        .then((res) => {
-          setIsLoading(false)
-          if(res?.data?.status_code !== 200){
-            setAlert('error', res?.data?.message || 'Remarks Submittion Failed !')
-          }else{
-            handleClose()
-            setAlert('success', res?.data?.message || 'Remarks Submitted Successfully !')
-            setIsEditRemark(false)
+          setIsLoading(false);
+          if (res?.data?.status_code !== 200) {
+            setAlert('error', res?.data?.message || 'Remarks Submittion Failed !');
+          } else {
+            handleClose();
+            setAlert('success', res?.data?.message || 'Remarks Submitted Successfully !');
+            setIsEditRemark(false);
           }
-        }).catch((error) => {
-            setIsLoading(false)
-            setAlert('error' , error.response.data.message || error.response.data.msg || 'Submiting Remarks Failed !')
         })
-      }
-    
-  }
+        .catch((error) => {
+          setIsLoading(false);
+          setAlert(
+            'error',
+            error?.response?.data?.message ||
+              error?.response?.data?.msg ||
+              'Submiting Remarks Failed !'
+          );
+        });
+    } else {
+      axiosInstance
+        .post(`assessment/teacher-remarks/`, params)
+        .then((res) => {
+          setIsLoading(false);
+          if (res?.data?.status_code !== 200) {
+            setAlert('error', res?.data?.message || 'Remarks Submittion Failed !');
+          } else {
+            handleClose();
+            setAlert('success', res?.data?.message || 'Remarks Submitted Successfully !');
+            setIsEditRemark(false);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          setAlert(
+            'error',
+            error.response.data.message ||
+              error.response.data.msg ||
+              'Submiting Remarks Failed !'
+          );
+        });
+    }
+  };
 
   return (
     <Paper className={`${classes.root} common-table`}>
       {/* {loading && <Loader />} */}
-      {loading ? (
-        <Loader />
-      ) : null}
+      {loading ? <Loader /> : null}
       <TableContainer
         className={`table table-shadow view_users_table ${classes.container}`}
       >
@@ -269,30 +303,47 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
                 </TableCell>
                 <TableCell className={classes.tableCell}>{items.erp_id}</TableCell>
                 <TableCell className={classes.tableCell}>
-                  <Button variant='contained' color='primary' onClick={() => handleRemark(items?.user?.id)} style={{ margin: '0 10%' }}>
-                    Remark
-                  </Button>
                   <Button
                     variant='contained'
                     color='primary'
-                    onClick={() => handleNewPreview(items.erp_id)}
+                    onClick={() => handleRemark(items?.user?.id)}
+                    style={{ margin: '0 10%' }}
                   >
-                    View
+                    Remark
                   </Button>
+                  {eypConfig.includes(String(filterData.grade?.grade_id)) ? (
+                    <EypReportCard
+                      erpId={items.erp_id}
+                      gradeId={filterData.grade?.grade_id}
+                      acadSessionId={filterData?.branch?.id}
+                      branchName={filterData?.branch?.branch?.branch_name}
+                    />
+                  ) : (
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => handleNewPreview(items.erp_id)}
+                    >
+                      View
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      {openModal &&  <Dialog open={openModal} fullWidth onClose={handleClose}>
-        <DialogTitle style = {{display:'flex' , justifyContent:'center'}}>Remarks</DialogTitle>
-        <DialogContent>
-          {/* <DialogContentText>
+      {openModal && (
+        <Dialog open={openModal} fullWidth onClose={handleClose}>
+          <DialogTitle style={{ display: 'flex', justifyContent: 'center' }}>
+            Remarks
+          </DialogTitle>
+          <DialogContent>
+            {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We
             will send updates occasionally.
           </DialogContentText> */}
-          {/* <TextField
+            {/* <TextField
             autoFocus
             margin="dense"
             id="remark"
@@ -301,26 +352,30 @@ const StudentWiseReport = ({ setisstudentList,isstudentList, setIsPreview, filte
             fullWidth
             variant="outlined"
           /> */}
-          <textarea
+            <textarea
               id='standard-multiline-flexible'
               rowsMax={4}
-              aria-label="minimum height"
+              aria-label='minimum height'
               type='text'
-              placeholder= 'Teacher Remarks'
-              style={{ width: '100%' , height:'100px'}}
+              placeholder='Teacher Remarks'
+              style={{ width: '100%', height: '100px' }}
               value={teacherRemark}
               onChange={(e) => setTeacherRemark(e?.target?.value)}
-              maxLength= '400'
+              maxLength='400'
               InputProps={{ inputProps: { min: 0, maxLength: 400 } }}
-
             />
-        </DialogContent>
-        <DialogActions>
-          <Button variant='contained' color='primary' onClick={handleClose}>Cancel</Button>
-          <Button variant='contained' color='primary' onClick={handleRemarkSubmit}>Submit</Button>
-        </DialogActions>
-      </Dialog>}
-      {studentList.length===0 && <NoFilterData data='No Data Found'/>}
+          </DialogContent>
+          <DialogActions>
+            <Button variant='contained' color='primary' onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant='contained' color='primary' onClick={handleRemarkSubmit}>
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+      {studentList.length === 0 && <NoFilterData data='No Data Found' />}
 
       {/* <TablePagination
               component='div'
