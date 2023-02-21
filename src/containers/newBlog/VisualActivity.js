@@ -47,8 +47,7 @@ import {
   message,
   Tag,
   Modal,
-  Tooltip,
-} from 'antd';
+  Tooltip} from 'antd';
 
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
@@ -146,7 +145,6 @@ const VisualActivity = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
-  console.log(selectedBranch?.branch?.id, 'pp');
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
   const branch_update_user =
     JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
@@ -470,7 +468,8 @@ const VisualActivity = () => {
 
   useEffect(() => {
     if (moduleId && branch_update_user) {
-      if (selectedAcademicYear?.id > 0) setLoading(true);
+      if (selectedAcademicYear?.id > 0) 
+      setLoading(true);
       axios
         .get(
           `${endpoints.newBlog.activityBranch}?branch_ids=${selectedBranch?.branch?.id}`,
