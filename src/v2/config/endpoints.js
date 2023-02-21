@@ -227,6 +227,7 @@ export default {
     diaryActivities: `${newBlogURL}/api/diary_activities/`,
     getSchoolWallApi: `${newBlogURL}/api/school_wall/`,
     whatsAppChatGetApi: `${baseFinanceURL}/apiV1/whatsup-log/`,
+    gradesERP: `/erp_user/grademapping/`,
   },
   fileDrive: {
     fileList: `/schools/school_file_list/`,

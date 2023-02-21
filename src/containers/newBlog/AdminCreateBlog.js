@@ -1,37 +1,23 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext, createRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  IconButton,
-  Divider,
-  TextField,
-  Button,
-  SvgIcon,
   makeStyles,
-  Typography,
-  Grid,
-  Tooltip,
-  MenuItem,
-  TextareaAutosize,
-  Paper,
-  TableCell,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Table,
-  Drawer,
-  TablePagination,
-  Select,
   Dialog,
   DialogTitle,
   Checkbox,
 } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
+import moment from 'moment';
 import Layout from 'containers/Layout';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
+import {
+  fetchAcademicYears,
+  fetchBranches as fetchBranchRedux,
+  fetchGrades,
+  fetchSection,
+} from '../lesson-plan/create-lesson-plan/apis';
 import Box from '@material-ui/core/Box';
 import { useTheme, withStyles } from '@material-ui/core/styles';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -41,9 +27,10 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
-import Carousel from "react-elastic-carousel";
+import Carousel from 'react-elastic-carousel';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
+import { useFormik } from 'formik';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import AddIcon from '@material-ui/icons/Add';
 import Tab from '@material-ui/core/Tab';
@@ -51,7 +38,16 @@ import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
 import BackupIcon from '@material-ui/icons/Backup';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { Breadcrumb } from 'antd';
+import {
+  Breadcrumb,
+  Button,
+  Form,
+  Select,
+  Space,
+  Typography,
+  DatePicker,
+  Input,
+} from 'antd';
 
 import {
   fetchBranchesForCreateUser as getBranches,
@@ -62,7 +58,9 @@ import {
 import axios from 'axios';
 import CloseIcon from '@material-ui/icons/Close';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
+import { DownOutlined } from '@ant-design/icons';
+import { element } from 'prop-types';
+import { each } from 'highcharts';
 const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
@@ -127,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
     height: '45px',
   },
   tickSize: {
-    transform: "scale(2.0)",
+    transform: 'scale(2.0)',
   },
 }));
 
@@ -137,7 +135,7 @@ const dummyRound = [
   { id: 3, round: 3, name: '3' },
   { id: 4, round: 4, name: '4' },
   { id: 5, round: 5, name: '5' },
-]
+];
 
 const AdminCreateBlog = () => {
   const classes = useStyles();
@@ -146,19 +144,23 @@ const AdminCreateBlog = () => {
   const token = data?.token;
   const user_level = data?.user_level;
   const user_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
-  const physicalId = localStorage?.getItem('PhysicalActivityId') ? JSON.parse(localStorage?.getItem('PhysicalActivityId')) : '';
-  const branch_update_user = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  const physicalId = localStorage?.getItem('PhysicalActivityId')
+    ? JSON.parse(localStorage?.getItem('PhysicalActivityId'))
+    : '';
+  const branch_update_user =
+    JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const { Option } = Select;
+  const { TextArea } = Input;
+  const formRef = createRef();
   const [branchList, setBranchList] = useState([]);
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
-
   const [assigned, setAssigned] = useState(false);
-
   const [sectionDropdown, setSectionDropdown] = useState([]);
-  const [roundDropdown, setRoundDropdown] = useState(dummyRound)
-
+  const [roundDropdown, setRoundDropdown] = useState(dummyRound);
   const [moduleId, setModuleId] = React.useState();
   const [month, setMonth] = React.useState('1');
   const [branches, setBranches] = useState([]);
@@ -166,7 +168,7 @@ const AdminCreateBlog = () => {
   const [sections, setSections] = useState([]);
   const [status, setStatus] = React.useState('');
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
-  const [subActivityListData, setSubActivityListData] = useState([])
+  const [subActivityListData, setSubActivityListData] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
@@ -182,19 +184,21 @@ const AdminCreateBlog = () => {
   const [startDate, setStartDate] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
   const [activityName, setActivityName] = useState([]);
-  const [changeText, setChangeText] = useState("");
+  const [changeText, setChangeText] = useState('');
   const [visible, setVisible] = useState(false);
   const [isPhysicalActivity, setIsPhysicalActivity] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
-  const [subActivityName, setSubActivityName] = useState([])
-  const [isVisualActivity,setIsVisualActivity] = useState(false);
+  const [branchDropdown, setBranchDropdown] = useState([]);
+  const [subActivityName, setSubActivityName] = useState([]);
+  const [isVisualActivity, setIsVisualActivity] = useState(false);
+  const [academicYear, setAcademicYear] = useState('');
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
     section: '',
   });
   const [sudActId, setSubActId] = useState(physicalId);
-  const [selectedSubActivityId, setSelectedSubActivityId] = useState('')
+  const [selectedSubActivityId, setSelectedSubActivityId] = useState('');
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -204,37 +208,35 @@ const AdminCreateBlog = () => {
   };
 
   const handleSubActivity = (e, value) => {
-    setVisible(false)
-    setSelectedBranch([])
-    setSelectedGrade([])
-    setSelectedSection([])
-    setIsPhysicalActivity(false)
-    setIsVisualActivity(false)
+    setVisible(false);
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+    setIsPhysicalActivity(false);
+    setIsVisualActivity(false);
     if (value) {
-      setSubActivityName(value)
-      setIsPhysicalActivity(true)
-      setSelectedSubActivityId(value?.id)
-      setVisible(true)
-      console.log(value)
-
+      setSubActivityName(value);
+      setIsPhysicalActivity(true);
+      setSelectedSubActivityId(value?.id);
+      setVisible(true);
+      console.log(value);
     }
-
-  }
+  };
 
   const handleChangeActivity = (e, value) => {
-    setActivityName([])
-    setSelectedBranch([])
-    setSelectedGrade([])
-    setSelectedSection([])
-    setIsPhysicalActivity(false)
-    setVisible(false)
+    setActivityName([]);
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+    setIsPhysicalActivity(false);
+    setVisible(false);
     if (value) {
-      setVisible(true)
+      setVisible(true);
       setActivityName(value);
-      if (value?.name == "Physical Activity") {
-        setIsPhysicalActivity(true)
-      }else if(value?.name ==="Visual Act"){
-        setIsVisualActivity(true)
+      if (value?.value == 'Physical Activity') {
+        setIsPhysicalActivity(true);
+      } else if (value?.value === 'Visual Act') {
+        setIsVisualActivity(true);
       }
     }
   };
@@ -242,11 +244,27 @@ const AdminCreateBlog = () => {
     setChangeText(value);
   };
 
-  // `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Activity Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Blog Activity') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   const fetchBranches = () => {
-    var branchIds = branch_update_user?.branches?.map((item) => item?.id)
-    setLoading(true)
+    var branchIds = branch_update_user?.branches?.map((item) => item?.id);
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`, {
         headers: {
@@ -255,7 +273,7 @@ const AdminCreateBlog = () => {
       })
       .then((res) => {
         console.log('res', res);
-        setLoading(false)
+        setLoading(false);
         if (res?.data) {
           const transformedData = res?.data?.result?.map((obj) => ({
             id: obj.id,
@@ -266,7 +284,7 @@ const AdminCreateBlog = () => {
             id: 'all',
           });
           setBranchList(transformedData);
-          setLoading(false)
+          setLoading(false);
         }
       });
     // })
@@ -274,49 +292,36 @@ const AdminCreateBlog = () => {
 
   let allGradeIds = [];
 
-  const fetchGrades = (value) => {
-    const ids = value.map((el) => el.id) || [];
-    // setGradeIds(ids);
-    setLoading(true)
-    axiosInstance
-      .get(`${endpoints.newBlog.activityGrade}?branch_ids=${ids}`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((res) => {
-        setLoading(false)
-        console.log(res, 'result');
-        if (res) {
-          setLoading(false)
-          const gradeData = res?.data?.result || [];
-          for (let i = 0; i < gradeData?.length; i++) {
-            allGradeIds.push(gradeData[i].id);
-          }
-          gradeData.unshift({
-            name: 'Select All',
-            id: allGradeIds,
-          });
-          setGradeList(gradeData);
-        }
-        // if (res) {
-        //   const transformedData = res.data.result.map((obj) => ({
-        //     id: obj.id,
-        //     name: obj.name,
-        //   }));
-        //   transformedData.unshift({
-        //     name: 'Select All',
-        //     id: 'all',
-        //   });
-        //   console.log(transformedData,"data")
-        //   setGradeList(transformedData);
-        // }
-      });
-  };
+  // const fetchGrades = (value) => {
+  //   const ids = value.map((el) => el.id) || [];
+  //   setLoading(true);
+  //   axiosInstance
+  //     .get(`${endpoints.newBlog.activityGrade}?branch_ids=${ids}`, {
+  //       headers: {
+  //         'X-DTS-HOST': X_DTS_HOST,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setLoading(false);
+  //       console.log(res, 'result');
+  //       if (res) {
+  //         setLoading(false);
+  //         const gradeData = res?.data?.result || [];
+  //         for (let i = 0; i < gradeData?.length; i++) {
+  //           allGradeIds.push(gradeData[i].id);
+  //         }
+  //         gradeData.unshift({
+  //           name: 'Select All',
+  //           id: allGradeIds,
+  //         });
+  //         setGradeList(gradeData);
+  //       }
+  //     });
+  // };
 
   useEffect(() => {
-    fetchSubActivityListData()
-  }, [])
+    fetchSubActivityListData();
+  }, []);
 
   const fetchSubActivityListData = () => {
     axiosInstance
@@ -326,25 +331,29 @@ const AdminCreateBlog = () => {
         },
       })
       .then((result) => {
-        setLoading(false)
-        setSubActivityListData(result?.data?.result)
-      })
-  }
-
-  const fetchSections = (value) => {
-    if (value?.length !== 0) {
-      const ids = value.map((el) => el.id) || [];
-      setLoading(true)
+        setLoading(false);
+        setSubActivityListData(result?.data?.result);
+      });
+  };
+  const fetchSections = (sessionId, branchIds, gradeIds, moduleId) => {
+    if (gradeIds) {
+      // const branchIds = selectedBranch.map((element) => parseInt(element?.key))
+      // const ids = value.map((el) => el.id) || [];
+      setLoading(true);
       axiosInstance
-        .get(`${endpoints.newBlog.activitySection}?grade_ids=${ids}`, {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
+        .get(
+          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
         .then((result) => {
-          setLoading(false)
-          console.log(result, 'section');
+          setLoading(false);
           if (result.data) {
+            console.log(result.data);
+            setSectionList(result.data?.data);
             const gradeData = result?.data?.result || [];
             gradeData.unshift({
               name: 'Select All',
@@ -360,28 +369,35 @@ const AdminCreateBlog = () => {
     fetchBranches();
   }, []);
   const handleBranch = (e, value) => {
+    setSelectedSection([]);
     setSelectedGrade([]);
-    if (value) {
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...branchList].filter(({ id }) => id !== 'all')
-          : value;
+    if (value?.length > 0) {
+      setSelectedGrade([]);
+      setSelectedSection([]);
+      const branchId = value?.map((element) => parseInt(element?.key)) || [];
+      // value =
+      //   value.filter(({ value }) => value === 'all').length === 1
+      //     ? [...branchDropdown].filter(({ id }) => id !== 'all')
+      //     : value;
       setSelectedBranch(value);
-      fetchGrades(value);
+      // fetchGrades(branchId);
+      getGrades(selectedAcademicYear?.id, branchId);
     }
-    getTemplate(activityName.id);
-
+    getTemplate(activityName?.id);
   };
 
   const handleGrade = (e, value) => {
-    console.log(value);
     if (value) {
-      value =
-        value.filter(({ name }) => name === 'Select All').length === 1
-          ? [...gradeList].filter(({ name }) => name !== 'Select All')
-          : value;
+      const branchIds = selectedBranch.map((element) => parseInt(element?.key));
+      const gradeId = value?.map((element) => parseInt(element?.key));
+      // value =
+      //   value.filter(({ name }) => name === 'Select All').length === 1
+      //     ? [...gradeList].filter(({ name }) => name !== 'Select All')
+      //     : value;
       setSelectedGrade(value);
-      fetchSections(value);
+      fetchSections(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
+
+      // fetchSections(value);
     }
   };
   const handleSection = (e, value) => {
@@ -396,25 +412,30 @@ const AdminCreateBlog = () => {
 
   const handleRound = (e, value) => {
     if (value) {
-      setSelectedRound(value)
-      setSelectedRoundID(value?.id)
+      setSelectedRound(value?.value);
+      setSelectedRoundID(value?.id);
     }
-  }
+  };
 
   const handleStartDateChange = (val) => {
-    setStartDate(val);
+    setStartDate(moment(val).format('YYYY-MM-DD'));
   };
-  let branchIdss = selectedBranch.map((obj, index) => obj?.name).join(', ');
-  let branchname = [...branchIdss];
-  let gradeIdss = selectedGrade.map((obj, index) => obj?.name).join(', ');
-  let gradename = [...gradeIdss];
-  let sectionIdss = selectedSection.map((obj, index) => obj?.name).join(', ');
-  let sectionname = [...sectionIdss];
 
+  var branchname
+  var gradename
+  var sectionname
   const PreviewBlog = () => {
-    // history.push('/blog/editnewblog');
+    // let branchIdss = selectedBranch.map((obj, index) => obj?.children).join(', ');
+    // branchname = [...branchIdss];
+    // console.log(branchname,'kl2')
+    // let gradeIdss = selectedGrade.map((obj, index) => obj?.children).join(', ');
+    // gradename = [...gradeIdss];
+    // let sectionIdss = selectedSection.map((obj, index) => obj?.children).join(', ');
+    // sectionname = [...sectionIdss];
     setAssigned(true);
   };
+
+  
 
   const onFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -425,7 +446,7 @@ const AdminCreateBlog = () => {
     setSelectedFile(null);
   };
   const ActvityLocalStorage = () => {
-    setLoading(true)
+    setLoading(true);
     axios
       .post(
         `${endpoints.newBlog.activityWebLogin}`,
@@ -454,7 +475,7 @@ const AdminCreateBlog = () => {
     setActivityName([]);
     setDescription('');
     setTitle('');
-    setSelectedRound([])
+    setSelectedRound([]);
     setStartDate('');
   };
   const formatdate = new Date();
@@ -467,63 +488,57 @@ const AdminCreateBlog = () => {
     formatdate.getSeconds();
 
   const dataPost = () => {
-    setLoading(true)
-    const branchIds = selectedBranch.map((obj) => obj?.id);
-    const gradeIds = selectedGrade.map((obj) => obj?.id);
+    setLoading(true);
+    const branchIds = selectedBranch.map((obj) => obj?.key);
+    const gradeIds = selectedGrade.map((obj) => obj?.key);
     const sectionIds = selectedSection.map((obj) => obj?.id);
     // setLoading(true);
     if (!startDate) {
-      setLoading(false)
-      setAlert('error', 'Please Select The Date')
+      setLoading(false);
+      setAlert('error', 'Please Select The Date');
       return;
     }
 
     if (activityName.length === 0 && physicalId == undefined) {
-      setLoading(false)
-      setAlert('error', 'Please Add Activity Name')
+      setLoading(false);
+      setAlert('error', 'Please Add Activity Name');
       return;
     }
     if (branchIds?.length === 0) {
-      setLoading(false)
-      setAlert('error', 'Please Select Branch')
-      return
+      setLoading(false);
+      setAlert('error', 'Please Select Branch');
+      return;
     }
     if (gradeIds?.length === 0) {
-      setLoading(false)
-      setAlert('error', 'Please Select Grade')
+      setLoading(false);
+      setAlert('error', 'Please Select Grade');
       return;
     }
     if (sectionIds?.length === 0) {
-      setLoading(false)
-      setAlert('error', 'Please Select Section')
+      setLoading(false);
+      setAlert('error', 'Please Select Section');
       return;
     }
     if (title.length === 0) {
-      setLoading(false)
-      setAlert('error', 'Please Add Title')
+      setLoading(false);
+      setAlert('error', 'Please Add Title');
       return;
     }
     if (!description) {
-      setLoading(false)
-      setAlert('error', 'Please Add Description')
+      setLoading(false);
+      setAlert('error', 'Please Add Description');
       return;
-    }
-
-
-    // if(!checked) {
-    //   setLoading(false);
-    //   setAlert('error','Please Select Templates')
-    //   return;
-    // }
-    else {
+    } else {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
       formData.append('issue_date', null);
       formData.append('submission_date', startDate + hoursAndMinutes);
       formData.append('image', selectedFile);
-      formData.append('activity_type_id', activityName?.id ? activityName?.id : selectedSubActivityId);
-      // formData.append('sub-activity_type_id',selectedSubActivityId)
+      formData.append(
+        'activity_type_id',
+        activityName?.id ? activityName?.id : selectedSubActivityId
+      );
       formData.append('session_year', selectedAcademicYear.session_year);
       formData.append('created_at', startDate + hoursAndMinutes);
       formData.append('created_by', user_id.id);
@@ -531,13 +546,12 @@ const AdminCreateBlog = () => {
       formData.append('grade_ids', gradeIds);
       formData.append('section_ids', sectionIds);
       formData.append('is_draft', physicalId ? false : true);
-      formData.append('template_type', "template");
+      formData.append('template_type', 'template');
       formData.append('template_id', checked);
       formData.append('round_count', selectedRoundID);
       axios
         .post(`${endpoints.newBlog.activityCreate}`, formData, {
           headers: {
-            // Authorization: `${token}`,
             'X-DTS-HOST': X_DTS_HOST,
           },
         })
@@ -553,30 +567,24 @@ const AdminCreateBlog = () => {
           setTitle('');
           setStartDate('');
           if (isPhysicalActivity == true) {
-            history.push('/physical/activity')
-            return
-
-          }else if(isVisualActivity == true){
-            history.push('visual/activity')
-            return
-          } 
-          
-          else{
+            history.push('/physical/activity');
+            return;
+          } else if (isVisualActivity == true) {
+            history.push('visual/activity');
+            return;
+          } else {
             history.push('/blog/blogview');
-            return
+            return;
           }
         });
-
     }
-
-
   };
 
-  const [typeText, setTypeText] = useState([{ name: "text" }, { name: "template" }])
+  const [typeText, setTypeText] = useState([{ name: 'text' }, { name: 'template' }]);
 
   const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
-    setLoading(true)
+    setLoading(true);
     axios
       .get(`${endpoints.newBlog.getActivityType}`, {
         headers: {
@@ -584,9 +592,8 @@ const AdminCreateBlog = () => {
         },
       })
       .then((response) => {
-        setLoading(false)
+        setLoading(false);
         setActivityCategory(response.data.result);
-        // ActvityLocalStorage();
       });
   };
   useEffect(() => {
@@ -595,7 +602,7 @@ const AdminCreateBlog = () => {
 
   const [activityStorage, setActivityStorage] = useState([]);
   const getActivitySession = () => {
-    setLoading(true)
+    setLoading(true);
     axios
       .post(
         `${endpoints.newBlog.activitySessionLogin}`,
@@ -616,12 +623,12 @@ const AdminCreateBlog = () => {
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
-        setLoading(false)
+        setLoading(false);
       });
   };
   const goBack = () => {
     history.push('/blog/blogview');
-  }
+  };
 
   const closePreview = () => {
     setAssigned(false);
@@ -638,7 +645,7 @@ const AdminCreateBlog = () => {
 
   const getTemplate = (data) => {
     if (data) {
-      setLoading(true)
+      setLoading(true);
       axios
         .get(`${endpoints.newBlog.getTemplates}${data}/`, {
           headers: {
@@ -646,67 +653,591 @@ const AdminCreateBlog = () => {
           },
         })
         .then((response) => {
-          // console.log(response?.data?.result, 'session');
           setTemplates(response?.data?.result);
-          setLoading(false)
-
+          setLoading(false);
         });
-
     }
   };
 
   useEffect(() => {
-    getTemplate()
+    getTemplate(activityName?.id);
   }, [selectedBranch, activityName]);
 
-  const [checked, setChecked] = React.useState("");
+  useEffect(() => {
+    if (moduleId && selectedAcademicYear) {
+      getAcademic();
+    }
+  }, [moduleId, selectedAcademicYear]);
+
+  const [checked, setChecked] = React.useState('');
 
   const handleChange = (event, value) => {
-    // console.log(event.target.checked)
-    // console.log(event,"event",value);
-
     setChecked(value);
   };
-  //   const clickHandler = (e, item) => {
-
-  //     if (e.target.checked) {
-  //         setList(prevState => [
-  //             ...prevState,
-  //             item
-  //         ])
-  //         const newInitialList = initialList.filter((list, index) => list.id !== item.id);
-  //         setIinitialList(newInitialList)
-  //     }
-  // }
-
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
     { width: 550, itemsToShow: 2, itemsToScroll: 2 },
     { width: 768, itemsToShow: 3 },
-    { width: 1200, itemsToShow: 4 }
+    { width: 1200, itemsToShow: 4 },
   ];
 
   const handleGoBack = () => {
-    history.goBack()
-  }
+    history.goBack();
+  };
 
+  const formik = useFormik({
+    initialValues: {
+      activity: '',
+      date: '', //[moment().startOf('isoWeek'), moment().endOf('week')],
+      branch: [],
+      academic: selectedAcademicYear,
+      grade: '',
+      subject: [],
+      assesment_type: '',
+      section: [],
+      group: '',
+    },
+    onSubmit: (values) => {
+      // filterResults(1);
+    },
+    validateOnChange: false,
+    validateOnBlur: false,
+  });
+
+  const getBranch = async (acadId) => {
+    setLoading(true);
+    try {
+      setBranchDropdown([]);
+      setGrades([]);
+      // setSubjects([]);
+      if (moduleId) {
+        const data = await fetchBranchRedux(acadId, moduleId);
+        setBranchDropdown(data);
+        setLoading(false);
+      }
+    } catch (e) {
+      setLoading(false);
+      setAlert('error', 'Failed to fetch branch');
+    }
+  };
+
+  const getGrades = async (acadId, branchId) => {
+    setLoading(true);
+    try {
+      setGrades([]);
+      // setSubjects([]);
+      const data = await fetchGrades(acadId, branchId, moduleId);
+      setGrades(data);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      setAlert('error', 'Failed to fetch grades');
+    }
+  };
+
+  const actionTypeOption = activityCategory.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.name} id={each?.id}>
+        {each?.name}
+      </Option>
+    );
+  });
+
+  const branchOptions = branchDropdown?.map((each) => {
+    return (
+      <Option key={each?.branch?.id} value={each?.id}>
+        {each?.branch?.branch_name}
+      </Option>
+    );
+  });
+
+  const gradeOptions = grades?.map((each) => {
+    return (
+      <Option key={each?.grade_id} value={each.grade__grade_name} id={each?.grade_id}>
+        {each?.grade__grade_name}
+      </Option>
+    );
+  });
+  const sectionOptions = sectionList?.map((each) => {
+    return (
+      <Option key={each?.section_id} value={each?.id} id={each?.section_id}>
+        {each?.section__section_name}
+      </Option>
+    );
+  });
+  const roundOptions = roundDropdown.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.name} id={each?.id}>
+        {each?.name}
+      </Option>
+    );
+  });
+
+  const subActionTypeOption = subActivityListData.map((each) =>{
+    return(
+      <Option key={each?.id} value={each?.sub_type} id={each?.id}>
+          {each?.sub_type}
+      </Option>
+    )
+  })
+
+  const handleAcademicYear = (event = {}, value = '') => {
+    // formik.setFieldValue('academic', '');
+    setAcademicYear('');
+    if (value) {
+      getBranch(value?.id);
+      setAcademicYear(value);
+      // formik.setFieldValue('academic', value);
+    }
+  };
+  const getAcademic = async () => {
+    handleAcademicYear({}, selectedAcademicYear);
+  };
+
+  const handleClearGrade =() =>{
+    setSelectedGrade([])
+  }
 
   return (
     <div>
-
       {loading && <Loader />}
       <Layout>
+        <div className='row py-3 px-2 th-bg-grey'>
+          <div className='col=md-8' style={{ zIndex: 2 }}>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item
+                className='th-grey-1 th-18 th-pointer'
+                href='/blog/wall/central/redirect'
+              >
+                Activity Management
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                href='/blog/blogview'
+                className='th-grey-1 th-18 th-pointer'
+              >
+                Blog Activity
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-18'>
+                Create Activity
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+        </div>
+        <div className='th-bg-white py-0 mx-3'>
+          <div className='row'>
+            <div className='col-12 py-3'>
+              <Form id='filterForm' layout={'horizontal'} >
+                <div className='row align-items-center'>
+                  {physicalId ? (
+                    <div className='col-md-2 col-6 pl-0'>
+                      <div className='mb-2 text-left'>Sub-Activity Categories</div>
+                      <Form.Item name='sib-activity_categories'>
+                        <Select
+                          allowClear
+                          placeholder={'Select Sub-Activity'}
+                          showSearch
+                          optionFilterProp='children'
+                          value={subActivityName || []}
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          // defaultValue={subjectName}
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          // onChange={(e, value) => {
+                          //   formik.setFieldValue('status', value);
+                          // }}
+                          // onClear={handleClearSubject}
+                          onChange={handleSubActivity}
+                          className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                          bordered={true}
+                        >
+                          {/* {statusOption} */}
+                          {/* {actionTypeOption} */}
+                          {subActionTypeOption}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                  ) : (
+                    <div className='col-md-2 col-6 pl-0'>
+                      <div className='mb-2 text-left'>Activity Categories</div>
+                      <Form.Item name='activity_categories'>
+                        <Select
+                          allowClear
+                          placeholder={'Select Activity'}
+                          showSearch
+                          optionFilterProp='children'
+                          value={activityName || []}
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          // defaultValue={subjectName}
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          // onChange={(e, value) => {
+                          //   formik.setFieldValue('status', value);
+                          // }}
+                          // onClear={handleClearSubject}
+                          onChange={handleChangeActivity}
+                          className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                          bordered={true}
+                        >
+                          {/* {statusOption} */}
+                          {actionTypeOption}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                  )}
+                  {visible ? (
+                    <>
+                      <div className='col-md-2 col-6'>
+                        <div className='mb-2 text-left'>Branch</div>
+                        <Form.Item name='branch'>
+                          <Select
+                            allowClear
+                            placeholder='Select Branch'
+                            mode='multiple'
+                            showSearch
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            optionFilterProp='children'
+                            maxTagCount={2}
+                            showArrow={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            value={selectedBranch || []}
+                            onChange={(e, value) => {
+                              handleBranch(e, value);
+                            }}
+                            // onClear={handleClearBoard}
+                            className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                            bordered={true}
+                          >
+                            {/* {branchDropdown.length > 1 && (
+                          <>
+                            <Option key={0} value={'all'}>
+                              All
+                            </Option>
+                          </>
+                        )} */}
+                            {branchOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-md-2 col-6'>
+                        <div className='mb-2 text-left'>Grade</div>
+                        <Form.Item name='grade'>
+                          <Select
+                            allowClear
+                            placeholder={'Select Grade'}
+                            mode='multiple'
+                            maxTagCount={2}
+                            showArrow={2}
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            showSearch
+                            optionFilterProp='children'
+                            value={selectedGrade || []}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            onChange={(e, value) => {
+                              handleGrade(e, value);
+                            }}
+                            onClear={handleClearGrade}
+                            className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                            bordered={true}
+                          >
+                            {gradeOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                        <div className='mb-2 text-left'>Section</div>
+                        <Form.Item name='section'>
+                          <Select
+                            allowClear
+                            mode='multiple'
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            maxTagCount={2}
+                            showArrow={2}
+                            placeholder={'Select Section'}
+                            value={selectedSection || []}
+                            showSearch
+                            optionFilterProp='children'
+                            // defaultValue={subjectName}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            onChange={(e, value) => {
+                              handleSection(e, value);
+                            }}
+                            // onClear={handleClearSubject}
+                            className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                            bordered={true}
+                          >
+                            {sectionOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      {physicalId ? (
+                        <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                          <div className='mb-2 text-left'>Round</div>
+                          <Form.Item name='round'>
+                            <Select
+                              allowClear
+                              // mode='multiple'
+                              suffixIcon={<DownOutlined className='th-grey' />}
+                              // maxTagCount={2}
+                              // showArrow={2}
+                              placeholder={'Select Round'}
+                              value={selectedRound || []}
+                              showSearch
+                              optionFilterProp='children'
+                              // defaultValue={subjectName}
+                              filterOption={(input, options) => {
+                                return (
+                                  options.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                              onChange={(event, value) => {
+                                handleRound(event, value);
+                              }}
+                              // onClear={handleClearSubject}
+                              className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                              bordered={true}
+                            >
+                              {roundOptions}
+                            </Select>
+                          </Form.Item>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+
+                      <div className='col-md-2 col-6'>
+                        <div className='mb-2 text-left'>Submission End Date</div>
+                        <Form.Item name='date'>
+                          <Space direction='vertical' className='w-100' size={12}>
+                            <DatePicker
+                              className='text-left th-date-picker th-br-4 th-bg-grey w-100 th-black-1'
+                              bordered={true}
+                              format={'YYYY/MM/DD'}
+                              allowClear={false}
+                              onChange={(value) => handleStartDateChange(value)}
+                            />
+                            {/* <RangePicker
+                          allowClear={false}
+                          style={{ width: '105%', border: 'none' }}
+                          bordered={true}
+                          placement='bottomRight'
+                          showToday={false}
+                          suffixIcon={<DownOutlined />}
+                          // defaultValue={[moment(), moment()]}
+                          // value={formik?.values.date}
+                          // onChange={(value) => handleDateChange(value)}
+                          className='th-range-picker th-br-4 th-bg-grey'
+                          separator={'-'}
+                          format={'DD/MM/YYYY'}
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                        /> */}
+                          </Space>
+                        </Form.Item>
+                      </div>
+                    </>
+                  ) : (
+                    ''
+                  )}
+                </div>
+              </Form>
+            </div>
+            <div className='col-12 py-3 px-0'>
+              <div className='col-md-6 py-3 py-md-0'>
+                <span className='th-grey th-14'>Title*</span>
+                <Input
+                  className='th-br-4 mt-1 th-16'
+                  showCount
+                  maxLength='30'
+                  value={title}
+                  onChange={handleTitle}
+                />
+                <div className='text-right'>
+                  <span className='th-red th-12 text-right'>Max. 30 Characters</span>
+                </div>
+              </div>
+              <div className='col-md-6'>
+                <span className='th-grey th-14'>Description*</span>
+                <div className='th-editor py-2'>
+                  <TextArea rows={5} value={description} onChange={handleDescription} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='row mt-1'>
+            {isPhysicalActivity ? (
+              ''
+            ) : (
+              <>
+                {(selectedBranch?.length !== 0) & (activityName?.length !== 0) ? (
+                  <Carousel
+                    breakPoints={breakPoints}
+                    showThumbs={false}
+                    infiniteLoop={true}
+                  >
+                    {templates?.map((obj, index) => (
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <img
+                          src={obj?.template_path}
+                          alt='images'
+                          style={{ maxWidth: '34%' }}
+                        />
+                        <Checkbox
+                          value={checked}
+                          onChange={() => handleChange(obj?.id, obj?.id)}
+                          className={classes.tickSize}
+                          color='primary'
+                          inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        />
+                        <div>{obj?.title}</div>
+                      </div>
+                    ))}
+                  </Carousel>
+                ) : (
+                  ''
+                )}
+              </>
+            )}
+          </div>
+          <div className='row mt-2'>
+            <div className='col-12 px-0 py-3 d-flex'>
+              <div className='col-md-2'>
+                <Button type='primary' className='w-100 th-14' onClick={goBack}>
+                  Back
+                </Button>
+              </div>
+              <div className='col-md-2'>
+                <Button type='primary' className='w-100 th-14' onClick={PreviewBlog}>
+                  Preview
+                </Button>
+              </div>
+              {/* <div className='col-md-2'>
+                <Button type='primary' className='w-100 th-14' onClick={handleClear}>
+                  Clear All
+                </Button>
+              </div> */}
+              <div className='col-md-2'>
+                <Button
+                  type='primary'
+                  className='w-100 th-14'
+                  disabled={user_level == 11}
+                  onClick={dataPost}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          </div>
+          <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
+          <div style={{ width: '642px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '12px',
+              }}
+            >
+              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
+              <div style={{ marginTop: '21px', marginRight: '34px' }}>
+                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
+              </div>
+            </div>
+
+            <div
+              style={{
+                border: '1px solid lightgray',
+                height: ' auto',
+                marginLeft: '16px',
+                marginRight: '32px',
+                borderRadius: '10px',
+                marginBottom: '9px',
+              }}
+            >
+              <div style={{ marginLeft: '23px', marginTop: '28px' }}>
+                <div style={{ fontSize: '15px', color: '#7F92A3' }}>
+                  Title -{activityName.name}
+                </div>
+                <div style={{ fontSize: '21px' }}>{title}</div>
+                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                  Submission on -{startDate}
+                </div>
+                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                  Branch -&nbsp;<span style={{ color: 'black' }}>{ selectedBranch.map((each) =>  <b style={{padding:'4px', fontWeight:'500'}}>{each?.children}</b>)}</span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Grade -&nbsp;<span style={{ color: 'black' }}>{selectedGrade.map((each) =>  <b style={{padding:'4px', fontWeight:'500'}}>{each?.children}</b>)}</span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Section -&nbsp;<span style={{ color: 'black' }}>{selectedSection.map((each) => <b style={{padding:'4px', fontWeight:'500'}}>{each?.children}</b>)}</span>
+                </div>
+
+                <div
+                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+                ></div>
+                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                  Instructions
+                </div>
+                <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
+                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
+                  <img src={fileUrl} width='50%' />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+        </div>
+      </Layout>
+
+      {/* <Layout>
         {loading && <Loader />}
 
         <Grid
           container
           direction='row'
           style={{ paddingLeft: '22px', paddingRight: '10px' }}
+        ></Grid>
+        <div
+          className='col-md-6'
+          style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}
         >
-        </Grid>
-        <div className='col-md-6' style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}>
           <div>
-            <IconButton aria-label="back" onClick={handleGoBack}>
+            <IconButton aria-label='back' onClick={handleGoBack}>
               <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
             </IconButton>
           </div>
@@ -721,26 +1252,14 @@ const AdminCreateBlog = () => {
               <Breadcrumb.Item href='' className='th-grey th-16'>
                 Create Physical Activity
               </Breadcrumb.Item>
-
             ) : (
               <Breadcrumb.Item href='' className='th-grey th-16'>
                 Create Activity
               </Breadcrumb.Item>
-
             )}
           </Breadcrumb>
         </div>
-        {/* <div style={{    marginLeft:"15px", marginBottom: "18px",
-    marginTop: "-14px", cursor: 'pointer' }} onClick={goBack}>
-          <div>
-            {' '}
-            <ArrowBackIcon style={{ color: '#0000008c' }} />{' '}
-            <span style={{ color: 'gray' }}>Back to</span> &nbsp;
-            <span style={{ color: '#0000008c', fontWeight: 'bold' }}>View Blog</span>
-          </div>
-        </div>       */}
         <div style={{ paddingLeft: '22px', paddingRight: '10px' }}>
-
           {physicalId ? (
             <Button
               variant='primary'
@@ -749,7 +1268,6 @@ const AdminCreateBlog = () => {
             >
               Create Physical Activity
             </Button>
-
           ) : (
             <Button
               variant='primary'
@@ -758,7 +1276,6 @@ const AdminCreateBlog = () => {
             >
               Create Activity
             </Button>
-
           )}
 
           <Divider className={classes.dividerColor} />
@@ -780,14 +1297,12 @@ const AdminCreateBlog = () => {
             }}
           >
             <div style={{ display: 'flex' }}>
-
               {physicalId ? (
                 <>
                   Sub-Activity Category * :
                   <Autocomplete
                     style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
                     size='small'
-                    // onChange={(e) => {handleSubActivity(e, value)}}
                     onChange={handleSubActivity}
                     options={subActivityListData || []}
                     value={subActivityName || []}
@@ -796,7 +1311,6 @@ const AdminCreateBlog = () => {
                     renderInput={(params) => <TextField {...params} variant='outlined' />}
                   />
                 </>
-
               ) : (
                 <>
                   Activity Category * :
@@ -810,10 +1324,8 @@ const AdminCreateBlog = () => {
                     filterSelectedOptions
                     renderInput={(params) => <TextField {...params} variant='outlined' />}
                   />
-
                 </>
               )}
-
             </div>
             <div>
               {' '}
@@ -837,7 +1349,6 @@ const AdminCreateBlog = () => {
                   fullWidth
                   size='small'
                   limitTags={1}
-                  // style={{ width: '82%', marginLeft: '4px' }}
                   options={branchList || []}
                   value={selectedBranch || []}
                   getOptionLabel={(option) => option?.name}
@@ -909,9 +1420,7 @@ const AdminCreateBlog = () => {
               {physicalId ? (
                 <Grid item md={6} xs={12}>
                   <Autocomplete
-                    // multiple
                     fullWidth
-                    // limitTags={1}
                     size='small'
                     className='filter-student meeting-form-input'
                     options={roundDropdown || []}
@@ -919,8 +1428,7 @@ const AdminCreateBlog = () => {
                     filterSelectedOptions
                     value={selectedRound || []}
                     onChange={(event, value) => {
-                      // handleSection(event, value);
-                      handleRound(event, value)
+                      handleRound(event, value);
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -933,30 +1441,13 @@ const AdminCreateBlog = () => {
                     )}
                   />
                 </Grid>
-
               ) : (
                 ''
               )}
-
-              {/* <Grid item md={6} xs={12}>
-
-          <Autocomplete
-              size='small'
-              fullWidth
-
-              onChange={handleChangeText}
-              options={typeText || []}
-              value={changeText || []}
-              getOptionLabel={(option) => option?.name}
-              filterSelectedOptions
-              renderInput={(params) => <TextField label="Blog Type" {...params} variant='outlined' />}
-            />
-                    </Grid> */}
-
             </Grid>
-
-          ) : ''}
-
+          ) : (
+            ''
+          )}
 
           <div
             style={{
@@ -987,13 +1478,6 @@ const AdminCreateBlog = () => {
                 marginBottom: '23px',
               }}
             >
-              {/* <MyTinyEditor
-              handleEditorChange={handleEditorChange}
-              placeholder='Description...'
-              content='<img src="https://st.depositphotos.com/1015682/1248/i/600/depositphotos_12483210-stock-photo-elephant-with-large-tusks.jpg" />'
-
-            /> */}
-
               <TextField
                 label='Description/Instructions *'
                 placeholder='Description/Instructions *'
@@ -1015,81 +1499,43 @@ const AdminCreateBlog = () => {
               marginTop: '20px',
             }}
           >
-            {/* <div
-            style={{
-              textAlign: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: '7px',
-            }}
-          >
-            {selectedFile ? (
-              <img style={{ height: '85px', width: '158px' }} src={fileUrl} />
-            ) : null}
-
-            <input
-              hidden
-              type='file'
-              id='upload_video'
-              onChange={onFileChange}
-              accept='image/*,.pdf,video/*,.docx,audio/*,.csv,.xlsx'
-              className='video-file-upload'
-              style={{ fontSize: '20px' }}
-            />
-            <div
-              className='video-file-upload'
-              style={{
-                marginTop: '24px',
-                marginLeft: '23px',
-              }}
-            >
-              <label htmlFor='upload_video'>
-                <Tooltip title='Upload'>
-                  <CloudUploadIcon />
-                </Tooltip>
-              </label>
-              <label> {selectedFile ? selectedFile.name : 'Select File'}</label>{' '}
-              &nbsp;&nbsp;
-              <label>
-                {selectedFile ? (
-                  <Button
-                    color='primary'
-                    variant='contained'
-                    size='small'
-                    onClick={deleteSelectedImage}
-                  >
-                    Delete
-                  </Button>
-                ) : null}{' '}
-              </label>
-            </div>
-          </div> */}
             {isPhysicalActivity ? (
               ''
-
             ) : (
               <>
                 {selectedBranch?.length !== 0 && activityName?.length !== 0 ? (
-                  <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
-                    {/* <div style={{ height: "200px", color: "#fff" }}>this is slide 1</div>
-          <div style={{ height: "200px", color: "#fff" }}>this is slide 2</div>
-          <div style={{ height: "200px", color: "#fff" }}>this is slide 3</div> */}
+                  <Carousel
+                    breakPoints={breakPoints}
+                    showThumbs={false}
+                    infiniteLoop={true}
+                  >
                     {templates?.map((obj, index) => (
-                      <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                        <img src={obj?.template_path} alt="images" style={{ maxWidth: "34%" }} />
-                        {/* <div> */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <img
+                          src={obj?.template_path}
+                          alt='images'
+                          style={{ maxWidth: '34%' }}
+                        />
                         <Checkbox
                           value={checked}
                           onChange={() => handleChange(obj?.id, obj?.id)}
                           className={classes.tickSize}
-                          color="primary"
+                          color='primary'
                           inputProps={{ 'aria-label': 'secondary checkbox' }}
                         />
                         <div>{obj?.title}</div>
-                        {/* </div> */}
-                      </div>))}
+                      </div>
+                    ))}
                   </Carousel>
-                ) : ''}
+                ) : (
+                  ''
+                )}
               </>
             )}
           </div>
@@ -1128,7 +1574,12 @@ const AdminCreateBlog = () => {
               Clear
             </Button>{' '}
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <Button variant='contained' color='primary' disabled={user_level == 11} onClick={dataPost}>
+            <Button
+              variant='contained'
+              color='primary'
+              disabled={user_level == 11}
+              onClick={dataPost}
+            >
               Submit
             </Button>
           </div>
@@ -1152,7 +1603,6 @@ const AdminCreateBlog = () => {
               style={{
                 border: '1px solid lightgray',
                 height: ' auto',
-                // width: '100%',
                 marginLeft: '16px',
                 marginRight: '32px',
                 borderRadius: '10px',
@@ -1177,9 +1627,9 @@ const AdminCreateBlog = () => {
                   Section -&nbsp;<span style={{ color: 'black' }}>{sectionname}</span>
                 </div>
 
-                <div style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}>
-                  {/* word limit -300 */}
-                </div>
+                <div
+                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+                ></div>
                 <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
                   Instructions
                 </div>
@@ -1191,8 +1641,7 @@ const AdminCreateBlog = () => {
             </div>
           </div>
         </Dialog>
-      </Layout>
-
+      </Layout> */}
     </div>
   );
 };
