@@ -427,9 +427,7 @@ const VisualActivity = () => {
       .get(
         `${
           endpoints.newBlog.physicalActivityListApi
-        }?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${
-          sudActId ? sudActId?.id : id
-        }&branch_ids=${boardId ? boardId : selectedBranch?.branch?.id}`,
+        }?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${id}&branch_ids=${boardId ? boardId : selectedBranch?.branch?.id}`,
         {
           params: {},
           headers: {
@@ -565,7 +563,7 @@ const VisualActivity = () => {
     const { id } = localActivityData;
     axiosInstance
       .get(
-        `${endpoints.newBlog.subActivityListApi}?type_id=${sudActId ? sudActId?.id : id}`,
+        `${endpoints.newBlog.subActivityListApi}?type_id=${id}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,

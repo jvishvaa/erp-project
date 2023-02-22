@@ -337,8 +337,6 @@ const AdminCreateBlog = () => {
   };
   const fetchSections = (sessionId, branchIds, gradeIds, moduleId) => {
     if (gradeIds) {
-      // const branchIds = selectedBranch.map((element) => parseInt(element?.key))
-      // const ids = value.map((el) => el.id) || [];
       setLoading(true);
       axiosInstance
         .get(
@@ -803,7 +801,7 @@ const AdminCreateBlog = () => {
       {loading && <Loader />}
       <Layout>
         <div className='row py-3 px-2 th-bg-grey'>
-          <div className='col=md-8' style={{ zIndex: 2 }}>
+          <div className='col-md-8' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-grey-1 th-18 th-pointer'
