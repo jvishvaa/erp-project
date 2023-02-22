@@ -47,8 +47,7 @@ import {
   message,
   Tag,
   Modal,
-  Tooltip,
-} from 'antd';
+  Tooltip} from 'antd';
 
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
@@ -146,7 +145,6 @@ const VisualActivity = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
-  console.log(selectedBranch?.branch?.id, 'pp');
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
   const branch_update_user =
     JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
@@ -429,9 +427,7 @@ const VisualActivity = () => {
       .get(
         `${
           endpoints.newBlog.physicalActivityListApi
-        }?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${
-          sudActId ? sudActId?.id : id
-        }&branch_ids=${boardId ? boardId : selectedBranch?.branch?.id}`,
+        }?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${id}&branch_ids=${boardId ? boardId : selectedBranch?.branch?.id}`,
         {
           params: {},
           headers: {
@@ -470,7 +466,8 @@ const VisualActivity = () => {
 
   useEffect(() => {
     if (moduleId && branch_update_user) {
-      if (selectedAcademicYear?.id > 0) setLoading(true);
+      if (selectedAcademicYear?.id > 0) 
+      setLoading(true);
       axios
         .get(
           `${endpoints.newBlog.activityBranch}?branch_ids=${selectedBranch?.branch?.id}`,
@@ -566,7 +563,7 @@ const VisualActivity = () => {
     const { id } = localActivityData;
     axiosInstance
       .get(
-        `${endpoints.newBlog.subActivityListApi}?type_id=${sudActId ? sudActId?.id : id}`,
+        `${endpoints.newBlog.subActivityListApi}?type_id=${id}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
