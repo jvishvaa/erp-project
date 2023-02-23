@@ -18,6 +18,9 @@ const AttendanceReportNew = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const fetchClasswiseAttendanceData = (params = {}) => {
     setLoading(true);
@@ -44,7 +47,7 @@ const AttendanceReportNew = () => {
   useEffect(() => {
     if (selectedAcademicYear) {
       fetchClasswiseAttendanceData({
-        session_id: selectedAcademicYear?.id,
+        acadsession_id: selectedBranch?.id,
       });
     }
   }, [selectedAcademicYear]);
@@ -59,11 +62,11 @@ const AttendanceReportNew = () => {
         </div>
         <div className='row justify-content-between align-items-center mt-3'>
           <div className='col-12 th-black-1'>
-            <div className='d-flex justify-content-between py-1 px-2 align-items-center th-bg-grey th-br-8'>
+            <div className='d-flex justify-content-between py-2 px-2 align-items-center th-bg-grey th-br-8'>
               <div className='th-fw-400 th-12'>Your Today's Attendance</div>
               {!loading && todaysAttendance && (
                 <div
-                  className='th-fw-400 th-br-8 th-bg-green th-white px-2 py-1 th-12 text-capitalize'
+                  className='th-fw-400 th-br-5 th-bg-green th-white px-2 py-1 th-12 text-capitalize'
                   style={{
                     backgroundColor:
                       todaysAttendance === 'Holiday'

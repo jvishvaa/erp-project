@@ -89,6 +89,7 @@ export default {
     todaysClass: `${msReportsUrl}/api/reports/teacher_retrieve_daily_periods/`,
     studentsAttendance: `${msReportsUrl}/api/reports/teacher_dsh_st_attendance/`,
     activities: `${newBlogURL}/api/get_activities_dashboard/`,
+    curriculumReport: `${msReportsUrl}/api/reports/td-curriculum-report/`,
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
@@ -111,6 +112,7 @@ export default {
     homeworkReport: `${msReportsUrl}/api/reports/dashboard_student_hw_performance/`,
     diaryStats: `${msReportsUrl}/api/reports/diary_homework_count/`,
     todaysTimeTable: `${msReportsUrl}/api/reports/retrieve_daily_periods/`,
+    classwisehomeworkReport: `${msReportsUrl}/api/reports/teacher_dsh_homeworks/`,
   },
   assessmentDashboard: {
     studentMonthwiseAssessment: `${msReportsUrl}/api/acad_performance/month-wise-assessment-report/`,

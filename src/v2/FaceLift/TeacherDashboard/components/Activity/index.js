@@ -89,39 +89,45 @@ const Activity = () => {
               {activityData.length > 0 ? (
                 <div className='row mt-1 th-bg-grey p-1 th-br-5'>
                   {activityData?.map((item, index) => (
-                    <div className='col-12 px-1 mt-1'>
-                      <div
-                        className='th-bg-white row align-items-center th-br-5 px-0'
-                        style={{ outline: '1px solid #d9d9d9' }}
-                      >
+                    <Badge.Ribbon
+                      style={{ top: '32px', right: '-4px' }}
+                      text={
+                        <span className='th-white th-12'>
+                          {item?.activity_type?.name}
+                        </span>
+                      }
+                    >
+                      <div className='col-12 px-1 mt-1'>
                         <div
-                          className='col-12 px-2 py-1'
-                          style={{ borderBottom: '1px solid #d9d9d9' }}
+                          className='th-bg-white row align-items-center th-br-5 px-0'
+                          style={{ outline: '1px solid #d9d9d9' }}
                         >
-                          <div className='d-flex justify-content-between th-12 align-items-center'>
-                            <div className='th-primary d-flex align-items-center'>
-                              {item?.activity_type?.name == 'Public Speaking' ? (
-                                <>
-                                  <Badge
-                                    status={item?.asset_state ? 'success' : 'processing'}
-                                  />
-                                  <div className='th-fw-500 text-capitalize'>
-                                    {item?.asset_state}
-                                  </div>
-                                </>
-                              ) : null}
-                            </div>
-                            <div className='th-grey th-10'>
-                              Assigned On:&nbsp;
-                              {moment(item?.created_at).format('DD/MM/YYYY')}
+                          <div
+                            className='col-12 px-2 py-1'
+                            style={{ borderBottom: '1px solid #d9d9d9' }}
+                          >
+                            <div className='d-flex justify-content-between th-12 align-items-center'>
+                              <div className='th-primary d-flex align-items-center'>
+                                {item?.activity_type?.name == 'Public Speaking' ? (
+                                  <>
+                                    <Badge
+                                      status={
+                                        item?.asset_state ? 'success' : 'processing'
+                                      }
+                                    />
+                                    <div className='th-fw-500 text-capitalize'>
+                                      {item?.asset_state}
+                                    </div>
+                                  </>
+                                ) : null}
+                              </div>
+                              <div className='th-grey th-10'>
+                                Assigned On:&nbsp;
+                                {moment(item?.created_at).format('DD/MM/YYYY')}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <Badge.Ribbon
-                          text={
-                            <span className='th-white'>{item?.activity_type?.name}</span>
-                          }
-                        >
+
                           <div className='col-12 px-2 py-2'>
                             <div className='row align-items-center'>
                               <div className='col-2 px-1'>
@@ -129,10 +135,11 @@ const Activity = () => {
                                   src={getActivityIcon(item?.activity_type?.name)}
                                   alt='icon'
                                   style={{
-                                    width: 50,
-                                    height: 50,
+                                    width: 48,
+                                    height: 48,
                                     objectFit: 'cover',
                                   }}
+                                  className='th-br-4'
                                 />
                               </div>
                               <div className='col-10 px-0'>
@@ -161,9 +168,9 @@ const Activity = () => {
                               Physical Activity
                             </div> */}
                           </div>
-                        </Badge.Ribbon>
+                        </div>
                       </div>
-                    </div>
+                    </Badge.Ribbon>
                   ))}
                 </div>
               ) : (

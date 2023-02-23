@@ -15,6 +15,9 @@ const HomeworkReport = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [homeworkReportData, setHomeworkReportData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -42,14 +45,14 @@ const HomeworkReport = () => {
   useEffect(() => {
     if (selectedAcademicYear)
       fetchHomeworkReportData({
-        session_id: selectedAcademicYear?.id,
+        acadsession_id: selectedBranch?.id,
       });
   }, [selectedAcademicYear]);
 
   return (
-    <div className={`th-bg-white th-br-5 py-3 px-2 shadow-sm`} style={{ height: 430 }}>
+    <div className={`th-bg-white th-br-5 py-3 px-2 shadow-sm`} style={{ height: 436 }}>
       <div className='row justify-content-between'>
-        <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>Homework Report</div>
+        <div className='col-12 th-16 mt-2 th-fw-500 th-black-1 pb-1'>Homework Report</div>
       </div>
       <div className='row'>
         {loading ? (
@@ -61,23 +64,28 @@ const HomeworkReport = () => {
           </div>
         ) : (
           <>
-            <div className='col-12' style={{ height: 340, overflowY: 'auto' }}>
+            <div className='col-12' style={{ height: 335, overflowY: 'auto' }}>
               {homeworkReportData?.length > 0 ? (
                 <div className='row mt-1 th-bg-grey p-1 th-br-5'>
                   {homeworkReportData?.map((item, index) => (
-                    <div className='col-12 px-1 mt-1'>
-                      <div
-                        className='th-bg-white row align-items-center th-br-5 px-lg-2'
-                        style={{ outline: '1px solid #d9d9d9' }}
-                      >
+                    <Badge.Ribbon
+                      style={{ top: '36px', right: '-4px' }}
+                      text={<span className='th-white th-12'>{item?.subject_name}</span>}
+                    >
+                      {' '}
+                      <div className='col-12 px-1 mt-1'>
                         <div
-                          className='col-12 px-0 py-1'
-                          style={{ borderBottom: '1px solid #d9d9d9' }}
+                          className='th-bg-white row align-items-center th-br-5 px-lg-2'
+                          style={{ outline: '1px solid #d9d9d9' }}
                         >
-                          <div className='d-flex justify-content-between th-12 align-items-center'>
-                            <div className='th-primary d-flex align-items-center'>
-                              {' '}
-                              {/* <div
+                          <div
+                            className='col-12 px-0 py-1'
+                            style={{ borderBottom: '1px solid #d9d9d9' }}
+                          >
+                            <div className='d-flex justify-content-between th-12 align-items-center'>
+                              <div className='th-primary d-flex align-items-center'>
+                                {' '}
+                                {/* <div
                                 style={{
                                   width: 5,
                                   height: 5,
@@ -88,18 +96,16 @@ const HomeworkReport = () => {
                                 &nbsp;
                               </div>
                               <div className='ml-2'>Upcoming</div> */}
-                              <Badge status='processing' />
-                              <div className='th-fw-500'>Upcoming</div>
-                            </div>
-                            <div className='th-grey th-10'>
-                              Assigned On:&nbsp;
-                              {moment(item?.assigned_date).format('DD/MM/YYYY')}
+                                <Badge status='processing' />
+                                <div className='th-fw-500'>Upcoming</div>
+                              </div>
+                              <div className='th-grey th-10'>
+                                Assigned On:&nbsp;
+                                {moment(item?.assigned_date).format('DD/MM/YYYY')}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <Badge.Ribbon
-                          text={<span className='th-white'>{item?.subject_name}</span>}
-                        >
+
                           <div className='col-12 px-0 py-2'>
                             <div className='row align-items-center'>
                               <div className='col-2 px-1'>
@@ -129,9 +135,9 @@ const HomeworkReport = () => {
                               </div>
                             </div>
                           </div>
-                        </Badge.Ribbon>
+                        </div>
                       </div>
-                    </div>
+                    </Badge.Ribbon>
                   ))}
                 </div>
               ) : (
@@ -140,7 +146,7 @@ const HomeworkReport = () => {
                 </div>
               )}
             </div>
-            <div className='row justify-content-end pr-3'>
+            <div className='row justify-content-end pr-3 pt-3'>
               <div
                 className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
                 style={{ outline: '1px solid #d9d9d9' }}
