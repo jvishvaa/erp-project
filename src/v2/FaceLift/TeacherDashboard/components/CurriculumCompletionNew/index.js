@@ -1,75 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Progress, Spin } from 'antd';
+import { useSelector } from 'react-redux';
+import endpoints from 'v2/config/endpoints';
+import axios from 'v2/config/axios';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 
 const CurriculumTracker = (props) => {
   const [loading, setLoading] = useState(false);
-  const [curriculumData, setCurriculumData] = useState([
-    {
-      id: 1,
-      subject: 'Trilingual Language 1',
-      grade: 'Grade 1A',
-      completion: '30',
-      periods: 3,
-    },
-    {
-      id: 1,
-      subject: 'Trilingual Language 2',
-      grade: 'Grade 2A',
-      completion: '50',
-      periods: 3,
-    },
-    {
-      id: 1,
-      subject: 'Trilingual Language 3',
-      grade: 'Grade 2A',
-      completion: '80',
-      periods: 3,
-    },
-    {
-      id: 1,
-      subject: 'Trilingual Language 1',
-      grade: 'Grade 1A',
-      completion: '30',
-      periods: 3,
-    },
-    {
-      id: 1,
-      subject: 'Trilingual Language 2',
-      grade: 'Grade 2A',
-      completion: '50',
-      periods: 3,
-    },
-    {
-      id: 1,
-      subject: 'Trilingual Language 3',
-      grade: 'Grade 2A',
-      completion: '80',
-      periods: 3,
-    },
+  const [curriculumData, setCurriculumData] = useState([]);
 
-    {
-      id: 1,
-      subject: 'Trilingual Language 1',
-      grade: 'Grade 1A',
-      completion: '30',
-      periods: 3,
-    },
-    {
-      id: 1,
-      subject: 'Trilingual Language 2',
-      grade: 'Grade 2A',
-      completion: '50',
-      periods: 3,
-    },
-    {
-      id: 1,
-      subject: 'Trilingual Language 3',
-      grade: 'Grade 2A',
-      completion: '80',
-      periods: 3,
-    },
-  ]);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+
+  const fetchCurriculumReport = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.teacherDashboard.curriculumReport}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          setCurriculumData(response?.data?.result);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchCurriculumReport({
+      acadsession_id: selectedBranch?.id,
+      branch: selectedBranch?.branch?.id,
+    });
+  }, []);
+
   return (
     <div
       className={`th-bg-white th-br-5 py-3 px-2 shadow-sm mb-1`}
@@ -99,31 +71,33 @@ const CurriculumTracker = (props) => {
                         <div className='col-9 px-lg-0  th-fw-600 py-1 th-12'>
                           <div
                             className='th-black-2  text-truncate'
-                            title={item?.subject}
+                            title={item?.subject_name}
                           >
-                            {item?.subject}
+                            {item?.subject_name}
                           </div>
-                          <div className='th-black-1 text-truncate'>{item?.grade}</div>
+                          <div className='th-black-1 text-truncate'>
+                            {item?.grade_name}
+                          </div>
                           <div className='th-grey th-fw-500'>
-                            Period : {item?.periods}
+                            Period : {item?.period_completed}
                           </div>
                         </div>
                         <div className='col-3 px-lg-0'>
                           <Progress
                             type='circle'
                             strokeWidth='11'
-                            percent={item?.completion}
+                            percent={item?.completed_percentage}
                             strokeColor={
-                              item?.completion < 40
+                              item?.completed_percentage < 40
                                 ? '#F33434'
-                                : item?.completion <= 75
+                                : item?.completed_percentage <= 75
                                 ? '#F3A734'
                                 : '#2FC069'
                             }
                             width={40}
                             format={(percent) => (
                               <span
-                                className='th-fw-500 th-10'
+                                className='th-fw-500 th-9'
                                 style={{
                                   color:
                                     percent < 50

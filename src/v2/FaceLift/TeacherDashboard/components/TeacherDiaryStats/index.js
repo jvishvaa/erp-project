@@ -13,6 +13,9 @@ const DiaryStats = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [diaryStats, setDiaryStats] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +30,7 @@ const DiaryStats = () => {
       })
       .then((response) => {
         if (response.data?.status_code === 200) {
-          setDiaryStats(response?.data?.result?.todays_diary);
+          setDiaryStats(response?.data?.result);
         }
         setLoading(false);
       })
@@ -39,7 +42,7 @@ const DiaryStats = () => {
   useEffect(() => {
     if (selectedAcademicYear)
       fetchDiaryStats({
-        session_id: selectedAcademicYear?.id,
+        acadsession_id: selectedBranch?.id,
       });
   }, []);
 

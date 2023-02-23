@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button, CircularProgress } from '@material-ui/core';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
@@ -7,10 +7,12 @@ import _ from 'lodash';
 import JSPDF from 'jspdf';
 import 'jspdf-autotable';
 import './customFont';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import FrontImg from './img/frontPage.png';
 import BodyBg from './img/report-card-bg.png';
 
 const EypReportCard = (props) => {
+  const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
 
   const getEypReprtData = (params = {}) => {
@@ -26,7 +28,8 @@ const EypReportCard = (props) => {
           generateEypReport(response?.data?.result);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        setAlert('error', err?.response?.data?.message);
         setLoading(false);
       });
   };

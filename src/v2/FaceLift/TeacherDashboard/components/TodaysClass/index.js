@@ -17,6 +17,9 @@ const TodaysClass = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const fetchTodaysClassData = (params = {}) => {
     setLoading(true);
@@ -62,7 +65,7 @@ const TodaysClass = () => {
 
   useEffect(() => {
     fetchTodaysClassData({
-      session_id: selectedAcademicYear?.id,
+      acadsession_id: selectedBranch?.id,
     });
   }, []);
   useEffect(() => {
