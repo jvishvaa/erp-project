@@ -399,8 +399,8 @@ const ViewHomeworkNew = withRouter(
                                                 className='homework-question-container-coordinator'
                                                 key={`homework_student_question_${1}`}
                                             >
-                                                <div className='homework-question'>
-                                                    <div className='question'>{question.question}</div>
+                                                <div className='w-100'>
+                                                    <div className='th-14 th-fw-600 p-2' style={{color: '#556778' , background: '#f4f9ff'}} > Question {i + 1} : {question.question}</div>
                                                 </div>
                                             </div>
                                             <div className="overallContainer">
