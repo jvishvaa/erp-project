@@ -148,13 +148,14 @@ const ViewBMITableCustom = (props) => {
         if (res.data?.status_code == 200) {
           setBmiDetails(res?.data?.result);
           setLoading(false);
-          setAlert('success', res?.data?.message);
+          message.success(res?.data?.message)
           setOpenBigModal(true);
         } else if (res?.data?.status_code == 400) {
           setOpenBigModal(false);
-          setAlert('error', res?.data?.message);
+          message.error(res?.data?.message)
           setLoading(false);
           setOpenBigModal(false);
+          return
         }
       });
   };
@@ -197,12 +198,12 @@ const ViewBMITableCustom = (props) => {
         };
         axios.post(`${endpoints.newBlog.addBMIApi}`, requestData, options).then((res) => {
           if (res?.data?.status_code === 200) {
-            setAlert('success', res?.data?.message);
+            message.success(res?.data?.message)
             setIsEdit(false);
             setIsModalOpen(false);
             showBMITable(editData?.student);
           } else {
-            setAlert('error', res?.data?.message);
+            message.error(res?.data?.message)
             setIsModalOpen(false);
           }
         });
@@ -234,11 +235,11 @@ const ViewBMITableCustom = (props) => {
         };
         axios.post(`${endpoints.newBlog.addBMIApi}`, requestData, options).then((res) => {
           if (res?.data?.status_code === 200) {
-            setAlert('success', res?.data?.message);
+            message.success( res?.data?.message)
             setIsEdit(false);
             setIsModalOpen(false);
           } else {
-            setAlert('error', res?.data?.message);
+            message.error(res?.data?.message);
             setIsModalOpen(false);
           }
         });
@@ -339,7 +340,7 @@ const ViewBMITableCustom = (props) => {
         setTotalSubmitted(response?.data?.result);
         // ActivityManagement(response?.data?.result)
         props.setFlag(false);
-        setAlert('success', response?.data?.message);
+        message.success(response?.data?.message)
         setLoading(false);
       });
   };
@@ -396,7 +397,7 @@ const ViewBMITableCustom = (props) => {
         .then((response) => {
           setCheckBMIData(response?.data?.result);
           showBMITable(response?.data?.result);
-          setAlert('success', response?.data?.message);
+          message.success(response?.data?.message)
           setLoading(false);
         });
     }
@@ -415,18 +416,30 @@ const ViewBMITableCustom = (props) => {
     if(bmiArg && ageArg){
       setLoading(true)
       axios
-      .get(`${endpoints.newBlog.bmiRemarksApi}?age=${ageArg}&bmi=${bmiArg}&user_id=${user_id}`,{
+      .get(`${endpoints.newBlog.bmiRemarksApi}?age=${ageArg}&bmi=${bmiArg}&user_id=${checkBMIData?.id}`,{
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
       .then((response) =>{
         // setBmiRemarks()
+        if(response?.data?.status_code == 400){
+          // message.error(response?.data?.message)
+          setLoading(false)
+          return
+        }else{
+          // message.success(response?.data?.message)
+          setBmiRemarks(response?.data?.category)
+          setRemarks(response?.data?.category);
+          setLoading(false)
+          return
+        }
         setLoading(false)
         return
       })
       .catch((err) =>{
         setLoading(false)
+        message.error('BMI calculation failed')
         return
       })
 
@@ -438,16 +451,15 @@ const ViewBMITableCustom = (props) => {
       let parseHeight = parseInt(height);
       let parseWeight = parseInt(weight);
       if (parseHeight === '' || isNaN(parseHeight)) {
-        setAlert('error', 'Provide a valid height');
+        message.error('Provide A Valid Height')
         return;
       } else if (parseWeight === '' || isNaN(parseWeight)) {
-        setAlert('error', 'Provide a valid weight');
+        message.error('Provide a valid weight')
         return;
       } else {
         let bmi = (weight / ((height * height) / 10000)).toFixed(2);
         setBmi(bmi);
         calculateRemarks(bmi,age)
-        setAlert('success', 'BMI Calculated Successfully');
         return;
       }
     } else {
@@ -475,13 +487,13 @@ const ViewBMITableCustom = (props) => {
     }
   };
 
-  const bmiRemarksListOptions = bmiRemarkData?.map((each) => {
-    return (
-      <Option key={each?.name} value={each?.name}>
-        {each?.name}
-      </Option>
-    );
-  });
+  // const bmiRemarksListOptions = bmiRemarkData?.map((each) => {
+  //   return (
+  //     <Option key={each?.name} value={each?.name}>
+  //       {each?.name}
+  //     </Option>
+  //   );
+  // });
 
   return (
     <>
@@ -560,23 +572,13 @@ const ViewBMITableCustom = (props) => {
           </Col>
           <Col span={8}>
             {/* <Input style={{ margin: '0.5rem', width: 'auto' }} value={remarks} onChange={(event) => handleInputBMI(event, 'remarks')} placeholder="Remarks" /> */}
-            <Select
-              // className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-              bordered={true}
-              getPopupContainer={(trigger) => trigger.parentNode}
-              defaultValue={bmiRemarks}
-              style={{ width:'81%', padding: '0.5rem' }}
-              placement='bottomRight'
-              placeholder='Select Remark'
-              suffixIcon={<DownOutlined className='th-black-1' />}
-              dropdownMatchSelectWidth={true}
-              onChange={(event) => handleInputBMI(event, 'remarks')}
-              disabled='true'
-
-              menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-            >
-              {bmiRemarksListOptions}
-            </Select>
+            <Input
+              style={{ margin: '0.5rem', width: 'auto' }}
+              value={bmiRemarks}
+              disabled
+              // onChange={(event) => handleInputBMI(event, 'age')}
+              placeholder='Remarks'
+            />
           </Col>
           <Col span={8}>
             <Input

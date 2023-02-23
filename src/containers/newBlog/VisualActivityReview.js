@@ -339,7 +339,7 @@ const VisualActivityReview = () => {
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
                   href='/blog/wall/central/redirect'
-                  className='th-black-1 th-16'
+                  className='th-grey-1 th-16'
                 >
                   Activity Management
                 </Breadcrumb.Item>
