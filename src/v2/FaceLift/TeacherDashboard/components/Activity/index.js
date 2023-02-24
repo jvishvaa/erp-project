@@ -147,10 +147,17 @@ const Activity = () => {
                                   className='th-br-4'
                                 />
                               </div>
-                              <div className='col-10 px-0'>
+                              <div className='col-10 pl-1'>
                                 <div className='row ml-2 w-100'>
                                   <div className='col-12 px-0 th-black-2 th-fw-600 th-14 '>
-                                    <div className='th-width-50 text-truncate'>
+                                    <div
+                                      className='th-width-50 text-truncate'
+                                      title={
+                                        item?.grade_name[0] +
+                                        ' ' +
+                                        item?.section_name[0]?.slice(-1)
+                                      }
+                                    >
                                       {item?.grade_name[0] +
                                         ' ' +
                                         item?.section_name[0]?.slice(-1)}
