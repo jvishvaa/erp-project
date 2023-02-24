@@ -5,11 +5,14 @@ import endpoints from 'v2/config/endpoints';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import { useHistory } from 'react-router-dom';
 
 const CurriculumTracker = (props) => {
   const [loading, setLoading] = useState(false);
   const [curriculumData, setCurriculumData] = useState([]);
-
+  const [moduleId, setModuleId] = useState('');
+  const history = useHistory();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -41,16 +44,30 @@ const CurriculumTracker = (props) => {
       branch: selectedBranch?.branch?.id,
     });
   }, []);
-
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Ebook' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Ebook View') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
   return (
     <div
       className={`th-bg-white th-br-5 py-3 px-2 shadow-sm mb-1`}
       style={{ height: 440 }}
     >
       <div className='row justify-content-between'>
-        <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
-          Curriculum Completion
-        </div>
+        <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>Curriculum Report</div>
       </div>
       <div className='row'>
         {loading ? (
@@ -65,8 +82,20 @@ const CurriculumTracker = (props) => {
                   {curriculumData.map((item, index) => (
                     <div className='col-md-6 px-1 my-1'>
                       <div
-                        className='th-bg-white row align-items-center th-br-5 px-lg-2'
+                        className='th-bg-white row align-items-center th-br-5 px-lg-2 th-pointer'
                         style={{ outline: '1px solid #d9d9d9' }}
+                        onClick={() =>
+                          history.push({
+                            pathname: `/curriculum-completion-teacher-subject/${selectedBranch?.branch?.id}`,
+                            state: {
+                              branchId: selectedBranch?.branch?.id,
+                              acad_sess_id: selectedBranch?.id,
+                              branchName: selectedBranch?.branch?.branch_name,
+                              acad_session_id: selectedBranch?.session_year?.id,
+                              module_id: moduleId,
+                            },
+                          })
+                        }
                       >
                         <div className='col-9 px-lg-0  th-fw-600 py-1 th-12'>
                           <div
@@ -75,8 +104,11 @@ const CurriculumTracker = (props) => {
                           >
                             {item?.subject_name}
                           </div>
-                          <div className='th-black-1 text-truncate'>
-                            {item?.grade_name}
+                          <div
+                            className='th-black-1 text-truncate'
+                            title={item?.grade_name + ' ' + item?.section_name?.slice(-1)}
+                          >
+                            {item?.grade_name} {item?.section_name?.slice(-1)}
                           </div>
                           <div className='th-grey th-fw-500'>
                             Period : {item?.period_completed}
@@ -128,7 +160,18 @@ const CurriculumTracker = (props) => {
               <div
                 className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
                 style={{ outline: '1px solid #d9d9d9' }}
-                // onClick={() => history.push('/student-assessment-dashboard')}
+                onClick={() =>
+                  history.push({
+                    pathname: `/curriculum-completion-teacher-subject/${selectedBranch?.branch?.id}`,
+                    state: {
+                      branchId: selectedBranch?.branch?.id,
+                      acad_sess_id: selectedBranch?.id,
+                      branchName: selectedBranch?.branch?.branch_name,
+                      acad_session_id: selectedBranch?.session_year?.id,
+                      module_id: moduleId,
+                    },
+                  })
+                }
               >
                 View All
               </div>
