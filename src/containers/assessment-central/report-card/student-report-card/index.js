@@ -74,10 +74,10 @@ const StudentReportCard = () => {
   const handleGrade = (event, value) => {
     setSelectedGrade('');
     const { published = '' } = value || {};
-    if (!published) {
-      setAlert('error', 'Report card not published');
-      return;
-    }
+    // if (!published) {
+    //   setAlert('error', 'Report card not published');
+    //   return;
+    // }
     setSelectedGrade(value);
 
     let paramObj = {

@@ -69,9 +69,18 @@ const EypReportCard = (props) => {
     );
 
     doc.text(
-      `Grade: ${reportCardData?.student_details?.grade}  Section: ${reportCardData?.student_details?.section}`,
+      `ERP ID: ${reportCardData?.student_details?.erp_id}`,
       155,
       163,
+      null,
+      null,
+      'center'
+    );
+
+    doc.text(
+      `Grade: ${reportCardData?.student_details?.grade} , ${reportCardData?.student_details?.section}`,
+      155,
+      173,
       null,
       null,
       'center'
