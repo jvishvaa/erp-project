@@ -161,7 +161,7 @@ function AddTemplates() {
     getActivityCategory();
   }, []);
 
-  const handleActiveType = (event, value) => {
+  const handleActiveType = (value) => {
     if (value) {
       setSearch(value);
       setSeacrhId(value?.id);
@@ -230,9 +230,9 @@ function AddTemplates() {
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
-                      // onChange={(e) => {
-                      //   handleActivity(e);
-                      // }}
+                      onChange={(e) => {
+                        handleActiveType(e);
+                      }}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       bordered={false}
                     >

@@ -37,6 +37,8 @@ const CentralBlogRedirection = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [blogLoginId, setBlogLoginId] = useState('');
+  const [physicalSubId,setPhysicalSubId] = useState('')
+  const [blogSubIdValue,setBlogSubIdValue] = useState('')
 
   const handleBlogWriting = () => {
     history.push('/blog/studentview');
@@ -107,10 +109,12 @@ const CentralBlogRedirection = () => {
           (item) => item?.name == 'Physical Activity'
         );
         setSubId(physicalData[0]?.id);
+        setPhysicalSubId(physicalData[0])
         const blogActivityData = result?.data?.result.filter(
           (item) => item?.name == 'Blog Activity'
         );
         setBlogSubId(blogActivityData[0]?.id);
+        setBlogSubIdValue(blogActivityData[0]);
         const visualActivityData = result?.data?.result.filter(
           (item) => item?.name.toLowerCase() === 'visual art'
         );
@@ -150,11 +154,13 @@ const CentralBlogRedirection = () => {
       // handlePublicSpeaking()
       // return
     } else if (dataLower === 'physical activity') {
+      localStorage.setItem('ActivityData', JSON.stringify(physicalSubId));
       localStorage.setItem('PhysicalActivityId', JSON.stringify(subId));
       handlePublicSpeaking();
       return;
     } else if (dataLower === 'art writting' || dataLower === 'blog activity') {
       localStorage.setItem('BlogActivityId', JSON.stringify(blogSubId));
+      localStorage.setItem('ActivityData', JSON.stringify(blogSubIdValue));
       if (user_level === 2 || user_level === 8 || user_level === 11) {
         handleBlogActivity();
         return;

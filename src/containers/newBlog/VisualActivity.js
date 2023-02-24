@@ -261,7 +261,7 @@ const VisualActivity = () => {
       align: 'center',
       width: '25%',
       render: (text, row) => (
-        <div className='th-black-1 d-flex justify-content-around'>
+        <div className='th-black-1 d-flex justify-content-center'>
           <Tag
             icon={<PieChartOutlined className='th-14' />}
             color='geekblue'

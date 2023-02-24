@@ -2,8 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { withStyles } from '@material-ui/core';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import { UserOutlined, MonitorOutlined, CloseOutlined, UserAddOutlined  } from '@ant-design/icons';
-import { Avatar, Tag, Table as TableAnt, Input, Drawer, Space } from 'antd';
+import {
+  UserOutlined,
+  MonitorOutlined,
+  CloseOutlined,
+  UserAddOutlined,
+} from '@ant-design/icons';
+import { Avatar, Tag, Table as TableAnt, Input, Drawer, Space, message } from 'antd';
 import { makeStyles } from '@material-ui/core/styles';
 import Rating from '@material-ui/lab/Rating';
 import endpoints from '../../config/endpoints';
@@ -86,7 +91,7 @@ const Reviewed = (props) => {
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const classes = useStyles();
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [dataId, setDataId] = useState();
   let datas = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = datas?.token;
@@ -146,7 +151,7 @@ const Reviewed = (props) => {
         },
       })
       .then((response) => {
-        setAlert('success', 'Activity Successfully Shortlisted');
+        message.success('Activity Successfully Shortlisted');
         setButtonFlag(true);
         getTotalSubmitted();
 
@@ -180,7 +185,7 @@ const Reviewed = (props) => {
           setCurrentPage(response?.data?.page);
           setLimit(Number(limit));
           props.setFlag(false);
-          setAlert('success', response?.data?.message);
+          // setAlert('success', response?.data?.message);
           setTotalSubmitted(response?.data?.result);
           setLoading(false);
         });
@@ -399,19 +404,26 @@ const Reviewed = (props) => {
                       <div className=' th-fw-500 th-14'>{data?.grade?.name}</div>
                     </div>
                   </div>
-                  <div className='row text-truncate px-1 text-left mt-2'>
-                    <div className='col-12 px-0'>
-                      <span style={{ fontWeight: 'normal', fontSize: '16px' }}>
-                        Title: {data?.activity_detail?.title}
-                      </span>
-                    </div>
-                    <div className='col-12 px-0'>
-                      <span
-                        className='text-left'
-                        style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}
+                  <div className='col-12 px-0'>
+                    <div
+                      className='th-bg-grey py-3 px-2 th-br-8'
+                      style={{ outline: '1px solid #d9d9d9' }}
+                    >
+                      <div className=' th-12 th-black-2'>
+                        Title :{' '}
+                        <span className='th-16 th-fw-500 th-black-1'>
+                          {data?.activity_detail?.title}
+                        </span>
+                      </div>
+                      <div
+                        className='mt-2'
+                        style={{ overflowY: 'auto', maxHeight: '25vh' }}
                       >
-                        Description: {data?.activity_detail?.description}
-                      </span>
+                        <span className='th-12 th-black-2'>Description :&nbsp;</span>
+                        <span className='th-16 th-fw-400 th-black-1'>
+                          {data?.activity_detail?.description}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   <div className='mt-3'>
@@ -490,17 +502,11 @@ const Reviewed = (props) => {
                             )}
                             {obj?.name == 'Overall' ? (
                               <div>
-                                <Input
-                                  value={obj?.remarks}
-                                  placeholder='Mandatory'
-                                />
+                                <Input value={obj?.remarks} placeholder='Mandatory' />
                               </div>
                             ) : (
                               <div>
-                                <Input
-                                  value={obj?.remarks}
-                                  placeholder='Optional'
-                                />
+                                <Input value={obj?.remarks} placeholder='Optional' />
                               </div>
                             )}
                           </div>
@@ -516,8 +522,7 @@ const Reviewed = (props) => {
                           marginBottom: '15px',
                           marginTop: '32px',
                         }}
-                      >
-                      </div>
+                      ></div>
                     </div>
                   </div>
                 </div>

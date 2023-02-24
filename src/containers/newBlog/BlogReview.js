@@ -109,7 +109,7 @@ const BlogReview = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   console.log(selectedBranch, 'wt');
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (newValue) => {
@@ -358,17 +358,16 @@ const BlogReview = () => {
                         setFlag={setFlag}
                       />
                     </TabPane>
-                    <TabPane tab='NOT SUBMITTED' key='1'>
+                    {/* <TabPane tab='NOT SUBMITTED' key='1'>
                       <NotSubmitted
                         selectedBranch={selectedBranch?.branch}
                         setValue={setValue}
                         value={value}
-                        // handleChange={handleChange}
                         selectedGrade={selectedGrade}
                         flag={flag}
                         setFlag={setFlag}
                       />
-                    </TabPane>
+                    </TabPane> */}
                     <TabPane tab='REVIEWED' key='2'>
                       <Reviewed
                         selectedBranch={selectedBranch?.branch}
