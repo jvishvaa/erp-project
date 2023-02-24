@@ -64,7 +64,10 @@ const HomeworkReport = () => {
           </div>
         ) : (
           <>
-            <div className='col-12' style={{ height: 335, overflowY: 'auto' }}>
+            <div
+              className='col-12'
+              style={{ height: 335, overflowY: 'auto', overflowX: 'hidden' }}
+            >
               {homeworkReportData?.length > 0 ? (
                 <div className='row mt-1 th-bg-grey p-1 th-br-5'>
                   {homeworkReportData?.map((item, index) => (
@@ -84,20 +87,24 @@ const HomeworkReport = () => {
                           >
                             <div className='d-flex justify-content-between th-12 align-items-center'>
                               <div className='th-primary d-flex align-items-center'>
-                                {' '}
-                                {/* <div
-                                style={{
-                                  width: 5,
-                                  height: 5,
-                                  borderRadius: '50%',
-                                  background: '#32d2ff',
-                                }}
-                              >
-                                &nbsp;
-                              </div>
-                              <div className='ml-2'>Upcoming</div> */}
-                                <Badge status='processing' />
-                                <div className='th-fw-500'>Upcoming</div>
+                                <Badge
+                                  status={
+                                    moment().isBefore(item?.submission_date)
+                                      ? 'processing'
+                                      : 'error'
+                                  }
+                                />
+                                <div
+                                  className={`${
+                                    moment().isBefore(item?.submission_date)
+                                      ? 'th-primary'
+                                      : 'th-red'
+                                  } th-fw-500`}
+                                >
+                                  {moment().isBefore(item?.submission_date)
+                                    ? 'Pending'
+                                    : 'Overdue'}
+                                </div>
                               </div>
                               <div className='th-grey th-10'>
                                 Assigned On:&nbsp;
@@ -118,12 +125,22 @@ const HomeworkReport = () => {
                               <div className='col-10 px-0'>
                                 <div className='row ml-2 w-100'>
                                   <div className='col-12 px-0 th-black-2 th-fw-600 th-14 '>
-                                    <div className='text-truncate '>
+                                    <div
+                                      className='text-truncate th-width-50'
+                                      title={
+                                        item?.grade_name +
+                                        ' ' +
+                                        item?.section_name.slice(-1)
+                                      }
+                                    >
                                       {item?.grade_name} {item?.section_name.slice(-1)}
                                     </div>
                                   </div>
                                   <div className='col-12 px-0 th-black-1 th-fw-600 th-16'>
-                                    <div className='text-truncate th-width-80'>
+                                    <div
+                                      className='text-truncate th-width-100'
+                                      title={item?.title}
+                                    >
                                       {item?.title}
                                     </div>
                                   </div>

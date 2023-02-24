@@ -4,7 +4,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { message, Spin, Badge } from 'antd';
+import { message, Spin, Badge, Modal } from 'antd';
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { getActivityIcon } from 'v2/getActivityIcon';
@@ -19,7 +19,8 @@ const Activity = () => {
   const { token } = JSON.parse(localStorage.getItem('userDetails'));
   const [activityData, setActivityData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [activityUserId, setActivityUserId] = useState(null);
+  const [currentActivity, setCurrentActivity] = useState(null);
+  const [showActivityModal, setShowActivityModal] = useState(false);
 
   const fetchActivityData = (params = {}) => {
     setLoading(true);
@@ -99,8 +100,12 @@ const Activity = () => {
                     >
                       <div className='col-12 px-1 mt-1'>
                         <div
-                          className='th-bg-white row align-items-center th-br-5 px-0'
+                          className='th-bg-white row align-items-center th-br-5 px-0 th-pointer'
                           style={{ outline: '1px solid #d9d9d9' }}
+                          onClick={() => {
+                            setCurrentActivity(item);
+                            setShowActivityModal(true);
+                          }}
                         >
                           <div
                             className='col-12 px-2 py-1'
@@ -144,15 +149,17 @@ const Activity = () => {
                               </div>
                               <div className='col-10 px-0'>
                                 <div className='row ml-2 w-100'>
-                                  <div className='col-12 px-0 text-truncate th-black-2 th-fw-600 th-14 '>
-                                    <div className='th-width-70 text-truncate'>
-                                      {/* {item?.grade_name[0] +
+                                  <div className='col-12 px-0 th-black-2 th-fw-600 th-14 '>
+                                    <div className='th-width-50 text-truncate'>
+                                      {item?.grade_name[0] +
                                         ' ' +
-                                        item?.section_name[0]?.slice(-1)} */}
+                                        item?.section_name[0]?.slice(-1)}
                                     </div>
                                   </div>
-                                  <div className='col-12 px-0 text-truncate th-black-1 th-fw-600 th-16'>
-                                    {item?.title}
+                                  <div className='col-12 px-0 th-black-1 th-fw-600 th-16'>
+                                    <div className='th-truncate-1' title={item?.title}>
+                                      {item?.title}
+                                    </div>
                                   </div>
                                   <div className='col-12 px-0 text-truncate th-grey th-fw-400 th-10'>
                                     Submission Date :{' '}
@@ -161,12 +168,6 @@ const Activity = () => {
                                 </div>
                               </div>
                             </div>
-                            {/* <div
-                              className='th-bg-primary th-white p-1 th-br-2 th-10'
-                              style={{ position: 'absolute', top: 0, right: '-8px' }}
-                            >
-                              Physical Activity
-                            </div> */}
                           </div>
                         </div>
                       </div>
@@ -191,6 +192,61 @@ const Activity = () => {
           </>
         )}
       </div>
+      <Modal
+        centered
+        visible={showActivityModal}
+        onCancel={() => {
+          setShowActivityModal(false);
+        }}
+        footer={false}
+        width={500}
+      >
+        <div className='row th-bg-white p-2 pb-3'>
+          <div className='col-12'>
+            <span className='th-black-1 th-fw-500 th-25'>
+              {currentActivity?.title}({currentActivity?.activity_type?.name})
+            </span>
+          </div>
+          <div className='col-12'>
+            <span className='th-grey th-12'>
+              Submission on -
+              {moment(currentActivity?.submission_date).format('DD/MM/YYYY')}
+            </span>
+          </div>
+          <div className='col-12 mt-3'>
+            <div className='row th-12 th-grey'>
+              <div className='col-2 px-0 th-14'>
+                <div className='d-flex justify-content-between'>
+                  <span>Grade</span>
+                  <span>:&nbsp;</span>
+                </div>
+              </div>
+              <div className='col-10 pl-0'>
+                <span>{currentActivity?.grade_name[0]}</span>
+              </div>
+            </div>
+            <div className='row th-12 th-grey'>
+              <div className='col-2 px-0 th-14'>
+                <div className='d-flex justify-content-between'>
+                  <span>Section</span>
+                  <span>:&nbsp;</span>
+                </div>
+              </div>
+              <div className='col-10 pl-0'>
+                <span>
+                  <span>{currentActivity?.section_name[0]}</span>
+                </span>
+              </div>
+            </div>
+            <div className='row th-12 th-grey'>
+              <div className='d-flex flex-column'>
+                <div className='th-14'>Instructions</div>
+                <div>{currentActivity?.description}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

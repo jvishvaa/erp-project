@@ -116,7 +116,7 @@ const DiaryStats = () => {
                 </div>
               </div>
             </div>
-            <div className='col-1 text-right'>
+            <div className='col-1 px-0 text-right'>
               <div>
                 <span className='th-grey th-20'>&gt;</span>
               </div>
