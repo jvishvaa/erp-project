@@ -941,85 +941,88 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
         </table>
 
         {/* COMPETITIVE EXAMS */}
-
-        <table className='w-100 mt-1 th-12 th-report-table '>
-          <tbody className='th-table-border'>
-            {competitiveData?.map((eachCompetitive, compI) => {
-              return (
-                <>
-                  {/* Scholastic Semester Header Start */}
-                  <tr className='text-center'>
-                    <td
-                      className='th-width-12 th-fw-600'
-                      style={{ backgroundColor: '#fdbf8e' }}
-                    >
-                      {eachCompetitive?.component_name}
-                    </td>
-                    {eachCompetitive?.sub_component?.map((eachSem) => {
-                      return (
-                        <td
-                          className={`th-fw-600`} //calculating column width
-                          colSpan={eachSem?.marks_with_subject?.length + 3}
-                          style={{
-                            backgroundColor: '#fdbf8e',
-                            width: `${72 / eachCompetitive?.sub_component?.length}%`,
-                          }}
-                        >
-                          {eachSem?.sub_component_name}
-                        </td>
-                      );
-                    })}
-                    {eachCompetitive?.sub_component?.length > 1 ? (
+        {competitiveData?.length > 0 ? (
+          <table className='w-100 mt-1 th-12 th-report-table '>
+            <tbody className='th-table-border'>
+              {competitiveData?.map((eachCompetitive, compI) => {
+                return (
+                  <>
+                    {/* Scholastic Semester Header Start */}
+                    <tr className='text-center'>
                       <td
-                        className='th-width-16 th-fw-600'
-                        colSpan={3}
+                        className='th-width-12 th-fw-600'
                         style={{ backgroundColor: '#fdbf8e' }}
                       >
-                        ANNUAL SCORE / GRADE
+                        {eachCompetitive?.component_name}
                       </td>
-                    ) : null}
-                  </tr>
-                  {/* Scholastic Semester Header End */}
-                  {/* Subject/Exam type Header Start */}
-                  <tr>
-                    <td className='th-width-12 th-fw-600'>{'Subject'}</td>
-                    {eachCompetitive?.sub_component?.map((eachSem) => {
-                      return eachSem?.marks_with_subject?.map(
-                        (eachSubject, subjectIndex) => {
-                          return (
-                            <>
-                              <td className='th-width-10 th-fw-600 text-center'>
-                                {eachSubject?.column_text}
-                              </td>
-
-                              {/* Inserting Total marks column for each semester */}
-                              {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
-                                <td className='th-width-12 th-fw-600 text-center'>
-                                  {'Total'}
+                      {eachCompetitive?.sub_component?.map((eachSem) => {
+                        return (
+                          <td
+                            className={`th-fw-600`} //calculating column width
+                            colSpan={eachSem?.marks_with_subject?.length + 3}
+                            style={{
+                              backgroundColor: '#fdbf8e',
+                              width: `${72 / eachCompetitive?.sub_component?.length}%`,
+                            }}
+                          >
+                            {eachSem?.sub_component_name}
+                          </td>
+                        );
+                      })}
+                      {eachCompetitive?.sub_component?.length > 1 ? (
+                        <td
+                          className='th-width-16 th-fw-600'
+                          colSpan={3}
+                          style={{ backgroundColor: '#fdbf8e' }}
+                        >
+                          ANNUAL SCORE / GRADE
+                        </td>
+                      ) : null}
+                    </tr>
+                    {/* Scholastic Semester Header End */}
+                    {/* Subject/Exam type Header Start */}
+                    <tr>
+                      <td className='th-width-12 th-fw-600'>{'Subject'}</td>
+                      {eachCompetitive?.sub_component?.map((eachSem) => {
+                        return eachSem?.marks_with_subject?.map(
+                          (eachSubject, subjectIndex) => {
+                            return (
+                              <>
+                                <td className='th-width-10 th-fw-600 text-center'>
+                                  {eachSubject?.column_text}
                                 </td>
-                              ) : null}
-                              {/* Inserting Grade column for each semester */}
-                              {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
-                                <td
-                                  className='th-width-12 th-fw-600 text-center'
-                                  rowSpan={2}
-                                >
-                                  {'Grade'}
-                                </td>
-                              ) : null}
 
-                              {/* Inserting OSR column for each semester */}
-                              {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
-                                <td
-                                  className='th-width-12 th-fw-600 text-center'
-                                  rowSpan={2}
-                                >
-                                  {'OSR'}
-                                </td>
-                              ) : null}
+                                {/* Inserting Total marks column for each semester */}
+                                {subjectIndex ==
+                                eachSem?.marks_with_subject?.length - 1 ? (
+                                  <td className='th-width-12 th-fw-600 text-center'>
+                                    {'Total'}
+                                  </td>
+                                ) : null}
+                                {/* Inserting Grade column for each semester */}
+                                {subjectIndex ==
+                                eachSem?.marks_with_subject?.length - 1 ? (
+                                  <td
+                                    className='th-width-12 th-fw-600 text-center'
+                                    rowSpan={2}
+                                  >
+                                    {'Grade'}
+                                  </td>
+                                ) : null}
 
-                              {/* Inserting AIR column for each semester */}
-                              {/* {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
+                                {/* Inserting OSR column for each semester */}
+                                {subjectIndex ==
+                                eachSem?.marks_with_subject?.length - 1 ? (
+                                  <td
+                                    className='th-width-12 th-fw-600 text-center'
+                                    rowSpan={2}
+                                  >
+                                    {'OSR'}
+                                  </td>
+                                ) : null}
+
+                                {/* Inserting AIR column for each semester */}
+                                {/* {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
                                 <td
                                   className='th-width-12 th-fw-600 text-center'
                                   rowSpan={2}
@@ -1027,108 +1030,112 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   {'AIR'}
                                 </td>
                               ) : null} */}
-                            </>
-                          );
-                        }
-                      );
-                    })}
-                    {/* Inserting Anuual column for each semester */}
-                    {eachCompetitive?.sub_component?.length > 1 ? (
-                      <>
-                        {' '}
-                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                          {'(T1 +T2)/2'}
-                        </td>
-                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                          {'Grade'}
-                        </td>
-                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                          {'OSR'}
-                        </td>
-                        {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                              </>
+                            );
+                          }
+                        );
+                      })}
+                      {/* Inserting Anuual column for each semester */}
+                      {eachCompetitive?.sub_component?.length > 1 ? (
+                        <>
+                          {' '}
+                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                            {'(T1 +T2)/2'}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                            {'Grade'}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                            {'OSR'}
+                          </td>
+                          {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                           {'AIR'}
                         </td> */}
-                      </>
-                    ) : null}
-                  </tr>
-                  {/* Subject/Exam type Header End */}
-                  {/* Weightage Header Start */}
-                  <tr>
-                    <td className='th-width-12 th-fw-600'>{'WEIGHTAGE(%)'}</td>
-                    {eachCompetitive?.sub_component?.map((eachSem) => {
-                      return eachSem?.marks_with_subject?.map(
-                        (eachSubject, subjectIndex) => {
-                          return (
-                            <>
-                              <td className='th-width-10 th-fw-600 text-center'>
-                                {eachSubject?.weightage}
-                              </td>
-                              {/* Inserting Total marks column for each semester */}
-                              {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
-                                <td className='th-width-12 th-fw-600 text-center'>
-                                  {eachSem?.total_weightage}
-                                </td>
-                              ) : null}
-                            </>
-                          );
-                        }
-                      );
-                    })}
-                  </tr>
-                  {/* Weightage Header End */}
-                  {/* Subject With Marks Start */}
-
-                  {competitiveSubjectList[compI]?.map((x, subjectIndex) => {
-                    return (
-                      <tr>
-                        <td className='th-fw-600' style={{ backgroundColor: '#ffffff' }}>
-                          {x.subject_name}
-                        </td>
-                        {eachCompetitive?.sub_component?.map((eachSem, i) => {
-                          return eachSem?.marks_with_subject?.map((eachExam, j) => {
-                            let subMarks = eachExam?.marks?.filter(
-                              (eachMarks, marksIndex) => {
-                                return eachMarks?.subject?.id === x.id;
-                              }
-                            )[0]?.normalized_marks;
-
+                        </>
+                      ) : null}
+                    </tr>
+                    {/* Subject/Exam type Header End */}
+                    {/* Weightage Header Start */}
+                    <tr>
+                      <td className='th-width-12 th-fw-600'>{'WEIGHTAGE(%)'}</td>
+                      {eachCompetitive?.sub_component?.map((eachSem) => {
+                        return eachSem?.marks_with_subject?.map(
+                          (eachSubject, subjectIndex) => {
                             return (
                               <>
-                                <td
-                                  className='th-width-10  text-center'
-                                  style={{ backgroundColor: '#ffffff' }}
-                                >
-                                  {isNaN(subMarks) ? 'NA' : subMarks}
+                                <td className='th-width-10 th-fw-600 text-center'>
+                                  {eachSubject?.weightage}
                                 </td>
                                 {/* Inserting Total marks column for each semester */}
-                                {j == eachSem?.marks_with_subject?.length - 1 ? (
-                                  <td
-                                    className='th-width-12 text-center'
-                                    style={{ backgroundColor: '#ffffff' }}
-                                  >
-                                    {eachSem?.subject_wise_secured_marks[subjectIndex]}
+                                {subjectIndex ==
+                                eachSem?.marks_with_subject?.length - 1 ? (
+                                  <td className='th-width-12 th-fw-600 text-center'>
+                                    {eachSem?.total_weightage}
                                   </td>
                                 ) : null}
-                                {/* Inserting Total Grade column for each semester */}
-                                {j == eachSem?.marks_with_subject?.length - 1 ? (
+                              </>
+                            );
+                          }
+                        );
+                      })}
+                    </tr>
+                    {/* Weightage Header End */}
+                    {/* Subject With Marks Start */}
+
+                    {competitiveSubjectList[compI]?.map((x, subjectIndex) => {
+                      return (
+                        <tr>
+                          <td
+                            className='th-fw-600'
+                            style={{ backgroundColor: '#ffffff' }}
+                          >
+                            {x.subject_name}
+                          </td>
+                          {eachCompetitive?.sub_component?.map((eachSem, i) => {
+                            return eachSem?.marks_with_subject?.map((eachExam, j) => {
+                              let subMarks = eachExam?.marks?.filter(
+                                (eachMarks, marksIndex) => {
+                                  return eachMarks?.subject?.id === x.id;
+                                }
+                              )[0]?.normalized_marks;
+
+                              return (
+                                <>
                                   <td
-                                    className='th-width-12 text-center'
+                                    className='th-width-10  text-center'
                                     style={{ backgroundColor: '#ffffff' }}
                                   >
-                                    {eachSem?.grade[subjectIndex]}
+                                    {isNaN(subMarks) ? 'NA' : subMarks}
                                   </td>
-                                ) : null}
-                                {/* Inserting Total OSR column for each semester */}
-                                {j == eachSem?.marks_with_subject?.length - 1 ? (
-                                  <td
-                                    className='th-width-12 text-center'
-                                    style={{ backgroundColor: '#ffffff' }}
-                                  >
-                                    {eachSem?.OSR[subjectIndex]}
-                                  </td>
-                                ) : null}
-                                {/* Inserting Total AIR column for each semester */}
-                                {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                  {/* Inserting Total marks column for each semester */}
+                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                    <td
+                                      className='th-width-12 text-center'
+                                      style={{ backgroundColor: '#ffffff' }}
+                                    >
+                                      {eachSem?.subject_wise_secured_marks[subjectIndex]}
+                                    </td>
+                                  ) : null}
+                                  {/* Inserting Total Grade column for each semester */}
+                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                    <td
+                                      className='th-width-12 text-center'
+                                      style={{ backgroundColor: '#ffffff' }}
+                                    >
+                                      {eachSem?.grade[subjectIndex]}
+                                    </td>
+                                  ) : null}
+                                  {/* Inserting Total OSR column for each semester */}
+                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                    <td
+                                      className='th-width-12 text-center'
+                                      style={{ backgroundColor: '#ffffff' }}
+                                    >
+                                      {eachSem?.OSR[subjectIndex]}
+                                    </td>
+                                  ) : null}
+                                  {/* Inserting Total AIR column for each semester */}
+                                  {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
                                     className='th-width-12 text-center'
                                     style={{ backgroundColor: '#ffffff' }}
@@ -1136,218 +1143,222 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                     {eachSem?.AIR[subjectIndex]}
                                   </td>
                                 ) : null} */}
-                              </>
-                            );
-                          });
-                        })}
-                        {/* avg */}
-                        {eachCompetitive?.sub_component?.length > 1 ? (
-                          <>
-                            {' '}
-                            <td
-                              className='th-width-10  text-center'
-                              style={{ backgroundColor: '#ffffff' }}
-                            >
-                              {eachCompetitive?.annual_score?.marks[subjectIndex]}
-                            </td>
-                            {/* Avg Grade */}
-                            <td
-                              className='th-width-10  text-center'
-                              style={{ backgroundColor: '#ffffff' }}
-                            >
-                              {eachCompetitive?.annual_score?.grade[subjectIndex]}
-                            </td>
-                            {/* Avg OSR */}
-                            <td
-                              className='th-width-10  text-center'
-                              style={{ backgroundColor: '#ffffff' }}
-                            >
-                              {eachCompetitive?.annual_score?.OSR[subjectIndex]}
-                            </td>
-                            {/* Avg AIR */}
-                            {/* <td
+                                </>
+                              );
+                            });
+                          })}
+                          {/* avg */}
+                          {eachCompetitive?.sub_component?.length > 1 ? (
+                            <>
+                              {' '}
+                              <td
+                                className='th-width-10  text-center'
+                                style={{ backgroundColor: '#ffffff' }}
+                              >
+                                {eachCompetitive?.annual_score?.marks[subjectIndex]}
+                              </td>
+                              {/* Avg Grade */}
+                              <td
+                                className='th-width-10  text-center'
+                                style={{ backgroundColor: '#ffffff' }}
+                              >
+                                {eachCompetitive?.annual_score?.grade[subjectIndex]}
+                              </td>
+                              {/* Avg OSR */}
+                              <td
+                                className='th-width-10  text-center'
+                                style={{ backgroundColor: '#ffffff' }}
+                              >
+                                {eachCompetitive?.annual_score?.OSR[subjectIndex]}
+                              </td>
+                              {/* Avg AIR */}
+                              {/* <td
                               className='th-width-10  text-center'
                               style={{ backgroundColor: '#ffffff' }}
                             >
                               {eachCompetitive?.annual_score?.AIR[subjectIndex]}
                             </td> */}
-                          </>
-                        ) : null}
-                      </tr>
-                    );
-                  })}
+                            </>
+                          ) : null}
+                        </tr>
+                      );
+                    })}
 
-                  {/* Total Start */}
-                  <tr>
-                    <td className='th-width-12 th-fw-600'>{'Total'}</td>
-                    {eachCompetitive?.sub_component?.map((eachSem, x) => {
-                      return (
-                        <>
-                          <td
-                            className='th-width-10 th-fw-600 text-center'
-                            colSpan={coschSxamTypeHeader[compI][x].length + 1}
-                          >
-                            {eachSem.total_secured_marks} out of {eachSem.total_marks} (
-                            {isNaN(eachSem?.total_marks_percentage)
-                              ? eachSem?.total_marks_percentage
-                              : eachSem?.total_marks_percentage?.toFixed(2)}
-                            %)
-                          </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
-                            {eachSem.total_grade}
-                          </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
-                            {eachSem.overall_osr}
-                          </td>
-                          {/* <td className='th-width-12 th-fw-600 text-center'>
+                    {/* Total Start */}
+                    <tr>
+                      <td className='th-width-12 th-fw-600'>{'Total'}</td>
+                      {eachCompetitive?.sub_component?.map((eachSem, x) => {
+                        return (
+                          <>
+                            <td
+                              className='th-width-10 th-fw-600 text-center'
+                              colSpan={coschSxamTypeHeader[compI][x].length + 1}
+                            >
+                              {eachSem.total_secured_marks} out of {eachSem.total_marks} (
+                              {isNaN(eachSem?.total_marks_percentage)
+                                ? eachSem?.total_marks_percentage
+                                : eachSem?.total_marks_percentage?.toFixed(2)}
+                              %)
+                            </td>
+                            <td className='th-width-12 th-fw-600 text-center'>
+                              {eachSem.total_grade}
+                            </td>
+                            <td className='th-width-12 th-fw-600 text-center'>
+                              {eachSem.overall_osr}
+                            </td>
+                            {/* <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.overall_air}
                           </td> */}
-                        </>
-                      );
-                    })}
-                    {eachCompetitive?.sub_component?.length > 1 ? (
-                      <>
-                        {' '}
-                        <td className='th-width-12 th-fw-600 text-center'>
-                          {_.sum(
-                            eachCompetitive?.sub_component.map((item) => {
-                              return item.total_secured_marks;
-                            })
-                          ) / eachCompetitive?.sub_component?.length}
-                        </td>
-                        <td className='th-width-12 th-fw-600 text-center'>
-                          {eachCompetitive?.annual_score?.total_grade}
-                        </td>
-                        <td className='th-width-12 th-fw-600 text-center'>
-                          {eachCompetitive?.annual_score?.overall_osr}
-                        </td>
-                        {/* <td className='th-width-12 th-fw-600 text-center'>
+                          </>
+                        );
+                      })}
+                      {eachCompetitive?.sub_component?.length > 1 ? (
+                        <>
+                          {' '}
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {_.sum(
+                              eachCompetitive?.sub_component.map((item) => {
+                                return item.total_secured_marks;
+                              })
+                            ) / eachCompetitive?.sub_component?.length}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachCompetitive?.annual_score?.total_grade}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachCompetitive?.annual_score?.overall_osr}
+                          </td>
+                          {/* <td className='th-width-12 th-fw-600 text-center'>
                           {eachCompetitive?.annual_score?.overall_air}
                         </td> */}
-                      </>
-                    ) : null}
-                  </tr>
-                  {/* Total End */}
+                        </>
+                      ) : null}
+                    </tr>
+                    {/* Total End */}
 
-                  {/* Grading point descriptions Start */}
-                  <tr>
-                    <td
-                      style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                      colSpan={
-                        eachCompetitive?.sub_component?.length > 1
-                          ? competitiveExamTypeHeader[compI]?.flat().length +
-                            competitiveHeader[compI].length +
-                            (3 * (eachCompetitive?.sub_component?.length - 1) + 4)
-                          : competitiveExamTypeHeader[compI]?.flat().length +
-                            competitiveHeader[compI].length +
-                            2
-                      } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                    >
-                      {eachCompetitive?.grade_description}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                      colSpan={
-                        eachCompetitive?.sub_component?.length > 1
-                          ? competitiveExamTypeHeader[compI]?.flat().length +
-                            competitiveHeader[compI].length +
-                            (3 * (eachCompetitive?.sub_component?.length - 1) + 4)
-                          : competitiveExamTypeHeader[compI]?.flat().length +
-                            competitiveHeader[compI].length +
-                            2
-                      } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                    >
-                      {eachCompetitive?.component_description}
-                    </td>
-                  </tr>
-                  {/* Grading point descriptions End */}
-                </>
-              );
-            })}
-          </tbody>
-        </table>
-        {/* ASSET EXAMS */}
-
-        <table className='w-100 mt-1 th-12 th-report-table '>
-          <tbody className='th-table-border'>
-            {assetData?.map((eachAsset, compI) => {
-              return (
-                <>
-                  {/* Scholastic Semester Header Start */}
-                  <tr className='text-center'>
-                    <td
-                      className='th-width-12 th-fw-600'
-                      style={{ backgroundColor: '#fdbf8e' }}
-                    >
-                      {eachAsset?.component_name}
-                    </td>
-                    {eachAsset?.sub_component?.map((eachSem) => {
-                      return (
-                        <td
-                          className={`th-fw-600`} //calculating column width
-                          colSpan={eachSem?.marks_with_subject?.length + 3}
-                          style={{
-                            backgroundColor: '#fdbf8e',
-                            width: `${72 / eachAsset?.sub_component?.length}%`,
-                          }}
-                        >
-                          {eachSem?.sub_component_name}
-                        </td>
-                      );
-                    })}
-                    {eachAsset?.sub_component?.length > 1 ? (
+                    {/* Grading point descriptions Start */}
+                    <tr>
                       <td
-                        className='th-width-16 th-fw-600'
-                        colSpan={3}
+                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                        colSpan={
+                          eachCompetitive?.sub_component?.length > 1
+                            ? competitiveExamTypeHeader[compI]?.flat().length +
+                              competitiveHeader[compI].length +
+                              (3 * (eachCompetitive?.sub_component?.length - 1) + 4)
+                            : competitiveExamTypeHeader[compI]?.flat().length +
+                              competitiveHeader[compI].length +
+                              2
+                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                      >
+                        {eachCompetitive?.grade_description}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                        colSpan={
+                          eachCompetitive?.sub_component?.length > 1
+                            ? competitiveExamTypeHeader[compI]?.flat().length +
+                              competitiveHeader[compI].length +
+                              (3 * (eachCompetitive?.sub_component?.length - 1) + 4)
+                            : competitiveExamTypeHeader[compI]?.flat().length +
+                              competitiveHeader[compI].length +
+                              2
+                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                      >
+                        {eachCompetitive?.component_description}
+                      </td>
+                    </tr>
+                    {/* Grading point descriptions End */}
+                  </>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : null}
+        {/* ASSET EXAMS */}
+        {assetData?.length > 0 ? (
+          <table className='w-100 mt-1 th-12 th-report-table '>
+            <tbody className='th-table-border'>
+              {assetData?.map((eachAsset, compI) => {
+                return (
+                  <>
+                    {/* Scholastic Semester Header Start */}
+                    <tr className='text-center'>
+                      <td
+                        className='th-width-12 th-fw-600'
                         style={{ backgroundColor: '#fdbf8e' }}
                       >
-                        ANNUAL SCORE / GRADE
+                        {eachAsset?.component_name}
                       </td>
-                    ) : null}
-                  </tr>
-                  {/* Scholastic Semester Header End */}
-                  {/* Subject/Exam type Header Start */}
-                  <tr>
-                    <td className='th-width-12 th-fw-600'>{'Subject'}</td>
-                    {eachAsset?.sub_component?.map((eachSem) => {
-                      return eachSem?.marks_with_subject?.map(
-                        (eachSubject, subjectIndex) => {
-                          return (
-                            <>
-                              <td className='th-width-10 th-fw-600 text-center'>
-                                {eachSubject?.column_text}
-                              </td>
-
-                              {/* Inserting Total marks column for each semester */}
-                              {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
-                                <td className='th-width-12 th-fw-600 text-center'>
-                                  {'Total'}
+                      {eachAsset?.sub_component?.map((eachSem) => {
+                        return (
+                          <td
+                            className={`th-fw-600`} //calculating column width
+                            colSpan={eachSem?.marks_with_subject?.length + 3}
+                            style={{
+                              backgroundColor: '#fdbf8e',
+                              width: `${72 / eachAsset?.sub_component?.length}%`,
+                            }}
+                          >
+                            {eachSem?.sub_component_name}
+                          </td>
+                        );
+                      })}
+                      {eachAsset?.sub_component?.length > 1 ? (
+                        <td
+                          className='th-width-16 th-fw-600'
+                          colSpan={3}
+                          style={{ backgroundColor: '#fdbf8e' }}
+                        >
+                          ANNUAL SCORE / GRADE
+                        </td>
+                      ) : null}
+                    </tr>
+                    {/* Scholastic Semester Header End */}
+                    {/* Subject/Exam type Header Start */}
+                    <tr>
+                      <td className='th-width-12 th-fw-600'>{'Subject'}</td>
+                      {eachAsset?.sub_component?.map((eachSem) => {
+                        return eachSem?.marks_with_subject?.map(
+                          (eachSubject, subjectIndex) => {
+                            return (
+                              <>
+                                <td className='th-width-10 th-fw-600 text-center'>
+                                  {eachSubject?.column_text}
                                 </td>
-                              ) : null}
-                              {/* Inserting Grade column for each semester */}
-                              {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
-                                <td
-                                  className='th-width-12 th-fw-600 text-center'
-                                  rowSpan={2}
-                                >
-                                  {'Grade'}
-                                </td>
-                              ) : null}
 
-                              {/* Inserting OSR column for each semester */}
-                              {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
-                                <td
-                                  className='th-width-12 th-fw-600 text-center'
-                                  rowSpan={2}
-                                >
-                                  {'OSR'}
-                                </td>
-                              ) : null}
+                                {/* Inserting Total marks column for each semester */}
+                                {subjectIndex ==
+                                eachSem?.marks_with_subject?.length - 1 ? (
+                                  <td className='th-width-12 th-fw-600 text-center'>
+                                    {'Total'}
+                                  </td>
+                                ) : null}
+                                {/* Inserting Grade column for each semester */}
+                                {subjectIndex ==
+                                eachSem?.marks_with_subject?.length - 1 ? (
+                                  <td
+                                    className='th-width-12 th-fw-600 text-center'
+                                    rowSpan={2}
+                                  >
+                                    {'Grade'}
+                                  </td>
+                                ) : null}
 
-                              {/* Inserting AIR column for each semester */}
-                              {/* {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
+                                {/* Inserting OSR column for each semester */}
+                                {subjectIndex ==
+                                eachSem?.marks_with_subject?.length - 1 ? (
+                                  <td
+                                    className='th-width-12 th-fw-600 text-center'
+                                    rowSpan={2}
+                                  >
+                                    {'OSR'}
+                                  </td>
+                                ) : null}
+
+                                {/* Inserting AIR column for each semester */}
+                                {/* {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
                                 <td
                                   className='th-width-12 th-fw-600 text-center'
                                   rowSpan={2}
@@ -1355,108 +1366,112 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   {'AIR'}
                                 </td>
                               ) : null} */}
-                            </>
-                          );
-                        }
-                      );
-                    })}
-                    {/* Inserting Anuual column for each semester */}
-                    {eachAsset?.sub_component?.length > 1 ? (
-                      <>
-                        {' '}
-                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                          {'(T1 +T2)/2'}
-                        </td>
-                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                          {'Grade'}
-                        </td>
-                        <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                          {'OSR'}
-                        </td>
-                        {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                              </>
+                            );
+                          }
+                        );
+                      })}
+                      {/* Inserting Anuual column for each semester */}
+                      {eachAsset?.sub_component?.length > 1 ? (
+                        <>
+                          {' '}
+                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                            {'(T1 +T2)/2'}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                            {'Grade'}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                            {'OSR'}
+                          </td>
+                          {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                           {'AIR'}
                         </td> */}
-                      </>
-                    ) : null}
-                  </tr>
-                  {/* Subject/Exam type Header End */}
-                  {/* Weightage Header Start */}
-                  <tr>
-                    <td className='th-width-12 th-fw-600'>{'WEIGHTAGE(%)'}</td>
-                    {eachAsset?.sub_component?.map((eachSem) => {
-                      return eachSem?.marks_with_subject?.map(
-                        (eachSubject, subjectIndex) => {
-                          return (
-                            <>
-                              <td className='th-width-10 th-fw-600 text-center'>
-                                {eachSubject?.weightage}
-                              </td>
-                              {/* Inserting Total marks column for each semester */}
-                              {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
-                                <td className='th-width-12 th-fw-600 text-center'>
-                                  {eachSem?.total_weightage}
-                                </td>
-                              ) : null}
-                            </>
-                          );
-                        }
-                      );
-                    })}
-                  </tr>
-                  {/* Weightage Header End */}
-                  {/* Subject With Marks Start */}
-
-                  {assetSubjectList[compI]?.map((x, subjectIndex) => {
-                    return (
-                      <tr>
-                        <td className='th-fw-600' style={{ backgroundColor: '#ffffff' }}>
-                          {x.subject_name}
-                        </td>
-                        {eachAsset?.sub_component?.map((eachSem, i) => {
-                          return eachSem?.marks_with_subject?.map((eachExam, j) => {
-                            let subMarks = eachExam?.marks?.filter(
-                              (eachMarks, marksIndex) => {
-                                return eachMarks?.subject?.id === x.id;
-                              }
-                            )[0]?.normalized_marks;
-
+                        </>
+                      ) : null}
+                    </tr>
+                    {/* Subject/Exam type Header End */}
+                    {/* Weightage Header Start */}
+                    <tr>
+                      <td className='th-width-12 th-fw-600'>{'WEIGHTAGE(%)'}</td>
+                      {eachAsset?.sub_component?.map((eachSem) => {
+                        return eachSem?.marks_with_subject?.map(
+                          (eachSubject, subjectIndex) => {
                             return (
                               <>
-                                <td
-                                  className='th-width-10  text-center'
-                                  style={{ backgroundColor: '#ffffff' }}
-                                >
-                                  {isNaN(subMarks) ? 'NA' : subMarks}
+                                <td className='th-width-10 th-fw-600 text-center'>
+                                  {eachSubject?.weightage}
                                 </td>
                                 {/* Inserting Total marks column for each semester */}
-                                {j == eachSem?.marks_with_subject?.length - 1 ? (
-                                  <td
-                                    className='th-width-12 text-center'
-                                    style={{ backgroundColor: '#ffffff' }}
-                                  >
-                                    {eachSem?.subject_wise_secured_marks[subjectIndex]}
+                                {subjectIndex ==
+                                eachSem?.marks_with_subject?.length - 1 ? (
+                                  <td className='th-width-12 th-fw-600 text-center'>
+                                    {eachSem?.total_weightage}
                                   </td>
                                 ) : null}
-                                {/* Inserting Total Grade column for each semester */}
-                                {j == eachSem?.marks_with_subject?.length - 1 ? (
+                              </>
+                            );
+                          }
+                        );
+                      })}
+                    </tr>
+                    {/* Weightage Header End */}
+                    {/* Subject With Marks Start */}
+
+                    {assetSubjectList[compI]?.map((x, subjectIndex) => {
+                      return (
+                        <tr>
+                          <td
+                            className='th-fw-600'
+                            style={{ backgroundColor: '#ffffff' }}
+                          >
+                            {x.subject_name}
+                          </td>
+                          {eachAsset?.sub_component?.map((eachSem, i) => {
+                            return eachSem?.marks_with_subject?.map((eachExam, j) => {
+                              let subMarks = eachExam?.marks?.filter(
+                                (eachMarks, marksIndex) => {
+                                  return eachMarks?.subject?.id === x.id;
+                                }
+                              )[0]?.normalized_marks;
+
+                              return (
+                                <>
                                   <td
-                                    className='th-width-12 text-center'
+                                    className='th-width-10  text-center'
                                     style={{ backgroundColor: '#ffffff' }}
                                   >
-                                    {eachSem?.grade[subjectIndex]}
+                                    {isNaN(subMarks) ? 'NA' : subMarks}
                                   </td>
-                                ) : null}
-                                {/* Inserting Total OSR column for each semester */}
-                                {j == eachSem?.marks_with_subject?.length - 1 ? (
-                                  <td
-                                    className='th-width-12 text-center'
-                                    style={{ backgroundColor: '#ffffff' }}
-                                  >
-                                    {eachSem?.OSR[subjectIndex]}
-                                  </td>
-                                ) : null}
-                                {/* Inserting Total AIR column for each semester */}
-                                {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                  {/* Inserting Total marks column for each semester */}
+                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                    <td
+                                      className='th-width-12 text-center'
+                                      style={{ backgroundColor: '#ffffff' }}
+                                    >
+                                      {eachSem?.subject_wise_secured_marks[subjectIndex]}
+                                    </td>
+                                  ) : null}
+                                  {/* Inserting Total Grade column for each semester */}
+                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                    <td
+                                      className='th-width-12 text-center'
+                                      style={{ backgroundColor: '#ffffff' }}
+                                    >
+                                      {eachSem?.grade[subjectIndex]}
+                                    </td>
+                                  ) : null}
+                                  {/* Inserting Total OSR column for each semester */}
+                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                    <td
+                                      className='th-width-12 text-center'
+                                      style={{ backgroundColor: '#ffffff' }}
+                                    >
+                                      {eachSem?.OSR[subjectIndex]}
+                                    </td>
+                                  ) : null}
+                                  {/* Inserting Total AIR column for each semester */}
+                                  {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
                                     className='th-width-12 text-center'
                                     style={{ backgroundColor: '#ffffff' }}
@@ -1464,138 +1479,139 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                     {eachSem?.AIR[subjectIndex]}
                                   </td>
                                 ) : null} */}
-                              </>
-                            );
-                          });
-                        })}
-                        {/* avg */}
-                        {eachAsset?.sub_component?.length > 1 ? (
-                          <>
-                            {' '}
-                            <td
-                              className='th-width-10  text-center'
-                              style={{ backgroundColor: '#ffffff' }}
-                            >
-                              {eachAsset?.annual_score?.marks[subjectIndex]}
-                            </td>
-                            {/* Avg Grade */}
-                            <td
-                              className='th-width-10  text-center'
-                              style={{ backgroundColor: '#ffffff' }}
-                            >
-                              {eachAsset?.annual_score?.grade[subjectIndex]}
-                            </td>
-                            {/* Avg OSR */}
-                            <td
-                              className='th-width-10  text-center'
-                              style={{ backgroundColor: '#ffffff' }}
-                            >
-                              {eachAsset?.annual_score?.OSR[subjectIndex]}
-                            </td>
-                            {/* Avg AIR */}
-                            {/* <td
+                                </>
+                              );
+                            });
+                          })}
+                          {/* avg */}
+                          {eachAsset?.sub_component?.length > 1 ? (
+                            <>
+                              {' '}
+                              <td
+                                className='th-width-10  text-center'
+                                style={{ backgroundColor: '#ffffff' }}
+                              >
+                                {eachAsset?.annual_score?.marks[subjectIndex]}
+                              </td>
+                              {/* Avg Grade */}
+                              <td
+                                className='th-width-10  text-center'
+                                style={{ backgroundColor: '#ffffff' }}
+                              >
+                                {eachAsset?.annual_score?.grade[subjectIndex]}
+                              </td>
+                              {/* Avg OSR */}
+                              <td
+                                className='th-width-10  text-center'
+                                style={{ backgroundColor: '#ffffff' }}
+                              >
+                                {eachAsset?.annual_score?.OSR[subjectIndex]}
+                              </td>
+                              {/* Avg AIR */}
+                              {/* <td
                               className='th-width-10  text-center'
                               style={{ backgroundColor: '#ffffff' }}
                             >
                               {eachAsset?.annual_score?.AIR[subjectIndex]}
                             </td> */}
-                          </>
-                        ) : null}
-                      </tr>
-                    );
-                  })}
-
-                  {/* Total Start */}
-                  <tr>
-                    <td className='th-width-12 th-fw-600'>{'Total'}</td>
-                    {eachAsset?.sub_component?.map((eachSem, x) => {
-                      return (
-                        <>
-                          <td
-                            className='th-width-10 th-fw-600 text-center'
-                            colSpan={coschSxamTypeHeader[compI][x].length + 1}
-                          >
-                            {eachSem.total_secured_marks} out of {eachSem.total_marks} (
-                            {isNaN(eachSem?.total_marks_percentage)
-                              ? eachSem?.total_marks_percentage
-                              : eachSem?.total_marks_percentage?.toFixed(2)}
-                            %)
-                          </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
-                            {eachSem.total_grade}
-                          </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
-                            {eachSem.overall_osr}
-                          </td>
-                          {/* <td className='th-width-12 th-fw-600 text-center'>
-                            {eachSem.overall_air}
-                          </td> */}
-                        </>
+                            </>
+                          ) : null}
+                        </tr>
                       );
                     })}
-                    {eachAsset?.sub_component?.length > 1 ? (
-                      <>
-                        {' '}
-                        <td className='th-width-12 th-fw-600 text-center'>
-                          {_.sum(
-                            eachAsset?.sub_component.map((item) => {
-                              return item.total_secured_marks;
-                            })
-                          ) / eachAsset?.sub_component?.length}
-                        </td>
-                        <td className='th-width-12 th-fw-600 text-center'>
-                          {eachAsset?.annual_score?.total_grade}
-                        </td>
-                        <td className='th-width-12 th-fw-600 text-center'>
-                          {eachAsset?.annual_score?.overall_osr}
-                        </td>
-                        {/* <td className='th-width-12 th-fw-600 text-center'>
+
+                    {/* Total Start */}
+                    <tr>
+                      <td className='th-width-12 th-fw-600'>{'Total'}</td>
+                      {eachAsset?.sub_component?.map((eachSem, x) => {
+                        return (
+                          <>
+                            <td
+                              className='th-width-10 th-fw-600 text-center'
+                              colSpan={coschSxamTypeHeader[compI][x].length + 1}
+                            >
+                              {eachSem.total_secured_marks} out of {eachSem.total_marks} (
+                              {isNaN(eachSem?.total_marks_percentage)
+                                ? eachSem?.total_marks_percentage
+                                : eachSem?.total_marks_percentage?.toFixed(2)}
+                              %)
+                            </td>
+                            <td className='th-width-12 th-fw-600 text-center'>
+                              {eachSem.total_grade}
+                            </td>
+                            <td className='th-width-12 th-fw-600 text-center'>
+                              {eachSem.overall_osr}
+                            </td>
+                            {/* <td className='th-width-12 th-fw-600 text-center'>
+                            {eachSem.overall_air}
+                          </td> */}
+                          </>
+                        );
+                      })}
+                      {eachAsset?.sub_component?.length > 1 ? (
+                        <>
+                          {' '}
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {_.sum(
+                              eachAsset?.sub_component.map((item) => {
+                                return item.total_secured_marks;
+                              })
+                            ) / eachAsset?.sub_component?.length}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachAsset?.annual_score?.total_grade}
+                          </td>
+                          <td className='th-width-12 th-fw-600 text-center'>
+                            {eachAsset?.annual_score?.overall_osr}
+                          </td>
+                          {/* <td className='th-width-12 th-fw-600 text-center'>
                           {eachAsset?.annual_score?.overall_air}
                         </td> */}
-                      </>
-                    ) : null}
-                  </tr>
-                  {/* Total End */}
+                        </>
+                      ) : null}
+                    </tr>
+                    {/* Total End */}
 
-                  {/* Grading point descriptions Start */}
-                  <tr>
-                    <td
-                      style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                      colSpan={
-                        eachAsset?.sub_component?.length > 1
-                          ? assetExamTypeHeader[compI]?.flat().length +
-                            assetHeader[compI].length +
-                            (3 * (eachAsset?.sub_component?.length - 1) + 4)
-                          : assetExamTypeHeader[compI]?.flat().length +
-                            assetHeader[compI].length +
-                            2
-                      } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                    >
-                      {eachAsset?.grade_description}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                      colSpan={
-                        eachAsset?.sub_component?.length > 1
-                          ? assetExamTypeHeader[compI]?.flat().length +
-                            assetHeader[compI].length +
-                            (3 * (eachAsset?.sub_component?.length - 1) + 4)
-                          : assetExamTypeHeader[compI]?.flat().length +
-                            assetHeader[compI].length +
-                            2
-                      } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                    >
-                      {eachAsset?.component_description}
-                    </td>
-                  </tr>
-                  {/* Grading point descriptions End */}
-                </>
-              );
-            })}
-          </tbody>
-        </table>
+                    {/* Grading point descriptions Start */}
+                    <tr>
+                      <td
+                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                        colSpan={
+                          eachAsset?.sub_component?.length > 1
+                            ? assetExamTypeHeader[compI]?.flat().length +
+                              assetHeader[compI].length +
+                              (3 * (eachAsset?.sub_component?.length - 1) + 4)
+                            : assetExamTypeHeader[compI]?.flat().length +
+                              assetHeader[compI].length +
+                              2
+                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                      >
+                        {eachAsset?.grade_description}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                        colSpan={
+                          eachAsset?.sub_component?.length > 1
+                            ? assetExamTypeHeader[compI]?.flat().length +
+                              assetHeader[compI].length +
+                              (3 * (eachAsset?.sub_component?.length - 1) + 4)
+                            : assetExamTypeHeader[compI]?.flat().length +
+                              assetHeader[compI].length +
+                              2
+                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                      >
+                        {eachAsset?.component_description}
+                      </td>
+                    </tr>
+                    {/* Grading point descriptions End */}
+                  </>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : null}
         {/* PTSD */}
 
         {data?.ptsd_data?.data?.length > 0 ? (

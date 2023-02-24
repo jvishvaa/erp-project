@@ -67,7 +67,7 @@ export default function AssesmentReportBackNew({ reportCardDataNew }) {
                       <div>Grade - {eachData?.grade_name} </div>
                       <div>OSR - {eachData?.OSR}</div>
 
-                      <div>AIR - {eachData?.AIR}</div>
+                      {/* <div>AIR - {eachData?.AIR}</div> */}
                     </div>
                   </td>
 
