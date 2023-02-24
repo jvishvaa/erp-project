@@ -24,6 +24,7 @@ import './student-report-card.css';
 import AssesmentReportNew from 'containers/assessment-central/assesment-report-card/newReportPrint';
 import ReportCardNewBack from 'containers/assessment-central/assesment-report-card/reportCardNewBack';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+import EypReportCardPdf from 'containers/assessment-central/assesment-report-card/eypReportCard/eypPdf';
 
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
@@ -51,6 +52,9 @@ const StudentReportCard = () => {
     JSON.parse(sessionStorage.getItem('acad_session')) || {};
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
+  const [eypConfig, setEypConfig] = useState([]);
+
   const renderReportCardNew = () => {
     switch (tabValue) {
       case 0:
@@ -85,11 +89,33 @@ const StudentReportCard = () => {
       erp_id: erp,
       grade_id: value?.gr_id,
     };
-
     let params = `?${generateQueryParamSting({ ...paramObj })}`;
-    fetchReportCardData(params);
+    if (value?.gr_id) {
+      eypConfig.includes(String(value?.gr_id))
+        ? fetchEypReportCard(value?.gr_id)
+        : fetchReportCardData(params);
+    }
   };
 
+  const fetchEypReportCard = (grade_id) => {
+    let obj = {};
+    obj.acad_session_id = selectedBranch?.id;
+    obj.grade_id = grade_id;
+    obj.erp_id = erp;
+
+    axiosInstance
+      .get(`${endpoints.assessmentReportTypes.eypReportCard}`, { params: { ...obj } })
+      .then((response) => {
+        if (response?.data) {
+          // generateEypReport(response?.data?.result);
+          EypReportCardPdf(response?.data?.result, selectedBranch?.branch?.branch_name);
+        }
+      })
+      .catch((err) => {
+        setAlert('error', err?.response?.data?.message);
+        setLoading(false);
+      });
+  };
   const fetchReportCardData = (params) => {
     axiosInstance
       .get(`${endpoints.assessmentReportTypes.reportCardDataNew}${params}`)
@@ -109,7 +135,18 @@ const StudentReportCard = () => {
 
   useEffect(() => {
     getGrades();
+    checkEypConfig({ config_key: 'eyp_rc_grades' });
   }, []);
+
+  const checkEypConfig = (params = {}) => {
+    axiosInstance
+      .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data) {
+          setEypConfig(response?.data?.result);
+        }
+      });
+  };
 
   return (
     <>

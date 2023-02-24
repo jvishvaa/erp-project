@@ -303,14 +303,16 @@ const StudentWiseReport = ({
                 </TableCell>
                 <TableCell className={classes.tableCell}>{items.erp_id}</TableCell>
                 <TableCell className={classes.tableCell}>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={() => handleRemark(items?.user?.id)}
-                    style={{ margin: '0 10%' }}
-                  >
-                    Remark
-                  </Button>
+                  {eypConfig.includes(String(filterData.grade?.grade_id)) ? null : (
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => handleRemark(items?.user?.id)}
+                      style={{ margin: '0 10%' }}
+                    >
+                      Remark
+                    </Button>
+                  )}
                   {eypConfig.includes(String(filterData.grade?.grade_id)) ? (
                     <EypReportCard
                       erpId={items.erp_id}
