@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import AnnouncementCard from 'v2/FaceLift/myComponents/AnnouncementCards';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getSortedAnnouncements } from 'v2/generalAnnouncementFunctions';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/noAnnouncementIcon.svg';
 import DetailsModal from 'v2/FaceLift/Announcement/announcementList/DetailsModal';
 
 const Announcements = (props) => {
@@ -54,7 +53,7 @@ const Announcements = (props) => {
         <span className=''>Announcements </span>
       </div>
       <div
-        className='col-md-12 mt-2 mb-1'
+        className='col-md-12 my-2'
         style={{
           height: props?.scrollHeight,
           overflowY: 'auto',

@@ -6,8 +6,8 @@ import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import { message, Spin, Badge, Modal } from 'antd';
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import { getActivityIcon } from 'v2/getActivityIcon';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/noActivityIcon.svg';
+import { getActivityIcon, getActivityColor } from 'v2/generalActivityFunction';
 import moment from 'moment';
 import axiosInstance from 'axios';
 
@@ -92,6 +92,7 @@ const Activity = () => {
                   {activityData?.map((item, index) => (
                     <Badge.Ribbon
                       style={{ top: '32px', right: '-4px' }}
+                      color={getActivityColor(item?.activity_type?.name)}
                       text={
                         <span className='th-white th-12'>
                           {item?.activity_type?.name}

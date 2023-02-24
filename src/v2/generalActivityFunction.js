@@ -20,8 +20,31 @@ export const getActivityIcon = (value) => {
       return musicImage;
     case 'Dance':
       return danceImage;
-    case 'Theater':
+    case 'Theatre':
       return theaterImage;
+    default:
+      return '';
+  }
+};
+
+export const getActivityColor = (value) => {
+  switch (value) {
+    case 'Blog Activity':
+      return '#7931C0';
+    case 'Posts':
+      return '#6C6C6C';
+    case 'Public Speaking':
+      return '#1A8EBF';
+    case 'Physical Activity':
+      return '#23993D';
+    case 'Visual Art':
+      return '#F0C52E';
+    case 'Music':
+      return '#15B9C3';
+    case 'Dance':
+      return '#FD620B';
+    case 'Theatre':
+      return '#B90037';
     default:
       return '';
   }
