@@ -211,7 +211,7 @@ const AssesmentCard = ({
         )}
       </div> */}
       <div className='assessment-name row py-2 align-items-center'>
-        {handleClose && (
+        {handleClose && value.test_date && (
           <Checkbox
             checked={addedId.includes(value.id)}
             onChange={(e) => toggleComplete(e)}
