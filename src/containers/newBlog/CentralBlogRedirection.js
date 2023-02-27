@@ -32,8 +32,8 @@ const CentralBlogRedirection = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [blogLoginId, setBlogLoginId] = useState('');
-  const [physicalSubId,setPhysicalSubId] = useState('')
-  const [blogSubIdValue,setBlogSubIdValue] = useState('')
+  const [physicalSubId, setPhysicalSubId] = useState('');
+  const [blogSubIdValue, setBlogSubIdValue] = useState('');
 
   const handleBlogWriting = () => {
     history.push('/blog/studentview');
@@ -104,7 +104,7 @@ const CentralBlogRedirection = () => {
           (item) => item?.name == 'Physical Activity'
         );
         setSubId(physicalData[0]?.id);
-        setPhysicalSubId(physicalData[0])
+        setPhysicalSubId(physicalData[0]);
         const blogActivityData = result?.data?.result.filter(
           (item) => item?.name == 'Blog Activity'
         );
@@ -271,31 +271,6 @@ const CentralBlogRedirection = () => {
       });
   };
 
-<<<<<<< HEAD
-=======
-  const getSubjectIcon = (value) => {
-    switch (value) {
-      case 'Blog Activity':
-        return image2;
-      case 'Public Speaking':
-        return image1;
-      case 'Physical Activity':
-        return physicalImage;
-      case 'actiivtytype':
-        return image1;
-      case 'Visual Art':
-        return visualImage;
-      case 'Music':
-        return musicImage;
-      case 'Dance':
-        return danceImage;
-      case 'Theatre':
-        return theaterImage;
-      default:
-        return '';
-    }
-  };
->>>>>>> a7d9af0743276f8b2554735e6444495bb8017c6b
   useEffect(() => {
     localStorage.setItem('PhysicalActivityId', '');
     getActivitySession();
