@@ -70,17 +70,11 @@ const columns = [
 const BlogWall = () => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const user_level = data?.user_level;
-  const isStudent = user_level == 13;
   const token = data?.token;
-  const branch_update_user = localStorage.getItem('ActivityManagementSession')
-    ? JSON.parse(localStorage.getItem('ActivityManagementSession'))
-    : {};
   const history = useHistory();
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const [openModalPublic, setOpenModalPublic] = useState(false);
-  const branchIdsLocalId = branch_update_user?.branches?.map((item) => item?.id);
   const [loading, setLoading] = useState(false);
   const [gradeList, setGradeList] = useState([]);
   const [showTab, setShowTab] = useState('1');
@@ -555,34 +549,6 @@ const BlogWall = () => {
           {!(user_level == '13' || user_level == '10') && (
             <div className='col-12 px-0'>
               <div className='row align-items-end'>
-                {/* <div className='col-md-2 px-0 py-2 py-md-0'>
-                  <div className='mb-2 text-left'>Branch</div>
-                  <Select
-                    className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
-                    placement='bottomRight'
-                    mode='multiple'
-                    maxTagCount={3}
-                    showArrow={true}
-                    allowClear={true}
-                    bordered={true}
-                    suffixIcon={<DownOutlined className='th-primary' />}
-                    placeholder='Select Branches'
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    // placeholder={
-                    //   <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
-                    // }
-                    dropdownMatchSelectWidth={false}
-                    onChange={(e, value) => handleBranchChange(value)}
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                  >
-                    {branchOptions}
-                  </Select>
-                </div> */}
                 <div className='col-md-2 col-5 px-0 px-md-2'>
                   <div className='mb-2 text-left'>Grade</div>
                   <Select
@@ -1050,19 +1016,12 @@ const BlogWall = () => {
                         backgroundSize: 'contain',
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
-                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     >
-                      <div
-                        className=''
-                        style={{
-                          width: '70%',
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: `translate(-50%, -40%)`,
-                        }}
-                      >
+                      <div className=''>
                         <div
                           className='text-center th-white th-br-4 px-1 py-1'
                           style={{

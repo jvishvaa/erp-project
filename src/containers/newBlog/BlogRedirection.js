@@ -226,12 +226,12 @@ const BlogWallRedirect = () => {
                   <div className='col-md-4 mb-2 '>
                     <div className='th-br-10 th-bg-grey shadow-sm wall_card'>
                       <div className='row p-3'>
-                        <div className='col-4 px-0 th-br-5'>
+                        <div className='col-4 px-0 th-br-5' style={{ height: 150 }}>
                           <img
                             src={getActivityIcon(each?.name)}
                             alt='Icon'
                             style={{
-                              height: '150px',
+                              height: '100%',
                               width: '100%',
                               objectFit: '-webkit-fill-available',
                             }}

@@ -220,12 +220,7 @@ const BlogReview = () => {
         setLoading(true);
         axiosInstance
           .get(
-            `${endpoints.newBlog.gradesERP}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
-            {
-              headers: {
-                'X-DTS-HOST': X_DTS_HOST,
-              },
-            }
+            `${endpoints.newBlog.gradesERP}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`
           )
           .then((response) => {
             // debugger
@@ -301,10 +296,10 @@ const BlogReview = () => {
               </div>
             </div>
             <div className='row mt-2'>
-              <div className='col-md-4' style={{ zIndex: 5 }}>
+              <div className='col-md-6' style={{ zIndex: 5 }}>
                 <Form id='filterForm' ref={formRef} layout={'horizontal'}>
                   <div className='row align-item-center'>
-                    <div className='col-md-4 col-6 px-0'>
+                    <div className='col-6 px-0'>
                       <div className='mb-2 text-left'>Grade</div>
                       <Form.Item name='grade'>
                         <Select
