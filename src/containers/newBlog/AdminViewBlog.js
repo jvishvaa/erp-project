@@ -53,8 +53,19 @@ import {
   Tabs,
   Table,
   Tag,
+  Modal,
 } from 'antd';
-import { PlusSquareOutlined, SketchOutlined, MonitorOutlined, UserSwitchOutlined, ContactsOutlined, EditOutlined, CloseSquareOutlined, CheckSquareOutlined, PieChartOutlined } from '@ant-design/icons';
+import {
+  PlusSquareOutlined,
+  SketchOutlined,
+  MonitorOutlined,
+  UserSwitchOutlined,
+  ContactsOutlined,
+  EditOutlined,
+  CloseSquareOutlined,
+  CheckSquareOutlined,
+  PieChartOutlined,
+} from '@ant-design/icons';
 import { TabPane } from 'rc-tabs';
 const AdminViewBlog = () => {
   const branch_update_user =
@@ -202,15 +213,14 @@ const AdminViewBlog = () => {
 
   function handleTab(newValue) {
     setValue(newValue);
-    if(newValue == 0){
+    if (newValue == 0) {
       getUnAssinged();
-      return
-    }else if(newValue ==1){
+      return;
+    } else if (newValue == 1) {
       getAssinged();
-      return
+      return;
     }
   }
-
 
   const viewed = () => {
     setViewed(true);
@@ -273,7 +283,7 @@ const AdminViewBlog = () => {
       })
       .then((response) => {
         setAssigned(false);
-        message.success('Activity Successfully Assigned')
+        message.success('Activity Successfully Assigned');
         getUnAssinged();
         getAssinged();
         setLoading(false);
@@ -307,7 +317,6 @@ const AdminViewBlog = () => {
       });
   };
 
-
   const getAssinged = () => {
     setLoading(true);
     axios
@@ -329,7 +338,7 @@ const AdminViewBlog = () => {
           setAssigneds(response?.data?.result);
           setLoading(false);
         } else {
-          message.error('Server Issue')
+          message.error('Server Issue');
           setLoading(false);
         }
       });
@@ -371,7 +380,6 @@ const AdminViewBlog = () => {
     }
   }, [window.location.pathname]);
 
-
   function callApi(api, key) {
     axiosInstance.get(api).then((result) => {
       if (result.status === 200) {
@@ -404,7 +412,7 @@ const AdminViewBlog = () => {
       if (value == 0) {
         getUnAssinged();
         return;
-      } else if(value == 1) {
+      } else if (value == 1) {
         getAssinged();
         return;
       }
@@ -444,7 +452,6 @@ const AdminViewBlog = () => {
     setCurrentPageAssigned(page);
   };
 
-
   const handlePaginationUnassign = (page) => {
     setSearchFlag(true);
     setIsClickedUnassign(true);
@@ -460,7 +467,9 @@ const AdminViewBlog = () => {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       // dataIndex: 'lp_count',
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned-1)*10}</span>,
+      render: (text, row, index) => (
+        <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -472,7 +481,11 @@ const AdminViewBlog = () => {
       title: <span className='th-white th-fw-700'>Submission On</span>,
       // dataIndex: 'created_at',
       align: 'center',
-      render: (text, row) => <span className='th-black-1'>{moment(row?.submission_date).format('DD-MM-YYYY')}</span>,
+      render: (text, row) => (
+        <span className='th-black-1'>
+          {moment(row?.submission_date).format('DD-MM-YYYY')}
+        </span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Created By</span>,
@@ -488,29 +501,25 @@ const AdminViewBlog = () => {
       render: (text, row) => (
         <div className='th-black-1'>
           <Tag
-            icon={<EditOutlined  className='th-14' />}
+            icon={<EditOutlined className='th-14' />}
             color='red'
             className='th-br-5 th-pointer py-1'
-            disabled={
-              user_level == 11 || user_level == 10 || user_level == 8
-            }
+            disabled={user_level == 11 || user_level == 10 || user_level == 8}
             onClick={() => EditActivity(row)}
           >
             <span className='th-fw-500 th-14'>Edit</span>
           </Tag>
           <Tag
-            icon={<UserSwitchOutlined  className='th-14' />}
+            icon={<UserSwitchOutlined className='th-14' />}
             color='geekblue'
             className='th-br-5 th-pointer py-1'
             onClick={() => assignIcon(row)}
-            disabled={
-              user_level == 11 || user_level == 10 || user_level == 8
-            }
+            disabled={user_level == 11 || user_level == 10 || user_level == 8}
           >
             <span className='th-fw-500 th-14'>Assign</span>
           </Tag>
           <Tag
-            icon={<ContactsOutlined  className='th-14' />}
+            icon={<ContactsOutlined className='th-14' />}
             color='green'
             className='th-br-5 th-pointer py-1'
             onClick={() => handlePreview(row)}
@@ -527,7 +536,9 @@ const AdminViewBlog = () => {
       // dataIndex: 'lp_count',
       align: 'center',
       width: '15%',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned -1) * 10}</span>,
+      render: (text, row, index) => (
+        <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -539,7 +550,9 @@ const AdminViewBlog = () => {
       title: <span className='th-white th-fw-700'>Assigned On</span>,
       // dataIndex: 'created_at',
       align: 'center',
-      render: (text, row) => <span className='th-black-1'>{moment(row?.issue_date).format('DD-MM-YYYY')}</span>,
+      render: (text, row) => (
+        <span className='th-black-1'>{moment(row?.issue_date).format('DD-MM-YYYY')}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Created By</span>,
@@ -555,7 +568,7 @@ const AdminViewBlog = () => {
       render: (text, row) => (
         <div className='th-black-1'>
           <Tag
-            icon={<PieChartOutlined  className='th-14' />}
+            icon={<PieChartOutlined className='th-14' />}
             color='geekblue'
             className='th-br-5 th-pointer py-1'
             // onClick={() => assignPage(row)}
@@ -564,7 +577,6 @@ const AdminViewBlog = () => {
             <span className='th-fw-500 th-14'>Review</span>
           </Tag>
           <Tag
-
             icon={<MonitorOutlined className='th-14' />}
             color='orange'
             className='th-br-5 th-pointer py-1'
@@ -632,7 +644,6 @@ const AdminViewBlog = () => {
                   >
                     {(user_level !== 11 || user_level !== 10 || user_level !== 8) && (
                       <TabPane tab='UNASSIGNED' key='0'>
-                        
                         {value == 0 && (
                           <div className='col-12 px-0'>
                             {user_level == 11 || user_level == 10 || user_level == 8 ? (
@@ -651,12 +662,10 @@ const AdminViewBlog = () => {
                                   current: Number(currentPageAssigned),
                                   pageSize: limitAssigned,
                                   showSizeChanger: false,
-                                  onChange:(page) =>{
-                                    console.log('Pagination', page)
-                                    handlePaginationUnassign(page)
-                                   
-                                  }
-
+                                  onChange: (page) => {
+                                    console.log('Pagination', page);
+                                    handlePaginationUnassign(page);
+                                  },
                                 }}
                                 scroll={{
                                   x: unassingeds.length > 0 ? 'max-content' : null,
@@ -665,14 +674,14 @@ const AdminViewBlog = () => {
                               />
                             )}
                           </div>
-                          
                         )}
                       </TabPane>
                     )}
                     <TabPane tab='ASSIGNED' key='1'>
                       {(value == 1 ||
                         (value == 1 && user_level === 11) ||
-                        user_level === 10 || user_level === 2 ||
+                        user_level === 10 ||
+                        user_level === 2 ||
                         user_level === 8) && (
                         <div className='col-12 px-0'>
                           <Table
@@ -688,11 +697,10 @@ const AdminViewBlog = () => {
                               current: Number(currentPageAssigned),
                               pageSize: limitAssigned,
                               showSizeChanger: false,
-                              onChange:(page) =>{
-                                console.log('Pagination', page)
-                                handlePaginationAssign(page)
-                              }
-
+                              onChange: (page) => {
+                                console.log('Pagination', page);
+                                handlePaginationAssign(page);
+                              },
                             }}
                             scroll={{
                               x: assingeds.length > 0 ? 'max-content' : null,
@@ -707,126 +715,114 @@ const AdminViewBlog = () => {
               </div>
             </div>
           </div>
-          <Dialog open={preview} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '642px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '12px',
-              }}
-            >
-              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-              <div style={{ marginTop: '21px', marginRight: '34px' }}>
-                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
-              </div>
-            </div>
-
-            <div
-              style={{
-                border: '1px solid lightgray',
-                height: ' auto',
-                marginLeft: '16px',
-                marginRight: '32px',
-                borderRadius: '10px',
-                marginBottom: '9px',
-              }}
-            >
-              <div style={{ marginLeft: '23px', marginTop: '28px', overflow: 'scroll' }}>
-                <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
-                <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
-                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                  Submission on -{previewData?.submission_date?.substring(0, 10)}
-                </div>
-                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                  Branch -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Grade -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.grades.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Section -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-
-                <div
-                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                ></div>
-                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                  Instructions
-                </div>
-                <div style={{ paddingTop: '8px', fontSize: '16px' }}>
-                  {previewData?.description}
-                </div>
-                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                  <img src={previewData?.template?.template_path} width='50%' />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Dialog>
-        <Dialog maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '503px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div>
-                <DoneIcon style={{ color: 'green', fontSize: '81px' }} />
-              </div>
-              <div style={{ fontSize: '20px', marginBottom: '2px' }}>
-                Blog Successfully Assigned
-              </div>
-              <div style={{ fontSize: '15px', marginBottom: '24px' }}>
-                Check Assigned tab for new submissions
-              </div>
-              <div style={{ marginBottom: '15px' }}>
-                <Button variant='contained' size='small'>
-                  Okay
-                </Button>{' '}
-              </div>
-            </div>
-          </div>
-        </Dialog>
-        {assigned == true && (
-          <Dialog
-            open={assigned}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
+          <Modal
+            centered
+            onCancel={closePreview}
+            visible={preview}
+            footer={false}
+            width={500}
+            className='th-upload-modal'
+            title={`Preview Blog Activity`}
           >
-            <DialogTitle id='draggable-dialog-title'>
-              <strong>Assign Details</strong>
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText>Are you sure you want to assign ?</DialogContentText>
-            </DialogContent>
+            <div>
+                <div
+                  style={{ margin: '10px',overflow: 'scroll', maxHeight:'80vh' }}
+                >
+                  <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
+                  <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
+                  <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                    Submission on -{previewData?.submission_date?.substring(0, 10)}
+                  </div>
+                  <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                    Branch -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'gray' }}>
+                    Grade -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {previewData?.grades.map((obj) => obj?.name).join(', ')},{' '}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'gray' }}>
+                    Section -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
+                    </span>
+                  </div>
 
-            <Divider 
-            // className={classes.divider} 
-            />
-            <DialogActions>
-              <ButtonAnt 
-              // style={{ backgroundColor: 'lightgray' }} 
-              icon={<CloseSquareOutlined  className="th-14" />}
-              onClick={closeconfirm}>
-                Cancel
-              </ButtonAnt>
-              <ButtonAnt
-                icon={<CheckSquareOutlined className='th-14'/>}
-                type='primary'
-                // style={{ color: 'white' }}
-                onClick={confirmassign}
-              >
-                Confirm
-              </ButtonAnt>
-            </DialogActions>
+                  <div
+                    style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+                  ></div>
+                  <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                    Instructions
+                  </div>
+                  <div style={{ paddingTop: '8px', fontSize: '16px' }}>
+                    {previewData?.description}
+                  </div>
+                  <div style={{ paddingTop: '28px', fontSize: '14px', display:'flex', justifyContent:'center' }}>
+                    <img src={previewData?.template?.template_path} width='50%' />
+                  </div>
+                </div>
+            </div>
+          </Modal>
+          {/* </Dialog> */}
+          <Dialog maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
+            <div style={{ width: '503px' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div>
+                  <DoneIcon style={{ color: 'green', fontSize: '81px' }} />
+                </div>
+                <div style={{ fontSize: '20px', marginBottom: '2px' }}>
+                  Blog Successfully Assigned
+                </div>
+                <div style={{ fontSize: '15px', marginBottom: '24px' }}>
+                  Check Assigned tab for new submissions
+                </div>
+                <div style={{ marginBottom: '15px' }}>
+                  <Button variant='contained' size='small'>
+                    Okay
+                  </Button>{' '}
+                </div>
+              </div>
+            </div>
           </Dialog>
-        )}
+          {assigned == true && (
+            <Dialog
+              open={assigned}
+              aria-labelledby='alert-dialog-title'
+              aria-describedby='alert-dialog-description'
+            >
+              <DialogTitle id='draggable-dialog-title'>
+                <strong>Assign Details</strong>
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>Are you sure you want to assign ?</DialogContentText>
+              </DialogContent>
+
+              <Divider
+              // className={classes.divider}
+              />
+              <DialogActions>
+                <ButtonAnt
+                  // style={{ backgroundColor: 'lightgray' }}
+                  icon={<CloseSquareOutlined className='th-14' />}
+                  onClick={closeconfirm}
+                >
+                  Cancel
+                </ButtonAnt>
+                <ButtonAnt
+                  icon={<CheckSquareOutlined className='th-14' />}
+                  type='primary'
+                  // style={{ color: 'white' }}
+                  onClick={confirmassign}
+                >
+                  Confirm
+                </ButtonAnt>
+              </DialogActions>
+            </Dialog>
+          )}
         </div>
       </Layout>
       {/* <div>
