@@ -9,7 +9,7 @@ import endpoints from '../../config/endpoints';
 import { Breadcrumb, Button, message, Spin } from 'antd';
 import moment from 'moment';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import { getActivityIcon } from 'v2/getActivityIcon';
+import { getActivityIcon } from 'v2/generalActivityFunction';
 const BlogWallRedirect = () => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
