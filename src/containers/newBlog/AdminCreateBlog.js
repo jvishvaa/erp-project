@@ -359,11 +359,11 @@ const AdminCreateBlog = () => {
       axiosInstance
         .get(
           `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
+          // {
+          //   headers: {
+          //     'X-DTS-HOST': X_DTS_HOST,
+          //   },
+          // }
         )
         .then((result) => {
           setLoading(false);

@@ -20,7 +20,8 @@ import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
-import axiosInstance from '../../config/axios';
+// import axiosInstance from '../../config/axios';
+import axiosInstance from 'v2/config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
@@ -291,11 +292,6 @@ const VisualActivityCreate = () => {
       axiosInstance
         .get(
           `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
         )
         .then((result) => {
           setLoading(false);
