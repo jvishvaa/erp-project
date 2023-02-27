@@ -306,7 +306,9 @@ body {
 .ant-message-notice {
   margin-top: 5% !important;
 }
-
+.ant-message {
+  z-index: 2000 !important;
+}
 .ant-select-selector {
   min-width: 110px !important;
 }
