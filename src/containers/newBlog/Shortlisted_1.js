@@ -14,7 +14,7 @@ import {
   CloseOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import { Tag, Table as TableAnt, Button } from 'antd';
+import { Tag, Table as TableAnt, Button, message } from 'antd';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -109,7 +109,7 @@ const Shortlisted_1 = (props) => {
   const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = React.useState();
   const [month, setMonth] = React.useState('1');
   const [status, setStatus] = React.useState('');
@@ -467,7 +467,7 @@ const Shortlisted_1 = (props) => {
           setTotalPages(response?.data?.page_size);
           setCurrentPage(response?.data?.page);
           setLimit(Number(limit));
-          setAlert('success', response?.data?.message);
+          // setAlert('success', response?.data?.message);
           setTotalSubmitted(response?.data?.result);
           setLoading(false);
         });
@@ -525,7 +525,7 @@ const Shortlisted_1 = (props) => {
     setLoading(true);
     if (!activityLevel) {
       setLoading(false);
-      setAlert('error', 'Please Select Level');
+      message.error('Please Select Level')
       return;
     } else {
       let requestData = {
@@ -543,13 +543,13 @@ const Shortlisted_1 = (props) => {
         .then((res) => {
           if (res?.data?.status_code == 200) {
             setLoading(false);
-            setAlert('success', res?.data?.message);
+            // setAlert('success', res?.data?.message);
             getTotalSubmitted();
           }
         })
         .catch((err) => {
           setLoading(false);
-          setAlert('error', 'Server Error');
+          message.error('Server Error')
         });
 
       setActivityLevel('');

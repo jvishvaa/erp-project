@@ -10,7 +10,7 @@ import Loader from 'containers/sure-learning/hoc/loader';
 import {
   UserAddOutlined,
 } from '@ant-design/icons';
-import { Tag, Table as TableAnt } from 'antd';
+import { Tag, Table as TableAnt, message } from 'antd';
 
 const StyledRating = withStyles((theme) => ({
   iconFilled: {
@@ -101,7 +101,7 @@ const Published = (props) => {
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [totalPublish, setTotalPublish] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const user_level = dataes?.user_level;
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -139,13 +139,13 @@ const Published = (props) => {
         )
         .then((response) => {
           props.setFlag(false);
-          setAlert('success', response?.data?.message);
+          // setAlert('success', response?.data?.message);
           setTotalPublish(response?.data?.result);
           setCurrentPage(response.data?.page);
           setTotalCount(response?.data?.total);
           setLimit(Number(limit));
           props.setFlag(false);
-          setAlert('success', response?.data?.message);
+          // setAlert('success', response?.data?.message);
           setLoading(false);
         });
     }
@@ -166,14 +166,14 @@ const Published = (props) => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           setLoading(false);
-          setAlert('success', res?.data?.message);
+          message.success(res?.data?.message)
           getTotalPublish();
         }
       })
       .catch((err) => {
         console.log(err, 'res4');
         setLoading(false);
-        setAlert('error', 'Server Error');
+        message.error('Server Error')
       });
   };
 

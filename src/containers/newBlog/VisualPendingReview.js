@@ -18,6 +18,7 @@ import {
   Table as TableAnt,
   Drawer,
   Space,
+  message,
 } from 'antd';
 import {
   MonitorOutlined,
@@ -85,7 +86,7 @@ const VisualPendingReview = (props) => {
   const [value, setValue] = useState();
   const { Option } = Select;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const subActivityData = localStorage?.getItem('VisualActivityId')
     ? JSON.parse(localStorage.getItem('VisualActivityId'))
     : '';
@@ -119,7 +120,8 @@ const VisualPendingReview = (props) => {
     let body = [];
     let checkSelected = ratingReview.every((item) => item.checked);
     if (!checkSelected) {
-      return setAlert('error', 'Please Select All Options !!');
+      message.error('Please Select All Option')
+      return 
     } else {
       ratingReview.forEach((item) => {
         let record = { ...item };
@@ -140,7 +142,8 @@ const VisualPendingReview = (props) => {
         setView(false);
         setLoading(false);
         erpAPI();
-        setAlert('success', ' Review Submitted Successfully');
+        message.success('Review Submitted Successfully')
+        return
       })
       .catch(() => {
         setLoading(false);
@@ -189,7 +192,7 @@ const VisualPendingReview = (props) => {
         setSourceData(response?.data?.result);
         ActivityManagement(response?.data?.result);
         // props.setFlag(false);
-        setAlert('success', response?.data?.message);
+        message.success(response?.data?.message)
         setLoading(false);
       })
       .catch(() => {
@@ -282,7 +285,7 @@ const VisualPendingReview = (props) => {
           showReview(response?.data?.result);
           setLoading(false);
         } else if (response?.data?.status_code === 500) {
-          setAlert('error', response?.data?.message);
+          message.error(response?.data?.message)
           setLoading(false);
         }
       })
@@ -354,8 +357,8 @@ const VisualPendingReview = (props) => {
       setFile(fil);
       return;
     } else {
-      setAlert('error', 'Only Video & Image File is acceptable .');
-
+      message.error('Only Video & Image File is acceptable')
+      setLoading(false)
       setFile(null);
       return;
       fileRef.current.value = null;
@@ -377,7 +380,8 @@ const VisualPendingReview = (props) => {
         .then((res) => {})
         .catch((err) => {});
     } else {
-      setAlert('error', 'Please Upload File');
+      message.error('Please Upload File')
+      setLoading(false)
       return;
     }
   };

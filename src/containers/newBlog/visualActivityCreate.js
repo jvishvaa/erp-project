@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, createRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
   IconButton,
   Divider,
   TextField,
-  Button,
+  // Button,
   makeStyles,
   Grid,
   Dialog,
   DialogTitle,
+  // Input,
+  // Select,
 } from '@material-ui/core';
 import Layout from 'containers/Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -18,11 +20,12 @@ import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import Loader from '../../components/loader/loader';
-import axiosInstance from '../../config/axios';
+// import axiosInstance from '../../config/axios';
+import axiosInstance from 'v2/config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, Select, Form, DatePicker, Button, Input, message } from 'antd';
 
 import axios from 'axios';
 import CloseIcon from '@material-ui/icons/Close';
@@ -34,6 +37,9 @@ import {
 } from '../lesson-plan/create-lesson-plan/apis';
 import { getBranch } from 'containers/assessment-central/report-card/apis';
 import { element } from 'prop-types';
+import { each } from 'highcharts';
+import { DownOutlined } from '@ant-design/icons';
+import moment from 'moment';
 
 const drawerWidth = 350;
 
@@ -112,6 +118,9 @@ const dummyRound = [
 ];
 
 const VisualActivityCreate = () => {
+  const formRef = createRef();
+  const { Option } = Select;
+  const { TextArea } = Input;
   const classes = useStyles();
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
@@ -125,7 +134,7 @@ const VisualActivityCreate = () => {
   const history = useHistory();
   const [branchList, setBranchList] = useState([]);
   const [maxWidth, setMaxWidth] = React.useState('lg');
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
 
   const [assigned, setAssigned] = useState(false);
@@ -221,17 +230,17 @@ const VisualActivityCreate = () => {
           id: obj?.branch?.id,
           branch_name: obj?.branch?.branch_name,
         }));
-        transformedData.unshift({
-          branch_name: 'Select All',
-          id: 'all',
-        });
+        // transformedData.unshift({
+        //   branch_name: 'Select All',
+        //   id: 'all',
+        // });
         setBranchDropdown(transformedData);
         setBranchList(transformedData);
         setLoading(false);
       }
     } catch (e) {
       setLoading(false);
-      setAlert('error', 'failed To Fetch Branch');
+      message.error('Failed To Fetch Branch')
     }
   };
 
@@ -241,20 +250,22 @@ const VisualActivityCreate = () => {
     setLoading(true);
     try {
       setGrades([]);
-      const data = await fetchGrades(acadId, branchId, moduleId);
-      const transformedData = data?.map((obj) => ({
-        id: obj?.grade_id,
-        name: obj?.grade__grade_name,
-      }));
-      transformedData.unshift({
-        name: 'Select All',
-        id: 'all',
-      });
-      setGradeList(transformedData);
-      setLoading(false);
+      if(branchId){
+        const data = await fetchGrades(acadId, branchId, moduleId);
+        const transformedData = data?.map((obj) => ({
+          id: obj?.grade_id,
+          name: obj?.grade__grade_name,
+        }));
+        // transformedData.unshift({
+        //   name: 'Select All',
+        //   id: 'all',
+        // });
+        setGradeList(transformedData);
+        setLoading(false);
+      }
     } catch (e) {
       setLoading(false);
-      setAlert('error', 'Failed to fetch grade');
+      message.error('Failed To Fetch Grade')
     }
   };
 
@@ -281,11 +292,6 @@ const VisualActivityCreate = () => {
       axiosInstance
         .get(
           `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
         )
         .then((result) => {
           setLoading(false);
@@ -295,15 +301,15 @@ const VisualActivityCreate = () => {
               id: obj?.section_id,
               name: obj?.section__section_name,
             }));
-            transformedData.unshift({
-              name: 'Select All',
-              id: 'all',
-            });
+            // transformedData.unshift({
+            //   name: 'Select All',
+            //   id: 'all',
+            // });
             setSectionDropdown(transformedData);
           }
         })
         .catch((err) => {
-          setAlert('error', 'Section Api Failed to Load');
+          message.error('Failed To Fetch Section')
           setLoading(false);
         });
     }
@@ -312,14 +318,22 @@ const VisualActivityCreate = () => {
   useEffect(() => {
     fetchBranches();
   }, []);
-  const handleBranch = (e, value) => {
+  const handleBranch = (value) => {
     setSelectedGrade([]);
+    setSelectedSection([]);
     if (value) {
+      setSelectedGrade([]);
+      setSelectedSection([]);
       value =
         value.filter(({ id }) => id === 'all').length === 1
           ? [...branchList].filter(({ id }) => id !== 'all')
           : value;
       let branchId = value?.map((item) => item?.id);
+      formRef.current.setFieldsValue({
+        branch: value,
+        grade: [],
+        section: [],
+      });
       setSelectedBranch(value);
       fetchGradesFun(selectedAcademicYear?.id, branchId);
     }
@@ -334,22 +348,29 @@ const VisualActivityCreate = () => {
           : value;
       let gradeId = value?.map((item) => item?.id);
       let branchIds = selectedBranch?.map((element) => parseInt(element?.id));
+      formRef.current.setFieldsValue({
+        grade: value,
+        section: [],
+      });
       setSelectedGrade(value);
       fetchSectionsFun(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
     }
   };
-  const handleSection = (e, value) => {
+  const handleSection = (value) => {
     if (value) {
       value =
         value.filter(({ id }) => id === 'all').length === 1
           ? [...sectionDropdown].filter(({ id }) => id !== 'all')
           : value;
+      formRef.current.setFieldsValue({
+        section: value,
+      });
       setSelectedSection(value);
     }
   };
 
   const handleStartDateChange = (val) => {
-    setStartDate(val);
+    setStartDate(moment(val).format('YYYY-MM-DD'));
   };
   let branchIdss = selectedBranch.map((obj) => obj?.name).join(', ');
   let branchname = [...branchIdss];
@@ -371,6 +392,11 @@ const VisualActivityCreate = () => {
     setTitle('');
     setSelectedRound([]);
     setStartDate('');
+    formRef.current.setFieldsValue({
+      branch:[],
+      grade:[],
+      section:[],
+    })
   };
   const formatdate = new Date();
   const hoursAndMinutes =
@@ -388,32 +414,32 @@ const VisualActivityCreate = () => {
     const sectionIds = selectedSection.map((obj) => obj?.id);
     if (!startDate) {
       setLoading(false);
-      setAlert('error', 'Please Select The Date');
+      message.error('Please Select the Date')
       return;
     }
     if (branchIds?.length === 0) {
       setLoading(false);
-      setAlert('error', 'Please Select Branch');
+      message.error('Please Select Branch')
       return;
     }
     if (gradeIds?.length === 0) {
       setLoading(false);
-      setAlert('error', 'Please Select Grade');
+      message.error('Please Select Grade')
       return;
     }
     if (sectionIds?.length === 0) {
       setLoading(false);
-      setAlert('error', 'Please Select Section');
+      message.error('Please Select Section')
       return;
     }
     if (title.length === 0) {
       setLoading(false);
-      setAlert('error', 'Please Add Title');
+      message.error('Please Add Title')
       return;
     }
     if (!description) {
       setLoading(false);
-      setAlert('error', 'Please Add Description');
+      message.error('Please Add Description ')
       return;
     } else {
       const formData = new FormData();
@@ -442,7 +468,7 @@ const VisualActivityCreate = () => {
         })
         .then(() => {
           setLoading(false);
-          setAlert('success', 'Activity Successfully Created');
+          message.success('Activity Successfully Created')
           setLoading(false);
           setSelectedGrade([]);
           setSelectedBranch([]);
@@ -455,7 +481,8 @@ const VisualActivityCreate = () => {
           return;
         })
         .catch((error) => {
-          setAlert('error', error);
+          message.error(error)
+          setLoading(false)
         });
     }
   };
@@ -547,10 +574,297 @@ const VisualActivityCreate = () => {
     history.goBack();
   };
 
+  const branchOption = branchList.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.branch_name} children={each?.id} id={each?.id} name={each?.branch_name}>
+        {each?.branch_name}
+      </Option>
+    );
+  });
+
+  const gradeOption = gradeList.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id} id={each?.id} children={each?.id} name={each?.name}>
+        {each?.name}
+      </Option>
+    );
+  });
+
+  const sectionOption = sectionDropdown.map((each) => {
+    return (
+      <Option id={each?.id} value={each?.id} key={each?.id} children={each?.id} name={each?.name}>
+        {each?.name}
+      </Option>
+    );
+  });
+
+  const handleClearBranch = () => {
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+  };
+
+  const handleClearGrade = () => {
+    setSelectedGrade([]);
+  };
+
+  const handleClearSection = () => {
+    selectedSection([]);
+  };
+
   return (
     <div>
       {loading && <Loader />}
       <Layout>
+        <div className='row py-3 px-2 th-bg-grey'>
+          <div className='col-md-8' style={{ zIndex: 2 }}>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item
+                className='th-bg-grey th-pointer th-18'
+                href='/blog/wall/central/redirect'
+              >
+                Activity Management
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                className='th-bg-grey th-18 th-pointer'
+                href='/visual/activity'
+              >
+                {localActivityData?.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-bg-black th-18'>
+                Create {localActivityData?.name}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+        </div>
+        <div className='th-bg-white py-0 mx-3'>
+          <div className='row'>
+            <div className='col-12 py-3'>
+              <Form id='filterForm' layout={'horizontal'} ref={formRef}>
+                <div className='row align-items-center'>
+                  <div className='col-md-3 col-6 pl-0'>
+                    <div className='col-mb-3 text-left'> Branch</div>
+                    <Form.Item name='branch'>
+                      <Select
+                        allowClear
+                        placeholder={'Select Branch'}
+                        placement='bottomRight'
+                        showSearch
+                        mode='multiple'
+                        maxTagCount={2}
+                        showArrow={true}
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        optionFilterProp='children'
+                        value={selectedBranch}
+                        dropdownMatchSelectWidth={false}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(event, value) => {
+                          handleBranch(value);
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={true}
+                        onClear={handleClearBranch}
+                      >
+                        {branchOption}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-3 col-6 pl-0'>
+                    <div className='col-mb-3 text-left'>Grade</div>
+                    <Form.Item name='grade'>
+                      <Select
+                        allowClear
+                        placeholder={'Select Grade'}
+                        placement='bottomRight'
+                        showSearch
+                        mode='multiple'
+                        maxTagCount={2}
+                        showArrow={true}
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        optionFilterProp='children'
+                        value={selectedGrade}
+                        dropdownMatchSelectWidth={false}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(event, value) => {
+                          handleGrade(event, value);
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={true}
+                        onClear={handleClearGrade}
+                      >
+                        {gradeOption}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-3 col-6 pl-0'>
+                    <div className='col-mb-3 text-left'>Section</div>
+                    <Form.Item name='section'>
+                      <Select
+                        allowClear
+                        placeholder={'Select Section'}
+                        placement='bottomRight'
+                        showSearch
+                        mode='multiple'
+                        maxTagCount={2}
+                        showArrow={true}
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        optionFilterProp='children'
+                        value={selectedSection}
+                        dropdownMatchSelectWidth={false}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(event, value) => {
+                          handleSection(value);
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={true}
+                        onClear={handleClearSection}
+                      >
+                        {sectionOption}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-3 col-6 pl-0'>
+                    <div className='col-mb-3 text-left'>Submission Date</div>
+                    <DatePicker
+                      className='w-100 th-black-1 th-bg-grey th-br-4 p-1 mb-2'
+                      onChange={(value) => handleStartDateChange(value)}
+                    />
+                  </div>
+                </div>
+              </Form>
+            </div>
+          </div>
+        </div>
+        <div className='col-12 py-3 px-0'>
+          <div className='col-md-6 py-3 py-md-0'>
+            <span className='th-grey th-14'>Title</span>
+            <Input
+              className='th-br-4 mt-1 th-16'
+              showCount
+              maxLength='30'
+              value={title}
+              onChange={handleTitle}
+            />
+            <div className='text-right'>
+              <span className='th-red th-12 text-right'>Max. 30 Characters</span>
+            </div>
+          </div>
+          <div className='col-md-6'>
+            <span className='th-grey th-14'>Description*</span>
+            <div className='th-editor py-2'>
+              <TextArea rows={5} value={description} onChange={handleDescription} />
+            </div>
+          </div>
+        </div>
+        <div className='row mt-2'>
+          <div className='col-12 px-0 py-3 d-flex'>
+            <div className='col-md-2'>
+              <Button type='primary' className='w-100 th-14' onClick={goBack}>
+                Back
+              </Button>
+            </div>
+            <div className='col-md-2'>
+              <Button type='primary' className='w-100 th-14'  onClick={handleClear}
+              >
+                Clear All
+              </Button>
+            </div>
+            <div className='col-md-2'>
+              <Button type='primary' className='w-100 th-14' onClick={PreviewBlog}>
+                Preview
+              </Button>
+            </div>
+            <div className='col-md-2'>
+              <Button
+                type='primary'
+                className='w-100 th-14'
+                disabled={user_level == 11}
+                onClick={dataPost}
+              >
+                Submit
+              </Button>
+            </div>
+          </div>
+        </div>
+        <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
+          <div style={{ width: '642px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '12px',
+              }}
+            >
+              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
+              <div style={{ marginTop: '21px', marginRight: '34px' }}>
+                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
+              </div>
+            </div>
+
+            <div
+              style={{
+                border: '1px solid lightgray',
+                height: ' auto',
+                marginLeft: '16px',
+                marginRight: '32px',
+                borderRadius: '10px',
+                marginBottom: '9px',
+              }}
+            >
+              <div style={{ marginLeft: '23px', marginTop: '28px' }}>
+                <div style={{ fontSize: '15px', color: '#7F92A3' }}>
+                  Title -{activityName.name}
+                </div>
+                <div style={{ fontSize: '21px' }}>{title}</div>
+                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                  Submission on -{startDate}
+                </div>
+                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                  Branch -&nbsp;<span style={{ color: 'black' }}>{branchname}</span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Grade -&nbsp;<span style={{ color: 'black' }}>{gradename}</span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Section -&nbsp;<span style={{ color: 'black' }}>{sectionname}</span>
+                </div>
+
+                <div
+                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+                ></div>
+                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                  Instructions
+                </div>
+                <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
+                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
+                  <img src={fileUrl} width='50%' />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </Layout>
+      {/* <Layout>
+
+
 
         <Grid
           container
@@ -845,7 +1159,7 @@ const VisualActivityCreate = () => {
             </div>
           </div>
         </Dialog>
-      </Layout>
+      </Layout> */}
     </div>
   );
 };

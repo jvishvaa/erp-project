@@ -14,6 +14,7 @@ import {
   Table,
   Modal as ModalAnt,
   Tag,
+  message,
 } from 'antd';
 import {
   DeleteFilled,
@@ -26,9 +27,7 @@ import {
 
 import axios from 'axios';
 
-import {
-  makeStyles,
-} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
 import Layout from 'containers/Layout';
 
@@ -395,13 +394,18 @@ const RatingCreate = () => {
         },
       })
       .then((response) => {
-        console.log(response);
-        // alert.success('activity successfully created');
-        setLoading(false);
-        setAlert('success', 'Rating and Score Successfully Created');
-        setActivityType('');
-        handleClose();
-        getActivityCategory();
+        if (response?.data?.status_code == 400) {
+          setLoading(false);
+          message.error(response?.data?.message);
+          return;
+        } else {
+          message.success(response?.data?.message);
+          setLoading(false);
+          setActivityType('');
+          handleClose();
+          getActivityCategory();
+          return;
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -650,12 +654,18 @@ const RatingCreate = () => {
         },
       })
       .then((res) => {
-        console.log(res);
-        setLoading(false);
-        setAlert('success', 'Created Successfully');
-        setActivityType('');
-        handleClose();
-        getActivityCategory();
+        if (res.data.status_code == 400) {
+          message.error(res.data.message);
+          setLoading(false);
+          return;
+        } else {
+          setLoading(false);
+          message.success(res.data.message);
+          setActivityType('');
+          handleClose();
+          getActivityCategory();
+          return;
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -707,9 +717,9 @@ const RatingCreate = () => {
 
   const handleModalClose = () => {
     setViewing(false);
-    setInputList([{ name: '', rating: '', score: null }])
-    setVisualInputList([{ name: '', score: null }])
-    setOptionList([{ name: '', score: null, status: false }])
+    setInputList([{ name: '', rating: '', score: null }]);
+    setVisualInputList([{ name: '', score: null }]);
+    setOptionList([{ name: '', score: null, status: false }]);
 
     // setActivityType("")
   };
@@ -742,7 +752,7 @@ const RatingCreate = () => {
             </div>
           ) : (
             <div className='row p-3' style={{ height: '68vh', overflowY: 'auto' }}>
-              <div className='col-12 d-flex' style={{height:'6%'}}>
+              <div className='col-12 d-flex' style={{ height: '6%' }}>
                 <div className='col-md-6 mb-sm-0 p-0'>
                   <Form.Item name='activity type'>
                     <Select

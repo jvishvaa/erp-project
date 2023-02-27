@@ -121,7 +121,7 @@ const BlogWallRedirect = () => {
         );
         setDanceSubId(danceActivityData[0]);
         const theaterActivityData = result?.data?.result.filter(
-          (item) => item?.name.toLowerCase() === 'theater'
+          (item) => item?.name.toLowerCase() === 'theatre'
         );
         setTheaterSubId(theaterActivityData[0]);
         setLoading(false);
@@ -189,7 +189,7 @@ const BlogWallRedirect = () => {
       localStorage.setItem('ActivityData', JSON.stringify(danceSubId));
       handleActivityRedirection(activityName);
       return;
-    } else if (activityName === 'theater') {
+    } else if (activityName === 'theatre') {
       localStorage.setItem('ActivityData', JSON.stringify(theaterSubId));
       handleActivityRedirection(activityName);
       return;
@@ -205,7 +205,7 @@ const BlogWallRedirect = () => {
       <div className='row px-2'>
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-grey th-16'>
+            <Breadcrumb.Item className='th-grey th-18'>
               Activities Management
             </Breadcrumb.Item>
           </Breadcrumb>
