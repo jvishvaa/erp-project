@@ -128,7 +128,11 @@ const AttendanceReportNew = () => {
                           className='th-fw-600 th-black-2'
                           title={item?.grade_name + ' ' + item?.section_name?.slice(-1)}
                         >
-                          {item?.grade_name + ' ' + item?.section_name?.slice(-1)}
+                          {item?.grade_name + ' ' + item?.section_name?.slice(-1)} (
+                          {item?.total_count < 9
+                            ? '0' + item?.total_count
+                            : item?.total_count}
+                          )
                         </span>
                       </div>
                       <div className='col-2 px-1 text-center'>
@@ -136,7 +140,6 @@ const AttendanceReportNew = () => {
                           <span
                             className='pb-1 th-green-1'
                             style={{ borderBottom: '3px solid #35C979' }}
-                            tit
                           >
                             {item?.present_count < 9
                               ? '0' + item?.present_count
