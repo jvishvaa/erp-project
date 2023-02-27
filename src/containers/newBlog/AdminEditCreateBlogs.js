@@ -156,6 +156,7 @@ const AdminEditCreateBlogs = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   const [academicYear, setAcademicYear] = useState('');
+  const [flag,setFlag] = useState(false)
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -343,11 +344,6 @@ const AdminEditCreateBlogs = () => {
       axiosInstance
         .get(
           `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
         )
         .then((result) => {
           setLoading(false);
@@ -423,6 +419,7 @@ const AdminEditCreateBlogs = () => {
   ];
   const handleStartDateChange = (val) => {
     setStartDate(moment(val).format('YYYY-MM-DD'));
+    setFlag(true)
   };
   const PreviewBlog = () => {
     setAssigned(true);
@@ -504,10 +501,10 @@ const AdminEditCreateBlogs = () => {
         title: title,
         description: description,
         issue_date: null,
-        submission_date: startDate + hoursAndMinutes,
+        submission_date: flag ? startDate + hoursAndMinutes : startDate,
         activity_type_id: activityName.id,
         session_year: selectedAcademicYear.session_year,
-        created_at: startDate + hoursAndMinutes,
+        created_at: flag ? startDate + hoursAndMinutes: startDate,
         created_by: user_id.id,
         branch_ids: branchIds,
         grade_ids: gradeIds,
@@ -584,7 +581,7 @@ const AdminEditCreateBlogs = () => {
               branch: response?.data?.result?.branches.map((obj) => obj?.branch_id),
               grade:response?.data?.result?.grades?.map((obj) => obj?.grade_id), 
               section: response?.data?.result?.sections?.map((obj) => obj?.section_id),
-              date: moment(response?.data?.result?.submission_date)
+              date: moment(response?.data?.result?.submission_date).format('YYYY-MM-DD')
 
             });
           }
