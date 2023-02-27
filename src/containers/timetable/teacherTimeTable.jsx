@@ -136,7 +136,7 @@ const TeacherTimeTable = () => {
         defaultView={'timeGridWeek'}
         timeTableEvents={timeTableEvents}
         startSchoolTime={'07:00:00'}
-        endSchoolTime={'17:00:00'}
+        endSchoolTime={'19:00:00'}
         heading={'false'}
         eventClick={handlesetPeriodDetails}
       />

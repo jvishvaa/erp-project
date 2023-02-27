@@ -97,21 +97,21 @@ const HomeworkReport = () => {
                               <div className='th-primary d-flex align-items-center'>
                                 <Badge
                                   status={
-                                    moment().isBefore(item?.submission_date)
-                                      ? 'processing'
-                                      : 'error'
+                                    moment().isAfter(item?.submission_date, 'days')
+                                      ? 'error'
+                                      : 'processing'
                                   }
                                 />
                                 <div
                                   className={`${
-                                    moment().isBefore(item?.submission_date)
-                                      ? 'th-primary'
-                                      : 'th-red'
+                                    moment().isAfter(item?.submission_date, 'days')
+                                      ? 'th-red'
+                                      : 'th-primary'
                                   } th-fw-500`}
                                 >
-                                  {moment().isBefore(item?.submission_date)
-                                    ? 'Pending'
-                                    : 'Overdue'}
+                                  {moment().isAfter(item?.submission_date, 'days')
+                                    ? 'Overdue'
+                                    : 'Pending'}
                                 </div>
                               </div>
                               <div className='th-grey th-10'>

@@ -6,7 +6,7 @@ import axios from 'v2/config/axios';
 import { useSelector } from 'react-redux';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/noAttendanceIcon.svg';
 import moment from 'moment';
 
 const AttendanceReportNew = () => {
@@ -126,9 +126,13 @@ const AttendanceReportNew = () => {
                       <div className='col-7 px-2 text-left text-truncate text-capitalize'>
                         <span
                           className='th-fw-600 th-black-2'
-                          title={item?.grade_name + ' ' + item?.section_name?.slice(-1)}
+                          title={item?.grade_name + '' + item?.section_name?.slice(-1)}
                         >
-                          {item?.grade_name + ' ' + item?.section_name?.slice(-1)}
+                          {item?.grade_name + '' + item?.section_name?.slice(-1)} (
+                          {item?.total_count < 9
+                            ? '0' + item?.total_count
+                            : item?.total_count}
+                          )
                         </span>
                       </div>
                       <div className='col-2 px-1 text-center'>
@@ -136,7 +140,6 @@ const AttendanceReportNew = () => {
                           <span
                             className='pb-1 th-green-1'
                             style={{ borderBottom: '3px solid #35C979' }}
-                            tit
                           >
                             {item?.present_count < 9
                               ? '0' + item?.present_count

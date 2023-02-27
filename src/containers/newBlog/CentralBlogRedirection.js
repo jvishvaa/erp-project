@@ -12,13 +12,8 @@ import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIco
 
 import axios from 'axios';
 import moment from 'moment';
-import image1 from '../../assets/images/gp1.png';
-import image2 from '../../assets/images/gp2.png';
-import visualImage from '../../assets/images/visual art.jpg';
-import physicalImage from '../../assets/images/physical activity.jpg';
-import musicImage from '../../assets/images/music-01.jpg';
-import theaterImage from '../../assets/images/theater-02.jpg';
-import danceImage from '../../assets/images/dance-02.jpg';
+import { getActivityIcon } from 'v2/generalActivityFunction';
+
 const drawerWidth = 350;
 const { TabPane } = Tabs;
 
@@ -37,8 +32,8 @@ const CentralBlogRedirection = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [blogLoginId, setBlogLoginId] = useState('');
-  const [physicalSubId,setPhysicalSubId] = useState('')
-  const [blogSubIdValue,setBlogSubIdValue] = useState('')
+  const [physicalSubId, setPhysicalSubId] = useState('');
+  const [blogSubIdValue, setBlogSubIdValue] = useState('');
 
   const handleBlogWriting = () => {
     history.push('/blog/studentview');
@@ -109,7 +104,7 @@ const CentralBlogRedirection = () => {
           (item) => item?.name == 'Physical Activity'
         );
         setSubId(physicalData[0]?.id);
-        setPhysicalSubId(physicalData[0])
+        setPhysicalSubId(physicalData[0]);
         const blogActivityData = result?.data?.result.filter(
           (item) => item?.name == 'Blog Activity'
         );
@@ -276,28 +271,6 @@ const CentralBlogRedirection = () => {
       });
   };
 
-  const getSubjectIcon = (value) => {
-    switch (value) {
-      case 'Blog Activity':
-        return image2;
-      case 'Public Speaking':
-        return image1;
-      case 'Physical Activity':
-        return physicalImage;
-      case 'actiivtytype':
-        return image1;
-      case 'Visual Art':
-        return visualImage;
-      case 'Music':
-        return musicImage;
-      case 'Dance':
-        return danceImage;
-      case 'Theatre':
-        return theaterImage;
-      default:
-        return '';
-    }
-  };
   useEffect(() => {
     localStorage.setItem('PhysicalActivityId', '');
     getActivitySession();
@@ -330,7 +303,7 @@ const CentralBlogRedirection = () => {
                     <div className='row p-3'>
                       <div className='col-4 px-0 th-br-5'>
                         <img
-                          src={getSubjectIcon(each?.name)}
+                          src={getActivityIcon(each?.name)}
                           alt='Icon'
                           style={{
                             height: '150px',

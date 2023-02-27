@@ -87,9 +87,10 @@ const BlogWall = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [branchIds, setBranchIds] = useState('');
-  const userId = localStorage.getItem('ActivityManagementSession')
-    ? JSON.parse(localStorage.getItem('ActivityManagementSession'))?.user_id
-    : '';
+  const [userId, setUserId] = useState(
+    JSON.parse(localStorage.getItem('ActivityManagementSession'))?.user_id
+  );
+
   const [branchList, setBranchList] = useState([]);
   const [selectedGradeId, setSelectedGradeIds] = useState('');
   const [blogList, setBlogList] = useState([]);
@@ -114,13 +115,13 @@ const BlogWall = () => {
   const options = [
     { id: 1, value: 'All' },
     { id: 2, value: 'Blogs' },
-    { id: 3, value: 'Dance', visible: isStudent },
-    { id: 4, value: 'Music', visible: isStudent },
+    { id: 3, value: 'Dance' },
+    { id: 4, value: 'Music' },
     { id: 5, value: 'Posts' },
-    { id: 6, value: 'Public Speaking', visible: isStudent },
-    { id: 7, value: 'Theatre', visible: isStudent },
-    { id: 8, value: 'Visual Art', visible: isStudent },
-  ].filter((item) => item?.visible !== false);
+    { id: 6, value: 'Public Speaking' },
+    { id: 7, value: 'Theatre' },
+    { id: 8, value: 'Visual Art' },
+  ];
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(null);
@@ -149,7 +150,7 @@ const BlogWall = () => {
 
   const gradeOptions = gradeList?.map((each) => {
     return (
-      <Option key={each?.grade_id} value={each?.grade_id}>
+      <Option key={each?.grade_id} value={each?.grade_id} title={each?.name}>
         {each?.name}
       </Option>
     );
@@ -211,14 +212,15 @@ const BlogWall = () => {
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
+        setUserId(response?.data?.result?.user_id);
         setLoading(false);
         setShowTab('1');
       });
   };
 
   useEffect(() => {
-    ActvityLocalStorage();
-  }, []);
+    if (localStorage.getItem('ActivityManagementSession') == null) ActvityLocalStorage();
+  }, [window.location.pathname]);
   const ActvityLocalStorage = () => {
     setLoading(true);
     axios
@@ -1170,6 +1172,7 @@ const BlogWall = () => {
             onCancel={() => {
               setShowPostDetailsModal(false);
               setCurrentComment(null);
+              handleSearch();
             }}
             width={'80vw'}
             footer={null}
