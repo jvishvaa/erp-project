@@ -5,17 +5,8 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './images.css';
-import {
-  Breadcrumb,
-  Button,
-  Select,
-  Modal,
-  Form,
-  Input,
-} from 'antd';
-import {
-  CheckCircleOutlined,
-} from '@ant-design/icons';
+import { Breadcrumb, Button, Select, Modal, Form, Input, message } from 'antd';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import endpoints from '../../config/endpoints';
 import './styles.scss';
@@ -55,7 +46,7 @@ function AddTemplates() {
   const [drawer, showDrawer] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [search, setSearch] = useState('');
   const [searchId, setSeacrhId] = useState(null);
   const [activityCategory, setActivityCategory] = useState([]);
@@ -77,19 +68,19 @@ function AddTemplates() {
   };
   const handleTextArea = () => {
     if (!height) {
-      setAlert('error', 'Please Add Height');
+      message.error('Please Add Height')
       return;
     } else if (!width) {
-      setAlert('error', 'Please Add Width');
+      message.error("Please Add Width")
       return;
     } else if (!placeholder) {
-      setAlert('error', 'Please Add Placeholder');
+      message.error("Please Add Pleaceholder")
       return;
     } else if (!x) {
-      setAlert('error', 'Please Add X-Cordinate');
+      message.error('Please Add X- Cordinate')
       return;
     } else if (!y) {
-      setAlert('error', 'Please Add Y-Cordinate');
+      message.error('Please Add y-Cordinate')
       return;
     }
     showDrawer(false);
@@ -97,23 +88,30 @@ function AddTemplates() {
   };
   let heightcor = 'px';
   const submitProcess = () => {
-    const formData = new FormData();
-    const body = [
-      {
-        width: width,
-        height: height,
-        x_cordinate: x,
-        y_cordinate: y,
-        placeholder: placeholder,
-      },
-    ];
-
-    formData.append('activity_type_id', searchId);
-    formData.append('title', 'template 15sep 18:12pm');
-    formData.append('image', selectedFile);
-    formData.append(
-      'html_file',
-      JSON.stringify([
+    if (!searchId) {
+      message.error('Please Select Activity Type');
+      return;
+    } else if (!selectedFile) {
+      message.error('Please Add template');
+      return;
+    } else if (!height) {
+      message.error('Please Add Text');
+      return;
+    } else if (!width) {
+      message.error('Please Add Width');
+      return;
+    } else if (!placeholder) {
+      message.error('Please Add Pleaceholder');
+      return;
+    } else if (!x) {
+      message.error('Please Add X-Cordinate');
+      return;
+    } else if (!y) {
+      message.error('Please Add Y-Cordinate');
+      return;
+    } else {
+      const formData = new FormData();
+      const body = [
         {
           width: width,
           height: height,
@@ -121,22 +119,38 @@ function AddTemplates() {
           y_cordinate: y,
           placeholder: placeholder,
         },
-      ])
-    );
-    if (formData) {
-      setLoading(true);
-      axios
-        .post(`${endpoints.newBlog.createTemplates}`, formData, {
-          headers: {
-            // Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
+      ];
+
+      formData.append('activity_type_id', searchId);
+      formData.append('title', 'template 15sep 18:12pm');
+      formData.append('image', selectedFile);
+      formData.append(
+        'html_file',
+        JSON.stringify([
+          {
+            width: width,
+            height: height,
+            x_cordinate: x,
+            y_cordinate: y,
+            placeholder: placeholder,
           },
-        })
-        .then((response) => {
-          setAlert('success', response?.data?.message);
-          history.push('/blog/blogview');
-          setLoading(false);
-        });
+        ])
+      );
+      if (formData) {
+        setLoading(true);
+        axios
+          .post(`${endpoints.newBlog.createTemplates}`, formData, {
+            headers: {
+              // Authorization: `${token}`,
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          })
+          .then((response) => {
+            message.success(response?.data?.message)
+            history.push('/blog/blogview');
+            setLoading(false);
+          });
+      }
     }
   };
   const onFileChange = (event) => {
@@ -161,7 +175,7 @@ function AddTemplates() {
     getActivityCategory();
   }, []);
 
-  const handleActiveType = (value) => {
+  const handleActiveType = (e, value) => {
     if (value) {
       setSearch(value);
       setSeacrhId(value?.id);
@@ -172,7 +186,8 @@ function AddTemplates() {
     setFileUrl(null);
     setSelectedFile(null);
     fileRef.current.value = null;
-    setAlert('success', 'Successfull Template Deleted');
+    message.success('Successfull Template Deleted')
+    return
   };
 
   const handleGoBack = () => {
@@ -181,7 +196,13 @@ function AddTemplates() {
 
   const activityOption = activityCategory.map((each) => {
     return (
-      <Option value={each?.name} key={each?.id} name={each.name} sub_type={each.sub_type}>
+      <Option
+        value={each?.name}
+        key={each?.id}
+        name={each.name}
+        sub_type={each.sub_type}
+        id={each?.id}
+      >
         {each?.name}
       </Option>
     );
@@ -194,22 +215,13 @@ function AddTemplates() {
           <div className='row'>
             <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
-                <Breadcrumb.Item
-                  href='/'
-                  className='th-black th-pointer th-16'
-                >
+                <Breadcrumb.Item href='/' className='th-black th-pointer th-16'>
                   Activity
                 </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  href=''
-                  className='th-black th-pointer th-16'
-                >
+                <Breadcrumb.Item href='' className='th-black th-pointer th-16'>
                   Create Rating
                 </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  href=''
-                  className='th-black th-pointer th-16'
-                >
+                <Breadcrumb.Item href='' className='th-black th-pointer th-16'>
                   Add Template
                 </Breadcrumb.Item>
               </Breadcrumb>
@@ -230,8 +242,8 @@ function AddTemplates() {
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
-                      onChange={(e) => {
-                        handleActiveType(e);
+                      onChange={(e, value) => {
+                        handleActiveType(e, value);
                       }}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       bordered={false}
@@ -258,10 +270,7 @@ function AddTemplates() {
               </div>
               <div className='d-flex justify-content-center align-item-center row'>
                 <div className='A4-template-cover'>
-                  <img
-                    src={fileUrl}
-                    style={{ width: '502px', minHeight: '683px' }}
-                  />
+                  <img src={fileUrl} style={{ width: '502px', minHeight: '683px' }} />
                   {fun == true && (
                     <div
                       style={{
@@ -293,7 +302,7 @@ function AddTemplates() {
               </div>
               <div className='d-flex justify-content-center align-item-center row p-0'>
                 <div className='col-3 p-0 mt-4'>
-                  <Button type="primary" className='w-100 th-400' onClick={submitProcess}>
+                  <Button type='primary' className='w-100 th-400' onClick={submitProcess}>
                     Submit
                   </Button>
                 </div>

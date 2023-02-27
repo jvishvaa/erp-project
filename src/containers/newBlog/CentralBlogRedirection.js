@@ -84,7 +84,7 @@ const CentralBlogRedirection = () => {
           subActiveId: musicSubId,
         },
       });
-    } else if (data.toLowerCase() === 'theater') {
+    } else if (data.toLowerCase() === 'theatre') {
       history.push({
         pathname: '/visual/activity',
         state: {
@@ -128,7 +128,7 @@ const CentralBlogRedirection = () => {
         );
         setDanceSubId(danceActivityData[0]);
         const theaterActivityData = result?.data?.result.filter(
-          (item) => item?.name.toLowerCase() === 'theater'
+          (item) => item?.name.toLowerCase() === 'theatre'
         );
         setTheaterSubId(theaterActivityData[0]);
       })
@@ -207,7 +207,7 @@ const CentralBlogRedirection = () => {
         setAlert('error', 'Permission Denied');
         return;
       }
-    } else if (dataLower === 'theater') {
+    } else if (dataLower === 'theatre') {
       localStorage.setItem('ActivityData', JSON.stringify(theaterSubId));
       if (user_level === 2 || user_level === 6 || user_level === 11 || user_level === 8) {
         handleVisualActivityRoute(dataLower);
@@ -292,7 +292,7 @@ const CentralBlogRedirection = () => {
         return musicImage;
       case 'Dance':
         return danceImage;
-      case 'Theater':
+      case 'Theatre':
         return theaterImage;
       default:
         return '';
@@ -309,7 +309,7 @@ const CentralBlogRedirection = () => {
       <div className='row px-2'>
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-18'>
               Activities Management
             </Breadcrumb.Item>
           </Breadcrumb>
