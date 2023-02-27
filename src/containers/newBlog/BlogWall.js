@@ -150,7 +150,7 @@ const BlogWall = () => {
 
   const gradeOptions = gradeList?.map((each) => {
     return (
-      <Option key={each?.grade_id} value={each?.grade_id}>
+      <Option key={each?.grade_id} value={each?.grade_id} title={each?.name}>
         {each?.name}
       </Option>
     );
