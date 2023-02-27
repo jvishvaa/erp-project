@@ -81,7 +81,7 @@ const VisualActivityReview = () => {
   const [view, setView] = useState(false);
   const [flag, setFlag] = useState(false);
   const [gradeList, setGradeList] = useState([]);
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (newValue) => {
@@ -180,11 +180,11 @@ const VisualActivityReview = () => {
   const goSearch = () => {
     setLoading(true);
     if (gradeId == undefined) {
-      setAlert('error', 'Please Select Grade');
+      message.error('Please Select Grade ')
       setLoading(false);
       return;
     } else if (subjectId == undefined) {
-      setAlert('error', 'Please Select Section');
+      message.error('Please Select Section')
       setLoading(false);
       return;
     } else {

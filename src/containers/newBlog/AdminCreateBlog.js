@@ -1,12 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, createRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  makeStyles,
-  Dialog,
-  DialogTitle,
-  Checkbox,
-} from '@material-ui/core';
+import { makeStyles, Dialog, DialogTitle } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import moment from 'moment';
 import Layout from 'containers/Layout';
@@ -47,6 +42,8 @@ import {
   Typography,
   DatePicker,
   Input,
+  message,
+  Checkbox,
 } from 'antd';
 
 import {
@@ -125,7 +122,8 @@ const useStyles = makeStyles((theme) => ({
     height: '45px',
   },
   tickSize: {
-    transform: 'scale(2.0)',
+    transform: 'scale(1.2)',
+    padding: '5px',
   },
 }));
 
@@ -151,12 +149,12 @@ const AdminCreateBlog = () => {
     JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const activityDataType = localStorage.getItem('ActivityData') ? JSON.parse(localStorage.getItem('ActivityData')) : '';
   const { Option } = Select;
   const { TextArea } = Input;
   const formRef = createRef();
   const [branchList, setBranchList] = useState([]);
   const [maxWidth, setMaxWidth] = React.useState('lg');
-  const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [assigned, setAssigned] = useState(false);
   const [sectionDropdown, setSectionDropdown] = useState([]);
@@ -197,6 +195,7 @@ const AdminCreateBlog = () => {
     grade: '',
     section: '',
   });
+
   const [sudActId, setSubActId] = useState(physicalId);
   const [selectedSubActivityId, setSelectedSubActivityId] = useState('');
 
@@ -215,6 +214,14 @@ const AdminCreateBlog = () => {
     setIsPhysicalActivity(false);
     setIsVisualActivity(false);
     if (value) {
+      formRef.current.setFieldsValue({
+        sub_activity: value,
+        branch: [],
+        grade: [],
+        section: [],
+        round: [],
+        date: [],
+      });
       setSubActivityName(value);
       setIsPhysicalActivity(true);
       setSelectedSubActivityId(value?.id);
@@ -231,6 +238,17 @@ const AdminCreateBlog = () => {
     setIsPhysicalActivity(false);
     setVisible(false);
     if (value) {
+      formRef.current.setFieldsValue({
+        activity_categories: value,
+        branch: [],
+        grade: [],
+        section: [],
+        round: [],
+        date: [],
+      });
+      setSelectedBranch([]);
+      setSelectedGrade([]);
+      setSelectedSection([]);
       setVisible(true);
       setActivityName(value);
       if (value?.value == 'Physical Activity') {
@@ -377,6 +395,13 @@ const AdminCreateBlog = () => {
       //   value.filter(({ value }) => value === 'all').length === 1
       //     ? [...branchDropdown].filter(({ id }) => id !== 'all')
       //     : value;
+
+      formRef.current.setFieldsValue({
+        branch: value,
+        grade: [],
+        section: [],
+        data: [],
+      });
       setSelectedBranch(value);
       // fetchGrades(branchId);
       getGrades(selectedAcademicYear?.id, branchId);
@@ -385,13 +410,21 @@ const AdminCreateBlog = () => {
   };
 
   const handleGrade = (e, value) => {
+    setSelectedGrade([]);
+    setSelectedSection([]);
     if (value) {
+      setSelectedSection([]);
       const branchIds = selectedBranch.map((element) => parseInt(element?.key));
       const gradeId = value?.map((element) => parseInt(element?.key));
       // value =
       //   value.filter(({ name }) => name === 'Select All').length === 1
       //     ? [...gradeList].filter(({ name }) => name !== 'Select All')
       //     : value;
+      formRef.current.setFieldsValue({
+        grade: value,
+        section: [],
+        data: [],
+      });
       setSelectedGrade(value);
       fetchSections(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
 
@@ -399,11 +432,15 @@ const AdminCreateBlog = () => {
     }
   };
   const handleSection = (e, value) => {
+    setSelectedSection([]);
     if (value) {
       value =
         value.filter(({ id }) => id === 'all').length === 1
           ? [...sectionDropdown].filter(({ id }) => id !== 'all')
           : value;
+      formRef.current.setFieldsValue({
+        date: [],
+      });
       setSelectedSection(value);
     }
   };
@@ -419,21 +456,9 @@ const AdminCreateBlog = () => {
     setStartDate(moment(val).format('YYYY-MM-DD'));
   };
 
-  var branchname
-  var gradename
-  var sectionname
   const PreviewBlog = () => {
-    // let branchIdss = selectedBranch.map((obj, index) => obj?.children).join(', ');
-    // branchname = [...branchIdss];
-    // console.log(branchname,'kl2')
-    // let gradeIdss = selectedGrade.map((obj, index) => obj?.children).join(', ');
-    // gradename = [...gradeIdss];
-    // let sectionIdss = selectedSection.map((obj, index) => obj?.children).join(', ');
-    // sectionname = [...sectionIdss];
     setAssigned(true);
   };
-
-  
 
   const onFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -475,6 +500,15 @@ const AdminCreateBlog = () => {
     setTitle('');
     setSelectedRound([]);
     setStartDate('');
+    formRef.current.setFieldsValue({
+      sub_activity: [],
+      activity_categories: [],
+      branch: [],
+      grade: [],
+      section: [],
+      round: [],
+      date: [],
+    });
   };
   const formatdate = new Date();
   const hoursAndMinutes =
@@ -491,40 +525,44 @@ const AdminCreateBlog = () => {
     const gradeIds = selectedGrade.map((obj) => obj?.key);
     const sectionIds = selectedSection.map((obj) => obj?.id);
     // setLoading(true);
-    if (!startDate) {
+    if (!activityName) {
+      message.error('Please Select Activity Categories');
       setLoading(false);
-      setAlert('error', 'Please Select The Date');
       return;
     }
-
     if (activityName.length === 0 && physicalId == undefined) {
       setLoading(false);
-      setAlert('error', 'Please Add Activity Name');
+      message.error('Please Select Activity Type');
       return;
     }
     if (branchIds?.length === 0) {
       setLoading(false);
-      setAlert('error', 'Please Select Branch');
+      message.error('Please Select Branch');
       return;
     }
     if (gradeIds?.length === 0) {
       setLoading(false);
-      setAlert('error', 'Please Select Grade');
+      message.error('Please Select Grade');
       return;
     }
     if (sectionIds?.length === 0) {
       setLoading(false);
-      setAlert('error', 'Please Select Section');
+      message.error('Please Select Section');
+      return;
+    }
+    if (!startDate) {
+      setLoading(false);
+      message.error('Please Select Date');
       return;
     }
     if (title.length === 0) {
       setLoading(false);
-      setAlert('error', 'Please Add Title');
+      message.error('Please Add Title');
       return;
     }
     if (!description) {
       setLoading(false);
-      setAlert('error', 'Please Add Description');
+      message.error('Please Add Description');
       return;
     } else {
       const formData = new FormData();
@@ -555,7 +593,7 @@ const AdminCreateBlog = () => {
         })
         .then((response) => {
           setLoading(false);
-          setAlert('success', 'Activity Successfully Created');
+          message.success('Activity Successfully Created');
           setLoading(false);
           setSelectedGrade([]);
           setSelectedBranch([]);
@@ -715,7 +753,7 @@ const AdminCreateBlog = () => {
       }
     } catch (e) {
       setLoading(false);
-      setAlert('error', 'Failed to fetch branch');
+      message.error('Failed To Fetch Branch');
     }
   };
 
@@ -729,7 +767,7 @@ const AdminCreateBlog = () => {
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      setAlert('error', 'Failed to fetch grades');
+      message.error('Failed to Fetch Grade');
     }
   };
 
@@ -771,13 +809,13 @@ const AdminCreateBlog = () => {
     );
   });
 
-  const subActionTypeOption = subActivityListData.map((each) =>{
-    return(
+  const subActionTypeOption = subActivityListData.map((each) => {
+    return (
       <Option key={each?.id} value={each?.sub_type} id={each?.id}>
-          {each?.sub_type}
+        {each?.sub_type}
       </Option>
-    )
-  })
+    );
+  });
 
   const handleAcademicYear = (event = {}, value = '') => {
     // formik.setFieldValue('academic', '');
@@ -792,9 +830,9 @@ const AdminCreateBlog = () => {
     handleAcademicYear({}, selectedAcademicYear);
   };
 
-  const handleClearGrade =() =>{
-    setSelectedGrade([])
-  }
+  const handleClearGrade = () => {
+    setSelectedGrade([]);
+  };
 
   return (
     <div>
@@ -816,7 +854,7 @@ const AdminCreateBlog = () => {
                 Blog Activity
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-18'>
-                Create Activity
+                Create {activityDataType?.name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -824,12 +862,12 @@ const AdminCreateBlog = () => {
         <div className='th-bg-white py-0 mx-3'>
           <div className='row'>
             <div className='col-12 py-3'>
-              <Form id='filterForm' layout={'horizontal'} >
+              <Form id='filterForm' layout={'horizontal'} ref={formRef}>
                 <div className='row align-items-center'>
                   {physicalId ? (
                     <div className='col-md-2 col-6 pl-0'>
                       <div className='mb-2 text-left'>Sub-Activity Categories</div>
-                      <Form.Item name='sib-activity_categories'>
+                      <Form.Item name='sub_activity'>
                         <Select
                           allowClear
                           placeholder={'Select Sub-Activity'}
@@ -1120,8 +1158,8 @@ const AdminCreateBlog = () => {
                           value={checked}
                           onChange={() => handleChange(obj?.id, obj?.id)}
                           className={classes.tickSize}
-                          color='primary'
-                          inputProps={{ 'aria-label': 'secondary checkbox' }}
+                          // color='primary'
+                          // inputProps={{ 'aria-label': 'secondary checkbox' }}
                         />
                         <div>{obj?.title}</div>
                       </div>
@@ -1145,11 +1183,11 @@ const AdminCreateBlog = () => {
                   Preview
                 </Button>
               </div>
-              {/* <div className='col-md-2'>
+              <div className='col-md-2'>
                 <Button type='primary' className='w-100 th-14' onClick={handleClear}>
                   Clear All
                 </Button>
-              </div> */}
+              </div>
               <div className='col-md-2'>
                 <Button
                   type='primary'
@@ -1163,62 +1201,83 @@ const AdminCreateBlog = () => {
             </div>
           </div>
           <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '642px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '12px',
-              }}
-            >
-              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-              <div style={{ marginTop: '21px', marginRight: '34px' }}>
-                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
-              </div>
-            </div>
-
-            <div
-              style={{
-                border: '1px solid lightgray',
-                height: ' auto',
-                marginLeft: '16px',
-                marginRight: '32px',
-                borderRadius: '10px',
-                marginBottom: '9px',
-              }}
-            >
-              <div style={{ marginLeft: '23px', marginTop: '28px' }}>
-                <div style={{ fontSize: '15px', color: '#7F92A3' }}>
-                  Title -{activityName.name}
-                </div>
-                <div style={{ fontSize: '21px' }}>{title}</div>
-                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                  Submission on -{startDate}
-                </div>
-                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                  Branch -&nbsp;<span style={{ color: 'black' }}>{ selectedBranch.map((each) =>  <b style={{padding:'4px', fontWeight:'500'}}>{each?.children}</b>)}</span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Grade -&nbsp;<span style={{ color: 'black' }}>{selectedGrade.map((each) =>  <b style={{padding:'4px', fontWeight:'500'}}>{each?.children}</b>)}</span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Section -&nbsp;<span style={{ color: 'black' }}>{selectedSection.map((each) => <b style={{padding:'4px', fontWeight:'500'}}>{each?.children}</b>)}</span>
-                </div>
-
-                <div
-                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                ></div>
-                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                  Instructions
-                </div>
-                <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
-                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                  <img src={fileUrl} width='50%' />
+            <div style={{ width: '642px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginTop: '12px',
+                }}
+              >
+                <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
+                <div style={{ marginTop: '21px', marginRight: '34px' }}>
+                  <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
                 </div>
               </div>
+
+              <div
+                style={{
+                  border: '1px solid lightgray',
+                  height: ' auto',
+                  marginLeft: '16px',
+                  marginRight: '32px',
+                  borderRadius: '10px',
+                  marginBottom: '9px',
+                }}
+              >
+                <div style={{ marginLeft: '23px', marginTop: '28px' }}>
+                  <div style={{ fontSize: '15px', color: '#7F92A3' }}>
+                    Title -{activityName.name}
+                  </div>
+                  <div style={{ fontSize: '21px' }}>{title}</div>
+                  <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                    Submission on -{startDate}
+                  </div>
+                  <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                    Branch -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {selectedBranch.map((each) => (
+                        <b style={{ padding: '4px', fontWeight: '500' }}>
+                          {each?.children}
+                        </b>
+                      ))}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'gray' }}>
+                    Grade -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {selectedGrade.map((each) => (
+                        <b style={{ padding: '4px', fontWeight: '500' }}>
+                          {each?.children}
+                        </b>
+                      ))}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'gray' }}>
+                    Section -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {selectedSection.map((each) => (
+                        <b style={{ padding: '4px', fontWeight: '500' }}>
+                          {each?.children}
+                        </b>
+                      ))}
+                    </span>
+                  </div>
+
+                  <div
+                    style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+                  ></div>
+                  <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                    Instructions
+                  </div>
+                  <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
+                  <div style={{ paddingTop: '28px', fontSize: '14px' }}>
+                    <img src={fileUrl} width='50%' />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </Dialog>
+          </Dialog>
         </div>
       </Layout>
 

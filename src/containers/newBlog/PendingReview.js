@@ -118,7 +118,7 @@ const PendingReview = (props) => {
   const history = useHistory();
   const { Option } = Select;
   const [value, setValue] = useState();
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   console.log(ActivityId, 'ActivityId');
   const [inputList, setInputList] = useState([{ remarks: '', id: '', given_rating: '' }]);
@@ -152,7 +152,7 @@ const PendingReview = (props) => {
   const submitReview = () => {
     let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
     if (!mandatory[0].remarks) {
-      setAlert('error', 'Overall Remarks Is Compulsory');
+      message.error('Overall Remarks Is Compulsory');
       return;
     }
     let body = ratingReview;
@@ -170,7 +170,7 @@ const PendingReview = (props) => {
         console.log(response);
         setView(false);
         setLoading(false);
-        setAlert('success', ' Review Submitted Successfully');
+        message.success(' Review Submitted Successfully');
       });
   };
 
@@ -192,7 +192,7 @@ const PendingReview = (props) => {
       })
       .then((response) => {
         setLoading(false);
-        setAlert('success', 'Activity Successfully Shortlisted');
+        message.success('Activity Successfully Shortlisted');
       });
   };
 
@@ -468,7 +468,7 @@ const PendingReview = (props) => {
                       <div className=' th-fw-500 th-14'>{data?.grade?.name}</div>
                     </div>
                   </div>
-                  <div className='row text-truncate px-1 text-left mt-2'>
+                  {/* <div className='row text px-1 text-left mt-2'>
                     <div className='col-12 px-0'>
                       <span style={{ fontWeight: 'normal', fontSize: '16px' }}>
                         Title: {data?.activity_detail?.title}
@@ -482,6 +482,28 @@ const PendingReview = (props) => {
                         Description: {data?.activity_detail?.description}
                       </span>
                     </div>
+                  </div> */}
+                  <div className='col-12 px-0'>
+                    <div
+                      className='th-bg-grey py-3 px-2 th-br-8'
+                      style={{ outline: '1px solid #d9d9d9' }}
+                    >
+                      <div className=' th-12 th-black-2'>
+                        Title :{' '}
+                        <span className='th-16 th-fw-500 th-black-1'>
+                          {data?.activity_detail?.title}
+                        </span>
+                      </div>
+                      <div
+                        className='mt-2'
+                        style={{ overflowY: 'auto', maxHeight: '25vh' }}
+                      >
+                        <span className='th-12 th-black-2'>Description :&nbsp;</span>
+                        <span className='th-16 th-fw-400 th-black-1'>
+                          {data?.activity_detail?.description}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   <div className='mt-3'>
                     <div className='th-fw-500 th-16 mb-2'>Review</div>
@@ -489,14 +511,16 @@ const PendingReview = (props) => {
                       className='px-1 py-2 th-br-5'
                       style={{ outline: '1px solid #D9D9D9' }}
                     >
-
                       {ratingReview.map((obj, index) => {
                         return (
                           <div className='col-12 px-1'>
                             {obj?.name === 'Overall' ? (
-                              <div key={index} className='th-black d-flex' style={{justifyContent: 'space-between',}}>
+                              <div
+                                key={index}
+                                className='th-black d-flex'
+                                style={{ justifyContent: 'space-between' }}
+                              >
                                 {' '}
-                             
                                 <b>{obj?.name}</b>
                                 <StyledRating
                                   name={`rating`}
@@ -530,17 +554,21 @@ const PendingReview = (props) => {
                             {obj?.name == 'Overall' ? (
                               <div>
                                 <Input
-                                value={obj?.remarks}
-                                onChange={(event) => handleInputCreativity(event, index)}
-                                placeholder='Mandatory'
+                                  value={obj?.remarks}
+                                  onChange={(event) =>
+                                    handleInputCreativity(event, index)
+                                  }
+                                  placeholder='Mandatory'
                                 />
                               </div>
-                            ) :(
+                            ) : (
                               <div>
                                 <Input
-                                value={obj?.remarks}
-                                placeholder='Optional'
-                                onChange={(event) => handleInputCreativity(event, index)}
+                                  value={obj?.remarks}
+                                  placeholder='Optional'
+                                  onChange={(event) =>
+                                    handleInputCreativity(event, index)
+                                  }
                                 />
                               </div>
                             )}

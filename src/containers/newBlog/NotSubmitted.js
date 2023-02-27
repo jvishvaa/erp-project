@@ -15,6 +15,7 @@ import axios from 'axios';
 import endpoints from '../../config/endpoints';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Loader from 'components/loader/loader';
+import { message } from 'antd';
 
 const useStyles = makeStyles({
   button: {
@@ -91,7 +92,7 @@ const rows = [
 ];
 
 const NotSubmitted = (props) => {
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [checked, setChecked] = React.useState();
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -131,7 +132,7 @@ const NotSubmitted = (props) => {
           setTotalPages(response?.data?.page_size);
           setCurrentPage(response?.data?.page);
           setLimit(Number(limit));
-          setAlert('success', response?.data?.message);
+          // message.success(response?.data?.message)
           setTotalSubmitted(response?.data?.result);
           setLoading(false);
         });

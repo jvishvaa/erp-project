@@ -61,7 +61,7 @@ const AdminViewBlog = () => {
     JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const themeContext = useTheme();
   const history = useHistory();
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = React.useState('');
   const [month, setMonth] = React.useState('1');
   const [status, setStatus] = React.useState('');
@@ -270,7 +270,7 @@ const AdminViewBlog = () => {
       })
       .then((response) => {
         setAssigned(false);
-        setAlert('success', 'Activity Successfully Assign');
+        message.success('Activity Successfully Assigned')
         getUnAssinged();
         getAssinged();
         setLoading(false);
@@ -325,7 +325,7 @@ const AdminViewBlog = () => {
           setAssigneds(response?.data?.result);
           setLoading(false);
         } else {
-          setAlert('error', 'Server Issue ');
+          message.error('Server Issue')
           setLoading(false);
         }
       });
@@ -438,6 +438,7 @@ const AdminViewBlog = () => {
     setIsClickedAssigned(true);
     setCurrentPageAssigned(page);
   };
+
   const handlePaginationUnassign = (event, page) => {
     setSearchFlag(true);
     setIsClickedUnassign(true);
@@ -589,14 +590,14 @@ const AdminViewBlog = () => {
                 </Breadcrumb.Item>
               </Breadcrumb>
             </div>
-            <div className='col-6 d-flex justify-content-end'>
+            <div className='col-6 d-flex justify-content-end px-4'>
               {user_level === 11 || user_level == 10 || user_level == 8 ? (
                 ''
               ) : (
                 <ButtonAnt
                   type='primary'
                   icon={<PlusSquareOutlined />}
-                  className='th-600 mr-4'
+                  className='th-600 mr-3'
                   onClick={createPush}
                 >
                   Create Activity
@@ -639,7 +640,17 @@ const AdminViewBlog = () => {
                                   `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                                 }
                                 loading={loading}
-                                pagination={false}
+                                pagination={{
+                                  total: totalCountAssigned,
+                                  current: Number(currentPageAssigned),
+                                  pageSize: limitAssigned,
+                                  showSizeChanger: false,
+                                  onChange:(e) =>{
+                                    console.log('Pagination', e)
+                                    handlePaginationAssign(e)
+                                  }
+
+                                }}
                                 scroll={{
                                   x: unassingeds.length > 0 ? 'max-content' : null,
                                   y: 600,
@@ -665,7 +676,17 @@ const AdminViewBlog = () => {
                               `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                             }
                             loading={loading}
-                            pagination={false }
+                            pagination={{
+                              total: totalCountAssigned,
+                              current: Number(currentPageAssigned),
+                              pageSize: limitAssigned,
+                              showSizeChanger: false,
+                              onChange:(e) =>{
+                                console.log('Pagination', e)
+                                handlePaginationUnassign(e)
+                              }
+
+                            }}
                             scroll={{
                               x: assingeds.length > 0 ? 'max-content' : null,
                               y: 600,

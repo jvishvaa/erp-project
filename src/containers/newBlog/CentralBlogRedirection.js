@@ -37,6 +37,8 @@ const CentralBlogRedirection = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [blogLoginId, setBlogLoginId] = useState('');
+  const [physicalSubId,setPhysicalSubId] = useState('')
+  const [blogSubIdValue,setBlogSubIdValue] = useState('')
 
   const handleBlogWriting = () => {
     history.push('/blog/studentview');
@@ -82,7 +84,7 @@ const CentralBlogRedirection = () => {
           subActiveId: musicSubId,
         },
       });
-    } else if (data.toLowerCase() === 'theater') {
+    } else if (data.toLowerCase() === 'theatre') {
       history.push({
         pathname: '/visual/activity',
         state: {
@@ -107,10 +109,12 @@ const CentralBlogRedirection = () => {
           (item) => item?.name == 'Physical Activity'
         );
         setSubId(physicalData[0]?.id);
+        setPhysicalSubId(physicalData[0])
         const blogActivityData = result?.data?.result.filter(
           (item) => item?.name == 'Blog Activity'
         );
         setBlogSubId(blogActivityData[0]?.id);
+        setBlogSubIdValue(blogActivityData[0]);
         const visualActivityData = result?.data?.result.filter(
           (item) => item?.name.toLowerCase() === 'visual art'
         );
@@ -124,7 +128,7 @@ const CentralBlogRedirection = () => {
         );
         setDanceSubId(danceActivityData[0]);
         const theaterActivityData = result?.data?.result.filter(
-          (item) => item?.name.toLowerCase() === 'theater'
+          (item) => item?.name.toLowerCase() === 'theatre'
         );
         setTheaterSubId(theaterActivityData[0]);
       })
@@ -150,11 +154,13 @@ const CentralBlogRedirection = () => {
       // handlePublicSpeaking()
       // return
     } else if (dataLower === 'physical activity') {
+      localStorage.setItem('ActivityData', JSON.stringify(physicalSubId));
       localStorage.setItem('PhysicalActivityId', JSON.stringify(subId));
       handlePublicSpeaking();
       return;
     } else if (dataLower === 'art writting' || dataLower === 'blog activity') {
       localStorage.setItem('BlogActivityId', JSON.stringify(blogSubId));
+      localStorage.setItem('ActivityData', JSON.stringify(blogSubIdValue));
       if (user_level === 2 || user_level === 8 || user_level === 11) {
         handleBlogActivity();
         return;
@@ -201,7 +207,7 @@ const CentralBlogRedirection = () => {
         setAlert('error', 'Permission Denied');
         return;
       }
-    } else if (dataLower === 'theater') {
+    } else if (dataLower === 'theatre') {
       localStorage.setItem('ActivityData', JSON.stringify(theaterSubId));
       if (user_level === 2 || user_level === 6 || user_level === 11 || user_level === 8) {
         handleVisualActivityRoute(dataLower);
@@ -286,7 +292,7 @@ const CentralBlogRedirection = () => {
         return musicImage;
       case 'Dance':
         return danceImage;
-      case 'Theater':
+      case 'Theatre':
         return theaterImage;
       default:
         return '';
@@ -303,7 +309,7 @@ const CentralBlogRedirection = () => {
       <div className='row px-2'>
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-18'>
               Activities Management
             </Breadcrumb.Item>
           </Breadcrumb>
