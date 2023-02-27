@@ -171,6 +171,7 @@ const VisualActivityCreate = () => {
   const [selectedFile, setSelectedFile] = useState('');
   const [subActivityName, setSubActivityName] = useState([]);
   const [isVisualActivity, setIsVisualActivity] = useState(false);
+  const [isSubmissionHide,setIsSubmissionHide] =useState(false);
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -412,11 +413,11 @@ const VisualActivityCreate = () => {
     const branchIds = selectedBranch.map((obj) => obj?.id);
     const gradeIds = selectedGrade.map((obj) => obj?.id);
     const sectionIds = selectedSection.map((obj) => obj?.id);
-    if (!startDate) {
-      setLoading(false);
-      message.error('Please Select the Date')
-      return;
-    }
+    // if (!startDate) {
+    //   setLoading(false);
+    //   message.error('Please Select the Date')
+    //   return;
+    // }
     if (branchIds?.length === 0) {
       setLoading(false);
       message.error('Please Select Branch')
@@ -446,11 +447,11 @@ const VisualActivityCreate = () => {
       formData.append('title', title);
       formData.append('description', description);
       formData.append('issue_date', null);
-      formData.append('submission_date', startDate + hoursAndMinutes);
+      formData.append('submission_date', isSubmissionHide ? null : startDate + hoursAndMinutes);
       formData.append('image', selectedFile);
       formData.append('activity_type_id', localActivityData?.id);
       formData.append('session_year', selectedAcademicYear.session_year);
-      formData.append('created_at', startDate + hoursAndMinutes);
+      formData.append('created_at', isSubmissionHide ? null : startDate + hoursAndMinutes);
       formData.append('created_by', user_id.id);
       formData.append('branch_ids', branchIds);
       formData.append('grade_ids', gradeIds);
@@ -612,6 +613,15 @@ const VisualActivityCreate = () => {
     selectedSection([]);
   };
 
+  useEffect(()=>{
+    if(localActivityData?.name.toLowerCase() === 'music' || localActivityData?.name.toLowerCase() === "theatre"){
+      setIsSubmissionHide(true)
+    }else{
+      setIsSubmissionHide(false)
+    }
+
+  },[localActivityData?.name])
+
   return (
     <div>
       {loading && <Loader />}
@@ -741,6 +751,9 @@ const VisualActivityCreate = () => {
                       </Select>
                     </Form.Item>
                   </div>
+                  {isSubmissionHide ? (
+                    ''
+                  ):(
                   <div className='col-md-3 col-6 pl-0'>
                     <div className='col-mb-3 text-left'>Submission Date</div>
                     <DatePicker
@@ -748,6 +761,7 @@ const VisualActivityCreate = () => {
                       onChange={(value) => handleStartDateChange(value)}
                     />
                   </div>
+                  )}
                 </div>
               </Form>
             </div>
