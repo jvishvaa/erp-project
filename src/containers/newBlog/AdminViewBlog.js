@@ -91,6 +91,12 @@ const AdminViewBlog = () => {
   const [isClickedAssigned, setIsClickedAssigned] = useState(false);
   const [searchFlag, setSearchFlag] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [assingeds, setAssigneds] = useState([]);
+  const [view, setViewed] = useState(false);
+  const [branchView, setBranchView] = useState(true);
+  const [branchSearch, setBranchSearch] = useState(true);
+  const [branchList, setBranchList] = useState([]);
+
   const blogActivityId = localStorage.getItem('BlogActivityId')
     ? JSON.parse(localStorage.getItem('BlogActivityId'))
     : {};
@@ -204,10 +210,7 @@ const AdminViewBlog = () => {
       return
     }
   }
-  const [view, setViewed] = useState(false);
-  const [branchView, setBranchView] = useState(true);
-  const [branchSearch, setBranchSearch] = useState(true);
-  const [branchList, setBranchList] = useState([]);
+
 
   const viewed = () => {
     setViewed(true);
@@ -303,7 +306,8 @@ const AdminViewBlog = () => {
         }
       });
   };
-  const [assingeds, setAssigneds] = useState([]);
+
+
   const getAssinged = () => {
     setLoading(true);
     axios
@@ -397,15 +401,16 @@ const AdminViewBlog = () => {
 
   useEffect(() => {
     if (selectedBranch) {
-      if (value === 0) {
+      if (value == 0) {
         getUnAssinged();
         return;
-      } else if(value === 1) {
+      } else if(value == 1) {
         getAssinged();
         return;
       }
     }
   }, [value, selectedBranch, currentPageAssigned, currentPageUnassign]);
+
   const [previewData, setPreviewData] = useState();
   const handlePreview = (data) => {
     setLoading(true);
@@ -433,13 +438,14 @@ const AdminViewBlog = () => {
     });
   };
 
-  const handlePaginationAssign = (event, page) => {
+  const handlePaginationAssign = (page) => {
     setSearchFlag(true);
     setIsClickedAssigned(true);
     setCurrentPageAssigned(page);
   };
 
-  const handlePaginationUnassign = (event, page) => {
+
+  const handlePaginationUnassign = (page) => {
     setSearchFlag(true);
     setIsClickedUnassign(true);
     setCurrentPageUnassign(page);
@@ -454,7 +460,7 @@ const AdminViewBlog = () => {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       // dataIndex: 'lp_count',
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned-1)*10}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -521,7 +527,7 @@ const AdminViewBlog = () => {
       // dataIndex: 'lp_count',
       align: 'center',
       width: '15%',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned -1) * 10}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -645,9 +651,10 @@ const AdminViewBlog = () => {
                                   current: Number(currentPageAssigned),
                                   pageSize: limitAssigned,
                                   showSizeChanger: false,
-                                  onChange:(e) =>{
-                                    console.log('Pagination', e)
-                                    handlePaginationAssign(e)
+                                  onChange:(page) =>{
+                                    console.log('Pagination', page)
+                                    handlePaginationUnassign(page)
+                                   
                                   }
 
                                 }}
@@ -681,9 +688,9 @@ const AdminViewBlog = () => {
                               current: Number(currentPageAssigned),
                               pageSize: limitAssigned,
                               showSizeChanger: false,
-                              onChange:(e) =>{
-                                console.log('Pagination', e)
-                                handlePaginationUnassign(e)
+                              onChange:(page) =>{
+                                console.log('Pagination', page)
+                                handlePaginationAssign(page)
                               }
 
                             }}

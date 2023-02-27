@@ -458,9 +458,9 @@ const AdminEditCreateBlogs = () => {
     formatdate.getSeconds();
   const dataPost = () => {
     setLoading(true);
-    const branchIds = selectedBranch.map((obj) => obj?.id);
-    const gradeIds = selectedGrade.map((obj) => obj?.id);
-    const sectionIds = selectedSection.map((obj) => obj?.id);
+    const branchIds = selectedBranch.map((obj) => obj?.branch_id);
+    const gradeIds = selectedGrade.map((obj) => obj?.grade_id);
+    const sectionIds = selectedSection.map((obj) => obj?.section_id);
 
     if (activityName.length === 0) {
       message.error('Please Add Activity Name');
@@ -567,8 +567,6 @@ const AdminEditCreateBlogs = () => {
           setFileUrl(response?.data?.result?.template_path);
           setStartDate(response?.data?.result?.submission_date);
           setEditFlag(true);
-          setLoading(false);
-
           if (history.location.state.data) {
             const branchIds = response?.data?.result?.branches.map((obj) => obj?.branch_id) || [];
             const gradeId = response?.data?.result?.grades?.map((obj) => obj?.grade_id) || [];
@@ -582,9 +580,10 @@ const AdminEditCreateBlogs = () => {
               grade:response?.data?.result?.grades?.map((obj) => obj?.grade_id), 
               section: response?.data?.result?.sections?.map((obj) => obj?.section_id),
               date: moment(response?.data?.result?.submission_date).format('YYYY-MM-DD')
-
+            
             });
           }
+          setLoading(false);
         } else {
           setLoading(false);
         }
@@ -699,7 +698,7 @@ const AdminEditCreateBlogs = () => {
 
   const branchOptions = branchList?.map((each) => {
     return (
-      <Option key={each?.branch?.id} value={each?.branch?.id} id={each?.branch?.id}>
+      <Option key={each?.branch?.id} value={each?.branch?.id} id={each?.branch?.id} branch_id={each?.branch?.id}>
         {each?.branch?.branch_name}
       </Option>
     );
@@ -707,14 +706,14 @@ const AdminEditCreateBlogs = () => {
 
   const gradeOptions = grades?.map((each) => {
     return (
-      <Option key={each?.grade_id} value={each?.grade_id} id={each?.grade_id}>
+      <Option key={each?.grade_id} value={each?.grade_id} id={each?.grade_id} grade_id={each?.grade_id}>
         {each?.grade__grade_name}
       </Option>
     );
   });
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.section_id} value={each?.section_id} id={each?.section_id}>
+      <Option key={each?.section_id} value={each?.section_id} id={each?.section_id} section_id={each?.section_id}>
         {each?.section__section_name}
       </Option>
     );

@@ -757,7 +757,7 @@ const RatingCreate = () => {
                   <Form.Item name='activity type'>
                     <Select
                       getPopupContainer={(trigger) => trigger.parentNode}
-                      placeholder='Activity Type'
+                      placeholder='Select Activity Type'
                       showSearch
                       optionFilterProp='children'
                       filterOption={(input, options) => {
@@ -802,7 +802,6 @@ const RatingCreate = () => {
               </div>
               <div className='row' style={{ height: '55vh', overflowY: 'auto' }}>
                 <div className='col-md-12'>
-                  {console.log(activityCategory, 'pl')}
                   {/* {(search && search?.name?.toLowerCase() === "blog activity") || (search?.name?.toLowerCase() === "physical activity") ? ( */}
                   <>
                     {filterData?.length !== 0 ? (

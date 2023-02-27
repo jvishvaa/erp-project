@@ -221,11 +221,11 @@ const BlogReview = () => {
         axiosInstance
           .get(
             `${endpoints.newBlog.gradesERP}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
-            {
-              headers: {
-                'X-DTS-HOST': X_DTS_HOST,
-              },
-            }
+            // {
+            //   headers: {
+            //     'X-DTS-HOST': X_DTS_HOST,
+            //   },
+            // }
           )
           .then((response) => {
             // debugger
