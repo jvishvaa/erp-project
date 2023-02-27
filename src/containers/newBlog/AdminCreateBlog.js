@@ -525,7 +525,7 @@ const AdminCreateBlog = () => {
     const gradeIds = selectedGrade.map((obj) => obj?.key);
     const sectionIds = selectedSection.map((obj) => obj?.id);
     // setLoading(true);
-    if (!activityName) {
+    if (activityName?.length === 0) {
       message.error('Please Select Activity Categories');
       setLoading(false);
       return;

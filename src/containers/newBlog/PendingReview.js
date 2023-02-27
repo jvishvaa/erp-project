@@ -150,28 +150,31 @@ const PendingReview = (props) => {
   };
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
+    setLoading(true);
     let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
     if (!mandatory[0].remarks) {
       message.error('Overall Remarks Is Compulsory');
+      setLoading(false);
       return;
+    } else {
+      let body = ratingReview;
+      let overAllIndex = body.findIndex((each) => each?.name === 'Overall');
+      body[overAllIndex].given_rating = calculateOverallRating();
+      setLoading(true);
+      axios
+        .post(`${endpoints.newBlog.pendingReview}`, body, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          props.setValue(1);
+          console.log(response);
+          setView(false);
+          setLoading(false);
+          message.success(' Review Submitted Successfully');
+        });
     }
-    let body = ratingReview;
-    let overAllIndex = body.findIndex((each) => each?.name === 'Overall');
-    body[overAllIndex].given_rating = calculateOverallRating();
-    setLoading(true);
-    axios
-      .post(`${endpoints.newBlog.pendingReview}`, body, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        props.setValue(1);
-        console.log(response);
-        setView(false);
-        setLoading(false);
-        message.success(' Review Submitted Successfully');
-      });
   };
 
   const [dataId, setDataId] = useState();
@@ -488,7 +491,7 @@ const PendingReview = (props) => {
                       className='th-bg-grey py-3 px-2 th-br-8'
                       style={{ outline: '1px solid #d9d9d9' }}
                     >
-                      <div className=' th-12 th-black-2'>
+                      <div className=' th-16 th-black-2'>
                         Title :{' '}
                         <span className='th-16 th-fw-500 th-black-1'>
                           {data?.activity_detail?.title}
@@ -498,7 +501,7 @@ const PendingReview = (props) => {
                         className='mt-2'
                         style={{ overflowY: 'auto', maxHeight: '25vh' }}
                       >
-                        <span className='th-12 th-black-2'>Description :&nbsp;</span>
+                        <span className='th-16 th-black-2'>Description :&nbsp;</span>
                         <span className='th-16 th-fw-400 th-black-1'>
                           {data?.activity_detail?.description}
                         </span>
