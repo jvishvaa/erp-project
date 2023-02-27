@@ -409,7 +409,7 @@ const Reviewed = (props) => {
                       className='th-bg-grey py-3 px-2 th-br-8'
                       style={{ outline: '1px solid #d9d9d9' }}
                     >
-                      <div className=' th-12 th-black-2'>
+                      <div className=' th-16 th-black-2'>
                         Title :{' '}
                         <span className='th-16 th-fw-500 th-black-1'>
                           {data?.activity_detail?.title}
@@ -419,7 +419,7 @@ const Reviewed = (props) => {
                         className='mt-2'
                         style={{ overflowY: 'auto', maxHeight: '25vh' }}
                       >
-                        <span className='th-12 th-black-2'>Description :&nbsp;</span>
+                        <span className='th-16 th-black-2'>Description :&nbsp;</span>
                         <span className='th-16 th-fw-400 th-black-1'>
                           {data?.activity_detail?.description}
                         </span>
