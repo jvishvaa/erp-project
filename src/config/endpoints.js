@@ -11,6 +11,7 @@ const {
     baseURLMPQ,
     newBlogURL,
     erpBlogURL,
+    msOriginUrl
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -169,6 +170,8 @@ export default {
     downloadOnlineClass_EXCEL: '/erp_user/online-class-list-date-wise/',
     periodDetails: '/erp_user/rstoc/',
     options: 'erp_user/edxstream-allowed/',
+    onlineClassGmeetConfig : `${msOriginUrl}/api/oncls/v1/gmeet-config/`,
+    gmeetAuth: `${msOriginUrl}/api/oncls/v1/google-oauth/`,
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
