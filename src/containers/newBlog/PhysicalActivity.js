@@ -519,7 +519,7 @@ const PhysicalActivity = () => {
       });
   };
 
-  const handlePaginationAssign = (event, page) => {
+  const handlePaginationAssign = (page) => {
     setSearchFlag(true);
     setIsClickedAssigned(true);
     setCurrentPageAssigned(page);
@@ -736,7 +736,6 @@ const PhysicalActivity = () => {
                       pageSize: limitAssigned,
                       showSizeChanger: false,
                       onChange: (e) => {
-                        console.log('Pagination', e);
                         handlePaginationAssign(e);
                       },
                     }}

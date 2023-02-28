@@ -754,10 +754,10 @@ const VisualActivityCreate = () => {
                   {isSubmissionHide ? (
                     ''
                   ):(
-                  <div className='col-md-3 col-6 pl-0'>
+                  <div className='col-md-2 col-6 pl-0'>
                     <div className='col-mb-3 text-left'>Submission Date</div>
                     <DatePicker
-                      className='w-100 th-black-1 th-bg-grey th-br-4 p-1 mb-2'
+                      className='w-100 th-black-1 th-bg-grey th-br-4 p-1 mb-2 th-date-picker'
                       onChange={(value) => handleStartDateChange(value)}
                     />
                   </div>

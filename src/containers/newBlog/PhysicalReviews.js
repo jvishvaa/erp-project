@@ -156,7 +156,7 @@ const PhysicalReviewed = (props) => {
           props.setFlag(false);
           setTotalSubmitted(response?.data?.result);
           setLoading(false);
-          message.success(response?.data?.message)
+          // message.success(response?.data?.message)
         })
         .catch((err) => {
           setLoading(false);

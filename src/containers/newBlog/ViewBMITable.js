@@ -18,12 +18,15 @@ import {
   EyeOutlined,
   DownOutlined,
   CheckOutlined,
+  SnippetsOutlined,
 } from '@ant-design/icons';
 import endpoints from '../../config/endpoints';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import axios from 'axios';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import BMIDetailsImage from '../../assets/images/Body_Mass_Index.jpg';
 // import Select from 'containers/Finance/src/ui/select';
 
 const bmiRemarkData = [
@@ -33,15 +36,16 @@ const bmiRemarkData = [
 ];
 
 const ViewBMITableCustom = (props) => {
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const { Option } = Select;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openBigModal, setOpenBigModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   // const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const {user_id} = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
   const newBranches =
     JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
@@ -59,7 +63,7 @@ const ViewBMITableCustom = (props) => {
   const [editData, setEditData] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [selectedStudentDetails, setSelectedStudentsDetails] = useState([]);
-  const [bmiRemarks,setBmiRemarks] = useState('')
+  const [bmiRemarks, setBmiRemarks] = useState('');
 
   const columns = [
     {
@@ -148,14 +152,14 @@ const ViewBMITableCustom = (props) => {
         if (res.data?.status_code == 200) {
           setBmiDetails(res?.data?.result);
           setLoading(false);
-          message.success(res?.data?.message)
+          message.success(res?.data?.message);
           setOpenBigModal(true);
         } else if (res?.data?.status_code == 400) {
           setOpenBigModal(false);
-          message.error(res?.data?.message)
+          message.error(res?.data?.message);
           setLoading(false);
           setOpenBigModal(false);
-          return
+          return;
         }
       });
   };
@@ -198,12 +202,12 @@ const ViewBMITableCustom = (props) => {
         };
         axios.post(`${endpoints.newBlog.addBMIApi}`, requestData, options).then((res) => {
           if (res?.data?.status_code === 200) {
-            message.success(res?.data?.message)
+            message.success(res?.data?.message);
             setIsEdit(false);
             setIsModalOpen(false);
             showBMITable(editData?.student);
           } else {
-            message.error(res?.data?.message)
+            message.error(res?.data?.message);
             setIsModalOpen(false);
           }
         });
@@ -235,7 +239,7 @@ const ViewBMITableCustom = (props) => {
         };
         axios.post(`${endpoints.newBlog.addBMIApi}`, requestData, options).then((res) => {
           if (res?.data?.status_code === 200) {
-            message.success( res?.data?.message)
+            message.success(res?.data?.message);
             setIsEdit(false);
             setIsModalOpen(false);
           } else {
@@ -340,7 +344,7 @@ const ViewBMITableCustom = (props) => {
         setTotalSubmitted(response?.data?.result);
         // ActivityManagement(response?.data?.result)
         props.setFlag(false);
-        message.success(response?.data?.message)
+        message.success(response?.data?.message);
         setLoading(false);
       });
   };
@@ -397,7 +401,7 @@ const ViewBMITableCustom = (props) => {
         .then((response) => {
           setCheckBMIData(response?.data?.result);
           showBMITable(response?.data?.result);
-          message.success(response?.data?.message)
+          // message.success(response?.data?.message);
           setLoading(false);
         });
     }
@@ -411,55 +415,56 @@ const ViewBMITableCustom = (props) => {
     }
   };
 
-
-  const calculateRemarks =(bmiArg,ageArg) =>{
-    if(bmiArg && ageArg){
-      setLoading(true)
+  const calculateRemarks = (bmiArg, ageArg) => {
+    if (bmiArg && ageArg) {
+      setLoading(true);
       axios
-      .get(`${endpoints.newBlog.bmiRemarksApi}?age=${ageArg}&bmi=${bmiArg}&user_id=${checkBMIData?.id}`,{
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) =>{
-        // setBmiRemarks()
-        if(response?.data?.status_code == 400){
-          // message.error(response?.data?.message)
-          setLoading(false)
-          return
-        }else{
-          // message.success(response?.data?.message)
-          setBmiRemarks(response?.data?.category)
-          setRemarks(response?.data?.category);
-          setLoading(false)
-          return
-        }
-        setLoading(false)
-        return
-      })
-      .catch((err) =>{
-        setLoading(false)
-        message.error('BMI calculation failed')
-        return
-      })
-
+        .get(
+          `${endpoints.newBlog.bmiRemarksApi}?age=${ageArg}&bmi=${bmiArg}&user_id=${checkBMIData?.id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          // setBmiRemarks()
+          if (response?.data?.status_code == 400) {
+            // message.error(response?.data?.message)
+            setLoading(false);
+            return;
+          } else {
+            // message.success(response?.data?.message)
+            setBmiRemarks(response?.data?.category);
+            setRemarks(response?.data?.category);
+            setLoading(false);
+            return;
+          }
+          setLoading(false);
+          return;
+        })
+        .catch((err) => {
+          setLoading(false);
+          message.error('BMI calculation failed');
+          return;
+        });
     }
-  }
+  };
 
   const calculateBMI = (height, weight, age) => {
     if (height && weight && age) {
       let parseHeight = parseInt(height);
       let parseWeight = parseInt(weight);
       if (parseHeight === '' || isNaN(parseHeight)) {
-        message.error('Provide A Valid Height')
+        message.error('Provide A Valid Height');
         return;
       } else if (parseWeight === '' || isNaN(parseWeight)) {
-        message.error('Provide a valid weight')
+        message.error('Provide a valid weight');
         return;
       } else {
         let bmi = (weight / ((height * height) / 10000)).toFixed(2);
         setBmi(bmi);
-        calculateRemarks(bmi,age)
+        calculateRemarks(bmi, age);
         return;
       }
     } else {
@@ -598,17 +603,46 @@ const ViewBMITableCustom = (props) => {
         onOk={() => setOpenBigModal(false)}
         onCancel={() => setOpenBigModal(false)}
         width={1000}
+        zIndex={1000}
         footer={null}
       >
         <div className='row'>
           <div
-            className='col-12'
+            className='col-12 px-0'
             style={{ display: 'flex', borderRadius: '10px', padding: '0.5rem 1rem' }}
           >
             <div className='col-3'>Name : {rowData?.student_name}</div>
             <div className='col-3'>ERP ID :{rowData?.erp_id}</div>
             <div className='col-3'>Branch : {props?.selectedBoardName}</div>
             <div className='col-3'>Grade: {props?.selectedGradeName}</div>
+          </div>
+          <div className='row d-flex px-3'>
+            <div className='col-md-3 pl-0 col-12'>
+              <a
+                onClick={() => {
+                  const fileName = BMIDetailsImage;
+                  const fileSrc = BMIDetailsImage;
+                  openPreview({
+                    currentAttachmentIndex: 0,
+                    attachmentsArray: [
+                      {
+                        src: fileSrc,
+                        name: 'BMI Details',
+                        extension:
+                          '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                      },
+                    ],
+                  });
+                }}
+              >
+                <div className=' pl-0 col-12e4l th-primary '>
+                  <ButtonAnt icon={<SnippetsOutlined />} />
+                  <span style={{ marginLeft: '5px', fontWeight: '600' }}>
+                    BMI Details
+                  </span>
+                </div>
+              </a>
+            </div>
           </div>
           <div className='col-12' style={{ padding: '1rem 1rem' }}>
             <Table
