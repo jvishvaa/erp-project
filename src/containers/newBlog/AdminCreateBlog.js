@@ -525,10 +525,18 @@ const AdminCreateBlog = () => {
     const gradeIds = selectedGrade.map((obj) => obj?.key);
     const sectionIds = selectedSection.map((obj) => obj?.id);
     // setLoading(true);
-    if (activityName?.length === 0) {
-      message.error('Please Select Activity Categories');
-      setLoading(false);
-      return;
+    if(physicalId == ""){
+      if (activityName?.length === 0) {
+        message.error('Please Select Activity Categories');
+        setLoading(false);
+        return;
+      }
+    }else{
+      if(subActivityName?.length === 0){
+        message.error('Please Select Sub Activity Categories')
+        setLoading(false)
+        return;
+      }
     }
     if (activityName.length === 0 && physicalId == undefined) {
       setLoading(false);
@@ -548,6 +556,11 @@ const AdminCreateBlog = () => {
     if (sectionIds?.length === 0) {
       setLoading(false);
       message.error('Please Select Section');
+      return;
+    }
+    if (selectedRound?.length === 0 && physicalId !== "") {
+      setLoading(false);
+      message.error('Please Select Round');
       return;
     }
     if (!startDate) {

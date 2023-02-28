@@ -45,6 +45,7 @@ import {
   Table as TableAnt,
   Drawer,
   Space,
+  message
 } from 'antd';
 import {
   MonitorOutlined,
@@ -134,7 +135,7 @@ const PhysicalPendingReview = (props) => {
   const { Option } = Select;
   const [value, setValue] = useState();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const [inputList, setInputList] = useState([{ remarks: '', id: '', given_rating: '' }]);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
@@ -165,7 +166,7 @@ const PhysicalPendingReview = (props) => {
     // setSubmit(true);
     let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
     if (!mandatory[0].remarks) {
-      setAlert('error', 'Overall Remarks Is Compulsory');
+      message.error('Overall Remarks Is Compulsory')
       return;
     }
     let body = ratingReview;
@@ -182,7 +183,7 @@ const PhysicalPendingReview = (props) => {
         // props.setValue(1)
         setView(false);
         erpAPI();
-        setAlert('success', ' Review Submitted Successfully');
+        message.success(' Review Submitted Successfully')
         setLoading(false);
       });
   };
@@ -250,7 +251,7 @@ const PhysicalPendingReview = (props) => {
         setSourceData(response?.data?.result);
         ActivityManagement(response?.data?.result);
         props.setFlag(false);
-        setAlert('success', response?.data?.message);
+        message.success(response?.data?.message)
         setLoading(false);
       });
   };

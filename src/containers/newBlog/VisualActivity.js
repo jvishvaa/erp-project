@@ -600,11 +600,11 @@ const VisualActivity = () => {
                 </Breadcrumb.Item>
               </Breadcrumb>
             </div>
-            <div className='col-md-6 text-right pr-2'>
+            <div className='col-md-6 pr-3 th-16 d-flex justify-content-end'>
               <ButtonAnt
                 icon={<AppstoreAddOutlined />}
                 onClick={createPush}
-                className='th-button-active th-br-6 text-truncate th-pointer'
+                className='th-button-active th-br-6 th-pointer th-16'
               >
                 Create {localActivityData.name}
               </ButtonAnt>

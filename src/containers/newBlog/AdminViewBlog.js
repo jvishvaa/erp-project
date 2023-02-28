@@ -668,7 +668,7 @@ const AdminViewBlog = () => {
                                   },
                                 }}
                                 scroll={{
-                                  x: unassingeds.length > 0 ? 'max-content' : null,
+                                  x: unassingeds?.length > 0 ? 'max-content' : null,
                                   y: 600,
                                 }}
                               />
