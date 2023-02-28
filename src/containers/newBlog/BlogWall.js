@@ -1429,30 +1429,52 @@ const BlogWall = () => {
                         scroll={{ x: 'max-content' }}
                       />
                     ) : (
-                      <div
-                        className='p-2 th-bg-grey th-br-8'
-                        style={{ outline: '1px solid #d9d9d9' }}
-                      >
-                        {ratingReview?.map((obj, index) => {
-                          console.log(obj, 'ashjk');
-                          return (
-                            <div className='row py-1 align-items-center'>
-                              <div className='col-6 pl-1' key={index}>
-                                {obj?.name}
+                      <>
+                        <div
+                          className='th-bg-grey py-3 px-2 th-br-8'
+                          style={{ outline: '1px solid #d9d9d9' }}
+                        >
+                          <div className=' th-12 th-black-2'>
+                            Title :{' '}
+                            <span className='th-16 th-fw-500 th-black-1'>
+                              {selectedOtherActivity?.activity_detail?.title}
+                            </span>
+                          </div>
+                          <div
+                            className='mt-2'
+                            style={{ overflowY: 'auto', maxHeight: '25vh' }}
+                          >
+                            <span className='th-12 th-black-2'>Description :&nbsp;</span>
+                            <span className='th-16 th-fw-400 th-black-1'>
+                              {selectedOtherActivity?.activity_detail?.description}
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          className='p-2 mt-2 th-br-8'
+                          style={{ outline: '1px solid #d9d9d9' }}
+                        >
+                          {ratingReview?.map((obj, index) => {
+                            return (
+                              <div className='row py-1 align-items-center'>
+                                <div className='col-6 pl-1' key={index}>
+                                  {obj?.name}
+                                </div>
+                                <div className='col-6 pr-1'>
+                                  <Input
+                                    disabled
+                                    value={
+                                      obj?.remarks?.filter(
+                                        (item) => item.status == true
+                                      )[0]?.name
+                                    }
+                                  />
+                                </div>
                               </div>
-                              <div className='col-6 pr-1'>
-                                <Input
-                                  disabled
-                                  value={
-                                    obj?.remarks?.filter((item) => item.status == true)[0]
-                                      ?.name
-                                  }
-                                />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                            );
+                          })}
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
