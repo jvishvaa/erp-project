@@ -126,9 +126,9 @@ const AttendanceReportNew = () => {
                       <div className='col-7 px-2 text-left text-truncate text-capitalize'>
                         <span
                           className='th-fw-600 th-black-2'
-                          title={item?.grade_name + ' ' + item?.section_name}
+                          title={item?.grade_name + ' ' + item?.section_name?.slice(-1)}
                         >
-                          {item?.grade_name + ' ' + item?.section_name}
+                          {item?.grade_name + ' ' + item?.section_name?.slice(-1)}
                         </span>
                       </div>
                       <div className='col-2 px-1 text-center'>
@@ -150,9 +150,9 @@ const AttendanceReportNew = () => {
                             className='pb-1 th-red'
                             style={{ borderBottom: '3px solid #FF4747' }}
                           >
-                            {item?.absent_count < 9
-                              ? '0' + item?.absent_count
-                              : item?.absent_count}
+                            {item?.total_count - item?.present_count < 9
+                              ? `0${item?.total_count - item?.present_count}`
+                              : item?.total_count - item?.present_count}
                           </span>
                         </div>
                       </div>
