@@ -39,7 +39,7 @@ import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import toddlerGroup from '../../../../../assets/images/toddler-group.svg';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-
+import { getActivityColor } from 'v2/generalActivityFunction';
 const { Panel } = Collapse;
 let boardFilterArr = [
   'orchids.letseduvate.com',
@@ -226,7 +226,9 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             )}
           </div>
           <div className='col-6 text-right th-12 pr-0'>
-            <Tag color='green'>{item?.activity_type?.name}</Tag>
+            <Tag color={getActivityColor(item?.activity_type?.name)}>
+              {item?.activity_type?.name}
+            </Tag>
           </div>
         </div>
         <div className='row py-2 align-items-center'>

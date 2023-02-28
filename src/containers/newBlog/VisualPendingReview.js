@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import endpoints from '../../config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
@@ -28,9 +23,7 @@ import {
   CheckOutlined,
 } from '@ant-design/icons';
 
-
 import { makeStyles } from '@material-ui/core/styles';
-
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -79,8 +72,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
 const VisualPendingReview = (props) => {
   const history = useHistory();
   const [value, setValue] = useState();
@@ -112,7 +103,6 @@ const VisualPendingReview = (props) => {
     setView(false);
   };
 
-  const [values, setValues] = useState();
   const [loading, setLoading] = useState(false);
   const [publish, setPublish] = useState(false);
   const [submit, setSubmit] = useState(false);
@@ -120,11 +110,11 @@ const VisualPendingReview = (props) => {
     let body = [];
     let checkSelected = ratingReview.every((item) => item.checked);
     if (!checkSelected) {
-      message.error('Please Select All Option')
-      return 
+      message.error('Please Select All Option');
+      return;
     } else {
       ratingReview.forEach((item) => {
-        let record = { ...item };
+        let record = { ...item, booking_id: bookingID };
         delete record.checked;
         body.push(record);
       });
@@ -141,18 +131,17 @@ const VisualPendingReview = (props) => {
         uploadFile();
         setView(false);
         setLoading(false);
+        setBookingID(null);
         erpAPI();
-        message.success('Review Submitted Successfully')
-        return
+        message.success('Review Submitted Successfully');
       })
       .catch(() => {
         setLoading(false);
+        setBookingID(null);
       });
   };
 
   const [dataId, setDataId] = useState();
-
-
 
   const [maxWidth, setMaxWidth] = React.useState('lg');
 
@@ -192,7 +181,7 @@ const VisualPendingReview = (props) => {
         setSourceData(response?.data?.result);
         ActivityManagement(response?.data?.result);
         // props.setFlag(false);
-        message.success(response?.data?.message)
+        // message.success(response?.data?.message);
         setLoading(false);
       })
       .catch(() => {
@@ -285,7 +274,7 @@ const VisualPendingReview = (props) => {
           showReview(response?.data?.result);
           setLoading(false);
         } else if (response?.data?.status_code === 500) {
-          message.error(response?.data?.message)
+          message.error(response?.data?.message);
           setLoading(false);
         }
       })
@@ -311,8 +300,6 @@ const VisualPendingReview = (props) => {
       getTotalSubmitted();
     }
   }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage, props?.value]);
-
-
 
   let dummyArr = [];
 
@@ -357,8 +344,8 @@ const VisualPendingReview = (props) => {
       setFile(fil);
       return;
     } else {
-      message.error('Only Video & Image File is acceptable')
-      setLoading(false)
+      message.error('Only Video & Image File is acceptable');
+      setLoading(false);
       setFile(null);
       return;
       fileRef.current.value = null;
@@ -380,8 +367,8 @@ const VisualPendingReview = (props) => {
         .then((res) => {})
         .catch((err) => {});
     } else {
-      message.error('Please Upload File')
-      setLoading(false)
+      // message.error('Please Upload File');
+      setLoading(false);
       return;
     }
   };
