@@ -69,6 +69,25 @@ const Footer = () => {
   const isV2 = IsV2Checker();
   const appVersion = JSON.parse(sessionStorage.getItem('app_version'));
   const version = isV2 ? appVersion?.v2 : appVersion?.v1;
+  const fetchVersion = () => {
+    axios
+      .get(`${endpoints.appVersion}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          sessionStorage.setItem('app_version', JSON.stringify(result?.data?.result));
+        }
+      })
+      .catch((error) => {
+        console.error(error?.message);
+      });
+  };
+  useEffect(() => {
+    if (!appVersion) fetchVersion();
+  }, [appVersion]);
   return (
     <Box p={2} width='auto'>
       <Copyright />

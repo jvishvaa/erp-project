@@ -41,6 +41,7 @@ import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIco
 import AssessmentIcon from 'v2/Assets/dashboardIcons/diaryIcons/AssessmentIcon.svg';
 import _ from 'lodash';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { getActivityColor } from 'v2/generalActivityFunction';
 let boardFilterArr = [
   'orchids.letseduvate.com',
   'localhost:3000',
@@ -1853,7 +1854,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 <span>:&nbsp;</span>
                               </div>
                               <div className='col-8 pl-1 text-truncate'>
-                                <Tag color='green'>{item?.activity_type?.name}</Tag>
+                                <Tag color={getActivityColor(item?.activity_type?.name)}>
+                                  {item?.activity_type?.name}
+                                </Tag>
                               </div>
                             </div>
                             <div className='row th-black-2 align-items-center py-1'>
