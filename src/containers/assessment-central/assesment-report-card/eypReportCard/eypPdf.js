@@ -114,6 +114,9 @@ const EypReportCardPdf = (reportCardData, branchName) => {
         if (col == 1) {
           data.cell.styles.halign = 'left';
           data.cell.styles.cellPadding = { top: 3, right: 11, bottom: 3.6, left: 5 };
+        } else {
+          data.cell.styles.halign = 'center';
+          data.cell.styles.cellPadding = { top: 3, bottom: 3.6 };
         }
       }
     };
@@ -155,7 +158,7 @@ const EypReportCardPdf = (reportCardData, branchName) => {
     doc.addImage(img, 'png', 0, 0, 297, 210);
 
     if (i === pageCount - 1) {
-      y = 185;
+      y = 188;
 
       doc.setFillColor(255, 255, 255);
       doc.rect(95, 186, 68, 30, 'F');
@@ -183,8 +186,8 @@ const EypReportCardPdf = (reportCardData, branchName) => {
       doc.text(`AE - Approaching Expectations`, 146, 198, null, null, 'left');
 
       doc.setFillColor(255, 0, 43);
-      doc.rect(207, 192, 51, 10, 'F');
-      doc.text(`NS - Needs Expectations`, 209, 198, null, null, 'left');
+      doc.rect(207, 192, 43, 10, 'F');
+      doc.text(`NS - Needs Support`, 209, 198, null, null, 'left');
     }
   }
 

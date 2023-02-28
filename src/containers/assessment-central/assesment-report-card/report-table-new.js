@@ -380,7 +380,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       <>
                         {' '}
                         <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                          {'(T1 +T2)/2'}
+                          {'(S1 +S2)/2'}
                         </td>
                         <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                           {'Grade'}
@@ -708,7 +708,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       <>
                         {' '}
                         <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                          {'(T1 +T2)/2'}
+                          {'(S1 +S2)/2'}
                         </td>
                         <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                           {'Grade'}
@@ -1040,7 +1040,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         <>
                           {' '}
                           <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                            {'(T1 +T2)/2'}
+                            {'(S1 +S2)/2'}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                             {'Grade'}
@@ -1376,7 +1376,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         <>
                           {' '}
                           <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
-                            {'(T1 +T2)/2'}
+                            {'(S1 +S2)/2'}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                             {'Grade'}
