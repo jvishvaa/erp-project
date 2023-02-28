@@ -44,6 +44,7 @@ import {
   Input,
   message,
   Checkbox,
+  Modal,
 } from 'antd';
 
 import {
@@ -149,7 +150,9 @@ const AdminCreateBlog = () => {
     JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const activityDataType = localStorage.getItem('ActivityData') ? JSON.parse(localStorage.getItem('ActivityData')) : '';
+  const activityDataType = localStorage.getItem('ActivityData')
+    ? JSON.parse(localStorage.getItem('ActivityData'))
+    : '';
   const { Option } = Select;
   const { TextArea } = Input;
   const formRef = createRef();
@@ -358,7 +361,7 @@ const AdminCreateBlog = () => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`,
+          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
           // {
           //   headers: {
           //     'X-DTS-HOST': X_DTS_HOST,
@@ -525,10 +528,18 @@ const AdminCreateBlog = () => {
     const gradeIds = selectedGrade.map((obj) => obj?.key);
     const sectionIds = selectedSection.map((obj) => obj?.id);
     // setLoading(true);
-    if (activityName?.length === 0) {
-      message.error('Please Select Activity Categories');
-      setLoading(false);
-      return;
+    if (physicalId == '') {
+      if (activityName?.length === 0) {
+        message.error('Please Select Activity Categories');
+        setLoading(false);
+        return;
+      }
+    } else {
+      if (subActivityName?.length === 0) {
+        message.error('Please Select Sub Activity Categories');
+        setLoading(false);
+        return;
+      }
     }
     if (activityName.length === 0 && physicalId == undefined) {
       setLoading(false);
@@ -548,6 +559,11 @@ const AdminCreateBlog = () => {
     if (sectionIds?.length === 0) {
       setLoading(false);
       message.error('Please Select Section');
+      return;
+    }
+    if (selectedRound?.length === 0 && physicalId !== '') {
+      setLoading(false);
+      message.error('Please Select Round');
       return;
     }
     if (!startDate) {
@@ -1200,84 +1216,68 @@ const AdminCreateBlog = () => {
               </div>
             </div>
           </div>
-          <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-            <div style={{ width: '642px' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginTop: '12px',
-                }}
-              >
-                <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-                <div style={{ marginTop: '21px', marginRight: '34px' }}>
-                  <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
+          <Modal
+            centered
+            visible={assigned}
+            onCancel={closePreview}
+            footer={false}
+            width={500}
+            className='th-upload-modal'
+            title={`Preview - ${activityDataType?.name}`}
+          >
+            <div>
+              <div style={{ marginLeft: '23px', marginTop: '28px' }}>
+                <div style={{ fontSize: '15px', color: '#7F92A3' }}>
+                  Title -{activityName.name}
                 </div>
-              </div>
+                <div style={{ fontSize: '21px' }}>{title}</div>
+                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                  Submission on -{startDate}
+                </div>
+                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                  Branch -&nbsp;
+                  <span style={{ color: 'black' }}>
+                    {selectedBranch.map((each) => (
+                      <b style={{ padding: '4px', fontWeight: '500' }}>
+                        {each?.children}
+                      </b>
+                    ))}
+                  </span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Grade -&nbsp;
+                  <span style={{ color: 'black' }}>
+                    {selectedGrade.map((each) => (
+                      <b style={{ padding: '4px', fontWeight: '500' }}>
+                        {each?.children}
+                      </b>
+                    ))}
+                  </span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Section -&nbsp;
+                  <span style={{ color: 'black' }}>
+                    {selectedSection.map((each) => (
+                      <b style={{ padding: '4px', fontWeight: '500' }}>
+                        {each?.children}
+                      </b>
+                    ))}
+                  </span>
+                </div>
 
-              <div
-                style={{
-                  border: '1px solid lightgray',
-                  height: ' auto',
-                  marginLeft: '16px',
-                  marginRight: '32px',
-                  borderRadius: '10px',
-                  marginBottom: '9px',
-                }}
-              >
-                <div style={{ marginLeft: '23px', marginTop: '28px' }}>
-                  <div style={{ fontSize: '15px', color: '#7F92A3' }}>
-                    Title -{activityName.name}
-                  </div>
-                  <div style={{ fontSize: '21px' }}>{title}</div>
-                  <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                    Submission on -{startDate}
-                  </div>
-                  <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                    Branch -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {selectedBranch.map((each) => (
-                        <b style={{ padding: '4px', fontWeight: '500' }}>
-                          {each?.children}
-                        </b>
-                      ))}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'gray' }}>
-                    Grade -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {selectedGrade.map((each) => (
-                        <b style={{ padding: '4px', fontWeight: '500' }}>
-                          {each?.children}
-                        </b>
-                      ))}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'gray' }}>
-                    Section -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {selectedSection.map((each) => (
-                        <b style={{ padding: '4px', fontWeight: '500' }}>
-                          {each?.children}
-                        </b>
-                      ))}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                  ></div>
-                  <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                    Instructions
-                  </div>
-                  <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
-                  <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                    <img src={fileUrl} width='50%' />
-                  </div>
+                <div
+                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+                ></div>
+                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                  Instructions
+                </div>
+                <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
+                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
+                  <img src={fileUrl} width='50%' />
                 </div>
               </div>
             </div>
-          </Dialog>
+          </Modal>
         </div>
       </Layout>
 

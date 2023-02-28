@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Layout from 'containers/Layout';
 import { Grid, IconButton } from '@material-ui/core';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Breadcrumb, Button as ButtonAnt, Form, Select, message } from 'antd';
+import { Breadcrumb, Button as ButtonAnt, Form, Select, message, Spin } from 'antd';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
 // import axios from 'axios';
@@ -58,7 +58,7 @@ const ViewBMI = () => {
   const [view, setView] = useState(false);
   const [flag, setFlag] = useState(false);
   const [gradeList, setGradeList] = useState([]);
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (event, newValue) => {
@@ -273,11 +273,11 @@ const ViewBMI = () => {
   const goSearch = () => {
     setLoading(true);
     if (gradeId == undefined) {
-      setAlert('error', 'Please Select Grade');
+      message.error('Please Select Grade ')
       setLoading(false);
       return;
     } else if (subjectId == undefined) {
-      setAlert('error', 'Please Select Section');
+      message.error('Please Select Section')
       setLoading(false);
       return;
     } else {
@@ -437,7 +437,7 @@ const ViewBMI = () => {
         setTotalSubmitted(response?.data?.result);
         // ActivityManagement(response?.data?.result)
         setFlag(false);
-        setAlert('success', response?.data?.message);
+        // message.success(response?.data?.message)
         setLoading(false);
       });
   };
@@ -454,7 +454,7 @@ const ViewBMI = () => {
           },
         })
         .then((response) => {
-          setAlert('success', response?.data?.message);
+          message.success(response?.data?.message)
           setLoading(false);
         });
     }
@@ -509,10 +509,10 @@ const ViewBMI = () => {
               </IconButton>
             </div>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-16' onClick={handleGoBack}>
                 Physical Activities
               </Breadcrumb.Item>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+              <Breadcrumb.Item href='/dashboard' className='th-black th-16'>
                 BMI List
               </Breadcrumb.Item>
             </Breadcrumb>
