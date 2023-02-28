@@ -213,10 +213,14 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 Status :&nbsp;
                 <span
                   className={`${
-                    moment().isBefore(item?.submission_date) ? 'th-primary' : 'th-green'
+                    moment().isAfter(item?.submission_date, 'days')
+                      ? 'th-green'
+                      : 'th-primary'
                   } text-capitalize`}
                 >
-                  {moment().isBefore(item?.submission_date) ? 'Upcoming' : 'Completed'}
+                  {moment().isAfter(item?.submission_date, 'days')
+                    ? 'Completed'
+                    : 'Upcoming'}
                 </span>
               </>
             )}

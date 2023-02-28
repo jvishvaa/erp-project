@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import endpoints from 'v2/config/endpoints';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/noReportIcon.svg';
 import { useHistory } from 'react-router-dom';
 
 const CurriculumTracker = (props) => {
@@ -71,8 +71,11 @@ const CurriculumTracker = (props) => {
       </div>
       <div className='row'>
         {loading ? (
-          <div className='text-center py-5'>
-            <Spin tip={<span className='th-12'>Loading...</span>}></Spin>
+          <div
+            className='d-flex justify-content-center align-items-center w-100'
+            style={{ height: '250px' }}
+          >
+            <Spin tip='Loading...'></Spin>
           </div>
         ) : (
           <>
@@ -151,7 +154,10 @@ const CurriculumTracker = (props) => {
                   ))}
                 </div>
               ) : (
-                <div className='d-flex justify-content-center pt-5'>
+                <div
+                  className='d-flex justify-content-center align-items-center'
+                  style={{ height: 300 }}
+                >
                   <img src={NoDataIcon} />
                 </div>
               )}

@@ -18,6 +18,7 @@ import {
   Drawer,
   Space,
   Input,
+  message,
 } from 'antd';
 import { makeStyles } from '@material-ui/core/styles';
 import endpoints from '../../config/endpoints';
@@ -78,7 +79,6 @@ const VisualReviews = (props) => {
   //   const PhysicalsubActivityData = JSON.parse(localStorage.getItem('PhysicalsubActivityData')) || {};
   const subActivityData = JSON.parse(localStorage.getItem('VisualActivityId')) || {};
   const classes = useStyles();
-  const { setAlert } = useContext(AlertNotificationContext);
   const [dataId, setDataId] = useState();
   let datas = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [values, setValues] = useState();
@@ -139,7 +139,7 @@ const VisualReviews = (props) => {
           setCurrentPage(response?.data?.page);
           setLimit(Number(limit));
           // props.setFlag(false);
-          setAlert('success', response?.data?.message);
+          message.success(response?.data?.message)
           setTotalSubmitted(response?.data?.result);
           setLoading(false);
         })

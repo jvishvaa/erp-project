@@ -6,7 +6,7 @@ import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import { message, Spin, Badge } from 'antd';
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/noHomeworkIcon.svg';
 import { getSubjectIcon } from 'v2/getSubjectIcon';
 import moment from 'moment';
 
@@ -78,8 +78,16 @@ const HomeworkReport = () => {
                       {' '}
                       <div className='col-12 px-1 mt-1'>
                         <div
-                          className='th-bg-white row align-items-center th-br-5 px-lg-2'
+                          className='th-bg-white row align-items-center th-br-5 px-lg-2 th-pointer'
                           style={{ outline: '1px solid #d9d9d9' }}
+                          onClick={() =>
+                            history.push({
+                              pathname: '/homework/teacher',
+                              state: {
+                                currentHomework: item,
+                              },
+                            })
+                          }
                         >
                           <div
                             className='col-12 px-0 py-1'
@@ -89,21 +97,21 @@ const HomeworkReport = () => {
                               <div className='th-primary d-flex align-items-center'>
                                 <Badge
                                   status={
-                                    moment().isBefore(item?.submission_date)
-                                      ? 'processing'
-                                      : 'error'
+                                    moment().isAfter(item?.submission_date, 'days')
+                                      ? 'error'
+                                      : 'processing'
                                   }
                                 />
                                 <div
                                   className={`${
-                                    moment().isBefore(item?.submission_date)
-                                      ? 'th-primary'
-                                      : 'th-red'
+                                    moment().isAfter(item?.submission_date, 'days')
+                                      ? 'th-red'
+                                      : 'th-primary'
                                   } th-fw-500`}
                                 >
-                                  {moment().isBefore(item?.submission_date)
-                                    ? 'Pending'
-                                    : 'Overdue'}
+                                  {moment().isAfter(item?.submission_date, 'days')
+                                    ? 'Overdue'
+                                    : 'Pending'}
                                 </div>
                               </div>
                               <div className='th-grey th-10'>

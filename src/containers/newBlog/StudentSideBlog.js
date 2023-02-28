@@ -332,19 +332,12 @@ const StudentSideBlog = () => {
                       backgroundSize: 'contain',
                       backgroundRepeat: 'no-repeat',
                       backgroundPosition: 'center',
-                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}
                   >
-                    <div
-                      className=''
-                      style={{
-                        width: '70%',
-                        position: 'absolute',
-                        top: '25%',
-                        left: '50%',
-                        transform: `translate(-50%, -40%)`,
-                      }}
-                    >
+                    <div className=''>
                       <div
                         className='text-center th-white th-br-4 px-1 py-1'
                         style={{
@@ -354,8 +347,9 @@ const StudentSideBlog = () => {
                           overflowY: 'auto',
                         }}
                       >
-                        <span className='p-2 th-12'></span>
-                        {blogDrawerData?.submitted_work?.html_text}
+                        <span className='p-2 th-12'>
+                          {blogDrawerData?.submitted_work?.html_text}
+                        </span>
                       </div>
                     </div>
                   </div>

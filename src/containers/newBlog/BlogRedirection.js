@@ -9,7 +9,7 @@ import endpoints from '../../config/endpoints';
 import { Breadcrumb, Button, message, Spin } from 'antd';
 import moment from 'moment';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import { getActivityIcon } from 'v2/getActivityIcon';
+import { getActivityIcon } from 'v2/generalActivityFunction';
 const BlogWallRedirect = () => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
@@ -121,7 +121,7 @@ const BlogWallRedirect = () => {
         );
         setDanceSubId(danceActivityData[0]);
         const theaterActivityData = result?.data?.result.filter(
-          (item) => item?.name.toLowerCase() === 'theater'
+          (item) => item?.name.toLowerCase() === 'theatre'
         );
         setTheaterSubId(theaterActivityData[0]);
         setLoading(false);
@@ -189,7 +189,7 @@ const BlogWallRedirect = () => {
       localStorage.setItem('ActivityData', JSON.stringify(danceSubId));
       handleActivityRedirection(activityName);
       return;
-    } else if (activityName === 'theater') {
+    } else if (activityName === 'theatre') {
       localStorage.setItem('ActivityData', JSON.stringify(theaterSubId));
       handleActivityRedirection(activityName);
       return;
@@ -205,7 +205,7 @@ const BlogWallRedirect = () => {
       <div className='row px-2'>
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-grey th-16'>
+            <Breadcrumb.Item className='th-grey th-18'>
               Activities Management
             </Breadcrumb.Item>
           </Breadcrumb>
@@ -226,12 +226,12 @@ const BlogWallRedirect = () => {
                   <div className='col-md-4 mb-2 '>
                     <div className='th-br-10 th-bg-grey shadow-sm wall_card'>
                       <div className='row p-3'>
-                        <div className='col-4 px-0 th-br-5'>
+                        <div className='col-4 px-0 th-br-5' style={{ height: 150 }}>
                           <img
                             src={getActivityIcon(each?.name)}
                             alt='Icon'
                             style={{
-                              height: '150px',
+                              height: '100%',
                               width: '100%',
                               objectFit: '-webkit-fill-available',
                             }}

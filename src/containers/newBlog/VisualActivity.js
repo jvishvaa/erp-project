@@ -261,7 +261,7 @@ const VisualActivity = () => {
       align: 'center',
       width: '25%',
       render: (text, row) => (
-        <div className='th-black-1 d-flex justify-content-around'>
+        <div className='th-black-1 d-flex justify-content-center'>
           <Tag
             icon={<PieChartOutlined className='th-14' />}
             color='geekblue'
@@ -591,11 +591,11 @@ const VisualActivity = () => {
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
                   onClick={() => history.goBack()}
-                  className='th-black th-pointer th-16'
+                  className='th-grey th-pointer th-18'
                 >
                   Activity Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item className='th-grey th-16'>
+                <Breadcrumb.Item className='th-black th-18'>
                   {localActivityData.name}
                 </Breadcrumb.Item>
               </Breadcrumb>

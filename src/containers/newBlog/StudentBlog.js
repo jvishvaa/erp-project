@@ -1,50 +1,33 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import { useHistory } from 'react-router';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
-import MyTinyEditor from 'containers/question-bank/create-question/tinymce-editor';
-
 import endpoints from '../../config/endpoints';
-
 import './styles.scss';
 import moment from 'moment';
-import { Breadcrumb, Button, Tabs, Rate, Drawer, Space, Input, Avatar, Spin } from 'antd';
+import { Breadcrumb, Button } from 'antd';
 
 const StudentBlog = () => {
-  const [value, setValue] = useState();
   const history = useHistory();
   const User_id = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
   const todayDate = moment();
-
   const [desc, setDesc] = useState('');
 
-  const handleEditorChange = (content, editor) => {
-    setDesc(content);
-  };
   const changeHandle = (e) => {
     setDesc(e.target.value);
   };
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [startDate, setStartDate] = useState('');
   const [activityId, setActivityId] = useState('');
-  const [submission, setSubmission] = useState('');
   const [imageData, setImageData] = useState('');
   const [blogData, setBlogData] = useState(null);
 
   const goBack = () => {
     history.push('/blog/studentview');
   };
-
-  console.log(history, 'history');
   const [previewData, setPreviewData] = useState();
 
   useEffect(() => {
     if (history?.location?.pathname === '/blog/activityedit') {
-      setTitle(history?.location?.state?.blogData?.title);
-      setDescription(history?.location?.state?.blogData?.description);
-      setSubmission(history?.location?.state?.blogData?.submission_date);
       setActivityId(history?.location?.state?.blogData?.id);
       setBlogData(history?.location?.state?.blogData);
     }
@@ -74,12 +57,6 @@ const StudentBlog = () => {
     }
     const dummyData = JSON.parse(previewData?.template?.html_file);
     dummyData[0].placeholder = desc;
-    // const formData = new FormData();
-    // formData.append('activity_detail_id', activityId);
-    // formData.append('user_id', User_id?.id);
-    // formData.append('submitted_on', submission);
-    // formData.append('created_at', submission);
-    // formData.append('is_submitted', true);
     let body = {
       booking_detail: {
         activity_detail_id: activityId,
@@ -90,14 +67,12 @@ const StudentBlog = () => {
       },
       content: {
         html_text: desc,
-        // image_data:previewData?.template?.html_file,
       },
     };
 
     axios
       .post(`${endpoints.newBlog.studentSideWriteApi}`, body, {
         headers: {
-          // Authorization: `${token}`,
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
