@@ -25,7 +25,16 @@ import axiosInstance from 'v2/config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { Breadcrumb, Select, Form, DatePicker, Button, Input, message } from 'antd';
+import {
+  Breadcrumb,
+  Select,
+  Form,
+  DatePicker,
+  Button,
+  Input,
+  message,
+  Modal,
+} from 'antd';
 
 import axios from 'axios';
 import CloseIcon from '@material-ui/icons/Close';
@@ -171,7 +180,7 @@ const VisualActivityCreate = () => {
   const [selectedFile, setSelectedFile] = useState('');
   const [subActivityName, setSubActivityName] = useState([]);
   const [isVisualActivity, setIsVisualActivity] = useState(false);
-  const [isSubmissionHide,setIsSubmissionHide] =useState(false);
+  const [isSubmissionHide, setIsSubmissionHide] = useState(false);
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -241,7 +250,7 @@ const VisualActivityCreate = () => {
       }
     } catch (e) {
       setLoading(false);
-      message.error('Failed To Fetch Branch')
+      message.error('Failed To Fetch Branch');
     }
   };
 
@@ -251,7 +260,7 @@ const VisualActivityCreate = () => {
     setLoading(true);
     try {
       setGrades([]);
-      if(branchId){
+      if (branchId) {
         const data = await fetchGrades(acadId, branchId, moduleId);
         const transformedData = data?.map((obj) => ({
           id: obj?.grade_id,
@@ -266,7 +275,7 @@ const VisualActivityCreate = () => {
       }
     } catch (e) {
       setLoading(false);
-      message.error('Failed To Fetch Grade')
+      message.error('Failed To Fetch Grade');
     }
   };
 
@@ -292,7 +301,7 @@ const VisualActivityCreate = () => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`,
+          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
         )
         .then((result) => {
           setLoading(false);
@@ -310,7 +319,7 @@ const VisualActivityCreate = () => {
           }
         })
         .catch((err) => {
-          message.error('Failed To Fetch Section')
+          message.error('Failed To Fetch Section');
           setLoading(false);
         });
     }
@@ -394,10 +403,10 @@ const VisualActivityCreate = () => {
     setSelectedRound([]);
     setStartDate('');
     formRef.current.setFieldsValue({
-      branch:[],
-      grade:[],
-      section:[],
-    })
+      branch: [],
+      grade: [],
+      section: [],
+    });
   };
   const formatdate = new Date();
   const hoursAndMinutes =
@@ -420,38 +429,44 @@ const VisualActivityCreate = () => {
     // }
     if (branchIds?.length === 0) {
       setLoading(false);
-      message.error('Please Select Branch')
+      message.error('Please Select Branch');
       return;
     }
     if (gradeIds?.length === 0) {
       setLoading(false);
-      message.error('Please Select Grade')
+      message.error('Please Select Grade');
       return;
     }
     if (sectionIds?.length === 0) {
       setLoading(false);
-      message.error('Please Select Section')
+      message.error('Please Select Section');
       return;
     }
     if (title.length === 0) {
       setLoading(false);
-      message.error('Please Add Title')
+      message.error('Please Add Title');
       return;
     }
     if (!description) {
       setLoading(false);
-      message.error('Please Add Description ')
+      message.error('Please Add Description ');
       return;
     } else {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
       formData.append('issue_date', null);
-      formData.append('submission_date', isSubmissionHide ? null : startDate + hoursAndMinutes);
+      formData.append(
+        'submission_date',
+        isSubmissionHide ? null : startDate + hoursAndMinutes
+      );
       formData.append('image', selectedFile);
       formData.append('activity_type_id', localActivityData?.id);
       formData.append('session_year', selectedAcademicYear.session_year);
-      formData.append('created_at', isSubmissionHide ? null : startDate + hoursAndMinutes);
+      formData.append(
+        'created_at',
+        isSubmissionHide ? null : startDate + hoursAndMinutes
+      );
       formData.append('created_by', user_id.id);
       formData.append('branch_ids', branchIds);
       formData.append('grade_ids', gradeIds);
@@ -469,7 +484,7 @@ const VisualActivityCreate = () => {
         })
         .then(() => {
           setLoading(false);
-          message.success('Activity Successfully Created')
+          message.success('Activity Successfully Created');
           setLoading(false);
           setSelectedGrade([]);
           setSelectedBranch([]);
@@ -482,8 +497,8 @@ const VisualActivityCreate = () => {
           return;
         })
         .catch((error) => {
-          message.error(error)
-          setLoading(false)
+          message.error(error);
+          setLoading(false);
         });
     }
   };
@@ -577,7 +592,13 @@ const VisualActivityCreate = () => {
 
   const branchOption = branchList.map((each) => {
     return (
-      <Option key={each?.id} value={each?.branch_name} children={each?.id} id={each?.id} name={each?.branch_name}>
+      <Option
+        key={each?.id}
+        value={each?.branch_name}
+        children={each?.id}
+        id={each?.id}
+        name={each?.branch_name}
+      >
         {each?.branch_name}
       </Option>
     );
@@ -585,7 +606,13 @@ const VisualActivityCreate = () => {
 
   const gradeOption = gradeList.map((each) => {
     return (
-      <Option key={each?.id} value={each?.id} id={each?.id} children={each?.id} name={each?.name}>
+      <Option
+        key={each?.id}
+        value={each?.id}
+        id={each?.id}
+        children={each?.id}
+        name={each?.name}
+      >
         {each?.name}
       </Option>
     );
@@ -593,7 +620,13 @@ const VisualActivityCreate = () => {
 
   const sectionOption = sectionDropdown.map((each) => {
     return (
-      <Option id={each?.id} value={each?.id} key={each?.id} children={each?.id} name={each?.name}>
+      <Option
+        id={each?.id}
+        value={each?.id}
+        key={each?.id}
+        children={each?.id}
+        name={each?.name}
+      >
         {each?.name}
       </Option>
     );
@@ -613,14 +646,18 @@ const VisualActivityCreate = () => {
     selectedSection([]);
   };
 
-  useEffect(()=>{
-    if(localActivityData?.name.toLowerCase() === 'music' || localActivityData?.name.toLowerCase() === "theatre"){
-      setIsSubmissionHide(true)
-    }else{
-      setIsSubmissionHide(false)
-    }
+  useEffect(() => {
+    if (
+      localActivityData?.name.toLowerCase() === 'music' ||
+      localActivityData?.name.toLowerCase() === 'theatre' ||
+      localActivityData?.name.toLowerCase() === 'dance' 
 
-  },[localActivityData?.name])
+    ) {
+      setIsSubmissionHide(true);
+    } else {
+      setIsSubmissionHide(false);
+    }
+  }, [localActivityData?.name]);
 
   return (
     <div>
@@ -753,14 +790,14 @@ const VisualActivityCreate = () => {
                   </div>
                   {isSubmissionHide ? (
                     ''
-                  ):(
-                  <div className='col-md-2 col-6 pl-0'>
-                    <div className='col-mb-3 text-left'>Submission Date</div>
-                    <DatePicker
-                      className='w-100 th-black-1 th-bg-grey th-br-4 p-1 mb-2 th-date-picker'
-                      onChange={(value) => handleStartDateChange(value)}
-                    />
-                  </div>
+                  ) : (
+                    <div className='col-md-2 col-6 pl-0'>
+                      <div className='col-mb-3 text-left'>Submission Date</div>
+                      <DatePicker
+                        className='w-100 th-black-1 th-bg-grey th-br-4 p-1 mb-2 th-date-picker'
+                        onChange={(value) => handleStartDateChange(value)}
+                      />
+                    </div>
                   )}
                 </div>
               </Form>
@@ -796,8 +833,7 @@ const VisualActivityCreate = () => {
               </Button>
             </div>
             <div className='col-md-2'>
-              <Button type='primary' className='w-100 th-14'  onClick={handleClear}
-              >
+              <Button type='primary' className='w-100 th-14' onClick={handleClear}>
                 Clear All
               </Button>
             </div>
@@ -818,31 +854,17 @@ const VisualActivityCreate = () => {
             </div>
           </div>
         </div>
-        <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '642px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '12px',
-              }}
-            >
-              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-              <div style={{ marginTop: '21px', marginRight: '34px' }}>
-                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
-              </div>
-            </div>
-
-            <div
-              style={{
-                border: '1px solid lightgray',
-                height: ' auto',
-                marginLeft: '16px',
-                marginRight: '32px',
-                borderRadius: '10px',
-                marginBottom: '9px',
-              }}
-            >
+        {/* <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}> */}
+        <Modal
+          centered
+          visible={assigned}
+          onCancel={closePreview}
+          footer={false}
+          width={500}
+          className='th-upload-modal'
+          title={`Preview - ${localActivityData?.name}`}
+        >
+          <div>
               <div style={{ marginLeft: '23px', marginTop: '28px' }}>
                 <div style={{ fontSize: '15px', color: '#7F92A3' }}>
                   Title -{activityName.name}
@@ -872,9 +894,8 @@ const VisualActivityCreate = () => {
                   <img src={fileUrl} width='50%' />
                 </div>
               </div>
-            </div>
           </div>
-        </Dialog>
+        </Modal>
       </Layout>
       {/* <Layout>
 

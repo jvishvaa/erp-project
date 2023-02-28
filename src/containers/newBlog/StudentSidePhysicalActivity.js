@@ -11,6 +11,7 @@ import {
   PlayCircleOutlined,
   FundViewOutlined,
   PieChartOutlined,
+  SnippetsOutlined,
 } from '@ant-design/icons';
 import {
   Breadcrumb,
@@ -26,8 +27,11 @@ import {
 } from 'antd';
 import moment from 'moment';
 import ReactPlayer from 'react-player';
+import BMIDetailsImage from '../../assets/images/Body_Mass_Index.jpg';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 
 const StudentSidePhysicalActivity = () => {
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const userIdLocal = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
   const history = useHistory();
   const activityDetails = history?.location?.state?.activity;
@@ -304,7 +308,36 @@ const StudentSidePhysicalActivity = () => {
             onCancel={() => setShowBMIModal(false)}
             width={'80vw'}
             footer={null}
+            zIndex={1000}
           >
+            <div className='row d-flex px-3'>
+              <div className='col-md-3 pl-0 col-12'>
+                <a
+                  onClick={() => {
+                    const fileName = BMIDetailsImage;
+                    const fileSrc = BMIDetailsImage;
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: [
+                        {
+                          src: fileSrc,
+                          name: 'BMI Details',
+                          extension:
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                        },
+                      ],
+                    });
+                  }}
+                >
+                  <div className=' pl-0 col-12e4l th-primary '>
+                    <Button icon={<SnippetsOutlined />} />
+                    <span style={{ marginLeft: '5px', fontWeight: '600' }}>
+                      BMI Details
+                    </span>
+                  </div>
+                </a>
+              </div>
+            </div>
             <div className='row'>
               <div className='col-12' style={{ padding: '1rem 1rem' }}>
                 <Table
