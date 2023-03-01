@@ -321,7 +321,6 @@ const BlogWall = () => {
           ...params,
           ...(startDate ? { start_date: startDate } : {}),
           ...(endDate ? { end_date: endDate } : {}),
-          ...(branchIds ? { branch_ids: branchIds } : {}),
           ...(selectedBlogListId ? { activity_detail_id: selectedBlogListId } : {}),
           ...(selectedGradeId ? { grade_ids: selectedGradeId } : {}),
           ...(categoriesFilter ? { category: categoriesFilter } : {}),
@@ -363,20 +362,24 @@ const BlogWall = () => {
       fetchPostWall({
         publish_level: 'Branch Level',
         user_id: userId,
+        branch_ids: selectedBranch?.branch?.id,
       });
     } else if (showTab == 4) {
       fetchPostWall({
         publish_level: 'Grade Level',
+        branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
       });
     } else if (showTab == 5) {
       fetchPostWall({
         is_best_blog: 'true',
         user_id: userId,
+        branch_ids: selectedBranch?.branch?.id,
       });
     } else if (showTab == 6) {
       fetchPostWall({
         publish_level: 'Section Level',
+        branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
       });
     }
