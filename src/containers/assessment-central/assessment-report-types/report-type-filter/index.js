@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, TextField, Divider } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { setReportType } from '../../../../redux/actions';
 
 const reportTypes = [
@@ -48,7 +48,7 @@ const orchidsReportTypes = [
   },
   {
     id: 14,
-    type: 'New Report Card',
+    type: 'Report Card',
   },
 ];
 
@@ -58,7 +58,7 @@ const ReportTypeFilter = ({
   setReportType,
   selectedReportType,
   setIsFilter,
-  reportcardpipelineview
+  reportcardpipelineview,
 }) => {
   const handleReportType = (event, value) => {
     setIsFilter(false);
@@ -66,6 +66,9 @@ const ReportTypeFilter = ({
       setReportType(value);
     } else setReportType({});
   };
+
+  const { session_year } =
+    useSelector((state) => state.commonFilterReducer?.selectedYear) || {};
 
   const query = new URLSearchParams(window.location.search);
   const isReportView = Boolean(query.get('report-card'));
@@ -76,10 +79,10 @@ const ReportTypeFilter = ({
   }, [isReportView]);
 
   useEffect(() => {
-if(reportcardpipelineview){
-  handleReportType({}, { ...orchidsReportTypes[6] });
-}
-  },[reportcardpipelineview])
+    if (reportcardpipelineview) {
+      handleReportType({}, { ...orchidsReportTypes[6] });
+    }
+  }, [reportcardpipelineview]);
 
   let domain = window.location.href.split('/');
   let isAolOrchids =
@@ -105,7 +108,17 @@ if(reportcardpipelineview){
           id='report-types'
           className='dropdownIcon'
           value={selectedReportType || {}}
-          options={isAolOrchids ? orchidsReportTypes : reportTypes || []}
+          options={
+            isAolOrchids
+              ? session_year !== '2021-22'
+                ? orchidsReportTypes?.filter((eachType) => {
+                    return eachType.id !== 5;
+                  })
+                : orchidsReportTypes?.filter((eachType) => {
+                    return eachType.id !== 14;
+                  })
+              : reportTypes || []
+          }
           getOptionLabel={(option) => option?.type || ''}
           getOptionSelected={(option, value) => option?.id === value?.id}
           renderInput={(params) => (
