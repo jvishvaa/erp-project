@@ -72,7 +72,10 @@ const AdminViewBlog = () => {
     JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const themeContext = useTheme();
   const history = useHistory();
-  // const { setAlert } = useContext(AlertNotificationContext);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const token = dataes?.token;
+  const user_level = dataes?.user_level;
   const [moduleId, setModuleId] = React.useState('');
   const [month, setMonth] = React.useState('1');
   const [status, setStatus] = React.useState('');
@@ -87,7 +90,7 @@ const AdminViewBlog = () => {
   const [selectedSectionIds, setSelectedSectionIds] = useState('');
   const [drawer, setDrawer] = useState(false);
   const [drawers, setDrawers] = useState(false);
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(user_level == 8 || user_level == 2 ? 0 : 1);
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [preview, setPreview] = useState(false);
   const [totalCountUnassign, setTotalCountUnassign] = useState(0);
@@ -111,11 +114,6 @@ const AdminViewBlog = () => {
   const blogActivityId = localStorage.getItem('BlogActivityId')
     ? JSON.parse(localStorage.getItem('BlogActivityId'))
     : {};
-
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const token = dataes?.token;
-  const user_level = dataes?.user_level;
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -643,73 +641,65 @@ const AdminViewBlog = () => {
                     onChange={handleTab}
                     defaultValue={value}
                   >
-                    {(user_level !== 11 || user_level !== 10 || user_level !== 8) && (
+                    {(user_level == 8 || user_level == 2) && (
                       <TabPane tab='UNASSIGNED' key='0'>
-                        {value == 0 && (
-                          <div className='col-12 px-0'>
-                            {user_level == 11 || user_level == 10 || user_level == 8 ? (
-                              ''
-                            ) : (
-                              <Table
-                                columns={columnsUnassigned}
-                                dataSource={unassingeds}
-                                className='th-table'
-                                rowClassName={(record, index) =>
-                                  `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                                }
-                                loading={loading}
-                                pagination={{
-                                  total: totalCountAssigned,
-                                  current: Number(currentPageAssigned),
-                                  pageSize: limitAssigned,
-                                  showSizeChanger: false,
-                                  onChange: (page) => {
-                                    console.log('Pagination', page);
-                                    handlePaginationUnassign(page);
-                                  },
-                                }}
-                                scroll={{
-                                  x: unassingeds?.length > 0 ? 'max-content' : null,
-                                  y: 600,
-                                }}
-                              />
-                            )}
-                          </div>
-                        )}
+                        <Table
+                          columns={columnsUnassigned}
+                          dataSource={unassingeds}
+                          className='th-table'
+                          rowClassName={(record, index) =>
+                            `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                          }
+                          loading={loading}
+                          pagination={{
+                            total: totalCountAssigned,
+                            current: Number(currentPageAssigned),
+                            pageSize: limitAssigned,
+                            showSizeChanger: false,
+                            onChange: (page) => {
+                              console.log('Pagination', page);
+                              handlePaginationUnassign(page);
+                            },
+                          }}
+                          scroll={{
+                            x: unassingeds?.length > 0 ? 'max-content' : null,
+                            y: 600,
+                          }}
+                        />
                       </TabPane>
                     )}
                     <TabPane tab='ASSIGNED' key='1'>
-                      {(value == 1 ||
+                      {/* {(value == 1 ||
                         (value == 1 && user_level === 11) ||
                         user_level === 10 ||
                         user_level === 2 ||
-                        user_level === 8) && (
-                        <div className='col-12 px-0'>
-                          <Table
-                            columns={columns}
-                            dataSource={assingeds}
-                            className='th-table'
-                            rowClassName={(record, index) =>
-                              `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                            }
-                            loading={loading}
-                            pagination={{
-                              total: totalCountAssigned,
-                              current: Number(currentPageAssigned),
-                              pageSize: limitAssigned,
-                              showSizeChanger: false,
-                              onChange: (page) => {
-                                console.log('Pagination', page);
-                                handlePaginationAssign(page);
-                              },
-                            }}
-                            scroll={{
-                              x: assingeds.length > 0 ? 'max-content' : null,
-                              y: 600,
-                            }}
-                          />
-                        </div>
-                      )}
+                        user_level === 8) && ( */}
+                      <div className='col-12 px-0'>
+                        <Table
+                          columns={columns}
+                          dataSource={assingeds}
+                          className='th-table'
+                          rowClassName={(record, index) =>
+                            `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                          }
+                          loading={loading}
+                          pagination={{
+                            total: totalCountAssigned,
+                            current: Number(currentPageAssigned),
+                            pageSize: limitAssigned,
+                            showSizeChanger: false,
+                            onChange: (page) => {
+                              console.log('Pagination', page);
+                              handlePaginationAssign(page);
+                            },
+                          }}
+                          scroll={{
+                            x: assingeds.length > 0 ? 'max-content' : null,
+                            y: 600,
+                          }}
+                        />
+                      </div>
+                      {/* )} */}
                     </TabPane>
                   </Tabs>
                 </div>
@@ -726,46 +716,51 @@ const AdminViewBlog = () => {
             title={`Preview Blog Activity`}
           >
             <div>
-                <div
-                  style={{ margin: '10px',overflow: 'scroll', maxHeight:'80vh' }}
-                >
-                  <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
-                  <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
-                  <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                    Submission on -{previewData?.submission_date?.substring(0, 10)}
-                  </div>
-                  <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                    Branch -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'gray' }}>
-                    Grade -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {previewData?.grades.map((obj) => obj?.name).join(', ')},{' '}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'gray' }}>
-                    Section -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                  ></div>
-                  <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                    Instructions
-                  </div>
-                  <div style={{ paddingTop: '8px', fontSize: '16px' }}>
-                    {previewData?.description}
-                  </div>
-                  <div style={{ paddingTop: '28px', fontSize: '14px', display:'flex', justifyContent:'center' }}>
-                    <img src={previewData?.template?.template_path} width='50%' />
-                  </div>
+              <div style={{ margin: '10px', overflow: 'scroll', maxHeight: '80vh' }}>
+                <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
+                <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
+                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                  Submission on -{previewData?.submission_date?.substring(0, 10)}
                 </div>
+                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                  Branch -&nbsp;
+                  <span style={{ color: 'black' }}>
+                    {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
+                  </span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Grade -&nbsp;
+                  <span style={{ color: 'black' }}>
+                    {previewData?.grades.map((obj) => obj?.name).join(', ')},{' '}
+                  </span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'gray' }}>
+                  Section -&nbsp;
+                  <span style={{ color: 'black' }}>
+                    {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
+                  </span>
+                </div>
+
+                <div
+                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+                ></div>
+                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                  Instructions
+                </div>
+                <div style={{ paddingTop: '8px', fontSize: '16px' }}>
+                  {previewData?.description}
+                </div>
+                <div
+                  style={{
+                    paddingTop: '28px',
+                    fontSize: '14px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <img src={previewData?.template?.template_path} width='50%' />
+                </div>
+              </div>
             </div>
           </Modal>
           {/* </Dialog> */}

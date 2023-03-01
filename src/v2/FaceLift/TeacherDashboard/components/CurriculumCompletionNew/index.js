@@ -107,11 +107,14 @@ const CurriculumTracker = (props) => {
                           >
                             {item?.subject_name}
                           </div>
-                          <div
-                            className='th-black-1 text-truncate'
-                            title={item?.grade_name + ' ' + item?.section_name?.slice(-1)}
-                          >
-                            {item?.grade_name} {item?.section_name?.slice(-1)}
+                          <div className='th-black-1 text-truncate'>
+                            <span
+                              title={
+                                item?.grade_name + ' ' + item?.section_name?.slice(-1)
+                              }
+                            >
+                              {item?.grade_name} {item?.section_name?.slice(-1)}
+                            </span>
                           </div>
                           <div className='th-grey th-fw-500'>
                             Period : {item?.period_completed}
