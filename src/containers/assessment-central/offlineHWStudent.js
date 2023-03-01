@@ -194,7 +194,6 @@ const OfflineStudentAssessment = () => {
   );
   const [branchList, setBranchList] = useState([]);
 
-
   const [selectedBranchId, setSelectedBranchIds] = useState([]);
   const [gradeList, setGradeList] = useState([]);
 
@@ -205,12 +204,8 @@ const OfflineStudentAssessment = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const filterData = JSON.parse(sessionStorage.getItem('filterData')) || {};
   const createFilterData = JSON.parse(sessionStorage.getItem('createfilterdata')) || {};
-  const [selectedBranch, setSelectedBranch] = useState(
-    createFilterData?.branch[0]
-  );
-  const [selectedGrade, setSelectedGrade] = useState(
-    createFilterData?.grade
-);
+  const [selectedBranch, setSelectedBranch] = useState(createFilterData?.branch[0]);
+  const [selectedGrade, setSelectedGrade] = useState(createFilterData?.grade);
 
   const [isNewSeach, setIsNewSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -225,11 +220,11 @@ const OfflineStudentAssessment = () => {
   const [branchOMR, setBranchOMR] = useState([]);
   const [displayOMR, setDisplayOMR] = useState(false);
   const [uploadBranchOMR, setUploadBranchOMR] = useState('');
-  const [filterClicked, setFilterClicked] = useState(false)
-  const [checkBoxFlag, setCheckBoxFlag] = useState(false)
+  const [filterClicked, setFilterClicked] = useState(false);
+  const [checkBoxFlag, setCheckBoxFlag] = useState(false);
   const [showNewAsses, setShowNewAsses] = useState(true);
 
-  console.log(createFilterData,'@@')
+  console.log(createFilterData, '@@');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -363,7 +358,7 @@ const OfflineStudentAssessment = () => {
     const payload = {
       branchId: selectedBranch?.value,
       gradeId: selectedGrade?.value,
-      subjId: createFilterData.subject[0].value,
+      subjId: createFilterData.subject[0]?.value,
       testId: history?.location?.state?.test?.id,
       sectionId: selectedSection?.id,
       selectedSection: selectedSection,
@@ -371,25 +366,34 @@ const OfflineStudentAssessment = () => {
     sessionStorage.setItem('filterData', JSON.stringify(payload));
     axiosInstance
       .get(
-        `${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.value}&grade=${selectedGrade?.value}&subject_id=${createFilterData?.subject[0].value}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${selectedSection?.id}`
+        `${endpoints.assessment.offlineAssesment}?acad_session=${
+          selectedBranch?.value
+        }&grade=${selectedGrade?.value}&test_id=${
+          history?.location?.state?.test?.id
+        }&section_mapping_id=${selectedSection?.id}  ${
+          createFilterData?.subject[0]?.value
+            ? '&subject_id=' + createFilterData?.subject[0]?.value
+            : ''
+        }`
       )
       .then((result) => {
         console.log(result);
         setStudentList(result?.data?.result?.user_reponse);
         setQuesList(result?.data?.result?.questions);
         setLoading(false);
-        setFilterClicked(true)
+        setFilterClicked(true);
       })
       .catch((error) => {
         console.log('');
+        setLoading(false);
       });
   };
 
   useEffect(() => {
     if (filterClicked) {
-      offlineMarks()
+      offlineMarks();
     }
-  }, [checkBoxFlag])
+  }, [checkBoxFlag]);
 
   const fetchquesPaperStatus = () => {
     setLoading(true);
@@ -407,7 +411,7 @@ const OfflineStudentAssessment = () => {
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error',error.msg || error?.message);
+        setAlert('error', error.msg || error?.message);
       });
   };
   useEffect(() => {
@@ -418,15 +422,16 @@ const OfflineStudentAssessment = () => {
     console.log(data);
     let student = [];
     let studentCheck = studentList.map((i) => {
-      if(i?.atdnce_status == true){
-        student.push(i)
+      if (i?.atdnce_status == true) {
+        student.push(i);
       }
-    }
-    )
+    });
     console.log(student);
     console.log(studentList);
     history.push({
-      pathname: quesList[0].sections?.mandatory_questions ? 'student-marks-upload' : 'student-mark',
+      pathname: quesList[0].sections?.mandatory_questions
+        ? 'student-marks-upload'
+        : 'student-mark',
       state: {
         test_id: history?.location?.state?.test?.id,
         user: data?.user_id,
@@ -436,37 +441,35 @@ const OfflineStudentAssessment = () => {
         branch: createFilterData?.branch,
         gradeList: createFilterData?.grade,
         grade: createFilterData?.grade,
-        subject_id: createFilterData?.subject[0].subject_id,
+        subject_id: createFilterData?.subject[0]?.subject_id,
         quesList: quesList,
       },
     });
   };
 
   const updateReUpload = (val) => {
-    setLoading(true)
-    let testId = history?.location?.state?.test?.id
+    setLoading(true);
+    let testId = history?.location?.state?.test?.id;
     let param = {
       user_id: val?.user_id,
       test_id: testId,
-      can_reupload: !val?.can_reupload
-    }
+      can_reupload: !val?.can_reupload,
+    };
     axiosInstance
-      .post(
-        `${endpoints.assessment.reUpload}?`, param
-      )
+      .post(`${endpoints.assessment.reUpload}?`, param)
       .then((result) => {
-        setLoading(false)
+        setLoading(false);
         console.log(result);
-        setCheckBoxFlag(!checkBoxFlag)
+        setCheckBoxFlag(!checkBoxFlag);
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
         }
       })
       .catch((error) => {
         console.log('');
-        setLoading(false)
+        setLoading(false);
       });
-  }
+  };
   useEffect(() => {
     if (filterData?.subjId && !filterClicked) {
       setLoading(true);
@@ -490,25 +493,23 @@ const OfflineStudentAssessment = () => {
   const deleteMarks = (item) => {
     console.log(item);
     axiosInstance
-    .delete(
-      `assessment/${item?.test_details?.usresponse_id}/ru-offline-asmnt/`
-    )
-    .then((result) => {
-      console.log(result);
-      setLoading(false);
-      setAlert('success','Response Deleted Successfully')
-      offlineMarks()
-    })
-    .catch((error) => {
-      console.log('');
-    });
-  }
+      .delete(`assessment/${item?.test_details?.usresponse_id}/ru-offline-asmnt/`)
+      .then((result) => {
+        console.log(result);
+        setLoading(false);
+        setAlert('success', 'Response Deleted Successfully');
+        offlineMarks();
+      })
+      .catch((error) => {
+        console.log('');
+      });
+  };
 
   const handleBack = () => {
     sessionStorage.removeItem('filterData');
-    sessionStorage.removeItem('createfilterdata')
+    sessionStorage.removeItem('createfilterdata');
     // history.goBack();
-    history.push({ pathname: '/assesment', state: { dataRestore: true } })
+    history.push({ pathname: '/assesment', state: { dataRestore: true } });
   };
 
   const uploadOMR = () => {
@@ -674,7 +675,9 @@ const OfflineStudentAssessment = () => {
                       <TableCell className={classes.tableCell}>Name</TableCell>
                       <TableCell className={classes.tableCell}>Total Marks</TableCell>
                       <TableCell className={classes.tableCell}>Action</TableCell>
-                      <TableCell className={classes.tableCell}>Enable Re-Upload</TableCell>
+                      <TableCell className={classes.tableCell}>
+                        Enable Re-Upload
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -689,7 +692,7 @@ const OfflineStudentAssessment = () => {
                         </TableCell>
                         <TableCell className={classes.tableCell} id='blockArea'>
                           {console.log(items)}
-                          {items?.atdnce_status == true ?
+                          {items?.atdnce_status == true ? (
                             <>
                               {items?.test_details?.total_marks != null ? (
                                 items?.test_details?.total_marks.toFixed(2)
@@ -702,61 +705,77 @@ const OfflineStudentAssessment = () => {
                                 </StyledButton>
                               )}
                             </>
-                            :
-                            items?.atdnce_status == null ? <><p>Please Mark Attendace First</p></> : <><p>Absent</p></>
-                          }
+                          ) : items?.atdnce_status == null ? (
+                            <>
+                              <p>Please Mark Attendace First</p>
+                            </>
+                          ) : (
+                            <>
+                              <p>Absent</p>
+                            </>
+                          )}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {items?.atdnce_status == true && items?.test_details?.total_marks != null ? 
-                          <>
-                          {items?.test_details?.total_marks != null ? (
-                            <StyledButton
-                              onClick={() => uploadMarks(items)}
-                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
-                            >
-                              Edit Marks
-                            </StyledButton>
+                          {items?.atdnce_status == true &&
+                          items?.test_details?.total_marks != null ? (
+                            <>
+                              {items?.test_details?.total_marks != null ? (
+                                <StyledButton
+                                  onClick={() => uploadMarks(items)}
+                                  startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                                >
+                                  Edit Marks
+                                </StyledButton>
+                              ) : (
+                                ''
+                              )}
+                            </>
+                          ) : items?.atdnce_status == null &&
+                            items?.test_details?.total_marks != null ? (
+                            <>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                startIcon={
+                                  <DeleteOutlineIcon style={{ fontSize: '30px' }} />
+                                }
+                              >
+                                Delete Marks
+                              </StyledButton>
+                            </>
+                          ) : items?.atdnce_status == false &&
+                            items?.test_details?.total_marks != null ? (
+                            <>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                              >
+                                Delete Marks
+                              </StyledButton>
+                            </>
                           ) : (
                             ''
                           )}
-                          </> : 
-                          items?.atdnce_status == null && items?.test_details?.total_marks != null ?
-                          <>
-                           <StyledButton
-                              onClick={() => deleteMarks(items)}
-                              startIcon={<DeleteOutlineIcon style={{ fontSize: '30px' }} />}
-                            >
-                              Delete Marks
-                            </StyledButton>
-                          </>
-                          : items?.atdnce_status == false && items?.test_details?.total_marks != null ?
-                          <>
-                           <StyledButton
-                              onClick={() => deleteMarks(items)}
-                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
-                            >
-                              Delete Marks
-                            </StyledButton>
-                          </> : ''}
                         </TableCell>
                         <TableCell className={classes.tableCell} id='blockArea'>
-                          {items?.can_reupload && <Checkbox
-                            checked={items?.can_reupload}
-                            iconStyle={{ fill: 'red' }}
-                            onChange={(e) => {
-                              updateReUpload(items)
-                            }
-                            }
-                            inputProps={{ 'aria-label': 'controlled' }}
-                          />}
-                          {!items?.can_reupload && <Checkbox
-                            iconStyle={{ fill: 'red' }}
-                            onChange={(e) => {
-                              updateReUpload(items)
-                            }
-                            }
-                            inputProps={{ 'aria-label': 'controlled' }}
-                          />}
+                          {items?.can_reupload && (
+                            <Checkbox
+                              checked={items?.can_reupload}
+                              iconStyle={{ fill: 'red' }}
+                              onChange={(e) => {
+                                updateReUpload(items);
+                              }}
+                              inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                          )}
+                          {!items?.can_reupload && (
+                            <Checkbox
+                              iconStyle={{ fill: 'red' }}
+                              onChange={(e) => {
+                                updateReUpload(items);
+                              }}
+                              inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
