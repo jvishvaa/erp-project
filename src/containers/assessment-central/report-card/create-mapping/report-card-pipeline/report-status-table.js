@@ -10,6 +10,11 @@ import {
   Paper,
   Button,
   Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import '../../../../master-management/master-management.css';
@@ -29,28 +34,36 @@ const ReportStatusTable = ({ setLoading }) => {
   const [mappingList, setMappingList] = useState();
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [reportCardId, setReportCardId] = useState(null);
 
-  const handlePublish = async (id) => {
+  const handlePublish = async (id, notify) => {
     setLoading(true);
     try {
-      const payload = { id, status: 2 };
-      const { status_code: status = 400, message = 'Error' } =
-        await updateReportCardStatus(payload);
+      const payload = { id, status: 2, notify: notify };
+      const {
+        status_code: status = 400,
+        message = 'Error',
+      } = await updateReportCardStatus(payload);
       const isSuccesful = isSuccess(status);
       setAlert(isSuccesful ? 'success' : 'error', message);
       if (isSuccesful) {
         setUpdateFlag((prev) => !prev);
+        handleClose();
       }
     } catch (err) {}
     setLoading(false);
+    handleClose();
   };
 
   const handleUnpublish = async (id) => {
     setLoading(true);
     try {
       const payload = { id, status: 1 };
-      const { status_code: status = 400, message = 'Error' } =
-        await updateReportCardStatus(payload);
+      const {
+        status_code: status = 400,
+        message = 'Error',
+      } = await updateReportCardStatus(payload);
       const isSuccesful = isSuccess(status);
       setAlert(isSuccesful ? 'success' : 'error', message);
       if (isSuccesful) {
@@ -75,12 +88,14 @@ const ReportStatusTable = ({ setLoading }) => {
             }}
             variant='contained'
             disabled={status === '1'}
-            onClick={() => history.push({
-              pathname : '/assessment-reports/',
-              state : {
-                reportcardpipeline : true
-              }
-            })}
+            onClick={() =>
+              history.push({
+                pathname: '/assessment-reports/',
+                state: {
+                  reportcardpipeline: true,
+                },
+              })
+            }
             title='View'
           >
             View
@@ -99,7 +114,8 @@ const ReportStatusTable = ({ setLoading }) => {
                 backgroundColor: '#228B22',
               }}
               variant='contained'
-              onClick={() => handlePublish(id)}
+              // onClick={() => handlePublish(id)}
+              onClick={() => handleOpen(id)}
               title='Publish'
             >
               Publish
@@ -151,6 +167,15 @@ const ReportStatusTable = ({ setLoading }) => {
       fetchReportCardStatus();
     }
   }, [updateFlag, currentPage]);
+  const handleOpen = (id) => {
+    setReportCardId(id);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setReportCardId(null);
+  };
 
   return (
     <Paper className={`${classes.root} common-table`}>
@@ -211,6 +236,31 @@ const ReportStatusTable = ({ setLoading }) => {
           />
         </Grid>
       </Grid>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle id='draggable-dialog-title'>Send Notification</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to send whatsapp notification?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => handlePublish(reportCardId, false)}
+            className='labelColor cancelButton'
+          >
+            No
+          </Button>
+          <Button
+            color='primary'
+            variant='contained'
+            style={{ color: 'white' }}
+            onClick={() => handlePublish(reportCardId, true)}
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };

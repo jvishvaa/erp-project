@@ -80,6 +80,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
 
   const [selectedERP, setSelectedERP] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [eypConfig, setEypConfig] = useState([]);
 
   useEffect(() => {
     if (isFilter) {
@@ -93,9 +94,22 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   }, [isFilter, assessmentReportListData]);
 
+  const checkEypConfig = (params = {}) => {
+    axiosInstance
+      .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data) {
+          setEypConfig(response?.data?.result);
+        }
+      });
+  };
+
   useEffect(() => {
     if (selectedReportType?.id) {
       setSelectedERP([]);
+    }
+    if (selectedReportType?.id === 14) {
+      checkEypConfig({ config_key: 'eyp_rc_grades' });
     }
     switch (selectedReportType?.id) {
       case 2:
@@ -356,7 +370,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
           selectedReportType={selectedReportType}
           widerWidth={widerWidth}
           isMobile={isMobile}
-          reportcardpipelineview = {history?.location?.state?.reportcardpipeline}
+          reportcardpipelineview={history?.location?.state?.reportcardpipeline}
         />
         {selectedReportType?.id && (
           <AssessmentReportFilters
@@ -605,6 +619,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             isFilter={isFilter}
             setIsFilter={setIsFilter}
             isstudentList={isstudentList}
+            eypConfig={eypConfig}
           />
         )}
       </Layout>
