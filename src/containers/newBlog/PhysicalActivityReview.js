@@ -179,7 +179,7 @@ const PhysicalActivityReview = () => {
       setLoading(false);
       return;
     } else if (subjectId == undefined) {
-      message.error('Please Select Subject')
+      message.error('Please Select Section')
       setLoading(false);
       return;
     } else {
@@ -338,17 +338,17 @@ const PhysicalActivityReview = () => {
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
                   href='/blog/wall/central/redirect'
-                  className='th-grey th-400'
+                  className='th-grey th-400 th-16'
                 >
                   Activity Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href='/physical/activity' className='th-grey th-400'>
+                <Breadcrumb.Item href='/physical/activity' className='th-grey th-400 th-16'>
                   Physical Activity
                 </Breadcrumb.Item>
-                <Breadcrumb.Item className='th-grey th-400'>
+                <Breadcrumb.Item className='th-grey th-400 th-16'>
                   Physical Review
                 </Breadcrumb.Item>
-                <Breadcrumb.Item className='th-black th-400'>
+                <Breadcrumb.Item className='th-black th-400 th-16'>
                   {ActivityId?.title}
                 </Breadcrumb.Item>
               </Breadcrumb>
