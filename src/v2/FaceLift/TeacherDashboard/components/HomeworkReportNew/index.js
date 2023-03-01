@@ -133,15 +133,16 @@ const HomeworkReport = () => {
                               <div className='col-10 px-0'>
                                 <div className='row ml-2 w-100'>
                                   <div className='col-12 px-0 th-black-2 th-fw-600 th-14 '>
-                                    <div
-                                      className='text-truncate th-width-50'
-                                      title={
-                                        item?.grade_name +
-                                        ' ' +
-                                        item?.section_name.slice(-1)
-                                      }
-                                    >
-                                      {item?.grade_name} {item?.section_name.slice(-1)}
+                                    <div className='text-truncate th-width-60'>
+                                      <span
+                                        title={
+                                          item?.grade_name +
+                                          ' ' +
+                                          item?.section_name.slice(-1)
+                                        }
+                                      >
+                                        {item?.grade_name} {item?.section_name.slice(-1)}
+                                      </span>
                                     </div>
                                   </div>
                                   <div className='col-12 px-0 th-black-1 th-fw-600 th-16'>
