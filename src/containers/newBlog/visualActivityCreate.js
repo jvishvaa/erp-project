@@ -344,7 +344,7 @@ const VisualActivityCreate = () => {
         branch: value,
         grade: [],
         section: [],
-        date:null,
+        date: null,
       });
       setSelectedBranch(value);
       fetchGradesFun(selectedAcademicYear?.id, branchId);
@@ -363,7 +363,7 @@ const VisualActivityCreate = () => {
       formRef.current.setFieldsValue({
         grade: value,
         section: [],
-        data: null
+        data: null,
       });
       setSelectedGrade(value);
       fetchSectionsFun(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
@@ -803,25 +803,26 @@ const VisualActivityCreate = () => {
               </Form>
             </div>
           </div>
-        </div>
-        <div className='col-12 py-3 px-0'>
-          <div className='col-md-6 py-3 py-md-0'>
-            <span className='th-grey th-14'>Title</span>
-            <Input
-              className='th-br-4 mt-1 th-16'
-              showCount
-              maxLength='30'
-              value={title}
-              onChange={handleTitle}
-            />
-            <div className='text-right'>
-              <span className='th-red th-12 text-right'>Max. 30 Characters</span>
+
+          <div className='col-12 py-3 px-0'>
+            <div className='col-md-6 py-3 py-md-0'>
+              <span className='th-grey th-14'>Title</span>
+              <Input
+                className='th-br-4 mt-1 th-16'
+                showCount
+                maxLength='30'
+                value={title}
+                onChange={handleTitle}
+              />
+              <div className='text-right'>
+                <span className='th-red th-12 text-right'>Max. 30 Characters</span>
+              </div>
             </div>
-          </div>
-          <div className='col-md-6'>
-            <span className='th-grey th-14'>Description*</span>
-            <div className='th-editor py-2'>
-              <TextArea rows={5} value={description} onChange={handleDescription} />
+            <div className='col-md-6'>
+              <span className='th-grey th-14'>Description*</span>
+              <div className='th-editor py-2'>
+                <TextArea rows={5} value={description} onChange={handleDescription} />
+              </div>
             </div>
           </div>
         </div>
