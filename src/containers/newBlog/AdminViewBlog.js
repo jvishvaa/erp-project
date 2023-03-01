@@ -616,6 +616,7 @@ const AdminViewBlog = () => {
                   type='primary'
                   icon={<PlusSquareOutlined />}
                   className='th-600 mr-3'
+                  disabled={user_level == 11}
                   onClick={createPush}
                 >
                   Create Activity

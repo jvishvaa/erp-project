@@ -604,6 +604,7 @@ const VisualActivity = () => {
               <ButtonAnt
                 icon={<AppstoreAddOutlined />}
                 onClick={createPush}
+                disabled={user_level == 11}
                 className='th-button-active th-br-6 th-pointer th-16'
               >
                 Create {localActivityData.name}

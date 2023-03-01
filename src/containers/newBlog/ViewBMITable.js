@@ -9,6 +9,7 @@ import {
   Input,
   message,
   Select,
+  Tag,
 } from 'antd';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import {
@@ -608,7 +609,7 @@ const ViewBMITableCustom = (props) => {
       >
         <div className='row'>
           <div
-            className='col-12 px-0'
+            className='col-12 px-3'
             style={{ display: 'flex', borderRadius: '10px', padding: '0.5rem 1rem' }}
           >
             <div className='col-3'>Name : {rowData?.student_name}</div>
@@ -616,8 +617,8 @@ const ViewBMITableCustom = (props) => {
             <div className='col-3'>Branch : {props?.selectedBoardName}</div>
             <div className='col-3'>Grade: {props?.selectedGradeName}</div>
           </div>
-          <div className='row d-flex px-3'>
-            <div className='col-md-3 pl-0 col-12'>
+          <div className='row d-flex px-3 justify-content-end'>
+            <div className='col-md-5 px-0 col-12 d-flex justify-content-end'>
               <a
                 onClick={() => {
                   const fileName = BMIDetailsImage;
@@ -635,11 +636,14 @@ const ViewBMITableCustom = (props) => {
                   });
                 }}
               >
-                <div className=' pl-0 col-12e4l th-primary '>
-                  <ButtonAnt icon={<SnippetsOutlined />} />
-                  <span style={{ marginLeft: '5px', fontWeight: '600' }}>
-                    BMI Details
-                  </span>
+                <div
+                  className='col-12 th-primary d-flex align-item-center px-0'
+                  style={{ alignItems: 'center' }}
+                >
+                  <span className='th-14 th-black pr-2'>Index : </span>
+                  <Tag className='th-14' icon={<EyeOutlined/>} color='processing'>
+                    Click Here To Check BMI Chart
+                  </Tag>
                 </div>
               </a>
             </div>

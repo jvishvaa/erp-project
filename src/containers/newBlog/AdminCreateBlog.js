@@ -223,7 +223,7 @@ const AdminCreateBlog = () => {
         grade: [],
         section: [],
         round: [],
-        date: [],
+        date: null,
       });
       setSubActivityName(value);
       setIsPhysicalActivity(true);
@@ -247,7 +247,7 @@ const AdminCreateBlog = () => {
         grade: [],
         section: [],
         round: [],
-        date: [],
+        date: null,
       });
       setSelectedBranch([]);
       setSelectedGrade([]);
@@ -403,7 +403,7 @@ const AdminCreateBlog = () => {
         branch: value,
         grade: [],
         section: [],
-        data: [],
+        data: null,
       });
       setSelectedBranch(value);
       // fetchGrades(branchId);
@@ -426,7 +426,7 @@ const AdminCreateBlog = () => {
       formRef.current.setFieldsValue({
         grade: value,
         section: [],
-        data: [],
+        data: null,
       });
       setSelectedGrade(value);
       fetchSections(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
@@ -442,7 +442,7 @@ const AdminCreateBlog = () => {
           ? [...sectionDropdown].filter(({ id }) => id !== 'all')
           : value;
       formRef.current.setFieldsValue({
-        date: [],
+        date: null,
       });
       setSelectedSection(value);
     }
@@ -457,6 +457,9 @@ const AdminCreateBlog = () => {
 
   const handleStartDateChange = (val) => {
     setStartDate(moment(val).format('YYYY-MM-DD'));
+    formRef.current.setFieldsValue({
+      date: val,
+    });
   };
 
   const PreviewBlog = () => {
@@ -510,7 +513,7 @@ const AdminCreateBlog = () => {
       grade: [],
       section: [],
       round: [],
-      date: [],
+      date: null,
     });
   };
   const formatdate = new Date();
@@ -679,7 +682,7 @@ const AdminCreateBlog = () => {
       });
   };
   const goBack = () => {
-    history.push('/blog/blogview');
+    history.goBack();
   };
 
   const closePreview = () => {
@@ -1090,13 +1093,13 @@ const AdminCreateBlog = () => {
 
                       <div className='col-md-2 col-6'>
                         <div className='mb-2 text-left'>Submission End Date</div>
-                        <Form.Item name='date'>
-                          <Space direction='vertical' className='w-100' size={12}>
+                        <Space direction='vertical' className='w-100' size={12}>
+                          <Form.Item name='date'>
                             <DatePicker
                               className='text-left th-date-picker th-br-4 th-bg-grey w-100 th-black-1'
                               bordered={true}
                               format={'YYYY/MM/DD'}
-                              allowClear={false}
+                              // allowClear={false}
                               onChange={(value) => handleStartDateChange(value)}
                             />
                             {/* <RangePicker
@@ -1114,8 +1117,8 @@ const AdminCreateBlog = () => {
                           format={'DD/MM/YYYY'}
                           getPopupContainer={(trigger) => trigger.parentNode}
                         /> */}
-                          </Space>
-                        </Form.Item>
+                          </Form.Item>
+                        </Space>
                       </div>
                     </>
                   ) : (

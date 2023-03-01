@@ -84,13 +84,17 @@ const VisualReviews = (props) => {
           }
         )
         .then((response) => {
-          if (response?.data?.status_code == 200) {
+          if(response?.data?.status_code === 400){
+            message.error(response?.data?.message)
+            setLoading(false)
+            return
+          }else if(response?.data?.status_code === 200){
             setTotalCount(response?.data?.count);
             setTotalPages(response?.data?.page_size);
             setCurrentPage(response?.data?.page);
             setLimit(Number(limit));
             // props.setFlag(false);
-            message.success(response?.data?.message);
+            message.success(response?.data?.message)
             setTotalSubmitted(response?.data?.result);
           }
           setLoading(false);
