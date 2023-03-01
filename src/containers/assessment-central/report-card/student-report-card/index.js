@@ -102,13 +102,14 @@ const StudentReportCard = () => {
     obj.acad_session_id = selectedBranch?.id;
     obj.grade_id = grade_id;
     obj.erp_id = erp;
-
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.assessmentReportTypes.eypReportCard}`, { params: { ...obj } })
       .then((response) => {
         if (response?.data) {
           // generateEypReport(response?.data?.result);
           EypReportCardPdf(response?.data?.result, selectedBranch?.branch?.branch_name);
+          setLoading(false);
         }
       })
       .catch((err) => {
