@@ -34,6 +34,7 @@ import {
   Input,
   message,
   Modal,
+  Spin,
 } from 'antd';
 
 import axios from 'axios';
@@ -343,6 +344,7 @@ const VisualActivityCreate = () => {
         branch: value,
         grade: [],
         section: [],
+        date:null,
       });
       setSelectedBranch(value);
       fetchGradesFun(selectedAcademicYear?.id, branchId);
@@ -361,6 +363,7 @@ const VisualActivityCreate = () => {
       formRef.current.setFieldsValue({
         grade: value,
         section: [],
+        data: null
       });
       setSelectedGrade(value);
       fetchSectionsFun(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
@@ -381,6 +384,9 @@ const VisualActivityCreate = () => {
 
   const handleStartDateChange = (val) => {
     setStartDate(moment(val).format('YYYY-MM-DD'));
+    formRef.current.setFieldsValue({
+      date: val,
+    });
   };
   let branchIdss = selectedBranch.map((obj) => obj?.name).join(', ');
   let branchname = [...branchIdss];
@@ -401,11 +407,12 @@ const VisualActivityCreate = () => {
     setDescription('');
     setTitle('');
     setSelectedRound([]);
-    setStartDate('');
+    setStartDate(null);
     formRef.current.setFieldsValue({
       branch: [],
       grade: [],
       section: [],
+      date: null,
     });
   };
   const formatdate = new Date();
@@ -422,11 +429,7 @@ const VisualActivityCreate = () => {
     const branchIds = selectedBranch.map((obj) => obj?.id);
     const gradeIds = selectedGrade.map((obj) => obj?.id);
     const sectionIds = selectedSection.map((obj) => obj?.id);
-    // if (!startDate) {
-    //   setLoading(false);
-    //   message.error('Please Select the Date')
-    //   return;
-    // }
+
     if (branchIds?.length === 0) {
       setLoading(false);
       message.error('Please Select Branch');
@@ -440,6 +443,11 @@ const VisualActivityCreate = () => {
     if (sectionIds?.length === 0) {
       setLoading(false);
       message.error('Please Select Section');
+      return;
+    }
+    if (!startDate) {
+      setLoading(false);
+      message.error('Please Select the Date');
       return;
     }
     if (title.length === 0) {
@@ -456,17 +464,11 @@ const VisualActivityCreate = () => {
       formData.append('title', title);
       formData.append('description', description);
       formData.append('issue_date', null);
-      formData.append(
-        'submission_date',
-        isSubmissionHide ? null : startDate + hoursAndMinutes
-      );
+      formData.append('submission_date', startDate + hoursAndMinutes);
       formData.append('image', selectedFile);
       formData.append('activity_type_id', localActivityData?.id);
       formData.append('session_year', selectedAcademicYear.session_year);
-      formData.append(
-        'created_at',
-        isSubmissionHide ? null : startDate + hoursAndMinutes
-      );
+      formData.append('created_at', startDate + hoursAndMinutes);
       formData.append('created_by', user_id.id);
       formData.append('branch_ids', branchIds);
       formData.append('grade_ids', gradeIds);
@@ -548,7 +550,7 @@ const VisualActivityCreate = () => {
       });
   };
   const goBack = () => {
-    history.push('/blog/blogview');
+    history.goBack();
   };
 
   const closePreview = () => {
@@ -646,22 +648,21 @@ const VisualActivityCreate = () => {
     selectedSection([]);
   };
 
-  useEffect(() => {
-    if (
-      localActivityData?.name.toLowerCase() === 'music' ||
-      localActivityData?.name.toLowerCase() === 'theatre' ||
-      localActivityData?.name.toLowerCase() === 'dance' 
+  // useEffect(() => {
+  //   if (
+  //     localActivityData?.name.toLowerCase() === 'music' ||
+  //     localActivityData?.name.toLowerCase() === 'theatre' ||
+  //     localActivityData?.name.toLowerCase() === 'dance'
 
-    ) {
-      setIsSubmissionHide(true);
-    } else {
-      setIsSubmissionHide(false);
-    }
-  }, [localActivityData?.name]);
+  //   ) {
+  //     setIsSubmissionHide(true);
+  //   } else {
+  //     setIsSubmissionHide(false);
+  //   }
+  // }, [localActivityData?.name]);
 
   return (
     <div>
-      {loading && <Loader />}
       <Layout>
         <div className='row py-3 px-2 th-bg-grey'>
           <div className='col-md-8' style={{ zIndex: 2 }}>
@@ -788,17 +789,16 @@ const VisualActivityCreate = () => {
                       </Select>
                     </Form.Item>
                   </div>
-                  {isSubmissionHide ? (
-                    ''
-                  ) : (
-                    <div className='col-md-2 col-6 pl-0'>
-                      <div className='col-mb-3 text-left'>Submission Date</div>
+
+                  <div className='col-md-2 col-6 pl-0'>
+                    <div className='col-mb-3 text-left'>Submission Date</div>
+                    <Form.Item name='date'>
                       <DatePicker
                         className='w-100 th-black-1 th-bg-grey th-br-4 p-1 mb-2 th-date-picker'
                         onChange={(value) => handleStartDateChange(value)}
                       />
-                    </div>
-                  )}
+                    </Form.Item>
+                  </div>
                 </div>
               </Form>
             </div>
@@ -865,35 +865,35 @@ const VisualActivityCreate = () => {
           title={`Preview - ${localActivityData?.name}`}
         >
           <div>
-              <div style={{ marginLeft: '23px', marginTop: '28px' }}>
-                <div style={{ fontSize: '15px', color: '#7F92A3' }}>
-                  Title -{activityName.name}
-                </div>
-                <div style={{ fontSize: '21px' }}>{title}</div>
-                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                  Submission on -{startDate}
-                </div>
-                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                  Branch -&nbsp;<span style={{ color: 'black' }}>{branchname}</span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Grade -&nbsp;<span style={{ color: 'black' }}>{gradename}</span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Section -&nbsp;<span style={{ color: 'black' }}>{sectionname}</span>
-                </div>
-
-                <div
-                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                ></div>
-                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                  Instructions
-                </div>
-                <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
-                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                  <img src={fileUrl} width='50%' />
-                </div>
+            <div style={{ marginLeft: '23px', marginTop: '28px' }}>
+              <div style={{ fontSize: '15px', color: '#7F92A3' }}>
+                Title -{activityName.name}
               </div>
+              <div style={{ fontSize: '21px' }}>{title}</div>
+              <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                Submission on -{startDate}
+              </div>
+              <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                Branch -&nbsp;<span style={{ color: 'black' }}>{branchname}</span>
+              </div>
+              <div style={{ fontSize: '10px', color: 'gray' }}>
+                Grade -&nbsp;<span style={{ color: 'black' }}>{gradename}</span>
+              </div>
+              <div style={{ fontSize: '10px', color: 'gray' }}>
+                Section -&nbsp;<span style={{ color: 'black' }}>{sectionname}</span>
+              </div>
+
+              <div
+                style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+              ></div>
+              <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                Instructions
+              </div>
+              <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
+              <div style={{ paddingTop: '28px', fontSize: '14px' }}>
+                <img src={fileUrl} width='50%' />
+              </div>
+            </div>
           </div>
         </Modal>
       </Layout>

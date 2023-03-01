@@ -12,6 +12,7 @@ import {
   FundViewOutlined,
   PieChartOutlined,
   SnippetsOutlined,
+  EyeOutlined,
 } from '@ant-design/icons';
 import {
   Breadcrumb,
@@ -281,7 +282,7 @@ const StudentSidePhysicalActivity = () => {
           </div>
           <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>
             <div className='row '>
-              <div className='col-12 px-0'>
+              <div className='col-12 px-3'>
                 <Table
                   columns={columns}
                   dataSource={activityListData}
@@ -310,8 +311,8 @@ const StudentSidePhysicalActivity = () => {
             footer={null}
             zIndex={1000}
           >
-            <div className='row d-flex px-3'>
-              <div className='col-md-3 pl-0 col-12'>
+            <div className='row d-flex justify-content-end px-3 py-2'>
+              <div className='col-md-4 px-0 col-12 d-flex justify-content-end'>
                 <a
                   onClick={() => {
                     const fileName = BMIDetailsImage;
@@ -329,11 +330,14 @@ const StudentSidePhysicalActivity = () => {
                     });
                   }}
                 >
-                  <div className=' pl-0 col-12e4l th-primary '>
-                    <Button icon={<SnippetsOutlined />} />
-                    <span style={{ marginLeft: '5px', fontWeight: '600' }}>
-                      BMI Details
-                    </span>
+                  <div
+                    className=' px-0 col-12 th-primary d-flex'
+                    style={{ alignItems: 'center' }}
+                  >
+                    <span className='th-14 th-black pr-2'>Index : </span>
+                    <Tag className='th-14' icon={<EyeOutlined />} color='processing'>
+                      Click Here To Check BMI Chart
+                    </Tag>
                   </div>
                 </a>
               </div>
