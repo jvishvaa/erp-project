@@ -48,6 +48,7 @@ import BlogWallImage from '../../assets/images/ssss.jpg';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import ReactPlayer from 'react-player';
+import { getActivityIcon } from 'v2/generalActivityFunction';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -70,6 +71,7 @@ const columns = [
 const BlogWall = () => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const user_level = data?.user_level;
+  const isStudent = user_level == 13;
   const token = data?.token;
   const history = useHistory();
   const selectedBranch = useSelector(
@@ -109,13 +111,13 @@ const BlogWall = () => {
   const options = [
     { id: 1, value: 'All' },
     { id: 2, value: 'Blogs' },
-    { id: 3, value: 'Dance' },
-    { id: 4, value: 'Music' },
+    { id: 3, value: 'Dance', visible: isStudent },
+    { id: 4, value: 'Music', visible: isStudent },
     { id: 5, value: 'Posts' },
-    { id: 6, value: 'Public Speaking' },
-    { id: 7, value: 'Theatre' },
-    { id: 8, value: 'Visual Art' },
-  ];
+    { id: 6, value: 'Public Speaking', visible: isStudent },
+    { id: 7, value: 'Theatre', visible: isStudent },
+    { id: 8, value: 'Visual Art', visible: isStudent },
+  ].filter((item) => item?.visible !== false);
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(null);
@@ -319,7 +321,6 @@ const BlogWall = () => {
           ...params,
           ...(startDate ? { start_date: startDate } : {}),
           ...(endDate ? { end_date: endDate } : {}),
-          ...(branchIds ? { branch_ids: branchIds } : {}),
           ...(selectedBlogListId ? { activity_detail_id: selectedBlogListId } : {}),
           ...(selectedGradeId ? { grade_ids: selectedGradeId } : {}),
           ...(categoriesFilter ? { category: categoriesFilter } : {}),
@@ -361,20 +362,24 @@ const BlogWall = () => {
       fetchPostWall({
         publish_level: 'Branch Level',
         user_id: userId,
+        branch_ids: selectedBranch?.branch?.id,
       });
     } else if (showTab == 4) {
       fetchPostWall({
         publish_level: 'Grade Level',
+        branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
       });
     } else if (showTab == 5) {
       fetchPostWall({
         is_best_blog: 'true',
         user_id: userId,
+        branch_ids: selectedBranch?.branch?.id,
       });
     } else if (showTab == 6) {
       fetchPostWall({
         publish_level: 'Section Level',
+        branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
       });
     }
@@ -915,7 +920,11 @@ const BlogWall = () => {
                                     </>
                                   ) : (
                                     <img
-                                      src={item?.content?.s3_path}
+                                      src={
+                                        item?.content?.s3_path
+                                          ? item?.content?.s3_path
+                                          : getActivityIcon(item?.type)
+                                      }
                                       alt='content_image'
                                       className='th-br-5 th-pointer'
                                       style={{
@@ -1371,7 +1380,11 @@ const BlogWall = () => {
                 ) : selectedOtherActivity?.content?.file_type === 'image/png' ||
                   selectedOtherActivity?.content?.file_type === 'image/jpeg' ? (
                   <img
-                    src={selectedOtherActivity?.content?.s3_path}
+                    src={
+                      selectedOtherActivity?.content?.s3_path
+                        ? selectedOtherActivity?.content?.s3_path
+                        : getActivityIcon(selectedOtherActivity?.type)
+                    }
                     alt={'image'}
                     width='100%'
                     loading='lazy'

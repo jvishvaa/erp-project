@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
 import {
   FileProtectOutlined,
   UserOutlined,
@@ -9,68 +7,21 @@ import {
   CloseOutlined,
 } from '@ant-design/icons';
 import {
-  Button as ButtonAnt,
+  Button,
   Tag,
   Avatar,
   Select,
   Tooltip,
-  Table as TableAnt,
+  Table,
   Drawer,
   Space,
   Input,
   message,
 } from 'antd';
-import { makeStyles } from '@material-ui/core/styles';
 import endpoints from '../../config/endpoints';
 import ReactPlayer from 'react-player';
 import moment from 'moment';
 import axios from 'axios';
-import './images.css';
-const useStyles = makeStyles((theme) => ({
-  root: {
-    // maxWidth: '90vw',
-    width: '99%',
-    // margin: '20px auto',
-    // marginTop: theme.spacing(4),
-    paddingLeft: '20px',
-    boxShadow: 'none',
-  },
-  tableCell: {
-    color: 'black !important',
-    backgroundColor: '#ADD8E6 !important',
-  },
-  buttonColor1: {
-    color: '#FF6161 !important',
-    backgroundColor: 'white',
-  },
-  buttonColor9: {
-    color: '#bdbdbd !important',
-    backgroundColor: 'white',
-  },
-  buttonColor2: {
-    color: '#2A7D4B !important',
-    backgroundColor: 'white',
-  },
-  tableCells: {
-    color: 'black !important',
-    backgroundColor: '#F0FFFF !important',
-  },
-
-  dividerColor: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
-  },
-  container: {
-    maxHeight: '70vh',
-    maxWidth: '95vw',
-  },
-  columnHeader: {
-    color: `${theme.palette.secondary.main} !important`,
-    fontWeight: 600,
-    fontSize: '1rem',
-    backgroundColor: `#ffffff !important`,
-  },
-  buttonDiv: {},
-}));
 
 const VisualReviews = (props) => {
   const [value, setValue] = React.useState();
@@ -78,7 +29,6 @@ const VisualReviews = (props) => {
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   //   const PhysicalsubActivityData = JSON.parse(localStorage.getItem('PhysicalsubActivityData')) || {};
   const subActivityData = JSON.parse(localStorage.getItem('VisualActivityId')) || {};
-  const classes = useStyles();
   const [dataId, setDataId] = useState();
   let datas = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [values, setValues] = useState();
@@ -126,7 +76,7 @@ const VisualReviews = (props) => {
 
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?&user_id=null&activity_detail_id=${subActivityData?.id}&is_reviewed=True&is_submitted=True&update=True&grade_id=${props.selectedGrade}&branch_ids=${props.selectedBranch}&section_ids=${props.selectedSubject}`,
+          `${endpoints.newBlog.studentSideApi}?user_id=null&activity_detail_id=${subActivityData?.id}&is_reviewed=True&is_submitted=True&update=True&grade_id=${props.selectedGrade}&branch_ids=${props.selectedBranch}&section_ids=${props.selectedSubject}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -138,7 +88,7 @@ const VisualReviews = (props) => {
             message.error(response?.data?.message)
             setLoading(false)
             return
-          }else{
+          }else if(response?.data?.status_code === 200){
             setTotalCount(response?.data?.count);
             setTotalPages(response?.data?.page_size);
             setCurrentPage(response?.data?.page);
@@ -146,11 +96,12 @@ const VisualReviews = (props) => {
             // props.setFlag(false);
             message.success(response?.data?.message)
             setTotalSubmitted(response?.data?.result);
-            setLoading(false);
           }
-        })
-        .catch(() => {
           setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          message.error(error);
         });
     }
   };
@@ -255,82 +206,8 @@ const VisualReviews = (props) => {
   ];
   return (
     <>
-      {/* {loading && <Loader />} */}
-      {/* <Paper className={`${classes.root} common-table`} id='singleStudent'>
-        <TableContainer
-          className={`table table-shadow view_users_table ${classes.container}`}
-        >
-          <Table stickyHeader aria-label='sticky table'>
-            <TableHead className={`${classes.columnHeader} table-header-row`}>
-              <TableRow>
-                <TableCell className={classes.tableCell} style={{ whiteSpace: 'nowrap' }}>
-                  S No.
-                </TableCell>
-                <TableCell className={classes.tableCell}>Student Name</TableCell>
-                <TableCell className={classes.tableCell}>ERP ID</TableCell>
-
-                <TableCell className={classes.tableCell}>Submission Date</TableCell>
-
-                <TableCell className={classes.tableCell} style={{ width: '261px' }}>
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            {totalSubmitted &&
-              totalSubmitted?.map((response, index) => (
-                <TableBody>
-                  <TableRow
-                    hover
-                    role='checkbox'
-                    tabIndex={-1}
-                    // key={`user_table_index${i}`}
-                  >
-                    <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {' '}
-                      {response?.booked_user?.name}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {' '}
-                      {response?.booked_user?.username}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {' '}
-                      {response?.submitted_on?.substring(0, 10)}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      <ButtonAnt
-                        type='primary'
-                        icon={<FileProtectOutlined />}
-                        onClick={() => assignPage(response)}
-                        size={'medium'}
-                      >
-                        Check Review
-                      </ButtonAnt>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              ))}
-          </Table>
-          {/* <TablePagination
-            component='div'
-            count={totalCount}
-            rowsPerPage={limit}
-            page={Number(currentPage) - 1}
-            onChangePage={(e, page) => {
-            handlePagination(e, page + 1);
-            }}
-            rowsPerPageOptions={false}
-            className='table-pagination'
-            classes={{
-              spacer: classes.tablePaginationSpacer,
-              toolbar: classes.tablePaginationToolbar,
-            }}
-          /> 
-        </TableContainer>
-      </Paper> */}
       <div className='col-12 px-0'>
-        <TableAnt
+        <Table
           columns={columns}
           dataSource={totalSubmitted}
           className='th-table'
@@ -376,7 +253,7 @@ const VisualReviews = (props) => {
                   height='100%'
                   playIcon={
                     <Tooltip title='play'>
-                      <ButtonAnt
+                      <Button
                         style={{
                           background: 'transparent',
                           border: 'none',
