@@ -22,7 +22,7 @@ const CentralBlogRedirection = () => {
   const token = data?.token;
   const user_level = data?.user_level;
   const history = useHistory();
-  const [periodData, setPeriodData] = useState([]);
+  const [activityListData, setActivityListData] = useState([]);
   const [subId, setSubId] = useState('');
   const [blogSubId, setBlogSubId] = useState('');
   const [visualSubId, setVisualSubId] = useState('');
@@ -89,7 +89,7 @@ const CentralBlogRedirection = () => {
     }
   };
 
-  const periodDataAPI = () => {
+  const fetchActivityListData = () => {
     setLoading(true);
     axiosInstance
       .get(`${endpoints.newBlog.blogRedirectApi}`, {
@@ -98,8 +98,7 @@ const CentralBlogRedirection = () => {
         },
       })
       .then((result) => {
-        setLoading(false);
-        setPeriodData(result?.data?.result);
+        setActivityListData(result?.data?.result);
         const physicalData = result?.data?.result.filter(
           (item) => item?.name == 'Physical Activity'
         );
@@ -126,6 +125,7 @@ const CentralBlogRedirection = () => {
           (item) => item?.name.toLowerCase() === 'theatre'
         );
         setTheaterSubId(theaterActivityData[0]);
+        setLoading(false);
       })
       .catch((err) => {
         setLoading(false);
@@ -134,7 +134,7 @@ const CentralBlogRedirection = () => {
   };
 
   useEffect(() => {
-    periodDataAPI();
+    fetchActivityListData();
   }, []);
 
   const handleExplore = (data) => {
@@ -295,11 +295,11 @@ const CentralBlogRedirection = () => {
             >
               <Spin tip='Loading' />
             </div>
-          ) : periodData.length > 0 ? (
+          ) : activityListData.length > 0 ? (
             <div className='row p-3'>
-              {periodData?.map((each, index) => (
+              {activityListData?.map((each, index) => (
                 <div className='col-md-4 mb-2 '>
-                  <div className='th-br-10 th-bg-grey shadow-sm'>
+                  <div className='th-br-10 th-bg-grey shadow-sm wall_card'>
                     <div className='row p-3'>
                       <div className='col-4 px-0 th-br-5' style={{ height: 150 }}>
                         <img
