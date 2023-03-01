@@ -601,6 +601,9 @@ const VisualActivity = () => {
               </Breadcrumb>
             </div>
             <div className='col-md-6 pr-3 th-16 d-flex justify-content-end'>
+              {user_level == 11 ? (
+                ''
+              ):(
               <ButtonAnt
                 icon={<AppstoreAddOutlined />}
                 onClick={createPush}
@@ -609,6 +612,8 @@ const VisualActivity = () => {
               >
                 Create {localActivityData.name}
               </ButtonAnt>
+
+              )}
             </div>
           </div>
           <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>

@@ -650,30 +650,34 @@ const PhysicalActivity = () => {
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
                   href='/blog/wall/central/redirect'
-                  className='th-grey th-400'
+                  className='th-grey th-400 th-16'
                 >
                   Activity Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item>Physical Activity</Breadcrumb.Item>
+                <Breadcrumb.Item className='th-16'>Physical Activity</Breadcrumb.Item>
               </Breadcrumb>
             </div>
             <div className='col-md-6 d-flex justify-content-end'>
-              <ButtonAnt
-                type='primary'
-                icon={<AppstoreAddOutlined />}
-                size={'large'}
-                onClick={createPush}
-                className='th-400 mx-4'
-                disabled={user_level == 11}
-              >
-                Create Physical Activity
-              </ButtonAnt>
+              {user_level == 11 ? (
+                ''
+              ) : (
+                <ButtonAnt
+                  type='primary'
+                  icon={<AppstoreAddOutlined />}
+                  size={'large'}
+                  onClick={createPush}
+                  className='th-400 mx-4'
+                  disabled={user_level == 11}
+                >
+                  Create Physical Activity
+                </ButtonAnt>
+              )}
+
               <ButtonAnt
                 type='primary'
                 icon={<AppstoreAddOutlined />}
                 size={'large'}
                 onClick={redirectBMI}
-                disabled={user_level == 11}
                 className='th-400'
               >
                 Add BMI
