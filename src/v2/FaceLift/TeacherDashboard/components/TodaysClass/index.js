@@ -187,9 +187,9 @@ const TodaysClass = () => {
                           <div className='d-none d-sm-block px-0 col-md-2 px-md-2 py-1'>
                             <span className='th-grey'>Grade</span>
                           </div>
-                          <div className='col-5 col-md-3 px-1 px-md-2 py-1 text-truncate'>
+                          <div className='col-12 col-md-10 px-1 px-md-2 py-1 text-truncate'>
                             <span className='th-black-1 th-fw-600'>
-                              {item?.grade_name + item?.section_name?.slice(-1)}
+                              {item?.grade_name + ' ' + item?.section_name?.slice(-1)}
                             </span>
                           </div>
                         </div>

@@ -126,9 +126,9 @@ const AttendanceReportNew = () => {
                       <div className='col-7 px-2 text-left text-truncate text-capitalize'>
                         <span
                           className='th-fw-600 th-black-2'
-                          title={item?.grade_name + '' + item?.section_name?.slice(-1)}
+                          title={item?.grade_name + ' ' + item?.section_name?.slice(-1)}
                         >
-                          {item?.grade_name + '' + item?.section_name?.slice(-1)} (
+                          {item?.grade_name + ' ' + item?.section_name?.slice(-1)} (
                           {item?.total_count < 9
                             ? '0' + item?.total_count
                             : item?.total_count}
