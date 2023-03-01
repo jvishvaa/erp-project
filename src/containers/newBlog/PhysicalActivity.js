@@ -664,6 +664,7 @@ const PhysicalActivity = () => {
                 size={'large'}
                 onClick={createPush}
                 className='th-400 mx-4'
+                disabled={user_level == 11}
               >
                 Create Physical Activity
               </ButtonAnt>
@@ -672,6 +673,7 @@ const PhysicalActivity = () => {
                 icon={<AppstoreAddOutlined />}
                 size={'large'}
                 onClick={redirectBMI}
+                disabled={user_level == 11}
                 className='th-400'
               >
                 Add BMI
