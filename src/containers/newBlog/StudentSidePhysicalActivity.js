@@ -45,6 +45,7 @@ const StudentSidePhysicalActivity = () => {
   const [mediaFiles, setMediaFiles] = useState(false);
   const [showBMIModal, setShowBMIModal] = useState(false);
   const [studentBMIData, setStudentBMIData] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
@@ -213,7 +214,7 @@ const StudentSidePhysicalActivity = () => {
   ];
   const columnsBMI = [
     {
-      title: <span className='th-white th-fw-700 '>Height(in meters)</span>,
+      title: <span className='th-white th-fw-700 '>Height(in cm)</span>,
       key: 'height',
       align: 'center',
       render: (text, row, index) => <span>{row?.bmi_details?.height}</span>,
@@ -313,33 +314,33 @@ const StudentSidePhysicalActivity = () => {
           >
             <div className='row d-flex justify-content-end px-3 py-2'>
               <div className='col-md-4 px-0 col-12 d-flex justify-content-end'>
-                <a
-                  onClick={() => {
-                    const fileName = BMIDetailsImage;
-                    const fileSrc = BMIDetailsImage;
-                    openPreview({
-                      currentAttachmentIndex: 0,
-                      attachmentsArray: [
-                        {
-                          src: fileSrc,
-                          name: 'BMI Details',
-                          extension:
-                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
-                        },
-                      ],
-                    });
-                  }}
+              <div
+                className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
+                style={{ alignItems: 'center' }}
+              >
+                <span className='th-14 th-black pr-2'>Index : </span>
+                <Button
+                  icon={<EyeOutlined />}
+                  type='primary'
+                  onClick={() => setVisible(true)}
                 >
-                  <div
-                    className=' px-0 col-12 th-primary d-flex'
-                    style={{ alignItems: 'center' }}
-                  >
-                    <span className='th-14 th-black pr-2'>Index : </span>
-                    <Tag className='th-14' icon={<EyeOutlined />} color='processing'>
-                      Click Here To Check BMI Chart
-                    </Tag>
-                  </div>
-                </a>
+                  Click Here To Check BMI Chart
+                </Button>
+              </div>
+              <Modal
+                title='BMI Chart'
+                centered
+                visible={visible}
+                open={visible}
+                footer={false}
+                onCancel={() => setVisible(false)}
+                width={1000}
+              >
+                <img
+                src={BMIDetailsImage}
+                style={{height:'100%', width:'100%', objectFit: '-webkit-fill-available'}}
+                />
+              </Modal>
               </div>
             </div>
             <div className='row'>
