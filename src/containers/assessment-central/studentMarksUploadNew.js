@@ -465,11 +465,11 @@ const StudentMarkNew = () => {
           }
         });
         let valueCount = values?.val.filter((item) => item !== undefined && item !== '');
-        if (valueCount?.length < markscount) {
-          return setAlert('error', 'please Fill all Mandetory Questions');
-        } else if (valueCount?.length > markscount) {
-          return setAlert('error', 'Please Fill only Mandetory Questions');
-        }
+        // if (valueCount?.length < markscount) {
+        //   return setAlert('error', 'please Fill all Mandetory Questions');
+        // } else if (valueCount?.length > markscount) {
+        //   return setAlert('error', 'Please Fill only Mandetory Questions');
+        // }
 
         testArr = values?.val.map((ques, i) => {
           valueArray.push({
@@ -503,15 +503,14 @@ const StudentMarkNew = () => {
           else return true;
         });
 
-        if (data.includes(false)) {
-          return setAlert('error', 'Please Fill only Mandetory Questions');
-        }
+        // if (data.includes(false)) {
+        //   return setAlert('error', 'Please Fill only Mandetory Questions');
+        // }
 
         const payload = {
           test: history?.location?.state?.test_id,
           submitted_by: selectedUser,
           user_response: finalValue,
-          // total_mark: parseFloat(sum)
         };
         axiosInstance
           .put(`${endpoints.assessment.studentMarks}`, payload)
