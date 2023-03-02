@@ -92,14 +92,14 @@ const AttendanceReportNew = () => {
         <div className='col-md-12 pt-2'>
           {loading ? (
             <div
-              className='d-flex justify-content-center align-items-center'
+              className='d-flex justify-content-center align-items-center '
               style={{ height: '250px' }}
             >
               <Spin tip='Loading...'></Spin>
             </div>
           ) : classwiseAttendanceData?.length > 0 ? (
             <div
-              className=' th-bg-grey th-br-5'
+              className=' th-bg-grey th-br-5 th-custom-scrollbar'
               style={{ height: 250, overflowY: 'auto', overflowX: 'hidden' }}
             >
               <div className='row pb-2'>

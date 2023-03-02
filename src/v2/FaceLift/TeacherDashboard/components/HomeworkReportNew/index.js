@@ -65,7 +65,7 @@ const HomeworkReport = () => {
         ) : (
           <>
             <div
-              className='col-12'
+              className='col-12 th-custom-scrollbar'
               style={{ height: 335, overflowY: 'auto', overflowX: 'hidden' }}
             >
               {homeworkReportData?.length > 0 ? (

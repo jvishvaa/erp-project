@@ -99,7 +99,7 @@ const TodaysClass = () => {
       ) : todaysClassData?.length > 0 ? (
         <>
           <div
-            className='py-3 mt-2 th-timeline'
+            className='py-3 mt-2 th-timeline th-custom-scrollbar'
             style={{ height: 265, overflowY: 'auto', overflowX: 'hidden' }}
           >
             <Timeline mode='left' style={{ width: '100%' }}>

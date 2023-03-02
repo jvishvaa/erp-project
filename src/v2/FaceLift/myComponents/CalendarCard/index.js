@@ -271,6 +271,7 @@ const CalendarCard = () => {
                     height: '30vh',
                     cursor: 'pointer',
                   }}
+                  className='th-custom-scrollbar'
                 >
                   {allEvent &&
                     allEvent?.map((item) => (
