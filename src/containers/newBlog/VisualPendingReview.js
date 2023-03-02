@@ -521,6 +521,7 @@ const VisualPendingReview = (props) => {
                         );
                       })}
                       <div className='col-12 py-2'>
+                        <div className='th-12 px-0 py-1 th-grey'>Upload .jpeg,.png,.mp4 file only</div>
                         <Input
                           type='file'
                           inputRef={fileRef}

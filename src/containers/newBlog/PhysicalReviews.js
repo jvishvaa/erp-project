@@ -221,7 +221,7 @@ const PhysicalReviewed = (props) => {
       render: (text, row) => <span className='th-black-1'>{row?.booked_user?.name}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>Submission Date</span>,
+      title: <span className='th-white th-fw-700'>Executed Date</span>,
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.submitted_on?.substring(0, 10)}</span>,
     },
