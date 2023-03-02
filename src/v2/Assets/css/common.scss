@@ -23,6 +23,13 @@ body {
   background: #8c8c8c;
   border-radius: 10px;
 }
+// Custom Scrollbar
+.th-custom-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.th-custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #8c8c8c;
+}
 
 /* font color */
 .th-black {

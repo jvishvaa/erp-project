@@ -79,7 +79,10 @@ const CurriculumTracker = (props) => {
           </div>
         ) : (
           <>
-            <div className='col-12 mb-1' style={{ height: 335, overflowY: 'auto' }}>
+            <div
+              className='col-12 mb-1 th-custom-scrollbar'
+              style={{ height: 335, overflowY: 'auto' }}
+            >
               {curriculumData.length > 0 ? (
                 <div className='row mt-1 th-bg-grey px-1 py-2 th-br-5'>
                   {curriculumData.map((item, index) => (

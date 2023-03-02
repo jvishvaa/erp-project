@@ -53,7 +53,7 @@ const Announcements = (props) => {
         <span className=''>Announcements </span>
       </div>
       <div
-        className='col-md-12 my-2'
+        className='col-md-12 my-2 th-custom-scrollbar'
         style={{
           height: props?.scrollHeight,
           overflowY: 'auto',

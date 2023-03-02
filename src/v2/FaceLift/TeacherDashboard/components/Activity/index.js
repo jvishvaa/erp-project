@@ -86,7 +86,10 @@ const Activity = () => {
           </div>
         ) : (
           <>
-            <div className='col-12' style={{ height: 340, overflowY: 'auto' }}>
+            <div
+              className='col-12 th-custom-scrollbar'
+              style={{ height: 340, overflowY: 'auto' }}
+            >
               {activityData.length > 0 ? (
                 <div className='row mt-1 th-bg-grey p-1 th-br-5'>
                   {activityData?.map((item, index) => (
@@ -118,11 +121,15 @@ const Activity = () => {
                                   <>
                                     <Badge
                                       status={
-                                        item?.asset_state ? 'success' : 'processing'
+                                        item?.asset_state == 'processed'
+                                          ? 'success'
+                                          : 'processing'
                                       }
                                     />
                                     <div className='th-fw-500 text-capitalize'>
-                                      {item?.asset_state}
+                                      {item?.asset_state == 'processed'
+                                        ? 'Completed'
+                                        : 'Upcoming'}
                                     </div>
                                   </>
                                 ) : null}
@@ -208,12 +215,15 @@ const Activity = () => {
           setShowActivityModal(false);
         }}
         footer={false}
-        width={500}
+        width={window.innerWidth < 600 ? '90vw' : 600}
       >
         <div className='row th-bg-white p-2 pb-3'>
           <div className='col-12'>
             <span className='th-black-1 th-fw-500 th-25'>
-              {currentActivity?.title}({currentActivity?.activity_type?.name})
+              {currentActivity?.activity_type?.name == 'Public Speaking'
+                ? currentActivity?.name
+                : currentActivity?.title}
+              ({currentActivity?.activity_type?.name})
             </span>
           </div>
           <div className='col-12'>
