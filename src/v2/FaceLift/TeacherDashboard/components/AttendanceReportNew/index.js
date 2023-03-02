@@ -57,7 +57,7 @@ const AttendanceReportNew = () => {
       <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
         <div className='row justify-content-between'>
           <div className='col-12 pr-0 pr-md-0 th-16 mt-2 th-fw-500 th-black-1'>
-            Attendance Overview
+            Today's Attendance
           </div>
         </div>
         <div className='row justify-content-between align-items-center mt-3'>
