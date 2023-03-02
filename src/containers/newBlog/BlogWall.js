@@ -97,6 +97,7 @@ const BlogWall = () => {
   const [categoriesFilter, setCategoriesFilter] = useState('All');
   const [openAttachment, setOpenAttachment] = useState(false);
   const [attachmentDetails, setAttachmentDetails] = useState([]);
+  const [studentPubliSpeakingData, setStudentPubliSpeakingData] = useState(null);
   const [chatDetails, setChatDetails] = useState([]);
   const [reloadData, setReloadData] = useState([]);
   const [publicSpeakingrating, setPublicSpeakingrating] = useState([]);
@@ -393,7 +394,6 @@ const BlogWall = () => {
         },
       })
       .then((response) => {
-        console.log('comments', response?.data);
         setCommentsList(response?.data);
       })
       .catch((error) => {
@@ -413,35 +413,25 @@ const BlogWall = () => {
         fetchCurrentComments({ post_id: data?.id, user_id: userId });
         //  setLoading(false);
         //  setOpenModal(true);
+      })
+      .catch((error) => {
+        console.log('error', error);
       });
   };
-  const getWhatsAppDetails = (prop) => {
-    setLoading(true);
-    if (prop !== null) {
-      setReloadData(prop);
-    }
+  const getWhatsAppDetails = (params = {}) => {
     axios
-      .get(
-        `${endpoints.newBlog.whatsAppChatGetApi}?erp_id=${
-          data?.erp
-        }&created_at__date__gte=${
-          prop !== null ? prop?.created_at__date__gte : reloadData?.created_at__date__gte
-        }&created_at__date__lte=${
-          prop !== null ? prop?.created_at__date__lte : reloadData?.created_at__date__lte
-        }&activity_id=${prop !== null ? prop?.activity : reloadData?.activity}`,
-        {
-          headers: {
-            HOST: X_DTS_HOST,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .get(`${endpoints.newBlog.whatsAppChatGetApi}`, {
+        params: { ...params },
+        headers: {
+          HOST: X_DTS_HOST,
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
-        setLoading(false);
         setChatDetails(response?.data);
       })
       .catch((err) => {
-        setLoading(false);
+        console.log(err);
       });
   };
 
@@ -539,6 +529,7 @@ const BlogWall = () => {
     if (data?.type == 'Public Speaking') {
       let ratings = JSON.parse(data?.grading?.grade_scheme_markings);
       setPublicSpeakingrating(ratings);
+      fetchStudentPublicSpeakingDetails({ asset_id: data?.asset?.id });
     } else {
       getRatingView({ data: data?.booking_detail?.id, otherActvity: true });
     }
@@ -546,7 +537,30 @@ const BlogWall = () => {
     setShowOtherActivityModal(true);
     // fetchPostDetails(data);
   };
-  console.log(showOtherActivityModal, 'showOtherActivityModalshowOtherActivityModal');
+  const fetchStudentPublicSpeakingDetails = (params = {}) => {
+    console.log('params', params);
+    axios
+      .get(`${endpoints.newBlog.studentPSContentApi}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setStudentPubliSpeakingData(response?.data?.result);
+          getWhatsAppDetails({
+            erp_id: data?.erp,
+            created_at__date__gte: response?.data?.result?.created_at__date__gte,
+            created_at__date__lte: response?.data?.result?.created_at__date__lte,
+            activity_id: response?.data?.result?.activity,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
   const PostContent = () => {
     return (
       <>
@@ -1365,45 +1379,47 @@ const BlogWall = () => {
           >
             <div className='row p-3'>
               <div className='col-7 '>
-                {selectedOtherActivity?.type == 'Public Speaking' ? (
-                  <video
-                    preload='auto'
-                    controls
-                    src={selectedOtherActivity?.asset?.signed_URL}
-                    className='th-br-5'
-                    style={{
-                      height: '500px',
-                      width: '100%',
-                      objectFit: 'fill',
-                    }}
-                  />
-                ) : selectedOtherActivity?.content?.file_type === 'image/png' ||
-                  selectedOtherActivity?.content?.file_type === 'image/jpeg' ? (
-                  <img
-                    src={
-                      selectedOtherActivity?.content?.s3_path
-                        ? selectedOtherActivity?.content?.s3_path
-                        : getActivityIcon(selectedOtherActivity?.type)
-                    }
-                    alt={'image'}
-                    width='100%'
-                    loading='lazy'
-                  />
-                ) : (
-                  <video
-                    preload='auto'
-                    controls
-                    src={selectedOtherActivity?.content?.s3_path}
-                    className='th-br-5'
-                    style={{
-                      height: '500px',
-                      width: '100%',
-                      objectFit: 'fill',
-                    }}
-                  />
-                )}
+                <div className='d-flex align-items-center h-100'>
+                  {selectedOtherActivity?.type == 'Public Speaking' ? (
+                    <video
+                      preload='auto'
+                      controls
+                      src={selectedOtherActivity?.asset?.signed_URL}
+                      className='th-br-5'
+                      style={{
+                        height: '500px',
+                        width: '100%',
+                        objectFit: 'fill',
+                      }}
+                    />
+                  ) : selectedOtherActivity?.content?.file_type === 'image/png' ||
+                    selectedOtherActivity?.content?.file_type === 'image/jpeg' ? (
+                    <img
+                      src={
+                        selectedOtherActivity?.content?.s3_path
+                          ? selectedOtherActivity?.content?.s3_path
+                          : getActivityIcon(selectedOtherActivity?.type)
+                      }
+                      alt={'image'}
+                      width='100%'
+                      loading='lazy'
+                    />
+                  ) : (
+                    <video
+                      preload='auto'
+                      controls
+                      src={selectedOtherActivity?.content?.s3_path}
+                      className='th-br-5'
+                      style={{
+                        height: '500px',
+                        width: '100%',
+                        objectFit: 'fill',
+                      }}
+                    />
+                  )}
+                </div>
               </div>
-              <div className='col-5 '>
+              <div className='col-5' style={{ height: 600, overflowY: 'auto' }}>
                 <div className='row justify-content-between'>
                   <div className='col-12 py-2 px-0'>
                     <div className='d-flex align-items-center'>
@@ -1492,128 +1508,61 @@ const BlogWall = () => {
                   </div>
                 </div>
                 {selectedOtherActivity?.type == 'Public Speaking' && (
-                  <div className='col-12'>
-                    <div
-                      className='col-12'
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0.5rem 0',
-                      }}
-                    >
-                      <div className='col-6'>
-                        <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                          {' '}
-                          <CommentOutlined
-                            style={{
-                              color: 'blue',
-                              fontSize: '20px',
-                              paddingRight: '0.5rem',
-                            }}
-                          />
-                          Comments
-                        </span>
-                      </div>
-                      <div
-                        className='col-6'
-                        style={{ display: 'flex', justifyContent: 'end' }}
-                      >
-                        <span>
-                          {' '}
-                          <Button
-                            shape='circle'
-                            size='small'
-                            onClick={() => reloadButton()}
-                            icon={<RedoOutlined />}
-                          />
-                        </span>
-                      </div>
+                  <div className='row mt-2 align-item-center'>
+                    <div className='col-6 px-0'>
+                      <span className='th-18 th-fw-600'>
+                        Comments
+                        {chatDetails?.length > 0 ? `(${chatDetails?.length})` : null}
+                      </span>
                     </div>
-                    <div
-                      style={{
-                        padding: '0.5rem 1rem',
-                        borderRadius: '10px',
-                        margin: '0.5rem 0rem',
-                      }}
-                    >
-                      {chatDetails.length !== 0 ? (
+                    <div className='col-6 text-right'>
+                      <span
+                        className='th-pointer'
+                        onClick={() =>
+                          getWhatsAppDetails({
+                            erp_id: data?.erp,
+                            created_at__date__gte:
+                              studentPubliSpeakingData?.created_at__date__gte,
+                            created_at__date__lte:
+                              studentPubliSpeakingData?.created_at__date__lte,
+                            activity_id: studentPubliSpeakingData?.activity,
+                          })
+                        }
+                      >
+                        <RedoOutlined />
+                      </span>
+                    </div>
+
+                    <div className='row'>
+                      {chatDetails.length > 0 ? (
                         <>
                           {chatDetails.map((item, index) => {
                             if (item?.is_reply == true) {
                               return (
-                                <div className=' col-12 comment-header'>
-                                  <div
-                                    className='col-2'
-                                    style={{
-                                      display: 'flex',
-                                      justifyContent: 'center',
-                                      alignItem: 'center',
-                                    }}
-                                  >
-                                    {' '}
-                                    <UserOutlined
-                                      style={{
-                                        fontSize: '18px',
-                                        color: 'white',
-                                        borderRadius: '20px',
-                                        padding: '0.5rem',
-                                        background: '#4800c9',
-                                      }}
-                                    />{' '}
-                                  </div>
-                                  <div
-                                    className='col-8'
-                                    style={{
-                                      color: 'black',
-                                      padding: '0.5rem',
-                                      background: '#f2f2f2',
-                                      wordWrap: 'break-word',
-                                      borderRadius: '0px 15px 15px 15px',
-                                      float: 'left',
-                                    }}
-                                  >
-                                    <span
-                                      style={{ fontWeight: 'bold', fontSize: '13px' }}
-                                    >
-                                      {item?.name}
-                                    </span>
-                                    <p
-                                      style={{ margin: '0px', fontSize: '12px' }}
-                                      key={item?.index}
-                                    >
-                                      {item.message}
-                                    </p>
-                                  </div>
-                                  <div className='col-2'>
-                                    {item?.media_link !== null ? (
-                                      <span>
-                                        <Button
-                                          onClick={() => viewMoreAttachment(item)}
-                                          type='primary'
-                                          size='small'
-                                          shape='circle'
-                                          icon={<FileImageOutlined />}
-                                        />
-                                      </span>
-                                    ) : (
-                                      ''
-                                    )}
-                                  </div>
-                                </div>
+                                <Comment
+                                  author={
+                                    <div className='th-fw-500 th-16'>{item?.name}</div>
+                                  }
+                                  avatar={<Avatar size={40} icon={<UserOutlined />} />}
+                                  content={<p>{item?.message}</p>}
+                                  datetime={
+                                    <>
+                                      <div
+                                        title={moment(item?.sent_at).format(
+                                          'MMM Do,YYYY'
+                                        )}
+                                      >
+                                        {moment(item?.sent_at).format('MMM Do,YYYY')}
+                                      </div>
+                                    </>
+                                  }
+                                />
                               );
                             }
                           })}
                         </>
                       ) : (
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItem: 'center',
-                            fontSize: '16px',
-                            fontWeight: 400,
-                          }}
-                        >
+                        <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
                           No Comments Submitted
                         </div>
                       )}
