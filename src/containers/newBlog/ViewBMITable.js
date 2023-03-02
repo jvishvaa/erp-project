@@ -65,6 +65,7 @@ const ViewBMITableCustom = (props) => {
   const [rowData, setRowData] = useState([]);
   const [selectedStudentDetails, setSelectedStudentsDetails] = useState([]);
   const [bmiRemarks, setBmiRemarks] = useState('');
+  const [visible, setVisible] = useState(false);
 
   const columns = [
     {
@@ -263,7 +264,7 @@ const ViewBMITableCustom = (props) => {
 
   const columnsBigTable = [
     {
-      title: <span className='th-white th-fw-700 '>Height(in meters)</span>,
+      title: <span className='th-white th-fw-700 '>Height(in cm)</span>,
       dataIndex: 'height',
       key: 'height',
       align: 'center',
@@ -553,6 +554,7 @@ const ViewBMITableCustom = (props) => {
         </Row>
         <Row style={{ padding: '0.5rem 1rem' }}>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>Height (in cm)</div>
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
               onChange={(event) => handleInputBMI(event, 'height')}
@@ -561,6 +563,7 @@ const ViewBMITableCustom = (props) => {
             />
           </Col>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>Weight(in kg)</div>
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
               value={weight}
@@ -569,6 +572,7 @@ const ViewBMITableCustom = (props) => {
             />
           </Col>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>Age</div>
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
               value={age}
@@ -577,6 +581,7 @@ const ViewBMITableCustom = (props) => {
             />
           </Col>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>Remarks</div>
             {/* <Input style={{ margin: '0.5rem', width: 'auto' }} value={remarks} onChange={(event) => handleInputBMI(event, 'remarks')} placeholder="Remarks" /> */}
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
@@ -587,6 +592,7 @@ const ViewBMITableCustom = (props) => {
             />
           </Col>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>BMI</div>
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
               value={bmi}
@@ -619,33 +625,33 @@ const ViewBMITableCustom = (props) => {
           </div>
           <div className='row d-flex px-3 justify-content-end'>
             <div className='col-md-5 px-0 col-12 d-flex justify-content-end'>
-              <a
-                onClick={() => {
-                  const fileName = BMIDetailsImage;
-                  const fileSrc = BMIDetailsImage;
-                  openPreview({
-                    currentAttachmentIndex: 0,
-                    attachmentsArray: [
-                      {
-                        src: fileSrc,
-                        name: 'BMI Details',
-                        extension:
-                          '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
-                      },
-                    ],
-                  });
-                }}
+              <div
+                className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
+                style={{ alignItems: 'center' }}
               >
-                <div
-                  className='col-12 th-primary d-flex align-item-center px-0'
-                  style={{ alignItems: 'center' }}
+                <span className='th-14 th-black pr-2'>Index : </span>
+                <ButtonAnt
+                  icon={<EyeOutlined />}
+                  type='primary'
+                  onClick={() => setVisible(true)}
                 >
-                  <span className='th-14 th-black pr-2'>Index : </span>
-                  <Tag className='th-14' icon={<EyeOutlined/>} color='processing'>
-                    Click Here To Check BMI Chart
-                  </Tag>
-                </div>
-              </a>
+                  Click Here To Check BMI Chart
+                </ButtonAnt>
+              </div>
+              <Modal
+                title='BMI Chart'
+                centered
+                visible={visible}
+                open={visible}
+                footer={false}
+                onCancel={() => setVisible(false)}
+                width={1000}
+              >
+                <img
+                src={BMIDetailsImage}
+                style={{height:'100%', width:'100%', objectFit: '-webkit-fill-available'}}
+                />
+              </Modal>
             </div>
           </div>
           <div className='col-12' style={{ padding: '1rem 1rem' }}>

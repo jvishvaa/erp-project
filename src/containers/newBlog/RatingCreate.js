@@ -1277,7 +1277,7 @@ const RatingCreate = () => {
                   {(ActivityType && ActivityType?.name.toLowerCase() === 'visual art') ||
                   ActivityType?.name.toLowerCase() === 'music' ||
                   ActivityType?.name.toLowerCase() === 'dance' ||
-                  ActivityType?.name.toLowerCase() === 'theater' ? (
+                  ActivityType?.name.toLowerCase() === 'theatre' ? (
                     <div className='row m-2' style={{ width: '650px' }}>
                       <AntDivider
                         orientation='left'
@@ -1369,12 +1369,14 @@ const RatingCreate = () => {
                         </Button>
                       </div>
                       <div className='col-12 padding-style'>
-                        <Button type='primary' onClick={handleOptionSubmit}>
+                        <Button 
+                        type='primary' 
+                        onClick={handleOptionSubmit}>
                           Submit
                         </Button>
 
                         <Button
-                          type='danger'
+                          type='primary'
                           onClick={handleClose}
                           style={{ marginLeft: '0.5rem' }}
                         >

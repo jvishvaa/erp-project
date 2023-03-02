@@ -600,7 +600,7 @@ const PhysicalActivity = () => {
       align: 'center',
     },
     {
-      title: <span className='th-white th-fw-700'>Assigned On</span>,
+      title: <span className='th-white th-fw-700'>Executed Date</span>,
       dataIndex: 'created_at',
       align: 'center',
       render: (text, row) => (
