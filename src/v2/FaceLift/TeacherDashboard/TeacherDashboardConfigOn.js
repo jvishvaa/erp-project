@@ -14,7 +14,6 @@ import TeacherDiaryStats from './components/TeacherDiaryStats';
 import Activity from './components/Activity';
 
 const TeacherdashboardNew = () => {
-  const [todaysAttendance, setTodaysAttendance] = useState([]);
   const [showDoodle, setShowDoodle] = useState(false);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();

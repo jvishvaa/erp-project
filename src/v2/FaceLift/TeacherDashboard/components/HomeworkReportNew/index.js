@@ -172,7 +172,7 @@ const HomeworkReport = () => {
                 </div>
               )}
             </div>
-            <div className='row justify-content-end pr-3 pt-3'>
+            <div className='row justify-content-end pr-3 pt-2'>
               <div
                 className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
                 style={{ outline: '1px solid #d9d9d9' }}

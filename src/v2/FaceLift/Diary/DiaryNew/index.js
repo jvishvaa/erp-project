@@ -120,7 +120,9 @@ const Diary = () => {
       <div className='row pt-2'>
         <div className='col-12 px-md-4'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-grey'>Diary</Breadcrumb.Item>
+            <Breadcrumb.Item href='/dashboard' className='th-grey'>
+              Dashboard
+            </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1'>View Diary</Breadcrumb.Item>
           </Breadcrumb>
         </div>

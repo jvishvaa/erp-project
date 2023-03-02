@@ -17,7 +17,7 @@
   right: 52px;
   z-index: 40;
   background-color: #323639;
-  top: 79px;
+  /* top: 79px; */
 }
 .attachment-viewer-header-close-icon {
   color: hsla(0, 0%, 100%, 0.6);
@@ -36,8 +36,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-
-  top: 65px;
+  top: 40px;
 }
 
 .attachment-viewer-frame {

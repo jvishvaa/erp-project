@@ -4,7 +4,6 @@ import TeacherDashboardConfigOff from './TeacherDashboardConfigOff';
 import TeacherDashboardConfigOn from './TeacherDashboardConfigOn';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 
 const TeacherDashoboardNew = () => {
@@ -14,23 +13,24 @@ const TeacherDashoboardNew = () => {
   );
   const fetchConfigStatus = (params = {}) => {
     axios
-      .get(`${endpoints.studentDashboard.checkConfigStatus}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-Host': X_DTS_HOST,
-        },
-      })
+      .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
       .then((response) => {
-        if (response.status === 200) {
-          setConfigOn(response?.data?.dashboard_enabled);
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setConfigOn(true);
+          } else {
+            setConfigOn(false);
+          }
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.error('error', error?.message);
+      });
   };
 
   useEffect(() => {
     if (selectedBranch) {
-      fetchConfigStatus({ branch_id: selectedBranch?.branch?.id });
+      fetchConfigStatus({ config_key: 'teacher_dashboard_cfg' });
     }
   }, [selectedBranch]);
   return (
