@@ -222,6 +222,7 @@ const CreateAssesment = ({
   }, [isEdit, branchDropdown]);
 
   useEffect(() => {
+    console.log(selectedQuestionPaper , 'selectedqp');
     if (selectedQuestionPaper && selectedQuestionPaper?.section) {
       // let paperwise = false;
       let test_mark = [];
@@ -685,6 +686,7 @@ const CreateAssesment = ({
       acad_session:
         CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
       is_central: selectedQuestionPaper['is_central'],
+      section : selectedQuestionPaper?.section
     };
 
     if (
