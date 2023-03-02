@@ -283,6 +283,9 @@ const CentralBlogRedirection = () => {
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
             <Breadcrumb.Item href='/dashboard' className='th-grey th-18'>
+              Dashboard
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href='' className='th-black-1 th-18'>
               Activities Management
             </Breadcrumb.Item>
           </Breadcrumb>

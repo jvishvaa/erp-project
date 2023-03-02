@@ -973,21 +973,6 @@ const BlogWall = () => {
                                   <div className='th-fw-500 th-14 th-grey'>
                                     {moment(item?.created_at).format('MMM Do,YYYY')}
                                   </div>
-                                  {item?.type == 'Public Speaking' && (
-                                    <div className=''>
-                                      <span
-                                        className='px-3 py-2 th-br-20 mr-2'
-                                        style={{ border: '1px solid #d9d9d9' }}
-                                      >
-                                        <span className='mr-2 th-14 th-fw-700 th-grey'>
-                                          {item?.comment_count}
-                                        </span>
-                                        <span>
-                                          <img src={commentIcon} height={20} />
-                                        </span>
-                                      </span>
-                                    </div>
-                                  )}
                                 </div>
                               </div>
                             </div>

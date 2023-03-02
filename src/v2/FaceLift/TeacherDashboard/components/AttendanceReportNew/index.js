@@ -57,7 +57,7 @@ const AttendanceReportNew = () => {
       <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
         <div className='row justify-content-between'>
           <div className='col-12 pr-0 pr-md-0 th-16 mt-2 th-fw-500 th-black-1'>
-            Today's Attendance
+            Attendance Overview
           </div>
         </div>
         <div className='row justify-content-between align-items-center mt-3'>
@@ -85,8 +85,8 @@ const AttendanceReportNew = () => {
           </div>
         </div>
         <div className='row mt-2'>
-          <div className='col-12 th-12 th-black-2 th-fw-400'>
-            Attendance of your Class
+          <div className='col-12 th-12 th-black-2 th-fw-400 pl-4'>
+            Today's Attendance of your Classes
           </div>
         </div>
         <div className='col-md-12 pt-2'>
