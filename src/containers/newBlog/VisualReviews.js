@@ -332,10 +332,12 @@ const VisualReviews = (props) => {
                           <div className='row py-1 align-items-center'>
                             <div className='col-6 pl-1' key={index}>
                               {obj?.name}
-                            </div>
+                            </div>  
                             <div className='col-6 pr-1'>
                               <Input
                                 disabled
+                                title={obj?.remarks.filter((item) => item.status == true)[0]
+                                  .name}
                                 value={
                                   obj?.remarks.filter((item) => item.status == true)[0]
                                     .name
