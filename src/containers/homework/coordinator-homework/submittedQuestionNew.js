@@ -353,7 +353,7 @@ const SubmittedQuestionNew = ({
         </div> */}
         <div className='item'>
           <FormControl variant='outlined' fullWidth size='small'>
-            <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
+            <InputLabel >Remarks</InputLabel>
             <OutlinedInput
               id='remarks'
               name='remarks'
@@ -363,7 +363,7 @@ const SubmittedQuestionNew = ({
               rowsMax={4}
               label='Remarks'
               value={remark}
-              onChange={(e) => onChangeQuestionsState('remarks', e.target.value)}
+              onChange={(e) => onChangeQuestionsState('remark', e.target.value)}
             />
           </FormControl>
         </div>
