@@ -42,7 +42,7 @@ const TeacherdashboardNew = () => {
         </div>
       </div>
       {showDoodle && <Doodle />}
-      <div className='row pt-3'>
+      <div className='row pt-1 pb-3'>
         <div className='col-lg-8 th-custom-col-padding'>
           <div className='row'>
             <div className='col-12 px-0'>
