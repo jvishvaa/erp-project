@@ -644,7 +644,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               {diary?.is_substitute_diary ? 'Substitute Dairy' : 'Daily Diary'}
             </Tag>
           </div>
-          {user_id == diary?.teacher_id && (
+          {user_id == diary?.teacher_id && diary?.hw_status != 3 && diary?.hw_status != 4 && (
             <div className='col-1 text-right pl-0'>
               <Popover
                 content={

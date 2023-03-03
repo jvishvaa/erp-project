@@ -349,8 +349,6 @@ const ViewHomeworkNew = withRouter(
 
                         <div className='card w-100' style={{ width: '100%' , margin: '0 auto' }}>
                             <div >
-                             
-
                                 {isQuestionwise && submittedHomeworkDetails?.length && (
                                     <SubmittedQuestionNew
                                         question={submittedHomeworkDetails[activeQuestion - 1]}
@@ -388,6 +386,7 @@ const ViewHomeworkNew = withRouter(
                                         onDeleteCorrectedAttachment={deleteEvaluated}
                                         onChangeQuestionsState={handleChangeQuestionState}
                                         evaluateAnswer={evaluateAnswer}
+                                        selectedHomeworkDetails={selectedHomeworkDetails}
                                     />
                                 )}
 
@@ -684,6 +683,7 @@ const ViewHomeworkNew = withRouter(
 
 const mapStateToProps = (state) => ({
     submittedHomeworkDetails: state.teacherHomework.submittedHomeworkDetails,
+    selectedHomeworkDetails: state.teacherHomework.selectedHomeworkDetails,
     totalSubmittedQuestions: state.teacherHomework.totalSubmittedQuestions,
     fetchingSubmittedHomeworkDetails:
         state.teacherHomework.fetchingSubmittedHomeworkDetails,
