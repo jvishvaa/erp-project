@@ -856,7 +856,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             </div>
                             {homeworkSubmission.status === 1 && (
                                 <div className='checkWrapper'>
-                                    {moment(dueDate).isBefore(moment(), 'day') == false ?
                                     <div className='homework_block_questionwise_check'>
                                         <Checkbox
                                             onChange={() => {
@@ -874,7 +873,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         <p className='th-13 th-fw-600 mx-2' >
                                             Upload Question Wise
                                         </p>
-                                    </div> : '' }
+                                    </div> 
                                 </div>
                             )}
                         </div>
@@ -1350,7 +1349,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
 
 {homeworkSubmission.status === 1 && !isQuestionWise && (
                             <div className='bulkContainer'>
-                                    {moment(dueDate).isBefore(moment(), 'day') == false ?
                                     <>
                                 <div className='bulkUploadButton'>
                                     <Button
@@ -1384,7 +1382,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     {' '}
                                     Accepted files: jpeg,jpg,mp3,mp4,pdf,png
                                 </small>
-                                </> : '' }
+                                </> 
                                 <div className='bulk_upload_attachments'>
                                     {bulkDataDisplay?.map((file, i) => (
                                         <FileRow
@@ -1612,7 +1610,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                 )}
                                 {homeworkSubmission.status === 1 && (
                                 <div>
-                                    {moment(dueDate).isBefore(moment(), 'day') == false ?
 
                                     <Button
                                         variant='contained'
@@ -1623,8 +1620,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         className='mx-2 '
                                     >
                                         {isupdate == true ? 'Update' :  'Submit' }
-                                    </Button> : <p className='th-red th-fw-600 th-14'>Submission Date Expired</p>
-                                    }
+                                    </Button> 
+                                   
                                 </div>
                             )}
                                 <Dialog id={id} open={open} onClose={handleClose}>
