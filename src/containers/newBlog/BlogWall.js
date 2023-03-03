@@ -1113,6 +1113,7 @@ const BlogWall = () => {
                             </div>
                             <div>
                               <Input
+                                title={obj?.remarks}
                                 disabled
                                 value={obj?.remarks}
                                 className='th-bg-white th-black- w-100 th-br-5'
@@ -1477,6 +1478,11 @@ const BlogWall = () => {
                                 <div className='col-6 pr-1'>
                                   <Input
                                     disabled
+                                    title={
+                                      obj?.remarks?.filter(
+                                        (item) => item.status == true
+                                      )[0]?.name
+                                    }
                                     value={
                                       obj?.remarks?.filter(
                                         (item) => item.status == true

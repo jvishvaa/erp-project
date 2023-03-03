@@ -83,7 +83,7 @@ const Announcements = (props) => {
           </div>
         )}
       </div>
-      <div className='col-md-12 mt-1 text-right'>
+      <div className='col-md-12 pt-1 text-right'>
         <div className='th-primary'>
           {announcementListData?.length > 0 ? (
             <div
