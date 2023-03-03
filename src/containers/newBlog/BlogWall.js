@@ -862,7 +862,9 @@ const BlogWall = () => {
                                   style={{ borderTop: '1px solid #d9d9d9' }}
                                 >
                                   <div className='th-fw-500 th-14 th-grey'>
-                                    {moment(item?.created_at).format('MMM Do,YYYY')}
+                                    {moment(item?.activity_detail?.created_at).format(
+                                      'MMM Do,YYYY'
+                                    )}
                                   </div>
                                   <div className=''>
                                     <Rate disabled defaultValue={2} />
@@ -971,7 +973,11 @@ const BlogWall = () => {
                                   style={{ borderTop: '1px solid #d9d9d9' }}
                                 >
                                   <div className='th-fw-500 th-14 th-grey'>
-                                    {moment(item?.created_at).format('MMM Do,YYYY')}
+                                    {moment(
+                                      item?.type == 'Public Speaking'
+                                        ? item?.scheduled_time
+                                        : item?.activity_detail?.created_at
+                                    ).format('MMM Do,YYYY')}
                                   </div>
                                 </div>
                               </div>
