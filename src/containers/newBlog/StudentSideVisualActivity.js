@@ -335,6 +335,9 @@ const StudentSideVisualActivity = () => {
                                 <div className='col-6 pr-1'>
                                   <Input
                                     disabled
+                                    title={obj?.remarks.filter(
+                                      (item) => item.status == true
+                                    )[0].name}
                                     value={
                                       obj?.remarks.filter(
                                         (item) => item.status == true
