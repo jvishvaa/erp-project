@@ -51,6 +51,7 @@ export const fetchAssesmentTests = async (
   category
 ) => {
   try {
+    console.log(hasGroup , pageSize , 'page');
     let url = '';
     if (fetchAll) {
       if (type === 'all') {
@@ -66,17 +67,11 @@ export const fetchAssesmentTests = async (
       if (subjectIds?.length > 0) {
         url = `${
           endpoints.assessmentErp.listAssessment
-        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&page=${page}&page_size=${pageSize}
-      &has_sub_group=${hasGroup ? true : false} ${
-          category ? '&category=' + category?.value : ''
-        }`;
+        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&page=${page}&page_size=${pageSize}&has_sub_group=${hasGroup ? true : false}${category ? '&category=' + category?.value : ''}`;
       } else {
         url = `${
           endpoints.assessmentErp.listAssessment
-        }?academic_session=${acadSessionId}&grade=${gradeId}&page=${page}&page_size=${pageSize}
-      &has_sub_group=${hasGroup ? true : false}${
-          category ? '&category=' + category?.value : ''
-        }`;
+        }?academic_session=${acadSessionId}&grade=${gradeId}&page=${page}&page_size=${pageSize}&has_sub_group=${hasGroup ? "true" : "false"}${category ? '&category=' + category?.value : ''}`;
       }
 
       if (date) {
