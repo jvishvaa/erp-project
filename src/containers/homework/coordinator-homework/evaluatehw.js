@@ -37,6 +37,7 @@ import {
     evaluateHomework,
     uploadFile,
     finalEvaluationForHomework,
+    evaluateHomeworkQuestionWise
 } from '../../../redux/actions';
 
 import SubmittedQuestion from './submitted-question';
@@ -181,7 +182,15 @@ const ViewHomeworkNew = withRouter(
         const evaluateAnswer = async () => {
             let currentQuestion;
             if (isQuestionwise) {
-                currentQuestion = questionsState[activeQuestion - 1];
+                console.log(questionsState , 'qstate');
+                
+                try {
+                    await evaluateHomeworkQuestionWise(homeworkId, questionsState);
+                    setAlert('success', 'Saved Successfully');
+                    setDisableEv(false)
+                } catch (e) {
+                    setAlert('error', 'Evaluation failed');
+                }
             } else {
                 currentQuestion = collatedQuestionState;
 
@@ -191,19 +200,21 @@ const ViewHomeworkNew = withRouter(
                 //   setAlert('error', 'Please evaluate all the attachments');
                 //   return;
                 // }
-            }
-            const { id, ...reqData } = currentQuestion;
-            try {
-                await evaluateHomework(id, reqData);
-                setAlert('success', 'Saved Successfully');
-                setDisableEv(false)
-            } catch (e) {
-                setAlert('error', 'Evaluation failed');
+                const { id, ...reqData } = currentQuestion;
+                try {
+                    await evaluateHomework(id, reqData);
+                    setAlert('success', 'Saved Successfully');
+                    setDisableEv(false)
+                } catch (e) {
+                    setAlert('error', 'Evaluation failed');
+                }
             }
         };
 
         const handleChangeQuestionState = (fieldName, value) => {
             const index = activeQuestion - 1;
+            console.log(questionsState , 'ques');
+         
             const currentQuestion = questionsState[index];
             currentQuestion[fieldName] = value;
             setQuestionsState([
@@ -273,8 +284,8 @@ const ViewHomeworkNew = withRouter(
 
             if (isQuestionwise) {
                 const initialQuestionsState = hwQuestions.map((q) => ({
-                    id: q.id,
-                    remarks: q.remark,
+                    homework_question_id: q.question_id,
+                    remark: q.remark,
                     // comments: q.comment,
                     corrected_submission: q.corrected_files,
                     evaluated_files: q.evaluated_files,
@@ -364,8 +375,8 @@ const ViewHomeworkNew = withRouter(
                                         }
                                         remark={
                                             questionsState.length
-                                                ? questionsState[activeQuestion - 1].remarks
-                                                : []
+                                                ? questionsState[activeQuestion - 1].remark
+                                                : ''
                                         }
                                         comment={
                                             questionsState.length

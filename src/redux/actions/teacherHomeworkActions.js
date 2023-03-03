@@ -232,6 +232,18 @@ export const evaluateHomework = async (id, data) => {
   }
 };
 
+export const evaluateHomeworkQuestionWise = async (id, data) => {
+  try {
+    const response = await axios.put(`/academic/${id}/v1/teacher-evaluation/`, data);
+    if (response.data.status_code === 200) {
+      return;
+    }
+    throw new Error();
+  } catch (error) {
+    throw new Error();
+  }
+};
+
 export const finalEvaluationForHomework = async (id, data) => {
   try {
     const response = await axios.put(`/academic/${id}/evaluation-completed/`, data);

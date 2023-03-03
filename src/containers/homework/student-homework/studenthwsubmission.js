@@ -39,6 +39,7 @@ import { AlertNotificationContext } from 'context-api/alert-context/alert-state'
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import '../student-homework/components/homework-submission/homework-submission.scss';
+import '../coordinator-homework/styles.scss';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import placeholder from 'assets/images/placeholder_small.jpg';
 import Attachment from '../teacher-homework/attachment';
@@ -54,7 +55,7 @@ import {
     message, Tabs, Badge, Drawer, Form, DatePicker, Breadcrumb, Divider, Button,
     Empty, Checkbox
 } from 'antd';
-import { LeftOutlined , UploadOutlined } from '@ant-design/icons';
+import { LeftOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 const useStyles = makeStyles((theme) => ({
     attachmentIcon: {
@@ -171,7 +172,7 @@ const StyledButton = withStyles({
 
 const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     const classes = useStyles();
-    const { homeworkSubmission, setHomeworkSubmission, setLoading, setHwSelect , dueDate , setDeuDate } =
+    const { homeworkSubmission, setHomeworkSubmission, setLoading, setHwSelect, dueDate, setDeuDate } =
         props || {};
     const { isOpen, subjectId, date, subjectName, isEvaluated } = homeworkSubmission || {};
     const [isQuestionWise, setIsQuestionWise] = useState(false);
@@ -200,11 +201,12 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     const [calssNameWise, setClassName] = useState('');
     const [studentBulkComment, setStudentBulkComment] = useState('');
     const [resultdata, setresultdata] = useState();
-
+    const [qwiseEvaluated, setQwiseEvaluated] = useState([])
+    const [bulkTeacherRemark , setBulkTeacherRemark ] = useState()
     const fileUploadInput = useRef(null);
 
     // const [quesComments, setQuesComments] = useState([]);
-    console.log(history ,props);
+    console.log(history, props);
     const handleHomeworkSubmit = () => {
         let count = 0;
         if (isQuestionWise)
@@ -375,6 +377,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
 
                             setSubjectQuestions(result.data.data.hw_questions);
                             if (homeworkSubmission.status === 3) {
+                                setQwiseEvaluated(result?.data?.data)
                                 setOverallRemark(result.data.data.overall_remark);
                                 setOverallScore(result.data.data.score);
                                 setQuestionwiseComment(result.data.data.hw_questions?.comment);
@@ -624,7 +627,18 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     };
 
     const scrollableContainer = useRef(null);
+    const scrollableContainerEvaluated = useRef(null);
+
     const handleScroll = (index, dir) => {
+        const ele = document.getElementById(`homework_student_question_container_${index}`);
+        if (dir === 'left') {
+            ele.scrollLeft -= 150;
+        } else {
+            ele.scrollLeft += 150;
+        }
+    };
+
+    const handleScrollevaluated = (index, dir) => {
         const ele = document.getElementById(`homework_student_question_container_${index}`);
         if (dir === 'left') {
             ele.scrollLeft -= 150;
@@ -665,13 +679,13 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         let maxAttachmentArray = resultdata.hw_questions;
         let totalMaxAttachment = '';
         let result = 0;
-        console.log(maxAttachmentArray , isupdate , 'max');
-        if(isupdate == true){
-             totalMaxAttachment = maxAttachmentArray?.questions.map((item) => {
+        console.log(maxAttachmentArray, isupdate, 'max');
+        if (isupdate == true) {
+            totalMaxAttachment = maxAttachmentArray?.questions.map((item) => {
                 return (result += item.max_attachment);
-            });    
-        } else if( isupdate == false){
-             totalMaxAttachment = maxAttachmentArray?.map((item) => {
+            });
+        } else if (isupdate == false) {
+            totalMaxAttachment = maxAttachmentArray?.map((item) => {
                 return (result += item.max_attachment);
             });
         }
@@ -805,11 +819,11 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             <div style={{ width: '90%', margin: '0 auto' }} >
                 <div
                     className='th-br-5 p-4 my-2 d-flex'
-                    style={{ background: '#EEF2F8', width: '100%' , cursor: 'pointer' }}
+                    style={{ background: '#EEF2F8', width: '100%', cursor: 'pointer' }}
                     onClick={handleHomeworkCancel}
                 >
-                    <LeftOutlined className='d-flex align-items-center' style={{color: '#535BA0'}} />
-                    <p className='th-14 mx-2 my-0 d-flex align-items-center' style={{color: '#535BA0', fontWeight: '600'}} >Back To Homework</p>
+                    <LeftOutlined className='d-flex align-items-center' style={{ color: '#535BA0' }} />
+                    <p className='th-14 mx-2 my-0 d-flex align-items-center' style={{ color: '#535BA0', fontWeight: '600' }} >Back To Homework</p>
                 </div>
                 <div
                     className='th-br-5 p-4 my-2'
@@ -823,7 +837,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             </div>
             <div className='row'>
 
-                <div style={{width: '90%' , margin: '0 auto'}} className='card th-br-10' >
+                <div style={{ width: '90%', margin: '0 auto' }} className='card th-br-10' >
                     <div className={classes.homeworkSubmitwrapper}>
                         <div className={classes.instructionText}>
                             {desc ? (
@@ -850,7 +864,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             )}
                         </div>
 
-                        <div className='row justify-content-between th-br-10 my-2 p-3' style={{background: '#EEF2F8'}}  >
+                        <div className='row justify-content-between th-br-10 my-2 p-3' style={{ background: '#EEF2F8' }}  >
                             <div className='th-14 th-fw-600'>
                                 Homework Title : {homeworkTitle}
                             </div>
@@ -873,11 +887,11 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         <p className='th-13 th-fw-600 mx-2' >
                                             Upload Question Wise
                                         </p>
-                                    </div> 
+                                    </div>
                                 </div>
                             )}
                         </div>
-                      
+
 
                         {penToolOpen && (
                             <DescriptiveTestcorrectionModule
@@ -904,7 +918,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     </div>
 
                                     {isQuestionWise && homeworkSubmission.status == 1 && (
-                                        <div className='questionWiseAttachmentsContainer '>
+                                        <div className='questionWiseAttachmentsContainer before submit'>
                                             <IconButton
                                                 fontSize='small'
                                                 id='file-icon'
@@ -977,7 +991,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                     </div>
                                                                 ))}
                                                                 <div
-                                                                    style={{ position: 'absolute', visibility: 'hidden' , width: '0', height: '0px' }}
+                                                                    style={{ position: 'absolute', visibility: 'hidden', width: '0', height: '0px' }}
                                                                 >
                                                                     <SRLWrapper>
                                                                         {attachmentData[index]?.attachments?.map((url, i) => (
@@ -1110,7 +1124,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                         </div>
                                                                     );
                                                             })}
-                                                            <div style={{ position: 'absolute', visibility: 'hidden' , height: '0px' , width: '0px' }}>
+                                                            <div style={{ position: 'absolute', visibility: 'hidden', height: '0px', width: '0px' }}>
                                                                 <SRLWrapper>
                                                                     {question.question_files.map((url, i) => {
                                                                         if (typeof url == 'object') {
@@ -1259,7 +1273,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                             </>
                                                                         ))}
                                                                         <div
-                                                                            style={{ position: 'absolute', visibility: 'hidden' , height: '0px' , width: '0px' }}
+                                                                            style={{ position: 'absolute', visibility: 'hidden', height: '0px', width: '0px' }}
                                                                         >
                                                                             <SRLWrapper>
                                                                                 {question.submitted_files.map((url, i) => (
@@ -1273,7 +1287,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                             e.target.src = placeholder;
                                                                                         }}
                                                                                         alt={`Attachment-${i + 1}`}
-                                                                                        style={{height: '0px'}}
+                                                                                        style={{ height: '0px' }}
                                                                                     />
                                                                                 ))}
                                                                             </SRLWrapper>
@@ -1323,7 +1337,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                             e.target.src = placeholder;
                                                                                         }}
                                                                                         alt={`Attachment-${i + 1}`}
-                                                                                        style={{height: '0px'}}
+                                                                                        style={{ height: '0px' }}
                                                                                     />
                                                                                 ))}
                                                                             </SRLWrapper>
@@ -1347,42 +1361,42 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             </>
                         ))}
 
-{homeworkSubmission.status === 1 && !isQuestionWise && (
+                        {homeworkSubmission.status === 1 && !isQuestionWise && (
                             <div className='bulkContainer'>
-                                    <>
-                                <div className='bulkUploadButton'>
-                                    <Button
-                                        variant='contained'
-                                        type='primary'
-                                        // style={{ color: 'white' }}
-                                        component='label'
-                                        size='medium'
-                                        onClick={handleBulkNotification}
-                                        icon={<UploadOutlined />}
-                                    >
-                                        Bulk Upload
-                                        {bulkDataDisplay?.length < maxCount ||
-                                            bulkDataDisplay === undefined ? (
-                                            <input
-                                                type='file'
-                                                accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
-                                                style={{ display: 'none' }}
-                                                id='raised-button-file'
-                                                onChange={(e) => {
-                                                    handleBulkUpload(e);
-                                                    e.target.value = null;
-                                                }}
-                                                ref={fileUploadInput}
+                                <>
+                                    <div className='bulkUploadButton'>
+                                        <Button
+                                            variant='contained'
+                                            type='primary'
+                                            // style={{ color: 'white' }}
+                                            component='label'
+                                            size='medium'
+                                            onClick={handleBulkNotification}
+                                            icon={<UploadOutlined />}
+                                        >
+                                            Bulk Upload
+                                            {bulkDataDisplay?.length < maxCount ||
+                                                bulkDataDisplay === undefined ? (
+                                                <input
+                                                    type='file'
+                                                    accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
+                                                    style={{ display: 'none' }}
+                                                    id='raised-button-file'
+                                                    onChange={(e) => {
+                                                        handleBulkUpload(e);
+                                                        e.target.value = null;
+                                                    }}
+                                                    ref={fileUploadInput}
 
-                                            />
-                                        ) : null}
-                                    </Button>
-                                </div>
-                                <small className={classes.acceptedfiles}>
-                                    {' '}
-                                    Accepted files: jpeg,jpg,mp3,mp4,pdf,png
-                                </small>
-                                </> 
+                                                />
+                                            ) : null}
+                                        </Button>
+                                    </div>
+                                    <small className={classes.acceptedfiles}>
+                                        {' '}
+                                        Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                                    </small>
+                                </>
                                 <div className='bulk_upload_attachments'>
                                     {bulkDataDisplay?.map((file, i) => (
                                         <FileRow
@@ -1522,7 +1536,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                                                 e.target.src = placeholder;
                                                                             }}
                                                                             alt={`Attachment-${i + 1}`}
-                                                                            style={{height: '0px'}}
+                                                                            style={{ height: '0px' }}
                                                                         />
                                                                     ))}
                                                                 </SRLWrapper>
@@ -1545,11 +1559,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                             Teacher's comment : {questionwiseComment}
                                                         </div>
                                                     )}
-                                                    {questionwiseRemark && (
-                                                        <div className='remarkBox1'>
-                                                            Teacher's Remark : {questionwiseRemark}
-                                                        </div>
-                                                    )}
+                                                  
                                                 </div>
                                             ) : null}
                                         </div>
@@ -1557,8 +1567,176 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             </>
                         )}
 
+                        {/* {homeworkSubmission.status === 3 && isQuestionWise && (
+                            <>
+                                {console.log(qwiseEvaluated, 'ques3')}
+                                {qwiseEvaluated?.hw_questions?.length > 0 && qwiseEvaluated?.hw_questions?.map((each, index) => (
+                                    < div className='add-homework-container-coordinator'>
+                                        <div className='th-13 col-md-8 th-br-10' style={{ background: '#eef2f8' }} >
+                                            <div className='p-4 th-14 th-fw-600'>Question {index + 1} : {each.question}</div>
+                                        </div>
+
+                                        <div className='attachments-container'>
+                                            <div className='col-md-8 my-2 p-2 th-14 th-fw-600 th-br-10' style={{ background: '#eef2f8', borderBottom: '1px solid grey' }} >
+                                                Teacher Attachments
+                                            </div>
+                                            <div className='attachments-list-outer-container'>
+                                                <div className='prev-btn'>
+                                                    <IconButton onClick={() => handleScroll(index,'left')}>
+                                                        <ArrowBackIosIcon />
+                                                    </IconButton>
+                                                </div>
+                                                <SimpleReactLightbox>
+                                                    <div
+                                                        className='attachments-list'
+                                                        ref={scrollableContainer}
+                                                        onScroll={(e) => {
+                                                            e.preventDefault();
+                                                        }}
+                                                    id={`homework_student_question_container_${index}`}
+
+                                                    >
+                                                        {each?.question_files.map((url, i) => {
+                                                          
+                                                            return (
+                                                                <>
+                                                                    <div className='attachment'>
+                                                                        <Attachment
+                                                                            key={`homework_student_question_attachment_${i}`}
+                                                                            fileUrl={url}
+                                                                            fileName={`Attachment-${i + 1}`}
+                                                                            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                                                            index={i}
+                                                                            actions={['preview', 'download']}
+                                                                        />
+                                                                    </div>
+                                                                </>
+                                                            );
+                                                        })}
+                                                        <div
+                                                            style={{
+                                                                position: 'absolute',
+                                                                width: '0',
+                                                                height: '0',
+                                                                visibility: 'hidden',
+                                                            }}
+                                                        >
+                                                            <SRLWrapper>
+                                                                {each.question_files.map((url, i) => (
+                                                                    <img
+                                                                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                                                        onError={(e) => {
+                                                                            e.target.src = placeholder;
+                                                                        }}
+                                                                        alt={`Attachment-${i + 1}`}
+                                                                        style={{ width: '0', height: '0' }}
+                                                                    />
+                                                                ))}
+                                                            </SRLWrapper>
+                                                        </div>
+                                                    </div>
+                                                </SimpleReactLightbox>
+                                                <div className='next-btn'>
+                                                    <IconButton onClick={() => handleScroll(index,'right')}>
+                                                        <ArrowForwardIosIcon color='primary' />
+                                                    </IconButton>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {each?.evaluated_files?.length > 0 ?
+                                        <div className='attachments-container'>
+                                            <div className='col-md-8 my-2 p-2 th-14 th-fw-600 th-br-10' style={{ background: '#eef2f8', borderBottom: '1px solid grey' }} >
+                                                Evaluated Attachments
+                                            </div>
+                                            <div className='attachments-list-outer-container'>
+                                                <div className='prev-btn'>
+                                                    <IconButton onClick={() => handleScrollevaluated(index,'left')}>
+                                                        <ArrowBackIosIcon />
+                                                    </IconButton>
+                                                </div>
+                                                <SimpleReactLightbox>
+                                                    <div
+                                                        className='attachments-list'
+                                                        ref={scrollableContainerEvaluated}
+                                                        onScroll={(e) => {
+                                                            e.preventDefault();
+                                                        }}
+                                                    id={`homework_student_question_container_${index}`}
+
+                                                    >
+                                                        {each?.evaluated_files.map((url, i) => {
+                                                          
+                                                            return (
+                                                                <>
+                                                                    <div className='attachment'>
+                                                                        <Attachment
+                                                                            key={`homework_student_question_attachment_${i}`}
+                                                                            fileUrl={url}
+                                                                            fileName={`Attachment-${i + 1}`}
+                                                                            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                                                            index={i}
+                                                                            actions={['preview', 'download']}
+                                                                        />
+                                                                    </div>
+                                                                </>
+                                                            );
+                                                        })}
+                                                        <div
+                                                            style={{
+                                                                position: 'absolute',
+                                                                width: '0',
+                                                                height: '0',
+                                                                visibility: 'hidden',
+                                                            }}
+                                                        >
+                                                            <SRLWrapper>
+                                                                {each.evaluated_files.map((url, i) => (
+                                                                    <img
+                                                                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                                                        onError={(e) => {
+                                                                            e.target.src = placeholder;
+                                                                        }}
+                                                                        alt={`Attachment-${i + 1}`}
+                                                                        style={{ width: '0', height: '0' }}
+                                                                    />
+                                                                ))}
+                                                            </SRLWrapper>
+                                                        </div>
+                                                    </div>
+                                                </SimpleReactLightbox>
+                                                <div className='next-btn'>
+                                                    <IconButton onClick={() => handleScrollevaluated(index,'right')}>
+                                                        <ArrowForwardIosIcon color='primary' />
+                                                    </IconButton>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : ''}
+                                     
+
+                                        <div className='th-13 col-md-8 th-br-10' style={{ background: '#eef2f8' }} >
+                                            <div className='p-4 th-14 th-fw-600'>Remarks : {each.remark}</div>
+                                        </div>
+                                    <Divider />
+                                    </div>
+                                ))}
+                            </>
+                        )} */}
+                        <div>
+                        {homeworkSubmission.status === 3 ? 
+                        <div className='overallContainer1'>
+                            {isBulk ?
+                            <>
+                             {questionwiseRemark != '' && (
+                                <div className='scoreBox'>Teacher Remark : {questionwiseRemark}</div>
+                            )} 
+                            </> : '' }
+                        </div>: ''}
+                        </div>
 
                         <div className='overallContainer1'>
+                      
                             {homeworkSubmission.status === 3 ? (
                                 <>
                                     {overallScore != 0 && (
@@ -1569,7 +1747,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     )}
                                 </>
                             ) : null}
-                            <div style={{ width: '100%'  , display: 'flex' , justifyContent: 'flex-end' }}>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                                 {/* <div>
                                     <Button
                                         variant='contained'
@@ -1580,18 +1758,18 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
                                     </Button>
                                 </div> */}
-                                        
+
                                 {!isupdate && homeworkSubmission.status === 2 && (
                                     <Button
                                         variant='contained'
                                         type='secondary'
                                         onClick={onEdit}
-                                        style={{  width: '15%' }}
+                                        style={{ width: '15%' }}
                                     >
                                         Edit
                                     </Button>
                                 )}
-                               
+
                                 {homeworkSubmission.status === 2 && !isupdate && (
                                     <Button
                                         variant='contained'
@@ -1609,21 +1787,21 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     </Button>
                                 )}
                                 {homeworkSubmission.status === 1 && (
-                                <div>
+                                    <div>
 
-                                    <Button
-                                        variant='contained'
-                                        style={{ color: 'white' }}
-                                        onClick={handleHomeworkSubmit}
-                                        type='primary'
-                                        size='medium'
-                                        className='mx-2 '
-                                    >
-                                        {isupdate == true ? 'Update' :  'Submit' }
-                                    </Button> 
-                                   
-                                </div>
-                            )}
+                                        <Button
+                                            variant='contained'
+                                            style={{ color: 'white' }}
+                                            onClick={handleHomeworkSubmit}
+                                            type='primary'
+                                            size='medium'
+                                            className='mx-2 '
+                                        >
+                                            {isupdate == true ? 'Update' : 'Submit'}
+                                        </Button>
+
+                                    </div>
+                                )}
                                 <Dialog id={id} open={open} onClose={handleClose}>
                                     <DialogTitle id='draggable-dialog-title'>Delete</DialogTitle>
                                     <DialogContent>
@@ -1649,7 +1827,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     </DialogActions>
                                 </Dialog>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
