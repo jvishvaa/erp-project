@@ -16,6 +16,9 @@ const CurriculumTracker = (props) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const fetchCurriculumReport = (params = {}) => {
     setLoading(true);
@@ -42,6 +45,7 @@ const CurriculumTracker = (props) => {
     fetchCurriculumReport({
       acadsession_id: selectedBranch?.id,
       branch: selectedBranch?.branch?.id,
+      session_year: selectedAcademicYear?.session_year,
     });
   }, []);
   useEffect(() => {
@@ -129,11 +133,13 @@ const CurriculumTracker = (props) => {
                             strokeWidth='11'
                             percent={item?.completed_percentage}
                             strokeColor={
-                              item?.completed_percentage < 40
-                                ? '#F33434'
-                                : item?.completed_percentage <= 75
-                                ? '#F3A734'
-                                : '#2FC069'
+                              item?.completed_percentage !== 'N/A'
+                                ? item?.completed_percentage < 40
+                                  ? '#F33434'
+                                  : item?.completed_percentage <= 75
+                                  ? '#F3A734'
+                                  : '#2FC069'
+                                : '#f2f2f2'
                             }
                             width={40}
                             format={(percent) => (
@@ -150,7 +156,7 @@ const CurriculumTracker = (props) => {
                                       : '#10B479',
                                 }}
                               >
-                                {percent} %
+                                {percent !== 'N/A' ? `${percent} %` : 'N/A'}
                               </span>
                             )}
                           />
