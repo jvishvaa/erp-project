@@ -1,49 +1,23 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  IconButton,
-  Divider,
   TextField,
-  Button,
-  SvgIcon,
   makeStyles,
-  Typography,
-  Grid,
-  Breadcrumbs,
-  MenuItem,
-  TextareaAutosize,
-  Paper,
-  TableCell,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Table,
-  Drawer,
-  TablePagination,
   Switch,
-  FormControlLabel
+  FormControlLabel,
 } from '@material-ui/core';
-import Layout from 'containers/Layout';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Box from '@material-ui/core/Box';
 import { useTheme, withStyles } from '@material-ui/core/styles';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useHistory } from 'react-router-dom';
-import MyTinyEditor from 'containers/question-bank/create-question/tinymce-editor';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import RatingScale from './RatingScale';
 import './styles.scss';
-
+import {
+  CloseOutlined,
+  UserAddOutlined,
+} from '@ant-design/icons';
+import { Tag, Table as TableAnt, Button, message } from 'antd';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddIcon from '@material-ui/icons/Add';
-import Tab from '@material-ui/core/Tab';
-import TabContext from '@material-ui/lab/TabContext';
-import TabList from '@material-ui/lab/TabList';
-import StarsIcon from '@material-ui/icons/Stars';
 import Rating from '@material-ui/lab/Rating';
 import axios from 'axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -55,9 +29,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-import { Dict } from 'pdfjs-dist/build/pdf.worker';
-import UserInfo from 'components/user-info';
-
 
 const drawerWidth = 350;
 
@@ -94,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
     backgroundColor: `${theme.palette.primary.main} !important`,
   },
-  
+
   buttonColor1: {
     color: 'green !important',
     backgroundColor: 'white',
@@ -123,7 +94,6 @@ const useStyles = makeStyles((theme) => ({
   tableCells: {
     color: 'black !important',
     backgroundColor: '#F0FFFF !important',
-
   },
   vl: {
     borderLeft: `3px solid ${theme.palette.primary.main}`,
@@ -132,18 +102,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction='up' ref={ref} {...props} />;
 });
 
 const Shortlisted_1 = (props) => {
   const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = React.useState();
   const [month, setMonth] = React.useState('1');
   const [status, setStatus] = React.useState('');
-  const  ActivityId  = JSON.parse(localStorage.getItem('ActivityId')) || {};
+  const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
 
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
@@ -158,16 +128,16 @@ const Shortlisted_1 = (props) => {
   const [selectedSectionIds, setSelectedSectionIds] = useState('');
   const [value, setValue] = useState(0);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
-  const [totalCount,setTotalCount] = useState(0);
-  const [currentPage,setCurrentPage] = useState(1)
-  const [totalPages,setTotalPages] = useState(0);
-  const [limit,setLimit] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(10);
   const [isClicked, setIsClicked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [activityLevel,setActivityLevel] = useState('')
-  const [bookingId,setBookingId] = useState(null)
-  const [checked,setChecked] = useState(false);
+  const [activityLevel, setActivityLevel] = useState('');
+  const [bookingId, setBookingId] = useState(null);
+  const [checked, setChecked] = useState(false);
   const [userInform, setUserInform] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
@@ -214,10 +184,12 @@ const Shortlisted_1 = (props) => {
   }, [moduleId]);
 
   function getBranch(acadId) {
-    if(moduleId){
-      setLoading(true)
+    if (moduleId) {
+      setLoading(true);
       axiosInstance
-        .get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData((prev) => {
@@ -230,7 +202,6 @@ const Shortlisted_1 = (props) => {
           setLoading(false);
         })
         .catch((error) => {});
-
     }
   }
 
@@ -262,7 +233,7 @@ const Shortlisted_1 = (props) => {
   };
 
   function getGrade(acadId, branchId) {
-    setLoading(true)
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
@@ -276,7 +247,7 @@ const Shortlisted_1 = (props) => {
             };
           });
         }
-        setLoading(false)
+        setLoading(false);
       })
       .catch((error) => {});
   }
@@ -337,7 +308,6 @@ const Shortlisted_1 = (props) => {
       const selectedsecctionId = value.map((item) => item.section_id || []);
       // const selectedsecctionId = value?.section_id;
       const sectionid = value.map((item) => item.id || []);
-      // const sectionid = value?.id;
       setSectionId(sectionid);
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
@@ -349,14 +319,14 @@ const Shortlisted_1 = (props) => {
   };
 
   function callApi(api, key) {
-    setLoading(true)
+    setLoading(true);
     axiosInstance
       .get(api)
       .then((result) => {
         if (result.status === 200) {
           if (key === 'gradeList') {
             setGradeList(result.data.data || []);
-            setLoading(false)
+            setLoading(false);
           }
           if (key === 'section') {
             const selectAllObject = {
@@ -368,15 +338,15 @@ const Shortlisted_1 = (props) => {
             };
             const data = [selectAllObject, ...result?.data?.data];
             setSectionList(data);
-            setLoading(false)
+            setLoading(false);
           }
         } else {
-          setLoading(false)
+          setLoading(false);
           console.log('error', result.data.message);
         }
       })
       .catch((error) => {
-        setLoading(false)
+        setLoading(false);
         console.log(error);
       });
   }
@@ -468,14 +438,22 @@ const Shortlisted_1 = (props) => {
     history.push('/blog/blogview');
   };
   const getTotalSubmitted = () => {
-    if(props){
-      setLoading(true)
-      const branchIds = props.selectedBranch.map((obj) => obj.id);
-      const gradeIds = props.selectedGrade?.id
-  
+    if (props) {
+      setLoading(true);
+      // const branchIds = props.selectedBranch.map((obj) => obj.id);
+      // const gradeIds = props.selectedGrade?.id
+
       axios
         .get(
-          `${endpoints.newBlog.studentSideApi}?section_ids=null&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&branch_ids=${branchIds==""?null:branchIds}&grade_id=${gradeIds}&is_bookmarked=True&is_published=False&page=${currentPage}&page_size=${limit}`,
+          `${
+            endpoints.newBlog.studentSideApi
+          }?section_ids=null&user_id=null&activity_detail_id=${
+            ActivityId?.id
+          }&is_reviewed=True&branch_ids=${
+            props.selectedBranch?.id == '' ? null : props.selectedBranch?.id
+          }&grade_id=${
+            props?.selectedGrade
+          }&is_bookmarked=True&is_published=False&page=${currentPage}&page_size=${limit}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -485,121 +463,286 @@ const Shortlisted_1 = (props) => {
         .then((response) => {
           console.log(response, 'response');
           props.setFlag(false);
-          setTotalCount(response?.data?.count)
-          setTotalPages(response?.data?.page_size)
-          setCurrentPage(response?.data?.page)
-          setLimit(Number(limit))
-          setAlert('success', response?.data?.message)
+          setTotalCount(response?.data?.count);
+          setTotalPages(response?.data?.page_size);
+          setCurrentPage(response?.data?.page);
+          setLimit(Number(limit));
+          // setAlert('success', response?.data?.message);
           setTotalSubmitted(response?.data?.result);
-          setLoading(false)
+          setLoading(false);
         });
-
     }
   };
 
-  useEffect(()=>{
-    if(props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0){
-      setTotalSubmitted([])
+  useEffect(() => {
+    if (props.selectedBranch?.length === 0 || props.selectedGrade?.length === 0) {
+      setTotalSubmitted([]);
     }
-
-  },[props.selectedBranch, props.selectedGrade, props.flag])
+  }, [props.selectedBranch, props.selectedGrade, props.flag]);
 
   useEffect(() => {
-    if(props.flag){
+    if (props.flag) {
       getTotalSubmitted();
     }
   }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
 
-  const handlePagination = (event, page) =>{
+  const handlePagination = (event, page) => {
     setIsClicked(true);
     setCurrentPage(page);
-  }
+  };
 
-
-  const handlePublishMenu = (data) =>{
-    setUserInform(data?.booked_user)
-    setBookingId(data?.id)
-    handleClickOpen()
-
-  }
+  const handlePublishMenu = (data) => {
+    setUserInform(data?.booked_user);
+    setBookingId(data?.id);
+    handleClickOpen();
+  };
   const handleClickOpen = () => {
     setOpen(true);
   };
-
-
-
   const handleClickClose = () => {
     setOpen(false);
   };
 
   const handleClose = () => {
-    setActivityLevel('')
+    setActivityLevel('');
     setOpen(false);
   };
 
   const top100Films = [
-    {title:'Intra Orchids Level', id : 1},
-    {title:'Branch Level', id : 2},
-    {title:'Grade Level', id : 3},
-    {title:'Section Level', id : 4},
-  ]
+    { title: 'Intra Orchids Level', id: 1 },
+    { title: 'Branch Level', id: 2 },
+    { title: 'Grade Level', id: 3 },
+    { title: 'Section Level', id: 4 },
+  ];
 
+  const userDetails = [{ name: 'Sujit', erp_no: '23294293232' }];
 
-  const userDetails =[
-    {name:'Sujit', erp_no :'23294293232'},
-  ]
+  const handleLevelChange = (event, data) => {
+    setActivityLevel(data);
+  };
 
-  const handleLevelChange = (event,data) => {
-    setActivityLevel(data)
-  }
-
-  const handlePublish = (event,data) => {
-    setLoading(true)
-    if(!activityLevel){
-      setLoading(false)
-      setAlert('error', 'Please Select Level')
-      return
-    }else{
-      let requestData ={
-        "booking_id": bookingId,
-        "is_published": true,
-        "publish_level": activityLevel?.title,
-        "is_best_blog" : checked
-      }
+  const handlePublish = (event, data) => {
+    setLoading(true);
+    if (!activityLevel) {
+      setLoading(false);
+      message.error('Please Select Level')
+      return;
+    } else {
+      let requestData = {
+        booking_id: bookingId,
+        is_published: true,
+        publish_level: activityLevel?.title,
+        is_best_blog: checked,
+      };
       axios
-      .post(`${endpoints.newBlog.publishBlogWallApi}`, requestData ,{
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        }
-      })
-      .then((res) => {
-        if(res?.data?.status_code == 200) {
-          setLoading(false)
-          setAlert('success', res?.data?.message)
-          getTotalSubmitted()
+        .post(`${endpoints.newBlog.publishBlogWallApi}`, requestData, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            setLoading(false);
+            // setAlert('success', res?.data?.message);
+            getTotalSubmitted();
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          message.error('Server Error')
+        });
 
-        }
-      })
-      .catch((err) => {
-        setLoading(false)
-        setAlert('error',"Server Error")
-      })
-
-      setActivityLevel('')
+      setActivityLevel('');
     }
 
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
-  const handleChangeSwitch =(e) =>{
-    console.log(e.target.checked,'kp')
-    setChecked(e.target.checked)
-  }
+  const handleChangeSwitch = (e) => {
+    console.log(e.target.checked, 'kp');
+    setChecked(e.target.checked);
+  };
+
+  const columns = [
+    {
+      title: <span className='th-white th-fw-700'>SL No.</span>,
+      // dataIndex: 'lp_count',
+      align: 'center',
+      // width: '15%',
+      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Student's Name</span>,
+      // dataIndex: 'title',
+      align: 'center',
+      render: (text, row) => <span className='th-black-1'>{row?.booked_user?.name}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>ERP ID</span>,
+      // dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'>{row?.booked_user?.username}</span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Submission Date</span>,
+      // dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'>{row?.submitted_on?.substring(0, 10)}</span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Reviewed By</span>,
+      // dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => <span className='th-black-1'>{row?.reviewer}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Overall Score</span>,
+      // dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'>
+          <StyledRating
+            // name={`rating${index}`}
+            size='small'
+            readOnly
+            defaultValue={row?.user_reviews?.given_rating}
+            max={parseInt(row?.user_reviews?.level?.rating)}
+          />
+        </span>
+      ),
+    },
+    // {
+    //   title: <span className='th-white th-fw-700'>Status</span>,
+    //   // dataIndex: 'created_at',
+    //   align: 'center',
+    //   render: (text, row) => (
+    //     <span className='th-black-1'>
+    //       {row?.is_bookmarked == true ? <BookmarksIcon style={{ color: 'gray' }} /> : ''}
+    //     </span>
+    //   ),
+    // },
+    {
+      title: <span className='th-white th-fw-700'>Actions</span>,
+      dataIndex: '',
+      align: 'center',
+      width: '25%',
+      render: (text, row) => (
+        <div className='th-black-1'>
+          <Tag
+            icon={<UserAddOutlined className='th-14' />}
+            color='green'
+            className='th-br-5 th-pointer py-1'
+            disabled={userLevel == '11' || userLevel == '8' ? true : false}
+            onClick={() => handlePublishMenu(row)}
+          >
+            <span className='th-fw-500 th-14'>Publish</span>
+          </Tag>
+        </div>
+      ),
+    },
+  ];
 
   return (
-  <>
-  {loading && <Loader/>}
-    <Grid
+    <>
+      {loading && <Loader />}
+      <div className='col-12 px-0'>
+        <TableAnt
+          columns={columns}
+          dataSource={totalSubmitted}
+          className='th-table'
+          rowClassName={(record, index) =>
+            `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+          }
+          loading={loading}
+          pagination={false}
+          scroll={{ x: totalSubmitted.length > 0 ? 'max-content' : null, y: 600 }}
+        />
+      </div>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby='alert-dialog-slide-title'
+        aria-describedby='alert-dialog-slide-description'
+      >
+        <DialogTitle
+          style={{ display: 'flex', margin: 'auto' }}
+          id='alert-dialog-slide-title'
+        >
+          {'User Details'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-slide-description'>
+            <div>
+              <div>
+                <div>
+                  <p>Name : {userInform?.name}</p>
+                  <p>ERP : {userInform?.username}</p>
+                </div>
+              </div>
+              <div>
+                <Autocomplete
+                  size='small'
+                  id='combo-box-demo'
+                  options={top100Films || []}
+                  value={activityLevel || ''}
+                  onChange={handleLevelChange}
+                  getOptionLabel={(option) => option.title || ''}
+                  style={{ width: 300 }}
+                  filterSelectedOptions
+                  required
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size='small'
+                      label='Level'
+                      placeholder='Level'
+                      variant='outlined'
+                    />
+                  )}
+                />
+              </div>
+              <div>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={checked}
+                      onChange={handleChangeSwitch}
+                      value='bestBlog'
+                      color='primary'
+                    />
+                  }
+                  label='Best Blogs'
+                />
+              </div>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions style={{ display: 'flex', margin: 'auto' }}>
+          <Button
+            icon={<UserAddOutlined className='th-14' />}
+            type='primary'
+            onClick={handlePublish}
+          >
+            Publish
+          </Button>
+          <Button
+            icon={<CloseOutlined className='th-14' />}
+            type='primary'
+            variant='contained'
+            onClick={handleClose}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* <Grid
         container
         style={{
           display: 'flex',
@@ -620,7 +763,7 @@ const Shortlisted_1 = (props) => {
             Shortlisted({totalSubmitted?.length})
           </Button>
         </Grid>
-        <Grid item style={{fontSize:"16px"}}>
+        <Grid item style={{ fontSize: '16px' }}>
           <StarsIcon style={{ color: '#F7B519' }} /> Published
         </Grid>
       </Grid>
@@ -636,137 +779,138 @@ const Shortlisted_1 = (props) => {
                 </TableCell>
                 <TableCell className={classes.tableCell}>Student Name</TableCell>
                 <TableCell className={classes.tableCell}>ERP ID</TableCell>
-
-                {/* <TableCell className={classes.tableCell}>Grade</TableCell> */}
                 <TableCell className={classes.tableCell}>Submission Date</TableCell>
                 <TableCell className={classes.tableCell}>Reviewed By</TableCell>
                 <TableCell className={classes.tableCell}>Overall Score</TableCell>
                 <TableCell className={classes.tableCell}></TableCell>
-                <TableCell style={{width:"237px"}}className={classes.tableCell}>Action</TableCell>
+                <TableCell style={{ width: '237px' }} className={classes.tableCell}>
+                  Action
+                </TableCell>
               </TableRow>
             </TableHead>
-            {totalSubmitted?.map((response, index)=> (   
+            {totalSubmitted?.map((response, index) => (
+              <TableBody>
+                <TableRow hover role='checkbox' tabIndex={-1}>
+                  <TableCell className={classes.tableCells}>{index + 1}</TableCell>
+                  <TableCell className={classes.tableCells}>
+                    {response?.booked_user?.name}
+                  </TableCell>
+                  <TableCell className={classes.tableCells}>
+                    {response?.booked_user?.username}
+                  </TableCell>
+                  <TableCell className={classes.tableCells}>
+                    {response?.submitted_on.slice(0, 10)}
+                  </TableCell>
+                  <TableCell className={classes.tableCells}>
+                    {response?.reviewer}
+                  </TableCell>
+                  <TableCell className={classes.tableCells}>
+                    <Box component='fieldset' mb={3} borderColor='transparent'>
+                      <StyledRating
+                        name={`rating${index}`}
+                        size='small'
+                        readOnly
+                        precision={0.5}
+                        defaultValue={response?.user_reviews?.given_rating}
+                        max={parseInt(response?.user_reviews?.level?.rating)}
+                      />
+                    </Box>
+                  </TableCell>
+                  <TableCell className={classes.tableCells}>
+                    <StarsIcon style={{ color: '#F7B519' }} />
+                  </TableCell>
 
-            <TableBody>
-              <TableRow
-                hover
-                role='checkbox'
-                tabIndex={-1}
-                // key={`user_table_index${i}`}
-              >
-                <TableCell className={classes.tableCells}>{index+1}</TableCell>
-                <TableCell className={classes.tableCells}>{response?.booked_user?.name}</TableCell>
-
-                <TableCell className={classes.tableCells}>{response?.booked_user?.username}</TableCell>
-                {/* <TableCell className={classes.tableCells}>Grade 1</TableCell> */}
-                <TableCell className={classes.tableCells}>{response?.submitted_on.slice(0,10)}</TableCell>
-                <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell>
-                <TableCell className={classes.tableCells}>
-                  {' '}
-                  <Box component='fieldset' mb={3} borderColor='transparent'>
-                  
-                    <StyledRating
-                            name={`rating${index}`}
-                            size='small'
-                            readOnly
-                            precision={0.5}
-                            // rating={response?.user_reviews?.given_rating}
-                            defaultValue={response?.user_reviews?.given_rating}
-                            max={parseInt(response?.user_reviews?.level?.rating)}
-                            // defaultValue={props.defaultValue}
-                           
-                            
-                          />
-                  </Box>
-                </TableCell>
-                <TableCell className={classes.tableCells}>
-                  <StarsIcon style={{ color: '#F7B519' }} />
-                </TableCell>
-
-                <TableCell className={classes.tableCells}>
-                  {/* <Button
-                    variant='outlined'
-                    size='small'
-                    className={classes.buttonColor2}
-                  >
-                    Publish
-                  </Button>{' '} */}
-                  <Button variant="outlined" className={(userLevel == '11' || userLevel == '8') ? classes.buttonDisable : classes.buttonColor2} disabled={(userLevel == '11' || userLevel == '8') ? true : false} onClick ={() => handlePublishMenu(response)} >
-                    Publish
-                  </Button>
-                  &nbsp;
-                  <Dialog
+                  <TableCell className={classes.tableCells}>
+                    <Button
+                      variant='outlined'
+                      className={
+                        userLevel == '11' || userLevel == '8'
+                          ? classes.buttonDisable
+                          : classes.buttonColor2
+                      }
+                      disabled={userLevel == '11' || userLevel == '8' ? true : false}
+                      onClick={() => handlePublishMenu(response)}
+                    >
+                      Publish
+                    </Button>
+                    &nbsp;
+                    <Dialog
                       open={open}
                       TransitionComponent={Transition}
                       keepMounted
                       onClose={handleClose}
-                      aria-labelledby="alert-dialog-slide-title"
-                      aria-describedby="alert-dialog-slide-description"
+                      aria-labelledby='alert-dialog-slide-title'
+                      aria-describedby='alert-dialog-slide-description'
                     >
-                      <DialogTitle style={{display:'flex', margin:'auto'}} id="alert-dialog-slide-title">{"User Details"}</DialogTitle>
+                      <DialogTitle
+                        style={{ display: 'flex', margin: 'auto' }}
+                        id='alert-dialog-slide-title'
+                      >
+                        {'User Details'}
+                      </DialogTitle>
                       <DialogContent>
-                        <DialogContentText id="alert-dialog-slide-description">
+                        <DialogContentText id='alert-dialog-slide-description'>
                           <div>
                             <div>
-
-                                {/* {userInform.map((event,index) => { */}
-                                  {/* return( */}
-                                <div> 
-                                  <p>Name : {userInform?.name}</p>
-                                  <p>ERP : {userInform?.username}</p>
-                                </div>
+                              <div>
+                                <p>Name : {userInform?.name}</p>
+                                <p>ERP : {userInform?.username}</p>
+                              </div>
                             </div>
                             <div>
-                            <Autocomplete
-                              size="small"
-                              id="combo-box-demo"
-                              options={top100Films || []}
-                              value={activityLevel || ''}
-                              onChange={handleLevelChange}
-                              getOptionLabel={(option) => option.title || ''}
-                              style={{ width: 300 }}
-                              filterSelectedOptions
-                              required
-                              renderInput={(params) => <TextField {...params} size='small' label="Level" placeholder='Level' variant="outlined" />}
-                            />
+                              <Autocomplete
+                                size='small'
+                                id='combo-box-demo'
+                                options={top100Films || []}
+                                value={activityLevel || ''}
+                                onChange={handleLevelChange}
+                                getOptionLabel={(option) => option.title || ''}
+                                style={{ width: 300 }}
+                                filterSelectedOptions
+                                required
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    size='small'
+                                    label='Level'
+                                    placeholder='Level'
+                                    variant='outlined'
+                                  />
+                                )}
+                              />
                             </div>
                             <div>
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  checked={checked}
-                                  onChange={handleChangeSwitch}
-                                  value='bestBlog'
-                                  color='primary'
-                                />
-                              }
-                              label='Best Blogs'
-                            />
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={checked}
+                                    onChange={handleChangeSwitch}
+                                    value='bestBlog'
+                                    color='primary'
+                                  />
+                                }
+                                label='Best Blogs'
+                              />
                             </div>
-
                           </div>
                         </DialogContentText>
                       </DialogContent>
-                      <DialogActions style={{display:'flex', margin: 'auto'}}>
-                        <Button onClick={handlePublish} color="primary" variant="contained">
+                      <DialogActions style={{ display: 'flex', margin: 'auto' }}>
+                        <Button
+                          onClick={handlePublish}
+                          color='primary'
+                          variant='contained'
+                        >
                           Publish
                         </Button>
-                        <Button variant="contained" color="primary" onClick={handleClose}>
-                            Close
+                        <Button variant='contained' color='primary' onClick={handleClose}>
+                          Close
                         </Button>
                       </DialogActions>
                     </Dialog>
-                  {/* <Button
-                    variant='outlined'
-                    size='small'
-                    className={classes.buttonColor1}
-                    
-                  >
-                    Check Review{' '}
-                  </Button>{' '} */}
-                </TableCell>
-              </TableRow>
-            </TableBody>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
             ))}
           </Table>
           <TablePagination
@@ -775,7 +919,7 @@ const Shortlisted_1 = (props) => {
             rowsPerPage={limit}
             page={Number(currentPage) - 1}
             onChangePage={(e, page) => {
-            handlePagination(e, page);
+              handlePagination(e, page);
             }}
             rowsPerPageOptions={false}
             className='table-pagination'
@@ -785,7 +929,8 @@ const Shortlisted_1 = (props) => {
             }}
           />
         </TableContainer>
-      </Paper>
-  </>);
+      </Paper> */}
+    </>
+  );
 };
 export default Shortlisted_1;

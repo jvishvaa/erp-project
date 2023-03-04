@@ -120,14 +120,16 @@ const Diary = () => {
       <div className='row pt-2'>
         <div className='col-12 px-md-4'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-grey'>Diary</Breadcrumb.Item>
+            <Breadcrumb.Item href='/dashboard' className='th-grey'>
+              Dashboard
+            </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1'>View Diary</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className='col-12 py-2'>
           <div className='row th-bg-white py-2'>
             <div className='row p-2 '>
-              <div className='col-md-2'>
+              <div className='col-sm-3 col-lg-2 col-6'>
                 <DatePicker
                   className='th-br-6 th-date-picker w-100'
                   disabledDate={(current) => current.isAfter(moment())}
@@ -140,7 +142,7 @@ const Diary = () => {
                 />
               </div>
               {!isStudentDiary && (
-                <div className='col-md-2'>
+                <div className='col-sm-3 col-lg-2 col-6'>
                   <Button
                     type='primary'
                     className='th-br-6 th-bg-primary th-pointer th-white'
@@ -154,27 +156,29 @@ const Diary = () => {
                     }
                     block
                   >
-                    <PlusOutlined className='ml-2' />
+                    <PlusOutlined className='' />
                     Create Diary
                   </Button>
                 </div>
               )}
-              <div className='col-md-8 text-right'>
-                <div className='row justify-content-end'>
+              <div className='col-md-6 col-lg-8 col-12 text-right'>
+                <div className='row justify-content-end align-items-center'>
                   {!isStudentDiary && (
-                    <div className='col-md-4 pr-0'>
-                      <div
-                        className='th-br-6 th-primary th-pointer'
-                        onClick={() =>
-                          history.push({
-                            pathname: '/create/diary',
-                            state: {
-                              isSubstituteDiary: true,
-                            },
-                          })
-                        }
-                      >
-                        <u>Create Substitute Diary</u>
+                    <div className='col-12 pr-0'>
+                      <div className='th-br-6 th-primary'>
+                        <u
+                          className='th-pointer'
+                          onClick={() =>
+                            history.push({
+                              pathname: '/create/diary',
+                              state: {
+                                isSubstituteDiary: true,
+                              },
+                            })
+                          }
+                        >
+                          Create Substitute Diary
+                        </u>
                       </div>
                     </div>
                   )}
@@ -187,7 +191,7 @@ const Diary = () => {
                   <>
                     {dailyDiaryData.length > 1 && (
                       <>
-                        <div className='col-md-2 col-6'>
+                        <div className='col-sm-3 col-lg-2 col-6'>
                           <Button
                             className={`${
                               selectedSubject == '' ? 'th-button-active' : 'th-button'
@@ -200,7 +204,7 @@ const Diary = () => {
                       </>
                     )}
                     {dailyDiaryData?.slice(0, showSubjectsCount).map((item, i) => (
-                      <div className='col-md-2 col-6'>
+                      <div className='col-sm-3 col-lg-2 col-6'>
                         <Button
                           className={`${
                             item?.subject_id == selectedSubject
@@ -267,7 +271,10 @@ const Diary = () => {
                     ) : dailyDiaryData.length > 0 ? (
                       <div
                         className='col-12 px-0'
-                        style={{ maxHeight: 400, overflowY: 'scroll' }}
+                        style={{
+                          maxHeight: 400,
+                          overflowY: 'scroll',
+                        }}
                       >
                         {isStudentDiary ? (
                           <div
@@ -313,7 +320,7 @@ const Diary = () => {
                                     </Divider>
                                     {each?.grade_data?.map((item) => {
                                       return (
-                                        <div className='col-md-4 mb-2 pl-0'>
+                                        <div className='col-md-6 col-lg-4 mb-2 pl-0'>
                                           <DailyDiaryCard
                                             diary={item}
                                             subject={each}
@@ -343,7 +350,7 @@ const Diary = () => {
                       </div>
                     ) : generalDiaryList.length > 0 ? (
                       generalDiaryList.map((diary, i) => (
-                        <div className='col-md-4 mb-2 pl-0'>
+                        <div className='col-md-6 col-lg-4 mb-2 pl-0'>
                           <GeneralDiaryCard
                             diary={diary}
                             showTab={showTab}

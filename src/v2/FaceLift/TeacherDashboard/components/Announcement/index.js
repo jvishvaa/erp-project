@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react';
 import AnnouncementCard from 'v2/FaceLift/myComponents/AnnouncementCards';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getSortedAnnouncements } from 'v2/generalAnnouncementFunctions';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/noAnnouncementIcon.svg';
+import DetailsModal from 'v2/FaceLift/Announcement/announcementList/DetailsModal';
 
 const Announcements = (props) => {
   const history = useHistory();
   const [announcementData, setAnnouncementData] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [currentAnnouncement, setCurrentAnnouncement] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -18,16 +20,17 @@ const Announcements = (props) => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   const fetchAnnouncementData = (params = {}) => {
     axios
       .get(`${endpoints.adminDashboard.announcements}`, {
         params: { ...params },
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
       })
       .then((response) => {
-        if (response.status === 200) {
+        if (response.data.status_code === 200) {
           setAnnouncementData(response?.data?.data);
         }
       })
@@ -45,12 +48,12 @@ const Announcements = (props) => {
   }, [selectedAcademicYear]);
 
   return (
-    <div className='th-bg-white th-br-5 py-3 mt-3 px-2 shadow-sm'>
-      <div className='col-md-12 mt-2 pb-2 th-black-1 th-16 th-fw-400 '>
+    <div className='th-bg-white th-br-5 py-3 mt-3 px-2 shadow-sm mb-2'>
+      <div className='col-md-12 mt-2 pb-2 th-black-1 th-16 th-fw-500 '>
         <span className=''>Announcements </span>
       </div>
       <div
-        className='col-md-12 mt-2 mb-1'
+        className='col-md-12 my-2 th-custom-scrollbar'
         style={{
           height: props?.scrollHeight,
           overflowY: 'auto',
@@ -62,7 +65,14 @@ const Announcements = (props) => {
               <div className='th-14 th-fw-500 th-black-1 th-lh-20'>
                 {item?.date}
                 {item?.events.map((item) => (
-                  <AnnouncementCard data={item} />
+                  <div
+                    onClick={() => {
+                      setShowModal(true);
+                      setCurrentAnnouncement(item);
+                    }}
+                  >
+                    <AnnouncementCard data={item} />
+                  </div>
                 ))}
               </div>
             );
@@ -73,17 +83,28 @@ const Announcements = (props) => {
           </div>
         )}
       </div>
-      <div className='col-md-12 mt-1 text-right'>
+      <div className='col-md-12 pt-1 text-right'>
         <div className='th-primary'>
           {announcementListData?.length > 0 ? (
-            <u className='th-pointer' onClick={() => history.push('./announcement-list')}>
-              {'View All >'}
-            </u>
+            <div
+              onClick={() => history.push('./announcement-list')}
+              className='th-black-1 th-bg-grey p-2 th-br-8 badge th-pointer'
+              style={{ outline: '1px solid #d9d9d9' }}
+            >
+              View All
+            </div>
           ) : (
             <span> &nbsp;</span>
           )}
         </div>
       </div>
+      {showModal && (
+        <DetailsModal
+          data={currentAnnouncement}
+          show={showModal}
+          handleClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };

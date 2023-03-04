@@ -67,7 +67,8 @@ function ContactNumber() {
 
 const Footer = () => {
   const isV2 = IsV2Checker();
-  const [version, setVersion] = useState();
+  const appVersion = JSON.parse(sessionStorage.getItem('app_version'));
+  const version = isV2 ? appVersion?.v2 : appVersion?.v1;
   const fetchVersion = () => {
     axios
       .get(`${endpoints.appVersion}`, {
@@ -77,11 +78,7 @@ const Footer = () => {
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          if (isV2) {
-            setVersion(result?.data?.result?.v2);
-          } else {
-            setVersion(result?.data?.result?.v1);
-          }
+          sessionStorage.setItem('app_version', JSON.stringify(result?.data?.result));
         }
       })
       .catch((error) => {
@@ -89,8 +86,8 @@ const Footer = () => {
       });
   };
   useEffect(() => {
-    fetchVersion();
-  }, []);
+    if (!appVersion) fetchVersion();
+  }, [appVersion]);
   return (
     <Box p={2} width='auto'>
       <Copyright />

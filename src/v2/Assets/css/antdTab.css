@@ -142,3 +142,12 @@
 .th-tabs .ant-tabs-nav-wrap {
   background: #f8f8f8 !important;
 }
+.th-activity-tabs {
+  margin-top: -50px;
+}
+.th-activity-tabs .ant-tabs-nav-wrap {
+  background: #fff !important;
+}
+.th-activity-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  z-index: 5;
+}

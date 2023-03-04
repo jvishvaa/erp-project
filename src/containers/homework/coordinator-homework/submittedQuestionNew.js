@@ -8,6 +8,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
+import { Input } from 'antd';
 
 import Attachment from './attachment';
 import endpoints from '../../../config/endpoints';
@@ -15,6 +16,8 @@ import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { IconButton } from '@material-ui/core';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { Button } from 'antd';
+const { TextArea } = Input;
+
 
 const SubmittedQuestionNew = ({
   question,
@@ -30,6 +33,7 @@ const SubmittedQuestionNew = ({
   remark,
   comment,
   alreadyCorrectedQuestions,
+  selectedHomeworkDetails
 }) => {
   const scrollableContainer = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -42,6 +46,7 @@ const SubmittedQuestionNew = ({
      
     }
   };
+  console.log(question , 'ques');
   useEffect(() => {
     // if(scrollableContainer.current.offsetWidth > = )
    
@@ -89,9 +94,83 @@ const SubmittedQuestionNew = ({
 
       </div>
       </div>
+      {/* teacher Attachment */}
+      {selectedHomeworkDetails?.hw_questions[activeQuestion -1]?.question_files?.length > 0 ? 
       <div className='attachments-container'>
         <div className='col-md-8 my-2 p-2 th-14 th-fw-600 th-br-10' style={{background: '#eef2f8' , borderBottom: '1px solid grey'}} >
-          Attachments
+          Teacher Attachments
+        </div>
+        <div className='attachments-list-outer-container'>
+          <div className='prev-btn'>
+            <IconButton onClick={() => handleScroll('left')}>
+              <ArrowBackIosIcon />
+            </IconButton>
+          </div>
+          <SimpleReactLightbox>
+            <div
+              className='attachments-list'
+              ref={scrollableContainer}
+              onScroll={(e) => {
+                e.preventDefault();
+              }}
+            >
+              {selectedHomeworkDetails?.hw_questions[activeQuestion -1]?.question_files?.map((url, i) => {
+                const actions = ['preview', 'download'];
+                if (!alreadyCorrectedQuestions.includes(url)) {
+                  actions.push('pentool');
+                }
+                return (
+                  <>
+                    <div className='attachment'>
+                      <Attachment
+                        key={`homework_student_question_attachment_${i}`}
+                        fileUrl={url}
+                        fileName={`Attachment-${i + 1}`}
+                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                        index={i}
+                        actions={['preview', 'download']}
+                        onOpenInPenTool={onOpenInPenTool}
+                      />
+                    </div>
+                  </>
+                );
+              })}
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '0',
+                  height: '0',
+                  visibility: 'hidden',
+                }}
+              >
+                <SRLWrapper>
+                  {question.submitted_files.map((url, i) => (
+                    <img
+                      src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                      onError={(e) => {
+                        e.target.src = placeholder;
+                      }}
+                      alt={`Attachment-${i + 1}`}
+                      style={{ width: '0', height: '0' }}
+                    />
+                  ))}
+                </SRLWrapper>
+              </div>
+            </div>
+          </SimpleReactLightbox>
+          <div className='next-btn'>
+            <IconButton onClick={() => handleScroll('right')}>
+              <ArrowForwardIosIcon color='primary' />
+            </IconButton>
+          </div>
+        </div>
+      </div>
+      : '' }
+
+      {/* student attachment */}
+      <div className='attachments-container'>
+        <div className='col-md-8 my-2 p-2 th-14 th-fw-600 th-br-10' style={{background: '#eef2f8' , borderBottom: '1px solid grey'}} >
+          Student Attachments
         </div>
         <div className='attachments-list-outer-container'>
           <div className='prev-btn'>
@@ -251,6 +330,10 @@ const SubmittedQuestionNew = ({
           </div>
         </div>
       )}
+      <div className='my-2 item col-md-6 p-0'>
+            <p className='th-grey'>Student Comment</p>
+            <Input placeholder="Student Comment" disabled value={question?.student_comment} />
+      </div>
       <div className='comments-remarks-container' style={{ display: 'flex' }}>
         {/* <div className='item comment'>
           <FormControl variant='outlined' fullWidth size='small'>
@@ -270,7 +353,7 @@ const SubmittedQuestionNew = ({
         </div> */}
         <div className='item'>
           <FormControl variant='outlined' fullWidth size='small'>
-            <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
+            <InputLabel >Remarks</InputLabel>
             <OutlinedInput
               id='remarks'
               name='remarks'
@@ -280,7 +363,7 @@ const SubmittedQuestionNew = ({
               rowsMax={4}
               label='Remarks'
               value={remark}
-              onChange={(e) => onChangeQuestionsState('remarks', e.target.value)}
+              onChange={(e) => onChangeQuestionsState('remark', e.target.value)}
             />
           </FormControl>
         </div>

@@ -1,931 +1,238 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import RatingScale from './RatingScale';
-import Loader from 'components/loader/loader';
-
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-import './styles.scss';
-
-import {
-  IconButton,
-  Divider,
-  TextField,
-  Button,
-  makeStyles,
-  Grid,
-  Paper,
-  TableCell,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Table,
-  Drawer,
-} from '@material-ui/core';
-import {
-  Table as TableAnt,
-  Breadcrumb as Breadcrumb
-} from 'antd';
-
-import Layout from 'containers/Layout';
-
-import { withStyles } from '@material-ui/core/styles';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import './images.css';
-
-import './styles.scss';
-
-import endpoints from '../../config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
+import Layout from 'containers/Layout';
+import endpoints from '../../config/endpoints';
+import { CloseOutlined, PieChartOutlined } from '@ant-design/icons';
+import { Breadcrumb, Table, Tag, Drawer, Space } from 'antd';
 import moment from 'moment';
-import { Rating } from '@material-ui/lab';
-import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
-import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
-
-const DEFAULT_RATING = 0;
-
-const StyledRating = withStyles(() => ({
-  iconFilled: {
-    color: '#E1C71D',
-  },
-  root: {
-    '& .MuiSvgIcon-root': {
-      color: 'currentColor',
-    },
-  },
-  iconHover: {
-    color: 'yellow',
-  },
-}))(Rating);
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: '90vw',
-    width: '95%',
-    margin: '20px auto',
-    marginTop: theme.spacing(4),
-    boxShadow: 'none',
-  },
-  searchTable: {
-    fontSize: '12px',
-    whiteSpace: 'nowrap',
-  },
-  divider: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
-  dividerColor: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
-  },
-  card: {
-    maxWidth: '100%',
-  },
-  media: {
-    height: 240,
-    objectFit: 'cover',
-    width: '45%'
-  },
-  container: {
-    maxHeight: '70vh',
-    maxWidth: '90vw',
-  },
-  columnHeader: {
-    color: `${theme.palette.secondary.main} !important`,
-    fontWeight: 600,
-    fontSize: '1rem',
-    backgroundColor: `#ffffff !important`,
-  },
-
-  customTabRoot: {
-    color: 'red',
-    backgroundColor: 'green',
-  },
-  customTabIndicator: {
-    backgroundColor: 'orange',
-  },
-  cardcontent: {
-    padding: 0,
-    '&:last-child': {
-      paddingBottom: 0,
-    },
-  },
-
-  tableCell: {
-    color: 'black !important',
-    backgroundColor: '#ADD8E6 !important',
-  },
-  tableCells: {
-    color: 'black !important',
-    backgroundColor: '#F0FFFF !important',
-  },
-  vl: {
-    borderLeft: `3px solid ${theme.palette.primary.main}`,
-    height: '45px',
-  },
-  buttonColor: {
-    color: `${theme.palette.primary.main} !important`,
-    // backgroundColor: 'white',
-  },
-  tabStyle: {
-    color: 'white !important',
-    backgroundColor: `${theme.palette.primary.main} !important`,
-  },
-  tabStatic: {
-    position: 'static',
-    paddingLeft: '19px',
-    paddingRight: '39px',
-    paddingTop: '36px',
-  },
-  buttonColor1: {
-    color: 'grey !important',
-    backgroundColor: 'white',
-  },
-  buttonColor2: {
-    color: `${theme.palette.primary.main} !important`,
-    backgroundColor: 'white',
-  },
-  selected1: {
-    background: `${theme.palette.primary.main} !important`,
-    color: 'white !important',
-    borderRadius: '4px',
-  },
-  selected2: {
-    background: `${theme.palette.primary.main} !important`,
-    color: 'white !important',
-    borderRadius: '4px',
-  },
-  tabsFont: {
-    '& .MuiTab-wrapper': {
-      color: 'white',
-      fontWeight: 'bold',
-    },
-  },
-  tabsFont1: {
-    '& .MuiTab-wrapper': {
-      color: 'black',
-      fontWeight: 'bold',
-    },
-  },
-  rating: {
-    '& .MuiRating-sizeLarge': {
-      fontSize: '5px !important',
-    },
-  },
-  dialogue: {
-    width: '750px !important',
-
-  }
-}));
-
-
-
-const columns = [
-  {
-    title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
-    width: '75%',
-    align: 'left',
-    render: (text, row) => {
-      return (
-        row.criterion
-      )
-
-    }
-  },
-  {
-    title: <span className='th-white th-fw-600'>Remarks</span>,
-    width: '25%',
-    align: 'center',
-    render: (text, row) => (
-      row?.levels?.filter((item) => item.status == true)[0].name
-    )
-  },
-];
-
-const PublicSpeakingWall = () => {
-  const classes = useStyles();
+const StudentSidePublicSpeaking = () => {
+  const userIdLocal = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
   const history = useHistory();
-  const User_id = JSON.parse(localStorage.getItem('ActivityManagementSession'))?.user_id;
-  let data = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const token = data?.token;
-  const [moduleId, setModuleId] = useState();
-  const [month, setMonth] = useState('1');
-  const [status, setStatus] = useState('');
-  const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
-
-  const [selectedBranch, setSelectedBranch] = useState([]);
-  const [selectedBranchIds, setSelectedBranchIds] = useState('');
-  const [gradeList, setGradeList] = useState([]);
-  const [selectedGrade, setSelectedGrade] = useState([]);
-  const [selectedGradeIds, setSelectedGradeIds] = useState('');
-  const [sectionId, setSectionId] = useState('');
-  const [sectionList, setSectionList] = useState([]);
-  const [selectedSection, setSelectedSection] = useState([]);
-  const [selectedSectionIds, setSelectedSectionIds] = useState('');
-  const [drawer, setDrawer] = useState(false);
-  const [drawers, setDrawers] = useState(false);
-  const [value, setValue] = useState(0);
-  const [values, setValues] = useState();
-  const [publish, setPublish] = useState(false);
-  const [ratingReview, setRatingReview] = useState([]);
-  const [readMore, setReadMore] = useState(true)
-  const [flag, setFlag] = useState(false)
-  const [currentDate, setCurrentDate] = useState('')
-  const [userData, setUserData] = useState()
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1)
-  const [totalPage, setTotalPage] = useState(0);
-  const [open, setOpen] = React.useState(false);
-  const [totalPublicSpeaking, setTotalPublicSpeaking] = useState([]);
-  const [videoDetails, setVideoDetails] = useState([]);
-  const [videoData, setVideoData] = useState('')
-  const [marksData, setMarksData] = useState([]);
-  const { setAlert } = useContext(AlertNotificationContext);
-  const [totalPublish, setTotalPublish] = useState([]);
+  const [publicSpeakingList, setPublicSpeakingList] = useState([]);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState(null);
 
-
-
-  const [maxWidth, setMaxWidth] = React.useState('lg');
-
-  function handleTab(event, newValue) {
-    setValue(newValue);
-  }
-  const [submit, setSubmit] = useState(false);
-
-
-  let array = [];
-  const expandMore = () => {
-    setSubmit(false);
+  const handleCloseDrawer = () => {
+    setShowDrawer(false);
+    setSelectedActivity(null);
+    setMediaFiles(null);
   };
-  const getActivitySession = () => {
-    setLoading(true)
+  const fetchPublicSpeakingList = (params = {}) => {
+    setLoading(true);
     axios
-      .post(
-        `${endpoints.newBlog.activitySessionLogin}`,
-        {},
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-            Authorization: `${token}`,
-          },
-        }
-      )
+      .get(`${endpoints.newBlog.studentPublicSpeakingApi}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((response) => {
-        console.log(response, 'session');
-        localStorage.setItem(
-          'ActivityManagementSession',
-          JSON.stringify(response?.data?.result)
-        );
-        setLoading(false)
+        console.log('response', response);
+        if (response?.data?.status_code === 200) {
+          setPublicSpeakingList(response?.data?.result);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
       });
   };
 
-  const [assinged, setAssigned] = useState([]);
-
   useEffect(() => {
-    // getAssinged()
-    getTotalPublicSpeaking()
-  }, [page])
+    fetchPublicSpeakingList({
+      user_id: userIdLocal?.id,
+    });
+  }, []);
+  const handleShowReview = (data) => {
+    let rating = JSON.parse(data?.grading?.grade_scheme_markings);
+    fetchMedia({ asset_id: data?.asset?.id });
+    setShowDrawer(true);
+    setSelectedActivity(rating);
+  };
 
-  const getAssinged = async () => {
-    setLoading(true)
-
+  const fetchMedia = (params = {}) => {
     axios
-      .get(
-        `${endpoints.newBlog.Assign}?section_ids=null&user_id=${User_id}&is_draft=false&page_size=${12}&page=${page}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
+      .get(`${endpoints.newBlog.studentPSContentApi}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((response) => {
-        var today = new Date().toISOString();
-        const output = today?.slice(0, 19);
-        setCurrentDate(output)
-        setAssigned(response?.data?.result);
-        setPage(response?.data?.page)
-        setTotalPage(response?.data?.total)
-        setLoading(false)
-
+        if (response.data?.status_code === 200) {
+          setMediaFiles(response?.data?.result);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
       });
   };
-
-
-  const [totalSubmitted, setTotalSubmitted] = useState([]);
-  const [totalReview, setTotalReview] = useState([]);
-
-
-
-  const getTotalPublicSpeaking = async () => {
-    if (User_id) {
-      setLoading(true)
-      axios
-        .get(
-          `${endpoints.newBlog.studentPublicSpeakingApi}?user_id=${User_id}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response, 'response');
-          setTotalPublicSpeaking(response?.data?.result)
-          setLoading(false);
-        });
-    }
-  };
-
-
-
-  useEffect(() => {
-    if (userData)
-      getAssinged();
-  }, [value, userData]);
-  const [view, setView] = useState(false);
-  const [previewData, setPreviewData] = useState();
-  const [imageData, setImageData] = useState('')
-  const handleCloseViewMore = () => {
-    setView(false);
-  };
-
-  const handleInputCreativity = (event, index) => {
-    console.log(index, 'text');
-
-    let arr = [...ratingReview];
-    arr[index].remarks = event.target.value;
-    setRatingReview(arr);
-  };
-  const handleInputCreativityOne = (event, newValue, index) => {
-    console.log(index, newValue, 'event');
-    let arr = [...ratingReview];
-    arr[index].given_rating = event.target.value;
-    setRatingReview(arr);
-  };
-
-
-  const handleClose = () => {
-    setView(false);
-  }
-
-  const handleClickOpen = (e) => {
-    if (e?.asset?.state == "processed") {
-      let data = JSON.parse(e?.grading?.grade_scheme_markings)
-      setMarksData(data)
-      axios
-        .get(
-          `${endpoints.newBlog.studentPSContentApi}?asset_id=${e?.asset?.id}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response, 'response 1');
-          setVideoDetails(response?.data?.result)
-          setVideoData(response?.data?.result?.signed_URL)
-          setLoading(false);
-          setOpen(true);
-        });
-      return
-    } else if (e?.asset == null) {
-      setAlert('error', 'Student Not Yet Submitted !')
-      return
-
-    } else {
-      setAlert('error', 'Student Not Yet Submitted')
-      return
-
-    }
-
-
-
-  };
-
-  const handleGoBack = () => {
-    history.goBack()
-  }
-
-
-  const handleCloseDialog = () => {
-    setOpen(false);
-  };
-
-
-
+  const columns = [
+    {
+      title: <span className='th-white th-fw-700'>SL No.</span>,
+      align: 'center',
+      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Title</span>,
+      align: 'center',
+      render: (text, row, index) => (
+        <span className='th-black-1'>{row?.group?.activity?.name}</span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Submitted On</span>,
+      dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'>
+          {moment(row?.scheduled_time).format('DD-MM-YYYY')}
+        </span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Actions</span>,
+      dataIndex: '',
+      align: 'center',
+      width: '25%',
+      render: (text, row) => (
+        <div className='th-black-1 d-flex justify-content-around'>
+          <Tag
+            icon={<PieChartOutlined className='th-14' />}
+            color='geekblue'
+            className='th-br-5 th-pointer py-1'
+            onClick={() => handleShowReview(row)}
+          >
+            <span className='th-fw-500 th-14'>Check Review</span>
+          </Tag>
+        </div>
+      ),
+    },
+  ];
+  const columnMarks = [
+    {
+      title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
+      align: 'left',
+      render: (text, row) => {
+        return row.criterion;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-600'>Remarks</span>,
+      align: 'center',
+      render: (text, row) => row?.levels?.filter((item) => item.status == true)[0].name,
+    },
+  ];
 
   return (
-
     <div>
-      {loading && <Loader />}
       <Layout>
-        <div className='layout-container-div ebookscroll' style={{
-          // background: 'white',
-          height: '90vh',
-          overflowX: 'hidden',
-          overflowY: 'scroll',
-        }}>
-          <Grid
-            container
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              paddingLeft: '22px',
-              paddingRight: '15px',
-              paddingBottom: '15px',
-            }}
-          >
-            <Grid item xs={4} md={4} style={{ display: 'flex', alignItems: 'center' }}>
-              <div>
-                <IconButton aria-label="back" onClick={handleGoBack}>
-                  <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
-                </IconButton>
-              </div>
+        <div className='px-3'>
+          <div className='row align-items-center'>
+            <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
-                <Breadcrumb.Item href='/blog/wall/redirect' className='th-grey th-16'>
-                  My Blogs
+                <Breadcrumb.Item
+                  onClick={() => history.goBack()}
+                  className='th-grey th-pointer th-16'
+                >
+                  Activities Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href='' className='th-grey th-16'>
+                <Breadcrumb.Item className='th-black th-16'>
                   Public Speaking
                 </Breadcrumb.Item>
               </Breadcrumb>
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item md={12} xs={12} className={classes.tabStatic}>
-              <Tabs
-                onChange={handleTab}
-                textColor='primary'
-                indicatorColor='primary'
-                // className={ classes.tabsFont}
-                value={value}
-              >
-                <Tab
-                  label='Public Speaking'
-                  classes={{
-                    selected: classes.selected2,
+            </div>
+          </div>
+          <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>
+            <div className='row '>
+              <div className='col-12 px-0'>
+                <Table
+                  columns={columns}
+                  dataSource={publicSpeakingList}
+                  className='th-table'
+                  rowClassName={(record, index) =>
+                    `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                  }
+                  loading={loading}
+                  pagination={false}
+                  scroll={{
+                    x: window.innerWidth > 600 ? '100%' : 'max-content',
+                    // y: 600,
                   }}
-                  className={value === 0 ? classes.tabsFont : classes.tabsFont1}
-                  onClick={getTotalPublicSpeaking}
                 />
-
-              </Tabs>
-              <Divider className={classes.dividerColor} />
-            </Grid>
-          </Grid>
-          {value == 0 && (
-            <>
-              <Paper className={`${classes.root} common-table`} id='singleStudent'>
-                <TableContainer
-                  className={`table table-shadow view_users_table ${classes.container}`}
-                >
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className={`${classes.columnHeader} table-header-row`}>
-                      <TableRow>
-                        <TableCell
-                          className={classes.tableCell}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          S No.
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>Title</TableCell>
-                        <TableCell className={classes.tableCell}>Submitted On</TableCell>
-                        <TableCell style={{ width: '252px' }} className={classes.tableCell}>
-                          Action
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    {totalPublicSpeaking?.map((response, index) => (
-                      <TableBody>
-                        <TableRow
-                          hover
-                          role='checkbox'
-                          tabIndex={-1}
-                        >
-                          <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                          <TableCell className={classes.tableCells}>{response?.group?.activity?.name}</TableCell>
-                          <TableCell className={classes.tableCells}>
-                            {`${moment(response?.scheduled_time).format('DD-MM-YYYY')}`}
-                          </TableCell>
-                          <TableCell className={classes.tableCells}>
-                            <Button
-                              variant='outlined'
-                              size='small'
-                              className={classes.buttonColor2}
-                              onClick={() => handleClickOpen(response)}
-                            >
-                              View More
-                            </Button>{' '}
-                            &nbsp;&nbsp;
-                            &nbsp;&nbsp;
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    ))}
-                  </Table>
-                  {/* <TablePagination
-             component='div'
-             count={totalCountAssigned}
-             rowsPerPage={limitAssigned}
-             page={Number(currentPageAssigned) - 1}
-             onChangePage={(e, page) => {
-             handlePaginationAssign(e, page + 1);
-             }}
-             rowsPerPageOptions={false}
-             className='table-pagination'
-             classes={{
-               spacer: classes.tablePaginationSpacer,
-               toolbar: classes.tablePaginationToolbar,
-             }}
-           /> */}
-                </TableContainer>
-              </Paper>
-              {videoData ? (
-                <Drawer
-                  anchor='right'
-                  maxWidth={maxWidth}
-                  open={open}
-                  onClose={handleCloseDialog}
-                  aria-labelledby='alert-dialog-title'
-                  aria-describedby='alert-dialog-description'
-                >
-                  <div style={{ width: '100%', marginTop: '20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', }}>
-                      <div style={{ fontSize: '24px', marginLeft: '15px' }}>
-                        <strong>Preview</strong>
-                      </div>
-                      <div style={{ fontSize: '24px', cursor: 'pointer' }}>
-                        <strong onClick={handleCloseDialog}>
-                          <CancelRoundedIcon style={{ fontSize: 30, marginRight: '10px' }} />
-                        </strong>
-                      </div>
-
-                    </div>
-                    <Divider />
-
-                    <Grid container direction='row' justifyContent='center'>
-                      <Grid item>
-                        <div
-                          style={{
-                            border: '1px solid #813032',
-                            width: '583px',
-                            background: 'white',
-                            height: 'auto',
-                            borderRadius: '10px',
-                            margin: '5px'
-                          }}
-                        >
-                          <div
-                            style={{
-                              background: 'white',
-                              width: '554px',
-                              marginLeft: '13px',
-                              marginTop: '5px',
-                            }}
-                          >
-                            <div>
-                              <img
-                                src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                                width='130'
-                                alt='image'
-                              />
-
-                            </div>
-                          </div>
-
-                          <div
-                            style={{
-                              background: 'white',
-                              width: '502px',
-                              marginLeft: '34px',
-                              marginTop: '16px',
-                              height: 'auto',
-                            }}
-                          >
-                            <div
-                              style={{ paddingTop: '7px', fontWeight: 'bold', display: 'flex', justifyContent: 'center' }}
-                            >
-                            </div>
-                            <div
-                              style={{
-                                paddingLeft: '30px',
-                                paddingTop: '10px',
-                                paddingBottom: '5px',
-                                fontWeight: 'bold',
-                              }}
-                            >
-                              <span style={{ fontWeight: 'normal' }}>
-                              </span>
-                            </div>
-                          </div>
-                          <div
-                            style={{
-                              background: 'white',
-                              width: '502px',
-                              marginLeft: '34px',
-                              height: 'auto',
-                              marginTop: '12px',
-                              marginBottom: '29px',
-                            }}
-                          >
-                            <div style={{ padding: '5px' }}>
-                              <div
-                                style={{
-                                  backgroundSize: "contain",
-                                  position: "relative",
-                                  backgroundRepeat: "no-repeat",
-                                  backgroundPosition: "center",
-                                  backgroundColor: "rgba(244 245 247 / 25%)",
-                                  height: "683px",
-                                }}
-
-                              >
-                                <video width="500" height="600" controls >
-                                  <source src={`${videoData}`} type="video/mp4" />
-                                  Your browser does not support HTML video.
-                                </video>
-
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </Grid>
-                      <Grid item>
-                        <div style={{ margin: '10px', background: '#E3F2FD', borderRadius: '10px', padding: '5px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <span style={{ fontSize: '20px', marginBottom: '15px' }}> Student Marks </span>
-                          </div>
-                          <div>
-                            <div className='col-12' style={{ padding: '10px' }}>
-                              <TableAnt
-                                className='th-table'
-                                columns={columns}
-                                // rowKey={(record) => record?.erp_id}
-                                loading={loading}
-                                dataSource={marksData}
-                                pagination={false}
-                                rowClassName={(record, index) =>
-                                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                                }
-                                scroll={{ x: 'max-content' }}
-                              />
-                            </div>
-                          </div>
-
-                        </div>
-                      </Grid>
-                    </Grid>
-                  </div>
-                </Drawer>
-
-              ) : ''}
-            </>
-          )}
-          <Drawer
-            anchor='right'
-            maxWidth={maxWidth}
-            zIndex={1300}
-            open={view}
-            onClose={handleCloseViewMore}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <div style={{ width: '100%', marginTop: '72px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', }}>
-                <div style={{ fontSize: '24px' }}>
-                  <strong>Preview</strong>
-                </div>
-                <div style={{ fontSize: '24px', cursor: 'pointer' }}>
-                  <strong onClick={handleClose}>X</strong>
-                </div>
-
               </div>
-              <Divider />
+            </div>
+          </div>
 
-              <Grid container direction='row' justifyContent='center'>
-                <Grid item>
-                  <div
-                    style={{
-                      border: '1px solid #813032',
-                      width: '583px',
-                      background: 'white',
-                      height: 'auto',
-                    }}
-                  >
-                    <div
-                      style={{
-                        background: 'white',
-                        width: '554px',
-                        marginLeft: '13px',
-                        marginTop: '5px',
-                      }}
-                    >
-                      <div>
-                        <img
-                          src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                          width='130'
-                          alt='image'
-                        />
-
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        background: 'white',
-                        width: '502px',
-                        marginLeft: '34px',
-                        marginTop: '16px',
-                        height: 'auto',
-                      }}
-                    >
-                      <div
-                        style={{ paddingLeft: '30px', paddingTop: '7px', fontWeight: 'bold' }}
-                      >
-                        <span style={{ fontWeight: 'normal' }}>
-                          Title: {previewData?.activity_detail?.title}
-                        </span>
-                      </div>
-                      <div
-                        style={{
-                          paddingLeft: '30px',
-                          paddingTop: '10px',
-                          paddingBottom: '5px',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        <span style={{ fontWeight: 'normal' }}>
-                          Description: {previewData?.activity_detail?.description}
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        background: 'white',
-                        width: '502px',
-                        marginLeft: '34px',
-                        height: 'auto',
-                        marginTop: '12px',
-                        marginBottom: '29px',
-                      }}
-                    >
-                      <div style={{ padding: '5px' }}>
+          <Drawer
+            title={<span className='th-fw-500'>Check Review</span>}
+            placement='right'
+            onClose={handleCloseDrawer}
+            zIndex={1300}
+            visible={showDrawer}
+            width={
+              window.innerWidth < 600 ? '95vw' : mediaFiles?.signed_URL ? '70vw' : '35vw'
+            }
+            closable={false}
+            className='th-activity-drawer'
+            extra={
+              <Space>
+                <CloseOutlined onClick={handleCloseDrawer} />
+              </Space>
+            }
+          >
+            <div>
+              <div className='row'>
+                <div className={mediaFiles?.signed_URL ? 'col-md-7' : 'd-none'}>
+                  <video
+                    src={mediaFiles?.signed_URL}
+                    controls
+                    alt={'image'}
+                    width='100%'
+                    height='95%'
+                  />
+                </div>
+                <div
+                  className={`${
+                    mediaFiles?.signed_URL ? 'col-md-5' : 'col-12'
+                  } px-0 th-bg-white`}
+                >
+                  <div className='row'>
+                    <div className='col-12 px-1'>
+                      <div className='mt-3'>
+                        <div className='th-fw-500 th-16 mb-2'>Remarks</div>
                         <div
-                          style={{
-                            background: `url(${previewData?.template?.template_path})`,
-                            backgroundSize: "contain",
-                            position: "relative",
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundColor: "rgba(244 245 247 / 25%)",
-                            height: "683px",
-                          }}
-
+                          className='px-1 py-2 th-br-5'
+                          style={{ outline: '1px solid #d9d9d9' }}
                         >
-                          <div className="certificate-text-center certificate-input-box" style={{ top: `calc(279px + ${imageData[0]?.x_cordinate.concat('px')})`, left: `calc(232px + ${imageData[0]?.y_cordinate.concat('px')})` }}>
-                            <textarea className="certificate-box" style={{
-                              width: `${imageData[0]?.width}px`,
-                              height: `${imageData[0]?.height}px`, top: `${imageData[0]?.x_cordinate}px`, left: `${imageData[0]?.y_cordinate}px`
-                            }} value={previewData?.submitted_work?.html_text} placeholder="type text here..." />
-
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Grid>
-                <Grid item>
-                  {submit == false ? (
-                    <div style={{ paddingLeft: '10px' }}>Review</div>
-                  ) : (
-                    <div style={{ paddingLeft: '8px' }}>Edit Review</div>
-                  )}
-                  {submit == false && (
-                    <div
-                      style={{
-                        border: '1px solid #707070',
-                        width: '295px',
-                        height: 'auto',
-                        marginLeft: '11px',
-                        marginRight: '10px',
-                      }}
-                    >
-                      {ratingReview?.map((obj, index) => {
-                        return (
-                          <div
-                            key={index}
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            <div
-                              key={index}
-                              style={{ display: 'flex', justifyContent: 'space-between' }}
-                            >
-                              {' '}
-                              {obj?.name}
-                              <StyledRating
-                                name={`rating${index}`}
-                                size='small'
-                                readOnly
-                                // rating={obj?.given_rating}
-                                defaultValue={obj?.given_rating}
-                                precision={0.1}
-                                max={parseInt(obj?.level)}
-                                onChange={(event, newValue) =>
-                                  handleInputCreativityOne(event, newValue, index)
-                                }
-                              />
-                            </div>
-                            {/* {obj} */}
-                            <div>
-                              <TextField
-                                id='outlined-basic'
-                                size='small'
-                                disabled
-                                variant='outlined'
-                                value={obj?.remarks}
-                                style={{ width: '264px' }}
-                                onChange={(event) => handleInputCreativity(event, index)}
-                              />
-                            </div>
-                          </div>
-                        );
-                      })}
-
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          marginRight: '10px',
-                          marginLeft: '6px',
-                          marginBottom: '15px',
-                          marginTop: '32px',
-                        }}
-                      ></div>
-                    </div>
-                  )}
-
-                  {submit == true && (
-                    <div
-                      style={{
-                        border: '1px solid #707070',
-                        width: '318px',
-                        height: 'auto',
-                        marginLeft: '8px',
-                        marginRight: '4px',
-                      }}
-                    >
-                      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                        <ExpandMoreIcon onClick={expandMore} />
-                      </div>
-                      <div
-                        style={{
-                          paddingLeft: '15px',
-                          paddingRight: '15px',
-                          paddingTop: '5px',
-                        }}
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          {' '}
-                          Overall
-                          <RatingScale
-                            name='simple-controlled'
-                            defaultValue={DEFAULT_RATING}
-                            onChange={(event, value) => {
-                              setValues((prev) => ({ ...prev, rating: value }));
-                            }}
+                          <Table
+                            className='th-table'
+                            columns={columnMarks}
+                            loading={loading}
+                            dataSource={selectedActivity}
+                            pagination={false}
+                            rowClassName={(record, index) =>
+                              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                            }
+                            scroll={{ x: 'max-content' }}
                           />
                         </div>
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            paddingBottom: '9px',
-                          }}
-                        >
-                          Review Submitted
-                        </div>
                       </div>
                     </div>
-                  )}
-                </Grid>
-              </Grid>
+                  </div>
+                </div>
+              </div>
             </div>
           </Drawer>
         </div>
       </Layout>
-
     </div>
   );
 };
-export default PublicSpeakingWall;
+export default StudentSidePublicSpeaking;

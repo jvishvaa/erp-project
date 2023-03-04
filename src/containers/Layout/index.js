@@ -14,6 +14,7 @@ import 'v2/Assets/css/antdTab.css';
 import 'v2/Assets/css/antdModal.css';
 import 'v2/Assets/css/table.scss';
 import 'v2/Assets/css/antdDrawer.css';
+import 'v2/Assets/css/timeline.scss';
 import Appbar from './Appbar';
 import TopBar from 'v2/Layout/TopBar';
 import SideBarV2 from 'v2/Layout/SideBar';

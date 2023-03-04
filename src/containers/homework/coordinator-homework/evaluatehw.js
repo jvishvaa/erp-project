@@ -37,6 +37,7 @@ import {
     evaluateHomework,
     uploadFile,
     finalEvaluationForHomework,
+    evaluateHomeworkQuestionWise
 } from '../../../redux/actions';
 
 import SubmittedQuestion from './submitted-question';
@@ -181,7 +182,15 @@ const ViewHomeworkNew = withRouter(
         const evaluateAnswer = async () => {
             let currentQuestion;
             if (isQuestionwise) {
-                currentQuestion = questionsState[activeQuestion - 1];
+                console.log(questionsState , 'qstate');
+                
+                try {
+                    await evaluateHomeworkQuestionWise(homeworkId, questionsState);
+                    setAlert('success', 'Saved Successfully');
+                    setDisableEv(false)
+                } catch (e) {
+                    setAlert('error', 'Evaluation failed');
+                }
             } else {
                 currentQuestion = collatedQuestionState;
 
@@ -191,19 +200,21 @@ const ViewHomeworkNew = withRouter(
                 //   setAlert('error', 'Please evaluate all the attachments');
                 //   return;
                 // }
-            }
-            const { id, ...reqData } = currentQuestion;
-            try {
-                await evaluateHomework(id, reqData);
-                setAlert('success', 'Saved Successfully');
-                setDisableEv(false)
-            } catch (e) {
-                setAlert('error', 'Evaluation failed');
+                const { id, ...reqData } = currentQuestion;
+                try {
+                    await evaluateHomework(id, reqData);
+                    setAlert('success', 'Saved Successfully');
+                    setDisableEv(false)
+                } catch (e) {
+                    setAlert('error', 'Evaluation failed');
+                }
             }
         };
 
         const handleChangeQuestionState = (fieldName, value) => {
             const index = activeQuestion - 1;
+            console.log(questionsState , 'ques');
+         
             const currentQuestion = questionsState[index];
             currentQuestion[fieldName] = value;
             setQuestionsState([
@@ -273,8 +284,8 @@ const ViewHomeworkNew = withRouter(
 
             if (isQuestionwise) {
                 const initialQuestionsState = hwQuestions.map((q) => ({
-                    id: q.id,
-                    remarks: q.remark,
+                    homework_question_id: q.question_id,
+                    remark: q.remark,
                     // comments: q.comment,
                     corrected_submission: q.corrected_files,
                     evaluated_files: q.evaluated_files,
@@ -349,8 +360,6 @@ const ViewHomeworkNew = withRouter(
 
                         <div className='card w-100' style={{ width: '100%' , margin: '0 auto' }}>
                             <div >
-                             
-
                                 {isQuestionwise && submittedHomeworkDetails?.length && (
                                     <SubmittedQuestionNew
                                         question={submittedHomeworkDetails[activeQuestion - 1]}
@@ -366,8 +375,8 @@ const ViewHomeworkNew = withRouter(
                                         }
                                         remark={
                                             questionsState.length
-                                                ? questionsState[activeQuestion - 1].remarks
-                                                : []
+                                                ? questionsState[activeQuestion - 1].remark
+                                                : ''
                                         }
                                         comment={
                                             questionsState.length
@@ -388,6 +397,7 @@ const ViewHomeworkNew = withRouter(
                                         onDeleteCorrectedAttachment={deleteEvaluated}
                                         onChangeQuestionsState={handleChangeQuestionState}
                                         evaluateAnswer={evaluateAnswer}
+                                        selectedHomeworkDetails={selectedHomeworkDetails}
                                     />
                                 )}
 
@@ -399,8 +409,8 @@ const ViewHomeworkNew = withRouter(
                                                 className='homework-question-container-coordinator'
                                                 key={`homework_student_question_${1}`}
                                             >
-                                                <div className='homework-question'>
-                                                    <div className='question'>{question.question}</div>
+                                                <div className='w-100'>
+                                                    <div className='th-14 th-fw-600 p-2' style={{color: '#556778' , background: '#f4f9ff'}} > Question {i + 1} : {question.question}</div>
                                                 </div>
                                             </div>
                                             <div className="overallContainer">
@@ -684,6 +694,7 @@ const ViewHomeworkNew = withRouter(
 
 const mapStateToProps = (state) => ({
     submittedHomeworkDetails: state.teacherHomework.submittedHomeworkDetails,
+    selectedHomeworkDetails: state.teacherHomework.selectedHomeworkDetails,
     totalSubmittedQuestions: state.teacherHomework.totalSubmittedQuestions,
     fetchingSubmittedHomeworkDetails:
         state.teacherHomework.fetchingSubmittedHomeworkDetails,

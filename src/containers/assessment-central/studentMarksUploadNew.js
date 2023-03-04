@@ -511,7 +511,6 @@ const StudentMarkNew = () => {
           test: history?.location?.state?.test_id,
           submitted_by: selectedUser,
           user_response: finalValue,
-          // total_mark: parseFloat(sum)
         };
         axiosInstance
           .put(`${endpoints.assessment.studentMarks}`, payload)

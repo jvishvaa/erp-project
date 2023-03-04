@@ -23,6 +23,7 @@ import {
   Tag,
   Table,
   Tooltip,
+  Input,
 } from 'antd';
 import axios from 'v2/config/axios';
 import axiosInstance from 'axios';
@@ -38,7 +39,7 @@ import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import toddlerGroup from '../../../../../assets/images/toddler-group.svg';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-
+import { getActivityColor } from 'v2/generalActivityFunction';
 const { Panel } = Collapse;
 let boardFilterArr = [
   'orchids.letseduvate.com',
@@ -86,6 +87,8 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
   const [physicalActivityData, setPhysicalActivityData] = useState([]);
   const [publicSpeakingData, setPublicSpeakingData] = useState([]);
   const [publicSpeakingMarks, setPublicSpeakingMarks] = useState([]);
+  const [ratingReview, setRatingReview] = useState([]);
+  const [activityMediaFiles, setActivityMediaFiles] = useState([]);
   const history = useHistory();
   const publicSpeakingColumns = [
     {
@@ -177,59 +180,55 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       >
         <div className='row align-items-center'>
           <div className='col-6 th-fw-500'>
-            {item?.activity_type?.name !== 'Physical Activity' && (
+            {item?.activity_type?.name == 'Public Speaking' ? (
               <>
                 Status :&nbsp;
                 <span
                   className={`${
                     item?.state == 'completed'
-                      ? 'th-green'
+                      ? 'th-green th-fw-600'
                       : item?.state == 'ongoing'
                       ? 'th-red th-fw-600'
-                      : 'th-primary'
+                      : 'th-primary th-fw-600'
                   } text-capitalize`}
                 >
                   {' '}
                   {item?.state}
                 </span>
               </>
-            )}
-            {item?.activity_type?.name == 'Physical Activity' && isStudentDiary && (
+            ) : isStudentDiary ? (
               <>
                 Status :&nbsp;
                 <span
                   className={`${
-                    item?.asset_state ? 'th-green' : 'th-red th-fw-600'
+                    item?.asset_state ? 'th-green th-fw-600' : 'th-red th-fw-600'
                   } text-capitalize`}
                 >
                   {' '}
                   {item?.asset_state ? 'Completed' : 'Ongoing'}
                 </span>
               </>
-            )}
-            {item?.activity_type?.name == 'Physical Activity' && !isStudentDiary && (
+            ) : (
               <>
                 Status :&nbsp;
                 <span
                   className={`${
-                    moment(moment(), 'hh:mm A').isBefore(
-                      moment(item?.submission_date, 'hh:mm A')
-                    )
-                      ? 'th-primary'
-                      : 'th-green'
+                    moment().isAfter(item?.submission_date, 'days')
+                      ? 'th-green'
+                      : 'th-primary'
                   } text-capitalize`}
                 >
-                  {moment(moment(), 'hh:mm A').isBefore(
-                    moment(item?.submission_date, 'hh:mm A')
-                  )
-                    ? 'Upcoming'
-                    : 'Completed'}
+                  {moment().isAfter(item?.submission_date, 'days')
+                    ? 'Completed'
+                    : 'Upcoming'}
                 </span>
               </>
             )}
           </div>
           <div className='col-6 text-right th-12 pr-0'>
-            <Tag color='green'>{item?.activity_type?.name}</Tag>
+            <Tag color={getActivityColor(item?.activity_type?.name)}>
+              {item?.activity_type?.name}
+            </Tag>
           </div>
         </div>
         <div className='row py-2 align-items-center'>
@@ -255,9 +254,13 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                       setShowTab(4);
                       setCurrentActivity(item);
                       fetchPhysicalActivityData({ activity_id: item?.id, erp: erp });
-                    } else {
+                    } else if (item?.activity_type?.name === 'Public Speaking') {
                       setShowTab(5);
                       fetchPublicSpeakingData({ erp: erp, activity_id: item?.id });
+                    } else {
+                      setShowTab(6);
+                      fetchOtherActivityData(item?.booking_detail_id);
+                      setCurrentActivity(item);
                     }
                   }}
                 >
@@ -487,7 +490,6 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             criterion: item.criterion,
             remarks: item.levels.filter((each) => each.status == true)[0],
           }));
-          console.log('rating', ratings);
           setPublicSpeakingMarks(ratings);
         }
         setActivityResultLoading(false);
@@ -495,6 +497,55 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       .catch((error) => {
         setActivityResultLoading(false);
         message.error('error', error?.message);
+      });
+  };
+  const fetchOtherActivityData = (id) => {
+    getRatingView(id);
+    fetchMedia(id);
+  };
+  const getRatingView = (id) => {
+    setActivityResultLoading(true);
+    let array = [];
+    axios
+      .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${id}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        response.data.map((obj) => {
+          let temp = {};
+          temp['id'] = obj.id;
+          temp['name'] = obj.level.name;
+          temp['remarks'] = JSON.parse(obj.remarks);
+          temp['given_rating'] = obj.given_rating;
+          temp['level'] = obj?.level?.rating;
+          array.push(temp);
+        });
+        setRatingReview(array);
+        setActivityResultLoading(false);
+      })
+      .catch((error) => {
+        setActivityResultLoading(false);
+      });
+  };
+
+  const fetchMedia = (id) => {
+    setActivityResultLoading(true);
+    axios
+      .get(`${endpoints.newBlog.showVisualMedia}${id}/`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response.data?.status_code === 200) {
+          setActivityMediaFiles(response?.data?.result);
+        }
+        setActivityResultLoading(false);
+      })
+      .catch((error) => {
+        setActivityResultLoading(false);
       });
   };
   useEffect(() => {
@@ -525,6 +576,38 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
           start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
           type: 'ps',
         });
+      } else if (subject.subject_name.includes('Visual Arts')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: diary?.grade_id,
+          section_id: diary?.section_id,
+          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
+          type: 'va',
+        });
+      } else if (subject.subject_name.includes('Music')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: diary?.grade_id,
+          section_id: diary?.section_id,
+          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
+          type: 'mu',
+        });
+      } else if (subject.subject_name.includes('Dance')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: diary?.grade_id,
+          section_id: diary?.section_id,
+          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
+          type: 'da',
+        });
+      } else if (subject.subject_name.includes('Theatre')) {
+        fetchActivityData({
+          branch_id: selectedBranch?.branch?.id,
+          grade_id: diary?.grade_id,
+          section_id: diary?.section_id,
+          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
+          type: 'th',
+        });
       }
     }
   }, [drawerVisible]);
@@ -533,7 +616,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
     <>
       <div
         className={`th-br-6 th-bg-white`}
-        style={{ border: '1px solid #d9d9d9', height: 200 }}
+        style={{ border: '1px solid #d9d9d9', minHeight: 200 }}
       >
         <div
           className={`row ${
@@ -561,7 +644,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               {diary?.is_substitute_diary ? 'Substitute Dairy' : 'Daily Diary'}
             </Tag>
           </div>
-          {user_id == diary?.teacher_id && (
+          {user_id == diary?.teacher_id && diary?.hw_status != 3 && diary?.hw_status != 4 && (
             <div className='col-1 text-right pl-0'>
               <Popover
                 content={
@@ -573,17 +656,20 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                       <span className='th-green th-16'>Edit</span>
                     </div>
 
-                    <Popconfirm
-                      placement='bottomRight'
-                      title={'Are you sure you want to delete this diary?'}
-                      onConfirm={() => deleteDiary(diary?.diary_id)}
-                      okText='Yes'
-                      cancelText='No'
-                    >
-                      <div className='row justify-content-between th-pointer pt-2'>
-                        <span className='th-red th-16 '>Delete</span>
-                      </div>
-                    </Popconfirm>
+                    {moment().format('DD/MM/YYYY') ==
+                      moment(diary?.created_at).format('DD/MM/YYYY') && (
+                      <Popconfirm
+                        placement='bottomRight'
+                        title={'Are you sure you want to delete this diary?'}
+                        onConfirm={() => deleteDiary(diary?.diary_id)}
+                        okText='Yes'
+                        cancelText='No'
+                      >
+                        <div className='row justify-content-between th-pointer pt-2'>
+                          <span className='th-red th-16 '>Delete</span>
+                        </div>
+                      </Popconfirm>
+                    )}
                   </>
                 }
                 trigger='click'
@@ -1600,6 +1686,86 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   }
                   scroll={{ x: publicSpeakingMarks.length > 0 ? 'max-content' : null }}
                 />
+              </div>
+            </div>
+          ))}
+        {/* Visual Art View  */}
+        {showTab == 6 &&
+          (activityResultLoading ? (
+            <div className='w-100 row justify-content-center'>
+              <Spin tip='Loading..' />
+            </div>
+          ) : (
+            <div>
+              <div className='row'>
+                <div className={activityMediaFiles?.s3_path ? 'col-12' : 'd-none'}>
+                  {activityMediaFiles?.file_type === 'image/jpeg' ||
+                  activityMediaFiles?.file_type === 'image/png' ? (
+                    <img
+                      src={activityMediaFiles?.s3_path}
+                      thumb={activityMediaFiles?.s3_path}
+                      alt={'image'}
+                      width='100%'
+                      height='95%'
+                    />
+                  ) : (
+                    <video
+                      controls='controls'
+                      preload='metadata'
+                      style={{ height: '50vh', width: '100%', objectFit: 'cover' }}
+                    >
+                      <source src={activityMediaFiles?.s3_path} type='video/mp4' />
+                    </video>
+                  )}
+                </div>
+                <div className='col-12 px-2 th-bg-white'>
+                  <div className='row'>
+                    <div className='col-12 px-1'>
+                      <div
+                        className='p-2 mt-3 th-br-5 th-bg-grey'
+                        style={{ outline: '1px solid #d9d9d9' }}
+                      >
+                        <div>
+                          Title :{' '}
+                          <span className='th-fw-600'>{currentActivity?.title}</span>
+                        </div>
+                        <div>
+                          Instructions :{' '}
+                          <span className='th-fw-400'>
+                            {currentActivity?.description}
+                          </span>
+                        </div>
+                      </div>
+                      <div className='mt-3'>
+                        <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                        <div
+                          className='px-1 py-2 th-br-5'
+                          style={{ outline: '1px solid #d9d9d9' }}
+                        >
+                          {ratingReview?.map((obj, index) => {
+                            return (
+                              <div className='row py-1 align-items-center'>
+                                <div className='col-6 pl-1' key={index}>
+                                  {obj?.name}
+                                </div>
+                                <div className='col-6 pr-1'>
+                                  <Input
+                                    disabled
+                                    value={
+                                      obj?.remarks.filter(
+                                        (item) => item.status == true
+                                      )[0].name
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

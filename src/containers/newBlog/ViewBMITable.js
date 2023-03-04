@@ -9,6 +9,7 @@ import {
   Input,
   message,
   Select,
+  Tag,
 } from 'antd';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import {
@@ -18,12 +19,15 @@ import {
   EyeOutlined,
   DownOutlined,
   CheckOutlined,
+  SnippetsOutlined,
 } from '@ant-design/icons';
 import endpoints from '../../config/endpoints';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import axios from 'axios';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import BMIDetailsImage from '../../assets/images/Body_Mass_Index.jpg';
 // import Select from 'containers/Finance/src/ui/select';
 
 const bmiRemarkData = [
@@ -33,14 +37,16 @@ const bmiRemarkData = [
 ];
 
 const ViewBMITableCustom = (props) => {
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const { Option } = Select;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openBigModal, setOpenBigModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   // const boardListData = useSelector((state) => state.commonFilterReducer?.branchList)
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
   const newBranches =
     JSON?.parse(localStorage?.getItem('ActivityManagementSession')) || {};
@@ -58,6 +64,8 @@ const ViewBMITableCustom = (props) => {
   const [editData, setEditData] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [selectedStudentDetails, setSelectedStudentsDetails] = useState([]);
+  const [bmiRemarks, setBmiRemarks] = useState('');
+  const [visible, setVisible] = useState(false);
 
   const columns = [
     {
@@ -146,13 +154,14 @@ const ViewBMITableCustom = (props) => {
         if (res.data?.status_code == 200) {
           setBmiDetails(res?.data?.result);
           setLoading(false);
-          setAlert('success', res?.data?.message);
+          message.success(res?.data?.message);
           setOpenBigModal(true);
         } else if (res?.data?.status_code == 400) {
           setOpenBigModal(false);
-          setAlert('error', res?.data?.message);
+          message.error(res?.data?.message);
           setLoading(false);
           setOpenBigModal(false);
+          return;
         }
       });
   };
@@ -195,12 +204,12 @@ const ViewBMITableCustom = (props) => {
         };
         axios.post(`${endpoints.newBlog.addBMIApi}`, requestData, options).then((res) => {
           if (res?.data?.status_code === 200) {
-            setAlert('success', res?.data?.message);
+            message.success(res?.data?.message);
             setIsEdit(false);
             setIsModalOpen(false);
             showBMITable(editData?.student);
           } else {
-            setAlert('error', res?.data?.message);
+            message.error(res?.data?.message);
             setIsModalOpen(false);
           }
         });
@@ -232,11 +241,11 @@ const ViewBMITableCustom = (props) => {
         };
         axios.post(`${endpoints.newBlog.addBMIApi}`, requestData, options).then((res) => {
           if (res?.data?.status_code === 200) {
-            setAlert('success', res?.data?.message);
+            message.success(res?.data?.message);
             setIsEdit(false);
             setIsModalOpen(false);
           } else {
-            setAlert('error', res?.data?.message);
+            message.error(res?.data?.message);
             setIsModalOpen(false);
           }
         });
@@ -255,7 +264,7 @@ const ViewBMITableCustom = (props) => {
 
   const columnsBigTable = [
     {
-      title: <span className='th-white th-fw-700 '>Height(in meters)</span>,
+      title: <span className='th-white th-fw-700 '>Height(in cm)</span>,
       dataIndex: 'height',
       key: 'height',
       align: 'center',
@@ -337,7 +346,7 @@ const ViewBMITableCustom = (props) => {
         setTotalSubmitted(response?.data?.result);
         // ActivityManagement(response?.data?.result)
         props.setFlag(false);
-        setAlert('success', response?.data?.message);
+        message.success(response?.data?.message);
         setLoading(false);
       });
   };
@@ -394,7 +403,7 @@ const ViewBMITableCustom = (props) => {
         .then((response) => {
           setCheckBMIData(response?.data?.result);
           showBMITable(response?.data?.result);
-          setAlert('success', response?.data?.message);
+          // message.success(response?.data?.message);
           setLoading(false);
         });
     }
@@ -408,20 +417,56 @@ const ViewBMITableCustom = (props) => {
     }
   };
 
+  const calculateRemarks = (bmiArg, ageArg) => {
+    if (bmiArg && ageArg) {
+      setLoading(true);
+      axios
+        .get(
+          `${endpoints.newBlog.bmiRemarksApi}?age=${ageArg}&bmi=${bmiArg}&user_id=${checkBMIData?.id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          // setBmiRemarks()
+          if (response?.data?.status_code == 400) {
+            // message.error(response?.data?.message)
+            setLoading(false);
+            return;
+          } else {
+            // message.success(response?.data?.message)
+            setBmiRemarks(response?.data?.category);
+            setRemarks(response?.data?.category);
+            setLoading(false);
+            return;
+          }
+          setLoading(false);
+          return;
+        })
+        .catch((err) => {
+          setLoading(false);
+          message.error('BMI calculation failed');
+          return;
+        });
+    }
+  };
+
   const calculateBMI = (height, weight, age) => {
     if (height && weight && age) {
       let parseHeight = parseInt(height);
       let parseWeight = parseInt(weight);
       if (parseHeight === '' || isNaN(parseHeight)) {
-        setAlert('error', 'Provide a valid height');
+        message.error('Provide A Valid Height');
         return;
       } else if (parseWeight === '' || isNaN(parseWeight)) {
-        setAlert('error', 'Provide a valid weight');
+        message.error('Provide a valid weight');
         return;
       } else {
         let bmi = (weight / ((height * height) / 10000)).toFixed(2);
         setBmi(bmi);
-        setAlert('success', 'BMI Calculated Successfully');
+        calculateRemarks(bmi, age);
         return;
       }
     } else {
@@ -449,13 +494,13 @@ const ViewBMITableCustom = (props) => {
     }
   };
 
-  const bmiRemarksListOptions = bmiRemarkData?.map((each) => {
-    return (
-      <Option key={each?.name} value={each?.name}>
-        {each?.name}
-      </Option>
-    );
-  });
+  // const bmiRemarksListOptions = bmiRemarkData?.map((each) => {
+  //   return (
+  //     <Option key={each?.name} value={each?.name}>
+  //       {each?.name}
+  //     </Option>
+  //   );
+  // });
 
   return (
     <>
@@ -509,6 +554,7 @@ const ViewBMITableCustom = (props) => {
         </Row>
         <Row style={{ padding: '0.5rem 1rem' }}>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>Height (in cm)</div>
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
               onChange={(event) => handleInputBMI(event, 'height')}
@@ -517,6 +563,7 @@ const ViewBMITableCustom = (props) => {
             />
           </Col>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>Weight(in kg)</div>
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
               value={weight}
@@ -525,6 +572,7 @@ const ViewBMITableCustom = (props) => {
             />
           </Col>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>Age</div>
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
               value={age}
@@ -533,27 +581,18 @@ const ViewBMITableCustom = (props) => {
             />
           </Col>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>Remarks</div>
             {/* <Input style={{ margin: '0.5rem', width: 'auto' }} value={remarks} onChange={(event) => handleInputBMI(event, 'remarks')} placeholder="Remarks" /> */}
-            <Select
-              // className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-              bordered={true}
-              getPopupContainer={(trigger) => trigger.parentNode}
-              // value={selectedCategoryName}
-              style={{ width: '72%', padding: '0.5rem' }}
-              placement='bottomRight'
-              placeholder='Select Remark'
-              suffixIcon={<DownOutlined className='th-black-1' />}
-              dropdownMatchSelectWidth={true}
-              // onChange={(e, val) => handleBlogListChange(e, val)}
-              onChange={(event) => handleInputBMI(event, 'remarks')}
-              // allowClear
-
-              menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-            >
-              {bmiRemarksListOptions}
-            </Select>
+            <Input
+              style={{ margin: '0.5rem', width: 'auto' }}
+              value={bmiRemarks}
+              disabled
+              // onChange={(event) => handleInputBMI(event, 'age')}
+              placeholder='Remarks'
+            />
           </Col>
           <Col span={8}>
+            <div className='th-12 px-2 th-grey'>BMI</div>
             <Input
               style={{ margin: '0.5rem', width: 'auto' }}
               value={bmi}
@@ -571,17 +610,49 @@ const ViewBMITableCustom = (props) => {
         onOk={() => setOpenBigModal(false)}
         onCancel={() => setOpenBigModal(false)}
         width={1000}
+        zIndex={1000}
         footer={null}
       >
         <div className='row'>
           <div
-            className='col-12'
+            className='col-12 px-3'
             style={{ display: 'flex', borderRadius: '10px', padding: '0.5rem 1rem' }}
           >
             <div className='col-3'>Name : {rowData?.student_name}</div>
             <div className='col-3'>ERP ID :{rowData?.erp_id}</div>
             <div className='col-3'>Branch : {props?.selectedBoardName}</div>
             <div className='col-3'>Grade: {props?.selectedGradeName}</div>
+          </div>
+          <div className='row d-flex px-3 justify-content-end'>
+            <div className='col-md-5 px-0 col-12 d-flex justify-content-end'>
+              <div
+                className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
+                style={{ alignItems: 'center' }}
+              >
+                <span className='th-14 th-black pr-2'>Index : </span>
+                <ButtonAnt
+                  icon={<EyeOutlined />}
+                  type='primary'
+                  onClick={() => setVisible(true)}
+                >
+                  Click Here To Check BMI Chart
+                </ButtonAnt>
+              </div>
+              <Modal
+                title='BMI Chart'
+                centered
+                visible={visible}
+                open={visible}
+                footer={false}
+                onCancel={() => setVisible(false)}
+                width={1000}
+              >
+                <img
+                src={BMIDetailsImage}
+                style={{height:'100%', width:'100%', objectFit: '-webkit-fill-available'}}
+                />
+              </Modal>
+            </div>
           </div>
           <div className='col-12' style={{ padding: '1rem 1rem' }}>
             <Table
