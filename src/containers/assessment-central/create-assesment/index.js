@@ -1161,7 +1161,7 @@ const CreateAssesment = ({
                                     : null}
                                 </div>
                               </div>
-                              <div className='th-14 th-fw-500 mr-3 th-width-70 d-flex align-items-center'>
+                              <div className='th-14 th-fw-500 mr-3 th-width-70 d-flex align-items-center justify-content-end'>
                                 {selectedQuestionPaper?.section?.filter(
                                   (item) => item?.discription == section.name
                                 )[0]?.instruction
