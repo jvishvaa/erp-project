@@ -222,7 +222,7 @@ const CreateAssesment = ({
   }, [isEdit, branchDropdown]);
 
   useEffect(() => {
-    console.log(selectedQuestionPaper , 'selectedqp');
+    console.log(selectedQuestionPaper, 'selectedqp');
     if (selectedQuestionPaper && selectedQuestionPaper?.section) {
       // let paperwise = false;
       let test_mark = [];
@@ -686,7 +686,7 @@ const CreateAssesment = ({
       acad_session:
         CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
       is_central: selectedQuestionPaper['is_central'],
-      section : selectedQuestionPaper?.section
+      section: selectedQuestionPaper?.section,
     };
 
     if (
@@ -1152,7 +1152,7 @@ const CreateAssesment = ({
                                   {selectedQuestionPaper?.section?.filter(
                                     (item) => item?.discription == section.name
                                   )[0]?.mandatory_questions
-                                    ? `Mandatory Questions:: 
+                                    ? `Mandatory Questions:
                                 ${
                                   selectedQuestionPaper?.section?.filter(
                                     (item) => item?.discription == section.name
@@ -1161,7 +1161,7 @@ const CreateAssesment = ({
                                     : null}
                                 </div>
                               </div>
-                              <div className='th-14 th-fw-500 mr-3'>
+                              <div className='th-14 th-fw-500 mr-3 th-width-70 d-flex align-items-center'>
                                 {selectedQuestionPaper?.section?.filter(
                                   (item) => item?.discription == section.name
                                 )[0]?.instruction
