@@ -10,6 +10,7 @@ import endpoints from 'config/endpoints';
 import Loader from './../../components/loader/loader';
 import TeacherDetailsDialogue from './teacherDetailsDialogue';
 import { AlertNotificationContext } from './../../context-api/alert-context/alert-state';
+import { useSelector } from 'react-redux';
 
 const TeacherTimeTable = () => {
   const history = useHistory();
@@ -18,6 +19,9 @@ const TeacherTimeTable = () => {
   const [openPeriod, setOpenPeriod] = useState(false);
   const [periodData, setPeriodData] = useState([]);
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -95,7 +99,7 @@ const TeacherTimeTable = () => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints?.timeTable?.teacherTimeTable}?session_year=${sessionYear?.id}&start_date=${startDateOfWeek}&end_date=${endDateOfWeek}`
+        `${endpoints?.timeTable?.teacherTimeTable}?session_year=${sessionYear?.id}&start_date=${startDateOfWeek}&end_date=${endDateOfWeek}&acad_session_id=${selectedBranch?.id}`
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
