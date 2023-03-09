@@ -73,3 +73,18 @@
 .event_holidaymod .ant-modal-header{
   background-color: #EDECF8;
 }
+.th-calendar .holidayDate{
+  background: #00b8df;
+    border-radius: 25px !important;
+}
+
+
+.th-calendar .react-calendar__tile--active{
+  background: none;
+  color: inherit !important;
+}
+
+.th-calendar .bothEvent{
+  border: 1px solid #d700dd;
+  color: #00b8df
+}
