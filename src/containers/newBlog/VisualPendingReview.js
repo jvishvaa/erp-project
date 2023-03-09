@@ -336,10 +336,12 @@ const VisualPendingReview = (props) => {
   const handleFileChange = (event) => {
     const { files } = event.target;
     const fil = files[0] || '';
+    console.log('File', fil);
     if (
       fil.name.lastIndexOf('.mp4') > 0 ||
       fil.name.lastIndexOf('.jpeg') > 0 ||
-      fil.name.lastIndexOf('.jpg') > 0
+      fil.name.lastIndexOf('.jpg') > 0 ||
+      fil.name.lastIndexOf('.png') > 0
     ) {
       setFile(fil);
       return;
@@ -521,7 +523,9 @@ const VisualPendingReview = (props) => {
                         );
                       })}
                       <div className='col-12 py-2'>
-                        <div className='th-12 px-0 py-1 th-grey'>Upload .jpeg,.png,.mp4 file only</div>
+                        <div className='th-12 px-0 py-1 th-grey'>
+                          Upload .jpeg,.png,.mp4 file only
+                        </div>
                         <Input
                           type='file'
                           inputRef={fileRef}
