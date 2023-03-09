@@ -364,7 +364,7 @@ const CalendarCard = () => {
               className='mt-1'
             ></div>
             <div className='th-13 mx-1' style={{ color: '#00b8df', paddingTop: '0px' }}>
-              {holidaysData.length == 0 ? 'No' : holidaysData.length} Holidays
+              {holidayCount.length == 0 ? 'No' : holidayCount.length} Holidays
             </div>
           </div>
           <div className='col-4 row'>
@@ -373,7 +373,7 @@ const CalendarCard = () => {
               className='mt-1'
             ></div>
             <div className='th-13 mx-1' style={{ color: '#d700dd', paddingTop: '0px' }}>
-              {eventssData.length == 0 ? 'No' : eventssData.length} Events
+              {eventCount.length == 0 ? 'No' : eventCount.length} Events
             </div>
           </div>
         </div>
