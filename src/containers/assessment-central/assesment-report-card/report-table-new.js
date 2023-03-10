@@ -559,11 +559,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       {eachScholastic?.sub_component?.length > 1 ? (
                         <>
                           <td className='th-width-12 th-fw-600 text-center'>
-                            {_.sum(
-                              eachScholastic?.sub_component.map((item) => {
-                                return item.total_secured_marks;
-                              })
-                            ) / eachScholastic?.sub_component?.length}
+                            {eachScholastic?.annual_score?.overall_mark}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachScholastic?.annual_score?.total_grade}
@@ -897,11 +893,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         <>
                           {' '}
                           <td className='th-width-12 th-fw-600 text-center'>
-                            {_.sum(
-                              eachScholastic?.sub_component.map((item) => {
-                                return item.total_secured_marks;
-                              })
-                            ) / eachScholastic?.sub_component?.length}
+                            {eachScholastic?.annual_score?.overall_mark}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachScholastic?.annual_score?.total_grade}
@@ -1234,11 +1226,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         <>
                           {' '}
                           <td className='th-width-12 th-fw-600 text-center'>
-                            {_.sum(
-                              eachCompetitive?.sub_component.map((item) => {
-                                return item.total_secured_marks;
-                              })
-                            ) / eachCompetitive?.sub_component?.length}
+                            {eachCompetitive?.annual_score?.overall_mark}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachCompetitive?.annual_score?.total_grade}
@@ -1570,11 +1558,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         <>
                           {' '}
                           <td className='th-width-12 th-fw-600 text-center'>
-                            {_.sum(
-                              eachAsset?.sub_component.map((item) => {
-                                return item.total_secured_marks;
-                              })
-                            ) / eachAsset?.sub_component?.length}
+                            {eachAsset?.annual_score?.overall_mark}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachAsset?.annual_score?.total_grade}
