@@ -23,6 +23,7 @@ export default function reducer(state = INITIAL_STATE, action) {
       const { sections } = questionsList[index];
       const sectionIndex = sections?.findIndex((sec) => sec.name === action.section);
       sections[sectionIndex].questions.push(action.data);
+      sections[sectionIndex].mandatory_questions += 1;
       questionsList[index].sections = sections;
       return { ...state, questions: questionsList };
 
