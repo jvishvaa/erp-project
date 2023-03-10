@@ -366,6 +366,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
         Grade: filterData?.grade,
         Branch: filterData?.branch,
         Academic: filterData?.academic,
+        Topic: filterData?.topic,
         
       };
     }
@@ -382,12 +383,12 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     //   }
     // }
 
-    if (filterData?.topic) {
-      filterObject = {
-        ...filterObject,
-        Topic: filterData?.topic,
-      };
-    }
+    // if (filterData?.topic) {
+    //   filterObject = {
+    //     ...filterObject,
+    //     Topic: filterData?.topic,
+    //   };
+    // }
     let filterFlag = Object.values(filterObject).every(Boolean);
     if (filterFlag) {
       setIsFilter(true);
