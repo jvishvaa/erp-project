@@ -57,7 +57,7 @@ const QuestionBankDrawer = ({
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
-  console.log(section, 'section');
+  // console.log(section, 'section');
   const [testMarks, SettestMarks] = useState(section?.test_marks);
   const [marksselection, setSelectionMarks] = useState([]);
 
@@ -187,7 +187,6 @@ const QuestionBankDrawer = ({
         }
       });
     });
-
     if (!question?.is_central) {
       if (!questionIds.includes(question?.id)) {
         addQuestionToPaper(question, questionId, section?.name);
@@ -203,7 +202,7 @@ const QuestionBankDrawer = ({
   const handleAdd = () => {
    let marks = marksselection.map((item) => item?.question_mark[0])
     let check = marks.every((item) => item === marks[0])
-
+console.log(marksselection, selectedQuestion, '@@@@@')
     if (!questionPaperWise && marksselection?.length !== selectedQuestion?.length) {
       setAlert('error', 'please add Marks for All Selected Question');
     } else if(marksselection?.length === selectedQuestion?.length && !check){
@@ -234,6 +233,7 @@ const QuestionBankDrawer = ({
     }  };
 
   const handleMarks = (e,question,index) => {
+    console.log('handleMarks', e, question)
     let quesindex = testMarks.findIndex((item) => item?.question_id === question?.id)
     let quesindex1 = marksselection.findIndex((item) => item?.question_id === question?.id)
     // if(quesindex !== -1){
@@ -263,6 +263,7 @@ const QuestionBankDrawer = ({
   console.log(marksselection, 'marksselection');
 
   const toggleCompleteQuestion = (e, question, index) => {
+    console.log('gautam', e, question, index)
     const { name, checked } = e.target;
     if (name === 'allSelect') {
       if (checked === true) {
@@ -306,18 +307,29 @@ const QuestionBankDrawer = ({
         setSelectedQuestion([...selectedQuestion, question]);
         setLoading(false);
       } else {
-        let tempArr = [];
-        let tempQues = [];
-        tempArr = selectedIdQuestion.filter((el) => el !== question?.id);
-        tempQues = selectedQuestion.filter((el) => el?.id !== question?.id);
-        console.log(tempQues);
-        setSelectedIdQuestion(tempArr);
-        setSelectedQuestion(tempQues);
-        setIsSelectAllQuestion(false);
-        console.log(tempArr);
+        if(checked === true){
+          let tempArr = [];
+          let tempQues = [];
+          tempArr = selectedIdQuestion.filter((el) => el !== question?.id);
+          tempQues = selectedQuestion.filter((el) => el?.id !== question?.id);
+          setSelectedIdQuestion(tempArr);
+          // setSelectedQuestion(tempQues);
+          setSelectedQuestion([...selectedQuestion, question]);
+          setIsSelectAllQuestion(false);
+          // console.log(tempArr);
+          setSelectionMarks(marksselection)
+        } else {
+          let tempMarksSelection = []
+          let tempQues1 = [];
+          tempQues1 = selectedQuestion.filter((el) => el?.id !== question?.id);
+          setSelectedQuestion(tempQues1)
+          tempMarksSelection = marksselection.filter((el) => el?.question_id !== question?.id);
+          console.log(tempMarksSelection, '@@@@@');
+          setSelectionMarks(tempMarksSelection)
+        }
       }
     }
-    console.log(selectedQuestion);
+    // console.log(selectedQuestion);
   };
 
   const fetchFilterData = () => {
@@ -558,7 +570,6 @@ const QuestionBankDrawer = ({
     }
   };
 
-  console.log(periodData, 'periodData');
 
   const dummydata = [
     {
