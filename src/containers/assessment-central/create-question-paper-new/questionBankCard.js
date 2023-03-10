@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -16,7 +16,7 @@ import axiosInstance from '../../../config/axios';
 import moment from 'moment';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import { Button, Checkbox, Drawer, Input, Typography } from 'antd';
+import { Button, Checkbox, Drawer, Form, Input, Typography } from 'antd';
 import ViewMoreCard from 'containers/question-bank/question-bank-list/view-more-card';
 
 const QuestionBankCard = ({
@@ -61,7 +61,9 @@ const QuestionBankCard = ({
   //   const [callFlag, setCallFlag] = useState(false)
   //   const [selectedIndex, setSelectedIndex] = useState(-1)
 
-  console.log(questionName, 'questionName');
+  // console.log(questionName, 'questionName');
+const formRef = useRef()
+
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -221,9 +223,9 @@ const QuestionBankCard = ({
   const setMarksEnable = (e) => {
     setEnableMarks(e.target.checked);
   };
-
   return (
     <>
+        <Form ref={formRef}>
       <div className='row my-2'>
         {/* <div>
             a
@@ -237,6 +239,9 @@ const QuestionBankCard = ({
               <Checkbox
                 checked={question?.checked}
                 onChange={(e) => {
+                  formRef.current.setFieldsValue({
+                    marks:null
+                  })
                   toggleCompleteQuestion(e, question, index);
                   setEnableMarks(e.target.checked);
                 }}
@@ -249,9 +254,11 @@ const QuestionBankCard = ({
                 <div className='mr-2' style={{ color: '#00c040' }}>
                   Assign Marks
                 </div>
+                <Form.Item name='marks'>
                 <Input
                   disabled={!question?.checked}
                   type='number'
+                  // value={ question?.checked ? }
                   maxLength={3}
                   onChange={(e) => handleMarks(e, question, index)}
                   style={{
@@ -260,6 +267,7 @@ const QuestionBankCard = ({
                     background: enableMarks ? 'white' : '',
                   }}
                 />
+                </Form.Item>
               </div>
             )}
           </div>
@@ -318,6 +326,7 @@ const QuestionBankCard = ({
           </div>
         </div>
       </div>
+        </Form>
 
       {/* {viewMore && <ViewMoreCard
                       setSelectedIndex={setSelectedIndex}
