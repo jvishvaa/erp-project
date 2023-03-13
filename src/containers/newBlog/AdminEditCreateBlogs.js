@@ -1,34 +1,17 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-
-import {
-  Divider,
-  TextField,
-  // Button,
-  makeStyles,
-  // Typography,
-  Grid,
-  // Breadcrumb,
-  // Checkbox,
-} from '@material-ui/core';
 import Layout from 'containers/Layout';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import { useTheme } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import Carousel from 'react-elastic-carousel';
 import Loader from '../../components/loader/loader';
 import axios from 'axios';
 import {
-  fetchAcademicYears,
   fetchBranches as fetchBranchRedux,
   fetchGrades,
-  fetchSection,
 } from '../lesson-plan/create-lesson-plan/apis';
 import {
   Breadcrumb,
@@ -43,79 +26,12 @@ import {
   Checkbox,
 } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { element } from 'prop-types';
 import moment from 'moment';
 
-const drawerWidth = 350;
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    width: 300,
-  },
-  indeterminateColor: {
-    color: '#f50057',
-  },
-  selectAllText: {
-    fontWeight: 500,
-  },
-  selectedAll: {
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.08)',
-    },
-  },
-  root: {
-    maxWidth: '90vw',
-    width: '95%',
-    margin: '20px auto',
-    marginTop: theme.spacing(4),
-    boxShadow: 'none',
-  },
-  customFileUpload: {
-    border: '1px solid black',
-    padding: '6px 12px',
-
-    cursor: 'pointer',
-  },
-  container: {
-    maxHeight: '70vh',
-    maxWidth: '90vw',
-  },
-  dividerColor: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
-  },
-  buttonColor: {
-    color: `${theme.palette.secondary.main} !important`,
-    backgroundColor: 'white',
-  },
-  buttonColor1: {
-    color: `${theme.palette.primary.main} !important`,
-    backgroundColor: 'white',
-  },
-  columnHeader: {
-    color: `${theme.palette.secondary.main} !important`,
-    fontWeight: 600,
-    fontSize: '1rem',
-    backgroundColor: `#ffffff !important`,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  tableCell: {
-    color: theme.palette.secondary.main,
-  },
-  vl: {
-    borderLeft: `3px solid ${theme.palette.primary.main}`,
-    height: '45px',
-  },
-}));
-
 const AdminEditCreateBlogs = () => {
-  const classes = useStyles();
   const { Option } = Select;
   const formRef = useRef();
   const { TextArea } = Input;
-  const themeContext = useTheme();
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
   const user_level = data?.user_level;
@@ -156,7 +72,8 @@ const AdminEditCreateBlogs = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   const [academicYear, setAcademicYear] = useState('');
-  const [flag,setFlag] = useState(false)
+  const [flag, setFlag] = useState(false);
+  const [requestOngoing, setRequestOngoing] = useState(false);
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -261,37 +178,6 @@ const AdminEditCreateBlogs = () => {
       setLoading(false);
       message.error('Failed To Fetch Branch');
     }
-
-    // if (branch_update_user) {
-
-    //   var branchIds = branch_update_user?.branches?.map((item) => item?.id);
-    //   axiosInstance
-    //     .get(`${endpoints.newBlog.activityBranch}?branch_ids=${branchIds}`, {
-    //       headers: {
-    //         'X-DTS-HOST': X_DTS_HOST,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       if (res?.data) {
-    //         const transformedData = res.data.result?.map((obj) => ({
-    //           id: obj.id,
-    //           name: obj.name,
-    //         }));
-    //         // transformedData.unshift({
-    //         //   name: 'Select All',
-    //         //   id: 'all',
-    //         // });
-    //         setBranchList(transformedData);
-    //         if (selectedBranch && selectedBranch.length > 0) {
-    //           const selectedSectionArray = transformedData.filter(
-    //             (obj) => selectedBranch.findIndex((sec) => obj.id == sec.id) > -1
-    //           );
-    //           setSelectedBranch(selectedSectionArray);
-    //         }
-    //       }
-    //       setLoading(false);
-    //     });
-    // }
   };
 
   let allGradeIds = [];
@@ -310,27 +196,6 @@ const AdminEditCreateBlogs = () => {
       setLoading(false);
       message.error('Failed to Fetch Grade');
     }
-
-    // axiosInstance
-    //   .get(`${endpoints.newBlog.activityGrade}?branch_ids=${ids}`, {
-    //     headers: {
-    //       'X-DTS-HOST': X_DTS_HOST,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     if (res) {
-    //       const gradeData = res?.data?.result || [];
-    //       for (let i = 0; i < gradeData?.length; i++) {
-    //         allGradeIds.push(gradeData[i].id);
-    //       }
-    //       gradeData.unshift({
-    //         name: 'Select All',
-    //         id: allGradeIds,
-    //       });
-    //       setGradeList(gradeData);
-    //     }
-    //     setLoading(false);
-    //   });
   };
 
   const handleChange = (event, value) => {
@@ -343,7 +208,7 @@ const AdminEditCreateBlogs = () => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`,
+          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
         )
         .then((result) => {
           setLoading(false);
@@ -390,7 +255,6 @@ const AdminEditCreateBlogs = () => {
       //     : value;
       setSelectedGrade(value);
       fetchSections(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
-      
     }
   };
   const handleSection = (e, value) => {
@@ -402,37 +266,11 @@ const AdminEditCreateBlogs = () => {
       setSelectedSection(value);
     }
   };
-
-  const blogsContent = [
-    {
-      label: 'Public Speaking',
-      value: '1',
-    },
-    {
-      label: 'Post Card Writting',
-      value: '2',
-    },
-    {
-      label: 'Blog Card Writting',
-      value: '3',
-    },
-  ];
   const handleStartDateChange = (val) => {
     setStartDate(moment(val).format('YYYY-MM-DD'));
-    setFlag(true)
-  };
-  const PreviewBlog = () => {
-    setAssigned(true);
+    setFlag(true);
   };
 
-  const onFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setFileUrl(URL.createObjectURL(event.target.files[0]));
-  };
-  const deleteSelectedImage = () => {
-    setFileUrl(null);
-    setSelectedFile(null);
-  };
   const handleClear = () => {
     setSelectedGrade([]);
     setSelectedBranch([]);
@@ -442,11 +280,11 @@ const AdminEditCreateBlogs = () => {
     setTitle('');
     setStartDate('');
     formRef.current.setFieldsValue({
-      activity_categories:[],
-      branch:[],
-      grade:[],
-      section:[],
-      })
+      activity_categories: [],
+      branch: [],
+      grade: [],
+      section: [],
+    });
   };
   const formatdate = new Date();
   const hoursAndMinutes =
@@ -497,6 +335,7 @@ const AdminEditCreateBlogs = () => {
       setLoading(false);
       return;
     } else {
+      setRequestOngoing(true);
       let body = {
         title: title,
         description: description,
@@ -504,7 +343,7 @@ const AdminEditCreateBlogs = () => {
         submission_date: flag ? startDate + hoursAndMinutes : startDate,
         activity_type_id: activityName.id,
         session_year: selectedAcademicYear.session_year,
-        created_at: flag ? startDate + hoursAndMinutes: startDate,
+        created_at: flag ? startDate + hoursAndMinutes : startDate,
         created_by: user_id.id,
         branch_ids: branchIds,
         grade_ids: gradeIds,
@@ -530,8 +369,14 @@ const AdminEditCreateBlogs = () => {
           setTitle('');
           setStartDate('');
           setEditFlag(false);
+          setRequestOngoing(false);
           history.push('/blog/blogview');
           setLoading(false);
+        })
+        .catch((error) => {
+          setRequestOngoing(false);
+          setLoading(false);
+          message.error(error);
         });
     }
   };
@@ -568,8 +413,10 @@ const AdminEditCreateBlogs = () => {
           setStartDate(response?.data?.result?.submission_date);
           setEditFlag(true);
           if (history.location.state.data) {
-            const branchIds = response?.data?.result?.branches.map((obj) => obj?.branch_id) || [];
-            const gradeId = response?.data?.result?.grades?.map((obj) => obj?.grade_id) || [];
+            const branchIds =
+              response?.data?.result?.branches.map((obj) => obj?.branch_id) || [];
+            const gradeId =
+              response?.data?.result?.grades?.map((obj) => obj?.grade_id) || [];
 
             getGrades(selectedAcademicYear?.id, branchIds);
             fetchSections(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
@@ -577,10 +424,9 @@ const AdminEditCreateBlogs = () => {
             formRef.current.setFieldsValue({
               activity_categories: response?.data?.result?.activity_type?.name,
               branch: response?.data?.result?.branches.map((obj) => obj?.branch_id),
-              grade:response?.data?.result?.grades?.map((obj) => obj?.grade_id), 
+              grade: response?.data?.result?.grades?.map((obj) => obj?.grade_id),
               section: response?.data?.result?.sections?.map((obj) => obj?.section_id),
-              date: moment(response?.data?.result?.submission_date).format('YYYY-MM-DD')
-            
+              date: moment(response?.data?.result?.submission_date).format('YYYY-MM-DD'),
             });
           }
           setLoading(false);
@@ -698,7 +544,12 @@ const AdminEditCreateBlogs = () => {
 
   const branchOptions = branchList?.map((each) => {
     return (
-      <Option key={each?.branch?.id} value={each?.branch?.id} id={each?.branch?.id} branch_id={each?.branch?.id}>
+      <Option
+        key={each?.branch?.id}
+        value={each?.branch?.id}
+        id={each?.branch?.id}
+        branch_id={each?.branch?.id}
+      >
         {each?.branch?.branch_name}
       </Option>
     );
@@ -706,14 +557,24 @@ const AdminEditCreateBlogs = () => {
 
   const gradeOptions = grades?.map((each) => {
     return (
-      <Option key={each?.grade_id} value={each?.grade_id} id={each?.grade_id} grade_id={each?.grade_id}>
+      <Option
+        key={each?.grade_id}
+        value={each?.grade_id}
+        id={each?.grade_id}
+        grade_id={each?.grade_id}
+      >
         {each?.grade__grade_name}
       </Option>
     );
   });
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.section_id} value={each?.section_id} id={each?.section_id} section_id={each?.section_id}>
+      <Option
+        key={each?.section_id}
+        value={each?.section_id}
+        id={each?.section_id}
+        section_id={each?.section_id}
+      >
         {each?.section__section_name}
       </Option>
     );
@@ -945,36 +806,6 @@ const AdminEditCreateBlogs = () => {
                         </Select>
                       </Form.Item>
                     </div>
-                    {/* {physicalId ? ( */}
-                    {/* <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                          <div className='mb-2 text-left'>Round</div>
-                          <Form.Item name='round'>
-                            <Select
-                              allowClear
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              placeholder={'Select Round'}
-                              value={selectedRound || []}
-                              showSearch
-                              optionFilterProp='children'
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              onChange={(event, value) => {
-                                handleRound(event, value);
-                              }}
-                              className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                              bordered={true}
-                            >
-                            </Select>
-                          </Form.Item>
-                        </div> */}
-                    {/* ) : (
-                        ''
-                      )} */}
 
                     <div className='col-md-2 col-6'>
                       <div className='mb-2 text-left'>Submission End Date</div>
@@ -988,21 +819,6 @@ const AdminEditCreateBlogs = () => {
                             allowClear={false}
                             onChange={(value) => handleStartDateChange(value)}
                           />
-                          {/* <RangePicker
-                          allowClear={false}
-                          style={{ width: '105%', border: 'none' }}
-                          bordered={true}
-                          placement='bottomRight'
-                          showToday={false}
-                          suffixIcon={<DownOutlined />}
-                          // defaultValue={[moment(), moment()]}
-                          // value={formik?.values.date}
-                          // onChange={(value) => handleDateChange(value)}
-                          className='th-range-picker th-br-4 th-bg-grey'
-                          separator={'-'}
-                          format={'DD/MM/YYYY'}
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                        /> */}
                         </Space>
                       </Form.Item>
                     </div>
@@ -1055,7 +871,6 @@ const AdminEditCreateBlogs = () => {
                         />
                         <Checkbox
                           onChange={() => handleChange(obj?.id, obj?.id)}
-                          className={classes.tickSize}
                           checked={isItemSelected}
                           color='primary'
                           inputProps={{ 'aria-label': 'secondary checkbox' }}
@@ -1085,7 +900,7 @@ const AdminEditCreateBlogs = () => {
                   <Button
                     type='primary'
                     className='w-100 th-14'
-                    disabled={user_level == 11}
+                    disabled={user_level == 11 || requestOngoing}
                     onClick={dataPost}
                   >
                     Update Activity
@@ -1093,360 +908,9 @@ const AdminEditCreateBlogs = () => {
                 </div>
               </div>
             </div>
-            {/* <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-            <div style={{ width: '642px' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginTop: '12px',
-                }}
-              >
-                <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-                <div style={{ marginTop: '21px', marginRight: '34px' }}>
-                  <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
-                </div>
-              </div>
-
-              <div
-                style={{
-                  border: '1px solid lightgray',
-                  height: ' auto',
-                  marginLeft: '16px',
-                  marginRight: '32px',
-                  borderRadius: '10px',
-                  marginBottom: '9px',
-                }}
-              >
-                <div style={{ marginLeft: '23px', marginTop: '28px' }}>
-                  <div style={{ fontSize: '15px', color: '#7F92A3' }}>
-                    Title -{activityName.name}
-                  </div>
-                  <div style={{ fontSize: '21px' }}>{title}</div>
-                  <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                    Submission on -{startDate}
-                  </div>
-                  <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                    Branch -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {selectedBranch.map((each) => (
-                        <b style={{ padding: '4px', fontWeight: '500' }}>
-                          {each?.children}
-                        </b>
-                      ))}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'gray' }}>
-                    Grade -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {selectedGrade.map((each) => (
-                        <b style={{ padding: '4px', fontWeight: '500' }}>
-                          {each?.children}
-                        </b>
-                      ))}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'gray' }}>
-                    Section -&nbsp;
-                    <span style={{ color: 'black' }}>
-                      {selectedSection.map((each) => (
-                        <b style={{ padding: '4px', fontWeight: '500' }}>
-                          {each?.children}
-                        </b>
-                      ))}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                  ></div>
-                  <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                    Instructions
-                  </div>
-                  <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
-                  <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                    <img src={fileUrl} width='50%' />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Dialog> */}
           </div>
         </div>
       </Layout>
-
-      {/* <Layout>
-        <Grid
-          container
-          direction='row'
-          style={{ paddingLeft: '22px', paddingRight: '10px' }}
-        >
-          <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
-            <Breadcrumb
-              separator={<NavigateNextIcon fontSize='small' />}
-              aria-label='breadcrumb'
-            >
-              <Typography color='textPrimary' variant='h6'>
-                <strong>Activity Management</strong>
-              </Typography>
-              <Typography color='textPrimary'>Activity</Typography>
-              <Typography color='Primary'>Edit Activity</Typography>
-            </Breadcrumb>
-          </Grid>
-        </Grid>
-        <div style={{ paddingLeft: '22px', paddingRight: '10px' }}>
-          <Button
-            variant='primary'
-            style={{ borderRadius: '1px', color: 'white' }}
-            disabled
-          >
-            Edit Activity
-          </Button>
-
-          <Divider className={classes.dividerColor} />
-        </div>
-        <div
-          style={{
-            paddingLeft: '22px',
-            paddingRight: '10px',
-            paddingTop: '50px',
-            fontSize: '15px',
-          }}
-        >
-          <div
-            style={{
-              marginLeft: '9px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginRight: '6px',
-            }}
-          >
-            <div style={{ display: 'flex' }}>
-              Activity Category *:
-              <Autocomplete
-                style={{ marginTop: '-7px', width: '222px', marginLeft: '18px' }}
-                size='small'
-                onChange={handleChangeActivity}
-                options={activityCategory || []}
-                value={activityName || []}
-                getOptionLabel={(option) => option?.name}
-                filterSelectedOptions
-                renderInput={(params) => <TextField {...params} variant='outlined' />}
-              />
-            </div>
-            <div>
-              {' '}
-              Submission End Date *: &nbsp;&nbsp;&nbsp;
-              <TextField
-                required
-                size='small'
-                style={{ marginTop: '-6px' }}
-                onChange={(e) => handleStartDateChange(e.target.value)}
-                type='date'
-                value={startDate || ' '}
-                variant='outlined'
-              />
-            </div>
-          </div>
-          <Grid container spacing={2} style={{ marginTop: '23px' }}>
-            <Grid item md={6} xs={12}>
-              <Autocomplete
-                multiple
-                fullWidth
-                size='small'
-                limitTags={1}
-                options={branchList || []}
-                select
-                value={selectedBranch || []}
-                className='dropdownIcon'
-                SelectProps={{ multiple: true }}
-                getOptionLabel={(option) => option?.name || ''}
-                filterSelectedOptions
-                onChange={(event, value) => {
-                  handleBranch(event, value);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    fullWidth
-                    variant='outlined'
-                    label='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <Autocomplete
-                multiple
-                fullWidth
-                limitTags={1}
-                size='small'
-                className='filter-student meeting-form-input'
-                options={gradeList || []}
-                getOptionLabel={(option) => option?.name || ''}
-                filterSelectedOptions
-                value={selectedGrade || []}
-                onChange={(event, value) => {
-                  handleGrade(event, value);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    fullWidth
-                    variant='outlined'
-                    label='Grade'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <Autocomplete
-                multiple
-                fullWidth
-                limitTags={1}
-                size='small'
-                className='filter-student meeting-form-input'
-                options={sectionDropdown || []}
-                getOptionLabel={(option) => option?.name || ''}
-                filterSelectedOptions
-                value={selectedSection || []}
-                onChange={(event, value) => {
-                  handleSection(event, value);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    fullWidth
-                    variant='outlined'
-                    label='Section'
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <div
-            style={{
-              border: '1px solid lightgrey',
-              borderRadius: '5px',
-              height: 'auto',
-              marginTop: '20px',
-            }}
-          >
-            <div style={{ marginTop: '23px', marginLeft: '73px', display: 'flex' }}>
-              Activity Details *: &nbsp;&nbsp;&nbsp;&nbsp;
-              <TextField
-                id='outlined-basic'
-                size='small'
-                fullWidth
-                value={title}
-                onChange={handleTitle}
-                style={{ maxWidth: '80%' }}
-                label='Title'
-                variant='outlined'
-              />
-            </div>
-            <br />
-            <div
-              style={{
-                marginLeft: '17%',
-                marginRight: '8%',
-                marginBottom: '23px',
-              }}
-            >
-              <TextField
-                label='Description/Instructions *'
-                placeholder='Description/Instructions *'
-                multiline
-                value={description}
-                onChange={handleDescription}
-                fullWidth
-                style={{ maxWidth: '100%' }}
-                rows='8'
-                variant='outlined'
-              />
-            </div>
-          </div>
-          <div
-            style={{
-              border: '1px solid lightgrey',
-              borderRadius: '5px',
-              height: 'auto',
-              marginTop: '20px',
-            }}
-          >
-            {selectedBranch?.length !== 0 && activityName?.length !== 0 ? (
-              <Carousel breakPoints={breakPoints} showThumbs={false} infiniteLoop={true}>
-                {templates?.map((obj, index) => {
-                  const isItemSelected = isSelected(obj?.id);
-                  return (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      <img
-                        src={obj?.template_path}
-                        alt='images'
-                        style={{ maxWidth: '34%' }}
-                      />
-                      <Checkbox
-                        onChange={() => handleChange(obj?.id, obj?.id)}
-                        className={classes.tickSize}
-                        checked={isItemSelected}
-                        color='primary'
-                        inputProps={{ 'aria-label': 'secondary checkbox' }}
-                      />
-                      <div>{obj?.title}</div>
-                    </div>
-                  );
-                })}
-              </Carousel>
-            ) : (
-              ''
-            )}
-          </div>
-          <div
-            style={{
-              marginTop: '60px',
-              marginLeft: '50px',
-
-              display: 'flex',
-            }}
-          >
-            <Button
-              variant='outlined'
-              className={classes.buttonColor}
-              size='medium'
-              onClick={handleGoBack}
-            >
-              Back
-            </Button>{' '}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <Button
-              variant='outlined'
-              onClick={handleClear}
-              className={classes.buttonColor1}
-              size='medium'
-            >
-              Clear
-            </Button>{' '}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <Button
-              variant='contained'
-              color='primary'
-              disabled={user_level == 11}
-              onClick={dataPost}
-            >
-              Update Activity
-            </Button>
-          </div>
-        </div>
-      </Layout> */}
     </div>
   );
 };
