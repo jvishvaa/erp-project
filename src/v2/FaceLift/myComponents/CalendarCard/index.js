@@ -215,8 +215,6 @@ const CalendarCard = () => {
   })
 
 
-  console.log(monthHolidays, 'monthafter');
-
 
   return (
     <div className='th-bg-white th-br-5 mt-3'>
@@ -289,6 +287,30 @@ const CalendarCard = () => {
                 )
               ) {
                 return 'bothEvent';
+              }
+              if (
+                monthHolidays.find(
+                  (item) =>
+                    item?.date != moment(date).format('YYYY-MM-DD')  && moment(date).day() == 6
+                )
+              ) {
+                return 'th-weekendcal';
+              }
+              if (
+                monthHolidays.find(
+                  (item) =>
+                    item?.date != moment(date).format('YYYY-MM-DD')  && moment(date).day() == 0
+                )
+              ) {
+                return 'th-weekendcal';
+              }
+              if (
+                monthHolidays.find(
+                  (item) =>
+                    item?.date != moment(date).format('YYYY-MM-DD')  && moment(date).day() == 1 || 2 || 3 || 4 || 5
+                )
+              ) {
+                return 'th-weekdaycal';
               }
             }}
             calendarType='US'
