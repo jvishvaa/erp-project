@@ -81,10 +81,21 @@
 
 .th-calendar .react-calendar__tile--active{
   background: none !important;
-  color: inherit !important;
+  /* color: inherit !important; */
+}
+.th-calendar .react-calendar__tile--active:hover{
+  background: none !important;
+  /* color: inherit !important; */
 }
 
 .th-calendar .bothEvent{
   border: 1px solid #d700dd;
   color: #00b8df
+}
+
+.th-calendar .th-weekendcal{
+  color: #d10000 !important;
+}
+.th-calendar .th-weekdaycal{
+  color: black !important;
 }
