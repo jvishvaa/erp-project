@@ -81,7 +81,7 @@
 
 .th-calendar .react-calendar__tile--active{
   background: none !important;
-  /* color: inherit !important; */
+  color: inherit !important;
 }
 
 .th-calendar .bothEvent{

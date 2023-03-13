@@ -563,3 +563,9 @@
   overflow: hidden;
   overflow-y: scroll;
 }
+
+.fileuploaddrop{
+  .MuiSelect-root{
+    padding: 0.25rem!important;
+  }
+}
