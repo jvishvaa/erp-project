@@ -256,7 +256,7 @@ const Sections = ({
     return span.textContent || span.innerText;
   }
 
-  console.log(section, '@@');
+  // console.log(section, '@@');
 
   const isoptionalQues = (e) => {
     setisOptionalQues(e.target.checked);

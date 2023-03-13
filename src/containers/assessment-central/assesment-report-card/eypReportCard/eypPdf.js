@@ -158,7 +158,7 @@ const EypReportCardPdf = (reportCardData, branchName) => {
     doc.addImage(img, 'png', 0, 0, 297, 210);
 
     if (i === pageCount - 1) {
-      y = 188;
+      y = 192;
 
       doc.setFillColor(255, 255, 255);
       doc.rect(95, 186, 68, 30, 'F');
@@ -170,28 +170,31 @@ const EypReportCardPdf = (reportCardData, branchName) => {
       // y += 10
 
       doc.setFillColor(0, 253, 43);
-      doc.rect(30, 192, 57, 10, 'F');
+      doc.rect(30, 194, 57, 10, 'F');
 
       doc.setTextColor(0, 0, 0);
-      doc.setFontSize(11);
+      doc.setFontSize(11.2);
       doc.setFont('Karla-VariableFont_wght', 'normal');
-      doc.text(`EE - Exceeding Expectations`, 32, 198, null, null, 'left');
+      doc.text(`EE - Exceeding Expectations`, 32, 200, null, null, 'left');
 
       doc.setFillColor(251, 171, 0);
-      doc.rect(87, 192, 57, 10, 'F');
-      doc.text(`ME - Meeting Expectations`, 89, 198, null, null, 'left');
+      doc.rect(87, 194, 57, 10, 'F');
+      doc.text(`ME - Meeting Expectations`, 89, 200, null, null, 'left');
 
       doc.setFillColor(170, 192, 71);
-      doc.rect(144, 192, 63, 10, 'F');
-      doc.text(`AE - Approaching Expectations`, 146, 198, null, null, 'left');
+      doc.rect(144, 194, 63, 10, 'F');
+      doc.text(`AE - Approaching Expectations`, 146, 200, null, null, 'left');
 
       doc.setFillColor(255, 0, 43);
-      doc.rect(207, 192, 43, 10, 'F');
-      doc.text(`NS - Needs Support`, 209, 198, null, null, 'left');
+      doc.rect(207, 194, 43, 10, 'F');
+      doc.text(`NS - Needs Support`, 209, 200, null, null, 'left');
     }
   }
 
   doc.deletePage(pageCount);
+  doc.setProperties({
+    title: `${reportCardData?.student_details?.name}- ${reportCardData?.student_details?.erp_id}`,
+  });
   window.open(doc.output('bloburl'));
 };
 

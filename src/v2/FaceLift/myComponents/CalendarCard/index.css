@@ -80,7 +80,7 @@
 
 
 .th-calendar .react-calendar__tile--active{
-  background: none;
+  background: none !important;
   color: inherit !important;
 }
 
