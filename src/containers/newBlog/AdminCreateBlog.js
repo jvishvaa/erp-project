@@ -138,7 +138,6 @@ const dummyRound = [
 
 const AdminCreateBlog = () => {
   const classes = useStyles();
-  const themeContext = useTheme();
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
   const user_level = data?.user_level;
@@ -156,6 +155,7 @@ const AdminCreateBlog = () => {
   const { Option } = Select;
   const { TextArea } = Input;
   const formRef = createRef();
+  const [requestOngoing, setRequestOngoing] = useState(false);
   const [branchList, setBranchList] = useState([]);
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [loading, setLoading] = useState(false);
@@ -584,6 +584,7 @@ const AdminCreateBlog = () => {
       message.error('Please Add Description');
       return;
     } else {
+      setRequestOngoing(true);
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
@@ -621,6 +622,7 @@ const AdminCreateBlog = () => {
           setDescription('');
           setTitle('');
           setStartDate('');
+          setRequestOngoing(false);
           if (isPhysicalActivity == true) {
             history.push('/physical/activity');
             return;
@@ -631,6 +633,11 @@ const AdminCreateBlog = () => {
             history.push('/blog/blogview');
             return;
           }
+        })
+        .catch((error) => {
+          setRequestOngoing(false);
+          setLoading(false);
+          message.error(error);
         });
     }
   };
@@ -1211,7 +1218,7 @@ const AdminCreateBlog = () => {
                 <Button
                   type='primary'
                   className='w-100 th-14'
-                  disabled={user_level == 11}
+                  disabled={user_level == 11 || requestOngoing}
                   onClick={dataPost}
                 >
                   Submit
