@@ -206,7 +206,7 @@ async function MultiEypPdf(reportData, branchName, gradeName, sectionName) {
     let doc = getJsPdf(student, branchName);
     if (typeof doc !== 'undefined') {
       try {
-        zip.file(student?.student_details?.name + ind + '.pdf', doc.output('blob'));
+        zip.file(student?.student_details?.name + '.pdf', doc.output('blob'));
       } catch {
         console.error('Something went wrong!');
       }
@@ -214,7 +214,7 @@ async function MultiEypPdf(reportData, branchName, gradeName, sectionName) {
   });
 
   zip.generateAsync({ type: 'blob' }).then(function (content) {
-    saveAs(content, `${gradeName}-${sectionName}.zip`);
+    saveAs(content, `${sectionName}.zip`);
   });
   return { generated: true };
 }

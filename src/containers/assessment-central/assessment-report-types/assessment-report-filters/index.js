@@ -28,6 +28,7 @@ import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest'
 import Weeklyassesmentreport from '../student-report/weekly-quiz-performnace';
 import Loading from '../../../../components/loader/loader';
 import MultiEypPdf from 'containers/assessment-central/assesment-report-card/eypReportCard/multiEypPdf';
+import JSZip from 'jszip';
 let url = '';
 const AssessmentReportFilters = ({
   widerWidth,
@@ -78,6 +79,7 @@ const AssessmentReportFilters = ({
   const [sectionToggle, setSectionToggle] = useState(false);
   const [examDate, setExamDate] = useState(null);
   const [multiEypLoading, setMultiEypLoading] = useState(false);
+  const [multiReportLoading, setMultiReportLoading] = useState(false);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -937,6 +939,16 @@ const AssessmentReportFilters = ({
     }
   };
 
+  const generateMultiReportCard = (params = {}) => {
+    if (!filterData.branch?.id) return setAlert('error', `Please select Branch`);
+    if (!filterData.grade?.grade_id) return setAlert('error', `Please select Grade`);
+    if (!filterData.section?.section_id)
+      return setAlert('error', `Please select Section`);
+    else {
+      setMultiReportLoading(true);
+    }
+  };
+
   useEffect(() => {
     if (multiEypLoading) {
       let obj = {};
@@ -948,12 +960,12 @@ const AssessmentReportFilters = ({
           params: { ...obj },
         })
         .then((response) => {
-          if (response?.data) {
+          if (response?.data?.length > 0) {
             MultiEypPdf(
               response?.data,
               filterData?.branch?.branch?.branch_name,
               filterData?.grade?.grade__grade_name,
-              filterData?.section?.grade__grade_name
+              filterData?.section?.section__section_name
             )
               .then((data) => {
                 setMultiEypLoading(false);
@@ -961,16 +973,70 @@ const AssessmentReportFilters = ({
               .catch(() => {
                 setMultiEypLoading(false);
               });
-
-            setLoading(false);
+          } else {
+            setAlert('error', 'No file to download!');
+            setMultiEypLoading(false);
           }
         })
         .catch((err) => {
           setAlert('error', err?.response?.data?.message);
-          setLoading(false);
+          setMultiEypLoading(false);
         });
     }
   }, [multiEypLoading]);
+
+  useEffect(() => {
+    if (multiReportLoading) {
+      let obj = {};
+      obj.acad_session_id = filterData?.branch?.id;
+      obj.grade_id = filterData.grade?.grade_id;
+      obj.section_id = filterData.section?.section_id;
+      axiosInstance
+        .get(`${endpoints.assessmentReportTypes.normalReportCardBulk}`, {
+          params: { ...obj },
+        })
+        .then((response) => {
+          if (response?.data.result?.length > 0) {
+            handleDownloadZip(response?.data.result);
+            setMultiReportLoading(false);
+          } else {
+            setAlert('error', 'No file to download!');
+            setMultiReportLoading(false);
+          }
+        })
+        .catch((err) => {
+          setAlert('error', err?.response?.data?.message);
+          setMultiReportLoading(false);
+        });
+    }
+  }, [multiReportLoading]);
+
+  const handleDownloadZip = async (reportUrl) => {
+    var zip = new JSZip();
+    console.log({ reportUrl });
+    for (const url of reportUrl) {
+      try {
+        const response = await fetch(
+          endpoints.assessmentReportTypes.reportCardBucketUrl + url
+        );
+        const blob = await response.blob();
+        const filename = url.split('/').pop();
+        zip.file(filename, blob);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    // Generate the zip file
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      // Download the zip file
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = `${filterData?.section?.section__section_name}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  };
 
   return (
     <>
@@ -1487,26 +1553,44 @@ const AssessmentReportFilters = ({
           </Grid>
         )}
         {selectedReportType?.id === 14 &&
-          [8, 11]?.includes(userDetails?.user_level) &&
-          eypConfig?.includes(String(filterData.grade?.grade_id)) && (
-            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-              {multiEypLoading ? (
-                <Button variant='contained' color='primary'>
-                  Please Wait...{' '}
-                  <CircularProgress color='#ffffff' size={20} thickness={4} />
-                </Button>
-              ) : (
-                <Button
-                  variant='contained'
-                  size='medium'
-                  color='primary'
-                  onClick={() => generateMultiEyp()}
-                >
-                  Download Zip
-                </Button>
-              )}
-            </Grid>
-          )}
+        [8, 11]?.includes(userDetails?.user_level) &&
+        eypConfig?.includes(String(filterData.grade?.grade_id)) ? (
+          <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+            {multiEypLoading ? (
+              <Button variant='contained' color='primary'>
+                Please Wait...{' '}
+                <CircularProgress color='#ffffff' size={20} thickness={4} />
+              </Button>
+            ) : (
+              <Button
+                variant='contained'
+                size='medium'
+                color='primary'
+                onClick={() => generateMultiEyp()}
+              >
+                Bulk Download
+              </Button>
+            )}
+          </Grid>
+        ) : (
+          <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+            {multiReportLoading ? (
+              <Button variant='contained' color='primary'>
+                Please Wait...{' '}
+                <CircularProgress color='#ffffff' size={20} thickness={4} />
+              </Button>
+            ) : (
+              <Button
+                variant='contained'
+                size='medium'
+                color='primary'
+                onClick={() => generateMultiReportCard()}
+              >
+                Bulk Download
+              </Button>
+            )}
+          </Grid>
+        )}
 
         {selectedReportType?.id !== 5 &&
           selectedReportType?.id !== 11 &&
