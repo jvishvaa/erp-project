@@ -49,8 +49,8 @@ const Layout = ({ children, history }) => {
     first_name,
     last_name,
   } = JSON.parse(localStorage.getItem('userDetails')) || '';
-  const branchesmapped =
-    sessionStorage.getItem('selected_branch') === null ? false : true;
+  const [branchesmapped, setBranchesMapped] = useState(true);
+
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -74,6 +74,9 @@ const Layout = ({ children, history }) => {
       userDetails = JSON.parse(userDetails);
       const { is_superuser = false } = userDetails;
       setSuperUser(is_superuser);
+      setBranchesMapped(
+        sessionStorage.getItem('selected_branch') === null ? false : true
+      );
     }
     if (containerRef.scrollTop > 50) {
       containerRef.scrollTop = 0;
@@ -1259,7 +1262,7 @@ const Layout = ({ children, history }) => {
                           <span className='th-20'>{`${
                             first_name + ' ' + last_name
                           } not mapped to academic year ${
-                            selectedAcademicYear.session_year
+                            selectedAcademicYear?.session_year
                           }`}</span>
                         }
                       />
