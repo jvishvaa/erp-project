@@ -24,7 +24,16 @@ import CloseIcon from '@material-ui/icons/Close';
 import { IconButton, Typography } from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 
-const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFiltered, counter, erpConfig ,selectedBranch }) => {
+const MyCalendar = ({
+  selectedGrade,
+  selectedSubject,
+  acadyear,
+  filtered,
+  setFiltered,
+  counter,
+  erpConfig,
+  selectedBranch,
+}) => {
   const [startDate, setStartDate] = useState([]);
   const [endDate, setEndDate] = useState([]);
   const [events, setEvents] = useState([]);
@@ -35,11 +44,11 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
   const [jumpTo, setJumpTo] = useState();
   const [isDay, setIsDay] = useState(false);
   const [isCreateClassOpen, setIsCreateClassOpen] = useState(false);
-  const [filterData, setFilterData] = useState([])
-  const [isMonth, setIsMonth] = useState(false)
-  const [viewCal, setViewCal] = useState('')
-  const [periodDataEach, setPeriodDataEach] = useState([])
-  const [dialogDate, setDialogDate] = useState()
+  const [filterData, setFilterData] = useState([]);
+  const [isMonth, setIsMonth] = useState(false);
+  const [viewCal, setViewCal] = useState('');
+  const [periodDataEach, setPeriodDataEach] = useState([]);
+  const [dialogDate, setDialogDate] = useState();
   const toggleCreateClass = () => {
     setIsCreateClassOpen((prevState) => !prevState);
   };
@@ -51,7 +60,6 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
   const branchIds =
     JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch || {};
 
-
   const { user_level: userLevel = 5 } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const handleDateClick = (e) => {
@@ -60,28 +68,28 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
   };
 
   const handleEventClick = (e) => {
-    if(e?.start) {
-    const cal = calendarRef.current.getApi();
-    cal.changeView('day', e?.start);
-    setOpenMonth(false)
+    if (e?.start) {
+      const cal = calendarRef.current.getApi();
+      cal.changeView('day', e?.start);
+      setOpenMonth(false);
     } else {
       const cal = calendarRef.current.getApi();
       cal.changeView('day', e?.date);
-      setOpenMonth(false)
+      setOpenMonth(false);
     }
   };
 
   const handleClickOpenMonth = (e) => {
     setOpenMonth(true);
-    setDialogDate(moment(e.event.start).format('DD-MM-YYYY'))
+    setDialogDate(moment(e.event.start).format('DD-MM-YYYY'));
     if (e.event.start) {
       if (!filtered) {
         let params = {
           start_date: moment(e.event.start).format('YYYY-MM-DD'),
           end_date: moment(e.event.start).format('YYYY-MM-DD'),
-          branch: (branchIds.map((el) => el?.id)).toString(),
-          session_year: selectedAcademicYear?.id
-        }
+          branch: branchIds.map((el) => el?.id).toString(),
+          session_year: selectedAcademicYear?.id,
+        };
         axios({
           method: 'get',
           url: `${endpoints.period.getDate}`,
@@ -89,36 +97,33 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
         })
           .then((res) => {
             console.log(res);
-            setPeriodDataEach(res.data.result)
+            setPeriodDataEach(res.data.result);
           })
           .catch((error) => {
             console.log(error);
-          })
-      }
-      else {
+          });
+      } else {
         let params = {
           start_date: moment(e.event.start).format('YYYY-MM-DD'),
           end_date: moment(e.event.start).format('YYYY-MM-DD'),
           subject_mapping: selectedSubject.toString(),
           grade: selectedGrade.toString(),
-          acad_session: selectedBranch?.id
-        }
+          acad_session: selectedBranch?.id,
+        };
         axios({
           method: 'get',
           url: `${endpoints.period.getDate}`,
           params: params,
         })
           .then((res) => {
-            setPeriodDataEach(res.data.result)
+            setPeriodDataEach(res.data.result);
           })
           .catch((error) => {
             console.log(error);
-          })
+          });
       }
     }
-
   };
-
 
   const handleClose = () => {
     setOpen(false);
@@ -126,8 +131,8 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
 
   const handleCloseMonth = () => {
     setOpenMonth(false);
-    setDialogDate()
-    setPeriodDataEach([])
+    setDialogDate();
+    setPeriodDataEach([]);
   };
 
   const handleOpenEvent = () => {
@@ -139,10 +144,10 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
       let params = {
         start_date: startDate,
         end_date: endDate,
-        branch: (branchIds.map((el) => el?.id)).toString(),
-        session_year : selectedAcademicYear?.id
-      }
-      setFilterData(params)
+        branch: branchIds?.map((el) => el?.id).toString(),
+        session_year: selectedAcademicYear?.id,
+      };
+      setFilterData(params);
       if (params?.end_date.length != 0) {
         axios({
           method: 'get',
@@ -153,42 +158,54 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             // setEvents(res.data.result);
             let eventsArray = [];
             if (isMonth) {
-              res.data.result && res.data.result.forEach((items, index) => {
-                eventsArray.push({
-                  start: items?.date,
-                  // end: items?.end,
-                  title: items?.info?.name || items?.total_periods ? 'periods ' + items?.total_periods : items?.total_holidays ? "holiday " + items?.total_holidays : '',
-                  color:
-                    items?.info?.type_name === 'Examination'
-                      ? '#F0485B'
-                      : items?.info?.type_name === 'Lecture'
+              res.data.result &&
+                res.data.result.forEach((items, index) => {
+                  eventsArray.push({
+                    start: items?.date,
+                    // end: items?.end,
+                    title:
+                      items?.info?.name || items?.total_periods
+                        ? 'periods ' + items?.total_periods
+                        : items?.total_holidays
+                        ? 'holiday ' + items?.total_holidays
+                        : '',
+                    color:
+                      items?.info?.type_name === 'Examination'
+                        ? '#F0485B'
+                        : items?.info?.type_name === 'Lecture'
                         ? '#A7A09B'
                         : items?.type?.name === 'Holiday'
-                          ? '#308143'
-                          : items?.total_holidays ? '#308143' : items?.total_periods ? '#A7A09B' : '#BD78F9',
-                  extendedProps: res.data.result,
-                  id: items?.index,
+                        ? '#308143'
+                        : items?.total_holidays
+                        ? '#308143'
+                        : items?.total_periods
+                        ? '#A7A09B'
+                        : '#BD78F9',
+                    extendedProps: res.data.result,
+                    id: items?.index,
+                  });
                 });
-              });
             }
             if (!isMonth) {
-              res.data.result && res.data.result.forEach((items, index) => {
-                eventsArray.push({
-                  start: items?.start || items?.date,
-                  end: items?.end,
-                  title: items?.info?.name || items?.gradewise_holidays[0]?.holiday_name,
-                  color:
-                    items?.info?.type_name === 'Examination'
-                      ? '#F0485B'
-                      : items?.info?.type_name === 'Lecture'
+              res.data.result &&
+                res.data.result.forEach((items, index) => {
+                  eventsArray.push({
+                    start: items?.start || items?.date,
+                    end: items?.end,
+                    title:
+                      items?.info?.name || items?.gradewise_holidays[0]?.holiday_name,
+                    color:
+                      items?.info?.type_name === 'Examination'
+                        ? '#F0485B'
+                        : items?.info?.type_name === 'Lecture'
                         ? '#A7A09B'
                         : items?.type?.name === 'Holiday'
-                          ? '#308143'
-                          : '#BD78F9',
-                  extendedProps: res.data.result,
-                  id: items?.id,
+                        ? '#308143'
+                        : '#BD78F9',
+                    extendedProps: res.data.result,
+                    id: items?.id,
+                  });
                 });
-              });
             }
             setEvents(eventsArray);
           })
@@ -198,20 +215,19 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             eventsArray.push({
               extendedProps: null,
             });
-            setEvents(eventsArray)
+            setEvents(eventsArray);
           });
       }
-    }
-    else {
+    } else {
       let params = {
         start_date: startDate,
         end_date: endDate,
         subject_mapping: selectedSubject.toString(),
         grade: selectedGrade.toString(),
-        acad_session: selectedBranch?.id
-      }
+        acad_session: selectedBranch?.id,
+      };
 
-      setFilterData(params)
+      setFilterData(params);
       if (params?.start_date) {
         axios({
           method: 'get',
@@ -222,23 +238,33 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             // setEvents(res.data.result);
             let eventsArray = [];
             if (isMonth) {
-              res.data.result && res.data.result.forEach((items, index) => {
-                eventsArray.push({
-                  start: items?.date,
-                  // end: items?.end,
-                  title: items?.info?.name || items?.total_periods ? 'periods ' + items?.total_periods : items?.total_holidays ? "holiday " + items?.total_holidays : '',
-                  color:
-                    items?.info?.type_name === 'Examination'
-                      ? '#F0485B'
-                      : items?.info?.type_name === 'Lecture'
+              res.data.result &&
+                res.data.result.forEach((items, index) => {
+                  eventsArray.push({
+                    start: items?.date,
+                    // end: items?.end,
+                    title:
+                      items?.info?.name || items?.total_periods
+                        ? 'periods ' + items?.total_periods
+                        : items?.total_holidays
+                        ? 'holiday ' + items?.total_holidays
+                        : '',
+                    color:
+                      items?.info?.type_name === 'Examination'
+                        ? '#F0485B'
+                        : items?.info?.type_name === 'Lecture'
                         ? '#A7A09B'
                         : items?.type?.name === 'Holiday'
-                          ? '#308143'
-                          : items?.total_holidays ? '#308143' : items?.total_periods ? '#A7A09B' : '#BD78F9',
-                  extendedProps: res.data.result,
-                  id: items?.index,
+                        ? '#308143'
+                        : items?.total_holidays
+                        ? '#308143'
+                        : items?.total_periods
+                        ? '#A7A09B'
+                        : '#BD78F9',
+                    extendedProps: res.data.result,
+                    id: items?.index,
+                  });
                 });
-              });
             }
             if (!isMonth) {
               res.data.result.forEach((items, index) => {
@@ -250,10 +276,10 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
                     items?.info?.type_name === 'Examination'
                       ? '#F0485B'
                       : items?.info?.type_name === 'Lecture'
-                        ? '#A7A09B'
-                        : items?.type?.name === 'Holiday'
-                          ? '#308143'
-                          : '#BD78F9',
+                      ? '#A7A09B'
+                      : items?.type?.name === 'Holiday'
+                      ? '#308143'
+                      : '#BD78F9',
                   extendedProps: res.data.result,
                   id: items?.id,
                 });
@@ -267,7 +293,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             eventsArray.push({
               extendedProps: null,
             });
-            setEvents(eventsArray)
+            setEvents(eventsArray);
           });
       }
     }
@@ -281,11 +307,11 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
   };
 
   const getView = (e) => {
-    setViewCal(e.view.type)
+    setViewCal(e.view.type);
     if (e.view.type === 'dayGridMonth') {
-      setIsMonth(true)
+      setIsMonth(true);
     } else {
-      setIsMonth(false)
+      setIsMonth(false);
     }
     if (e.view.type === 'day') {
       setIsDay(true);
@@ -363,8 +389,8 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
         dayMaxEventRows={4}
         extendedProps={filterData}
         content={filterData}
-      // allDaySlot={false}
-      // eventMinHeight={30}
+        // allDaySlot={false}
+        // eventMinHeight={30}
       />
 
       <div>
@@ -387,35 +413,38 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
                 className='colorDiv'
                 style={{ background: '#308143', marginRight: '1%' }}
               ></div>
-              <p style={{marginBottom: 0, paddingLeft: '2px'}}> Holidays </p>
+              <p style={{ marginBottom: 0, paddingLeft: '2px' }}> Holidays </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div
                 className='colorDiv'
                 style={{ background: '#F0485B', marginRight: '1%' }}
               ></div>
-              <p style={{marginBottom: 0, paddingLeft: '2px'}}> Examination </p>
+              <p style={{ marginBottom: 0, paddingLeft: '2px' }}> Examination </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div
                 className='colorDiv'
                 style={{ background: '#BD78F9', marginRight: '1%' }}
               ></div>
-              <p style={{ width: '100%', marginBottom: 0, paddingLeft:'2px' }}> Miscellaneous Event </p>
+              <p style={{ width: '100%', marginBottom: 0, paddingLeft: '2px' }}>
+                {' '}
+                Miscellaneous Event{' '}
+              </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div
                 className='colorDiv'
                 style={{ background: '#F96E34', marginRight: '1%' }}
               ></div>
-              <p style={{marginBottom: 0, paddingLeft: '2px'}}> Competitions </p>
+              <p style={{ marginBottom: 0, paddingLeft: '2px' }}> Competitions </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div
                 className='colorDiv'
                 style={{ background: '#A7A09B', marginRight: '1%' }}
               ></div>
-              <p style={{marginBottom: 0, paddingLeft: '2px'}}> Period </p>
+              <p style={{ marginBottom: 0, paddingLeft: '2px' }}> Period </p>
             </div>
           </div>
 
@@ -467,7 +496,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             <Button onClick={handleClose} color='primary' variant='contained'>
               Cancel
             </Button>
-            <Button onClick={jumpDate} color='primary' autoFocus >
+            <Button onClick={jumpDate} color='primary' autoFocus>
               Submit
             </Button>
           </DialogActions>
@@ -481,36 +510,57 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
           aria-labelledby='alert-dialog-title'
           aria-describedby='alert-dialog-description'
         >
-          <DialogTitle id='alert-dialog-title' ><div style={{display: 'flex' , justifyContent: 'space-between'}}><div style={{fontSize: '15px' , margin: 'auto 0' }} >{dialogDate}</div> <IconButton onClick={handleCloseMonth} style={{fontSize: '15px'}} ><CloseIcon /></IconButton> </div></DialogTitle>
-          <DialogContent style={{minWidth: '450px' , paddingBottom: '5%'}} >
-            <div style={{overflowX: 'hidden' , overflowY: 'auto' , height:'400px' }} >
-            <div style={{display: 'flex' , justifyContent: 'space-between'}} >
-              <div style={{fontSize: '15px' , fontWeight: '600'}} >
-                Event Start Date
-              </div>
-              <div style={{fontSize: '15px' , fontWeight: '600'}}>
-                Event Time
-              </div>
+          <DialogTitle id='alert-dialog-title'>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ fontSize: '15px', margin: 'auto 0' }}>{dialogDate}</div>{' '}
+              <IconButton onClick={handleCloseMonth} style={{ fontSize: '15px' }}>
+                <CloseIcon />
+              </IconButton>{' '}
             </div>
-            <Divider />
-            <div>
-              {periodDataEach && periodDataEach.map((item) => (
-                <>
-                <div style={{display: 'flex' , justifyContent: 'space-between' , margin: '2% 0' , cursor: 'pointer' }} onClick={() => handleEventClick(item)} >
-                <div>
-                  <div>{item?.info?.name ? item?.info?.name : item?.gradewise_holidays[0]?.holiday_name}</div>
+          </DialogTitle>
+          <DialogContent style={{ minWidth: '450px', paddingBottom: '5%' }}>
+            <div style={{ overflowX: 'hidden', overflowY: 'auto', height: '400px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: '15px', fontWeight: '600' }}>
+                  Event Start Date
                 </div>
-                <div>
-                <div>{item?.start ? moment(item?.start).format('hh:mm a') : item?.date }</div>
-              </div>
+                <div style={{ fontSize: '15px', fontWeight: '600' }}>Event Time</div>
               </div>
               <Divider />
-              </>
-              ))}
-            </div>
+              <div>
+                {periodDataEach &&
+                  periodDataEach.map((item) => (
+                    <>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          margin: '2% 0',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => handleEventClick(item)}
+                      >
+                        <div>
+                          <div>
+                            {item?.info?.name
+                              ? item?.info?.name
+                              : item?.gradewise_holidays[0]?.holiday_name}
+                          </div>
+                        </div>
+                        <div>
+                          <div>
+                            {item?.start
+                              ? moment(item?.start).format('hh:mm a')
+                              : item?.date}
+                          </div>
+                        </div>
+                      </div>
+                      <Divider />
+                    </>
+                  ))}
+              </div>
             </div>
           </DialogContent>
-         
         </Dialog>
       </>
 

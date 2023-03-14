@@ -2,7 +2,6 @@
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 // import setDefaultYear from '../reducers/common-reducer'
-
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
 export const uploadFile = async (file) => {
@@ -171,25 +170,29 @@ export const currentSelectedBranch = (data) => (dispatch) => {
 };
 
 export const fetchBranchList = (session_year) => (dispatch) => {
+  sessionStorage.removeItem('branch_list');
+  sessionStorage.removeItem('selected_branch');
   console.log('Branch Api Called');
   dispatch({ type: BRANCH_LIST, payload: [] });
   let url = `${endpoints?.academics?.branches}?session_year=${session_year}&module_id=${moduleId}`;
   return axiosInstance
     .get(url)
     .then((response) => {
-      let branchList = response?.data?.data?.results;
-      if (response?.status > 199 && response?.status < 300 && branchList) {
-        sessionStorage.setItem('branch_list', JSON.stringify(branchList));
+      if (response?.data?.data?.results.length > 0) {
+        let branchList = response?.data?.data?.results;
+        if (response?.status > 199 && response?.status < 300 && branchList) {
+          sessionStorage.setItem('branch_list', JSON.stringify(branchList));
 
-        if (!sessionStorage.getItem('selected_branch')) {
-          sessionStorage.setItem('selected_branch', JSON.stringify(branchList[0]));
+          if (!sessionStorage.getItem('selected_branch')) {
+            sessionStorage.setItem('selected_branch', JSON.stringify(branchList[0]));
 
-          dispatch({ type: SELECTED_BRANCH, payload: branchList[0] });
-          sessionStorage.setItem('isSessionChanged', false);
-          window.location.reload();
+            dispatch({ type: SELECTED_BRANCH, payload: branchList[0] });
+            sessionStorage.setItem('isSessionChanged', false);
+            window.location.reload();
+          }
+
+          dispatch({ type: BRANCH_LIST, payload: branchList });
         }
-
-        dispatch({ type: BRANCH_LIST, payload: branchList });
       }
     })
     .catch(() => {
