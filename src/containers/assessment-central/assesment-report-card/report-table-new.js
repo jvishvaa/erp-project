@@ -1195,7 +1195,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     })}
 
                     {/* Total Start */}
-                    <tr>
+                    {/* <tr>
                       <td className='th-width-12 th-fw-600'>{'Total'}</td>
                       {eachCompetitive?.sub_component?.map((eachSem, x) => {
                         return (
@@ -1216,9 +1216,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             <td className='th-width-12 th-fw-600 text-center'>
                               {eachSem.overall_osr}
                             </td>
-                            {/* <td className='th-width-12 th-fw-600 text-center'>
-                            {eachSem.overall_air}
-                          </td> */}
+                           
                           </>
                         );
                       })}
@@ -1234,12 +1232,10 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachCompetitive?.annual_score?.overall_osr}
                           </td>
-                          {/* <td className='th-width-12 th-fw-600 text-center'>
-                          {eachCompetitive?.annual_score?.overall_air}
-                        </td> */}
+                          
                         </>
                       ) : null}
-                    </tr>
+                    </tr> */}
                     {/* Total End */}
 
                     {/* Grading point descriptions Start */}

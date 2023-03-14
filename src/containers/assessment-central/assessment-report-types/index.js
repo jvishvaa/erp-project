@@ -395,6 +395,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             filterData={filterData}
             setFilterData={setFilterData}
             setisstudentList={setisstudentList}
+            eypConfig={eypConfig}
           />
         )}
         {selectedReportType?.id === 5 && isPreview && (
