@@ -547,6 +547,7 @@ export default {
     reportCardDataNew: '/assessment/report-card-generation/',
     eypReportCard: '/assessment/eyp-report-card-generation/',
     eypReportCardBulk: '/assessment/eyp-bulk-report-card-generation/',
+    normalReportCardBulk: '/assessment/fetch-s3-reports/',
     reportPdf: '/assessment/download-report-pdf/',
     weeklyStudentReport: '/assessment/download-report-student-report/',
     reportConsolidated: '/assessment/download-report-consolidate/',
@@ -557,6 +558,7 @@ export default {
     weeklyQuizPerformance: '/assessment/weekly-quiz-performance-report/',
     assessmentRetest: '/assessment/retake-assessment-permission/',
     downloadReportTestReport: '/assessment/download-report-test-report/',
+    reportCardBucketUrl: `${CENTRAL_BUCKET}/`,
   },
   observation: {
     observationGet: '/teacher_observation/observation-area/',
