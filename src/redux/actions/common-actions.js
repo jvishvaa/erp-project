@@ -74,6 +74,8 @@ const getDefaultYear = (data) => {
 };
 
 export const fetchAcademicYearList = (moduleId) => (dispatch) => {
+  sessionStorage.removeItem('branch_list');
+  sessionStorage.removeItem('selected_branch');
   dispatch({ type: ACADEMIC_YEAR_LIST, payload: [] });
   let url = endpoints.userManagement.academicYear;
   if (moduleId) url += `?module_id=${moduleId}`;

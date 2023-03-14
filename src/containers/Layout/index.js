@@ -54,6 +54,7 @@ const Layout = ({ children, history }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector((state) => state.commonFilterReducer?.branch);
   const {
     apiGateway: { baseURLCentral, baseUdaan, baseEvent },
     s3: { BUCKET: s3BUCKET, ERP_BUCKET },
@@ -74,10 +75,8 @@ const Layout = ({ children, history }) => {
       userDetails = JSON.parse(userDetails);
       const { is_superuser = false } = userDetails;
       setSuperUser(is_superuser);
-      setBranchesMapped(
-        sessionStorage.getItem('selected_branch') === null ? false : true
-      );
     }
+    // setBranchesMapped(sessionStorage.getItem('selected_branch') === null ? false : true);
     if (containerRef.scrollTop > 50) {
       containerRef.scrollTop = 0;
     }
@@ -95,6 +94,13 @@ const Layout = ({ children, history }) => {
       fetchThemeApi();
     }
   }, []);
+  console.log({ branchesmapped });
+  useEffect(() => {
+    if (selectedAcademicYear)
+      setBranchesMapped(
+        sessionStorage.getItem('selected_branch') === null ? false : true
+      );
+  }, [selectedBranch]);
 
   const classes = useStyles();
 
