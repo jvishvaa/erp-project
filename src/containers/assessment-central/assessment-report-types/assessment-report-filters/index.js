@@ -27,6 +27,7 @@ import moment from 'moment';
 import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest';
 import Weeklyassesmentreport from '../student-report/weekly-quiz-performnace';
 import Loading from '../../../../components/loader/loader';
+import MultiEypPdf from 'containers/assessment-central/assesment-report-card/eypReportCard/multiEypPdf';
 let url = '';
 const AssessmentReportFilters = ({
   widerWidth,
@@ -46,6 +47,7 @@ const AssessmentReportFilters = ({
   filterData,
   setFilterData,
   setisstudentList,
+  eypConfig,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
@@ -74,8 +76,8 @@ const AssessmentReportFilters = ({
   const [mappingList, setMappingList] = useState([]);
   const [downloadTestId, setDownloadTestId] = useState(null);
   const [sectionToggle, setSectionToggle] = useState(false);
-
   const [examDate, setExamDate] = useState(null);
+  const [multiEypLoading, setMultiEypLoading] = useState(false);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -925,6 +927,51 @@ const AssessmentReportFilters = ({
     });
   };
 
+  const generateMultiEyp = (params = {}) => {
+    if (!filterData.branch?.id) return setAlert('error', `Please select Branch`);
+    if (!filterData.grade?.grade_id) return setAlert('error', `Please select Grade`);
+    if (!filterData.section?.section_id)
+      return setAlert('error', `Please select Section`);
+    else {
+      setMultiEypLoading(true);
+    }
+  };
+
+  useEffect(() => {
+    if (multiEypLoading) {
+      let obj = {};
+      obj.acad_session_id = filterData?.branch?.id;
+      obj.grade_id = filterData.grade?.grade_id;
+      obj.section_id = filterData.section?.section_id;
+      axiosInstance
+        .get(`${endpoints.assessmentReportTypes.eypReportCardBulk}`, {
+          params: { ...obj },
+        })
+        .then((response) => {
+          if (response?.data) {
+            MultiEypPdf(
+              response?.data,
+              filterData?.branch?.branch?.branch_name,
+              filterData?.grade?.grade__grade_name,
+              filterData?.section?.grade__grade_name
+            )
+              .then((data) => {
+                setMultiEypLoading(false);
+              })
+              .catch(() => {
+                setMultiEypLoading(false);
+              });
+
+            setLoading(false);
+          }
+        })
+        .catch((err) => {
+          setAlert('error', err?.response?.data?.message);
+          setLoading(false);
+        });
+    }
+  }, [multiEypLoading]);
+
   return (
     <>
       <Grid
@@ -1439,6 +1486,28 @@ const AssessmentReportFilters = ({
             </Button>
           </Grid>
         )}
+        {selectedReportType?.id === 14 &&
+          [8, 11]?.includes(userDetails?.user_level) &&
+          eypConfig?.includes(String(filterData.grade?.grade_id)) && (
+            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+              {multiEypLoading ? (
+                <Button variant='contained' color='primary'>
+                  Please Wait...{' '}
+                  <CircularProgress color='#ffffff' size={20} thickness={4} />
+                </Button>
+              ) : (
+                <Button
+                  variant='contained'
+                  size='medium'
+                  color='primary'
+                  onClick={() => generateMultiEyp()}
+                >
+                  Download Zip
+                </Button>
+              )}
+            </Grid>
+          )}
+
         {selectedReportType?.id !== 5 &&
           selectedReportType?.id !== 11 &&
           selectedReportType?.id !== 14 && (
