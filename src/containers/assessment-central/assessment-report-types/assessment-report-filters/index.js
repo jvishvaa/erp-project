@@ -972,7 +972,6 @@ const AssessmentReportFilters = ({
     }
   }, [multiEypLoading]);
 
-  console.log(eypConfig, 'eypConfig');
   return (
     <>
       <Grid
