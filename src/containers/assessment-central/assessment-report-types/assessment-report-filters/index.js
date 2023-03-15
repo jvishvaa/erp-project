@@ -80,6 +80,7 @@ const AssessmentReportFilters = ({
   const [examDate, setExamDate] = useState(null);
   const [multiEypLoading, setMultiEypLoading] = useState(false);
   const [multiReportLoading, setMultiReportLoading] = useState(false);
+  const [reportCardDownloadConfig, setReportCardDownloadConfig] = useState([]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -954,7 +955,7 @@ const AssessmentReportFilters = ({
       let obj = {};
       obj.acad_session_id = filterData?.branch?.id;
       obj.grade_id = filterData.grade?.grade_id;
-      obj.section_id = filterData.section?.section_id;
+      obj.section_mapping_id = filterData.section?.id;
       axiosInstance
         .get(`${endpoints.assessmentReportTypes.eypReportCardBulk}`, {
           params: { ...obj },
@@ -984,13 +985,26 @@ const AssessmentReportFilters = ({
         });
     }
   }, [multiEypLoading]);
+  useEffect(() => {
+    if (selectedReportType?.id === 14) {
+      let obj = {};
+      obj.config_key = 'rc_download_access';
+      axiosInstance
+        .get(`${endpoints.doodle.checkDoodle}`, { params: { ...obj } })
+        .then((response) => {
+          if (response?.data) {
+            setReportCardDownloadConfig(response?.data?.result);
+          }
+        });
+    }
+  }, [selectedReportType]);
 
   useEffect(() => {
     if (multiReportLoading) {
       let obj = {};
-      obj.acad_session_id = filterData?.branch?.id;
+      obj.session_year = filterData?.branch?.session_year?.session_year;
       obj.grade_id = filterData.grade?.grade_id;
-      obj.section_id = filterData.section?.section_id;
+      obj.section_mapping_id = filterData.section?.id;
       axiosInstance
         .get(`${endpoints.assessmentReportTypes.normalReportCardBulk}`, {
           params: { ...obj },
@@ -1552,45 +1566,61 @@ const AssessmentReportFilters = ({
             </Button>
           </Grid>
         )}
-        {selectedReportType?.id === 14 &&
-        [8, 11]?.includes(userDetails?.user_level) &&
-        eypConfig?.includes(String(filterData.grade?.grade_id)) ? (
-          <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-            {multiEypLoading ? (
-              <Button variant='contained' color='primary'>
-                Please Wait...{' '}
-                <CircularProgress color='#ffffff' size={20} thickness={4} />
-              </Button>
+
+        {reportCardDownloadConfig.length > 0 &&
+        selectedReportType?.id === 14 &&
+        JSON.parse(reportCardDownloadConfig[0]?.replace(/'/g, '"'))?.includes(
+          String(userDetails?.user_level)
+        ) ? (
+          toMinutes(JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[0]) <
+            toMinutes(new Date().toLocaleTimeString()) &&
+          toMinutes(new Date().toLocaleTimeString()) <
+            toMinutes(JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[1]) ? (
+            eypConfig?.includes(String(filterData.grade?.grade_id)) ? (
+              <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                {multiEypLoading ? (
+                  <Button variant='contained' color='primary'>
+                    Please Wait...{' '}
+                    <CircularProgress color='#ffffff' size={20} thickness={4} />
+                  </Button>
+                ) : (
+                  <Button
+                    variant='contained'
+                    size='medium'
+                    color='primary'
+                    onClick={() => generateMultiEyp()}
+                  >
+                    Bulk Download
+                  </Button>
+                )}
+              </Grid>
             ) : (
-              <Button
-                variant='contained'
-                size='medium'
-                color='primary'
-                onClick={() => generateMultiEyp()}
-              >
-                Bulk Download
-              </Button>
-            )}
-          </Grid>
-        ) : (
-          <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-            {multiReportLoading ? (
-              <Button variant='contained' color='primary'>
-                Please Wait...{' '}
-                <CircularProgress color='#ffffff' size={20} thickness={4} />
-              </Button>
-            ) : (
-              <Button
-                variant='contained'
-                size='medium'
-                color='primary'
-                onClick={() => generateMultiReportCard()}
-              >
-                Bulk Download
-              </Button>
-            )}
-          </Grid>
-        )}
+              <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                {multiReportLoading ? (
+                  <Button variant='contained' color='primary'>
+                    Please Wait...{' '}
+                    <CircularProgress color='#ffffff' size={20} thickness={4} />
+                  </Button>
+                ) : (
+                  <Button
+                    variant='contained'
+                    size='medium'
+                    color='primary'
+                    onClick={() => generateMultiReportCard()}
+                  >
+                    Bulk Download
+                  </Button>
+                )}
+              </Grid>
+            )
+          ) : (
+            <span className='pt-4'>
+              You can download bulk report between{' '}
+              {JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[0]} -{' '}
+              {JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[1]} .
+            </span>
+          )
+        ) : null}
 
         {selectedReportType?.id !== 5 &&
           selectedReportType?.id !== 11 &&
@@ -1623,6 +1653,11 @@ const AssessmentReportFilters = ({
     </>
   );
 };
+
+function toMinutes(time) {
+  var b = time.split(':');
+  return b[0] * 60 + +b[1];
+}
 
 const mapDispatchToProps = (dispatch) => ({
   fetchAssessmentReportList: (reportType, params) =>
