@@ -103,8 +103,9 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
   const [assesmentTestsTotalPage, setAssesmentTestsTotalPage] = useState(0);
   const [filteredAssesmentTests, setFilteredAssesmentTests] = useState([]);
   const [filteredAssesmentTestsPage, setFilteredAssesmentTestPage] = useState(1);
-  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] =
-    useState(0);
+  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] = useState(
+    0
+  );
   const [showFilteredList, setShowFilteredList] = useState(false);
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
@@ -127,6 +128,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
   const [sectionList, setSectionList] = useState([]);
   const [sectionFlag, setSectionFlag] = useState(false);
   const [groupList, setGroupList] = useState([]);
+  const [erpCategory, setErpCategory] = useState([]);
   const [groupFlag, setGroupFlag] = useState(false);
   const [isRestoreUnable, setIsRestoreUnable] = useState(false);
   const testFilterData = JSON.parse(sessionStorage.getItem('createTestData')) || {};
@@ -139,6 +141,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
 
   useEffect(() => {
     if (isRestoreFields) setIsRestoreUnable(true);
+    getErpCategory();
   }, []);
 
   useEffect(() => {
@@ -309,6 +312,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
       status,
       section,
       group,
+      category,
     } = formik.values;
     filterData1 = {
       branch: formik.values.branch,
@@ -319,6 +323,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
       date: formik.values?.date,
       section: formik.values.section,
       group: formik.values.group,
+      category: formik.values.category,
     };
     setFilterData(filterData1);
     // const acadSessionId = branch?.id;
@@ -343,7 +348,8 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
         sectionMappingIds,
         groupIds,
         sectionFlag,
-        groupFlag
+        groupFlag,
+        category
       );
       setShowFilteredList(true);
       setFilteredAssesmentTestsTotalPage(totalPages);
@@ -351,6 +357,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
       setFetchingTests(false);
       setLoading(false);
     } catch (e) {
+      console.log(e, 'asdfghjk');
       setLoading(false);
       setAlert('error', 'Fetching tests failed');
       setFetchingTests(false);
@@ -380,6 +387,16 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
     }
   };
 
+  const getErpCategory = () => {
+    axiosInstance
+      .get(`${endpoints.questionBank.erpCategory}`)
+      .then((result) => {
+        setErpCategory(result?.data?.result);
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+  };
   // useEffect(() => {
   //   if (formik.values.academic) {
   //     getBranch(formik.values.academic?.id);
@@ -421,7 +438,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
       formik?.values?.status &&
       formik?.values?.branch?.length &&
       formik?.values?.grade &&
-      formik?.values?.subject?.length &&
+      (formik?.values?.subject?.length || formik?.values?.category) &&
       formik?.values?.date
     ) {
       setFilteredAssesmentTestPage(1);
@@ -431,6 +448,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
     // clearResults();
   }, [activeTab, formik.values]);
 
+  console.log(formik, 'formikformikformik');
   useEffect(() => {
     if (formik.values.status?.name === 'Upcoming') {
       // formik.setFieldValue('date', [moment(), moment().add(6, 'days')]);
@@ -831,6 +849,14 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
     );
   });
 
+  const erpCategoryOptions = erpCategory?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.erp_category_id}>
+        {each?.erp_category_name}
+      </Option>
+    );
+  });
+
   // let newid = filterbasedonsub()
 
   return (
@@ -998,6 +1024,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
                     </Select>
                   </Form.Item>
                 </div>
+
                 <div className='col-md-3 col-6'>
                   <div className='mb-2 ml-1 text-left'>Date Range</div>
                   <Form.Item name='date'>
@@ -1020,7 +1047,8 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
                     </Space>
                   </Form.Item>
                 </div>
-                {!handleClose && <div className='col-md-2 d-flex mt-2'>
+                {!handleClose && (
+                  <div className='col-md-2 d-flex mt-2'>
                     <div
                       className='col-md-8 col-6 px-0'
                       style={{ display: 'flex', justifyContent: 'center' }}
@@ -1035,9 +1063,10 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
                         Create
                       </Button>
                     </div>
-                </div>}
-                <div className= 'col-md-1 mt-2'>
-                <div className='hideShowFilterIcon' style={{ marginTop: '-4%' }}>
+                  </div>
+                )}
+                <div className='col-md-1 mt-2'>
+                  <div className='hideShowFilterIcon' style={{ marginTop: '-4%' }}>
                     <IconButton onClick={() => setShowfilter(!showFilter)}>
                       <SvgIcon
                         component={() => (
@@ -1083,6 +1112,33 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
                       </Select>
                     </Form.Item>
                   </div>
+
+                  <div className='col-md-2 col-6 pl-0'>
+                    <div className='mb-2 text-left'>ERP Category</div>
+                    <Form.Item name='category'>
+                      <Select
+                        allowClear
+                        placeholder='Select ERP Category'
+                        showSearch
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e, value) => {
+                          formik.setFieldValue('category', value);
+                        }}
+                        // onClear={handleClearBoard}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={false}
+                      >
+                        {erpCategoryOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+
                   <div className='col-md-2 col-6 d-flex'>
                     <Typography className='d-flex align-items-center'>Section</Typography>
                     <div className='d-flex align-items-center'>

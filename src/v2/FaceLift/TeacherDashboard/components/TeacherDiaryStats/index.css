@@ -1,0 +1,19 @@
+.th-diaryprogress .step:first-of-type {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.th-diaryprogress .step:last-of-type {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.th-diaryprogress {
+  display: flex;
+  justify-content: space-between !important;
+}
+.step {
+  background-color: #94beff !important;
+}
+.active {
+  background-color: #1b4ccb !important;
+}

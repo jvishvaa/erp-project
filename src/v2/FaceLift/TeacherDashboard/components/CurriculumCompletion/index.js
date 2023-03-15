@@ -43,8 +43,11 @@ const CurriculumCompletion = () => {
   };
 
   const getCurriculumData = () => {
-    if (selectedAcademicYear && selectedBranch){
-      fetchCurriculumData({ session_year: selectedAcademicYear?.id  , acad_session : selectedBranch?.id});
+    if (selectedAcademicYear && selectedBranch) {
+      fetchCurriculumData({
+        session_year: selectedAcademicYear?.id,
+        acad_session: selectedBranch?.id,
+      });
     }
   };
 
@@ -98,7 +101,9 @@ const CurriculumCompletion = () => {
               </div>
               <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
                 {curriculumData?.map((item, i) => {
-                  let section = item?.section_name?.charAt(item?.section_name?.length - 1);
+                  let section = item?.section_name?.charAt(
+                    item?.section_name?.length - 1
+                  );
                   return (
                     <div
                       className='th-bg-grey mb-2 th-br-6'
@@ -126,7 +131,7 @@ const CurriculumCompletion = () => {
                               central_gs_mapping: item?.central_gs_mapping,
                               erp_gs_mapping: item?.erp_gs_mapping,
                               grade_name: item?.grade_name,
-                            }
+                            },
                           })
                         }
                       >
@@ -160,9 +165,8 @@ const CurriculumCompletion = () => {
         <div className='d-flex justify-content-center mt-5'>
           <img src={NoDataIcon} />
         </div>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 };
 

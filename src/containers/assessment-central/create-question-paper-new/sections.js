@@ -30,7 +30,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import { DeleteFilled, PlusOutlined } from '@ant-design/icons';
-import { AutoComplete, Button, Checkbox, Drawer, Input, Select } from 'antd';
+import { AutoComplete, Button, Checkbox, Drawer, Input, message, Select } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import QuestionCard from './questionCard';
 import QuestionBankDrawer from './questionBankDrawer';
@@ -148,6 +148,29 @@ const Sections = ({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dispatch = useDispatch();
   const [isOptionalQues, setisOptionalQues] = useState(false);
+  const [deleteSection , setDeleteSection] = useState(false)
+  const [sectionId , setSectionId] = useState()
+  const [quesId , setQuestionId] = useState()
+
+
+  const handleDeleteSectionclose = () => {
+    setQuestionId(null);
+    setSectionId(null);
+    setDeleteSection(false);
+  };
+
+  const handledeleteSectionpopup = (qid , secid) => {
+    setQuestionId(qid);
+    setSectionId(secid);
+    setDeleteSection(true);
+  };
+
+  const DeleteSection = () => {
+    deleteOneSection(quesId, sectionId)
+    setQuestionId(null);
+    setSectionId(null);
+    setDeleteSection(false);
+  }
   // const sectionMarks = section?.test_marks?.forEach((item) => {
   //       marks += parseInt(item?.question_mark[0])
   // } )
@@ -221,6 +244,7 @@ const Sections = ({
   const handleDeleteQuestion = (q, v) => {
     handleMenuClose();
     onDeleteQuestion(q?.id, section);
+    message.success('Question Deleted')
   };
   const handleDeleteCancel = () => {
     setDeleteAlert(false);
@@ -232,7 +256,7 @@ const Sections = ({
     return span.textContent || span.innerText;
   }
 
-  console.log(section, '@@');
+  // console.log(section, '@@');
 
   const isoptionalQues = (e) => {
     setisOptionalQues(e.target.checked);
@@ -341,7 +365,8 @@ const Sections = ({
         <div style={{ display: 'flex', marginRight: '1%', alignItems: 'center' }}>
           <DeleteFilled
             style={{ color: 'blue', fontSize: 'large' }}
-            onClick={() => deleteOneSection(questionId, section?.id)}
+            // onClick={() => deleteOneSection(questionId, section?.id)}
+            onClick={() => handledeleteSectionpopup(questionId, section?.id)}
           />
         </div>
       </div>
@@ -357,6 +382,25 @@ const Sections = ({
           questionPaperWise={questionPaperWise}
         />
       )}
+
+      <Dialog open={deleteSection} onClose={handleDeleteSectionclose}>
+        <DialogTitle id='draggable-dialog-title'>Delete Section</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to delete ?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteSectionclose} className='labelColor cancelButton'>
+            Cancel
+          </Button>
+          <Button
+            type='primary'
+            variant='contained'
+            onClick={DeleteSection}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

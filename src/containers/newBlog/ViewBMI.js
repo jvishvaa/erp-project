@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Layout from 'containers/Layout';
 import { Grid, IconButton } from '@material-ui/core';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Breadcrumb, Button as ButtonAnt, Form, Select, message } from 'antd';
+import { Breadcrumb, Button as ButtonAnt, Form, Select, message, Spin } from 'antd';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
 // import axios from 'axios';
@@ -45,7 +45,7 @@ const ViewBMI = () => {
   const history = useHistory();
   const [value, setValue] = React.useState(0);
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
-  const [selectedBranch, setSelectedBranch] = useState([]);
+  // const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const branch_update_user =
@@ -58,7 +58,7 @@ const ViewBMI = () => {
   const [view, setView] = useState(false);
   const [flag, setFlag] = useState(false);
   const [gradeList, setGradeList] = useState([]);
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (event, newValue) => {
@@ -69,7 +69,7 @@ const ViewBMI = () => {
   };
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
-  const [boardId, setBoardId] = useState();
+  // const [boardId, setBoardId] = useState();
   const { Option } = Select;
   const [gradeId, setGradeId] = useState();
   const [gradeName, setGradeName] = useState();
@@ -78,6 +78,7 @@ const ViewBMI = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector((state) => state.commonFilterReducer?.selectedBranch)
   const [subjectId, setSubjectId] = useState();
   const [subjectName, setSubjectName] = useState();
   const [totalSubmitted, setTotalSubmitted] = useState([]);
@@ -245,15 +246,14 @@ const ViewBMI = () => {
   };
 
   const handleBranch = (event, value) => {
-    setSelectedBranch([]);
     setSelectedGrade([]);
     if (value?.length) {
       const branchIds = value.map((obj) => obj?.id);
-      setSelectedBranch(value);
+      // setSelectedBranch(value);
       if (branchIds) {
         setLoading(true);
         axios
-          .get(`${endpoints.newBlog.activityGrade}?branch_ids=${branchIds}`, {
+          .get(`${endpoints.newBlog.activityGrade}?branch_ids=${selectedBranch?.branch?.id}`, {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
             },
@@ -272,26 +272,18 @@ const ViewBMI = () => {
 
   const goSearch = () => {
     setLoading(true);
-    if (boardId === undefined) {
-      setAlert('error', 'Please Select Branch');
-      setLoading(false);
-      return;
-    } else if (gradeId == undefined) {
-      setAlert('error', 'Please Select Grade');
+    if (gradeId == undefined) {
+      message.error('Please Select Grade ')
       setLoading(false);
       return;
     } else if (subjectId == undefined) {
-      setAlert('error', 'Please Select Section');
+      message.error('Please Select Section')
       setLoading(false);
       return;
     } else {
       setFlag(true);
       setLoading(false);
     }
-  };
-
-  const handleClearBoard = () => {
-    setBoardId('');
   };
 
   const boardOptions = boardListData?.map((each) => {
@@ -308,7 +300,6 @@ const ViewBMI = () => {
       subject: null,
     });
     if (value) {
-      setBoardId(value?.value);
       setBoardName(value?.children);
     }
   };
@@ -325,15 +316,15 @@ const ViewBMI = () => {
   };
 
   useEffect(() => {
-    if (moduleId && boardId) {
+    if (moduleId && selectedBranch) {
       fetchGradeData();
     }
-  }, [boardId]);
+  }, [selectedBranch, moduleId]);
 
   const fetchGradeData = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
-      branch_id: boardId,
+      branch_id: selectedBranch?.branch?.id,
       module_id: moduleId,
     };
     axios
@@ -356,7 +347,7 @@ const ViewBMI = () => {
     if (gradeId !== '') {
       fetchSubjectData({
         session_year: selectedAcademicYear?.id,
-        branch_id: boardId,
+        branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
         grade_id: gradeId,
       });
@@ -446,7 +437,7 @@ const ViewBMI = () => {
         setTotalSubmitted(response?.data?.result);
         // ActivityManagement(response?.data?.result)
         setFlag(false);
-        setAlert('success', response?.data?.message);
+        // message.success(response?.data?.message)
         setLoading(false);
       });
   };
@@ -463,7 +454,7 @@ const ViewBMI = () => {
           },
         })
         .then((response) => {
-          setAlert('success', response?.data?.message);
+          message.success(response?.data?.message)
           setLoading(false);
         });
     }
@@ -479,16 +470,16 @@ const ViewBMI = () => {
   };
 
   useEffect(() => {
-    if (boardId === undefined || gradeId === undefined) {
+    if (gradeId === undefined) {
       setTotalSubmitted([]);
     }
-  }, [boardId, gradeId, flag]);
+  }, [selectedBranch, gradeId, flag]);
 
   useEffect(() => {
     if (flag) {
       getTotalSubmitted();
     }
-  }, [boardId, gradeId, flag, currentPage]);
+  }, [selectedBranch, gradeId, flag, currentPage]);
 
   const goDownload = () => {
     //will implement soon
@@ -518,10 +509,10 @@ const ViewBMI = () => {
               </IconButton>
             </div>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-16' onClick={handleGoBack}>
                 Physical Activities
               </Breadcrumb.Item>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
+              <Breadcrumb.Item href='/dashboard' className='th-black th-16'>
                 BMI List
               </Breadcrumb.Item>
             </Breadcrumb>
@@ -532,34 +523,6 @@ const ViewBMI = () => {
           <div className='col-12'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
-                {/* {boardFilterArr.includes(window.location.host) && ( */}
-                <div className='col-md-2 col-6 pl-0'>
-                  <div className='mb-2 text-left'>Branch</div>
-                  <Form.Item name='branch'>
-                    <Select
-                      showSearch
-                      placeholder='Select Branch'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      // className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      placement='bottomRight'
-                      suffixIcon={<DownOutlined className='th-grey' />}
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, value) => handleBoard(e, value)}
-                      allowClear={true}
-                      onClear={handleClearBoard}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {branchOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                {/* )} */}
                 <div className='col-md-2 col-6 px-0'>
                   <div className='mb-2 text-left'>Grade</div>
                   <Form.Item name='grade'>
@@ -627,8 +590,8 @@ const ViewBMI = () => {
         </div>
         <ViewBMITableCustom
           style={{ border: '1px solid red' }}
-          selectedBranch={boardId}
-          selectedBoardName={boardName}
+          selectedBranch={selectedBranch?.branch?.id}
+          selectedBoardName={selectedBranch?.branch?.branch_name}
           setValue={setValue}
           value={value}
           handleChange={handleChange}

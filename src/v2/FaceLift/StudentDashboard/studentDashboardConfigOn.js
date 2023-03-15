@@ -83,7 +83,7 @@ const StudentDashboardConfigOn = () => {
       </div>
       {showDoodle && <Doodle />}
       <div className='row pt-3'>
-        <div className='col-md-8 th-custom-col-padding'>
+        <div className='col-lg-8 th-custom-col-padding'>
           <div className='row'>
             <div className='col-12 px-0'>
               <TodaysClass />
@@ -92,7 +92,7 @@ const StudentDashboardConfigOn = () => {
             <div className='col-md-6 px-0 '>
               <Assessment />
             </div>
-            <div className='col-md-6 mt-3 pr-0'>
+            <div className='col-md-6 mt-3 px-0 pl-sm-3'>
               <HomeworkReport />
               <div className='mt-3'>
                 <StudentAttendanceNew />
@@ -100,7 +100,7 @@ const StudentDashboardConfigOn = () => {
             </div>
           </div>
         </div>
-        <div className='col-md-4 th-custom-col-padding'>
+        <div className='col-lg-4 th-custom-col-padding'>
           <DiaryStats />
           <CalendarCard />
           <Announcement scrollHeight={'585px'} />

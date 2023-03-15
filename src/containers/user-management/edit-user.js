@@ -21,6 +21,7 @@ import Layout from '../Layout';
 import { Button, Grid } from '@material-ui/core';
 import './styles.scss';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import axios from 'v2/config/axios';
 
 const BackButton = withStyles({
   root: {
@@ -32,6 +33,7 @@ const BackButton = withStyles({
   },
 })(Button);
 
+const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -45,23 +47,15 @@ class EditUser extends Component {
       mappingBgsLength: 0,
       collectDataCount: 0,
       isEditable: false,
-      isSuper: false
+      isSuper: false,
+      hasAddAccess: false,
     };
   }
 
   componentDidMount() {
     this.fetchUserDetails();
+    this.fetchEditAccessLevels();
   }
-
-  // collectSessionIds(details) {
-  //   let selectedYearIds = [];
-  //   for (let i = 0; i < details?.mapping_bgs.length; i++) {
-  //     for (let j = 0; j < details?.mapping_bgs[i].session_year.length; j++) {
-  //       selectedYearIds.push(details.mapping_bgs[i]?.session_year[j].session_year_id);
-  //     }
-  //   }
-  //   this.setState({ selectedYearIds });
-  // }
 
   componentDidUpdate(prevProps) {
     const { selectedUser } = this.props;
@@ -77,7 +71,7 @@ class EditUser extends Component {
           this.state.isEditable = true;
         }
       }
-      if(details?.is_superuser){
+      if (details?.is_superuser) {
         this.state.isSuper = true;
       }
       this.setState({
@@ -321,6 +315,18 @@ class EditUser extends Component {
     const { fetchUser, match } = this.props;
     fetchUser(match.params.id);
   }
+  fetchEditAccessLevels() {
+    axios
+      .get(`assessment/check-sys-config/?config_key=user_edit_access_levels`)
+      .then((response) => {
+        if (response.data.status_code == 200) {
+          if (response?.data?.result.includes(String(userLevel))) {
+            this.setState({ hasAddAccess: true });
+          }
+        }
+      })
+      .catch((error) => console.log('error', error));
+  }
 
   handleAddMappingObject() {
     const { user } = this.state;
@@ -352,7 +358,7 @@ class EditUser extends Component {
   }
 
   getUserDetails(user, index) {
-    const details =  {
+    const details = {
       ...user,
       academic_year: user['academic_year'][index],
       branch: user['branch'][index],
@@ -428,7 +434,7 @@ class EditUser extends Component {
                               isAcadDisabled={is_acad_disabled}
                               index={index}
                               handleDelete={() => this.handleDeleteMappingObject(index)}
-                              isEditable = {this.state.isEditable}
+                              isEditable={this.state.isEditable}
                               // selectedYearIds={this.state.selectedYearIds}
                             />
                           )
@@ -440,11 +446,12 @@ class EditUser extends Component {
                           color='primary'
                           style={{ color: 'rgb(140, 140, 140)' }}
                           onClick={() => {
-                            this.props.history.push({pathname : '/user-management/view-users',
-                          state : {
-                            isEdit : true
-                          }
-                          });
+                            this.props.history.push({
+                              pathname: '/user-management/view-users',
+                              state: {
+                                isEdit: true,
+                              },
+                            });
                           }}
                         >
                           Back
@@ -462,9 +469,9 @@ class EditUser extends Component {
                           Next
                         </Button>
                       </Grid>
-                      <Grid item md={9} />
+                      <Grid item md={8} />
                       <Grid item md={1}>
-                        {this.state?.isSuper ? (
+                        {this.state?.isSuper || this.state.hasAddAccess ? (
                           <Button
                             startIcon={<AddOutlinedIcon />}
                             variant='contained'
@@ -476,7 +483,9 @@ class EditUser extends Component {
                           >
                             Add
                           </Button>
-                        ) : ''}
+                        ) : (
+                          ''
+                        )}
                       </Grid>
                     </Grid>
                   </>

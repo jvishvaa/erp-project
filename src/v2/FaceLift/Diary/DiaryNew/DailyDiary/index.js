@@ -41,6 +41,7 @@ import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIco
 import AssessmentIcon from 'v2/Assets/dashboardIcons/diaryIcons/AssessmentIcon.svg';
 import _ from 'lodash';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { getActivityColor } from 'v2/generalActivityFunction';
 let boardFilterArr = [
   'orchids.letseduvate.com',
   'localhost:3000',
@@ -209,6 +210,58 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     const newFileList = uploadedFiles.slice();
     newFileList.splice(index, 1);
     setUploadedFiles(newFileList);
+  };
+
+  const checkActivityData = (activityName) => {
+    if (activityName.includes('Physical Activity')) {
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: gradeID,
+        section_id: sectionID,
+        start_date: moment().format('YYYY-MM-DD'),
+        type: 'pa',
+      });
+    } else if (activityName.includes('Public Speaking')) {
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: gradeID,
+        section_id: sectionID,
+        start_date: moment().format('YYYY-MM-DD'),
+        type: 'ps',
+      });
+    } else if (activityName.includes('Visual Arts')) {
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: gradeID,
+        section_id: sectionID,
+        start_date: moment().format('YYYY-MM-DD'),
+        type: 'va',
+      });
+    } else if (activityName.includes('Theatre')) {
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: gradeID,
+        section_id: sectionID,
+        start_date: moment().format('YYYY-MM-DD'),
+        type: 'th',
+      });
+    } else if (activityName.includes('Dance')) {
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: gradeID,
+        section_id: sectionID,
+        start_date: moment().format('YYYY-MM-DD'),
+        type: 'da',
+      });
+    } else if (activityName.includes('Music')) {
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: gradeID,
+        section_id: sectionID,
+        start_date: moment().format('YYYY-MM-DD'),
+        type: 'mu',
+      });
+    }
   };
 
   const showDrawer = (params = {}) => {
@@ -528,6 +581,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setShowHomeworkForm(false);
     setHomeworkDetails(null);
     setHomeworkMapped(false);
+    setActivityData([]);
     if (e) {
       setSubjectID(e.value);
       setSubjectName(e.children.split('_')[e.children.split('_').length - 1]);
@@ -548,24 +602,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject_id: e.value,
         date: moment().format('YYYY-MM-DD'),
       });
-      if (e.children.includes('Physical Activity')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: gradeID,
-          section_id: sectionID,
-          start_date: moment().format('YYYY-MM-DD'),
-          type: 'pa',
-        });
-      } else if (e.children.includes('Public Speaking')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: gradeID,
-          section_id: sectionID,
-          start_date: moment().format('YYYY-MM-DD'),
-          type: 'ps',
-          // erp: erp,
-        });
-      }
+      checkActivityData(e.children);
     }
   };
 
@@ -1058,23 +1095,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject_id: editSubject?.subject_id,
         date: moment(editData?.created_at).format('YYYY-MM-DD'),
       });
-      if (editSubject?.subject_name.includes('Physical Activity')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: editData?.grade_id,
-          section_id: editData?.section_id,
-          start_date: moment(editData?.created_at).format('YYYY-MM-DD'),
-          type: 'pa',
-        });
-      } else if (editSubject?.subject_name.includes('Public Speaking')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: editData?.grade_id,
-          section_id: editData?.section_id,
-          start_date: moment(editData?.created_at).format('YYYY-MM-DD'),
-          type: 'ps',
-        });
-      }
+      checkActivityData(editSubject?.subject_name);
     }
   }, []);
 
@@ -1159,6 +1180,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       }, 2000);
     }
   }, [showPeriodInfoModal]);
+
+  useEffect(() => {
+    if (!history?.location?.state?.data) {
+      setAddedPeriods([]);
+      setUpcomingPeriod({});
+      setClearUpcomingPeriod(true);
+      setClearTodaysTopic(true);
+    }
+  }, [subjectID]);
 
   return (
     <div className='row th-bg-white'>
@@ -1251,11 +1281,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     // style={{ border: '1px solid #d9d9d9' }}
                   >
                     <div className='col-md-5 py-2 th-bg-grey th-br-6 ml-2'>
-                      <div className='row px-2 align-items-center'>
-                        <div className='col-6 px-0 th-black-2 th-fw-600 th-18'>
-                          Today's Topic
-                        </div>
-                        <div className='col-6 text-right pr-0'>
+                      <div className='d-flex justify-content-between px-2 align-items-center'>
+                        <div className=' th-black-2 th-fw-600 th-18'>Today's Topic</div>
+                        <div className=' text-right px-1'>
                           {addedPeriods.length > 0 && (
                             <span
                               className='th-12 px-1 th-primary py-1 th-pointer mr-3 th-br-6'
@@ -1352,7 +1380,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                         ) : null}
                                       </div>
                                       <div
-                                        className='col-1 pr-0'
+                                        className='col-1 px-1'
                                         onClick={() => {
                                           setIsPeriodAdded(false);
                                           setCompletedPeriod(item);
@@ -1432,14 +1460,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     </div>
 
                     <div
-                      className='col-md-5 py-2 th-bg-grey th-br-6 ml-3'
-                      style={{ height: '215px' }}
+                      className='col-md-5 py-2 th-bg-grey th-br-6 ml-2'
+                      style={{ minHeight: '215px' }}
                     >
-                      <div className='row px-2 align-items-center'>
-                        <div className='col-sm-6 col-8 px-0 th-black-2 th-fw-600 th-18'>
+                      <div className='d-flex justify-content-between px-2 align-items-center'>
+                        <div className=' px-0 th-black-2 th-fw-600 th-18'>
                           Upcoming Period
                         </div>
-                        <div className='col-sm-6 col-4 text-right pr-0'>
+                        <div className='text-right px-1'>
                           {!_.isEmpty(upcomingPeriod) ? (
                             <span
                               className='th-12 px-1 th-red py-1 th-pointer th-br-6'
@@ -1781,15 +1809,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                       style={{ maxHeight: '25vh', overflowY: 'scroll' }}
                     >
                       {activityData.map((item) => (
-                        <div className='col-4 px-1 mb-2'>
+                        <div className='col-sm-6 col-lg-4 px-1 mb-2'>
                           <div className='th-bg-grey py-1 px-2 th-br-6'>
-                            {item?.activity_type?.name === 'Public Speaking' && (
-                              <div className='row th-black-2 align-items-center py-1'>
-                                <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
-                                  <span>Status </span>
-                                  <span>:&nbsp;</span>
-                                </div>
-                                <div className='col-8 pl-1 text-capitalize'>
+                            <div className='row th-black-2 align-items-center py-1'>
+                              <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
+                                <span>Status </span>
+                                <span>:&nbsp;</span>
+                              </div>
+                              <div className='col-8 pl-1 text-capitalize'>
+                                {item?.activity_type?.name === 'Public Speaking' ? (
                                   <span
                                     className={`${
                                       item?.state == 'completed'
@@ -1801,16 +1829,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                   >
                                     {item?.state}
                                   </span>
-                                </div>
-                              </div>
-                            )}
-                            {item?.activity_type?.name === 'Physical Activity' && (
-                              <div className='row th-black-2 align-items-center py-1'>
-                                <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
-                                  <span>Status </span>
-                                  <span>:&nbsp;</span>
-                                </div>
-                                <div className='col-8 pl-1 text-capitalize'>
+                                ) : (
                                   <span
                                     className={`${
                                       moment(moment(), 'hh:mm A').isBefore(
@@ -1826,16 +1845,18 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                       ? 'Upcoming'
                                       : 'Completed'}
                                   </span>
-                                </div>
+                                )}
                               </div>
-                            )}
+                            </div>
                             <div className='row th-black-2 align-items-center py-1'>
                               <div className='col-4 px-0 d-flex justify-content-between th-black-1 th-fw-500'>
                                 <span>Activity Type</span>
                                 <span>:&nbsp;</span>
                               </div>
                               <div className='col-8 pl-1 text-truncate'>
-                                <Tag color='green'>{item?.activity_type?.name}</Tag>
+                                <Tag color={getActivityColor(item?.activity_type?.name)}>
+                                  {item?.activity_type?.name}
+                                </Tag>
                               </div>
                             </div>
                             <div className='row th-black-2 align-items-center py-1'>
@@ -1847,15 +1868,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 {item?.name ? item?.name : item?.title}
                               </div>
                             </div>
-                            {/* <div className='row th-black-2 align-items-center py-1'>
-                              <div className='col-4 d-flex justify-content-between px-0 th-black-1 th-fw-500'>
-                                <span>Scheduled At</span>
-                                <span>:&nbsp;</span>
-                              </div>
-                              <div className='col-8 pl-1 text-truncate th-12'>
-                                {moment(item?.test_date).format('DD/MM/YYYY HH:mm a')}
-                              </div>
-                            </div> */}
                           </div>
                         </div>
                       ))}

@@ -73,7 +73,19 @@ const CalendarCard = () => {
       .then((response) => {
         if (response.status === 200) {
           console.log(response);
-          setEventsData(response?.data?.events_data);
+          let eventsArr = []
+          response.data.events_data.map((item) => eventsArr.push({
+            id: item.id,
+            event_name: item.event_name,
+            description: item.description,
+            start_time: moment(item.start_time).format('YYYY-MM-DD'),
+            end_time: item.end_time,
+            academic_year: item.academic_year,
+            is_deleted: item.is_deleted,
+            event_category_type: item.event_category_type
+          }))
+          setEventsData(eventsArr);
+          // setEventsData(response?.data?.events_data);
         }
       })
       .catch((error) => console.log(error));
@@ -144,7 +156,8 @@ const CalendarCard = () => {
       holidaysData.map((item) =>
         holidayEach.push({
           event_name: item?.title,
-          start_time: item?.holiday_start_date,
+          start_time: moment(item?.holiday_start_date).format('YYYY-MM-DD'),
+          // start_time: item?.holiday_start_date,
           end_time: item?.holiday_end_date,
           description: item?.description,
           id: item?.id,
@@ -152,8 +165,9 @@ const CalendarCard = () => {
         })
       );
       allData = [...eventssData, ...holidayEach];
+      let newData = allData.sort((a, b) => Date.parse(a.start_time) - Date.parse(b.start_time));
       console.log(allData, 'holiday');
-      setAllEvent(allData);
+      setAllEvent(newData);
       console.log(allEvent, 'allusel');
     }
   }, [holidaysData, eventssData]);
@@ -179,9 +193,29 @@ const CalendarCard = () => {
   let holidayCount = monthHolidays.filter((item) => item?.prog == true);
   let eventCount = monthHolidays.filter((item) => item?.prog == undefined);
   console.log(
-    monthHolidays.filter((item) => item?.prog == undefined),
+    monthHolidays,
     'month'
   );
+
+
+  let duplicateIds = monthHolidays
+    .map(e => e['date'])
+    .map((e, i, final) => final.indexOf(e) !== i && i)
+    .filter(obj => monthHolidays[obj])
+    .map(e => monthHolidays[e]["date"])
+
+  let getduplicateDate = monthHolidays.filter(obj => duplicateIds.includes(obj.date));
+  console.log(getduplicateDate, 'getdup');
+
+  let changeProg = monthHolidays.map((item, index) => {
+    if (duplicateIds.includes(item?.date) == true) {
+      console.log(item);
+      monthHolidays[index].prog = false
+    }
+  })
+
+
+
   return (
     <div className='th-bg-white th-br-5 mt-3'>
       <div className='row' style={{ borderRadius: '5px 5px 0 0 ' }}>
@@ -206,7 +240,10 @@ const CalendarCard = () => {
           </Select>
         </div>  */}
       </div>
-      <div className='shadow-sm p-2' style={{ height: '380px' }}>
+      <div
+        className='shadow-sm p-2'
+        style={{ height: window.innerWidth < 892 ? '470px' : '380px' }}
+      >
         <div className='row'>
           <Calendar
             value={new Date()}
@@ -242,6 +279,39 @@ const CalendarCard = () => {
               ) {
                 return 'th-events';
               }
+              if (
+                monthHolidays.find(
+                  (item) =>
+                    item?.date === moment(date).format('YYYY-MM-DD') &&
+                    item?.prog == false
+                )
+              ) {
+                return 'bothEvent';
+              }
+              if (
+                monthHolidays.find(
+                  (item) =>
+                    item?.date != moment(date).format('YYYY-MM-DD')  && moment(date).day() == 6
+                )
+              ) {
+                return 'th-weekendcal';
+              }
+              if (
+                monthHolidays.find(
+                  (item) =>
+                    item?.date != moment(date).format('YYYY-MM-DD')  && moment(date).day() == 0
+                )
+              ) {
+                return 'th-weekendcal';
+              }
+              if (
+                monthHolidays.find(
+                  (item) =>
+                    item?.date != moment(date).format('YYYY-MM-DD')  && moment(date).day() == 1 || 2 || 3 || 4 || 5
+                )
+              ) {
+                return 'th-weekdaycal';
+              }
             }}
             calendarType='US'
             formatShortWeekday={(locale, value) =>
@@ -268,34 +338,32 @@ const CalendarCard = () => {
                     height: '30vh',
                     cursor: 'pointer',
                   }}
+                  className='th-custom-scrollbar'
                 >
                   {allEvent &&
                     allEvent?.map((item) => (
                       <div
                         className='row mb-2 py-1'
-                        style={{
-                          borderLeft: item?.is_holiday
-                            ? '5px solid #89DDF1'
-                            : '5px solid #E089F1',
-                        }}
                         onClick={() => modalopen(item)}
                       >
-                        <div className='col-4 px-0 pt-1'>
+                        <div className='col-3 px-0 pt-1'>
                           <div
                             style={{
-                              background: item?.is_holiday ? '#89DDF1' : '#E089F1',
+                              background: item?.is_holiday ? '#00b8df' : '#d700dd',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '30px', height: '30px', width: '30px'
                             }}
-                            className='mx-1 th-10 th-white th-br-4 text-center'
-                          >{`${moment(item?.start_time).format('DD')}-${moment(
-                            item?.end_time
-                          ).format('DD')}`}</div>
+                            className='mx-1 th-10 th-white text-center'
+                          >{moment(item?.start_time).format('DD')}</div>
                         </div>
-                        <div className='col-8 px-0 text-truncate text-capitalize'>
+                        <div className='col-8 px-0 text-truncate text-capitalize d-flex align-items-center'>
                           <Tooltip title={item?.event_name} placement='bottomLeft'>
                             <span style={{ margin: '0px', fontSize: '13px' }}>
                               {item?.event_name}
                             </span>
                           </Tooltip>
+                        </div>
+                        <div className='col-1 p-0' >
+                          <RightOutlined style={{ width: '20px', height: '20px' }} />
                         </div>
                       </div>
                     ))}
@@ -314,19 +382,19 @@ const CalendarCard = () => {
         <div className='row justify-content-start th-14 th-fw-400 px-2 pt-2 pb-1'>
           <div className='col-4 row'>
             <div
-              style={{ width: '2vh', height: '2vh', background: '#89DDF1' }}
+              style={{ width: '2vh', height: '2vh', background: '#00b8df' }}
               className='mt-1'
             ></div>
-            <div className='th-13 mx-1' style={{ color: '#89DDF1', paddingTop: '0px' }}>
+            <div className='th-13 mx-1' style={{ color: '#00b8df', paddingTop: '0px' }}>
               {holidayCount.length == 0 ? 'No' : holidayCount.length} Holidays
             </div>
           </div>
           <div className='col-4 row'>
             <div
-              style={{ width: '2vh', height: '2vh', background: '#E089F1' }}
+              style={{ width: '2vh', height: '2vh', background: '#d700dd' }}
               className='mt-1'
             ></div>
-            <div className='th-13 mx-1' style={{ color: '#E089F1', paddingTop: '0px' }}>
+            <div className='th-13 mx-1' style={{ color: '#d700dd', paddingTop: '0px' }}>
               {eventCount.length == 0 ? 'No' : eventCount.length} Events
             </div>
           </div>

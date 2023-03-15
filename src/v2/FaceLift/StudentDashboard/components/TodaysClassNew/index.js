@@ -7,7 +7,6 @@ import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import NoClassIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/noclass.png';
-import '../../index.css';
 
 const TodaysClass = () => {
   const myRef = useRef();
@@ -88,7 +87,7 @@ const TodaysClass = () => {
                 {moment().format('Do MMM  YYYY')}
               </span>
             </div>
-            {!loading && todaysAttendance !== 'N/A' ? (
+            {!loading && todaysAttendance && todaysAttendance !== 'N/A' ? (
               <div className='d-flex align-item-center align-items-center th-12 ml-2 '>
                 <span className='mr-2'>Today's Attendance :</span>
                 <div
@@ -185,14 +184,16 @@ const TodaysClass = () => {
                               <div className='d-none d-sm-block px-0 px-md-2 col-md-2 py-1'>
                                 <span className='th-grey'>Subject</span>
                               </div>
-                              <div className='col-8 px-1 px-md-2 py-1'>
+                              <div className='col-7 col-sm-8 px-1 px-md-2 py-1'>
                                 <div className='th-black-1 th-fw-600 text-truncate'>
                                   <Tooltip title={item?.subject_name}>
                                     {item?.subject_name}
                                   </Tooltip>
                                 </div>
                               </div>
-                              <div className={`col-4 col-md-2 px-0 text-md-right`}>
+                              <div
+                                className={`col-5 col-sm-4 col-md-2 px-0 text-md-right`}
+                              >
                                 <Tag
                                   color={
                                     getPeriodStatus(item) == 'ongoing'
@@ -261,7 +262,7 @@ const TodaysClass = () => {
           </>
         ) : (
           <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
-            <img src={NoClassIcon} style={{ height: '150px', objectFit: 'cover' }} />
+            <img src={NoClassIcon} style={{ height: '100px', objectFit: 'cover' }} />
           </div>
         )}
       </div>

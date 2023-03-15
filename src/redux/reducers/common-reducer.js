@@ -7,8 +7,10 @@ const INITIAL_STATE = {
   erpConFigKey: !!JSON.parse(localStorage?.getItem('erp_config')),
   selectedBranch: sessionStorage?.getItem('selected_branch')
     ? JSON.parse(sessionStorage?.getItem('selected_branch'))
-    : '',
-  branchList: '' || JSON.parse(sessionStorage.getItem('branch_list')),
+    : null,
+  branchList: !!sessionStorage?.getItem('branch_list')
+    ? JSON.parse(sessionStorage.getItem('branch_list'))
+    : [],
   selectedVersion: localStorage.getItem('isV2')
     ? JSON.parse(localStorage.getItem('isV2'))
     : true,
@@ -45,7 +47,7 @@ const commonReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedBranch: !sessionStorage.getItem('selected_branch')
-          ? JSON.parse(sessionStorage.getItem('branch_list'))[0]
+          ? JSON.parse(sessionStorage.getItem('branch_list'))?.[0]
           : action.payload,
       };
     case commonActions.BRANCH_LIST:

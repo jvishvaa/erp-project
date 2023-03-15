@@ -47,9 +47,11 @@ export const fetchAssesmentTests = async (
   sectionMappingId,
   groupIds,
   sectionFlag,
-  groupFlag
+  groupFlag,
+  category
 ) => {
   try {
+    console.log(hasGroup , pageSize , 'page');
     let url = '';
     if (fetchAll) {
       if (type === 'all') {
@@ -58,44 +60,48 @@ export const fetchAssesmentTests = async (
         url = `${endpoints.assessmentErp.listAssessment}?test_mode=2&is_delete=False`;
       } else if (type === 'online-pattern') {
         url = `${endpoints.assessmentErp.listAssessment}?test_mode=1&is_delete=False`;
-      }else if(type === 'deleted'){
+      } else if (type === 'deleted') {
         url = `${endpoints.assessmentErp.listAssessment}?is_delete=True`;
-
       }
-    } else {      
-      url = `${ endpoints.assessmentErp.listAssessment
-      }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&page=${page}&page_size=${pageSize}
-      &has_sub_group=${hasGroup ? true : false}`
-      if(date){
+    } else {
+      if (subjectIds?.length > 0) {
+        url = `${
+          endpoints.assessmentErp.listAssessment
+        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&page=${page}&page_size=${pageSize}&has_sub_group=${hasGroup ? true : false}${category ? '&category=' + category?.value : ''}`;
+      } else {
+        url = `${
+          endpoints.assessmentErp.listAssessment
+        }?academic_session=${acadSessionId}&grade=${gradeId}&page=${page}&page_size=${pageSize}&has_sub_group=${hasGroup ? "true" : "false"}${category ? '&category=' + category?.value : ''}`;
+      }
+
+      if (date) {
         const startDate = moment(date[0]).format('YYYY-MM-DD');
         const endDate = moment(date[1]).format('YYYY-MM-DD');
 
-        url += `&start_date=${startDate}&end_date=${endDate}`
+        url += `&start_date=${startDate}&end_date=${endDate}`;
       }
-      if(testTypeId){
-        url += `&test_type=${testTypeId}`
+      if (testTypeId) {
+        url += `&test_type=${testTypeId}`;
       }
-      if(statusId){
-        url +=  `&is_completed=${
-          statusId === 1 ? 'False' : statusId === 2 ? 'True' : null}`
+      if (statusId) {
+        url += `&is_completed=${
+          statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
+        }`;
       }
-      if(!hasGroup && sectionFlag){
-        url += `&section_mappings=${sectionMappingId}`
+      if (!hasGroup && sectionFlag) {
+        url += `&section_mappings=${sectionMappingId}`;
       }
-      if(hasGroup && groupFlag && groupIds){
-        url += `&group=${groupIds?.value}`
+      if (hasGroup && groupFlag && groupIds) {
+        url += `&group=${groupIds?.value}`;
       }
       if (type === 'physical-test') {
-        url += `&test_mode=2&is_delete=False`
-
+        url += `&test_mode=2&is_delete=False`;
       } else if (type === 'online-pattern') {
-
-        url += `&test_mode=1&is_delete=False`
-
-      }else if(type === 'deleted'){
-        url += '&is_delete=True'
-      }else if(type === 'all'){
-        url += '&is_delete=False'
+        url += `&test_mode=1&is_delete=False`;
+      } else if (type === 'deleted') {
+        url += '&is_delete=True';
+      } else if (type === 'all') {
+        url += '&is_delete=False';
       }
     }
     const response = await axiosInstance.get(url);
@@ -131,11 +137,10 @@ export const deleteAssessmentTest = async (id) => {
       `${endpoints.assessmentErp.deleteAssessmentTest}${id}/test/`
     );
     if (response.data.status_code === 200) {
-      return response.data ;
+      return response.data;
     }
     // throw new Error();
-  } 
-  catch (e) {
-     return e
+  } catch (e) {
+    return e;
   }
 };

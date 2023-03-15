@@ -123,7 +123,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
         date: moment(selectedHomeworkDetails?.last_submission_dt)
       })
 
-
+      setQueIndexCounter(selectedHomeworkDetails?.hw_questions?.length - 1)
       setName(selectedHomeworkDetails?.homework_name);
       setDateValue(selectedHomeworkDetails?.last_submission_dt)
       setDescription(selectedHomeworkDetails?.description);

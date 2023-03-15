@@ -12,7 +12,9 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import { connect } from 'react-redux';
 import { login, aolLogin, isMsAPI } from '../../redux/actions';
 import axiosInstance from 'config/axios';
+import axios from 'axios';
 import endpoints from 'config/endpoints';
+import endpointsV2 from 'v2/config/endpoints';
 
 function LoginForm(props) {
   const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;
@@ -63,7 +65,22 @@ function LoginForm(props) {
       });
     return result;
   };
-
+  const fetchVersion = () => {
+    axios
+      .get(`${endpointsV2.appVersion}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          sessionStorage.setItem('app_version', JSON.stringify(result?.data?.result));
+        }
+      })
+      .catch((error) => {
+        console.error(error?.message);
+      });
+  };
   const handleLogin = () => {
     // UdaanLogin();
     if (erpSearch !== null) {
@@ -86,6 +103,7 @@ function LoginForm(props) {
       onLogin(params).then((response) => {
         if (response?.isLogin) {
           isMsAPI();
+          fetchVersion();
           fetchERPSystemConfig(response?.isLogin).then((res) => {
             let erpConfig;
             let userData = JSON.parse(localStorage.getItem('userDetails'));

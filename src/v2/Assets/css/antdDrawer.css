@@ -5,6 +5,29 @@
 .ant-drawer {
   z-index: 2000;
 }
-.ant-select-dropdown{
+.ant-select-dropdown {
   z-index: 2050;
+}
+
+/* Custom Drawers */
+.th-activity-drawer .ant-drawer-body {
+  padding: 12px !important;
+}
+
+.th-activity-drawer .ant-collapse-header-text {
+  width: 100% !important;
+}
+.th-activity-drawer .ant-drawer-header {
+  background-color: #1b4ccb !important;
+  color: #fff !important;
+  border-bottom: 2px solid #d9d9d9 !important;
+}
+.th-activity-drawer .ant-drawer-title {
+  color: #fff !important;
+  border-top-left-radius: 8px !important;
+  font-weight: 500;
+  font-size: 18px;
+}
+.th-activity-drawer .ant-drawer-content {
+  border-top-left-radius: 8px !important;
 }

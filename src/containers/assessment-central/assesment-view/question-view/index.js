@@ -386,7 +386,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                       {' '}
                       <div className='matrix-column d-flex'>
                         <div>{Object.keys(obj)[0] || ''}</div> {' : '}
-                        <div>{obj[Object.keys(obj)[0]].isChecked ? " True" : " False"}</div>
+                        <div>{obj[Object.keys(obj)[0]].optionValue}</div>
                       </div>
                     </div>
                   ))}
