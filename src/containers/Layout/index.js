@@ -7,7 +7,7 @@ import React, { useState, useEffect, useRef, createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Box, useMediaQuery, useTheme } from '@material-ui/core';
-import { Result } from 'antd';
+import { Result, Spin } from 'antd';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
@@ -54,7 +54,9 @@ const Layout = ({ children, history }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const selectedBranch = useSelector((state) => state.commonFilterReducer?.branch);
+  const { selectedBranch, branchList } = useSelector(
+    (state) => state.commonFilterReducer
+  );
   const {
     apiGateway: { baseURLCentral, baseUdaan, baseEvent },
     s3: { BUCKET: s3BUCKET, ERP_BUCKET },
@@ -95,14 +97,18 @@ const Layout = ({ children, history }) => {
     }
   }, []);
   useEffect(() => {
-    if (selectedAcademicYear)
-      setBranchesMapped(
-        sessionStorage.getItem('selected_branch') === null ? false : true
-      );
-  }, [selectedBranch, selectedAcademicYear]);
+    if (sessionStorage.getItem('isSessionChanged') === 'true') {
+      if (selectedAcademicYear && sessionStorage.getItem('branch_list') !== null) {
+        if (selectedBranch?.branch?.id !== undefined) {
+          setBranchesMapped(true);
+        } else {
+          setBranchesMapped(false);
+        }
+      }
+    }
+  }, [selectedBranch, window.location.pathname]);
 
   const classes = useStyles();
-
   const handleRouting = (name) => {
     switch (name) {
       case 'Take Class': {

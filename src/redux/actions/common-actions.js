@@ -102,8 +102,8 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
 };
 
 export const currentSelectedYear = (data) => (dispatch) => {
-  sessionStorage.removeItem('branch_list');
-  sessionStorage.removeItem('selected_branch');
+  sessionStorage.setItem('branch_list', []);
+  sessionStorage.setItem('selected_branch', '');
   dispatch({ type: SELECTED_YEAR, payload: data });
 };
 
@@ -172,8 +172,9 @@ export const currentSelectedBranch = (data) => (dispatch) => {
 };
 
 export const fetchBranchList = (session_year) => (dispatch) => {
-  // sessionStorage.removeItem('branch_list');
-  sessionStorage.removeItem('selected_branch');
+  sessionStorage.setItem('branch_list', []);
+  sessionStorage.setItem('selected_branch', '');
+
   console.log('Branch Api Called');
   dispatch({ type: BRANCH_LIST, payload: [] });
   let url = `${endpoints?.academics?.branches}?session_year=${session_year}&module_id=${moduleId}`;
