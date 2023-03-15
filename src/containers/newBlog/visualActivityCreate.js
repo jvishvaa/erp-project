@@ -1,30 +1,13 @@
 import React, { useState, useEffect, useContext, createRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  IconButton,
-  Divider,
-  TextField,
-  // Button,
-  makeStyles,
-  Grid,
-  Dialog,
-  DialogTitle,
-  // Input,
-  // Select,
-} from '@material-ui/core';
 import Layout from 'containers/Layout';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import Loader from '../../components/loader/loader';
-// import axiosInstance from '../../config/axios';
 import axiosInstance from 'v2/config/axios';
 import endpoints from '../../config/endpoints';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import {
   Breadcrumb,
   Select,
@@ -38,100 +21,19 @@ import {
 } from 'antd';
 
 import axios from 'axios';
-import CloseIcon from '@material-ui/icons/Close';
 import {
   fetchAcademicYears,
   fetchBranches as fetchBranchRedux,
   fetchGrades,
   fetchSection,
 } from '../lesson-plan/create-lesson-plan/apis';
-import { getBranch } from 'containers/assessment-central/report-card/apis';
-import { element } from 'prop-types';
-import { each } from 'highcharts';
 import { DownOutlined } from '@ant-design/icons';
 import moment from 'moment';
-
-const drawerWidth = 350;
-
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    width: 300,
-  },
-  indeterminateColor: {
-    color: '#f50057',
-  },
-  selectAllText: {
-    fontWeight: 500,
-  },
-  selectedAll: {
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.08)',
-    },
-  },
-  root: {
-    maxWidth: '90vw',
-    width: '95%',
-    margin: '20px auto',
-    marginTop: theme.spacing(4),
-    boxShadow: 'none',
-  },
-  customFileUpload: {
-    border: '1px solid black',
-    padding: '6px 12px',
-
-    cursor: 'pointer',
-  },
-  container: {
-    maxHeight: '70vh',
-    maxWidth: '90vw',
-  },
-  dividerColor: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
-  },
-  buttonColor: {
-    color: `${theme.palette.secondary.main} !important`,
-    backgroundColor: 'white',
-  },
-  buttonColor1: {
-    color: `${theme.palette.primary.main} !important`,
-    backgroundColor: 'white',
-  },
-  columnHeader: {
-    color: `${theme.palette.secondary.main} !important`,
-    fontWeight: 600,
-    fontSize: '1rem',
-    backgroundColor: `#ffffff !important`,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  tableCell: {
-    color: theme.palette.secondary.main,
-  },
-  vl: {
-    borderLeft: `3px solid ${theme.palette.primary.main}`,
-    height: '45px',
-  },
-  tickSize: {
-    transform: 'scale(2.0)',
-  },
-}));
-
-const dummyRound = [
-  { id: 1, round: 1, name: '1' },
-  { id: 2, round: 2, name: '2' },
-  { id: 3, round: 3, name: '3' },
-  { id: 4, round: 4, name: '4' },
-  { id: 5, round: 5, name: '5' },
-];
 
 const VisualActivityCreate = () => {
   const formRef = createRef();
   const { Option } = Select;
   const { TextArea } = Input;
-  const classes = useStyles();
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
   const user_level = data?.user_level;
@@ -146,56 +48,36 @@ const VisualActivityCreate = () => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
   // const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
-
+  const [checked, setChecked] = React.useState('');
   const [assigned, setAssigned] = useState(false);
-
+  const [templates, setTemplates] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
-  const [roundDropdown, setRoundDropdown] = useState(dummyRound);
-
+  const [description, setDescription] = useState('');
   const [moduleId, setModuleId] = React.useState();
-  const [month, setMonth] = React.useState('1');
-  const [branches, setBranches] = useState([]);
+  const [activityCategory, setActivityCategory] = useState([]);
+  const [title, setTitle] = useState('');
   const [grades, setGrades] = useState([]);
-  const [sections, setSections] = useState([]);
-  const [status, setStatus] = React.useState('');
-  const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
-  const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [selectedRound, setSelectedRound] = useState([]);
   const [selectedRoundID, setSelectedRoundID] = useState('');
-  const [gradeIds, setGradeIds] = useState('');
-  const [sectionId, setSectionId] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
-  const [selectedSectionIds, setSelectedSectionIds] = useState('');
   const [desc, setDesc] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
   const [activityName, setActivityName] = useState([]);
-  const [changeText, setChangeText] = useState('');
-  const [visible, setVisible] = useState(false);
-  const [isPhysicalActivity, setIsPhysicalActivity] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
-  const [subActivityName, setSubActivityName] = useState([]);
-  const [isVisualActivity, setIsVisualActivity] = useState(false);
-  const [isSubmissionHide, setIsSubmissionHide] = useState(false);
-  const [filterData, setFilterData] = useState({
-    branch: '',
-    grade: '',
-    section: '',
-  });
   const [sudActId, setSubActId] = useState(localActivityData);
-  const [selectedSubActivityId, setSelectedSubActivityId] = useState('');
   const [branchDropdown, setBranchDropdown] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [academicYear, setAcademicYear] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-
+  const [requestOngoing, setRequestOngoing] = useState(false);
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -460,6 +342,7 @@ const VisualActivityCreate = () => {
       message.error('Please Add Description ');
       return;
     } else {
+      setRequestOngoing(true);
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
@@ -486,6 +369,7 @@ const VisualActivityCreate = () => {
         })
         .then(() => {
           setLoading(false);
+          setRequestOngoing(false);
           message.success('Activity Successfully Created');
           setLoading(false);
           setSelectedGrade([]);
@@ -501,13 +385,11 @@ const VisualActivityCreate = () => {
         .catch((error) => {
           message.error(error);
           setLoading(false);
+          setRequestOngoing(false);
         });
     }
   };
 
-  const [typeText, setTypeText] = useState([{ name: 'text' }, { name: 'template' }]);
-
-  const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
     setLoading(true);
     axios
@@ -556,15 +438,14 @@ const VisualActivityCreate = () => {
   const closePreview = () => {
     setAssigned(false);
   };
-  const [title, setTitle] = useState('');
+
   const handleTitle = (event) => {
     setTitle(event.target.value);
   };
-  const [description, setDescription] = useState('');
+
   const handleDescription = (event) => {
     setDescription(event.target.value);
   };
-  const [templates, setTemplates] = useState([]);
 
   const getTemplate = (data) => {
     if (data) {
@@ -585,12 +466,6 @@ const VisualActivityCreate = () => {
   useEffect(() => {
     getTemplate();
   }, [selectedBranch, activityName]);
-
-  const [checked, setChecked] = React.useState('');
-
-  const handleGoBack = () => {
-    history.goBack();
-  };
 
   const branchOption = branchList.map((each) => {
     return (
@@ -647,19 +522,6 @@ const VisualActivityCreate = () => {
   const handleClearSection = () => {
     selectedSection([]);
   };
-
-  // useEffect(() => {
-  //   if (
-  //     localActivityData?.name.toLowerCase() === 'music' ||
-  //     localActivityData?.name.toLowerCase() === 'theatre' ||
-  //     localActivityData?.name.toLowerCase() === 'dance'
-
-  //   ) {
-  //     setIsSubmissionHide(true);
-  //   } else {
-  //     setIsSubmissionHide(false);
-  //   }
-  // }, [localActivityData?.name]);
 
   return (
     <div>
@@ -847,7 +709,7 @@ const VisualActivityCreate = () => {
               <Button
                 type='primary'
                 className='w-100 th-14'
-                disabled={user_level == 11}
+                disabled={user_level == 11 || requestOngoing}
                 onClick={dataPost}
               >
                 Submit
@@ -855,7 +717,6 @@ const VisualActivityCreate = () => {
             </div>
           </div>
         </div>
-        {/* <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}> */}
         <Modal
           centered
           visible={assigned}
@@ -898,304 +759,6 @@ const VisualActivityCreate = () => {
           </div>
         </Modal>
       </Layout>
-      {/* <Layout>
-
-
-
-        <Grid
-          container
-          direction='row'
-          style={{ paddingLeft: '22px', paddingRight: '10px' }}
-        ></Grid>
-        <div
-          className='col-md-6'
-          style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}
-        >
-          <div>
-            <IconButton aria-label='back' onClick={handleGoBack}>
-              <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
-            </IconButton>
-          </div>
-          <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-              Activity Management
-            </Breadcrumb.Item>
-            <Breadcrumb.Item href='' className='th-grey th-16'>
-              Activity
-            </Breadcrumb.Item>
-            <Breadcrumb.Item href='' className='th-grey th-16'>
-              Create {localActivityData?.name}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
-        <div style={{ paddingLeft: '22px', paddingRight: '10px' }}>
-          <Button
-            variant='primary'
-            style={{ borderRadius: '1px', color: 'white' }}
-            disabled
-          >
-            Create {localActivityData?.name}
-          </Button>
-          <Divider className={classes.dividerColor} />
-        </div>
-        <div
-          style={{
-            paddingLeft: '22px',
-            paddingRight: '10px',
-            paddingTop: '50px',
-            fontSize: '15px',
-          }}
-        >
-          <div
-            style={{
-              marginLeft: '9px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginRight: '6px',
-            }}
-          >
-            <div>
-              {' '}
-              Submission End Date *: &nbsp;&nbsp;&nbsp;
-              <TextField
-                required
-                size='small'
-                style={{ marginTop: '-6px' }}
-                onChange={(e) => handleStartDateChange(e.target.value)}
-                type='date'
-                value={startDate || ' '}
-                variant='outlined'
-              />
-            </div>
-          </div>
-          <Grid container spacing={2} style={{ marginTop: '23px' }}>
-            <Grid item md={6} xs={12}>
-              <Autocomplete
-                multiple
-                fullWidth
-                size='small'
-                limitTags={1}
-                options={branchList || []}
-                value={selectedBranch || []}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                onChange={(event, value) => {
-                  handleBranch(event, value);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    fullWidth
-                    variant='outlined'
-                    label='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <Autocomplete
-                multiple
-                fullWidth
-                limitTags={1}
-                size='small'
-                className='filter-student meeting-form-input'
-                options={gradeList || []}
-                getOptionLabel={(option) => option?.name || ''}
-                filterSelectedOptions
-                value={selectedGrade || []}
-                onChange={(event, value) => {
-                  handleGrade(event, value);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    fullWidth
-                    variant='outlined'
-                    label='Grade'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <Autocomplete
-                multiple
-                fullWidth
-                limitTags={1}
-                size='small'
-                className='filter-student meeting-form-input'
-                options={sectionDropdown || []}
-                getOptionLabel={(option) => option?.name || ''}
-                filterSelectedOptions
-                value={selectedSection || []}
-                onChange={(event, value) => {
-                  handleSection(event, value);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    fullWidth
-                    variant='outlined'
-                    label='Section'
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <div
-            style={{
-              border: '1px solid lightgrey',
-              borderRadius: '5px',
-              height: 'auto',
-              marginTop: '20px',
-            }}
-          >
-            <div style={{ marginTop: '23px', marginLeft: '73px', display: 'flex' }}>
-              Activity Details *: &nbsp;&nbsp;&nbsp;&nbsp;
-              <TextField
-                id='outlined-basic'
-                size='small'
-                fullWidth
-                value={title}
-                onChange={handleTitle}
-                style={{ maxWidth: '80%' }}
-                label='Title *'
-                variant='outlined'
-              />
-            </div>
-            <br />
-            <div
-              style={{
-                marginLeft: '13%',
-                marginRight: '8%',
-                marginBottom: '23px',
-              }}
-            >
-              <TextField
-                label='Description/Instructions *'
-                placeholder='Description/Instructions *'
-                multiline
-                value={description}
-                onChange={handleDescription}
-                fullWidth
-                style={{ maxWidth: '97%' }}
-                rows='8'
-                variant='outlined'
-              />
-            </div>
-          </div>
-          <div
-            style={{
-              border: '1px solid lightgrey',
-              borderRadius: '5px',
-              height: 'auto',
-              marginTop: '20px',
-            }}
-          ></div>
-          <div
-            style={{
-              marginTop: '60px',
-              marginLeft: '50px',
-
-              display: 'flex',
-            }}
-          >
-            <Button
-              variant='outlined'
-              className={classes.buttonColor}
-              size='medium'
-              onClick={goBack}
-            >
-              Back
-            </Button>{' '}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <Button
-              variant='outlined'
-              className={classes.buttonColor}
-              size='medium'
-              onClick={PreviewBlog}
-            >
-              Preview
-            </Button>{' '}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <Button
-              variant='outlined'
-              onClick={handleClear}
-              className={classes.buttonColor1}
-              size='medium'
-            >
-              Clear
-            </Button>{' '}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <Button
-              variant='contained'
-              color='primary'
-              disabled={user_level == 11}
-              onClick={dataPost}
-            >
-              Submit
-            </Button>
-          </div>
-        </div>
-        <Dialog open={assigned} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '642px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '12px',
-              }}
-            >
-              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-              <div style={{ marginTop: '21px', marginRight: '34px' }}>
-                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
-              </div>
-            </div>
-
-            <div
-              style={{
-                border: '1px solid lightgray',
-                height: ' auto',
-                marginLeft: '16px',
-                marginRight: '32px',
-                borderRadius: '10px',
-                marginBottom: '9px',
-              }}
-            >
-              <div style={{ marginLeft: '23px', marginTop: '28px' }}>
-                <div style={{ fontSize: '15px', color: '#7F92A3' }}>
-                  Title -{activityName.name}
-                </div>
-                <div style={{ fontSize: '21px' }}>{title}</div>
-                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                  Submission on -{startDate}
-                </div>
-                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                  Branch -&nbsp;<span style={{ color: 'black' }}>{branchname}</span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Grade -&nbsp;<span style={{ color: 'black' }}>{gradename}</span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Section -&nbsp;<span style={{ color: 'black' }}>{sectionname}</span>
-                </div>
-
-                <div style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}>
-                </div>
-                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                  Instructions
-                </div>
-                <div style={{ paddingTop: '8px', fontSize: '16px' }}>{description}</div>
-                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                  <img src={fileUrl} width='50%' />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Dialog>
-      </Layout> */}
     </div>
   );
 };

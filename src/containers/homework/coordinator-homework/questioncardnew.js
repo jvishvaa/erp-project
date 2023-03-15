@@ -690,7 +690,7 @@ const QuestionCardNew = ({
                                                     value={maxattachment}
                                                     disabled={window.location.pathname.includes('/diary/')}
                                                     style={{ fontSize: '13px', fontWeight: '600' }}
-                                                    className='w-25'
+                                                    className='w-25 fileuploaddrop '
                                                 >
                                                     {Array.from({ length: 10 }, (_, index) => (
                                                         <option value={index + 1}>{index + 1}</option>
@@ -890,11 +890,11 @@ const QuestionCardNew = ({
                                 anchorEl={anchorEl}
                                 onClose={handleClose}
                                 anchorOrigin={{
-                                    vertical: 'bottom',
+                                    vertical: 'center',
                                     horizontal: 'center',
                                 }}
                                 transformOrigin={{
-                                    vertical: 'top',
+                                    vertical: 'center',
                                     horizontal: 'center',
                                 }}
                             >

@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef, createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Box, useMediaQuery, useTheme } from '@material-ui/core';
+import { Result, Spin } from 'antd';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
@@ -27,8 +28,8 @@ import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 import ENVCONFIG from 'config/config';
 import SideBar from './Sidebar';
 import { IsV2Checker } from 'v2/isV2Checker';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 export const ContainerContext = createContext();
-
 // const isV2 = localStorage.getItem('isV2');
 
 const Layout = ({ children, history }) => {
@@ -43,8 +44,19 @@ const Layout = ({ children, history }) => {
   const searchParams = new URLSearchParams(window.location.search);
   const isLayoutHidden = searchParams.get('wb_view');
   let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
-  let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
+  let {
+    user_level: userLevel,
+    first_name,
+    last_name,
+  } = JSON.parse(localStorage.getItem('userDetails')) || '';
+  const [branchesmapped, setBranchesMapped] = useState(true);
 
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const { selectedBranch, branchList } = useSelector(
+    (state) => state.commonFilterReducer
+  );
   const {
     apiGateway: { baseURLCentral, baseUdaan, baseEvent },
     s3: { BUCKET: s3BUCKET, ERP_BUCKET },
@@ -66,19 +78,11 @@ const Layout = ({ children, history }) => {
       const { is_superuser = false } = userDetails;
       setSuperUser(is_superuser);
     }
+    // setBranchesMapped(sessionStorage.getItem('selected_branch') === null ? false : true);
     if (containerRef.scrollTop > 50) {
       containerRef.scrollTop = 0;
     }
   }, []);
-  // useEffect(() => {
-  //   if (isV2) {
-  //     if (window.innerWidth < 768) {
-  //       setDrawerOpen(false);
-  //     } else {
-  //       setDrawerOpen(true);
-  //     }
-  //   }
-  // }, [window.innerWidth]);
 
   useEffect(() => {
     if (isLogout) {
@@ -92,9 +96,19 @@ const Layout = ({ children, history }) => {
       fetchThemeApi();
     }
   }, []);
+  useEffect(() => {
+    if (sessionStorage.getItem('isSessionChanged') === 'true') {
+      if (selectedAcademicYear && sessionStorage.getItem('branch_list') !== null) {
+        if (selectedBranch?.branch?.id !== undefined) {
+          setBranchesMapped(true);
+        } else {
+          setBranchesMapped(false);
+        }
+      }
+    }
+  }, [selectedBranch, window.location.pathname]);
 
   const classes = useStyles();
-
   const handleRouting = (name) => {
     switch (name) {
       case 'Take Class': {
@@ -1239,12 +1253,34 @@ const Layout = ({ children, history }) => {
                 <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
               ))}
             <ContainerContext.Provider value={{ containerRef }}>
-              <Box className={classes.container} ref={containerRef}>
-                <Box>{children}</Box>
-                <Box mt={0} className={classes.footerBar}>
-                  <Footer />
+              {branchesmapped ? (
+                <Box className={classes.container} ref={containerRef}>
+                  <Box>{children}</Box>
+                  <Box mt={0} className={classes.footerBar}>
+                    <Footer />
+                  </Box>
                 </Box>
-              </Box>
+              ) : (
+                <div className=' p-4' style={{ height: '100vh', background: '#f2f2f2' }}>
+                  <div
+                    className='d-flex justify-content-center align-items-center th-height-50'
+                    style={{ height: '70vh' }}
+                  >
+                    <div className='shadow-lg th-bg-white th-br-8 py-2 w-70'>
+                      <Result
+                        status='error'
+                        title={
+                          <span className='th-20'>{`${
+                            first_name + ' ' + last_name
+                          } not mapped to academic year ${
+                            selectedAcademicYear?.session_year
+                          }`}</span>
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </ContainerContext.Provider>
           </main>
         </div>
