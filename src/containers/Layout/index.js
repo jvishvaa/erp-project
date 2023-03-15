@@ -94,13 +94,12 @@ const Layout = ({ children, history }) => {
       fetchThemeApi();
     }
   }, []);
-  console.log({ branchesmapped });
   useEffect(() => {
     if (selectedAcademicYear)
       setBranchesMapped(
         sessionStorage.getItem('selected_branch') === null ? false : true
       );
-  }, [selectedBranch]);
+  }, [selectedBranch, selectedAcademicYear]);
 
   const classes = useStyles();
 

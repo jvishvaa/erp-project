@@ -74,8 +74,6 @@ const getDefaultYear = (data) => {
 };
 
 export const fetchAcademicYearList = (moduleId) => (dispatch) => {
-  sessionStorage.removeItem('branch_list');
-  sessionStorage.removeItem('selected_branch');
   dispatch({ type: ACADEMIC_YEAR_LIST, payload: [] });
   let url = endpoints.userManagement.academicYear;
   if (moduleId) url += `?module_id=${moduleId}`;
@@ -104,6 +102,8 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
 };
 
 export const currentSelectedYear = (data) => (dispatch) => {
+  sessionStorage.removeItem('branch_list');
+  sessionStorage.removeItem('selected_branch');
   dispatch({ type: SELECTED_YEAR, payload: data });
 };
 
@@ -172,7 +172,7 @@ export const currentSelectedBranch = (data) => (dispatch) => {
 };
 
 export const fetchBranchList = (session_year) => (dispatch) => {
-  sessionStorage.removeItem('branch_list');
+  // sessionStorage.removeItem('branch_list');
   sessionStorage.removeItem('selected_branch');
   console.log('Branch Api Called');
   dispatch({ type: BRANCH_LIST, payload: [] });
