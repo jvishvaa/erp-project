@@ -82,12 +82,11 @@
 }
 .th-calendar .react-calendar__tile--active {
   background: none !important;
-  /* color: inherit !important; */
 }
-.th-calendar .react-calendar__tile--active:hover {
+/* .th-calendar .react-calendar__tile--active:hover {
   background: none !important;
-  /* color: inherit !important; */
-}
+   color: inherit !important; 
+} */
 .th-calendar .bothEvent .react-calendar__tile--active {
   border: 1px solid #d700dd;
   color: #00b8df;
@@ -97,9 +96,12 @@
   color: #00b8df;
 }
 
-.th-calendar .th-weekendcal {
+.th-calendar .th-weekendcal .react-calendar__tile {
   color: #d10000 !important;
 }
-.th-calendar .th-weekdaycal {
+.th-calendar .th-weekdaycal .react-calendar__tile--active {
   color: black !important;
+}
+.react-calendar__tile--active {
+  color: black;
 }
