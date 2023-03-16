@@ -15,26 +15,26 @@
   font-size: 14px;
   font-weight: 400 !important;
   color: #ffffff !important;
-  background-color:   #89B4E2!important;
+  background-color: #89b4e2 !important;
 }
 .th-calendar .react-calendar__navigation__arrow {
   color: #ffffff !important;
   font-weight: bold !important;
-  background-color: #89B4E2 !important;
+  background-color: #89b4e2 !important;
 }
 
 .th-calendar .react-calendar__navigation {
   display: flex;
   justify-content: center !important;
-  background-color: #89B4E2 !important;
+  background-color: #89b4e2 !important;
   border-radius: 5px;
 }
-.th-calendar .react-calendar__viewContainer{
-  background-color: #FCFCFD;
+.th-calendar .react-calendar__viewContainer {
+  background-color: #fcfcfd;
 }
 .th-calendar .react-calendar__navigation__label {
   flex-grow: 0.3 !important;
-  background-color: #89B4E2 !important;
+  background-color: #89b4e2 !important;
   pointer-events: none !important;
 }
 
@@ -58,7 +58,7 @@
 .th-calendar .react-calendar__year-view__months {
   height: 254px;
 }
-.calendar-card{
+.calendar-card {
   width: 50% !important;
 }
 .event_holiday .ant-card-head-title {
@@ -66,36 +66,40 @@
   font-size: 14px;
 }
 
-.event_holidaymod .ant-modal-header{
-  background-color: #EDECF8;
+.event_holidaymod .ant-modal-header {
+  background-color: #edecf8;
 }
 
-.event_holidaymod .ant-modal-header{
-  background-color: #EDECF8;
+.event_holidaymod .ant-modal-header {
+  background-color: #edecf8;
 }
-.th-calendar .holidayDate{
+.th-calendar .holidayDate {
   background: #00b8df;
-    border-radius: 25px !important;
+  border-radius: 25px !important;
 }
-
-
-.th-calendar .react-calendar__tile--active{
+.th-calendar .holidayDate .react-calendar__tile--active {
+  background: #00b8df !important;
+}
+.th-calendar .react-calendar__tile--active {
   background: none !important;
   /* color: inherit !important; */
 }
-.th-calendar .react-calendar__tile--active:hover{
+.th-calendar .react-calendar__tile--active:hover {
   background: none !important;
   /* color: inherit !important; */
 }
-
-.th-calendar .bothEvent{
+.th-calendar .bothEvent .react-calendar__tile--active {
   border: 1px solid #d700dd;
-  color: #00b8df
+  color: #00b8df;
+}
+.th-calendar .bothEvent {
+  border: 1px solid #d700dd;
+  color: #00b8df;
 }
 
-.th-calendar .th-weekendcal{
+.th-calendar .th-weekendcal {
   color: #d10000 !important;
 }
-.th-calendar .th-weekdaycal{
+.th-calendar .th-weekdaycal {
   color: black !important;
 }
