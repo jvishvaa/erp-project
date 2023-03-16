@@ -100,10 +100,13 @@ const SubmissionData = withRouter(({
 
     let IsToday = false;
     let Isyesterday = false;
+    let Isafter = false;
+
 
     const checkValid = () => {
         IsToday = moment(selectedHomeworkDetails?.date).isSame(todayDate, 'day');
         Isyesterday = moment(selectedHomeworkDetails?.date).isSame(yesterdayDate, 'day');
+        Isafter = moment(selectedHomeworkDetails?.date).isAfter(todayDate, 'day');
 
         console.log(IsToday, Isyesterday, 'today');
         if (IsToday) {
@@ -112,6 +115,8 @@ const SubmissionData = withRouter(({
         } else if (Isyesterday) {
             setCheckEdit(true)
             console.log("hit yes");
+        } else if (Isafter){
+            setCheckEdit(true)
         } else {
             setCheckEdit(false)
         }
