@@ -350,7 +350,7 @@ const AssesmentCard = ({
       <div className='row align-items-center py-2'>
         <div className='col-8 px-0'>
           <div className='text-truncate text-capitalize'>
-            <Tooltip title={getSection()} placement='bottomLeft'>
+            <Tooltip zIndex={5000} title={getSection()} placement='bottomLeft'>
               <span>{getSection()}</span>
             </Tooltip>
           </div>
