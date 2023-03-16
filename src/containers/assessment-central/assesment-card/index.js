@@ -219,7 +219,11 @@ const AssesmentCard = ({
           />
         )}
         <div className='col-8 pl-0 text-truncate'>
-          <Tooltip title={<span>{value?.test_name}</span>} placement='bottomLeft'>
+          <Tooltip
+            zIndex={5000}
+            title={<span>{value?.test_name}</span>}
+            placement='bottomLeft'
+          >
             <span>{value?.test_name}</span>
           </Tooltip>
         </div>
