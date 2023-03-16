@@ -1614,11 +1614,18 @@ const AssessmentReportFilters = ({
               </Grid>
             )
           ) : (
-            <span className='pt-4'>
-              You can download bulk report between{' '}
-              {JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[0]} -{' '}
-              {JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[1]} .
-            </span>
+            <>
+              <Grid item xs={6} sm={8} className={isMobile ? '' : 'addButtonPadding'}>
+                <Button variant='contained' size='medium' color='primary' disabled={true}>
+                  Bulk Download
+                </Button>
+                <span className='pt-4 pl-2'>
+                  Note: Can download between{' '}
+                  {JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[0]} -{' '}
+                  {JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[1]} hrs.
+                </span>
+              </Grid>
+            </>
           )
         ) : null}
 
