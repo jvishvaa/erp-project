@@ -7,6 +7,7 @@ import axios from 'axios';
 import GmeetAuth from './gmeetauth';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const CreateClass = () => {
 
@@ -19,8 +20,11 @@ const CreateClass = () => {
 
   const CheckGmeetConfig = () => {
     axiosInstance
-    .get(`${endpoints.onlineClass.onlineClassGmeetConfig}`)
-    .then((res) => {
+    .get(`${endpoints.onlineClass.onlineClassGmeetConfig}`, {
+      headers: {
+      'X-DTS-SCHEMA': X_DTS_HOST,
+      },
+      }).then((res) => {
       console.log(res);
       setConfigData(res.data.result)
       if(res.data.result?.is_gmeet_enabled == true && res.data.result?.is_authorized == false){

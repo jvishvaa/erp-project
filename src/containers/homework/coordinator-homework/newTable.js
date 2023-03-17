@@ -13,6 +13,7 @@ import {
   fetchCoordinateTeacherHomeworkDetails,
   setSelectedHomework,
   fetchStudentsListForTeacherHomework,
+  fetchTeacherHomeworkDetails,
   setTeacherUserIDCoord,
   setSelectedCoFilters,
   resetSelectedCoFilters,
@@ -23,6 +24,7 @@ const { Search } = Input;
 
 const WeeklyTable = withRouter(({
   getCoordinateTeacherHomeworkDetails,
+  getTeacherHomeworkDetails,
   onSetSelectedFilters,
   onResetSelectedFilters,
   selectedFilters,
@@ -88,9 +90,19 @@ const selectedBranch = useSelector(
   const onCloseDrawer = () => {
     setOpenDrawer(false);
     setSubmitData()
-    getCoordinateTeacherHomeworkDetails(props?.moduleId, selectedAcademicYear?.id,
-      selectedBranch?.branch?.id, props?.grade, props?.sectionMapping,
-      props?.sectionId, props?.startDate, props?.endDate, props?.teacherid)
+    console.log(history , 'onclose');
+    if(history?.location?.state?.isTeacher == false){
+      getCoordinateTeacherHomeworkDetails(props?.moduleId, selectedAcademicYear?.id,
+        selectedBranch?.branch?.id, props?.grade, props?.sectionMapping,
+        props?.sectionId, props?.startDate, props?.endDate, props?.teacherid)
+    } else {
+      getTeacherHomeworkDetails(
+        props?.moduleId, selectedAcademicYear?.id,
+        selectedBranch?.branch?.id, props?.grade, props?.sectionMapping,
+        props?.sectionId, props?.startDate, props?.endDate,
+      )
+    }
+
   };
 
   const handleAdd = (each) => {
@@ -231,6 +243,29 @@ const mapDispatchToProps = (dispatch) => ({
         startDate,
         endDate,
         selectedTeacherUser_id
+      )
+    );
+  },
+  getTeacherHomeworkDetails: (
+    teacherModuleId,
+    acadYear,
+    branch,
+    grade,
+    sectionId,
+    section,
+    startDate,
+    endDate
+  ) => {
+    dispatch(
+      fetchTeacherHomeworkDetails(
+        teacherModuleId,
+        acadYear,
+        branch,
+        grade,
+        sectionId,
+        section,
+        startDate,
+        endDate
       )
     );
   },
