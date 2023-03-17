@@ -126,10 +126,8 @@ const StudentReportCard = () => {
         setLoading(false);
       })
       .catch((error) => {
-        if (error?.response?.data?.status === 403) {
-          setAlert('error', 'Report card not published');
-          setSelectedGrade('');
-        }
+        setAlert('error', error?.response?.data?.message);
+        setSelectedGrade('');
       });
     setLoading(false);
   };
