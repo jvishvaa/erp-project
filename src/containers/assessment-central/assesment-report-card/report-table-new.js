@@ -576,38 +576,42 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     {/* Total End */}
 
                     {/* Grading point descriptions Start */}
-                    <tr index={eachScholastic?.sub_component?.length}>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachScholastic?.sub_component?.length > 1
-                            ? examTypeHeader[i]?.flat().length +
-                              scholasticHeader[i].length +
-                              (3 * (eachScholastic?.sub_component?.length - 1) + 4)
-                            : examTypeHeader[i]?.flat().length +
-                              scholasticHeader[i].length +
-                              2
-                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                      >
-                        {eachScholastic?.grade_description}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachScholastic?.sub_component?.length > 1
-                            ? examTypeHeader[i]?.flat().length +
-                              scholasticHeader[i].length +
-                              (3 * (eachScholastic?.sub_component?.length - 1) + 4)
-                            : examTypeHeader[i]?.flat().length +
-                              scholasticHeader[i].length +
-                              2
-                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                      >
-                        {eachScholastic?.component_description}
-                      </td>
-                    </tr>
+                    {eachScholastic?.grade_description ? (
+                      <tr index={eachScholastic?.sub_component?.length}>
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachScholastic?.sub_component?.length > 1
+                              ? examTypeHeader[i]?.flat().length +
+                                scholasticHeader[i].length +
+                                (3 * (eachScholastic?.sub_component?.length - 1) + 4)
+                              : examTypeHeader[i]?.flat().length +
+                                scholasticHeader[i].length +
+                                2
+                          } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                        >
+                          {eachScholastic?.grade_description}
+                        </td>
+                      </tr>
+                    ) : null}
+                    {eachScholastic?.component_description ? (
+                      <tr>
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachScholastic?.sub_component?.length > 1
+                              ? examTypeHeader[i]?.flat().length +
+                                scholasticHeader[i].length +
+                                (3 * (eachScholastic?.sub_component?.length - 1) + 4)
+                              : examTypeHeader[i]?.flat().length +
+                                scholasticHeader[i].length +
+                                2
+                          } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                        >
+                          {eachScholastic?.component_description}
+                        </td>
+                      </tr>
+                    ) : null}
                     {/* Grading point descriptions End */}
                   </>
                 );
@@ -910,38 +914,42 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     {/* Total End */}
 
                     {/* Grading point descriptions Start */}
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachScholastic?.sub_component?.length > 1
-                            ? coschSxamTypeHeader[coI]?.flat().length +
-                              coschScholasticHeader[coI].length +
-                              (3 * (eachScholastic?.sub_component?.length - 1) + 4)
-                            : coschSxamTypeHeader[coI]?.flat().length +
-                              coschScholasticHeader[coI].length +
-                              2
-                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                      >
-                        {eachScholastic?.grade_description}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachScholastic?.sub_component?.length > 1
-                            ? coschSxamTypeHeader[coI]?.flat().length +
-                              coschScholasticHeader[coI].length +
-                              (3 * (eachScholastic?.sub_component?.length - 1) + 4)
-                            : coschSxamTypeHeader[coI]?.flat().length +
-                              coschScholasticHeader[coI].length +
-                              2
-                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                      >
-                        {eachScholastic?.component_description}
-                      </td>
-                    </tr>
+                    {eachScholastic?.grade_description ? (
+                      <tr>
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachScholastic?.sub_component?.length > 1
+                              ? coschSxamTypeHeader[coI]?.flat().length +
+                                coschScholasticHeader[coI].length +
+                                (3 * (eachScholastic?.sub_component?.length - 1) + 4)
+                              : coschSxamTypeHeader[coI]?.flat().length +
+                                coschScholasticHeader[coI].length +
+                                2
+                          } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                        >
+                          {eachScholastic?.grade_description}
+                        </td>
+                      </tr>
+                    ) : null}
+                    {eachScholastic?.component_description ? (
+                      <tr>
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachScholastic?.sub_component?.length > 1
+                              ? coschSxamTypeHeader[coI]?.flat().length +
+                                coschScholasticHeader[coI].length +
+                                (3 * (eachScholastic?.sub_component?.length - 1) + 4)
+                              : coschSxamTypeHeader[coI]?.flat().length +
+                                coschScholasticHeader[coI].length +
+                                2
+                          } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                        >
+                          {eachScholastic?.component_description}
+                        </td>
+                      </tr>
+                    ) : null}
                     {/* Grading point descriptions End */}
                   </>
                 );
@@ -1239,38 +1247,42 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     {/* Total End */}
 
                     {/* Grading point descriptions Start */}
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachCompetitive?.sub_component?.length > 1
-                            ? competitiveExamTypeHeader[compI]?.flat().length +
-                              competitiveHeader[compI].length +
-                              (3 * (eachCompetitive?.sub_component?.length - 1) + 4)
-                            : competitiveExamTypeHeader[compI]?.flat().length +
-                              competitiveHeader[compI].length +
-                              2
-                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                      >
-                        {eachCompetitive?.grade_description}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachCompetitive?.sub_component?.length > 1
-                            ? competitiveExamTypeHeader[compI]?.flat().length +
-                              competitiveHeader[compI].length +
-                              (3 * (eachCompetitive?.sub_component?.length - 1) + 4)
-                            : competitiveExamTypeHeader[compI]?.flat().length +
-                              competitiveHeader[compI].length +
-                              2
-                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                      >
-                        {eachCompetitive?.component_description}
-                      </td>
-                    </tr>
+                    {eachCompetitive?.grade_description ? (
+                      <tr>
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachCompetitive?.sub_component?.length > 1
+                              ? competitiveExamTypeHeader[compI]?.flat().length +
+                                competitiveHeader[compI].length +
+                                (3 * (eachCompetitive?.sub_component?.length - 1) + 4)
+                              : competitiveExamTypeHeader[compI]?.flat().length +
+                                competitiveHeader[compI].length +
+                                2
+                          } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                        >
+                          {eachCompetitive?.grade_description}
+                        </td>
+                      </tr>
+                    ) : null}
+                    {eachCompetitive?.component_description ? (
+                      <tr>
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachCompetitive?.sub_component?.length > 1
+                              ? competitiveExamTypeHeader[compI]?.flat().length +
+                                competitiveHeader[compI].length +
+                                (3 * (eachCompetitive?.sub_component?.length - 1) + 4)
+                              : competitiveExamTypeHeader[compI]?.flat().length +
+                                competitiveHeader[compI].length +
+                                2
+                          } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                        >
+                          {eachCompetitive?.component_description}
+                        </td>
+                      </tr>
+                    ) : null}
                     {/* Grading point descriptions End */}
                   </>
                 );
@@ -1571,38 +1583,42 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     {/* Total End */}
 
                     {/* Grading point descriptions Start */}
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachAsset?.sub_component?.length > 1
-                            ? assetExamTypeHeader[compI]?.flat().length +
-                              assetHeader[compI].length +
-                              (3 * (eachAsset?.sub_component?.length - 1) + 4)
-                            : assetExamTypeHeader[compI]?.flat().length +
-                              assetHeader[compI].length +
-                              2
-                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                      >
-                        {eachAsset?.grade_description}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
-                        colSpan={
-                          eachAsset?.sub_component?.length > 1
-                            ? assetExamTypeHeader[compI]?.flat().length +
-                              assetHeader[compI].length +
-                              (3 * (eachAsset?.sub_component?.length - 1) + 4)
-                            : assetExamTypeHeader[compI]?.flat().length +
-                              assetHeader[compI].length +
-                              2
-                        } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
-                      >
-                        {eachAsset?.component_description}
-                      </td>
-                    </tr>
+                    {eachAsset?.grade_description ? (
+                      <tr>
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachAsset?.sub_component?.length > 1
+                              ? assetExamTypeHeader[compI]?.flat().length +
+                                assetHeader[compI].length +
+                                (3 * (eachAsset?.sub_component?.length - 1) + 4)
+                              : assetExamTypeHeader[compI]?.flat().length +
+                                assetHeader[compI].length +
+                                2
+                          } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                        >
+                          {eachAsset?.grade_description}
+                        </td>
+                      </tr>
+                    ) : null}
+                    {eachAsset?.component_description ? (
+                      <tr>
+                        <td
+                          style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
+                          colSpan={
+                            eachAsset?.sub_component?.length > 1
+                              ? assetExamTypeHeader[compI]?.flat().length +
+                                assetHeader[compI].length +
+                                (3 * (eachAsset?.sub_component?.length - 1) + 4)
+                              : assetExamTypeHeader[compI]?.flat().length +
+                                assetHeader[compI].length +
+                                2
+                          } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
+                        >
+                          {eachAsset?.component_description}
+                        </td>
+                      </tr>
+                    ) : null}
                     {/* Grading point descriptions End */}
                   </>
                 );
