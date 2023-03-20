@@ -81,7 +81,7 @@ const AssessmentReportFilters = ({
   const [multiEypLoading, setMultiEypLoading] = useState(false);
   const [multiReportLoading, setMultiReportLoading] = useState(false);
   const [reportCardDownloadConfig, setReportCardDownloadConfig] = useState([]);
-  const [bulkPermission, setBulkPermission] = useState(false);
+  const [bulkPermission, setBulkPermission] = useState(null);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -1585,6 +1585,8 @@ const AssessmentReportFilters = ({
 
         {reportCardDownloadConfig.length > 0 &&
         selectedReportType?.id === 14 &&
+        filterData?.branch &&
+        bulkPermission !== null &&
         JSON.parse(reportCardDownloadConfig[0]?.replace(/'/g, '"'))?.includes(
           String(userDetails?.user_level)
         ) ? (
