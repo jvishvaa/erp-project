@@ -546,7 +546,7 @@ const PeriodListView = () => {
       completeSections.map((section, index) => {
         let payLoad = {
           academic_year: selectedAcademicYear?.session_year,
-          academic_year_id: history?.location?.state?.centralAcademicYearID,
+          academic_year_id: resourcesData?.central_academic_year_id,
           volume_id: Number(volumeId),
           volume_name: volumeName,
           subject_id: subjectId,
