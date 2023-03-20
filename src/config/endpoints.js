@@ -548,6 +548,7 @@ export default {
     eypReportCard: '/assessment/eyp-report-card-generation/',
     eypReportCardBulk: '/assessment/eyp-bulk-report-card-generation/',
     normalReportCardBulk: '/assessment/fetch-s3-reports/',
+    reportCardBulkConfig: '/assessment/get-bulk-rc-download-permission/',
     reportPdf: '/assessment/download-report-pdf/',
     weeklyStudentReport: '/assessment/download-report-student-report/',
     reportConsolidated: '/assessment/download-report-consolidate/',
