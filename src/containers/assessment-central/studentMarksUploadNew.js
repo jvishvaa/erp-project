@@ -466,9 +466,9 @@ const StudentMarkNew = () => {
         });
         let valueCount = values?.val.filter((item) => item !== undefined && item !== '');
         if (valueCount?.length < markscount) {
-          return setAlert('error', 'please Fill all Mandatory Questions');
+          return setAlert('error', 'Please Fill All Mandatory Questions');
         } else if (valueCount?.length > markscount) {
-          return setAlert('error', 'Please Fill only Mandatory Questions');
+          return setAlert('error', 'Please Fill Only Mandatory Questions');
         }
 
         testArr = values?.val.map((ques, i) => {
@@ -504,7 +504,7 @@ const StudentMarkNew = () => {
         });
 
         if (data.includes(false)) {
-          return setAlert('error', 'Please Fill only Mandatory Questions');
+          return setAlert('error', 'Please Fill Only Mandatory Questions');
         }
 
         const payload = {
