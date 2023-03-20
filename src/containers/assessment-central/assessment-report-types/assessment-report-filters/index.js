@@ -81,6 +81,7 @@ const AssessmentReportFilters = ({
   const [multiEypLoading, setMultiEypLoading] = useState(false);
   const [multiReportLoading, setMultiReportLoading] = useState(false);
   const [reportCardDownloadConfig, setReportCardDownloadConfig] = useState([]);
+  const [bulkPermission, setBulkPermission] = useState(false);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -1000,6 +1001,21 @@ const AssessmentReportFilters = ({
   }, [selectedReportType]);
 
   useEffect(() => {
+    if (selectedReportType?.id === 14 && filterData?.branch?.id) {
+      let obj = {};
+      obj.branch_id = filterData?.branch?.branch?.id;
+      console.log({ obj });
+      axiosInstance
+        .get(`${endpoints.assessmentReportTypes.reportCardBulkConfig}`, {
+          params: { ...obj },
+        })
+        .then((response) => {
+          setBulkPermission(response.data?.result);
+        });
+    }
+  }, [filterData]);
+
+  useEffect(() => {
     if (multiReportLoading) {
       let obj = {};
       obj.session_year = filterData?.branch?.session_year?.session_year;
@@ -1572,10 +1588,7 @@ const AssessmentReportFilters = ({
         JSON.parse(reportCardDownloadConfig[0]?.replace(/'/g, '"'))?.includes(
           String(userDetails?.user_level)
         ) ? (
-          toMinutes(JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[0]) <
-            toMinutes(new Date().toLocaleTimeString()) &&
-          toMinutes(new Date().toLocaleTimeString()) <
-            toMinutes(JSON.parse(reportCardDownloadConfig[1]?.replace(/'/g, '"'))[1]) ? (
+          bulkPermission ? (
             eypConfig?.includes(String(filterData.grade?.grade_id)) ? (
               <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 {multiEypLoading ? (
