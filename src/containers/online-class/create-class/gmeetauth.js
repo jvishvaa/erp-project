@@ -4,13 +4,15 @@ import Google from 'assets/images/google.png'
 import { Divider, Button } from 'antd';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const GmeetAuth = () => {
     const [authLink, setAuthLink] = useState()
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
 
     useEffect(() => {
         getAuthUrl({
-            tutor_id: '4093',
+            tutor_id: userDetails?.user_id,
         })
     }, [])
 
@@ -18,6 +20,9 @@ const GmeetAuth = () => {
         axiosInstance
             .get(`${endpoints.onlineClass.gmeetAuth}`, {
                 params: { ...params },
+                headers: {
+                    'X-DTS-SCHEMA': X_DTS_HOST,
+                },
             })
             .then((res) => {
                 console.log(res);
