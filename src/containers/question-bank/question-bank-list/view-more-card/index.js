@@ -49,6 +49,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const extractContentOption = (s) => {
+  if (s?.length > 0 && s.indexOf('<') > -1) {
+    let newarr = s.replace(/</g, '&lt;');
+    newarr = newarr.replace('&lt;p>', '');
+    newarr = newarr.replace('&lt;/p>', '')
+    console.log('extract', newarr)
+    // newarr = newarr.replaceAll('&lt;br />',' ');
+    newarr = newarr.split('&lt;br />').join(' ')
+    const span = document.createElement('span');
+    span.innerHTML = newarr;
+    return span.textContent || span.innerText;
+  } else {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  }
+}
+
+const checkName = (node) => {
+  if(node?.split('"').filter((str) => str.startsWith('https'))
+  .length > 0 ){
+    return ReactHtmlParser(node)
+  } else {
+    return extractContentOption(node)
+  }
+}
+
 const ViewMoreCard = ({
   viewMoreData,
   setViewMore,
@@ -268,7 +295,7 @@ const ViewMoreCard = ({
               <div className={classes.questionContainer}>
                 {Data?.map((p) => (
                   <div>
-                    {ReactHtmlParser(p?.question)}
+                   {checkName(p?.question)}
                     <div>
                       {p?.question?.split('"').filter((str) => str.startsWith('https'))
                         ?.length > 0 && (
@@ -1448,7 +1475,7 @@ const ViewMoreCard = ({
               {Data &&
                 Data?.map((p) => (
                   <div>
-                    {ReactHtmlParser(p.question)}
+                    {checkName(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
                         <div>
