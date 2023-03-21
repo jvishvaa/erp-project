@@ -409,6 +409,7 @@ const PeriodListView = () => {
       lesson_plan: 'true',
       page_size: '10',
       page_number: pageEbook,
+      board: boardId,
     });
   };
   const fetchEbookCount = (params) => {
