@@ -290,6 +290,7 @@ const TableView = (props) => {
       lesson_plan: 'true',
       page_size: '10',
       page: pageIbook,
+      board: boardId,
     });
     showIbookDrawer();
   };
