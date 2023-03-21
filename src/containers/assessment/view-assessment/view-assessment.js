@@ -15,6 +15,8 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import axiosInstance from '../../../config/axios';
 import './view-assessment.css';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+import FeeReminderAssesment from 'containers/assessment-central/Feereminder';
+
 
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
@@ -222,6 +224,8 @@ const ViewAssessments = ({ history, ...restProps }) => {
         {tabBar()}
         <Divider variant='middle' />
         {/* <h4 className='assessment_heading'>All | Completed | Upcoming</h4> */}
+        {user_level == 13 ? 
+        <FeeReminderAssesment /> : '' }
         <Grid
           container
           spacing={2}

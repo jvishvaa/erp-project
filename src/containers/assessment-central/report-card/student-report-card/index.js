@@ -25,6 +25,7 @@ import AssesmentReportNew from 'containers/assessment-central/assesment-report-c
 import ReportCardNewBack from 'containers/assessment-central/assesment-report-card/reportCardNewBack';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import EypReportCardPdf from 'containers/assessment-central/assesment-report-card/eypReportCard/eypPdf';
+import FeeReminderAssesment from 'containers/assessment-central/Feereminder';
 
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
@@ -156,6 +157,8 @@ const StudentReportCard = () => {
           childComponentName='Report-Card'
           isAcademicYearVisible={true}
         />
+        {user_level == 13 ? 
+        <FeeReminderAssesment /> : '' }
         <div
           className='student-report-card'
           style={{
