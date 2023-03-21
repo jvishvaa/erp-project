@@ -36,7 +36,7 @@ const FeeReminderAssesment = () => {
           `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
           '_blank'
         );
-
+    history.push({ pathname: '/dashboard' });
     setOpen(false);
   };
 
