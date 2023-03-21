@@ -387,6 +387,7 @@ const TableView = (props) => {
       lesson_plan: 'true',
       page_size: '10',
       page: e,
+      board: boardId,
     });
     const element = document.getElementById('ibooktop');
     element.scrollTo({ top: 0, behavior: 'smooth' });
