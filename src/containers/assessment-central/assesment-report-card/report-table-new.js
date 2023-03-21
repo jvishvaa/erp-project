@@ -191,7 +191,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
   return (
     <React.Fragment>
       <div className='row bg-white py-2 px-2'>
-        <table className='w-100 th-report-table mb-2'>
+        <table className='w-100 th-report-table mb-2 mt-4'>
           <tbody>
             <tr>
               <td width='15%' className='text-center'>

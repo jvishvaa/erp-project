@@ -559,7 +559,7 @@ export default {
     weeklyQuizPerformance: '/assessment/weekly-quiz-performance-report/',
     assessmentRetest: '/assessment/retake-assessment-permission/',
     downloadReportTestReport: '/assessment/download-report-test-report/',
-    reportCardBucketUrl: `${CENTRAL_BUCKET}/`,
+    reportCardBucketUrl: `${ERP_BUCKET}/`,
   },
   observation: {
     observationGet: '/teacher_observation/observation-area/',
