@@ -409,6 +409,7 @@ const PeriodListView = () => {
       lesson_plan: 'true',
       page_size: '10',
       page_number: pageEbook,
+      board: boardId,
     });
   };
   const fetchEbookCount = (params) => {
@@ -452,6 +453,7 @@ const PeriodListView = () => {
       lesson_plan: 'true',
       page_size: '10',
       page: pageIbook,
+      board: boardId,
     });
     showIbookDrawer();
   };
@@ -533,6 +535,7 @@ const PeriodListView = () => {
       lesson_plan: 'true',
       page_size: '10',
       page: e,
+      board: boardId,
     });
     const element = document.getElementById('ibooktop');
     element.scrollTo({ top: 0, behavior: 'smooth' });
