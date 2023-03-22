@@ -69,7 +69,7 @@ const getJsPdf = (reportCardData, branchName) => {
     doc.setFontSize(30);
     doc.setFont('LoveYaLikeASister-Regular', 'normal');
     doc.setTextColor(255, 112, 131);
-    doc.text(`${eachReportCardData?.component_name}`, 30, y, null, null, 'left');
+    doc.text(`${eachReportCardData?.component_name}`, 30, 20, null, null, 'left');
 
     var bodyArr = [];
 
@@ -115,10 +115,10 @@ const getJsPdf = (reportCardData, branchName) => {
         var col = data.column.index;
         if (col == 1) {
           data.cell.styles.halign = 'left';
-          data.cell.styles.cellPadding = { top: 3, right: 11, bottom: 3.6, left: 5 };
+          data.cell.styles.cellPadding = { top: 2.8, right: 11, bottom: 3.4, left: 5 };
         } else {
           data.cell.styles.halign = 'center';
-          data.cell.styles.cellPadding = { top: 3, bottom: 3.6 };
+          data.cell.styles.cellPadding = { top: 2.8, bottom: 3.4 };
         }
       }
     };
@@ -129,7 +129,7 @@ const getJsPdf = (reportCardData, branchName) => {
       head: [['S.No', 'Milestones'].concat(reportCardData?.volumes_arr)],
       body: bodyArr,
       margin: { left: 30, bottom: 20 },
-      styles: { fontSize: 13, lineColor: [155, 155, 155], lineWidth: 0.1 },
+      styles: { fontSize: 12.5, lineColor: [155, 155, 155], lineWidth: 0.1 },
       headStyles: {
         fontSize: 18,
         fontStyle: 'bold',
@@ -146,7 +146,7 @@ const getJsPdf = (reportCardData, branchName) => {
       },
       theme: 'plain',
       tableWidth: 236,
-      startY: y + 5,
+      startY: 27,
     });
     doc.addPage();
   });

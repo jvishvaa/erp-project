@@ -409,6 +409,7 @@ const PeriodListView = () => {
       lesson_plan: 'true',
       page_size: '10',
       page_number: pageEbook,
+      board: boardId,
     });
   };
   const fetchEbookCount = (params) => {
@@ -452,6 +453,7 @@ const PeriodListView = () => {
       lesson_plan: 'true',
       page_size: '10',
       page: pageIbook,
+      board: boardId,
     });
     showIbookDrawer();
   };
@@ -533,6 +535,7 @@ const PeriodListView = () => {
       lesson_plan: 'true',
       page_size: '10',
       page: e,
+      board: boardId,
     });
     const element = document.getElementById('ibooktop');
     element.scrollTo({ top: 0, behavior: 'smooth' });
@@ -546,7 +549,7 @@ const PeriodListView = () => {
       completeSections.map((section, index) => {
         let payLoad = {
           academic_year: selectedAcademicYear?.session_year,
-          academic_year_id: history?.location?.state?.centralAcademicYearID,
+          academic_year_id: resourcesData?.central_academic_year_id,
           volume_id: Number(volumeId),
           volume_name: volumeName,
           subject_id: subjectId,

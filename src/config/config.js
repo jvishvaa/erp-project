@@ -97,6 +97,7 @@ const stage = {
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: 'https://mgmt-stage.letseduvate.com/qbox',
+    msOriginUrl: 'https://classes.letseduvate.com',
     xAPIKey: 'vikash@12345#1231',
     baseEvent: 'http://events.letseduvate.com/',
     newBlogURL: 'https://activities.letseduvate.com',
