@@ -170,6 +170,24 @@ const QuestionBankCard = ({
     span.innerHTML = s;
     return span.textContent || span.innerText;
   }
+
+  const extractContentOption = (s) => {
+    if (s?.length > 0 && s.indexOf('<') > -1) {
+      let newarr = s.replace(/</g, '&lt;');
+      newarr = newarr.replace('&lt;p>', '');
+      newarr = newarr.replace('&lt;/p>', '')
+      console.log('extract', newarr)
+      // newarr = newarr.replaceAll('&lt;br />',' ');
+      newarr = newarr.split('&lt;br />').join(' ')
+      const span = document.createElement('span');
+      span.innerHTML = newarr;
+      return span.textContent || span.innerText;
+    } else {
+      const span = document.createElement('span');
+      span.innerHTML = s;
+      return span.textContent || span.innerText;
+    }
+  }
   // const DiaClickOpen = () => {
   //   setdiaOpen(true);
   // };
@@ -354,7 +372,7 @@ const QuestionBankCard = ({
                 color='secondary'
                 noWrap
               >
-                Question: {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
+                Question4: {extractContentOption(questionName[0]?.question).length > 70 ? extractContentOption(questionName[0]?.question).substring(0,70) + '...' : extractContentOption(questionName[0]?.question)}
               </Typography>
           )}
         </Grid>

@@ -116,6 +116,33 @@ const QuestionView = ({ question, showHeader, index }) => {
       question?.is_central === true ? endpoints.s3 : endpoints.assessmentErp.s3
       }/${fileSrc}`;
   };
+
+  const extractContent = (s) => {
+    if (s?.length > 0 && s.indexOf('<') > -1) {
+      let newarr = s.replace(/</g, '&lt;');
+      newarr = newarr.replace('&lt;p>', '');
+      newarr = newarr.replace('&lt;/p>', '')
+      console.log('extract', newarr)
+      // newarr = newarr.replaceAll('&lt;br />',' ');
+      newarr = newarr.split('&lt;br />').join(' ')
+      const span = document.createElement('span');
+      span.innerHTML = newarr;
+      return span.textContent || span.innerText;
+    } else {
+      const span = document.createElement('span');
+      span.innerHTML = s;
+      return span.textContent || span.innerText;
+    }
+  }
+
+  const checkName = (node) => {
+    if(node?.split('"').filter((str) => str.startsWith('https'))
+    .length > 0 ){
+      return ReactHtmlParser(node)
+    } else {
+      return extractContent(node)
+    }
+  }
   return (
     <div className='question-view-container' key={Math.random()}>
       {showHeader && (
@@ -133,7 +160,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType == 1 && (
             <div className='mcq-container'>
               <div className={classes.questionContainer}>
-                {ReactHtmlParser(question.question_answer[0].question)}
+                {checkName(question.question_answer[0].question)}
               </div>
               <div className={classes.answersContainer}>
                 <div className={classes.answersHeader}>Options</div>
@@ -225,7 +252,7 @@ const QuestionView = ({ question, showHeader, index }) => {
             {questionType == 2 && (
               <div className='mcq-container'>
                 <div className='question-container'>
-                  {ReactHtmlParser(question.question_answer[0].question)}
+                  {checkName(question.question_answer[0].question)}
                 </div>
                 <div className='answers-container'>
                   <div className={classes.answersHeader}>Options</div>
@@ -375,7 +402,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 8 && (
             <div className='true-false-container'>
               <div className='question-container'>
-                {ReactHtmlParser(question.question_answer[0]?.question)}
+                {checkName(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
 
