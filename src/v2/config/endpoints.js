@@ -242,6 +242,7 @@ export default {
   principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
 
   appVersion: `${baseURLCentral}/central-admin/app-versioning/`,
+  schoolDetails: `${baseURLCentral}/central-admin/school_details/`,
 
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
