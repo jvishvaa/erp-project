@@ -131,9 +131,12 @@ const VisualPendingReview = (props) => {
         uploadFile();
         setView(false);
         setLoading(false);
-        setBookingID(null);
+        setRatingReview([]);
+        setFile(null);
+        fileRef.current.value = null;
         erpAPI();
         message.success('Review Submitted Successfully');
+        return;
       })
       .catch(() => {
         setLoading(false);
@@ -181,7 +184,7 @@ const VisualPendingReview = (props) => {
         setSourceData(response?.data?.result);
         ActivityManagement(response?.data?.result);
         // props.setFlag(false);
-        // message.success(response?.data?.message);
+        message.success(response?.data?.message);
         setLoading(false);
       })
       .catch(() => {
@@ -369,7 +372,7 @@ const VisualPendingReview = (props) => {
         .then((res) => {})
         .catch((err) => {});
     } else {
-      // message.error('Please Upload File');
+      message.error('Please Upload File');
       setLoading(false);
       return;
     }
@@ -393,6 +396,20 @@ const VisualPendingReview = (props) => {
       // dataIndex: 'created_at',
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.erp_id}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Attendance</span>,
+      // dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'>
+          {row?.attendence_status === null ? (
+            <Tag color='red'>Absent</Tag>
+          ) : (
+            <Tag color='green'>Present</Tag>
+          )}
+        </span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
@@ -528,6 +545,7 @@ const VisualPendingReview = (props) => {
                         </div>
                         <Input
                           type='file'
+                          
                           inputRef={fileRef}
                           accept='image/x-png,image/gif,image/jpeg,image/jpeg,video/mp4'
                           inputProps={{ accept: '.mp4,.jpeg,.png' }}

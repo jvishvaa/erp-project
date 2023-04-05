@@ -1,40 +1,12 @@
 import React, {
   useState,
-  useRef,
   useEffect,
-  useContext,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
 } from 'react';
-// import Table from '@material-ui/core/Table';
-// import TableBody from '@material-ui/core/TableBody';
-// import TableCell from '@material-ui/core/TableCell';
-// import TableContainer from '@material-ui/core/TableContainer';
-// import TableHead from '@material-ui/core/TableHead';
-// import TableRow from '@material-ui/core/TableRow';
-// import Paper from '@material-ui/core/Paper';
-// import { Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
-import Loader from 'components/loader/loader';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import RatingScale from './HoverRating';
-import ReactHtmlParser from 'react-html-parser';
 import Rating from '@material-ui/lab/Rating';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-// import {
-//   TablePagination,
-//   Grid,
-//   Drawer,
-//   Divider,
-//   TextField,
-//   Dialog,
-// } from '@material-ui/core';
 
 import {
   Button as ButtonAnt,
@@ -43,19 +15,17 @@ import {
   Select,
   Tag,
   Table as TableAnt,
-  Drawer,
-  Space,
-  message
+  message,
+  Modal,
 } from 'antd';
 import {
   MonitorOutlined,
-  CloseOutlined,
+  ScheduleOutlined,
   UserOutlined,
-  DownOutlined,
-  CheckOutlined,
+  ArrowRightOutlined,
+  CaretRightOutlined
 } from '@ant-design/icons';
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
-import axiosInstance from 'config/axios';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 const DEFAULT_RATING = 0;
 const StyledRating = withStyles((theme) => ({
@@ -124,18 +94,11 @@ const dummyData = [
   { id: 2, name: 'gjadjga', title: 'bajbjabdjabj' },
 ];
 
-const dummyData1 = [
-  { user_id: 9709, name: 'Vinay_04', erp_id: '20217770127_OLV', level: 13 },
-  { user_id: 9707, name: 'Vinay_03', erp_id: '2200366_AYI', level: 13 },
-  { user_id: 970, name: 'Vinay_2', erp_id: '2200365_AYI', level: 13 },
-];
-
 const PhysicalPendingReview = (props) => {
   const history = useHistory();
   const { Option } = Select;
   const [value, setValue] = useState();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  // const { setAlert } = useContext(AlertNotificationContext);
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const [inputList, setInputList] = useState([{ remarks: '', id: '', given_rating: '' }]);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
@@ -148,6 +111,15 @@ const PhysicalPendingReview = (props) => {
   const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession'));
   const [sourceData, setSourceData] = useState([]);
   const [targetData, setTargetData] = useState([]);
+  const [reviewData, setReviewData] = useState([]);
+  const [tableHeader, setTableHeader] = useState([]);
+  const [overallData, setOverAllData] = useState([]);
+  const [ratingReview, setRatingReview] = useState([]);
+  const [customRatingReview, setCustomRatingReview] = useState([]);
+  const [overallRemarks, setOverAllRemarks] = useState('');
+  const [data, setData] = useState();
+  const [maxWidth, setMaxWidth] = React.useState('lg');
+  const [dataId, setDataId] = useState();
 
   const handleCloseViewMore = () => {
     setView(false);
@@ -162,11 +134,9 @@ const PhysicalPendingReview = (props) => {
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
     setView(false);
-    // props.setValue(1)
-    // setSubmit(true);
     let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
     if (!mandatory[0].remarks) {
-      message.error('Overall Remarks Is Compulsory')
+      message.error('Overall Remarks Is Compulsory');
       return;
     }
     let body = ratingReview;
@@ -183,18 +153,25 @@ const PhysicalPendingReview = (props) => {
         // props.setValue(1)
         setView(false);
         erpAPI();
-        message.success(' Review Submitted Successfully')
+        message.success(' Review Submitted Successfully');
+        setCustomRatingReview([])
+        setOverAllRemarks([])
+        setLoading(false);
+      })
+      .catch((err) => {
+        message.error(err);
         setLoading(false);
       });
   };
 
-  const [dataId, setDataId] = useState();
+
 
   const handleInputCreativity = (event, index) => {
     let arr = [...ratingReview];
     arr[index].remarks = event.target.value;
     setRatingReview(arr);
   };
+
   const handleInputCreativityOne = (event, newValue, index) => {
     let arr = [...ratingReview];
 
@@ -206,7 +183,7 @@ const PhysicalPendingReview = (props) => {
     setSubmit(false);
   };
 
-  const [maxWidth, setMaxWidth] = React.useState('lg');
+  
 
   const functionFilter = (sourceData, targetData) => {
     setLoading(true);
@@ -223,7 +200,6 @@ const PhysicalPendingReview = (props) => {
     var res = sourceData.filter(
       (item) => !targetData.map((item2) => item2?.erp_id).includes(item?.erp_id)
     );
-    // console.log(A.filter(a => !B.map(b=>b.id).includes(a.id)))
     if (finalData == 0) {
       setTotalSubmitted(sourceData);
       setLoading(false);
@@ -251,7 +227,7 @@ const PhysicalPendingReview = (props) => {
         setSourceData(response?.data?.result);
         ActivityManagement(response?.data?.result);
         props.setFlag(false);
-        message.success(response?.data?.message)
+        message.success(response?.data?.message);
         setLoading(false);
       });
   };
@@ -259,7 +235,6 @@ const PhysicalPendingReview = (props) => {
   const ActivityManagement = (sourceData) => {
     setLoading(true);
     axios
-      // .get(`${endpoints.newBlog.physicalErpReview}?branch_id=${1}&grade_id=${2}&section_id=${1}&activity_id=${1784}`, {
       .get(
         `${endpoints.newBlog.physicalErpReview}?branch_id=${props.selectedBranch}&grade_id=${props.selectedGrade}&section_id=${props.selectedSubject}&activity_id=${ActivityId?.id}`,
         {
@@ -271,7 +246,6 @@ const PhysicalPendingReview = (props) => {
       .then((response) => {
         setTargetData(response?.data?.result);
         functionFilter(sourceData, response?.data?.result);
-        // functionFilter(sourceData,dummyData1)
         setLoading(false);
       })
       .catch((err) => {
@@ -287,15 +261,15 @@ const PhysicalPendingReview = (props) => {
     }
   };
 
-  const [ratingReview, setRatingReview] = useState([]);
-  const [data, setData] = useState();
   let array = [];
   const showReview = (data) => {
     if (data) {
       setLoading(true);
       axios
         .get(
-          `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data?.booking_detail_id}`,
+          `${endpoints.newBlog.studentReviewss}?booking_detail_id=${
+            data?.booking_detail_id
+          }&response_is_change=${true}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -303,17 +277,17 @@ const PhysicalPendingReview = (props) => {
           }
         )
         .then((response) => {
-          response.data.map((obj, index) => {
-            let temp = {};
-            temp['id'] = obj?.id;
-            temp['name'] = obj?.level.name;
-            temp['remarks'] = obj?.remarks;
-            temp['given_rating'] = obj?.given_rating;
-            temp['level'] = obj?.level?.rating;
-            temp['reviewer_id'] = user_id;
-            array.push(temp);
-          });
-          setRatingReview(array);
+          // response.data.map((obj, index) => {
+          //   let temp = {};
+          //   temp['id'] = obj?.id;
+          //   temp['name'] = obj?.level.name;
+          //   temp['remarks'] = obj?.remarks;
+          //   temp['given_rating'] = obj?.given_rating;
+          //   temp['level'] = obj?.level?.rating;
+          //   temp['reviewer_id'] = user_id;
+          //   array.push(temp);
+          // });
+          setRatingReview(response?.data);
           setLoading(false);
           setView(true);
         })
@@ -376,7 +350,6 @@ const PhysicalPendingReview = (props) => {
       average += parameter.given_rating;
       ave += Number(parameter.rating);
       aver = ave - Number('5');
-      console.log(average, 'average', aver, 'ave');
     });
     return (average / aver) * 5;
   };
@@ -414,6 +387,19 @@ const PhysicalPendingReview = (props) => {
       render: (text, row) => <span className='th-black-1'>{row?.erp_id}</span>,
     },
     {
+      title: <span className='th-white th-fw-700'>Attendance</span>,
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'>
+          {row?.attendence_status === null ? (
+            <Tag color='red'>Absent</Tag>
+          ) : (
+            <Tag color='green'>Present</Tag>
+          )}
+        </span>
+      ),
+    },
+    {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
       align: 'center',
@@ -433,6 +419,91 @@ const PhysicalPendingReview = (props) => {
     },
   ];
 
+  useEffect(() => {
+    if (ratingReview?.length > 0) {
+      transformTable(ratingReview);
+    }
+  }, [ratingReview]);
+
+  let rounds;
+  function transformTable(arr) {
+    let headersData = arr
+      .filter((item) => item?.name !== 'Overall')
+      .map((item) => item)
+      .reduce((acc, curr) => {
+        let obj = acc.find((item) => item?.name === curr?.name);
+        if (obj) {
+          return acc;
+        } else {
+          return acc.concat([curr]);
+        }
+      }, []);
+
+    let overValueAllData = arr
+      .filter((item) => item?.name.toLowerCase() === 'overall')
+      .map((item) => item);
+    setOverAllData(overValueAllData);
+    setTableHeader(headersData);
+
+    rounds = arr
+      .filter((item) => item.name !== 'Overall')
+      .reduce((initial, data) => {
+        let key = data.level;
+        if (!initial[key]) {
+          initial[key] = [];
+        }
+        initial[key].push(data);
+        return initial;
+      }, {});
+    setCustomRatingReview(rounds);
+  }
+
+  // let roundData = Object.keys(arr[0]).filter(
+  //   (item) => item.toLowerCase() !== 'overall'
+  // );
+
+  // setTableRound(roundData);
+  // let valueData = Object.keys(arr[0])
+  //   .filter((item) => item.toLowerCase() !== 'overall')
+  //   .map((item) => arr[0][item]);
+  // let columnsData = Object.keys(arr[0])
+  //   .filter((item) => item.toLowerCase() !== 'overall')
+  //   .map((item) => Object.keys(arr[0][item]))[0];
+
+  // console.log(columnsData, 'help1');
+  // let overKey = Object.keys(arr[0]).filter((item) => item.toLowerCase() === 'overall');
+
+  // console.log(overKey, 'help3');
+
+  // let overValueAllData = Object.keys(arr[0])
+  //   .filter((item) => item.toLowerCase() === 'overall')
+  //   .map((item) => arr[0][item]);
+  // setOverAllData([overKey]);
+  // setReviewData(columnsData);
+  // }
+  const handleInputEvent = (event, round, value) => {
+    const newReview = ratingReview.map((item) => {
+      if (item.name == value?.name && item.level == round) {
+        return { ...item, remarks: event.target.value };
+      } else {
+        return item;
+      }
+    });
+    setRatingReview(newReview);
+  };
+
+  const handleOverAll = (event, round, index) => {
+    setOverAllRemarks(event.target.value);
+    const newReview = ratingReview.map((item) => {
+      if (item.name == round.name) {
+        return { ...item, remarks: event.target.value };
+      } else {
+        return item;
+      }
+    });
+    setRatingReview(newReview);
+  };
+
   return (
     <>
       <div className='col-12 px-0'>
@@ -448,7 +519,7 @@ const PhysicalPendingReview = (props) => {
           pagination={false}
         />
       </div>
-      <Drawer
+      {/* <Drawer
         title={<span className='th-fw-500'>Submit Review</span>}
         placement='right'
         onClose={handleCloseViewMore}
@@ -473,7 +544,6 @@ const PhysicalPendingReview = (props) => {
                       src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                       alt='image'
                       style={{
-                        // width: '100%',
                         height: 100,
                         objectFit: 'fill',
                       }}
@@ -526,9 +596,7 @@ const PhysicalPendingReview = (props) => {
                                 {' '}
                                 {obj?.name}
                                 <b style={{ color: '#53bedd', fontSize: '12px' }}>
-                                  {/* <Tag color='magenta'>  */}
                                   {filterRound(obj?.level)}
-                                  {/* </Tag> */}
                                 </b>
                               </div>
                             )}
@@ -602,343 +670,108 @@ const PhysicalPendingReview = (props) => {
             </div>
           </div>
         </div>
-      </Drawer>
-
-      {/* {loading && <Loader />}
-      <Paper className={`${classes.root} common-table`} id='singleStudent'>
-        <TableContainer
-          className={`table table-shadow view_users_table ${classes.container}`}
-        >
-          <Table stickyHeader aria-label='sticky table'>
-            <TableHead className={`${classes.columnHeader} table-header-row`}>
-              <TableRow>
-                <TableCell className={classes.tableCell} style={{ whiteSpace: 'nowrap' }}>
-                  S No.
-                </TableCell>
-                <TableCell className={classes.tableCell}>Student Name</TableCell>
-                <TableCell className={classes.tableCell}>ERP ID</TableCell>
-
-                <TableCell className={classes.tableCell}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            {console.log(totalSubmitted, 'kl')}
-            {totalSubmitted?.map((response, index) => (
-              <TableBody>
-                <TableRow hover role='checkbox' tabIndex={-1}>
-                  <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                  <TableCell className={classes.tableCells}>
-                    {response?.student_name}
-                  </TableCell>
-                  <TableCell className={classes.tableCells}>{response?.erp_id}</TableCell>
-                  <TableCell className={classes.tableCells}>
-                    <ButtonAnt
-                      type='primary'
-                      style={{ backgroundColor: '#4caf50', border: '1px solid #4caf50' }}
-                      icon={<MonitorOutlined />}
-                      onClick={() => assignPage(response)}
-                      size={'medium'}
-                    >
-                      Add Review
-                    </ButtonAnt>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            ))}
-          </Table>
-        </TableContainer>
-      </Paper>
-      <Drawer
-        anchor='right'
-        maxWidth={maxWidth}
-        open={view}
-        onClose={handleCloseViewMore}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+      </Drawer> */}
+      <Modal
+        centered
+        visible={view}
+        onCancel={handleCloseViewMore}
+        footer={false}
+        width={1000}
+        className='th-upload-modal'
+        title={`Submit Review`}
       >
-        <div style={{ width: '100%', padding: '10px' }}>
-          <div
-            style={{
-              fontSize: '24px',
-              marginLeft: '6px',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <strong>Preview</strong>
-            <strong
-              onClick={handleCloseViewMore}
-              style={{ cursor: 'pointer', marginRight: '10px' }}
-            >
-              <CloseCircleOutlined />
-            </strong>
+        <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
+          <div className='d-flex align-items-center pr-1'>
+            <Avatar
+              size={50}
+              aria-label='recipe'
+              icon={
+                <UserOutlined
+                  color='#F3F3F3'
+                  style={{ color: '#F3F3F3' }}
+                  twoToneColor='white'
+                />
+              }
+            />
+            <div className='text-left ml-3'>
+              <div className=' th-fw-600 th-16'>{data?.student_name}</div>
+              <div className=' th-fw-500 th-14'>{data?.erp_id}</div>
+            </div>
           </div>
-          <Divider />
 
-          <Grid container direction='row' justifyContent='center'>
-            <Grid item>
-              <div
-                style={{
-                  background: 'white',
-                  height: 'auto',
-                }}
-              >
-                <div
-                  style={{
-                    background: 'white',
-                    width: '554px',
-                    marginLeft: '13px',
-                    marginTop: '5px',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <img
-                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                      width='130'
-                      alt='image'
+          <div className='pr-1'>
+            <img
+              src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+              alt='image'
+              style={{
+                height: 60,
+                width: 150,
+                objectFit: 'fill',
+              }}
+            />
+          </div>
+        </div>
+
+        <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
+          <table className='w-100' style={{ background: '#eee' }}>
+            <thead>
+              <tr style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}>
+                <th> </th>
+                {tableHeader?.map((item, i) => (
+                  <th>{item?.name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Object.keys(customRatingReview)?.length > 0 &&
+                Object.keys(customRatingReview).map((item, index) => (
+                  <tr className='th-html-table'>
+                    <td style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}>
+                      {item}
+                    </td>
+                    {tableHeader?.map((each, i) => (
+                      <td style={{ padding: '5px' }}>
+                        <Input
+                          className='text-center'
+                          placeholder={`Enter ${each?.name} for ${item}`}
+                          onChange={(event) => handleInputEvent(event, item, each)}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+        <div className='col-12 px-0'>
+          <div className='p-2 d-flex justify-content-start'>
+            {overallData.length > 0 &&
+              overallData.map((item, index) => {
+                return (
+                  <div className='col-6 px-0 d-flex align-items-center justify-content-start'>
+                    <span style={{ fontWeight: 500, marginRight: '5px', fontSize: '15px', display: 'flex', alignItems:'center' }}>Overall  {<CaretRightOutlined/>}</span>
+                    <Input
+                      value={overallRemarks}
+                      placeholder={`Enter for OverAll`}
+                      onChange={(event) => handleOverAll(event, item, index)}
                     />
                   </div>
-                </div>
-                <div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      width: '100%',
-                      padding: '0.5rem 1rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <div style={{ padding: '5px' }}>
-                      <Avatar
-                        size={40}
-                        aria-label='recipe'
-                        icon={
-                          <UserOutlined
-                            color='#f3f3f3'
-                            style={{ color: '#f3f3f3' }}
-                            twoToneColor='white'
-                          />
-                        }
-                      ></Avatar>
-                    </div>
-                    <div style={{ padding: '0 0.5rem' }}>
-                      <div style={{ fontWeight: 600, fontSize: '16px' }}>
-                        {data?.student_name}
-                      </div>
-                      <div style={{ fontWeight: 500, fontSize: '14px' }}>
-                        {data?.erp_id}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Divider />
-                <div
-                  style={{
-                    background: 'white',
-                    width: '502px',
-                    marginLeft: '34px',
-                    height: 'auto',
-                    marginTop: '12px',
-                    marginBottom: '29px',
-                  }}
-                >
-                  <div style={{ paddingTop: '12px' }}>
-                    <Grid item>
-                      {submit == false ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                            padding: '0.5rem 1rem',
-                          }}
-                        >
-                          Review
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            color: 'blue',
-                            padding: '0.5rem 1rem',
-                          }}
-                        >
-                          Edit Review
-                        </div>
-                      )}
-                      {submit == false && (
-                        <div
-                          style={{
-                            border: '1px solid gray',
-                            borderRadius: '10px',
-                            background: '#f4f5f9',
-                            height: 'auto',
-                            padding: '0.5rem',
-                          }}
-                        >
-                          {ratingReview?.map((obj, index) => {
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  paddingLeft: '15px',
-                                  paddingRight: '15px',
-                                  paddingTop: '5px',
-                                }}
-                              >
-                                {obj?.name === 'Overall' ? (
-                                  ''
-                                ) : (
-                                  <div
-                                    key={index}
-                                    style={{
-                                      display: 'flex',
-                                      justifyContent: 'space-between',
-                                      marginBottom: '10px',
-                                    }}
-                                  >
-                                    {' '}
-                                    {obj?.name}
-                                    <b style={{ color: '#53bedd', fontSize: '12px' }}>
-                                      {filterRound(obj?.level)}
-                                    </b>
-                                  </div>
-                                )}
-                                {obj?.name == 'Overall' ? (
-                                  ''
-                                ) : (
-                                  <div>
-                                    <Input
-                                      style={{ background: 'white' }}
-                                      placeholder={obj?.name}
-                                      onChange={(event) =>
-                                        handleInputCreativity(event, index)
-                                      }
-                                      value={obj?.remarks}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-
-                          {ratingReview?.map((obj, index) => {
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  paddingLeft: '15px',
-                                  paddingRight: '15px',
-                                  paddingTop: '5px',
-                                }}
-                              >
-                                {obj?.name == 'Overall' ? (
-                                  <div>
-                                    {obj?.name}*
-                                    <Input
-                                      placeholder={obj?.name}
-                                      onChange={(event) =>
-                                        handleInputCreativity(event, index)
-                                      }
-                                      value={obj?.remarks}
-                                    />
-                                  </div>
-                                ) : (
-                                  ''
-                                )}
-                              </div>
-                            );
-                          })}
-
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              marginRight: '10px',
-                              marginLeft: '6px',
-                              marginBottom: '15px',
-                              marginTop: '32px',
-                            }}
-                          >
-                            {' '}
-                            <ButtonAnt
-                              type='primary'
-                              size='large'
-                              className={classes.buttonColor}
-                              onClick={() => submitReview()}
-                            >
-                              Submit Review
-                            </ButtonAnt>
-                          </div>
-                        </div>
-                      )}
-
-                      {submit == true && (
-                        <div
-                          style={{
-                            border: '1px solid #707070',
-                            width: '318px',
-                            height: 'auto',
-                            marginLeft: '8px',
-                            marginRight: '4px',
-                          }}
-                        >
-                          <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                            <ExpandMoreIcon onClick={expandMore} />
-                          </div>
-                          <div
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            <div
-                              style={{ display: 'flex', justifyContent: 'space-between' }}
-                            >
-                              Overall
-                              <RatingScale
-                                name='simple-controlled'
-                                defaultValue={DEFAULT_RATING}
-                                onChange={(event, value) => {
-                                  setValue((prev) => ({ ...prev, rating: value }));
-                                }}
-                              />
-                            </div>
-                            <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                paddingBottom: '9px',
-                              }}
-                            >
-                              Review Submitted
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </Grid>
-                  </div>
-                </div>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row-reverse',
-                  paddingTop: '9px',
-                }}
-              >
-                {' '}
-                &nbsp;
-              </div>
-            </Grid>
-          </Grid>
+                );
+              })}
+          </div>
         </div>
-      </Drawer> */}
+        <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
+          <div className='p-2'>
+            <ButtonAnt
+              type='primary'
+              icon={<ScheduleOutlined />}
+              onClick={() => submitReview()}
+            >
+              Submit Review
+            </ButtonAnt>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
