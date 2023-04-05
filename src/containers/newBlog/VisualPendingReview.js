@@ -307,6 +307,7 @@ const VisualPendingReview = (props) => {
   let dummyArr = [];
 
   const handleRemark = (value, id) => {
+    debugger
     const arr1 = ratingReview?.map((obj) => {
       let newObj = obj?.remarks;
       if (obj.id === id) {
@@ -529,7 +530,7 @@ const VisualPendingReview = (props) => {
                               >
                                 {obj?.remarks?.map((each) => {
                                   return (
-                                    <Option value={each?.score} key={each?.score}>
+                                    <Option value={each?.name} key={each?.score}>
                                       {each?.name}
                                     </Option>
                                   );

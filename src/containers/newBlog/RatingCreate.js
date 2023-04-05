@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef} from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -15,6 +15,7 @@ import {
   Modal as ModalAnt,
   Tag,
   message,
+  Popconfirm,
 } from 'antd';
 import {
   DeleteFilled,
@@ -24,6 +25,8 @@ import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   EditFilled,
+  StopOutlined,
+  QuestionCircleOutlined,
 } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -187,12 +190,12 @@ const RatingCreate = () => {
   const [filterData, setFilterData] = useState([]);
   const [search, setSearch] = useState('');
   const [viewing, setViewing] = useState(false);
-  const [ActivityType, setActivityType] = useState();
+  const [ActivityType, setActivityType] = useState('');
   const [remarksType, setRemarksType] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [isEditData, setIsEditData] = useState([]);
-  const [editOption,setEditOption] = useState([])
-  const formRef = useRef()
+  const [editOption, setEditOption] = useState([]);
+  const formRef = useRef();
 
   const columns = [
     {
@@ -264,34 +267,54 @@ const RatingCreate = () => {
         );
       },
     },
-    // {
-    //   title: <span className='th-white th-fw-700 '>Action</span>,
-    //   dataIndex: 'gender',
-    //   key: 'gender',
-    //   align: 'center',
-    //   render: (text, row, index) => {
-    //     return (
-    //       <div>
-    //         <Tag
-    //           icon={<EditFilled className='th-14' />}
-    //           color={'warning'}
-    //           className='th-br-5 th-pointer py-1'
-    //           onClick={(e) => handleEdit(e, row)}
-    //         >
-    //           Edit
-    //         </Tag>
-    //         <Tag
-    //           icon={<DeleteFilled className='="th-14' />}
-    //           color={'red'}
-    //           className='th-br-5 th-pointer py-1'
-    //           onClick={(e) => handleDelete(row)}
-    //         >
-    //           Delete
-    //         </Tag>
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      title: <span className='th-white th-fw-700 '>Action</span>,
+      dataIndex: 'gender',
+      key: 'gender',
+      align: 'center',
+      render: (text, row, index) => {
+        return (
+          <div>
+            {row?.is_editable ? (
+              <>
+                <Tag
+                  icon={<EditFilled className='th-14' />}
+                  color={'geekblue'}
+                  className='th-br-5 th-pointer py-1'
+                  onClick={(e) => handleEdit(e, row)}
+                >
+                  Edit
+                </Tag>
+                <Popconfirm
+                  title='Delete the Remarks ?'
+                  description='Are you sure to delete this remarks?'
+                  onConfirm={(e) => handleDelete(row)}
+                  onOpenChange={() => console.log('open change')}
+                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                >
+                  <Tag
+                    icon={<DeleteFilled className='="th-14' />}
+                    color={'red'}
+                    className='th-br-5 th-pointer py-1'
+                    // onClick={(e) => handleDelete(row)}
+                  >
+                    Delete
+                  </Tag>
+                </Popconfirm>
+              </>
+            ) : (
+              <Tag
+                color={'magenta'}
+                icon={<StopOutlined className='="th-14' />}
+                className='th-br-5 py-1'
+              >
+                Permission Denied
+              </Tag>
+            )}
+          </div>
+        );
+      },
+    },
   ];
 
   const handleListAdd = () => {
@@ -303,6 +326,17 @@ const RatingCreate = () => {
         score: null,
       },
     ]);
+  };
+
+  const handleListAddEdit = () => {
+    const newData = isEditData.grading_scheme.concat({
+      id: '',
+      name: '',
+      rating: '',
+      score: '',
+      va_rating: '',
+    });
+    setIsEditData({ ...isEditData, grading_scheme: newData });
   };
 
   const selectedAcademicYear = useSelector(
@@ -388,7 +422,6 @@ const RatingCreate = () => {
   };
   const [data, setData] = useState('');
   const handleDate = (data) => {
-    console.log(data, 'data');
     setBranchView(true);
     setBranchSearch(false);
     setData(data);
@@ -408,7 +441,6 @@ const RatingCreate = () => {
         },
       })
       .then((response) => {
-        console.log(response);
         setAssigneds(response.data.result);
       });
   };
@@ -418,7 +450,7 @@ const RatingCreate = () => {
   }, []);
 
   const handleActivityTypeSubmit = () => {
-    if (!ActivityType?.name) {
+    if (!ActivityType?.name || isEdit?.name) {
       setAlert('error', 'Please Enter Activity Type');
       return;
     }
@@ -461,6 +493,44 @@ const RatingCreate = () => {
         setLoading(false);
       });
   };
+  const handleActivityTypeSubmitEdit = () => {
+    if (!isEditData?.name) {
+      setAlert('error', 'Please Enter Activity Type');
+      return;
+    }
+    const uniqueValues = new Set(isEditData?.grading_scheme?.map((e) => e.name));
+    if (uniqueValues.size < isEditData?.grading_scheme?.length) {
+      setAlert('error', 'Duplicate Name Found');
+      return;
+    }
+    let body = { ...isEditData };
+    setLoading(true);
+    axios
+      .post(`${endpoints.newBlog.activityTypeSubmitEdit}`, body, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 400 || response?.data?.status_code == 422) {
+          setLoading(false);
+          message.error(response?.data?.message);
+          return;
+        } else {
+          message.success(response?.data?.message);
+          setLoading(false);
+          setActivityType('');
+          setFilterData([]);
+          getActivityCategory();
+          // handleActivity(isEditData?.name)
+          handleModalCloseEdit();
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  };
 
   const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
@@ -485,6 +555,7 @@ const RatingCreate = () => {
           temp['va_rating'] = obj?.grading_scheme.map((item) =>
             JSON.parse(item?.va_rating)
           );
+          temp['is_editable'] = obj?.is_editable;
           array.push(temp);
         });
         setActivityCategory(array);
@@ -500,22 +571,20 @@ const RatingCreate = () => {
     if (e.target.value === '' || re.test(e.target.value)) {
       setScore1(e.target.value);
     }
-    console.log(e.target.value, 'event');
   };
 
   const handleInputCreativity = (event, index) => {
     const { value } = event.target;
     const newInputList = [...inputList];
-    // newInputList[index].creativity = value;
     newInputList[index].name = value;
     setInputList(newInputList);
   };
   const handleInputCreativityEdit = (event, index) => {
     const { value } = event.target;
-    const newInputList = {...isEditData};
-    let newData = newInputList.grading_scheme
+    const newInputList = { ...isEditData };
+    let newData = newInputList.grading_scheme;
     newData[index].name = value;
-    let modifiedData = {...newData['grading_scheme'], isEditData}
+    let modifiedData = { ...newData['grading_scheme'], ...isEditData };
     setIsEditData(modifiedData);
   };
   const handleInputRating = (event, index) => {
@@ -525,24 +594,40 @@ const RatingCreate = () => {
       return;
     }
     const newInputList = [...inputList];
-    // newInputList[index].creativity = value;
     newInputList[index].rating = value;
     setInputList(newInputList);
   };
 
+  const handleInputRatingEdit = (event, index) => {
+    const { value } = event.target;
+    if (value > 5 || value < 0) {
+      setAlert('error', 'Please Enter Number In Between 0 to 5');
+      return;
+    }
+    const newInputList = { ...isEditData };
+    let newData = newInputList.grading_scheme;
+    newData[index].rating = value;
+    let modifiedData = { ...newData['grading_scheme'], ...isEditData };
+    setIsEditData(modifiedData);
+  };
+
   const handleInputChange1 = (event, index) => {
     const { value } = event?.target;
-    // const index1=1;
-
     let newInputList = [...inputList];
-    // newInputList[index].creativity = value;
     newInputList[index].score = Number(value);
-
     setInputList(newInputList);
   };
 
+  const handleInputChange1Edit = (event, index) => {
+    const { value } = event.target;
+    const newInputList = { ...isEditData };
+    let newData = newInputList.grading_scheme;
+    newData[index].score = Number(value);
+    let modifiedData = { ...newData['grading_scheme'], ...isEditData };
+    setIsEditData(modifiedData);
+  };
+
   const viewParameter = () => {
-    // setViewParameterFlag(true)
     setAntDrawer(true);
   };
   const viewOption = () => {
@@ -562,16 +647,19 @@ const RatingCreate = () => {
     setInputList(newList);
   };
 
-  const handleActivity = (e, value) => {
+  const handleRemoveItemEdit = (index) => {
+    const newFileList = isEditData.grading_scheme.slice();
+    newFileList.splice(index, 1);
+    setIsEditData({ ...isEditData, grading_scheme: newFileList });
+  };
+
+  const handleActivity = (e) => {
     if (e) {
       setSearch(e);
       let res = activityCategory.filter((item) =>
         item.name.toLowerCase()?.includes(e.toLowerCase())
       );
-      console.log(res, 'pl3');
       setFilterData(res);
-
-      // setFilterData(value)
     } else {
       setFilterData(activityCategory);
     }
@@ -586,13 +674,12 @@ const RatingCreate = () => {
   }, [ActivityType]);
 
   useEffect(() => {
-    if(isEditData?.name == "Physical Activity"){
+    if (isEditData?.name == 'Physical Activity') {
       setShowPhy(true);
-    }else{
+    } else {
       setShowPhy(false);
     }
-
-  },[isEditData]);
+  }, [isEditData]);
 
   const onCloseAnt = () => {
     setAntDrawer(false);
@@ -607,6 +694,15 @@ const RatingCreate = () => {
         score: null,
       },
     ]);
+  };
+
+  const handleVisualInputAppEdit = () => {
+    const newData = isEditData.grading_scheme.concat({
+      id: '',
+      name: '',
+      score: null,
+    });
+    setIsEditData({ ...isEditData, grading_scheme: newData });
   };
 
   const handleVisualOption = (event, index) => {
@@ -628,11 +724,8 @@ const RatingCreate = () => {
       setAlert('error', 'Duplicate Name Found');
       return;
     }
-
-    //API call
   };
 
-  //Visual Option dropdown
   const visulaOptions = visualOptionData?.map((each) => {
     return (
       <Option value={each?.name} key={each?.id}>
@@ -692,8 +785,17 @@ const RatingCreate = () => {
     ]);
   };
 
+  const handleOptionInputAddEdit = (e, value) => {
+    const newData = editOption.concat({
+      id: '',
+      name: '',
+      score: null,
+      status: false,
+    });
+    setEditOption([...editOption, newData]);
+  };
+
   const handleOptionInput = (event, index) => {
-    console.log(index);
     if (event) {
       const { value } = event.target;
       const newInputList = [...optionList];
@@ -702,11 +804,30 @@ const RatingCreate = () => {
     }
   };
 
+  const handleOptionInputEdit = (event, index) => {
+    if (event) {
+      const { value } = event.target;
+      const newInputList = [...editOption];
+      let newData = newInputList;
+      newData[index].name = value;
+      let modifiedData = [...newData];
+      setEditOption(modifiedData);
+    }
+  };
+
   const handleMarksInput = (event, index) => {
     const { value } = event.target;
     let newInputList = [...optionList];
     newInputList[index].score = value;
     setOptionList(newInputList);
+  };
+
+  const handleMarksInputEdit = (event, index) => {
+    const { value } = event.target;
+    let newInputList = [...editOption];
+    newInputList[index].score = value;
+    let modifiedData = [...newInputList];
+    setEditOption(newInputList);
   };
 
   const handleOptionSubmit = () => {
@@ -738,12 +859,52 @@ const RatingCreate = () => {
           setActivityType('');
           handleClose();
           getActivityCategory();
+          setFilterData([]);
           return;
         }
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
+      });
+  };
+
+  const handleOptionSubmitEdit = () => {
+    const arr1 = isEditData.grading_scheme?.map((obj) => {
+      return { ...obj, rating: editOption };
+      return obj;
+    });
+    console.log(arr1);
+    let body = {
+      name: isEditData?.name,
+      id: isEditData?.id,
+      criteria_title: isEditData?.criteria_title,
+      grading_scheme: arr1,
+    };
+
+    setLoading(true);
+    axios
+      .post(`${endpoints.newBlog.activityTypeSubmitEdit}`, body, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        if (res.data.status_code == 400 || res?.data?.status_code == 422) {
+          message.error(res.data.message);
+          setLoading(false);
+          handleModalCloseEdit();
+          return;
+        } else {
+          setLoading(false);
+          message.success(res.data.message);
+          setActivityType('');
+          handleModalCloseEdit();
+          getActivityCategory();
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
       });
   };
 
@@ -758,6 +919,12 @@ const RatingCreate = () => {
     setOptionList(newList);
   };
 
+  const handleOptionDeleteEdit = (id, index) => {
+    let newOptionList = [...editOption];
+    let newList = newOptionList.filter((item) => item?.name !== id?.name);
+    setEditOption(newList);
+  };
+
   const handleQuestion = (event, index) => {
     if (event) {
       const { value } = event.target;
@@ -767,10 +934,27 @@ const RatingCreate = () => {
     }
   };
 
+  const handleQuestionEdit = (event, index) => {
+    if (event) {
+      const { value } = event.target;
+      const newInputList = { ...isEditData };
+      let newData = newInputList.grading_scheme;
+      newData[index].name = value;
+      let modifiedData = { ...newData['grading_scheme'], ...isEditData };
+      setIsEditData(modifiedData);
+    }
+  };
+
   const handleRemoveVisualQuestion = (id, index) => {
     let newVisualList = [...visualInputlList];
     const newList = newVisualList.filter((item) => item?.name !== id?.name);
     setVisualInputList(newList);
+  };
+
+  const handleRemoveVisualQuestionEdit = (id, index) => {
+    const newFileList = isEditData.grading_scheme.slice();
+    newFileList.splice(index, 1);
+    setIsEditData({ ...isEditData, grading_scheme: newFileList });
   };
 
   const activityOptions = activityCategory?.map((each) => {
@@ -791,18 +975,17 @@ const RatingCreate = () => {
 
   const handleModalClose = () => {
     setViewing(false);
+    setActivityType('');
+    setRemarksType('');
     setInputList([{ name: '', rating: '', score: null }]);
     setVisualInputList([{ name: '', score: null }]);
     setOptionList([{ name: '', score: null, status: false }]);
   };
-  const handleModalCloseEdit = () =>{
+
+  const handleModalCloseEdit = () => {
     setIsEdit(false);
     setIsEditData([]);
-    setInputList([{ name: '', rating: '', score: null }]);
-    setVisualInputList([{ name: '', score: null }]);
-    setOptionList([{ name: '', score: null, status: false }]);
-
-  }
+  };
 
   const handleInputRemarks = (event) => {
     const { value } = event.target;
@@ -810,30 +993,41 @@ const RatingCreate = () => {
   };
   const handleInputRemarksEdit = (event) => {
     const { value } = event.target;
-    const newInputList = {...isEditData, criteria_title: value}
+    const newInputList = { ...isEditData, criteria_title: value };
     setIsEditData(newInputList);
-
   };
   const handleDelete = (data) => {
-    if(data){
-      setLoading(true)
-      axios.delete(`${endpoints.newBlog.criteriaDelete}/${data?.id}/?grading_scheme_id=${data?.grading_scheme_id}`,{
-        headers: {
-          'X-DTS-HOST' : X_DTS_HOST,
-        },
-      })
-      .then((response) =>{
-        console.log(response)
-        message.success(response?.data?.message)
-        setLoading(false)
-        return
-        
-      })
-      .catch((err) =>{
-        message.error(err)
-        console.log(err)
-        return
-      })
+    if (data) {
+      setLoading(true);
+      axios
+        .delete(
+          `${endpoints.newBlog.criteriaDelete}${data?.id}/?grading_scheme_id=${data?.grading_scheme_id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          if (response?.data?.status_code) {
+            message.success(response?.data?.message);
+            // handleActivity(data?.name);
+            setActivityType('');
+            setFilterData([]);
+            getActivityCategory();
+            setLoading(false);
+
+            return;
+          } else {
+            message.warning(response?.data?.message);
+            setLoading(false);
+            return;
+          }
+        })
+        .catch((err) => {
+          message.error(err);
+          return;
+        });
     }
   };
   const handleEdit = (e, data) => {
@@ -841,20 +1035,15 @@ const RatingCreate = () => {
     if (e) {
       setIsEdit(true);
       setIsEditData(data);
-      let optionData =  data?.va_rating[0]
-      setEditOption(optionData)      
-      console.log(data, 'k1');
+      let optionData = data?.va_rating[0];
+      setEditOption(optionData);
     }
   };
 
   return (
-    // ant design-ui ----->
-
     <Layout>
       {''}
       <div className='row px-2'>
-        {/* breadcrumb - */}
-
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
             <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
@@ -866,11 +1055,11 @@ const RatingCreate = () => {
 
         {/* //body - */}
 
-        <div className='row th-bg-white th-br-5 m-3'>
+        <div className='row th-bg-white th-br-5 m-3 h-50'>
           {loading ? (
             <div
-              className='d-flex align-item-center justify-content-center w-100'
-              style={{ height: '55vh' }}
+              className='d-flex align-items-center justify-content-center w-100 text-center'
+              style={{ height: '50vh' }}
             >
               <Spin tip='Loading' />
             </div>
@@ -969,6 +1158,7 @@ const RatingCreate = () => {
                 <Select
                   placeholder='Activity Type'
                   showSearch
+                  value={ActivityType}
                   optionFilterProp='children'
                   filterOption={(input, option) => {
                     return (
@@ -1012,8 +1202,8 @@ const RatingCreate = () => {
                         orientationMargin='0'
                         plain
                         style={{ alignItems: 'flex-start' }}
-    // setIsEdit(false);
-    >
+                        // setIsEdit(false);
+                      >
                         Add Questions
                       </AntDivider>
                       {visualInputlList
@@ -1135,7 +1325,8 @@ const RatingCreate = () => {
                                 width={100}
                                 value={remarksType}
                                 onChange={(event) => handleInputRemarks(event)}
-                                inputList   />
+                                inputList
+                              />
                             </div>
                           </>
                         )}
@@ -1267,9 +1458,9 @@ const RatingCreate = () => {
           width={1000}
         >
           <div className='row p-2'>
-            <div className='col-md-12 md-sm-0'>
-            {/* <Form ref={formRef}> */}
-              <Form.Item name='activity_type'>
+            <div className='col-md-12 md-sm-0 pt-2'>
+              {/* <Form ref={formRef}> */}
+              {/* <Form.Item name='activity_type'>
                 <Select
                   placeholder='Activity Type'
                   showSearch
@@ -1288,15 +1479,15 @@ const RatingCreate = () => {
                 >
                   {activityOption}
                 </Select>
-              </Form.Item>
+              </Form.Item> */}
 
-            {/* </Form> */}
+              {/* </Form> */}
+              <Input disabled placeholder={isEditData?.name} />
             </div>
-            {console.log(isEditData,'jk1')}
             <div className='col-md-12'>
-              {Object.keys(isEditData).length > 0  ? (
+              {Object.keys(isEditData).length > 0 ? (
                 <>
-                  {(isEditData?.name.toLowerCase() === 'visual art') ||
+                  {isEditData?.name.toLowerCase() === 'visual art' ||
                   isEditData?.name.toLowerCase() === 'music' ||
                   isEditData?.name.toLowerCase() === 'dance' ||
                   isEditData?.name.toLowerCase() === 'theatre' ? (
@@ -1314,8 +1505,12 @@ const RatingCreate = () => {
                           placeholder='Criteria Title'
                           width={100}
                           defaultValue={isEditData?.criteria_title}
-                          value={Object.keys(isEditData) ? isEditData?.criteria_title : remarksType}
-                          onChange={(e) => handleInputRemarks(e)}
+                          value={
+                            Object.keys(isEditData)
+                              ? isEditData?.criteria_title
+                              : remarksType
+                          }
+                          onChange={(e) => handleInputRemarksEdit(e)}
                         />
                       </div>
                       <AntDivider
@@ -1334,12 +1529,14 @@ const RatingCreate = () => {
                                   placeholder='Question'
                                   width={100}
                                   value={input?.name}
-                                  onChange={(event) => handleQuestion(event, index)}
+                                  onChange={(event) => handleQuestionEdit(event, index)}
                                 />
                               </div>
                               <div className='col-2 delete-visual-icon'>
                                 <DeleteFilled
-                                  onClick={() => handleRemoveVisualQuestion(input, index)}
+                                  onClick={() =>
+                                    handleRemoveVisualQuestionEdit(input, index)
+                                  }
                                   style={{
                                     cursor: 'pointer',
                                     fontSize: '18px',
@@ -1355,7 +1552,7 @@ const RatingCreate = () => {
                         <Button
                           type='primary'
                           icon={<PlusOutlined />}
-                          onClick={handleVisualInputApp}
+                          onClick={handleVisualInputAppEdit}
                         >
                           Add Question
                         </Button>
@@ -1368,6 +1565,7 @@ const RatingCreate = () => {
                       >
                         Add Options
                       </AntDivider>
+                      {console.log(editOption, 'kl88')}
                       {Object.keys(editOption)
                         ? editOption?.map((input, index) => (
                             <div className='row'>
@@ -1376,7 +1574,9 @@ const RatingCreate = () => {
                                   value={input?.name}
                                   placeholder='Option'
                                   width={100}
-                                  onChange={(event) => handleOptionInput(event, index)}
+                                  onChange={(event) =>
+                                    handleOptionInputEdit(event, index)
+                                  }
                                 />
                               </div>
                               <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
@@ -1384,7 +1584,7 @@ const RatingCreate = () => {
                                   placeholder='Marks'
                                   value={input?.score}
                                   width={100}
-                                  onChange={(event) => handleMarksInput(event, index)}
+                                  onChange={(event) => handleMarksInputEdit(event, index)}
                                 />
                               </div>
                               <div className='col-3 delete-visual-icon'>
@@ -1394,7 +1594,7 @@ const RatingCreate = () => {
                                     fontSize: '18px',
                                     color: 'darkblue',
                                   }}
-                                  onClick={() => handleOptionDelete(input, index)}
+                                  onClick={() => handleOptionDeleteEdit(input, index)}
                                 />
                               </div>
                             </div>
@@ -1403,20 +1603,20 @@ const RatingCreate = () => {
                       <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
                         <Button
                           icon={<PlusOutlined />}
-                          onClick={handleOptionInputAdd}
+                          onClick={handleOptionInputAddEdit}
                           type='primary'
                         >
                           Add Option
                         </Button>
                       </div>
                       <div className='col-12 padding-style'>
-                        <Button type='primary' onClick={handleOptionSubmit}>
+                        <Button type='primary' onClick={handleOptionSubmitEdit}>
                           Submit
                         </Button>
 
                         <Button
                           type='primary'
-                          onClick={handleClose}
+                          onClick={handleModalCloseEdit}
                           style={{ marginLeft: '0.5rem' }}
                         >
                           Cancel
@@ -1443,7 +1643,11 @@ const RatingCreate = () => {
                                 placeholder='Criteria Title'
                                 defaultValue={isEditData?.criteria_title}
                                 width={100}
-                                value={Object.keys(isEditData) ? isEditData?.criteria_title :  remarksType}
+                                value={
+                                  Object.keys(isEditData)
+                                    ? isEditData?.criteria_title
+                                    : remarksType
+                                }
                                 onChange={(event) => handleInputRemarksEdit(event)}
                               />
                             </div>
@@ -1464,7 +1668,15 @@ const RatingCreate = () => {
                         ? isEditData?.grading_scheme?.map((input, index) => (
                             <>
                               <div className='row m-2'>
-                                <div className='col-3'>
+                                <div
+                                  className='col-3'
+                                  style={{
+                                    display:
+                                      input?.name.toLowerCase() == 'overall'
+                                        ? 'none'
+                                        : '',
+                                  }}
+                                >
                                   <Input
                                     placeholder='Criteria'
                                     width={100}
@@ -1479,23 +1691,39 @@ const RatingCreate = () => {
                                   ''
                                 ) : (
                                   <>
-                                    <div className='col-3'>
+                                    <div
+                                      className='col-3'
+                                      style={{
+                                        display:
+                                          input?.name.toLowerCase() == 'overall'
+                                            ? 'none'
+                                            : '',
+                                      }}
+                                    >
                                       <Input
                                         placeholder='Rating'
                                         width={100}
                                         value={input?.rating}
                                         onChange={(event) =>
-                                          handleInputRating(event, index)
+                                          handleInputRatingEdit(event, index)
                                         }
                                       />
                                     </div>
-                                    <div className='col-3'>
+                                    <div
+                                      className='col-3'
+                                      style={{
+                                        display:
+                                          input?.name.toLowerCase() == 'overall'
+                                            ? 'none'
+                                            : '',
+                                      }}
+                                    >
                                       <Input
                                         placeholder='Score'
                                         width={100}
                                         value={input?.score}
                                         onChange={(event) =>
-                                          handleInputChange1(event, index)
+                                          handleInputChange1Edit(event, index)
                                         }
                                       />
                                     </div>
@@ -1503,12 +1731,15 @@ const RatingCreate = () => {
                                 )}
                                 <div className='col-2 d-flex align-items-center'>
                                   <DeleteFilled
-                                    // onClick={() => handleRemoveVisualQuestion(input, index)}
-                                    onClick={() => handleRemoveItem(index)}
+                                    onClick={() => handleRemoveItemEdit(index)}
                                     style={{
                                       cursor: 'pointer',
                                       fontSize: '18px',
                                       color: 'darkblue',
+                                      display:
+                                        input?.name.toLowerCase() == 'overall'
+                                          ? 'none'
+                                          : '',
                                     }}
                                   />
                                 </div>
@@ -1522,7 +1753,7 @@ const RatingCreate = () => {
                             icon={<PlusOutlined />}
                             type='primary'
                             className='th-br-5 th-pointer py-1 th-14 th-fw-500'
-                            onClick={handleListAdd}
+                            onClick={handleListAddEdit}
                           >
                             Add Remarks
                           </Button>
@@ -1536,7 +1767,7 @@ const RatingCreate = () => {
                             color='green'
                             type='primary'
                             className='th-br-5 th-pointer py-1 th-14 th-fw-500 mr-2'
-                            onClick={handleActivityTypeSubmit}
+                            onClick={handleActivityTypeSubmitEdit}
                           >
                             Submit
                           </Button>
@@ -1545,7 +1776,7 @@ const RatingCreate = () => {
                             color='red'
                             type='primary'
                             className='th-br-5 th-pointer py-1 th-14 th-fw-500'
-                            onClick={handleModalClose}
+                            onClick={handleModalCloseEdit}
                           >
                             Cancel
                           </Button>
