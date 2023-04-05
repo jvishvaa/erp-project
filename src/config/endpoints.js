@@ -963,6 +963,7 @@ export default {
     activityReview: `${newBlogURL}/api/student_activity_update/`,
 
     activityTypeSubmit: `${newBlogURL}/api/activity_type_create/`,
+    activityTypeSubmitEdit: `${newBlogURL}/api/activity_type_edit/`,
 
     studentReviews: `${newBlogURL}/api/student_review/`,
     studentReviewss: `${newBlogURL}/api/student_reviews/`,

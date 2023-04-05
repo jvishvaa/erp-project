@@ -103,6 +103,7 @@ const VisualPendingReview = (props) => {
     setView(false);
   };
 
+  const [values, setValues] = useState();
   const [loading, setLoading] = useState(false);
   const [publish, setPublish] = useState(false);
   const [submit, setSubmit] = useState(false);
@@ -114,7 +115,7 @@ const VisualPendingReview = (props) => {
       return;
     } else {
       ratingReview.forEach((item) => {
-        let record = { ...item, booking_id: bookingID };
+        let record = { ...item };
         delete record.checked;
         body.push(record);
       });
@@ -140,7 +141,6 @@ const VisualPendingReview = (props) => {
       })
       .catch(() => {
         setLoading(false);
-        setBookingID(null);
       });
   };
 
@@ -339,12 +339,10 @@ const VisualPendingReview = (props) => {
   const handleFileChange = (event) => {
     const { files } = event.target;
     const fil = files[0] || '';
-    console.log('File', fil);
     if (
       fil.name.lastIndexOf('.mp4') > 0 ||
       fil.name.lastIndexOf('.jpeg') > 0 ||
-      fil.name.lastIndexOf('.jpg') > 0 ||
-      fil.name.lastIndexOf('.png') > 0
+      fil.name.lastIndexOf('.jpg') > 0
     ) {
       setFile(fil);
       return;
@@ -529,7 +527,7 @@ const VisualPendingReview = (props) => {
                               >
                                 {obj?.remarks?.map((each) => {
                                   return (
-                                    <Option value={each?.score} key={each?.score}>
+                                    <Option value={each?.name} key={each?.score}>
                                       {each?.name}
                                     </Option>
                                   );
