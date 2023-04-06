@@ -697,7 +697,7 @@ const SubmissionData = withRouter(({
                 <>
                     {unSubmittedStudents?.length > 0 &&
                         <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
-                            <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
+                            <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To submitted</Button>
                         </div>}
                 </>
                 : segment == 2 ?
@@ -705,7 +705,7 @@ const SubmissionData = withRouter(({
                         {submittedStudents?.length > 0 &&
                         <>
                             <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
-                                <Button onClick={handleSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Unsubmit</Button>
+                                <Button onClick={handleSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move to not Submitted</Button>
                             </div>
 
                             <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', right: 0, width: '30%' }} >
@@ -717,7 +717,7 @@ const SubmissionData = withRouter(({
                     <>
                         {absentList?.length > 0 ?
                             <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
-                                <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
+                                <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To submitted</Button>
                             </div>
                             : ''}
                     </>
@@ -726,10 +726,10 @@ const SubmissionData = withRouter(({
                         {evaluatedStudents?.length > 0 &&
                             <>
                             <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
-                                <Button onClick={() => handleSubmittedEval(selectedRowKeys, true)} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
+                                <Button onClick={() => handleSubmittedEval(selectedRowKeys, true)} style={{ color: '#50A167', borderColor: '#50A167' }} >Move to Unevaluated</Button>
                             </div>
                             <div className='card th-br-4' style={{ position: 'absolute', right: 0, bottom: '0', width: '30%' }} >
-                                <Button onClick={handleEvaltoUns} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Unsubmit</Button>
+                                <Button onClick={handleEvaltoUns} style={{ color: '#50A167', borderColor: '#50A167' }} >Move to not submitted</Button>
                             </div>
                             </>
                         }
