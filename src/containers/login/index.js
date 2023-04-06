@@ -21,7 +21,9 @@ import SwipeableViews from 'react-swipeable-views';
 import { parseJwt } from '../../utility-functions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import LoginMobileForm from './login-mobile-form';
-
+import axios from 'axios';
+import endpoints from 'v2/config/endpoints';
+import LetsEduvateLogo from '../../assets/images/logo.png';
 function TermsAndCondition() {
   return (
     <Typography variant='body1' color='textSecondary' align='center'>
@@ -68,6 +70,7 @@ function SignIn({ history, setTheme }) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const [schoolInfo, setSchoolInfo] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const searchParams = new URLSearchParams(window.location.search);
   const redirectionToken = searchParams.get('redirect_key'); //token
@@ -76,6 +79,21 @@ function SignIn({ history, setTheme }) {
   const question_paper_id = +searchParams.get('question_paper_id');
   const redirectionView = +searchParams.get('wb_view'); // 1-android , 2-ios
   const pathIdentifier = +searchParams.get('path_value'); // 1-view-orchadio , 2-manage-orchadio
+  var splitedUrlAddress = window.location.origin.split('.');
+  const subDomain = splitedUrlAddress[0]?.split('//')[1];
+  const fetchSchoolDetails = () => {
+    axios
+      .get(`${endpoints.schoolDetails}?sub_domain=${subDomain}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+          // Authorization: '',
+        },
+      })
+      .then((response) => {
+        setSchoolInfo(response?.data);
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     if (isFetchThemeRequired())
@@ -119,6 +137,9 @@ function SignIn({ history, setTheme }) {
       localStorage.clear();
     }
   }, []);
+  useEffect(() => {
+    fetchSchoolDetails();
+  }, []);
 
   const tabStyle = {
     width: '100%',
@@ -127,17 +148,41 @@ function SignIn({ history, setTheme }) {
   };
 
   return (
-    <>
+    <div style={{ height: '100vh', overflowY: 'auto' }}>
       {!loading && (
-        <Container component='main' maxWidth='sm'>
+        <Container
+          component='main'
+          maxWidth='sm'
+          // style={{ overflow: 'auto', height: '100vh' }}
+        >
           <CssBaseline />
           <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
+            <div className='row py-2 text-center'>
+              <div className='col-12'>
+                <img
+                  src={
+                    schoolInfo?.school_logo ? schoolInfo?.school_logo : LetsEduvateLogo
+                  }
+                  alt='image'
+                  style={{
+                    height: schoolInfo?.school_logo ? 80 : 50,
+                    objectFit: 'fill',
+                  }}
+                />
+              </div>
+              <div className='col-12 mt-2'>
+                <div className='th-24 th-fw-500 text-uppercase'>
+                  {schoolInfo?.school_name}
+                </div>
+                <div className='th-14 th-fw-400 th-black-1'>
+                  {schoolInfo?.school_address}
+                </div>
+              </div>
+            </div>
+            {/* <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
-            </Avatar>
-            <Typography component='h1' variant='h5'>
-              Sign In
-            </Typography>
+            </Avatar> */}
+            <div className='pt-2 th-20 th-fw-500'>Sign In</div>
             <TabPanel
               tabValue={tabValue}
               setTabValue={setTabValue}
@@ -151,7 +196,7 @@ function SignIn({ history, setTheme }) {
             >
               <LoginForm history={history} setLoading={setLoading} />
               <LoginOTPForm history={history} setLoading={setLoading} />
-              <LoginMobileForm history={history} setLoading={setLoading}/>
+              <LoginMobileForm history={history} setLoading={setLoading} />
             </SwipeableViews>
           </div>
           <Box mt={4}>
@@ -163,7 +208,7 @@ function SignIn({ history, setTheme }) {
         </Container>
       )}
       {loading && <Loader />}
-    </>
+    </div>
   );
 }
 

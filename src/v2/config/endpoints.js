@@ -93,6 +93,7 @@ export default {
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
+    historicQuestion : '/assessment/v1/hst-quest-bank/',
   },
   teacherAttendance: {
     gradewiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections/`,
@@ -210,6 +211,7 @@ export default {
     activityReview: `${newBlogURL}/api/student_activity_update/`,
 
     activityTypeSubmit: `${newBlogURL}/api/activity_type_create/`,
+    activityTypeSubmitEdit: `${newBlogURL}/api/activity_type_edit/`,
 
     studentReviews: `${newBlogURL}/api/student_review/`,
     studentReviewss: `${newBlogURL}/api/student_reviews/`,
@@ -224,12 +226,14 @@ export default {
     publishBlogWallApi: `${newBlogURL}/api/publish_submission/`,
     blogWallApi: `${newBlogURL}/api/blog_wall/`,
     blogListDropApi: `${newBlogURL}/api/activity_dropdown/`,
-    blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
+    blogRedirectApi: `${newBlogURL}/api/activity_type_count_v1/`,
     checkBMIApi: `${newBlogURL}/api/check_student/`,
     diaryActivities: `${newBlogURL}/api/diary_activities/`,
     getSchoolWallApi: `${newBlogURL}/api/school_wall/`,
     whatsAppChatGetApi: `${baseFinanceURL}/apiV1/whatsup-log/`,
     gradesERP: `/erp_user/grademapping/`,
+    showVisualMedia: `${newBlogURL}/api/uploaded_content/`,
+    criteriaTitleList:`${newBlogURL}/api/activity_types_criteria`,
   },
   fileDrive: {
     fileList: `/schools/school_file_list/`,
@@ -247,6 +251,7 @@ export default {
   principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
 
   appVersion: `${baseURLCentral}/central-admin/app-versioning/`,
+  schoolDetails: `${baseURLCentral}/central-admin/school_details/`,
 
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',

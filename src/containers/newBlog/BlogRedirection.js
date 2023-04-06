@@ -7,6 +7,7 @@ import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
 import { Breadcrumb, Button, message, Spin } from 'antd';
+import {RightCircleOutlined} from "@ant-design/icons";
 import moment from 'moment';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { getActivityIcon } from 'v2/generalActivityFunction';
@@ -278,8 +279,9 @@ const BlogWallRedirect = () => {
                                 <Button
                                   className='th-button-active th-br-6 text-truncate th-pointer'
                                   onClick={() => handleExplore(each)}
+                                  icon={<RightCircleOutlined />}
                                 >
-                                  Explore &gt;
+                                  Explore
                                 </Button>
                               </div>
                             </div>

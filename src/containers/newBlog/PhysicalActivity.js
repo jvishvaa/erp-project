@@ -506,7 +506,7 @@ const PhysicalActivity = () => {
       .get(
         `${endpoints.newBlog.subActivityListApi}?type_id=${
           sudActId ? sudActId : physicalActivityId
-        }`,
+        }&is_type=${true}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,

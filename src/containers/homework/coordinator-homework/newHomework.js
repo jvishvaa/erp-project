@@ -108,13 +108,10 @@ const SubmissionData = withRouter(({
         Isyesterday = moment(selectedHomeworkDetails?.date).isSame(yesterdayDate, 'day');
         Isafter = moment(selectedHomeworkDetails?.date).isAfter(todayDate, 'day');
 
-        console.log(IsToday, Isyesterday, 'today');
         if (IsToday) {
             setCheckEdit(true)
-            console.log('hit today');
         } else if (Isyesterday) {
             setCheckEdit(true)
-            console.log("hit yes");
         } else if (Isafter){
             setCheckEdit(true)
         } else {
@@ -300,27 +297,25 @@ const SubmissionData = withRouter(({
 
     const handleSegment = (e) => {
         setSegment(e)
-        console.log(e, props, selectedHomeworkDetails);
     }
 
     const onSelectChange = (newSelectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
+
     };
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
     };
 
+
     const openCollapse = (key) => {
-        console.log(key);
         setCollapse(key)
     }
 
     const handleScroll = (dir, index) => {
         let cara = document.getElementsByClassName(`attachbox${index}`)
         let attachArr = cara?.length > 0 ? cara[0] : ''
-        console.log(dir, index, cara, 'dir');
 
         if (dir === 'left') {
             attachArr.scrollLeft -= 150;
@@ -336,16 +331,76 @@ const SubmissionData = withRouter(({
                 .then((result) => {
                     // message.success(result.data.message);
                     setSelectedRowKeys([])
-                    console.log(result.data.message);
                     setAlert('success', result.data.message);
                     fetchStudentLists(props?.submitData?.hw_data?.data?.hw_id, props?.submitData?.hw_data?.subject_id, props?.submitData?.props?.sectionMapping, props?.submitData?.props?.teacherid, props?.submitData?.hw_data?.date);
                 })
                 .catch((error) => {
                     setAlert('error','something went wrong');
-                    console.log(error);
                 });
         } else {
             setAlert('error','Please Select Users');
+        }
+    }
+
+    const subToEvalReq = {
+        user_id: selectedRowKeys,
+        is_evaluated_to_submitted: false
+    }
+    const handleSubmittedEval = (student_homework_id, is_evaluated_to_submitted) => {
+        if (selectedRowKeys.length > 0) {
+            axiosInstance
+                .put(`academic/${props?.submitData?.hw_data?.data?.hw_id}/homework-submitted-evaluated/`, {
+                    student_homework_id,
+                    is_evaluated_to_submitted
+                })
+                .then((result) => {
+                    // message.success(result.data.message);
+                    setSelectedRowKeys([])
+                    setAlert('success', result.data.message);
+                    fetchStudentLists(props?.submitData?.hw_data?.data?.hw_id, props?.submitData?.hw_data?.subject_id, props?.submitData?.props?.sectionMapping, props?.submitData?.props?.teacherid, props?.submitData?.hw_data?.date);
+                })
+                .catch((error) => {
+                    setAlert('error','something went wrong');
+                });
+        } else {
+            setAlert('error','Please Select Users');
+        }
+    }
+
+    let getDataStudenteval = []
+    let allDataeval = []
+    let temPayloadeval = []
+    const handleEvaltoUns = () => {
+        if (selectedRowKeys.length > 0) {
+            let studentData = selectedRowKeys?.map((item) => {
+                getDataStudenteval = evaluatedStudents.filter((each) => item == each?.student_homework_id)
+                allData.push(getDataStudenteval[0])
+            })
+            let functemp = allData?.map((item) => {
+                temPayloadeval.push({
+                    student_homework_id: item?.student_homework_id,
+                    hw_submission_mode: item?.hw_submission_mode
+                })
+            })
+            axiosInstance
+                .put(endpoints.homework.submitToUnsubmit, temPayloadeval)
+                .then((result) => {
+                    // message.success(result.data.message);
+                    setAlert('success', result.data.message);
+                    fetchStudentLists(props?.submitData?.hw_data?.data?.hw_id, props?.submitData?.hw_data?.subject_id, props?.submitData?.props?.sectionMapping, props?.submitData?.props?.teacherid, props?.submitData?.hw_data?.date);
+                    getDataStudenteval = [];
+                    allDataeval = []
+                    temPayloadeval = []
+                })
+                .catch((error) => {
+                    setAlert('error','something went wrong');
+                    getDataStudenteval = [];
+                    allDataeval = []
+                    temPayloadeval = []
+                });
+        } else {
+            setAlert('error','Please Select Users');
+
         }
     }
 
@@ -358,7 +413,6 @@ const SubmissionData = withRouter(({
                 getDataStudent = submittedStudents.filter((each) => item == each?.student_homework_id)
                 allData.push(getDataStudent[0])
             })
-            console.log(allData, getDataStudent, selectedRowKeys, 'stud');
             let functemp = allData?.map((item) => {
                 temPayload.push({
                     student_homework_id: item?.student_homework_id,
@@ -407,7 +461,6 @@ const SubmissionData = withRouter(({
     }
 
     const handleEdit = () => {
-        console.log(props, selectedHomeworkDetails, 'prop edit');
         history.push({
             pathname: `/homework/addhomework/${props?.submitData?.hw_data?.date}/${selectedAcademicYear?.id}/${props?.submitData?.hw_data?.branch}/${props?.submitData?.hw_data?.grade}/${props?.submitData?.hw_data?.subject_name}/${props?.submitData?.hw_data?.subject_id}/${props?.submitData?.props?.teacherid}`,
             state: { isEdit: true, viewHomework: viewHomework },
@@ -600,9 +653,22 @@ const SubmissionData = withRouter(({
                 <TabPane tab={`Evaluated(${evaluatedStudents?.length ? evaluatedStudents?.length : "0"})`} key={'4'} >
                     <div style={{ width: '100%' }} >
                         {evaluatedStudents?.length > 0 ?
-                            <Table
-                                columns={columns} dataSource={evaluatedStudents}
-                                rowKey={(record) => record?.user_id}
+                            // <Table
+                            //     rowSelection={{ ...rowSelection }}
+                            //     columns={columns} dataSource={evaluatedStudents}
+                            //     rowKey={(record) => record?.user_id}
+                            //     pagination={false}
+                            //     rowClassName={(record, index) =>
+                            //         `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                            //     }
+                            //     className=' th-homework-table-head-bg '
+                            // /> 
+
+                            <Table 
+                                rowSelection={{ ...rowSelection }}
+                                columns={columns} 
+                                dataSource={evaluatedStudents}
+                                rowKey={(record) => record?.student_homework_id}
                                 pagination={false}
                                 rowClassName={(record, index) =>
                                     `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
@@ -629,18 +695,23 @@ const SubmissionData = withRouter(({
             </Tabs>
             {segment == 1 ?
                 <>
-                    {unSubmittedStudents?.length > 0 ?
+                    {unSubmittedStudents?.length > 0 &&
                         <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
                             <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
-                        </div> : ''}
+                        </div>}
                 </>
                 : segment == 2 ?
                     <>
-                        {submittedStudents?.length > 0 ?
+                        {submittedStudents?.length > 0 &&
+                        <>
                             <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
                                 <Button onClick={handleSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Unsubmit</Button>
                             </div>
-                            : ''}
+
+                            <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', right: 0, width: '30%' }} >
+                                <Button onClick={() => handleSubmittedEval(selectedRowKeys, false)} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Evaluated</Button>
+                            </div>
+                        </>}
                     </>
                     : segment == 3 ?
                     <>
@@ -649,6 +720,19 @@ const SubmissionData = withRouter(({
                                 <Button onClick={handleUnSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
                             </div>
                             : ''}
+                    </>
+                    : segment == 4 ?
+                    <>
+                        {evaluatedStudents?.length > 0 &&
+                            <>
+                            <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
+                                <Button onClick={() => handleSubmittedEval(selectedRowKeys, true)} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Submit</Button>
+                            </div>
+                            <div className='card th-br-4' style={{ position: 'absolute', right: 0, bottom: '0', width: '30%' }} >
+                                <Button onClick={handleEvaltoUns} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Unsubmit</Button>
+                            </div>
+                            </>
+                        }
                     </>
                     : ''}
             <Modal title="Delete Homework" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
