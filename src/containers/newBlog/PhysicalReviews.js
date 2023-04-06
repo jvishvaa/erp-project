@@ -1,60 +1,12 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-// import { Button, Grid, Drawer, TextField, Divider, withStyles } from '@material-ui/core';
-import StarsIcon from '@material-ui/icons/Stars';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
+import React, { useState, useEffect } from 'react';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import {
-  Button as ButtonAnt,
-  Input,
-  Avatar,
-  Select,
-  Tag,
-  Table as TableAnt,
-  Drawer,
-  Space,
-  message,
-} from 'antd';
-import {
-  MonitorOutlined,
-  CloseOutlined,
-  UserOutlined,
-  DownOutlined,
-  CheckOutlined,
-  FileSearchOutlined,
-} from '@ant-design/icons';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Rating from '@material-ui/lab/Rating';
-import RatingScale from './RatingScale';
-import ReactHtmlParser from 'react-html-parser';
-import { TablePagination } from '@material-ui/core';
+import { Avatar, Select, Tag, Table as TableAnt, message, Modal, Input } from 'antd';
+import { UserOutlined, FileSearchOutlined,ArrowRightOutlined, CaretRightOutlined } from '@ant-design/icons';
 import endpoints from '../../config/endpoints';
-import Loader from 'components/loader/loader';
 
 import axios from 'axios';
 import './images.css';
 const DEFAULT_RATING = 0;
-// const StyledRating = withStyles((theme) => ({
-//   iconFilled: {
-//     color: '#E1C71D',
-//   },
-//   root: {
-//     '& .MuiSvgIcon-root': {
-//       color: 'currentColor',
-//     },
-//   },
-//   iconHover: {
-//     color: 'yellow',
-//   },
-// }))(Rating);
 
 function createData(slno, name, grade, submissiondate, overallscore, actions) {
   return { slno, name, grade, submissiondate, overallscore, actions };
@@ -66,7 +18,6 @@ const PhysicalReviewed = (props) => {
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const PhysicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId')) || {};
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
-  // const classes = useStyles();
   const [dataId, setDataId] = useState();
   let datas = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = datas?.token;
@@ -83,28 +34,37 @@ const PhysicalReviewed = (props) => {
   const [isClicked, setIsClicked] = useState(false);
   const [buttonFlag, setButtonFlag] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [reviewData, setReviewData] = useState([]);
+  const [tableHeader, setTableHeader] = useState([]);
+  const [overallData, setOverAllData] = useState([]);
+  const [customRatingReview, setCustomRatingReview] = useState([]);
+  const [overallRemarks, setOverAllRemarks] = useState('');
 
   let array = [];
   const getRatingView = (data) => {
     setLoading(true);
     axios
-      .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
+      .get(
+        `${
+          endpoints.newBlog.studentReviewss
+        }?booking_detail_id=${data}&response_is_change=${true}`,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
       .then((response) => {
-        console.log(response, 'responses');
-        response.data.map((obj, index) => {
-          let temp = {};
-          temp['id'] = obj.id;
-          temp['name'] = obj.level.name;
-          temp['remarks'] = obj.remarks;
-          temp['given_rating'] = obj.given_rating;
-          temp['level'] = obj?.level?.rating;
-          array.push(temp);
-        });
-        setRatingReview(array);
+        // response.data.map((obj, index) => {
+        //   let temp = {};
+        //   temp['id'] = obj.id;
+        //   temp['name'] = obj.level.name;
+        //   temp['remarks'] = obj.remarks;
+        //   temp['given_rating'] = obj.given_rating;
+        //   temp['level'] = obj?.level?.rating;
+        //   array.push(temp);
+        // });
+        setRatingReview(response.data);
         setLoading(false);
       });
   };
@@ -128,17 +88,14 @@ const PhysicalReviewed = (props) => {
         setButtonFlag(true);
         getTotalSubmitted();
         setLoading(false);
-        message.success('Activity Shortlisted Successfully')
-        return
+        message.success('Activity Shortlisted Successfully');
+        return;
       });
   };
 
   const getTotalSubmitted = () => {
     if (props) {
       setLoading(true);
-      // const branchIds = props.selectedBranch.map((obj) => obj.id);
-      // const gradeIds = props?.selectedGrade?.id
-
       axios
         .get(
           `${endpoints.newBlog.studentSideApi}?&user_id=null&activity_detail_id=${ActivityId?.id}&is_reviewed=True&is_submitted=True&grade_id=${props.selectedGrade}&branch_ids=${props.selectedBranch}&section_ids=${props.selectedSubject}`,
@@ -156,12 +113,11 @@ const PhysicalReviewed = (props) => {
           props.setFlag(false);
           setTotalSubmitted(response?.data?.result);
           setLoading(false);
-          // message.success(response?.data?.message)
         })
         .catch((err) => {
           setLoading(false);
-          message.error(err?.data?.message)
-          return
+          message.error(err?.data?.message);
+          return;
         });
     }
   };
@@ -169,7 +125,6 @@ const PhysicalReviewed = (props) => {
   const assignPage = (data) => {
     if (data?.length !== 0) {
       setView(true);
-      //   setImageData(JSON?.parse(data?.template?.html_file))
       setData(data);
       setDataId(data?.id);
 
@@ -223,18 +178,22 @@ const PhysicalReviewed = (props) => {
     {
       title: <span className='th-white th-fw-700'>Executed Date</span>,
       align: 'center',
-      render: (text, row) => <span className='th-black-1'>{row?.submitted_on?.substring(0, 10)}</span>,
+      render: (text, row) => (
+        <span className='th-black-1'>{row?.submitted_on?.substring(0, 10)}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Reviewed By</span>,
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.reviewer}</span>,
     },
-    
+
     {
       title: <span className='th-white th-fw-700'>Overall Score</span>,
       align: 'center',
-      render: (text, row) => <span className='th-black-1'>{row?.user_reviews?.remarks}</span>,
+      render: (text, row) => (
+        <span className='th-black-1'>{row?.user_reviews?.remarks}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
@@ -244,7 +203,7 @@ const PhysicalReviewed = (props) => {
       render: (text, row) => (
         <div className='th-black-1'>
           <Tag
-            icon={<FileSearchOutlined  className='th-14' />}
+            icon={<FileSearchOutlined className='th-14' />}
             color='purple'
             className='th-br-5 th-pointer py-1'
             onClick={() => assignPage(row)}
@@ -255,6 +214,45 @@ const PhysicalReviewed = (props) => {
       ),
     },
   ];
+
+  useEffect(() => {
+    if (ratingReview.length > 0) {
+      transformTable(ratingReview);
+    }
+  }, [ratingReview]);
+
+  let rounds;
+  function transformTable(arr) {
+    let headersData = arr
+      .filter((item) => item?.name !== 'Overall')
+      .map((item) => item)
+      .reduce((acc, curr) => {
+        let obj = acc.find((item) => item?.name === curr?.name);
+        if (obj) {
+          return acc;
+        } else {
+          return acc.concat([curr]);
+        }
+      }, []);
+
+    let overValueAllData = arr
+      .filter((item) => item?.name.toLowerCase() === 'overall')
+      .map((item) => item);
+    setOverAllData(overValueAllData);
+    setTableHeader(headersData);
+
+    rounds = arr
+      .filter((item) => item.name !== 'Overall')
+      .reduce((initial, data) => {
+        let key = data.level;
+        if (!initial[key]) {
+          initial[key] = [];
+        }
+        initial[key].push(data);
+        return initial;
+      }, {});
+    setCustomRatingReview(rounds);
+  }
 
   return (
     <>
@@ -271,7 +269,7 @@ const PhysicalReviewed = (props) => {
           pagination={false}
         />
       </div>
-      <Drawer
+      {/* <Drawer
         title={<span className='th-fw-500'>Submit Review</span>}
         placement='right'
         onClose={handleCloseViewMore}
@@ -315,7 +313,9 @@ const PhysicalReviewed = (props) => {
                     />
                     <div className='text-left ml-3'>
                       <div className=' th-fw-600 th-16'>{data?.booked_user?.name}</div>
-                      <div className=' th-fw-500 th-14'>{data?.booked_user?.username}</div>
+                      <div className=' th-fw-500 th-14'>
+                        {data?.booked_user?.username}
+                      </div>
                     </div>
                   </div>
                   <div className='mt-3'>
@@ -383,23 +383,6 @@ const PhysicalReviewed = (props) => {
                           </div>
                         );
                       })}
-                      {/* <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          marginRight: '10px',
-                          marginLeft: '6px',
-                          marginBottom: '15px',
-                          marginTop: '32px',
-                        }}
-                      >
-                        {' '}
-                        <ButtonAnt
-                          className='th-button-active th-br-6 text-truncate th-pointer'
-                        >
-                          Submit Review
-                        </ButtonAnt>
-                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -407,313 +390,98 @@ const PhysicalReviewed = (props) => {
             </div>
           </div>
         </div>
-      </Drawer>
-
-      {/* {loading && <Loader />}
-      <Paper className={`${classes.root} common-table`} id='singleStudent'>
-        <TableContainer
-          className={`table table-shadow view_users_table ${classes.container}`}
-        >
-          <Table stickyHeader aria-label='sticky table'>
-            <TableHead className={`${classes.columnHeader} table-header-row`}>
-              <TableRow>
-                <TableCell className={classes.tableCell} style={{ whiteSpace: 'nowrap' }}>
-                  S No.
-                </TableCell>
-                <TableCell className={classes.tableCell}>Student Name</TableCell>
-                <TableCell className={classes.tableCell}>ERP ID</TableCell>
-                <TableCell className={classes.tableCell}>Submission Date</TableCell>
-                <TableCell className={classes.tableCell}>Reviewed By</TableCell>
-                <TableCell className={classes.tableCell}>Overall Score</TableCell>
-                <TableCell className={classes.tableCell}></TableCell>
-
-                <TableCell className={classes.tableCell} style={{ width: '261px' }}>
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            {totalSubmitted?.map((response, index) => (
-              <TableBody>
-                <TableRow
-                  hover
-                  role='checkbox'
-                  tabIndex={-1}
-                >
-                  <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                  <TableCell className={classes.tableCells}>
-                    {' '}
-                    {response?.booked_user?.name}
-                    {response?.name}
-                  </TableCell>
-                  <TableCell className={classes.tableCells}>
-                    {' '}
-                    {response?.booked_user?.username}
-                  </TableCell>
-                  <TableCell className={classes.tableCells}>
-                    {response?.submitted_on?.substring(0, 10)}
-                  </TableCell>
-                  <TableCell className={classes.tableCells}>{response?.reviewer}</TableCell>
-                  <TableCell className={classes.tableCells}>
-                    {response?.user_reviews?.remarks}
-                  </TableCell>
-                  <TableCell className={classes.tableCells}>
-                    {response?.is_bookmarked == true ? (
-                      <BookmarksIcon style={{ color: 'gray' }} />
-                    ) : (
-                      ''
-                    )}
-                  </TableCell>
-
-                  <TableCell className={classes.tableCells}>
-                    <ButtonAnt
-                      type="primary"
-                      icon={<FileProtectOutlined />}
-                      onClick={() => assignPage(response)}
-                      size={'medium'}>
-                      Check Review
-                    </ButtonAnt>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            ))}
-          </Table>
-
-        </TableContainer>
-      </Paper>
-
-      <Drawer
-        anchor='right'
-        maxWidth={maxWidth}
-        open={view}
-        onClose={handleCloseViewMore}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <div style={{ width: '100%', padding: '10px' }}>
-          <div style={{ fontSize: '24px', marginLeft: '6px', display: 'flex', justifyContent: 'space-between' }}>
-            <strong>Preview</strong>
-            <strong onClick={handleCloseViewMore} style={{ cursor: 'pointer', marginRight: '10px' }} >
-              <CloseCircleOutlined />
-            </strong>
-          </div>
-          <Divider />
-
-          <Grid container direction='row' justifyContent='center'>
-            <Grid item>
-              <div
-                style={{
-                  background: 'white',
-                  height: 'auto',
-                }}
-              >
-                <div
-                  style={{
-                    background: 'white',
-                    width: '554px',
-                    marginLeft: '13px',
-                    marginTop: '5px',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <img
-                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                      width='130'
-                      alt='image'
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div style={{ display: 'flex', width: '100%', padding: '0.5rem 1rem', alignItems: 'center' }}>
-                    <div style={{ padding: '5px' }}>
-                      <Avatar size={50} aria-label="recipe" icon={<UserOutlined color='#f3f3f3' style={{ color: '#f3f3f3' }} twoToneColor="white" />}>
-                      </Avatar>
-                    </div>
-                    <div style={{ padding: '0 0.5rem' }}>
-                      <div style={{ fontWeight: 600, fontSize: '16px' }}>
-                        {data?.booked_user?.name}
-                      </div>
-                      <div style={{ fontWeight: 500, fontSize: '14px' }}>
-                        {data?.branch?.name}
-                      </div>
-                      <div style={{ fontWeight: 500, fontSize: '12px' }}>
-                        {data?.grade?.name}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    background: '#f9f9f9',
-                    margin: 'auto',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '5px',
-                    height: 'auto',
-                    border: '1px solid #dbdbdb',
-                    width: '36vw',
-                    maxHeight: '20vh',
-                    overflowY: 'auto'
-
-                  }}
-                >
-                  <div
-                    style={{ display: 'flex', justifyContent: 'flex-start', fontWeight: 'bold', paddingLeft: '10px', marginTop: '10px' }}
-                  >
-                    <span style={{ fontWeight: 'normal', fontSize: '16px', }}>
-                      Title: {data?.activity_detail?.title}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      fontWeight: 'bold',
-                      paddingLeft: '10px',
-                      paddingBottom: '10px'
-                    }}
-                  >
-                    <span style={{ fontWeight: 'normal', color: 'gray', fontSize: '12px' }}>
-                      Description: {data?.activity_detail?.description}
-                    </span>
-                  </div>
-                </div>
-                <Divider style={{ margin: '1.5rem 0.5rem' }} />
-                <div
-                  style={{
-                    background: 'white',
-                    width: '502px',
-                    marginLeft: '34px',
-                    height: 'auto',
-                    margin: 'auto',
-                  }}
-                >
-                  <div style={{ paddingTop: '12px' }}>
-
-                    <Grid item>
-                      {submit == false && (
-                        <div
-                          style={{
-                            border: '1px solid #707070',
-                            borderRadius: '10px',
-                            height: 'auto',
-                            padding: '0.5rem'
-                          }}
-                        >
-                          {ratingReview?.map((obj, index) => {
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  paddingLeft: '15px',
-                                  paddingRight: '15px',
-                                  paddingTop: '5px',
-                                }}
-                              >
-                                {obj?.name === 'Overall' ? (
-                                  ""
-                                ) : (
-                                  <div
-                                    key={index}
-                                    style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}
-                                  >
-                                    {' '}
-                                    {obj?.name}<b style={{ color: '#53bedd', fontSize: '12px' }}>{filterRound(obj?.level)}</b>
-                                  </div>
-                                )}
-                                {obj?.name == 'Overall' ? (
-                                  ""
-                                ) : (
-                                  <div>
-                                    <Input
-                                      placeholder={obj?.name}
-                                      value={obj?.remarks}
-
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                          {ratingReview?.map((obj, index) => {
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  paddingLeft: '15px',
-                                  paddingRight: '15px',
-                                  paddingTop: '5px',
-                                }}
-                              >
-                                {obj?.name == "Overall" ? (
-                                  <div>
-                                    {obj?.name}*
-                                    <Input placeholder={obj?.name}
-                                      value={obj?.remarks}
-                                    />
-                                  </div>
-
-                                ) : (
-                                  ""
-                                )}
-                              </div>
-
-                            )
-                          })}
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              marginRight: '10px',
-                              marginLeft: '6px',
-                              marginBottom: '15px',
-                              marginTop: '32px',
-                            }}
-                          >
-                          </div>
-                        </div>
-                      )}
-
-                      {submit == true && (
-                        <div
-                          style={{
-                            border: '1px solid #707070',
-                            width: '318px',
-                            height: 'auto',
-                            marginLeft: '8px',
-                            marginRight: '4px',
-                          }}
-                        >
-                          <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                          </div>
-                          <div
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                              Overall
-                            </div>
-                            <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                paddingBottom: '9px',
-                              }}
-                            >
-                              Review Submitted
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </Grid>
-                  </div>
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-        </div>
       </Drawer> */}
+      <Modal
+        centered
+        visible={view}
+        onCancel={handleCloseViewMore}
+        footer={false}
+        width={1000}
+        className='th-upload-modal'
+        title={`Submit Review`}
+      >
+        <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
+          <div className='d-flex align-items-center pr-1'>
+            <Avatar
+              size={50}
+              aria-label='recipe'
+              icon={
+                <UserOutlined
+                  color='#F3F3F3'
+                  style={{ color: '#F3F3F3' }}
+                  twoToneColor='white'
+                />
+              }
+            />
+            <div className='text-left ml-3'>
+              <div className=' th-fw-600 th-16'>{data?.booked_user?.name}</div>
+              <div className=' th-fw-500 th-14'>{data?.booked_user?.username}</div>
+            </div>
+          </div>
+
+          <div className='pr-1'>
+            <img
+              src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+              alt='image'
+              style={{
+                height: 60,
+                width: 150,
+                objectFit: 'fill',
+              }}
+            />
+          </div>
+        </div>
+        <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
+          <table className='w-100' style={{ background: '#eee' }}>
+            <thead>
+              <tr style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}>
+                <th> Rounds </th>
+                {tableHeader?.map((item, i) => (
+                  <th>{item?.name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Object.keys(customRatingReview)?.length > 0 &&
+                Object.keys(customRatingReview).map((item, index) => (
+                  <tr className='th-html-table'>
+                    <td style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}>
+                      {item}
+                    </td>
+                    {tableHeader?.map((each, i) => {
+                      let remarks = customRatingReview[item].filter(
+                        (round) => round.name === each.name
+                      )[0].remarks;
+                      return (
+                        <td style={{ padding: '5px' }}>
+                          <div className='text-center'>{remarks}</div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className='col-12 px-0'>
+          <div className='p-2 d-flex justify-content-start'>
+            {overallData.length > 0 &&
+              overallData.map((item, index) => {
+                return (
+                  <div className='col-6 pl-4 p-2 d-flex align-items-center justify-content-start'>
+                    <span style={{ fontWeight: 500, marginRight: '5px', fontSize:'15px' }}>Overall {<CaretRightOutlined />}</span>
+                    <div className='text-center'style={{fontSize:'15px', fontWeight:600, color:'blue'}}>
+                      {/* <Tag color='green'> */}
+                      {item?.remarks}
+                      {/* </Tag> */}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };

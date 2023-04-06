@@ -963,6 +963,7 @@ export default {
     activityReview: `${newBlogURL}/api/student_activity_update/`,
 
     activityTypeSubmit: `${newBlogURL}/api/activity_type_create/`,
+    activityTypeSubmitEdit: `${newBlogURL}/api/activity_type_edit/`,
 
     studentReviews: `${newBlogURL}/api/student_review/`,
     studentReviewss: `${newBlogURL}/api/student_reviews/`,
@@ -977,7 +978,7 @@ export default {
     publishBlogWallApi: `${newBlogURL}/api/publish_submission/`,
     blogWallApi: `${newBlogURL}/api/blog_wall/`,
     blogListDropApi: `${newBlogURL}/api/activity_dropdown/`,
-    blogRedirectApi: `${newBlogURL}/api/activity_type_count/`,
+    blogRedirectApi: `${newBlogURL}/api/activity_type_count_v1/`,
     subActivityListApi: `${newBlogURL}/api/activity_types/`,
     physicalActivityListApi: `${newBlogURL}/api/get_activities/`,
     physicalAddRating: `${newBlogURL}/api/student_performance/`,
@@ -1000,8 +1001,10 @@ export default {
     getComments: `${newBlogURL}/api/comment_data/`,
     activityDelete: `${newBlogURL}/api/del_activity_type/`,
     bmiRemarksApi: `${newBlogURL}/api/get_category/`,
-    gradesERP: `/erp_user/grademapping/`,
-  },
+    gradesERP:`/erp_user/grademapping/`,
+    criteriaTitleList:`${newBlogURL}/api/activity_types_criteria/`,
+    criteriaDelete: `${newBlogURL}/api/activity_type_scheme_delete/`
+},
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

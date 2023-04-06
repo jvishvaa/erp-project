@@ -70,6 +70,17 @@ const VisualActivityCreate = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const [activityName, setActivityName] = useState([]);
   const [selectedFile, setSelectedFile] = useState('');
+  const [subActivityName, setSubActivityName] = useState([]);
+  const [isVisualActivity, setIsVisualActivity] = useState(false);
+  const [isSubmissionHide, setIsSubmissionHide] = useState(false);
+  const [criteriaTitle, setCriteriaTitle] = useState([]);
+  const [selectedCriteria, setSelectedCriteria] = useState('');
+  const [selectedCriteriaTitleId, setSelectedCriteriaTitleId] = useState(null);
+  const [filterData, setFilterData] = useState({
+    branch: '',
+    grade: '',
+    section: '',
+  });
   const [sudActId, setSubActId] = useState(localActivityData);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const selectedAcademicYear = useSelector(
@@ -164,6 +175,7 @@ const VisualActivityCreate = () => {
 
   useEffect(() => {
     fetchSubActivityListData();
+    fetchCriteria();
   }, []);
 
   const fetchSubActivityListData = () => {
@@ -176,6 +188,19 @@ const VisualActivityCreate = () => {
       .then((result) => {
         setLoading(false);
         setSubActivityListData(result?.data?.result);
+      });
+  };
+
+  const fetchCriteria = () => {
+    axiosInstance
+      .get(`${endpoints.newBlog.criteriaTitleList}?type_id=${sudActId?.id}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((result) => {
+        setLoading(false);
+        setCriteriaTitle(result?.data?.result);
       });
   };
 
@@ -194,10 +219,6 @@ const VisualActivityCreate = () => {
               id: obj?.section_id,
               name: obj?.section__section_name,
             }));
-            // transformedData.unshift({
-            //   name: 'Select All',
-            //   id: 'all',
-            // });
             setSectionDropdown(transformedData);
           }
         })
@@ -327,6 +348,11 @@ const VisualActivityCreate = () => {
       message.error('Please Select Section');
       return;
     }
+    if (selectedCriteria?.length === 0) {
+      setLoading(false);
+      message.error('Please Select Criteria Title');
+      return;
+    }
     if (!startDate) {
       setLoading(false);
       message.error('Please Select the Date');
@@ -349,7 +375,7 @@ const VisualActivityCreate = () => {
       formData.append('issue_date', null);
       formData.append('submission_date', startDate + hoursAndMinutes);
       formData.append('image', selectedFile);
-      formData.append('activity_type_id', localActivityData?.id);
+      formData.append('activity_type_id', selectedCriteriaTitleId);
       formData.append('session_year', selectedAcademicYear.session_year);
       formData.append('created_at', startDate + hoursAndMinutes);
       formData.append('created_by', user_id.id);
@@ -509,6 +535,14 @@ const VisualActivityCreate = () => {
     );
   });
 
+  const criteriaOption = criteriaTitle?.map((each) => {
+    return (
+      <Option id={each?.id} value={each?.criteria_title}>
+        {each?.criteria_title}
+      </Option>
+    );
+  });
+
   const handleClearBranch = () => {
     setSelectedBranch([]);
     setSelectedGrade([]);
@@ -521,6 +555,16 @@ const VisualActivityCreate = () => {
 
   const handleClearSection = () => {
     selectedSection([]);
+  };
+
+  const handleCriteriaTitle = (e, value) => {
+    if (value) {
+      setSelectedCriteriaTitleId(value?.id);
+      setSelectedCriteria(value?.value);
+      formRef.current.setFieldsValue({
+        criteria: value,
+      });
+    }
   };
 
   return (
@@ -651,8 +695,41 @@ const VisualActivityCreate = () => {
                       </Select>
                     </Form.Item>
                   </div>
+                  <div className='col-md-3 col-6 pl-0'>
+                    <div className='col-mb-3 text-left'>Criteria Title</div>
+                    <Form.Item name='criteria'>
+                      <Select
+                        // allowClear
+                        placeholder={'Select Criteria Title'}
+                        placement='bottomRight'
+                        showSearch
+                        // mode='single'
+                        // maxTagCount={2}
+                        showArrow={true}
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        optionFilterProp='children'
+                        value={selectedCriteria || []}
+                        dropdownMatchSelectWidth={false}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(event, value) => {
+                          handleCriteriaTitle(event,value)
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={true}
+                        onClear={handleClearSection}
+                      >
+                        {criteriaOption}
+                      </Select>
+                    </Form.Item>
+                  </div>
 
-                  <div className='col-md-2 col-6 pl-0'>
+                  <div className='col-md-3 col-6 pl-0'>
                     <div className='col-mb-3 text-left'>Submission Date</div>
                     <Form.Item name='date'>
                       <DatePicker

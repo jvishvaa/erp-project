@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -15,6 +15,7 @@ import {
   Modal as ModalAnt,
   Tag,
   message,
+  Popconfirm,
 } from 'antd';
 import {
   DeleteFilled,
@@ -23,6 +24,9 @@ import {
   AuditOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
+  EditFilled,
+  StopOutlined,
+  QuestionCircleOutlined,
 } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -186,7 +190,12 @@ const RatingCreate = () => {
   const [filterData, setFilterData] = useState([]);
   const [search, setSearch] = useState('');
   const [viewing, setViewing] = useState(false);
-  const [ActivityType, setActivityType] = useState();
+  const [ActivityType, setActivityType] = useState('');
+  const [remarksType, setRemarksType] = useState('');
+  const [isEdit, setIsEdit] = useState(false);
+  const [isEditData, setIsEditData] = useState([]);
+  const [editOption, setEditOption] = useState([]);
+  const formRef = useRef();
 
   const columns = [
     {
@@ -201,6 +210,15 @@ const RatingCreate = () => {
       key: 'erp_id',
       align: 'center',
       render: (text, row, index) => <p>{row?.sub_type ? row?.sub_type : <b>NA</b>}</p>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Criteria Title</span>,
+      dataIndex: 'criteria_title',
+      key: 'erp_id',
+      align: 'center',
+      render: (text, row, index) => (
+        <p>{row?.criteria_title ? row?.criteria_title : <b>NA</b>}</p>
+      ),
     },
     {
       title: <span className='th-white th-fw-700 '>Criteria Name</span>,
@@ -249,6 +267,54 @@ const RatingCreate = () => {
         );
       },
     },
+    {
+      title: <span className='th-white th-fw-700 '>Action</span>,
+      dataIndex: 'gender',
+      key: 'gender',
+      align: 'center',
+      render: (text, row, index) => {
+        return (
+          <div>
+            {row?.is_editable ? (
+              <>
+                <Tag
+                  icon={<EditFilled className='th-14' />}
+                  color={'geekblue'}
+                  className='th-br-5 th-pointer py-1'
+                  onClick={(e) => handleEdit(e, row)}
+                >
+                  Edit
+                </Tag>
+                <Popconfirm
+                  title='Delete the Remarks ?'
+                  description='Are you sure to delete this remarks?'
+                  onConfirm={(e) => handleDelete(row)}
+                  onOpenChange={() => console.log('open change')}
+                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                >
+                  <Tag
+                    icon={<DeleteFilled className='="th-14' />}
+                    color={'red'}
+                    className='th-br-5 th-pointer py-1'
+                    // onClick={(e) => handleDelete(row)}
+                  >
+                    Delete
+                  </Tag>
+                </Popconfirm>
+              </>
+            ) : (
+              <Tag
+                color={'magenta'}
+                icon={<StopOutlined className='="th-14' />}
+                className='th-br-5 py-1'
+              >
+                Permission Denied
+              </Tag>
+            )}
+          </div>
+        );
+      },
+    },
   ];
 
   const handleListAdd = () => {
@@ -260,6 +326,17 @@ const RatingCreate = () => {
         score: null,
       },
     ]);
+  };
+
+  const handleListAddEdit = () => {
+    const newData = isEditData.grading_scheme.concat({
+      id: '',
+      name: '',
+      rating: '',
+      score: '',
+      va_rating: '',
+    });
+    setIsEditData({ ...isEditData, grading_scheme: newData });
   };
 
   const selectedAcademicYear = useSelector(
@@ -326,6 +403,9 @@ const RatingCreate = () => {
   };
   const handleClose = () => {
     setViewing(false);
+    setInputList([{ name: '', rating: '', score: null }]);
+    setVisualInputList([{ name: '', score: null }]);
+    setOptionList([{ name: '', score: null, status: false }]);
   };
 
   const handleParameterClose = () => {
@@ -342,7 +422,6 @@ const RatingCreate = () => {
   };
   const [data, setData] = useState('');
   const handleDate = (data) => {
-    console.log(data, 'data');
     setBranchView(true);
     setBranchSearch(false);
     setData(data);
@@ -362,7 +441,6 @@ const RatingCreate = () => {
         },
       })
       .then((response) => {
-        console.log(response);
         setAssigneds(response.data.result);
       });
   };
@@ -372,7 +450,7 @@ const RatingCreate = () => {
   }, []);
 
   const handleActivityTypeSubmit = () => {
-    if (!ActivityType?.name) {
+    if (!ActivityType?.name || isEdit?.name) {
       setAlert('error', 'Please Enter Activity Type');
       return;
     }
@@ -385,6 +463,10 @@ const RatingCreate = () => {
       sub_type: ActivityType?.sub_type,
       activity_type: ActivityType?.name,
       grading_scheme: inputList,
+      criteria_title:
+        ActivityType?.name.toLowerCase() === 'public speaking' ? '' : remarksType,
+
+      // {ActivityType.toLowerCase() === "public speaking" ?  criteria_title: remarksType : ""},
     };
     setLoading(true);
     axios
@@ -411,6 +493,44 @@ const RatingCreate = () => {
         setLoading(false);
       });
   };
+  const handleActivityTypeSubmitEdit = () => {
+    if (!isEditData?.name) {
+      setAlert('error', 'Please Enter Activity Type');
+      return;
+    }
+    const uniqueValues = new Set(isEditData?.grading_scheme?.map((e) => e.name));
+    if (uniqueValues.size < isEditData?.grading_scheme?.length) {
+      setAlert('error', 'Duplicate Name Found');
+      return;
+    }
+    let body = { ...isEditData };
+    setLoading(true);
+    axios
+      .post(`${endpoints.newBlog.activityTypeSubmitEdit}`, body, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 400 || response?.data?.status_code == 422) {
+          setLoading(false);
+          message.error(response?.data?.message);
+          return;
+        } else {
+          message.success(response?.data?.message);
+          setLoading(false);
+          setActivityType('');
+          setFilterData([]);
+          getActivityCategory();
+          // handleActivity(isEditData?.name)
+          handleModalCloseEdit();
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  };
 
   const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
@@ -429,11 +549,13 @@ const RatingCreate = () => {
           temp['grading_scheme_id'] = obj?.grading_scheme_id;
           temp['name'] = obj?.name;
           temp['sub_type'] = obj?.sub_type;
+          temp['criteria_title'] = obj?.criteria_title;
           temp['grading_scheme'] = obj?.grading_scheme;
           temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
           temp['va_rating'] = obj?.grading_scheme.map((item) =>
             JSON.parse(item?.va_rating)
           );
+          temp['is_editable'] = obj?.is_editable;
           array.push(temp);
         });
         setActivityCategory(array);
@@ -449,15 +571,21 @@ const RatingCreate = () => {
     if (e.target.value === '' || re.test(e.target.value)) {
       setScore1(e.target.value);
     }
-    console.log(e.target.value, 'event');
   };
 
   const handleInputCreativity = (event, index) => {
     const { value } = event.target;
     const newInputList = [...inputList];
-    // newInputList[index].creativity = value;
     newInputList[index].name = value;
     setInputList(newInputList);
+  };
+  const handleInputCreativityEdit = (event, index) => {
+    const { value } = event.target;
+    const newInputList = { ...isEditData };
+    let newData = newInputList.grading_scheme;
+    newData[index].name = value;
+    let modifiedData = { ...newData['grading_scheme'], ...isEditData };
+    setIsEditData(modifiedData);
   };
   const handleInputRating = (event, index) => {
     const { value } = event.target;
@@ -466,24 +594,40 @@ const RatingCreate = () => {
       return;
     }
     const newInputList = [...inputList];
-    // newInputList[index].creativity = value;
     newInputList[index].rating = value;
     setInputList(newInputList);
   };
 
+  const handleInputRatingEdit = (event, index) => {
+    const { value } = event.target;
+    if (value > 5 || value < 0) {
+      setAlert('error', 'Please Enter Number In Between 0 to 5');
+      return;
+    }
+    const newInputList = { ...isEditData };
+    let newData = newInputList.grading_scheme;
+    newData[index].rating = value;
+    let modifiedData = { ...newData['grading_scheme'], ...isEditData };
+    setIsEditData(modifiedData);
+  };
+
   const handleInputChange1 = (event, index) => {
     const { value } = event?.target;
-    // const index1=1;
-
     let newInputList = [...inputList];
-    // newInputList[index].creativity = value;
     newInputList[index].score = Number(value);
-
     setInputList(newInputList);
   };
 
+  const handleInputChange1Edit = (event, index) => {
+    const { value } = event.target;
+    const newInputList = { ...isEditData };
+    let newData = newInputList.grading_scheme;
+    newData[index].score = Number(value);
+    let modifiedData = { ...newData['grading_scheme'], ...isEditData };
+    setIsEditData(modifiedData);
+  };
+
   const viewParameter = () => {
-    // setViewParameterFlag(true)
     setAntDrawer(true);
   };
   const viewOption = () => {
@@ -503,16 +647,19 @@ const RatingCreate = () => {
     setInputList(newList);
   };
 
-  const handleActivity = (e, value) => {
+  const handleRemoveItemEdit = (index) => {
+    const newFileList = isEditData.grading_scheme.slice();
+    newFileList.splice(index, 1);
+    setIsEditData({ ...isEditData, grading_scheme: newFileList });
+  };
+
+  const handleActivity = (e) => {
     if (e) {
       setSearch(e);
       let res = activityCategory.filter((item) =>
         item.name.toLowerCase()?.includes(e.toLowerCase())
       );
-      console.log(res, 'pl3');
       setFilterData(res);
-
-      // setFilterData(value)
     } else {
       setFilterData(activityCategory);
     }
@@ -525,6 +672,14 @@ const RatingCreate = () => {
       setShowPhy(false);
     }
   }, [ActivityType]);
+
+  useEffect(() => {
+    if (isEditData?.name == 'Physical Activity') {
+      setShowPhy(true);
+    } else {
+      setShowPhy(false);
+    }
+  }, [isEditData]);
 
   const onCloseAnt = () => {
     setAntDrawer(false);
@@ -541,6 +696,15 @@ const RatingCreate = () => {
     ]);
   };
 
+  const handleVisualInputAppEdit = () => {
+    const newData = isEditData.grading_scheme.concat({
+      id: '',
+      name: '',
+      score: null,
+    });
+    setIsEditData({ ...isEditData, grading_scheme: newData });
+  };
+
   const handleVisualOption = (event, index) => {
     let newInputList = [...visualInputlList];
     newInputList[index].option = value;
@@ -548,9 +712,6 @@ const RatingCreate = () => {
   };
 
   const handleRemoveVisual = (index) => {
-    // let newList = [...visualInputlList]
-    // newList.splice(index, 1);
-    // setVisualInputList(newList)
     const indexList = visualInputlList.indexOf(index);
     const newList = [...visualInputlList];
     newList.splice(indexList, 1);
@@ -563,11 +724,8 @@ const RatingCreate = () => {
       setAlert('error', 'Duplicate Name Found');
       return;
     }
-
-    //API call
   };
 
-  //Visual Option dropdown
   const visulaOptions = visualOptionData?.map((each) => {
     return (
       <Option value={each?.name} key={each?.id}>
@@ -588,10 +746,23 @@ const RatingCreate = () => {
     setOnOptionModal(true);
   };
 
+  const mainActivityOption = activityCategory.map((each) => {
+    return (
+      <Option
+        value={each?.name}
+        key={each?.id}
+        name={each.name}
+        sub_type={each?.sub_type}
+      >
+        {each?.name}
+      </Option>
+    );
+  });
+
   const activityOption = activityCategory.map((each) => {
     return (
-      <Option value={each?.name} key={each?.id} name={each.name} sub_type={each.sub_type}>
-        {each?.name}
+      <Option value={each?.id} key={each?.id} name={each.name} sub_type={each?.sub_type}>
+        {each?.name} {each?.sub_type ? ` - ${each.sub_type}` : ''}
       </Option>
     );
   });
@@ -614,13 +785,33 @@ const RatingCreate = () => {
     ]);
   };
 
+  const handleOptionInputAddEdit = (e, value) => {
+    const newData = editOption.concat({
+      id: '',
+      name: '',
+      score: null,
+      status: false,
+    });
+    setEditOption([...editOption, newData]);
+  };
+
   const handleOptionInput = (event, index) => {
-    console.log(index);
     if (event) {
       const { value } = event.target;
       const newInputList = [...optionList];
       newInputList[index].name = value;
       setOptionList(newInputList);
+    }
+  };
+
+  const handleOptionInputEdit = (event, index) => {
+    if (event) {
+      const { value } = event.target;
+      const newInputList = [...editOption];
+      let newData = newInputList;
+      newData[index].name = value;
+      let modifiedData = [...newData];
+      setEditOption(modifiedData);
     }
   };
 
@@ -631,18 +822,22 @@ const RatingCreate = () => {
     setOptionList(newInputList);
   };
 
+  const handleMarksInputEdit = (event, index) => {
+    const { value } = event.target;
+    let newInputList = [...editOption];
+    newInputList[index].score = value;
+    let modifiedData = [...newInputList];
+    setEditOption(newInputList);
+  };
+
   const handleOptionSubmit = () => {
     const arr1 = visualInputlList?.map((obj) => {
       return { ...obj, rating: optionList };
       return obj;
     });
-    // let uniqueValues = new Set(optionList.map((e) => e?.option));
-    // if(uniqueValues.size < optionList?.length){
-    //   setAlert('error','Duplicate Name FOund')
-    //   return
-    // }
     let body = {
       activity_type: ActivityType?.name,
+      criteria_title: remarksType,
       grading_scheme: arr1,
     };
 
@@ -664,12 +859,52 @@ const RatingCreate = () => {
           setActivityType('');
           handleClose();
           getActivityCategory();
+          setFilterData([]);
           return;
         }
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
+      });
+  };
+
+  const handleOptionSubmitEdit = () => {
+    const arr1 = isEditData.grading_scheme?.map((obj) => {
+      return { ...obj, rating: editOption };
+      return obj;
+    });
+    console.log(arr1);
+    let body = {
+      name: isEditData?.name,
+      id: isEditData?.id,
+      criteria_title: isEditData?.criteria_title,
+      grading_scheme: arr1,
+    };
+
+    setLoading(true);
+    axios
+      .post(`${endpoints.newBlog.activityTypeSubmitEdit}`, body, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        if (res.data.status_code == 400 || res?.data?.status_code == 422) {
+          message.error(res.data.message);
+          setLoading(false);
+          handleModalCloseEdit();
+          return;
+        } else {
+          setLoading(false);
+          message.success(res.data.message);
+          setActivityType('');
+          handleModalCloseEdit();
+          getActivityCategory();
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
       });
   };
 
@@ -684,6 +919,12 @@ const RatingCreate = () => {
     setOptionList(newList);
   };
 
+  const handleOptionDeleteEdit = (id, index) => {
+    let newOptionList = [...editOption];
+    let newList = newOptionList.filter((item) => item?.name !== id?.name);
+    setEditOption(newList);
+  };
+
   const handleQuestion = (event, index) => {
     if (event) {
       const { value } = event.target;
@@ -693,10 +934,27 @@ const RatingCreate = () => {
     }
   };
 
+  const handleQuestionEdit = (event, index) => {
+    if (event) {
+      const { value } = event.target;
+      const newInputList = { ...isEditData };
+      let newData = newInputList.grading_scheme;
+      newData[index].name = value;
+      let modifiedData = { ...newData['grading_scheme'], ...isEditData };
+      setIsEditData(modifiedData);
+    }
+  };
+
   const handleRemoveVisualQuestion = (id, index) => {
     let newVisualList = [...visualInputlList];
     const newList = newVisualList.filter((item) => item?.name !== id?.name);
     setVisualInputList(newList);
+  };
+
+  const handleRemoveVisualQuestionEdit = (id, index) => {
+    const newFileList = isEditData.grading_scheme.slice();
+    newFileList.splice(index, 1);
+    setIsEditData({ ...isEditData, grading_scheme: newFileList });
   };
 
   const activityOptions = activityCategory?.map((each) => {
@@ -717,20 +975,75 @@ const RatingCreate = () => {
 
   const handleModalClose = () => {
     setViewing(false);
+    setActivityType('');
+    setRemarksType('');
     setInputList([{ name: '', rating: '', score: null }]);
     setVisualInputList([{ name: '', score: null }]);
     setOptionList([{ name: '', score: null, status: false }]);
-
-    // setActivityType("")
   };
-  return (
-    // ant design-ui ----->
 
+  const handleModalCloseEdit = () => {
+    setIsEdit(false);
+    setIsEditData([]);
+  };
+
+  const handleInputRemarks = (event) => {
+    const { value } = event.target;
+    setRemarksType(value);
+  };
+  const handleInputRemarksEdit = (event) => {
+    const { value } = event.target;
+    const newInputList = { ...isEditData, criteria_title: value };
+    setIsEditData(newInputList);
+  };
+  const handleDelete = (data) => {
+    if (data) {
+      setLoading(true);
+      axios
+        .delete(
+          `${endpoints.newBlog.criteriaDelete}${data?.id}/?grading_scheme_id=${data?.grading_scheme_id}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          if (response?.data?.status_code) {
+            message.success(response?.data?.message);
+            // handleActivity(data?.name);
+            setActivityType('');
+            setFilterData([]);
+            getActivityCategory();
+            setLoading(false);
+
+            return;
+          } else {
+            message.warning(response?.data?.message);
+            setLoading(false);
+            return;
+          }
+        })
+        .catch((err) => {
+          message.error(err);
+          return;
+        });
+    }
+  };
+  const handleEdit = (e, data) => {
+    setIsEdit(false);
+    if (e) {
+      setIsEdit(true);
+      setIsEditData(data);
+      let optionData = data?.va_rating[0];
+      setEditOption(optionData);
+    }
+  };
+
+  return (
     <Layout>
       {''}
       <div className='row px-2'>
-        {/* breadcrumb - */}
-
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
             <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
@@ -742,11 +1055,11 @@ const RatingCreate = () => {
 
         {/* //body - */}
 
-        <div className='row th-bg-white th-br-5 m-3'>
+        <div className='row th-bg-white th-br-5 m-3 h-50'>
           {loading ? (
             <div
-              className='d-flex align-item-center justify-content-center w-100'
-              style={{ height: '55vh' }}
+              className='d-flex align-items-center justify-content-center w-100 text-center'
+              style={{ height: '50vh' }}
             >
               <Spin tip='Loading' />
             </div>
@@ -772,7 +1085,7 @@ const RatingCreate = () => {
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       bordered={false}
                     >
-                      {activityOption}
+                      {mainActivityOption}
                     </Select>
                   </Form.Item>
                 </div>
@@ -802,11 +1115,9 @@ const RatingCreate = () => {
               </div>
               <div className='row' style={{ height: '55vh', overflowY: 'auto' }}>
                 <div className='col-md-12'>
-                  {/* {(search && search?.name?.toLowerCase() === "blog activity") || (search?.name?.toLowerCase() === "physical activity") ? ( */}
                   <>
                     {filterData?.length !== 0 ? (
                       <Table
-                        // style={{ maxHeight: '60vh', OverflowY: 'auto' }}
                         className='th-table'
                         rowClassName={(record, index) =>
                           `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
@@ -830,411 +1141,6 @@ const RatingCreate = () => {
             </div>
           )}
         </div>
-        {/* <Modal
-          title="Modal 1000px width"
-          centered
-          open={viewing}
-          onOk={() => setOpen(false)}
-          onCancel={() => setOpen(false)}
-          width={1000}
-        >
-          <p>some contents...</p>
-          <p>some contents...</p>
-          <p>some contents...</p>
-        </Modal> */}
-
-        {/* <AntDrawer
-          title={`Add Parameters`}
-          zIndex={1300}
-          placement="right"
-          width={window.innerWidth < 768 ? '90vw' : '450px'}
-          onClose={onCloseAnt}
-          visible={antDrawer}
-          open={antDrawer}
-        >
-
-          <div className='action-filed'>
-            {visualInputlList ? visualInputlList.map((input, index) => (
-              <>
-                <div className='row' style={{ marginTop: '1rem', display: 'flex' }}>
-                  <div className='col-6'>
-
-                  </div>
-                  <div className='col-4'>
-                    <Select
-                      className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-                      bordered={true}
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      placement='bottomRight'
-                      placeholder='Select Option'
-                      suffixIcon={<DownOutlined className='th-black-1' />}
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, val) => handleVisualChange(e, val)}
-                      allowClear
-
-                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                    >
-                      {visulaOptions}
-
-                    </Select>
-                  </div>
-                  <div className='col-2'>
-                    <DeleteFilled onClick={() => handleRemoveVisual(index)} style={{ cursor: 'pointer' }} />
-                  </div>
-
-                </div>
-              </>
-            )) : "No Item In The List"}
-            <div style={{ padding: '0.5rem 0rem' }}>
-              <Button type="primary" onClick={handleVisualInputApp} >Add</Button>
-
-            </div>
-            <div style={{ padding: '0.5rem 0rem', display: 'flex', alignItem: 'center', justifyContent: 'end' }}>
-              <Button type="primary">Submit</Button>
-            </div>
-
-          </div>
-        </AntDrawer>
-        <AntDrawer
-          title={`Options`}
-          zIndex={1300}
-          placement="right"
-          width={window.innerWidth < 768 ? '90vw' : '450px'}
-          // size='default'
-          onClose={onCloseAnt}
-          visible={onOptionVisible}
-          open={onOptionVisible}
-          extra={
-            <Space>
-              <Button
-                icon={<PlusOutlined />}
-                onClick={onOptionModalFun}
-              >Add Options</Button>
-            </Space>
-          }
-        >
-
-          <div className='action-filed'>
-            {visualInputlList ? visualInputlList.map((input, index) => (
-              <>
-                <div className='row' style={{ marginTop: '1rem', display: 'flex' }}>
-                  <div className='col-6'>
-
-                  </div>
-                  <div className='col-4'>
-                    <Select
-                      className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-                      bordered={true}
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      placement='bottomRight'
-                      placeholder='Select Option'
-                      suffixIcon={<DownOutlined className='th-black-1' />}
-                      dropdownMatchSelectWidth={false}
-                      onChange={(e, val) => handleVisualChange(e, val)}
-                      allowClear
-
-                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                    >
-                      {visulaOptions}
-
-                    </Select>
-                  </div>
-                  <div className='col-2'>
-                    <DeleteFilled onClick={() => handleRemoveVisual(index)} style={{ cursor: 'pointer' }} />
-                  </div>
-
-                </div>
-              </>
-            )) : "No Item In The List"}
-            <div style={{ padding: '0.5rem 0rem' }}>
-              <Button type="primary" onClick={handleVisualInputApp} >Add</Button>
-
-            </div>
-            <div style={{ padding: '0.5rem 0rem', display: 'flex', alignItem: 'center', justifyContent: 'end' }}>
-              <Button type="primary">Submit</Button>
-            </div>
-
-          </div>
-        </AntDrawer> */}
-        {/* <AntModal
-          title="Add Options"
-          centered
-          open={onOptionModal}
-          visible={onOptionModal}
-          onCancel={() => setOnOptionModal(false)}
-        >
-          <div style={{ border: '1px solid black', margin: '0.5rem 0rem' }}>
-            <div className='col-10' style={{ padding: '0.5rem 0rem' }}>
-              <Input
-                placeholder='Question'
-                width={100}
-              />
-            </div>
-            <div className='col-2'>
-            </div>
-            {optionList ? optionList.map((input, index) => (
-              <div className='row'>
-
-                <div className='col-6' style={{ padding: '0.5rem 0rem' }} >
-                  <Input
-                    placeholder='Option'
-                    width={100}
-                    onChange={(event) => handleOptionInput(event, index)}
-                  />
-                </div>
-                <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
-                  <Input
-                    placeholder='Marks'
-                    width={100}
-                    onChange={(event) => handleMarksInput(event, index)}
-                  />
-                </div>
-              </div>
-            )) : "No Item In The List"}
-            <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
-              <Button
-                icon={<PlusOutlined />}
-                onClick={handleOptionInputAdd}
-              >
-                Add Button
-              </Button>
-            </div>
-            <div className='col-12'
-            >
-              <Button onClick={handleOptionSubmit}>
-                Submit
-              </Button>
-
-            </div>
-
-          </div>
-        </AntModal> */}
-
-        {/* <Dialog
-          maxWidth={maxWidth}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <div
-            style={{
-              marginLeft: '37px',
-              marginTop: '13px',
-              marginBottom: '12px',
-              marginRight: '28px',
-            }}
-          >
-            <div style={{ fontSize: '28px', fontWeight: 'bold', width: '46vw' }}>
-              Create Rating
-            </div>
-            <Divider />
-            <div style={{ marginTop: '8px' }}>
-              <Autocomplete
-                size='small'
-                style={{ width: '45%' }}
-                onChange={(e, value) => setActivityType(value)}
-                className='dropdownIcon'
-                value={ActivityType}
-                options={activityCategory || []}
-                getOptionLabel={(option) => option?.name || ''}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Activity Type'
-                    placeholder='Activity Type'
-                    required
-                  />
-                )}
-              />
-            </div>
-
-            {ActivityType?.name == 'Physical Activity' ? (
-              <div
-                style={{
-                  width: '73vh',
-                  fontWeight: 400,
-                  marginTop: '10px',
-                  paddingLeft: '10px',
-                }}
-              >
-                Sub-Activity Type :
-                <b style={{ color: 'blue' }}> {ActivityType?.sub_type} </b>
-              </div>
-            ) : (
-              ''
-            )}
-
-            {ActivityType?.name.toLowerCase() === 'visual art' ||
-            ActivityType?.name.toLowerCase() === 'music' ||
-            ActivityType?.name.toLowerCase() === 'dance' ||
-            ActivityType?.name.toLowerCase() === 'theater' ? (
-              <div className='row m-2' style={{ width: '650px' }}>
-                <AntDivider orientation='left' plain style={{ alignItems: 'flex-start' }}>
-                  Add Questions
-                </AntDivider>
-                {visualInputlList
-                  ? visualInputlList.map((input, index) => (
-                      <>
-                        <div className='col-10 question-visual'>
-                          <Input
-                            placeholder='Question'
-                            width={100}
-                            value={input?.name}
-                            onChange={(event) => handleQuestion(event, index)}
-                          />
-                        </div>
-                        <div className='col-2 delete-visual-icon'>
-                          <DeleteFilled
-                            onClick={() => handleRemoveVisualQuestion(input, index)}
-                            style={{
-                              cursor: 'pointer',
-                              fontSize: '18px',
-                              color: 'darkblue',
-                            }}
-                          />
-                        </div>
-                      </>
-                    ))
-                  : 'No Item In The List'}
-
-                <div className='col-12 padding-style'>
-                  <Button
-                    type='primary'
-                    icon={<PlusOutlined />}
-                    onClick={handleVisualInputApp}
-                  >
-                    Add Question
-                  </Button>
-                </div>
-                <AntDivider orientation='left' plain style={{ alignItems: 'flex-start' }}>
-                  Add Options
-                </AntDivider>
-                {optionList
-                  ? optionList.map((input, index) => (
-                      <div className='row'>
-                        <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
-                          <Input
-                            value={input?.name}
-                            placeholder='Option'
-                            width={100}
-                            onChange={(event) => handleOptionInput(event, index)}
-                          />
-                        </div>
-                        <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
-                          <Input
-                            placeholder='Marks'
-                            value={input?.score}
-                            width={100}
-                            onChange={(event) => handleMarksInput(event, index)}
-                          />
-                        </div>
-                        <div className='col-3 delete-visual-icon'>
-                          <DeleteFilled
-                            style={{
-                              cursor: 'pointer',
-                              fontSize: '18px',
-                              color: 'darkblue',
-                            }}
-                            onClick={() => handleOptionDelete(input, index)}
-                          />
-                        </div>
-                      </div>
-                    ))
-                  : 'No Option In The List'}
-                <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
-                  <Button
-                    icon={<PlusOutlined />}
-                    onClick={handleOptionInputAdd}
-                    type='primary'
-                  >
-                    Add Option
-                  </Button>
-                </div>
-                <div className='col-12 padding-style'>
-                  <Button type='primary' onClick={handleOptionSubmit}>
-                    Submit
-                  </Button>
-                  <Button
-                    type='danger'
-                    onClick={handleClose}
-                    style={{ marginLeft: '0.5rem' }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <>
-                {inputList
-                  ? inputList.map((input, index) => (
-                      <>
-                        <div style={{ marginTop: '1rem', display: 'flex' }}>
-                          <TextField
-                            label='Criteria Name'
-                            size='small'
-                            type='text'
-                            onChange={(event) => handleInputCreativity(event, index)}
-                            variant='outlined'
-                          />
-                          &nbsp;&nbsp;&nbsp;
-                          {showPhy ? (
-                            ''
-                          ) : (
-                            <>
-                              <TextField
-                                label='Rating'
-                                size='small'
-                                type='number'
-                                onChange={(event) => handleInputRating(event, index)}
-                                variant='outlined'
-                              />
-                              &nbsp;&nbsp;&nbsp;
-                              <TextField
-                                label='Score'
-                                size='small'
-                                type='number'
-                                onChange={(event) => handleInputChange1(event, index)}
-                                variant='outlined'
-                              />
-                            </>
-                          )}
-                          <Button
-                            style={{ marginLeft: '12px' }}
-                            color='primary'
-                            variant='contained'
-                            onClick={() => handleRemoveItem(index)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </>
-                    ))
-                  : 'No item in the list '}
-                &nbsp;&nbsp;&nbsp;
-                <Button
-                  onClick={handleListAdd}
-                  disabled={isDisabled}
-                  style={{ marginTop: '1rem' }}
-                  variant='contained'
-                  color='primary'
-                >
-                  Add
-                </Button>
-                &nbsp;&nbsp;
-                <Button
-                  variant='contained'
-                  size='small'
-                  color='primary'
-                  onClick={handleActivityTypeSubmit}
-                  style={{ marginTop: '1rem' }}
-                >
-                  Submit
-                </Button>
-              </>
-            )}
-          </div>
-        </Dialog> */}
-
         <ModalAnt
           title='Create Rating'
           centered
@@ -1243,25 +1149,22 @@ const RatingCreate = () => {
           footer={null}
           className='th-upload-modal'
           onOk={() => setViewing(false)}
-          // onCancel={() => setViewing(false)}
           onCancel={handleModalClose}
           width={1000}
         >
           <div className='row p-2'>
             <div className='col-md-12 md-sm-0'>
-              <Form.Item name='activity type'>
+              <Form.Item name='activity_type'>
                 <Select
                   placeholder='Activity Type'
                   showSearch
+                  value={ActivityType}
                   optionFilterProp='children'
                   filterOption={(input, option) => {
                     return (
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     );
                   }}
-                  // onChange={(e) => handleActivity(e)}
-                  // onClear={handleRatingActivityClear}
-                  // onChange={(e, value) => setActivityType(value)}
                   onChange={(e, value) => handleActivityChange(e, value)}
                   className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                   bordered={false}
@@ -1270,7 +1173,6 @@ const RatingCreate = () => {
                 </Select>
               </Form.Item>
             </div>
-            {console.log(ActivityType, 'KK')}
             <div className='col-md-12'>
               {ActivityType ? (
                 <>
@@ -1278,11 +1180,29 @@ const RatingCreate = () => {
                   ActivityType?.name.toLowerCase() === 'music' ||
                   ActivityType?.name.toLowerCase() === 'dance' ||
                   ActivityType?.name.toLowerCase() === 'theatre' ? (
-                    <div className='row m-2' style={{ width: '650px' }}>
+                    <div className='row m-2'>
                       <AntDivider
                         orientation='left'
+                        orientationMargin='0'
                         plain
                         style={{ alignItems: 'flex-start' }}
+                      >
+                        Add Criteria Title
+                      </AntDivider>
+                      <div className='col-10 question-visual'>
+                        <Input
+                          placeholder='Criteria Title'
+                          width={100}
+                          value={remarksType}
+                          onChange={(e) => handleInputRemarks(e)}
+                        />
+                      </div>
+                      <AntDivider
+                        orientation='left'
+                        orientationMargin='0'
+                        plain
+                        style={{ alignItems: 'flex-start' }}
+                        // setIsEdit(false);
                       >
                         Add Questions
                       </AntDivider>
@@ -1322,6 +1242,7 @@ const RatingCreate = () => {
                       </div>
                       <AntDivider
                         orientation='left'
+                        orientationMargin='0'
                         plain
                         style={{ alignItems: 'flex-start' }}
                       >
@@ -1369,9 +1290,7 @@ const RatingCreate = () => {
                         </Button>
                       </div>
                       <div className='col-12 padding-style'>
-                        <Button 
-                        type='primary' 
-                        onClick={handleOptionSubmit}>
+                        <Button type='primary' onClick={handleOptionSubmit}>
                           Submit
                         </Button>
 
@@ -1386,6 +1305,42 @@ const RatingCreate = () => {
                     </div>
                   ) : (
                     <>
+                      <div className='row m-2'>
+                        {ActivityType &&
+                        ActivityType.name.toLowerCase() === 'public speaking' ? (
+                          ''
+                        ) : (
+                          <>
+                            <AntDivider
+                              orientation='left'
+                              orientationMargin='0'
+                              plain
+                              style={{ alignItems: 'flex-start' }}
+                            >
+                              Add Criteria Title
+                            </AntDivider>
+                            <div className='col-3'>
+                              <Input
+                                placeholder='Criteria Title'
+                                width={100}
+                                value={remarksType}
+                                onChange={(event) => handleInputRemarks(event)}
+                                inputList
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <div className='row m-2'>
+                        <AntDivider
+                          orientation='left'
+                          orientationMargin='0'
+                          plain
+                          style={{ alignItems: 'flex-start' }}
+                        >
+                          Add Criteria Name
+                        </AntDivider>
+                      </div>
                       {inputList
                         ? inputList.map((input, index) => (
                             <>
@@ -1412,7 +1367,6 @@ const RatingCreate = () => {
                                         onChange={(event) =>
                                           handleInputRating(event, index)
                                         }
-                                        // onChange={(event) => handleQuestion(event, index)}
                                       />
                                     </div>
                                     <div className='col-3'>
@@ -1423,7 +1377,6 @@ const RatingCreate = () => {
                                         onChange={(event) =>
                                           handleInputChange1(event, index)
                                         }
-                                        // onChange={(event) => handleQuestion(event, index)}
                                       />
                                     </div>
                                   </>
@@ -1440,71 +1393,28 @@ const RatingCreate = () => {
                                   />
                                 </div>
                               </div>
-                              {/* <div style={{ marginTop: '1rem', display: 'flex' }}>
-                                <TextField
-                                  label='Criteria Name'
-                                  size='small'
-                                  type='text'
-                                  onChange={(event) =>
-                                    handleInputCreativity(event, index)
-                                  }
-                                  variant='outlined'
-                                />
-                                &nbsp;&nbsp;&nbsp;
-                                {showPhy ? (
-                                  ''
-                                ) : (
-                                  <>
-                                    <TextField
-                                      label='Rating'
-                                      size='small'
-                                      type='number'
-                                      onChange={(event) =>
-                                        handleInputRating(event, index)
-                                      }
-                                      variant='outlined'
-                                    />
-                                    &nbsp;&nbsp;&nbsp;
-                                    <TextField
-                                      label='Score'
-                                      size='small'
-                                      type='number'
-                                      onChange={(event) =>
-                                        handleInputChange1(event, index)
-                                      }
-                                      variant='outlined'
-                                    />
-                                  </>
-                                )}
-                                <Button
-                                  style={{ marginLeft: '12px' }}
-                                  color='primary'
-                                  variant='contained'
-                                  onClick={() => handleRemoveItem(index)}
-                                >
-                                  Delete
-                                </Button>
-                              </div> */}
                             </>
                           ))
                         : 'No item in the list '}
                       <div className='row m-2'>
                         <div className='col-12 mb-2 th-black-1  text-truncate'>
-                          <Tag
+                          <Button
                             icon={<PlusOutlined />}
-                            color='geekblue'
+                            type='primary'
                             className='th-br-5 th-pointer py-1 th-14 th-fw-500'
                             onClick={handleListAdd}
                           >
                             Add Remarks
-                          </Tag>
+                          </Button>
                         </div>
                       </div>
-                      <div className='row m-2'>
+                      <AntDivider />
+                      <div className='row mb-3 ml-1'>
                         <div className='col-12 th-black-1'>
                           <Button
                             icon={<CheckCircleOutlined />}
                             color='green'
+                            type='primary'
                             className='th-br-5 th-pointer py-1 th-14 th-fw-500 mr-2'
                             onClick={handleActivityTypeSubmit}
                           >
@@ -1513,42 +1423,365 @@ const RatingCreate = () => {
                           <Button
                             icon={<CloseCircleOutlined />}
                             color='red'
+                            type='primary'
                             className='th-br-5 th-pointer py-1 th-14 th-fw-500'
                             onClick={handleModalClose}
                           >
                             Cancel
                           </Button>
                         </div>
-                        {/* <div className='col-6 th-black-1'>
-                          <Tag
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <div
+                  className='row justify-content-center align-item-center m-5'
+                  style={{ height: '25vh' }}
+                >
+                  <img src={NoDataIcon} />
+                </div>
+              )}
+            </div>
+          </div>
+        </ModalAnt>
+        {console.log(isEditData, 'k22')}
+        <ModalAnt
+          title='Edit Rating'
+          centered
+          open={isEdit}
+          visible={isEdit}
+          footer={null}
+          className='th-upload-modal'
+          onOk={() => setViewing(false)}
+          onCancel={handleModalCloseEdit}
+          width={1000}
+        >
+          <div className='row p-2'>
+            <div className='col-md-12 md-sm-0 pt-2'>
+              {/* <Form ref={formRef}> */}
+              {/* <Form.Item name='activity_type'>
+                <Select
+                  placeholder='Activity Type'
+                  showSearch
+                  disabled
+                  optionFilterProp='children'
+                  defaultValue={`${isEditData?.name}`}
+                  // value={isEditData?.name}
+                  filterOption={(input, option) => {
+                    return (
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => handleActivityChange(e, value)}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {activityOption}
+                </Select>
+              </Form.Item> */}
+
+              {/* </Form> */}
+              <Input disabled placeholder={isEditData?.name} />
+            </div>
+            <div className='col-md-12'>
+              {Object.keys(isEditData).length > 0 ? (
+                <>
+                  {isEditData?.name.toLowerCase() === 'visual art' ||
+                  isEditData?.name.toLowerCase() === 'music' ||
+                  isEditData?.name.toLowerCase() === 'dance' ||
+                  isEditData?.name.toLowerCase() === 'theatre' ? (
+                    <div className='row m-2'>
+                      <AntDivider
+                        orientation='left'
+                        orientationMargin='0'
+                        plain
+                        style={{ alignItems: 'flex-start' }}
+                      >
+                        Add Criteria Title
+                      </AntDivider>
+                      <div className='col-10 question-visual'>
+                        <Input
+                          placeholder='Criteria Title'
+                          width={100}
+                          defaultValue={isEditData?.criteria_title}
+                          value={
+                            Object.keys(isEditData)
+                              ? isEditData?.criteria_title
+                              : remarksType
+                          }
+                          onChange={(e) => handleInputRemarksEdit(e)}
+                        />
+                      </div>
+                      <AntDivider
+                        orientation='left'
+                        orientationMargin='0'
+                        plain
+                        style={{ alignItems: 'flex-start' }}
+                      >
+                        Add Questions
+                      </AntDivider>
+                      {Object.keys(isEditData)
+                        ? isEditData?.grading_scheme.map((input, index) => (
+                            <>
+                              <div className='col-10 question-visual'>
+                                <Input
+                                  placeholder='Question'
+                                  width={100}
+                                  value={input?.name}
+                                  onChange={(event) => handleQuestionEdit(event, index)}
+                                />
+                              </div>
+                              <div className='col-2 delete-visual-icon'>
+                                <DeleteFilled
+                                  onClick={() =>
+                                    handleRemoveVisualQuestionEdit(input, index)
+                                  }
+                                  style={{
+                                    cursor: 'pointer',
+                                    fontSize: '18px',
+                                    color: 'darkblue',
+                                  }}
+                                />
+                              </div>
+                            </>
+                          ))
+                        : 'No Item In The List'}
+
+                      <div className='col-12 padding-style'>
+                        <Button
+                          type='primary'
+                          icon={<PlusOutlined />}
+                          onClick={handleVisualInputAppEdit}
+                        >
+                          Add Question
+                        </Button>
+                      </div>
+                      <AntDivider
+                        orientation='left'
+                        orientationMargin='0'
+                        plain
+                        style={{ alignItems: 'flex-start' }}
+                      >
+                        Add Options
+                      </AntDivider>
+                      {console.log(editOption, 'kl88')}
+                      {Object.keys(editOption)
+                        ? editOption?.map((input, index) => (
+                            <div className='row'>
+                              <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
+                                <Input
+                                  value={input?.name}
+                                  placeholder='Option'
+                                  width={100}
+                                  onChange={(event) =>
+                                    handleOptionInputEdit(event, index)
+                                  }
+                                />
+                              </div>
+                              <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
+                                <Input
+                                  placeholder='Marks'
+                                  value={input?.score}
+                                  width={100}
+                                  onChange={(event) => handleMarksInputEdit(event, index)}
+                                />
+                              </div>
+                              <div className='col-3 delete-visual-icon'>
+                                <DeleteFilled
+                                  style={{
+                                    cursor: 'pointer',
+                                    fontSize: '18px',
+                                    color: 'darkblue',
+                                  }}
+                                  onClick={() => handleOptionDeleteEdit(input, index)}
+                                />
+                              </div>
+                            </div>
+                          ))
+                        : 'No Option In The List'}
+                      <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
+                        <Button
+                          icon={<PlusOutlined />}
+                          onClick={handleOptionInputAddEdit}
+                          type='primary'
+                        >
+                          Add Option
+                        </Button>
+                      </div>
+                      <div className='col-12 padding-style'>
+                        <Button type='primary' onClick={handleOptionSubmitEdit}>
+                          Submit
+                        </Button>
+
+                        <Button
+                          type='primary'
+                          onClick={handleModalCloseEdit}
+                          style={{ marginLeft: '0.5rem' }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className='row m-2'>
+                        {isEditData.name.toLowerCase() === 'public speaking' ? (
+                          ''
+                        ) : (
+                          <>
+                            <AntDivider
+                              orientation='left'
+                              orientationMargin='0'
+                              plain
+                              style={{ alignItems: 'flex-start' }}
+                            >
+                              Add Criteria Title
+                            </AntDivider>
+                            <div className='col-3'>
+                              <Input
+                                placeholder='Criteria Title'
+                                defaultValue={isEditData?.criteria_title}
+                                width={100}
+                                value={
+                                  Object.keys(isEditData)
+                                    ? isEditData?.criteria_title
+                                    : remarksType
+                                }
+                                onChange={(event) => handleInputRemarksEdit(event)}
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <div className='row m-2'>
+                        <AntDivider
+                          orientation='left'
+                          orientationMargin='0'
+                          plain
+                          style={{ alignItems: 'flex-start' }}
+                        >
+                          Add Criteria Name
+                        </AntDivider>
+                      </div>
+                      {Object.keys(isEditData)
+                        ? isEditData?.grading_scheme?.map((input, index) => (
+                            <>
+                              <div className='row m-2'>
+                                <div
+                                  className='col-3'
+                                  style={{
+                                    display:
+                                      input?.name.toLowerCase() == 'overall'
+                                        ? 'none'
+                                        : '',
+                                  }}
+                                >
+                                  <Input
+                                    placeholder='Criteria'
+                                    width={100}
+                                    defaultValue={input?.name}
+                                    value={input?.name}
+                                    onChange={(event) =>
+                                      handleInputCreativityEdit(event, index)
+                                    }
+                                  />
+                                </div>
+                                {showPhy ? (
+                                  ''
+                                ) : (
+                                  <>
+                                    <div
+                                      className='col-3'
+                                      style={{
+                                        display:
+                                          input?.name.toLowerCase() == 'overall'
+                                            ? 'none'
+                                            : '',
+                                      }}
+                                    >
+                                      <Input
+                                        placeholder='Rating'
+                                        width={100}
+                                        value={input?.rating}
+                                        onChange={(event) =>
+                                          handleInputRatingEdit(event, index)
+                                        }
+                                      />
+                                    </div>
+                                    <div
+                                      className='col-3'
+                                      style={{
+                                        display:
+                                          input?.name.toLowerCase() == 'overall'
+                                            ? 'none'
+                                            : '',
+                                      }}
+                                    >
+                                      <Input
+                                        placeholder='Score'
+                                        width={100}
+                                        value={input?.score}
+                                        onChange={(event) =>
+                                          handleInputChange1Edit(event, index)
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                )}
+                                <div className='col-2 d-flex align-items-center'>
+                                  <DeleteFilled
+                                    onClick={() => handleRemoveItemEdit(index)}
+                                    style={{
+                                      cursor: 'pointer',
+                                      fontSize: '18px',
+                                      color: 'darkblue',
+                                      display:
+                                        input?.name.toLowerCase() == 'overall'
+                                          ? 'none'
+                                          : '',
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          ))
+                        : 'No item in the list '}
+                      <div className='row m-2'>
+                        <div className='col-12 mb-2 th-black-1  text-truncate'>
+                          <Button
+                            icon={<PlusOutlined />}
+                            type='primary'
+                            className='th-br-5 th-pointer py-1 th-14 th-fw-500'
+                            onClick={handleListAddEdit}
+                          >
+                            Add Remarks
+                          </Button>
+                        </div>
+                      </div>
+                      <AntDivider />
+                      <div className='row mb-3 ml-1'>
+                        <div className='col-12 th-black-1'>
+                          <Button
+                            icon={<CheckCircleOutlined />}
+                            color='green'
+                            type='primary'
+                            className='th-br-5 th-pointer py-1 th-14 th-fw-500 mr-2'
+                            onClick={handleActivityTypeSubmitEdit}
+                          >
+                            Submit
+                          </Button>
+                          <Button
                             icon={<CloseCircleOutlined />}
                             color='red'
-                            className='th-br-5 th-pointer py-1'
-                            onClick={handleActivityTypeSubmit}
+                            type='primary'
+                            className='th-br-5 th-pointer py-1 th-14 th-fw-500'
+                            onClick={handleModalCloseEdit}
                           >
                             Cancel
-                          </Tag>
-                        </div> */}
+                          </Button>
+                        </div>
                       </div>
-                      {/* <Button
-                        onClick={handleListAdd}
-                        disabled={isDisabled}
-                        style={{ marginTop: '1rem' }}
-                        variant='contained'
-                        color='primary'
-                      >
-                        Add Remarks
-                      </Button> */}
-
-                      {/* <Button
-                        variant='contained'
-                        size='small'
-                        color='primary'
-                        onClick={handleActivityTypeSubmit}
-                        style={{ marginTop: '1rem' }}
-                      >
-                        Submit
-                      </Button> */}
                     </>
                   )}
                 </>
@@ -1565,545 +1798,6 @@ const RatingCreate = () => {
         </ModalAnt>
       </div>
     </Layout>
-
-    // material-ui ----->
-
-    // <div>
-    //   {loading && <Loader />}
-
-    //   <Layout>
-    //     <Grid
-    //       container
-    //       style={{
-    //         display: 'flex',
-    //         justifyContent: 'space-between',
-    //         paddingLeft: '22px',
-    //         paddingRight: '15px',
-    //         paddingBottom: '15px',
-    //       }}
-    //     >
-    //       <Grid item xs={4} md={4}>
-    //         <Breadcrumb separator=">">
-    //           <Breadcrumb.Item className='th-grey th-16'>
-    //             Activity
-    //           </Breadcrumb.Item>
-    //           <Breadcrumb.Item className='th-grey th-16'>
-    //             Create Rating
-    //           </Breadcrumb.Item>
-    //         </Breadcrumb>
-    //       </Grid>
-    //     </Grid>
-
-    //     <Grid container item md={12} sm={12} xs={12}>
-    //       <Grid item spacing={3} md={6}>
-    //         <Grid item md={6} style={{ margin: '0 6%' }}>
-    //           <Autocomplete
-    //             size='small'
-    //             fullWidth
-    //             onChange={handleActivity}
-    //             className='dropdownIcon'
-    //             value={search}
-    //             options={activityCategory || []}
-    //             getOptionLabel={(option) => option?.name || ''}
-    //             renderInput={(params) => (
-    //               <TextField
-    //                 {...params}
-    //                 variant='outlined'
-    //                 label='Activity Type'
-    //                 placeholder='Activity Type'
-    //                 required
-    //               />
-    //             )}
-    //           />
-    //         // </Grid>
-    //       </Grid>
-
-    //       <Grid item md={6} container justifyContent='flex-end'>
-    //         <Grid item md={3} container justifyContent='flex-end'>
-    //           <Button variant='contained' color='primary' onClick={handleCreateTemplate}>
-    //             {' '}
-    //             Add Template
-    //           </Button>
-    //         </Grid>
-    //         <Grid item md={3} container justifyContent='center'>
-    //           <Button variant='contained' color='primary' onClick={viewDisplay}>
-    //             Add
-    //           </Button>
-    //         </Grid>
-    //       </Grid>
-    //     </Grid>
-
-    //     {(search?.name.toLowerCase() === "visual activity") || (search?.name.toLowerCase() === "visual art") || (search?.name.toLowerCase() === "visual art") || (search?.name.toLowerCase() === "music") || (search?.name.toLowerCase() === "theater") || (search?.name.toLowerCase() === "dance") ? (
-    //       <Paper className={`${classes.root} common-table`} id='singleStudent'>
-    //         <TableContainer
-    //           className={`table table-shadow view_users_table ${classes.container}`}
-    //         >
-    //           <Table stickyHeader aria-label='sticky table'>
-    //             <TableHead className={`${classes.columnHeader} table-header-row`}>
-    //               <TableRow>
-    //                 <TableCell className={classes.tableCell} style={{ maxWidth: '1px' }}>
-    //                   S No.
-    //                 </TableCell>
-    //                 <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
-    //                 <TableCell className={classes.tableCell}>Question</TableCell>
-    //                 <TableCell className={classes.tableCell}>Options</TableCell>
-    //                 <TableCell className={classes.tableCell}>Score</TableCell>
-    //               </TableRow>
-    //             </TableHead>
-
-    //             {activityCategory && activityCategory
-    //               ?.filter((response) =>
-    //                 response?.name?.toLowerCase()?.includes(search?.name?.toLowerCase()))
-    //               .map((response, index) => (
-    //                 <>
-    //                 <TableBody>
-    //                   <TableRow
-    //                     hover
-    //                     role='checkbox'
-    //                     tabIndex={-1}
-    //                   >
-    //                     <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-    //                     <TableCell className={classes.tableCells}>{response?.name}</TableCell>
-    //                     <TableCell className={classes.tableCells}>{response?.question.map((item) => <p> {item} </p>)} </TableCell>
-    //                     <TableCell className={classes.tableCells}>
-    //                       {response?.va_rating[0].map((item) =><p>{item?.name}</p> )}
-    //                     </TableCell>{' '}
-    //                     <TableCell className={classes.tableCells}>
-    //                     {response?.va_rating[0].map((item) =><p>{item?.score}</p> )}
-    //                     </TableCell>
-    //                   </TableRow>
-    //                 </TableBody>
-    //                 </>
-    //               ))}
-    //           </Table>
-    //         </TableContainer>
-    //       </Paper>
-
-    //     ) : (
-    //       <Paper className={`${classes.root} common-table`} id='singleStudent'>
-    //         <TableContainer
-    //           className={`table table-shadow view_users_table ${classes.container}`}
-    //         >
-    //           <Table stickyHeader aria-label='sticky table'>
-    //             <TableHead className={`${classes.columnHeader} table-header-row`}>
-    //               <TableRow>
-    //                 <TableCell className={classes.tableCell} style={{ maxWidth: '1px' }}>
-    //                   S No.
-    //                 </TableCell>
-    //                 <TableCell className={classes.tableCell}>Activity Type Name </TableCell>
-    //                 <TableCell className={classes.tableCell}>Sub-Type Activity</TableCell>
-    //                 <TableCell className={classes.tableCell}>Criteria Name</TableCell>
-
-    //                 <TableCell className={classes.tableCell}>Rating </TableCell>
-    //                 {search?.name == "Physical Activity" ? (
-    //                   ""
-    //                 ) : (
-    //                   <TableCell className={classes.tableCell}>Score </TableCell>
-    //                 )}
-    //               </TableRow>
-    //             </TableHead>
-    //             {activityCategory
-    //               ?.filter((response) =>
-    //                 response?.name?.toLowerCase()?.includes(search?.name?.toLowerCase())
-    //               )
-    //               .map((response, index) => (
-    //                 <TableBody>
-    //                   <TableRow
-    //                     hover
-    //                     role='checkbox'
-    //                     tabIndex={-1}
-    //                   >
-    //                     <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-    //                     <TableCell className={classes.tableCells}>{response.name}</TableCell>
-    //                     <TableCell className={classes.tableCells}>{response.sub_type ? response.sub_type : <b style={{ color: 'red' }}>NA</b>}</TableCell>
-    //                     <TableCell className={classes.tableCells}>
-    //                       {response?.grading_scheme.map((obj) => (
-    //                         <div>{obj.name}</div>
-    //                       ))}
-    //                     </TableCell>{' '}
-    //                     <TableCell className={classes.tableCells}>
-    //                       <Typography>
-    //                         {response?.grading_scheme.map((obj) => (
-    //                           <div>{obj.rating}</div>
-    //                         ))}
-    //                       </Typography>
-    //                     </TableCell>
-    //                   </TableRow>
-    //                 </TableBody>
-    //               ))}
-    //           </Table>
-    //         </TableContainer>
-    //       </Paper>
-
-    //     )}
-
-    //     <Dialog
-    //       open={viewing}
-    //       maxWidth={maxWidth}
-    //       onClose={handleClose}
-    //       aria-labelledby='alert-dialog-title'
-    //       aria-describedby='alert-dialog-description'
-    //     >
-    //       <div
-    //         style={{
-    //           marginLeft: '37px',
-    //           marginTop: '13px',
-    //           marginBottom: '12px',
-    //           marginRight: '28px',
-    //         }}
-    //       >
-    //         <div style={{ fontSize: '28px', fontWeight: 'bold', width: '46vw' }}>Create Rating</div>
-    //         <Divider />
-    //         <div style={{ marginTop: '8px' }}>
-    //           <Autocomplete
-    //             size='small'
-    //             style={{ width: '45%' }}
-    //             onChange={(e, value) => setActivityType(value)}
-    //             className='dropdownIcon'
-    //             value={ActivityType}
-    //             options={activityCategory || []}
-    //             getOptionLabel={(option) => option?.name || ''}
-    //             renderInput={(params) => (
-    //               <TextField
-    //                 {...params}
-    //                 variant='outlined'
-    //                 label='Activity Type'
-    //                 placeholder='Activity Type'
-    //                 required
-    //               />
-    //             )}
-    //           />
-
-    //         </div>
-
-    //         {ActivityType?.name == "Physical Activity" ? (
-    //           <div style={{ width: '73vh', fontWeight: 400, marginTop: '10px', paddingLeft: '10px' }}>
-    //             Sub-Activity Type :<b style={{ color: 'blue' }}> {ActivityType?.sub_type} </b>
-    //           </div>
-    //         ) : ""}
-    //         {(ActivityType?.name.toLowerCase() === "visual art") || (ActivityType?.name.toLowerCase() === "music") || (ActivityType?.name.toLowerCase() === "dance") || (ActivityType?.name.toLowerCase() === "theater") ? (
-    //           <div className='row m-2' style={{width:'650px'}}>
-    //             <AntDivider orientation="left" plain style={{alignItems:'flex-start'}}>
-    //               Add Questions
-    //             </AntDivider>
-    //             {visualInputlList ? visualInputlList.map((input, index) => (
-    //               <>
-    //                 <div className='col-10 question-visual'
-    //                 >
-    //                   <Input
-    //                     placeholder='Question'
-    //                     width={100}
-    //                     value={input?.name}
-    //                     onChange={(event) => handleQuestion(event, index)}
-    //                   />
-    //                 </div>
-    //                 <div className='col-2 delete-visual-icon'>
-    //                   <DeleteFilled onClick={() => handleRemoveVisualQuestion(input, index)} style={{ cursor: 'pointer', fontSize: '18px', color: 'darkblue' }} />
-    //                 </div>
-
-    //               </>
-    //             )) : (
-    //               "No Item In The List"
-    //             )}
-
-    //             <div className='col-12 padding-style'
-
-    //             >
-    //               <Button type="primary" icon={<PlusOutlined />} onClick={handleVisualInputApp} >Add Question</Button>
-    //             </div>
-    //             <AntDivider orientation="left" plain style={{alignItems:'flex-start'}}>
-    //               Add Options
-    //             </AntDivider>
-    //             {optionList ? optionList.map((input, index) => (
-    //               <div className='row'>
-    //                 <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
-    //                   <Input
-    //                     value={input?.name}
-    //                     placeholder='Option'
-    //                     width={100}
-    //                     onChange={(event) => handleOptionInput(event, index)}
-    //                   />
-    //                 </div>
-    //                 <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
-    //                   <Input
-    //                     placeholder='Marks'
-    //                     value={input?.score}
-    //                     width={100}
-    //                     onChange={(event) => handleMarksInput(event, index)}
-    //                   />
-    //                 </div>
-    //                 <div className='col-3 delete-visual-icon'>
-    //                   <DeleteFilled style={{ cursor: 'pointer', fontSize: '18px', color: 'darkblue' }} onClick={() => handleOptionDelete(input, index)} />
-    //                 </div>
-    //               </div>
-
-    //             )) : (
-    //               "No Option In The List"
-    //             )}
-    //             <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
-    //               <Button
-    //                 icon={<PlusOutlined />}
-    //                 onClick={handleOptionInputAdd}
-    //                 type="primary"
-    //               >
-    //                 Add Option
-    //               </Button>
-    //             </div>
-    //             <div className='col-12 padding-style'
-    //             >
-    //               <Button type="primary" onClick={handleOptionSubmit}>
-    //                 Submit
-    //               </Button>
-    //               <Button type="danger" onClick={handleClose} style={{ marginLeft: '0.5rem' }}>
-    //                 Cancel
-    //               </Button>
-
-    //             </div>
-    //           </div>
-    //         ) : (
-    //           <>
-    //             {inputList
-    //               ? inputList.map((input, index) => (
-    //                 <>
-    //                   <div style={{ marginTop: '1rem', display: 'flex' }}>
-    //                     <TextField
-    //                       label='Criteria Name'
-    //                       size='small'
-    //                       type='text'
-    //                       onChange={(event) => handleInputCreativity(event, index)}
-    //                       variant='outlined'
-    //                     />
-    //                     &nbsp;&nbsp;&nbsp;
-    //                     {showPhy ? (
-    //                       ""
-    //                     ) : (
-    //                       <>
-    //                         <TextField
-    //                           label='Rating'
-    //                           size='small'
-    //                           type='number'
-    //                           onChange={(event) => handleInputRating(event, index)}
-    //                           variant='outlined'
-    //                         />
-    //                         &nbsp;&nbsp;&nbsp;
-    //                         <TextField
-    //                           label='Score'
-    //                           size='small'
-    //                           type='number'
-    //                           onChange={(event) => handleInputChange1(event, index)}
-    //                           variant='outlined'
-    //                         />
-    //                       </>
-    //                     )}
-    //                     <Button
-    //                       style={{ marginLeft: '12px' }}
-    //                       color='primary'
-    //                       variant='contained'
-    //                       onClick={() => handleRemoveItem(index)}
-    //                     >
-    //                       Delete
-    //                     </Button>
-    //                   </div>
-    //                 </>
-    //               ))
-    //               : 'No item in the list '}
-    //             &nbsp;&nbsp;&nbsp;
-    //             <Button
-    //               onClick={handleListAdd}
-    //               disabled={isDisabled}
-    //               style={{ marginTop: '1rem' }}
-    //               variant='contained'
-    //               color='primary'
-
-    //             >
-    //               Add
-    //             </Button>
-    //             &nbsp;&nbsp;
-    //             <Button
-    //               variant='contained'
-    //               size='small'
-    //               color='primary'
-    //               onClick={handleActivityTypeSubmit}
-    //               style={{ marginTop: '1rem' }}
-    //             >
-    //               Submit
-    //             </Button>
-    //           </>
-
-    //         )}
-    //       </div>
-
-    //     </Dialog>
-
-    // <AntDrawer
-    //   title={`Add Parameters`}
-    //   zIndex={1300}
-    //   placement="right"
-    //   width={window.innerWidth < 768 ? '90vw' : '450px'}
-    //   onClose={onCloseAnt}
-    //   visible={antDrawer}
-    //   open={antDrawer}
-    // >
-
-    //   <div className='action-filed'>
-    //     {visualInputlList ? visualInputlList.map((input, index) => (
-    //       <>
-    //         <div className='row' style={{ marginTop: '1rem', display: 'flex' }}>
-    //           <div className='col-6'>
-
-    //           </div>
-    //           <div className='col-4'>
-    //             <Select
-    //               className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-    //               bordered={true}
-    //               getPopupContainer={(trigger) => trigger.parentNode}
-    //               placement='bottomRight'
-    //               placeholder='Select Option'
-    //               suffixIcon={<DownOutlined className='th-black-1' />}
-    //               dropdownMatchSelectWidth={false}
-    //               onChange={(e, val) => handleVisualChange(e, val)}
-    //               allowClear
-
-    //               menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-    //             >
-    //               {visulaOptions}
-
-    //             </Select>
-    //           </div>
-    //           <div className='col-2'>
-    //             <DeleteFilled onClick={() => handleRemoveVisual(index)} style={{ cursor: 'pointer' }} />
-    //           </div>
-
-    //         </div>
-    //       </>
-    //     )) : "No Item In The List"}
-    //     <div style={{ padding: '0.5rem 0rem' }}>
-    //       <Button type="primary" onClick={handleVisualInputApp} >Add</Button>
-
-    //     </div>
-    //     <div style={{ padding: '0.5rem 0rem', display: 'flex', alignItem: 'center', justifyContent: 'end' }}>
-    //       <Button type="primary">Submit</Button>
-    //     </div>
-
-    //   </div>
-    // </AntDrawer>
-    // <AntDrawer
-    //   title={`Options`}
-    //   zIndex={1300}
-    //   placement="right"
-    //   width={window.innerWidth < 768 ? '90vw' : '450px'}
-    //   // size='default'
-    //   onClose={onCloseAnt}
-    //   visible={onOptionVisible}
-    //   open={onOptionVisible}
-    //   extra={
-    //     <Space>
-    //       <Button
-    //         icon={<PlusOutlined />}
-    //         onClick={onOptionModalFun}
-    //       >Add Options</Button>
-    //     </Space>
-    //   }
-    // >
-
-    //   <div className='action-filed'>
-    //     {visualInputlList ? visualInputlList.map((input, index) => (
-    //       <>
-    //         <div className='row' style={{ marginTop: '1rem', display: 'flex' }}>
-    //           <div className='col-6'>
-
-    //           </div>
-    //           <div className='col-4'>
-    //             <Select
-    //               className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-    //               bordered={true}
-    //               getPopupContainer={(trigger) => trigger.parentNode}
-    //               placement='bottomRight'
-    //               placeholder='Select Option'
-    //               suffixIcon={<DownOutlined className='th-black-1' />}
-    //               dropdownMatchSelectWidth={false}
-    //               onChange={(e, val) => handleVisualChange(e, val)}
-    //               allowClear
-
-    //               menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-    //             >
-    //               {visulaOptions}
-
-    //             </Select>
-    //           </div>
-    //           <div className='col-2'>
-    //             <DeleteFilled onClick={() => handleRemoveVisual(index)} style={{ cursor: 'pointer' }} />
-    //           </div>
-
-    //         </div>
-    //       </>
-    //     )) : "No Item In The List"}
-    //     <div style={{ padding: '0.5rem 0rem' }}>
-    //       <Button type="primary" onClick={handleVisualInputApp} >Add</Button>
-
-    //     </div>
-    //     <div style={{ padding: '0.5rem 0rem', display: 'flex', alignItem: 'center', justifyContent: 'end' }}>
-    //       <Button type="primary">Submit</Button>
-    //     </div>
-
-    //   </div>
-    // </AntDrawer>
-    // <AntModal
-    //   title="Add Options"
-    //   centered
-    //   open={onOptionModal}
-    //   visible={onOptionModal}
-    //   onCancel={() => setOnOptionModal(false)}
-    // >
-    //   <div style={{ border: '1px solid black', margin: '0.5rem 0rem' }}>
-    //     <div className='col-10' style={{ padding: '0.5rem 0rem' }}>
-    //       <Input
-    //         placeholder='Question'
-    //         width={100}
-    //       />
-    //     </div>
-    //     <div className='col-2'>
-    //     </div>
-    //     {optionList ? optionList.map((input, index) => (
-    //       <div className='row'>
-
-    //         <div className='col-6' style={{ padding: '0.5rem 0rem' }} >
-    //           <Input
-    //             placeholder='Option'
-    //             width={100}
-    //             onChange={(event) => handleOptionInput(event, index)}
-    //           />
-    //         </div>
-    //         <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
-    //           <Input
-    //             placeholder='Marks'
-    //             width={100}
-    //             onChange={(event) => handleMarksInput(event, index)}
-    //           />
-    //         </div>
-    //       </div>
-    //     )) : "No Item In The List"}
-    //     <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
-    //       <Button
-    //         icon={<PlusOutlined />}
-    //         onClick={handleOptionInputAdd}
-    //       >
-    //         Add Button
-    //       </Button>
-    //     </div>
-    //     <div className='col-12'
-    //     >
-    //       <Button onClick={handleOptionSubmit}>
-    //         Submit
-    //       </Button>
-
-    //     </div>
-
-    //   </div>
-    // </AntModal>
-
-    //   </Layout>
-    // </div>
   );
 };
 export default RatingCreate;
