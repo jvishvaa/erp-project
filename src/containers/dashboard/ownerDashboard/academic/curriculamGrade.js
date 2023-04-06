@@ -458,7 +458,8 @@ const CurriculumCompletion = (props) => {
 
   const datagen = (data) => {
     console.log(data);
-    let sec_name = data.map((sec) => sec?.section_name.replace(/sec|section/gi, "SEC"))
+    // let sec_name = data.map((sec) => sec?.section_name.replace(/sec|section/gi, "SEC"))
+    let sec_name = data.map((sec) => sec?.section_name)
 
     console.log(JSON.stringify(sec_name));
     return <span className='th-green th-16'>{sec_name.toString()}</span>
