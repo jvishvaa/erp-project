@@ -276,6 +276,9 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
               </tr>
             </tbody>
           </table>
+          <div className='mt-2'>
+            <span className='th-fw-500 th-black-1'>Supporting Document : </span>
+          </div>
         </div>
 
         <ReactToPrint

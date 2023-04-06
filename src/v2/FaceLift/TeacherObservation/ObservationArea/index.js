@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createRef, useRef } from 'react';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
-import endpoints from 'config/endpoints';
+import endpoints from 'v2/config/endpoints';
 import axiosInstance from 'axios';
 import {
   Table,
@@ -24,7 +24,8 @@ const { Option } = Select;
 
 const ObservationArea = () => {
   const formRef = useRef();
-  const [data, setData] = useState([]);
+  const [observationsList, setObservationsList] = useState([]);
+  const [observationAreaList, setObservationAreaList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -36,20 +37,40 @@ const ObservationArea = () => {
     fetchUserLevel();
   }, []);
   useEffect(() => {
-    observationGet({ is_student: tableView === 'teacher' ? false : true });
+    fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
+    fetchObservationAreaList({ is_student: tableView === 'teacher' ? false : true });
   }, [tableView]);
-
-  const observationGet = (params = {}) => {
+  console.log({ observationsList });
+  const fetchObservationList = (params = {}) => {
+    axios
+      .get(`${endpoints.observations.observationList}`, {
+        params: { ...params },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setObservationsList(result?.data?.result);
+        } else {
+          setLoading(false);
+          setObservationsList([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const fetchObservationAreaList = (params = {}) => {
     setLoading(true);
     axios
-      .get(`${endpoints.observation.observationGet}`, { params: { ...params } })
+      .get(`${endpoints.observations.observationAreaList}`, {
+        params: { ...params },
+      })
       .then((result) => {
-        if (result.status === 200) {
-          setData(result?.data);
+        if (result?.data?.status_code === 200) {
+          setObservationAreaList(result?.data?.result);
           setLoading(false);
         } else {
           setLoading(false);
-          setData([]);
+          setObservationAreaList([]);
         }
       })
       .catch((error) => {
@@ -57,7 +78,6 @@ const ObservationArea = () => {
         setLoading(false);
       });
   };
-
   const fetchUserLevel = () => {
     axiosInstance
       .get(`${endpoints.userManagement.userLevelList}`, {
@@ -75,19 +95,22 @@ const ObservationArea = () => {
       });
   };
 
-  const handleEdit = (id) => {
-    setEditId(id);
+  const handleEdit = (data) => {
+    setEditId(data?.id);
     setDrawerOpen(true);
-    axios.get(`${endpoints.observation.observationGet}${id}/`).then((res) => {
+    // axios.get(`${endpoints.observations.observationAreaList}${id}/`).then((res) => {
+    setTimeout(() => {
       formRef.current.setFieldsValue({
-        observation_area_name: res.data.result.observation_area_name,
-        levels: res.data?.result?.levels_data?.map((each) => {
+        observation_area_name: data?.observation_area_name,
+        levels: data?.levels?.map((each) => {
           return each?.id;
         }),
-        is_student: res.data.result.is_student,
+        is_student: data?.is_student,
+        observation: data?.observation?.title,
       });
-      setIsStudent(res.data.result.is_student);
-    });
+    }, 100);
+    setIsStudent(data.is_student);
+    // });
   };
 
   const handleStatus = (id, status) => {
@@ -95,20 +118,23 @@ const ObservationArea = () => {
       status: status ? false : true,
     };
     axios
-      .put(`${endpoints.observation.observationGet}${id}/`, body)
+      .put(`${endpoints.observations.updateObservationArea}${id}/`, body)
       .then((res) => {
-        observationGet({ is_student: tableView === 'teacher' ? false : true });
+        // // observationGet({ is_student: tableView === 'teacher' ? false : true });
       })
       .catch((error) => console.log(error));
   };
 
   const onDelete = (id) => {
     axios
-      .delete(`${endpoints.observation.observationGet}${id}/`)
+      .delete(`${endpoints.observations.updateObservationArea}${id}/`)
       .then((result) => {
-        if (result.status === 204) {
+        if (result.data?.status_code === 200) {
           message.success('Successfully Deleted');
-          observationGet({ is_student: tableView === 'teacher' ? false : true });
+          fetchObservationAreaList({
+            is_student: tableView === 'teacher' ? true : false,
+          });
+          // observationGet({ is_student: tableView === 'teacher' ? false : true });
         } else {
           message.error('Something went wrong');
         }
@@ -126,44 +152,56 @@ const ObservationArea = () => {
     setEditId(null);
     formRef.current.resetFields();
   };
-
+  console.log({ editId });
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
-    if (updateValues.observation_area_name && updateValues.levels) {
-      const valuess = new FormData();
-      valuess.append('observation_area_name', updateValues.observation_area_name);
-      valuess.append(
-        'is_student',
-        updateValues.is_student ? updateValues.is_student : false
-      );
-      valuess.append('levels', updateValues.levels?.toString());
+    if (updateValues.observation_area_name && updateValues.observation) {
+      // const valuess = new FormData();
+      // valuess.append('observation_area_name', updateValues.observation_area_name);
+      // valuess.append(
+      //   'is_student',
+      //   updateValues.is_student ? updateValues.is_student : false
+      // );
+      // valuess.append('levels', '13,11');
+      // // valuess.append('levels', updateValues.levels?.toString());
+      // valuess.append('observation', updateValues.observation);
 
-      if (!editId) {
-        valuess.append('status', true);
-      }
-
+      // if (!editId) {
+      //   valuess.append('status', true);
+      // }
+      let payload = {
+        observation_area_name: updateValues.observation_area_name,
+        is_student: updateValues.is_student ? updateValues.is_student : false,
+        levels: '13,11',
+        observation: updateValues.observation,
+        status: true,
+      };
       if (editId) {
         axios
-          .put(`${endpoints.observation.observationGet}${editId}/`, valuess)
+          .put(`${endpoints.observations.updateObservationArea}${editId}/`, payload)
           .then((result) => {
-            onClose();
-            setTableView(updateValues.is_student ? 'student' : 'teacher');
-            observationGet({
-              is_student: updateValues.is_student ? true : false,
-            });
+            if (result?.data?.status_code == 200) {
+              onClose();
+              setTableView(updateValues.is_student ? 'student' : 'teacher');
+              fetchObservationAreaList({
+                is_student: updateValues.is_student ? true : false,
+              });
+            }
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .post(`${endpoints.observation.observationGet}`, valuess)
+          .post(`${endpoints.observations.observationAreaList}`, payload)
           .then((result) => {
-            onClose();
-            setTableView(updateValues.is_student ? 'student' : 'teacher');
-            observationGet({
-              is_student: updateValues.is_student ? true : false,
-            });
+            if (result?.data?.status_code == 200) {
+              setTableView(updateValues.is_student ? 'student' : 'teacher');
+              fetchObservationAreaList({
+                is_student: updateValues.is_student ? true : false,
+              });
+              onClose();
+            }
           })
           .catch((error) => {
             console.log(error);
@@ -188,6 +226,13 @@ const ObservationArea = () => {
       </Option>
     );
   });
+  const observationsListOptions = observationsList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id}>
+        {each?.title}
+      </Option>
+    );
+  });
 
   const columns = [
     {
@@ -204,20 +249,25 @@ const ObservationArea = () => {
       render: (data) => <span className='th-black-1 th-16'>{data}</span>,
     },
     {
+      title: <span className='th-white th-fw-700'>Observation </span>,
+      dataIndex: 'observation',
+      render: (data) => <span className='th-black-1 th-16'>{data?.title}</span>,
+    },
+    {
       title: <span className='th-white th-fw-700'>Overall Score</span>,
       align: 'center',
-      dataIndex: 'score',
-      render: (data) => <span className='th-black-1 th-16'>{data}</span>,
+      dataIndex: 'over_all',
+      render: (data) => <span className='th-black-1 th-16'>{data?.over_all}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>User Level</span>,
       align: 'center',
-      dataIndex: 'levels_data',
+      dataIndex: 'levels',
       render: (data) => (
         <span className='th-black-1 th-14'>
           {data
             ?.map((item) => {
-              return item?.level_name;
+              return item?.id;
             })
             ?.toString()}
         </span>
@@ -248,7 +298,7 @@ const ObservationArea = () => {
               icon={<EditOutlined />}
               className='th-br-6 th-bg-primary th-white'
               style={{ cursor: 'pointer' }}
-              onClick={() => handleEdit(data.id)}
+              onClick={() => handleEdit(data)}
             >
               Edit
             </Tag>
@@ -297,7 +347,7 @@ const ObservationArea = () => {
                 loading={loading}
                 columns={columns}
                 rowKey={(record) => record?.id}
-                dataSource={data}
+                dataSource={observationAreaList}
                 pagination={false}
                 // scroll={{ y: '400px' }}
               />
@@ -319,6 +369,9 @@ const ObservationArea = () => {
           placement='right'
           onClose={onClose}
           visible={drawerOpen}
+          closable={null}
+          width='40vw'
+          className='th-activity-drawer'
           footer={
             <div
               style={{
@@ -339,46 +392,69 @@ const ObservationArea = () => {
             </div>
           }
         >
-          <Form id='filterForm' ref={formRef} layout={'vertical'}>
-            <Form.Item
-              name='observation_area_name'
-              label='Enter Observation Area'
-              rules={[{ required: true, message: 'Please enter Observation Area' }]}
-            >
-              <Input placeholder='Enter Observation Area' />
-            </Form.Item>
-
-            <Form.Item label='Applicable for' name='is_student'>
-              <Radio.Group
-                value={isStudent}
-                onChange={handleApplicableFor}
-                defaultValue={false}
+          <div className='px-2'>
+            <Form id='filterForm' ref={formRef} layout={'vertical'}>
+              <Form.Item
+                name='observation_area_name'
+                label='Enter Observation Area'
+                rules={[{ required: true, message: 'Please enter Observation Area' }]}
               >
-                <Radio value={false}> Teacher </Radio>
-                <Radio value={true}> Student </Radio>
-              </Radio.Group>
-            </Form.Item>
+                <Input placeholder='Enter Observation Area' />
+              </Form.Item>
 
-            <Form.Item
-              name='levels'
-              label='Select User Level'
-              rules={[{ required: true, message: 'Please select userlevels' }]}
-            >
-              <Select
-                mode='multiple'
-                allowClear={true}
-                className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                placement='bottomRight'
-                showArrow={true}
-                dropdownMatchSelectWidth={false}
-                filterOption={(input, options) => {
-                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
+              <Form.Item label='Applicable for' name='is_student'>
+                <Radio.Group
+                  value={isStudent}
+                  onChange={handleApplicableFor}
+                  defaultValue={false}
+                >
+                  <Radio value={false}> Teacher </Radio>
+                  <Radio value={true}> Student </Radio>
+                </Radio.Group>
+              </Form.Item>
+
+              <Form.Item
+                name='levels'
+                label='Select User Level'
+                rules={[{ required: true, message: 'Please select userlevels' }]}
               >
-                {userLevelListOptions}
-              </Select>
-            </Form.Item>
-          </Form>
+                <Select
+                  mode='multiple'
+                  allowClear={true}
+                  className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                  placement='bottomRight'
+                  showArrow={true}
+                  dropdownMatchSelectWidth={false}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {userLevelListOptions}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name='observation'
+                label='Select Observation'
+                rules={[{ required: true, message: 'Please select Observation' }]}
+              >
+                <Select
+                  className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                  placement='bottomRight'
+                  showArrow={true}
+                  dropdownMatchSelectWidth={false}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {observationsListOptions}
+                </Select>
+              </Form.Item>
+            </Form>
+          </div>
         </Drawer>
       </Layout>
     </React.Fragment>
