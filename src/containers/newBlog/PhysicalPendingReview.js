@@ -386,19 +386,19 @@ const PhysicalPendingReview = (props) => {
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.erp_id}</span>,
     },
-    {
-      title: <span className='th-white th-fw-700'>Attendance</span>,
-      align: 'center',
-      render: (text, row) => (
-        <span className='th-black-1'>
-          {row?.attendence_status === null ? (
-            <Tag color='red'>Absent</Tag>
-          ) : (
-            <Tag color='green'>Present</Tag>
-          )}
-        </span>
-      ),
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>Attendance</span>,
+    //   align: 'center',
+    //   render: (text, row) => (
+    //     <span className='th-black-1'>
+    //       {row?.attendence_status === null ? (
+    //         <Tag color='red'>Absent</Tag>
+    //       ) : (
+    //         <Tag color='green'>Present</Tag>
+    //       )}
+    //     </span>
+    //   ),
+    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
