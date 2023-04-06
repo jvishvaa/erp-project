@@ -93,6 +93,7 @@ export default {
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
+    historicQuestion : '/assessment/v1/hst-quest-bank/',
   },
   teacherAttendance: {
     gradewiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections/`,
@@ -245,6 +246,7 @@ export default {
   principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
 
   appVersion: `${baseURLCentral}/central-admin/app-versioning/`,
+  schoolDetails: `${baseURLCentral}/central-admin/school_details/`,
 
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',

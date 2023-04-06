@@ -145,6 +145,9 @@ const TeacherSubject = (props) => {
 const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
 );
+
+console.log('acadgdh', selectedAcademicYear, branchId, selectedBranch);
+
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [collapseData, setCollapseData] = useState([]);
 
@@ -246,7 +249,6 @@ const selectedBranch = useSelector(
 
 
   const teacherSubjectTable = (params = {}) => {
-    console.log(params);
     setLoading(true);
     axiosInstance
       .get(`${endpoints.ownerDashboard.teacherSubjectWiseReport}`, {
@@ -269,16 +271,26 @@ const selectedBranch = useSelector(
   };
 
   useEffect(() => {
+    // console.log('jfeiewfhei', ({
+    //   acad_session: history?.location?.state?.acad_sess_id,
+    //   session_year: history?.location?.state?.acad_session_id,
+    //   branch_id: branchId
+    // }))
     if (volumeId == null) {
+      // gradeTeacherTable({
+      //   acad_session: history?.location?.state?.acad_sess_id,
+      //   session_year: history?.location?.state?.acad_session_id,
+      //   branch_id: branchId
+      // });
       gradeTeacherTable({
-        acad_session: history?.location?.state?.acad_sess_id,
-        session_year: history?.location?.state?.acad_session_id,
+        acad_session: acad_sess_id,
+        session_year: acad_session_id,
         branch_id: branchId
       });
     } else {
       gradeTeacherTable({
-        acad_session: history?.location?.state?.acad_sess_id,
-        session_year: history?.location?.state?.acad_session_id,
+        acad_session: acad_sess_id,
+        session_year: acad_session_id,
         branch_id: branchId,
         volume: volumeId
       });
@@ -287,6 +299,7 @@ const selectedBranch = useSelector(
   }, [acad_session_id, volumeId]);
 
   const gradeTeacherTable = (params = {}) => {
+    console.log({params})
     setLoading(true);
     axiosInstance
       .get(`${endpoints.ownerDashboard.gradeWise}`, {

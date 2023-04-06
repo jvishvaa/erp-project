@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createRef } from 'react';
-import { Select, Form, message, Spin, Breadcrumb, Table, Tooltip, Button } from 'antd';
+import { Select, Form, message, Spin, Breadcrumb, Table, Tooltip, Button, Tabs, Pagination } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
@@ -21,9 +21,10 @@ import {
   RightOutlined,
   EyeFilled,
 } from '@ant-design/icons';
-import {  PlusOutlined} from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 const Chapterwise = () => {
   const formRef = createRef();
@@ -69,11 +70,35 @@ const Chapterwise = () => {
   const [selectedChapter, setSelectedChapter] = useState([]);
   const [loadingInner, setLoadingInner] = useState(false);
   const [selectedKeyConcept, setSelectedKeyConcept] = useState([]);
-  const [boardName , setBoardName] = useState('CBSE')
+  const [boardName, setBoardName] = useState('CBSE')
   const filters = history?.location?.state?.filters
-  const [questionId , setQuestionId] = useState(query.get('question'))
-  const [section , setSection] = useState(query.get('section'))
-  const [isEdit , setIsEdit] = useState(query.get('isedit'))
+  const [questionId, setQuestionId] = useState(query.get('question'))
+  const [section, setSection] = useState(query.get('section'))
+  const [isEdit, setIsEdit] = useState(query.get('isedit'))
+  const [Historic, setHistoric] = useState(false)
+  const [showTab, setShowTab] = useState('1');
+  const [changeRecent, setChangeRecent] = useState(false)
+  const [HistoricData, setHistoricData] = useState([]);
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalpage] = useState('')
+  const [ chapterType , setChapterType ] = useState(0)
+
+  const onChangeTab = (e) => {
+    console.log(e , 'tab');
+    if(e == 1){
+      setPage(1)
+      setChapterType(0)
+    } else {
+      setPage(1)
+      setChapterType(1)
+    }
+    setShowTab(e)
+  }
+
+  const handlePagechange = (e) => {
+    setPage(e)
+    console.log(e, page);
+  }
   // const fetchchapterwiseData = (params = {}) => {
   //   setFiltered(true);
   //   setLoading(true);
@@ -97,33 +122,33 @@ const Chapterwise = () => {
   // };
 
   useEffect(() => {
-if(filters){
-setBoardName(filters?.boardName)
-setSubjectName(filters?.subjectName)
-// setGradeName(filters?.gradeName)
-setBoardId(filters?.boardId)
-// setGradeId(filters?.gradeId)
-// setSubjectId(filters?.subjectId)
-handleGrade({
-  value : filters?.grade,
-  children : filters?.gradeName
-})
-handleSubject({
-  value : filters?.subjectId,
-  children : filters?.subjectName
-})
-if(filters.questionId){
-  setQuestionId(filters?.questionId)
-  setSection(filters?.section)
-  setIsEdit(filters?.isEdit)
-}
+    if (filters) {
+      setBoardName(filters?.boardName)
+      setSubjectName(filters?.subjectName)
+      // setGradeName(filters?.gradeName)
+      setBoardId(filters?.boardId)
+      // setGradeId(filters?.gradeId)
+      // setSubjectId(filters?.subjectId)
+      handleGrade({
+        value: filters?.grade,
+        children: filters?.gradeName
+      })
+      handleSubject({
+        value: filters?.subjectId,
+        children: filters?.subjectName
+      })
+      if (filters.questionId) {
+        setQuestionId(filters?.questionId)
+        setSection(filters?.section)
+        setIsEdit(filters?.isEdit)
+      }
 
-}
-  },[filters])
+    }
+  }, [filters])
 
   // useEffect(()=>{
   //   if(filters && gradeId){
-      
+
   //   }
 
   // },[gradeId])
@@ -221,7 +246,7 @@ if(filters.questionId){
     setSubjectId('');
     setSubjectName('');
   };
-  const handleBoard = (e,value) => {
+  const handleBoard = (e, value) => {
     setBoardId(e);
     setBoardName(value?.children)
   };
@@ -280,23 +305,34 @@ if(filters.questionId){
 
   useEffect(() => {
     if (subjectId && gradeId) {
-      fetchAnnualPlanData({
-        grade: gradeId,
-        // volume_id: 38,
-        subject: subjectId,
-        academic_session: selectedBranch?.id,
-        academic_year : selectedAcademicYear?.session_year,
-        session_year : selectedAcademicYear?.id
-        // board: boardId,
-      });
+      if (Historic == false) {
+
+        fetchAnnualPlanData({
+          grade: gradeId,
+          // volume_id: 38,
+          subject: subjectId,
+          academic_session: selectedBranch?.id,
+          academic_year: selectedAcademicYear?.session_year,
+          session_year: selectedAcademicYear?.id
+          // board: boardId,
+        });
+      } else {
+        fetchHistoricData({
+          grade: gradeId,
+          subject: subjectId,
+          page: page,
+          page_size: 10,
+          chapter_type : chapterType
+        })
+      }
     }
-  }, [subjectId, boardId, gradeId]);
+  }, [subjectId, boardId, gradeId , page , chapterType]);
 
   const fetchKeyConceptsData = (params = {}) => {
     setLoadingInner(true);
     axios
-    .get(`assessment/question_count/?chapter_id=${params?.chapter_id}&is_central=${params?.is_central ? 1 : 0}`, {
-      // .get(`academic/annual-plan/key-concepts/`, { 
+      .get(`assessment/question_count/?chapter_id=${params?.chapter_id}&is_central=${params?.is_central ? 1 : 0}`, {
+        // .get(`academic/annual-plan/key-concepts/`, { 
         // params: { ...params },
       })
       .then((result) => {
@@ -341,6 +377,30 @@ if(filters.questionId){
       });
   };
 
+  const fetchHistoricData = (params = {}) => {
+    setFiltered(true);
+    setLoading(true);
+    axios
+      .get(endpoints.teacherAssessment.historicQuestion, { //questions-list-V1/
+        params: { ...params },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          console.log(result);
+          setHistoricData(result.data.result)
+          setTotalpage(result.data.result?.total)
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        // setFiltered(false)
+        setLoading(false);
+      });
+  };
+
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
     setKeyConceptsData([]);
@@ -349,7 +409,7 @@ if(filters.questionId){
       setSelectedChapter(record);
       fetchKeyConceptsData({
         chapter_id: record.chapter_id,
-        is_central : record?.is_central
+        is_central: record?.is_central
       });
     }
 
@@ -364,21 +424,21 @@ if(filters.questionId){
       topic: data?.id,
       chapter: data?.chapter_id,
       boardName: boardName,
-      boardId : boardId,
-      gradeName : gradeName,
-      subjectName : subjectName,
-      subjectId : subjectId,
-      questionId :  questionId,
-      section :  section,
-      isEdit :  isEdit,
-       
+      boardId: boardId,
+      gradeName: gradeName,
+      subjectName: subjectName,
+      subjectId: subjectId,
+      questionId: questionId,
+      section: section,
+      isEdit: isEdit,
+
       // request_type : 1
     };
     history.push({
       pathname: '/question-bank',
       state: {
-        params : params
-      } 
+        params: params
+      }
     });
   };
 
@@ -412,7 +472,7 @@ if(filters.questionId){
           return (
             <div
               className='th-black-1 th-pointer'
-              // style={{ maxWidth: window.innerWidth < 768 ? '140px' : '300px' }}
+            // style={{ maxWidth: window.innerWidth < 768 ? '140px' : '300px' }}
             >
               {/* <div className='col-md-2 col-0'></div>
               <div className='col-md-10 col-12 px-md-0'> */}
@@ -434,27 +494,29 @@ if(filters.questionId){
         dataIndex: '',
         align: 'center',
         width: '15%',
-        render: (text , row , index) => {return (
-          // <span className='th-black-1'>{data}</span>
-          <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <div className='w-20'>
-            {row?.eduvate_qp_count != 0 ? <div //onClick={fetchQuestionCards(data)}
-              style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color : '#3d69be' , borderRadius:'15px' }}
-            > 
-              {row?.eduvate_qp_count}
-            </div> : null}
-            </div>
-          <div className='w-20'>
-          {row?.school_qp_count !=0 ? <div
-              style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%' ,color:'#b33dbe',borderRadius:'15px'}}
-            >
-             {row?.school_qp_count}
+        render: (text, row, index) => {
+          return (
+            // <span className='th-black-1'>{data}</span>
+            <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <div className='w-20'>
+                {row?.eduvate_qp_count != 0 ? <div //onClick={fetchQuestionCards(data)}
+                  style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color: '#3d69be', borderRadius: '15px' }}
+                >
+                  {row?.eduvate_qp_count}
+                </div> : null}
+              </div>
+              <div className='w-20'>
+                {row?.school_qp_count != 0 ? <div
+                  style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%', color: '#b33dbe', borderRadius: '15px' }}
+                >
+                  {row?.school_qp_count}
 
-            </div> : null}
-          </div>
-            
-          </div>
-        )}
+                </div> : null}
+              </div>
+
+            </div>
+          )
+        }
       },
       {
         title: '',
@@ -526,30 +588,42 @@ if(filters.questionId){
       dataIndex: '',
       width: '15%',
       align: 'center',
-      render: (text , row, index) => {
+      render: (text, row, index) => {
         return (
           // <div className='d-flex justify-content-center' >
           // <div style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width:'45%' }}>{data}</div>
           // </div>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div className='w-20'>{(row?.eduvate_qp_count != 0 && row?.eduvate_qp_count != null) ? <div
-            style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%' , color : '#3d69be' ,borderRadius:'15px'}}
+              style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color: '#3d69be', borderRadius: '15px' }}
             >
               {row?.eduvate_qp_count}
-            </div>: null}</div>
+            </div> : null}</div>
             <div className='w-20'>
-            {(row?.school_qp_count != 0 && row?.school_qp_count != null) ? <div
-            style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%' , color : '#b33dbe', borderRadius:'15px' }}
-            >
-              {row?.school_qp_count  === null ? 0 : row?.school_qp_count}
-            </div> : null}
+              {(row?.school_qp_count != 0 && row?.school_qp_count != null) ? <div
+                style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%', color: '#b33dbe', borderRadius: '15px' }}
+              >
+                {row?.school_qp_count === null ? 0 : row?.school_qp_count}
+              </div> : null}
             </div>
-            
+
           </div>
         );
       },
     },
   ].filter((item) => item.visible !== 'false');
+
+
+  const handleHistoric = () => {
+    handleClearGrade()
+    setAnnualPlanData([])
+    setHistoricData([])
+    if (Historic == false) {
+      setHistoric(true)
+    } else {
+      setHistoric(false)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -561,14 +635,20 @@ if(filters.questionId){
               <Breadcrumb.Item className='th-black-1 th-18'>
                 Question Bank
               </Breadcrumb.Item>
+              {Historic == true ?
+                <Breadcrumb.Item className='th-black-1 th-18'>
+                  Historical Questions
+                </Breadcrumb.Item> : ''
+              }
             </Breadcrumb>
           </div>
         </div>
-        <div className='row th-bg-white py-2'>
-          <div className='col-12'>
-            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-              <div className='row align-items-center'>
-                {/* {boardFilterArr.includes(window.location.host) && ( */}
+        <div className={Historic == false ? 'row th-bg-white py-2' : 'row th-bg-grey py-2'}>
+          {Historic == false ?
+            <div className='col-12'>
+              <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+                <div className='row align-items-center'>
+                  {/* {boardFilterArr.includes(window.location.host) && ( */}
                   {/* <div className='col-md-2 col-6 pl-0'>
                     <div className='mb-2 text-left'>Board</div>
                     <Form.Item name='board'>
@@ -595,194 +675,500 @@ if(filters.questionId){
                       </Select>
                     </Form.Item>
                   </div> */}
-                {/* )} */}
-                <div className='col-md-2 col-6 px-0 pl-0'>
-                  <div className='mb-2 text-left' style={{marginLeft : '4%'}}>Grade</div>
-                  <Form.Item name='grade'>
-                    <Select
-                      allowClear
-                      placeholder={
-                        gradeName ? (
-                          <span className='th-black-1'>{gradeName}</span>
-                        ) : (
-                          'Select Grade'
-                        )
-                      }
-                      showSearch
-                      disabled={user_level == 13}
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e, value) => {
-                        handleGrade(value);
-                      }}
-                      onClear={handleClearGrade}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={false}
-                    >
-                      {gradeOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                  <div className='mb-2 text-left' style={{marginLeft : '4%'}}>Subject</div>
-                  <Form.Item name='subject'>
-                    <Select
-                    allowClear
-                      placeholder={
-                        subjectName ? (
-                          <span className='th-black-1'>{subjectName}</span>
-                        ) : (
-                          'Select Subject'
-                        )
-                      }
-                      showSearch
-                      optionFilterProp='children'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      // defaultValue={subjectName}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e, value) => {
-                        handleSubject(value);
-                      }}
-                      onClear={handleClearSubject}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={false}
-                    >
-                      {subjectOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                  {/* )} */}
+                  <div className='col-md-2 col-6 px-0 pl-0'>
+                    <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Grade</div>
+                    <Form.Item name='grade'>
+                      <Select
+                        allowClear
+                        placeholder={
+                          gradeName ? (
+                            <span className='th-black-1'>{gradeName}</span>
+                          ) : (
+                            'Select Grade'
+                          )
+                        }
+                        showSearch
+                        disabled={user_level == 13}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
+                        onChange={(e, value) => {
+                          handleGrade(value);
+                        }}
+                        onClear={handleClearGrade}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={false}
+                      >
+                        {gradeOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                    <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Subject</div>
+                    <Form.Item name='subject'>
+                      <Select
+                        allowClear
+                        placeholder={
+                          subjectName ? (
+                            <span className='th-black-1'>{subjectName}</span>
+                          ) : (
+                            'Select Subject'
+                          )
+                        }
+                        showSearch
+                        optionFilterProp='children'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        // defaultValue={subjectName}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
+                        onChange={(e, value) => {
+                          handleSubject(value);
+                        }}
+                        onClear={handleClearSubject}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={false}
+                      >
+                        {subjectOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
 
+                  </div>
+                  <div
+                    className='col-md-6 col-12 px-0'
+                    style={{ display: 'flex', justifyContent: 'end' }}
+                  >
+                    {section && questionId && <Button
+                      type='primary'
+                      onClick={
+                        isEdit
+                          ? () => history.push(`/create-question-paper/${isEdit}`)
+                          : () => history.push(`/create-question-paper?show-question-paper=true`)
+                      }
+                      shape="round"
+                      style={{ marginLeft: '30%' }}
+                      className='th-br-6 w-30 th-fw-500'
+                    >
+                      Back
+                    </Button>}
+                    {Historic == false ?
+                      <Button
+                        type='primary'
+                        onClick={handleHistoric}
+                        style={{ marginRight: '2%' }}
+                        // size={'small'}
+                        shape="round"
+                        className='th-br-6 w-30 th-fw-500'
+                      >
+                        Historical Questions
+                      </Button> :
+                      <Button
+                        type='primary'
+                        onClick={handleHistoric}
+                        style={{ marginRight: '2%' }}
+                        // size={'small'}
+                        shape="round"
+                        className='th-br-6 w-30 th-fw-500'
+                      >
+                        Normal Questions
+                      </Button>
+                    }
+                    <Button
+                      type='primary'
+                      onClick={() => history.push('/create-question')}
+                      style={{ marginRight: '2%' }}
+                      // size={'small'}
+                      shape="round"
+                      className='th-br-6 w-30 th-fw-500'
+                    >
+                      <PlusOutlined size='small' />
+                      Create New
+                    </Button>
+                  </div>
                 </div>
+              </Form>
+            </div>
+            : ''}
+          {Historic == false ?
+            <>
+              <div className='col-12' style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1%' }}>
                 <div
-                  className='col-md-6 col-12 px-0'
+                  className='col-md-6 col-8 pl-0'
                   style={{ display: 'flex', justifyContent: 'end' }}
                 >
-                  {section && questionId && <Button
-                    type='primary'
-                    onClick={
-                      isEdit
-                        ? () => history.push(`/create-question-paper/${isEdit}`)
-                        : () => history.push(`/create-question-paper?show-question-paper=true`)
-                    }
-                    shape="round"
-                    style={{marginLeft : '30%'}}
-                    className='th-br-6 w-30 th-fw-500'
+                  <div className='col-md-3 col-3 px-0'>Questions Index :</div>
+                  <div
+                    className='col-md-2 col-3 px-0'
+                    style={{
+                      background: '#Ecf2ff',
+                      height: '25px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '15px',
+                      marginRight: '32px',
+                      color: '#3d69be'
+                    }}
                   >
-                    Back
-                  </Button>}
-
-                  <Button
-                    type='primary'
-                    onClick={() => history.push('/create-question')}
-                    style={{marginRight:'2%'}}
-                    // size={'small'}
-                    shape="round"
-                    className='th-br-6 w-30 th-fw-500'
+                    Eduvate
+                  </div>
+                  <div
+                    className='col-md-2 col-3 px-0'
+                    style={{
+                      background: '#f0d8f2',
+                      height: '25px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '15px',
+                      color: '#b33dbe'
+                    }}
                   >
-                  <PlusOutlined size='small'/>
-                    Create New
-                  </Button>
+                    School
+                  </div>
                 </div>
               </div>
-            </Form>
-          </div>
-          <div className='col-12' style={{ display: 'flex', justifyContent: 'flex-end' , marginBottom:'1%'}}>
-            <div
-              className='col-md-6 col-8 pl-0'
-              style={{ display: 'flex', justifyContent: 'end' }}
-            >
-              <div className='col-md-3 col-3 px-0'>Questions Index :</div>
-              <div
-                className='col-md-2 col-3 px-0'
-                style={{
-                  background: '#Ecf2ff',
-                  height: '25px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '15px',
-                  marginRight: '32px',
-                  color:'#3d69be'
-                }}
-              >
-                Eduvate
-              </div>
-              <div
-                className='col-md-2 col-3 px-0'
-                style={{
-                  background: '#f0d8f2',
-                  height: '25px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '15px',
-                  color:'#b33dbe'
-                }}
-              >
-                School
-              </div>
-            </div>
-          </div>
-          {!filtered ? (
-            <div className='row justify-content-center my-3 th-24 th-black-2'>
-              Please select the filters to show data!
-            </div>
-          ) : (
-            <>
-              {loading ? (
-                <div className='row justify-content-center my-3'>
-                  <Spin title='Loading...' />
-                </div>
-              ) : annualPlanData.length > 0 ? (
-                <div className='col-12'>
-                  <Table
-                    className='th-table '
-                    rowClassName={(record, index) =>
-                      `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                    }
-                    expandRowByClick={true}
-                    columns={columns}
-                    rowKey={(record) => record?.chapter_id}
-                    expandable={{ expandedRowRender }}
-                    dataSource={annualPlanData}
-                    pagination={false}
-                    loading={loading}
-                    onExpand={onTableRowExpand}
-                    expandedRowKeys={expandedRowKeys}
-                    expandIconColumnIndex={5}
-                    expandIcon={({ expanded, onExpand, record }) =>
-                      expanded ? (
-                        <UpOutlined
-                          className='th-black-1'
-                          onClick={(e) => onExpand(record, e)}
-                        />
-                      ) : (
-                        <DownOutlined
-                          className='th-black-1'
-                          onClick={(e) => onExpand(record, e)}
-                        />
-                      )
-                    }
-                    scroll={{ x: 'max-content', y: 600 }}
-                  />
+              {!filtered ? (
+                <div className='row justify-content-center my-3 th-24 th-black-2'>
+                  Please select the filters to show data!
                 </div>
               ) : (
-                <div className='row justify-content-center my-5'>
-                  <img src={NoDataIcon} />
-                </div>
+                <>
+                  {loading ? (
+                    <div className='row justify-content-center my-3'>
+                      <Spin title='Loading...' />
+                    </div>
+                  ) : annualPlanData.length > 0 ? (
+                    <div className='col-12'>
+                      <Table
+                        className='th-table '
+                        rowClassName={(record, index) =>
+                          `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                        }
+                        expandRowByClick={true}
+                        columns={columns}
+                        rowKey={(record) => record?.chapter_id}
+                        expandable={{ expandedRowRender }}
+                        dataSource={annualPlanData}
+                        pagination={false}
+                        loading={loading}
+                        onExpand={onTableRowExpand}
+                        expandedRowKeys={expandedRowKeys}
+                        expandIconColumnIndex={5}
+                        expandIcon={({ expanded, onExpand, record }) =>
+                          expanded ? (
+                            <UpOutlined
+                              className='th-black-1'
+                              onClick={(e) => onExpand(record, e)}
+                            />
+                          ) : (
+                            <DownOutlined
+                              className='th-black-1'
+                              onClick={(e) => onExpand(record, e)}
+                            />
+                          )
+                        }
+                        scroll={{ x: 'max-content', y: 600 }}
+                      />
+                    </div>
+                  ) : (
+                    <div className='row justify-content-center my-5'>
+                      <img src={NoDataIcon} />
+                    </div>
+                  )}
+                </>
               )}
-            </>
-          )}
+            </> :
+            <div className='row py-3 px-2'>
+              <div className='col-md-4'>
+                <Button
+                  type='primary'
+                  onClick={handleHistoric}
+                  style={{ marginRight: '2%', zIndex: '10' }}
+                  // size={'small'}
+                  shape="round"
+                  className='th-br-6 w-30 th-fw-500'
+                >
+                  New Questions
+                </Button>
+              </div>
+              <div className='row'>
+                <div className='col-12'>
+                  <div className='th-tabs th-bg-white'>
+                    <Tabs type='card' onChange={onChangeTab} activeKey={showTab}>
+                      <TabPane tab='Eduvate' key='1'>
+                        <div>
+                          <div className='col-md-6 ' style={{ zIndex: 2 }}>
+                            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+                              <div className='row align-items-center'>
+                                <div className='col-md-3 col-6 px-0 pl-0'>
+                                  <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Grade</div>
+                                  <Form.Item name='grade'>
+                                    <Select
+                                      allowClear
+                                      placeholder={
+                                        gradeName ? (
+                                          <span className='th-black-1'>{gradeName}</span>
+                                        ) : (
+                                          'Select Grade'
+                                        )
+                                      }
+                                      showSearch
+                                      disabled={user_level == 13}
+                                      getPopupContainer={(trigger) => trigger.parentNode}
+                                      optionFilterProp='children'
+                                      filterOption={(input, options) => {
+                                        return (
+                                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        );
+                                      }}
+                                      onChange={(e, value) => {
+                                        handleGrade(value);
+                                      }}
+                                      onClear={handleClearGrade}
+                                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                                      bordered={false}
+                                    >
+                                      {gradeOptions}
+                                    </Select>
+                                  </Form.Item>
+                                </div>
+                                <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
+                                  <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Subject</div>
+                                  <Form.Item name='subject'>
+                                    <Select
+                                      allowClear
+                                      placeholder={
+                                        subjectName ? (
+                                          <span className='th-black-1'>{subjectName}</span>
+                                        ) : (
+                                          'Select Subject'
+                                        )
+                                      }
+                                      showSearch
+                                      optionFilterProp='children'
+                                      getPopupContainer={(trigger) => trigger.parentNode}
+                                      // defaultValue={subjectName}
+                                      filterOption={(input, options) => {
+                                        return (
+                                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        );
+                                      }}
+                                      onChange={(e, value) => {
+                                        handleSubject(value);
+                                      }}
+                                      onClear={handleClearSubject}
+                                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                                      bordered={false}
+                                    >
+                                      {subjectOptions}
+                                    </Select>
+                                  </Form.Item>
+                                </div>
+                              </div>
+                            </Form>
+                          </div>
+                          {!filtered ? (
+                            <div className='row justify-content-center my-3 th-24 th-black-2'>
+                              Please select the filters to show data!
+                            </div>
+                          ) : (
+                            <>
+                              {loading ? (
+                                <div className='row justify-content-center my-3'>
+                                  <Spin title='Loading...' />
+                                </div>
+                              ) : HistoricData?.data?.length > 0 ? (
+                                <div className='col-12'>
+                                  <Table
+                                    className='th-table '
+                                    rowClassName={(record, index) =>
+                                      `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                    }
+                                    expandRowByClick={true}
+                                    columns={columns}
+                                    rowKey={(record) => record?.chapter_id}
+                                    expandable={{ expandedRowRender }}
+                                    dataSource={HistoricData?.data}
+                                    loading={loading}
+                                    onExpand={onTableRowExpand}
+                                    expandedRowKeys={expandedRowKeys}
+                                    pagination={false}
+                                    expandIconColumnIndex={5}
+                                    expandIcon={({ expanded, onExpand, record }) =>
+                                      expanded ? (
+                                        <UpOutlined
+                                          className='th-black-1'
+                                          onClick={(e) => onExpand(record, e)}
+                                        />
+                                      ) : (
+                                        <DownOutlined
+                                          className='th-black-1'
+                                          onClick={(e) => onExpand(record, e)}
+                                        />
+                                      )
+                                    }
+                                    scroll={{ x: 'max-content', y: 600 }}
+                                  />
+                                  <div className='d-flex justify-content-end my-2' >
+                                    <Pagination current={page} total={totalPage} onChange={(page) => {
+                                      setPage(page);
+                                    }} />
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className='row justify-content-center my-5'>
+                                  <img src={NoDataIcon} />
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </TabPane>
+                      <TabPane tab='School' key='2'>
+                        <div>
+                          <div className='col-md-6' style={{ zIndex: 2 }}>
+                            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+                              <div className='row align-items-center'>
+                                <div className='col-md-3 col-6 px-0 pl-0'>
+                                  <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Grade</div>
+                                  <Form.Item name='grade'>
+                                    <Select
+                                      allowClear
+                                      placeholder={
+                                        gradeName ? (
+                                          <span className='th-black-1'>{gradeName}</span>
+                                        ) : (
+                                          'Select Grade'
+                                        )
+                                      }
+                                      showSearch
+                                      disabled={user_level == 13}
+                                      getPopupContainer={(trigger) => trigger.parentNode}
+                                      optionFilterProp='children'
+                                      filterOption={(input, options) => {
+                                        return (
+                                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        );
+                                      }}
+                                      onChange={(e, value) => {
+                                        handleGrade(value);
+                                      }}
+                                      onClear={handleClearGrade}
+                                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                                      bordered={false}
+                                    >
+                                      {gradeOptions}
+                                    </Select>
+                                  </Form.Item>
+                                </div>
+                                <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
+                                  <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Subject</div>
+                                  <Form.Item name='subject'>
+                                    <Select
+                                      allowClear
+                                      placeholder={
+                                        subjectName ? (
+                                          <span className='th-black-1'>{subjectName}</span>
+                                        ) : (
+                                          'Select Subject'
+                                        )
+                                      }
+                                      showSearch
+                                      optionFilterProp='children'
+                                      getPopupContainer={(trigger) => trigger.parentNode}
+                                      // defaultValue={subjectName}
+                                      filterOption={(input, options) => {
+                                        return (
+                                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        );
+                                      }}
+                                      onChange={(e, value) => {
+                                        handleSubject(value);
+                                      }}
+                                      onClear={handleClearSubject}
+                                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                                      bordered={false}
+                                    >
+                                      {subjectOptions}
+                                    </Select>
+                                  </Form.Item>
+                                </div>
+                              </div>
+                            </Form>
+                          </div>
+                          {!filtered ? (
+                            <div className='row justify-content-center my-3 th-24 th-black-2'>
+                              Please select the filters to show data!
+                            </div>
+                          ) : (
+                            <>
+                              {loading ? (
+                                <div className='row justify-content-center my-3'>
+                                  <Spin title='Loading...' />
+                                </div>
+                              ) : HistoricData?.data?.length > 0 ? (
+                                <div className='col-12'>
+                                  <Table
+                                    className='th-table '
+                                    rowClassName={(record, index) =>
+                                      `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                    }
+                                    expandRowByClick={true}
+                                    columns={columns}
+                                    rowKey={(record) => record?.chapter_id}
+                                    expandable={{ expandedRowRender }}
+                                    dataSource={HistoricData?.data}
+                                    pagination={false}
+                                    loading={loading}
+                                    onExpand={onTableRowExpand}
+                                    expandedRowKeys={expandedRowKeys}
+                                    expandIconColumnIndex={5}
+                                    expandIcon={({ expanded, onExpand, record }) =>
+                                      expanded ? (
+                                        <UpOutlined
+                                          className='th-black-1'
+                                          onClick={(e) => onExpand(record, e)}
+                                        />
+                                      ) : (
+                                        <DownOutlined
+                                          className='th-black-1'
+                                          onClick={(e) => onExpand(record, e)}
+                                        />
+                                      )
+                                    }
+                                    scroll={{ x: 'max-content', y: 600 }}
+                                  />
+                                     <div className='d-flex justify-content-end my-2' >
+                                    <Pagination current={page} total={totalPage} onChange={(page) => {
+                                      setPage(page);
+                                    }} />
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className='row justify-content-center my-5'>
+                                  <img src={NoDataIcon} />
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </TabPane>
+                    </Tabs>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
         </div>
         {/* <TableView /> */}
       </Layout>
