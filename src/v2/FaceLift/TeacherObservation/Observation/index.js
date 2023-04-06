@@ -25,13 +25,13 @@ const { TextArea } = Input;
 
 const Observation = () => {
   const formRef = useRef();
-  const [obseravationsList, setObseravationsList] = useState([]);
+  const [obseravationsList, setObservationsList] = useState([]);
   const [isStudent, setIsStudent] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
-  const [observation, setObseravation] = useState({
+  const [observation, setObservation] = useState({
     title: '',
     status: true,
-    isStudent: isStudent,
+    is_student: isStudent,
     observations: [
       {
         label: '',
@@ -44,17 +44,19 @@ const Observation = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [tableView, setTableView] = useState('teacher');
   useEffect(() => {
-    fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
+    fetchObservationList({
+      is_student: tableView === 'teacher' ? false : true,
+    });
   }, [tableView]);
 
   const handleAddObservations = () => {
     let newObservations = observation?.observations?.concat({ label: '', score: '' });
-    setObseravation({ ...observation, observations: newObservations });
+    setObservation({ ...observation, observations: newObservations });
   };
   const handleDeleteObservations = (index) => {
     let newObservations = observation?.observations?.slice();
     newObservations.splice(index, 1);
-    setObseravation({ ...observation, observations: newObservations });
+    setObservation({ ...observation, observations: newObservations });
   };
   const fetchObservationList = (params = {}) => {
     setLoading(true);
@@ -64,11 +66,11 @@ const Observation = () => {
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          setObseravationsList(result?.data?.result);
+          setObservationsList(result?.data?.result);
           setLoading(false);
         } else {
           setLoading(false);
-          setObseravationsList([]);
+          setObservationsList([]);
         }
       })
       .catch((error) => {
@@ -76,7 +78,7 @@ const Observation = () => {
         setLoading(false);
       });
   };
-  console.log({ observation });
+  console.log({ isStudent }, { observation });
   // const getObservationArea = (params = {}) => {
   //   const result = axios
   //     .get(`${endpoints.observationName.observationArea}`, {
@@ -84,7 +86,7 @@ const Observation = () => {
   //     })
   //     .then((result) => {
   //       if (result.status === 200) {
-  //         setObseravationsList(result?.data);
+  //         setObservationsList(result?.data);
   //       }
   //     })
   //     .catch((error) => {
@@ -99,7 +101,8 @@ const Observation = () => {
     //     observation: res.data.result.title,
     //     is_student: res.data.result.is_student,
     //   });
-    setObseravation(data);
+    let currentData = data;
+    setObservation(currentData);
     setIsStudent(data.is_student);
     setDrawerOpen(true);
     // });
@@ -119,9 +122,9 @@ const Observation = () => {
 
   const onDelete = (id) => {
     axios
-      .delete(`${endpoints.observations.observationList}${id}/`)
+      .delete(`${endpoints.observations.updateObservation}${id}/`)
       .then((result) => {
-        if (result.status === 204) {
+        if (result?.data?.status_code === 200) {
           message.success('Successfully Deleted');
           fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
         } else {
@@ -139,7 +142,18 @@ const Observation = () => {
   const onClose = () => {
     setDrawerOpen(false);
     setEditId(null);
-    formRef.current.resetFields();
+    setObservation({
+      title: '',
+      status: true,
+      is_student: isStudent,
+      observations: [
+        {
+          label: '',
+          score: '',
+        },
+      ],
+    });
+    // formRef.current.resetFields();
   };
 
   const onSubmit = () => {
@@ -154,8 +168,6 @@ const Observation = () => {
         return false;
       }
     });
-    console.log({ isFieldNull });
-    // const updateValues = formRef.current.getFieldsValue();
     if (!observation?.title) {
       message.error('Please fill the observation title');
       return;
@@ -165,18 +177,6 @@ const Observation = () => {
       return;
     } else {
       setRequestSent(true);
-      // const valuess = new FormData();
-      // valuess.append('observation', updateValues.observation);
-      // valuess.append('score', updateValues.score);
-      // valuess.append('observation_area', updateValues.observation_area);
-      // valuess.append(
-      //   'is_student',
-      //   updateValues.is_student ? updateValues.is_student : false
-      // );
-      // if (!editId) {
-      //   valuess.append('status', true);
-      // }
-
       if (editId) {
         axios
           .put(`${endpoints.observations.updateObservation}`, observation)
@@ -221,7 +221,8 @@ const Observation = () => {
 
   const handleApplicableFor = (e) => {
     setIsStudent(e.target.value);
-    formRef.current.resetFields(['observation_area']);
+    setObservation({ ...observation, is_student: e.target.value });
+    // formRef.current.resetFields(['observation_area']);
   };
 
   const handleTableView = (e) => {
@@ -269,6 +270,7 @@ const Observation = () => {
       key: 'observation',
       render: (record, item, index) =>
         record.observations?.map((item, i) => {
+          console.log({ record });
           return (
             <div className='d-flex  align-items-center py-1 '>
               <div className='col-md-2 th-14'>{i + 1}</div>
@@ -332,11 +334,10 @@ const Observation = () => {
   //     </Option>
   //   );
   // });
-  console.log({ observation });
   const handleChangeObservations = (value, index, type) => {
     let updatedObservations = observation;
     updatedObservations.observations[index][type] = value;
-    setObseravation({ ...updatedObservations });
+    setObservation({ ...updatedObservations });
   };
   return (
     <React.Fragment>
@@ -403,49 +404,50 @@ const Observation = () => {
                 Cancel
               </Button>
               <Button
-                form='incomeForm'
+                // form='incomeForm'
                 onClick={onSubmit}
                 disabled={requestSent}
                 type='primary'
-                htmlType='submit'
+                // htmlType='submit'
               >
                 Submit
               </Button>
             </div>
           }
         >
-          <Form id='filterForm' ref={formRef} layout={'vertical'}>
-            <div className='col-md-12'>
-              {/* <Form.Item
+          {/* <Form id='filterForm' ref={formRef} layout={'vertical'}> */}
+          <div className='col-md-12'>
+            {/* <Form.Item
                 name='observation'
                 label='Enter Observation Title'
                 rules={[{ required: true, message: 'Please enter Observation Name' }]}
               > */}
-              <Input
-                placeholder='Enter Observation Name'
-                onChange={(e) => {
-                  console.log(e.target.value);
-                  e.preventDefault();
-                  setObseravation({ ...observation, title: e.target.value });
-                }}
-                value={observation.title}
-                className='th-br-5'
-              />
-              {/* </Form.Item> */}
-            </div>
-            <div className='col-md-12'>
-              <Form.Item label='Applicable for' name='is_student' defaultValue={false}>
-                <Radio.Group
-                  value={isStudent}
-                  onChange={handleApplicableFor}
-                  defaultValue={false}
-                >
-                  <Radio value={false}> Teacher </Radio>
-                  <Radio value={true}> Student </Radio>
-                </Radio.Group>
-              </Form.Item>
-            </div>
-            {/* <div className='col-md-12'>
+            <div className='mb-2'>Enter Observation Title *</div>
+            <Input
+              placeholder='Enter Observation Title'
+              onChange={(e) => {
+                e.preventDefault();
+                setObservation({ ...observation, title: e.target.value });
+              }}
+              value={observation.title}
+              className='th-br-5'
+            />
+            {/* </Form.Item> */}
+          </div>
+          <div className='col-md-12 py-2'>
+            {/* <Form.Item label='Applicable for' name='is_student' defaultValue={false}> */}
+            <div className='mb-2'>Applicable for</div>
+            <Radio.Group
+              value={isStudent}
+              onChange={handleApplicableFor}
+              defaultValue={false}
+            >
+              <Radio value={false}> Teacher </Radio>
+              <Radio value={true}> Student </Radio>
+            </Radio.Group>
+            {/* </Form.Item> */}
+          </div>
+          {/* <div className='col-md-12'>
               <Form.Item
                 name='observation_area'
                 label='Select Observation Area'
@@ -464,67 +466,67 @@ const Observation = () => {
                 </Select>
               </Form.Item>
             </div> */}
-            {observation?.observations?.map((item, index) => {
-              return (
-                <div className='row py-2 align-item-center'>
-                  <div className='col-7'>
-                    {/* <Form.Item
+          {observation?.observations?.map((item, index) => {
+            return (
+              <div className='row py-2 align-item-center'>
+                <div className='col-7'>
+                  {/* <Form.Item
                       name='label'
                       label='Enter Label'
                       rules={[{ required: true, message: 'Please enter Label' }]}
                     > */}
-                    <Input
-                      onChange={(e) => {
-                        e.preventDefault();
-                        handleChangeObservations(e.target.value, index, 'label');
-                      }}
-                      className='w-100 th-br-5'
-                      value={item?.label}
-                      placeholder='Enter Label'
-                    />
-                    {/* </Form.Item> */}
-                  </div>
-                  <div className='col-4'>
-                    {/* <Form.Item
+                  <Input
+                    onChange={(e) => {
+                      e.preventDefault();
+                      handleChangeObservations(e.target.value, index, 'label');
+                    }}
+                    className='w-100 th-br-5'
+                    value={item?.label}
+                    placeholder='Enter Label'
+                  />
+                  {/* </Form.Item> */}
+                </div>
+                <div className='col-4'>
+                  {/* <Form.Item
                       name='score'
                       label='Enter Score'
                       rules={[{ required: true, message: 'Please enter Score' }]}
                     > */}
-                    <InputNumber
-                      onChange={(e) => {
-                        handleChangeObservations(e, index, 'score');
-                      }}
-                      className='w-100 th-br-5'
-                      value={item?.score}
-                      placeholder='Enter Score'
-                    />
-                    {/* </Form.Item> */}
-                  </div>
-                  {observation?.observations?.length > 1 && (
-                    <div className='col-1'>
-                      <CloseCircleOutlined
-                        className='th-pointer'
-                        onClick={() => handleDeleteObservations(index)}
-                      />
-                    </div>
-                  )}
+                  <InputNumber
+                    onChange={(e) => {
+                      handleChangeObservations(e, index, 'score');
+                    }}
+                    className='w-100 th-br-5'
+                    value={item?.score}
+                    placeholder='Enter Score'
+                  />
+                  {/* </Form.Item> */}
                 </div>
-              );
-            })}
-
-            <div className='row'>
-              <div className='col-12 text-right'>
-                <Button
-                  icon={<PlusOutlined />}
-                  type='primary'
-                  className='th-br-8'
-                  onClick={handleAddObservations}
-                >
-                  Add
-                </Button>
+                {observation?.observations?.length > 1 && (
+                  <div className='col-1'>
+                    <CloseCircleOutlined
+                      className='th-pointer'
+                      onClick={() => handleDeleteObservations(index)}
+                    />
+                  </div>
+                )}
               </div>
+            );
+          })}
+
+          <div className='row'>
+            <div className='col-12 text-right'>
+              <Button
+                icon={<PlusOutlined />}
+                type='primary'
+                className='th-br-8'
+                onClick={handleAddObservations}
+              >
+                Add
+              </Button>
             </div>
-          </Form>
+          </div>
+          {/* </Form> */}
         </Drawer>
       </Layout>
     </React.Fragment>

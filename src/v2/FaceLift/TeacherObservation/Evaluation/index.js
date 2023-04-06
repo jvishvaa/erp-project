@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'config/endpoints';
+import endpointsV2 from 'v2/config/endpoints';
 import {
   Breadcrumb,
   Select,
@@ -31,6 +32,7 @@ const Evaluation = () => {
   const [data, setData] = useState([]);
   const [observationAreaList, setObservationAreaList] = useState([]);
   const [selectedObservationArea, setSelectedObservationArea] = useState(null);
+  const [currentData, setCurrentData] = useState([]);
   const [modifiedData, setModifiedData] = useState([]);
   const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -83,21 +85,15 @@ const Evaluation = () => {
     selectedFile,
   };
   console.log({ selectedObservationArea });
-  const observationAreaListOptions = observationAreaList?.map((each) => {
-    return (
-      <Option key={each?.id} value={each.id}>
-        {each?.observation_area_name}
-      </Option>
-    );
-  });
+
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
     //  setLoading(true);
     axios
-      .get(`${endpoints.observation.observationGet}`, { params: { ...params } })
+      .get(`${endpointsV2.observations.observationAreaList}`, { params: { ...params } })
       .then((result) => {
         if (result.data?.status_code === 200) {
-          setObservationAreaList(result?.data);
+          setObservationAreaList(result?.data?.result);
           //  setLoading(false);
         } else {
           //  setLoading(false);
@@ -111,14 +107,33 @@ const Evaluation = () => {
   };
   useEffect(() => {
     if (selectedObservationArea) {
-      observationGet({
-        is_student: tableView === 'teacher' ? false : true,
-        levels__id__in: user_level,
+      setCurrentData({
+        id: 2,
+        title: 'ROHIT abcd',
         status: true,
+        is_student: false,
+        observations: [
+          {
+            id: 378,
+            score: 5,
+            label: 'ABC2',
+          },
+          {
+            id: 379,
+            score: 4,
+            label: 'PQR2',
+          },
+        ],
       });
-    } else {
-      setData([]);
     }
+    //   observationGet({
+    //     is_student: tableView === 'teacher' ? false : true,
+    //     levels__id__in: user_level,
+    //     status: true,
+    //   });
+    // } else {
+    //   setData([]);
+    // }
   }, [selectedObservationArea]);
   useEffect(() => {
     fetchObservationAreasList({
@@ -135,9 +150,9 @@ const Evaluation = () => {
       })
       .then((result) => {
         if (result.status === 200) {
-          setData(
-            result?.data?.filter((item) => item?.id == selectedObservationArea?.value)
-          );
+          // setData(
+          //   result?.data?.filter((item) => item?.id == selectedObservationArea?.value)
+          // );
           modifyData(
             result?.data?.filter((item) => item?.id == selectedObservationArea?.value)
           );
@@ -465,6 +480,13 @@ const Evaluation = () => {
       </Option>
     );
   });
+  const observationAreaListOptions = observationAreaList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.observation_area_name}
+      </Option>
+    );
+  });
 
   const columns = [
     {
@@ -494,11 +516,11 @@ const Evaluation = () => {
       ),
       key: 'observation',
       render: (record, item, index) =>
-        record.observation?.map((item, i) => {
+        currentData.observations?.map((item, i) => {
           return (
             <div className='d-flex border-bottom align-items-center py-1 '>
               <div className='col-md-7 pl-0 th-14'>
-                {i + 1}. {item.observationarea}
+                {i + 1}. {item.label}
               </div>
               <div className='col-md-3'>
                 <Input
@@ -511,7 +533,7 @@ const Evaluation = () => {
                   className='w-100'
                   max={item?.observationScore}
                   min={0}
-                  placeholder={`Score Max(${item?.observationScore})`}
+                  placeholder={`Score Max(${item?.score})`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
@@ -557,7 +579,7 @@ const Evaluation = () => {
                 onChange={(e, value) => setSelectedObservationArea(value)}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 placeholder={'Select Observation Area'}
-                value={selectedObservationArea}
+                // value={selectedObservationArea}
                 showSearch
                 optionFilterProp='children'
                 filterOption={(input, options) => {
@@ -579,7 +601,7 @@ const Evaluation = () => {
                   loading={loading}
                   columns={columns}
                   rowKey={(record) => record?.id}
-                  dataSource={modifiedData}
+                  dataSource={[selectedObservationArea]}
                   pagination={false}
                   bordered
                   scroll={{ y: '58vh' }}

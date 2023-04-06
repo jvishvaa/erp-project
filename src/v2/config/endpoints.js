@@ -240,6 +240,8 @@ export default {
   observations: {
     observationList: '/teacher_observation/create-observation/',
     updateObservation: '/teacher_observation/update-observation/',
+    observationAreaList: '/teacher_observation/create-observation-area/',
+    updateObservationArea: '/teacher_observation/update-observation-area/',
   },
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
   principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
