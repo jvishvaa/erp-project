@@ -93,6 +93,7 @@ export default {
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
+    historicQuestion : '/assessment/v1/hst-quest-bank/',
   },
   teacherAttendance: {
     gradewiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections/`,
