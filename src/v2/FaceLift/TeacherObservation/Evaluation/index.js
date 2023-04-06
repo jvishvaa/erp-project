@@ -11,10 +11,13 @@ import {
   message,
   Table,
   InputNumber,
+  Upload,
 } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
+import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 
 const { Option } = Select;
 
@@ -26,6 +29,8 @@ const Evaluation = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [data, setData] = useState([]);
+  const [observationAreaList, setObservationAreaList] = useState([]);
+  const [selectedObservationArea, setSelectedObservationArea] = useState(null);
   const [modifiedData, setModifiedData] = useState([]);
   const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -43,22 +48,81 @@ const Evaluation = () => {
   const [studentId, setStudentId] = useState();
   const [studentName, setStudentName] = useState();
   const [studentErp, setStudentErp] = useState();
-
   const [overallRemarks, setOverallRemarks] = useState('');
   const [teacherData, setTeacherData] = useState([]);
   const [studentData, setStudentData] = useState([]);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { role_details } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [tableView, setTableView] = useState('teacher');
-
+  const [selectedFile, setSelectedFile] = useState(null);
+  const allowedFiles = ['.jpeg', '.jpg', '.png', '.pdf', '.mp4'];
   // useEffect(() => {
   //   observationGet({ levels__id__in: user_level, status: true });
   // }, []);
+  const uploadProps = {
+    showUploadList: false,
+    disabled: false,
+    accept: allowedFiles.join(),
+    // '.xls,.xlsx',
+    multiple: false,
+    onRemove: () => {
+      setSelectedFile(null);
+    },
+    beforeUpload: (...file) => {
+      setSelectedFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      console.log({ type }, { file });
+      if (allowedFiles.includes(type)) {
+        setSelectedFile(...file[1]);
+      } else {
+        message.error(' Please select the correct file type');
+      }
 
+      return false;
+    },
+    selectedFile,
+  };
+  console.log({ selectedObservationArea });
+  const observationAreaListOptions = observationAreaList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.observation_area_name}
+      </Option>
+    );
+  });
+  const fetchObservationAreasList = (params = {}) => {
+    setSelectedObservationArea(null);
+    //  setLoading(true);
+    axios
+      .get(`${endpoints.observation.observationGet}`, { params: { ...params } })
+      .then((result) => {
+        if (result.data?.status_code === 200) {
+          setObservationAreaList(result?.data);
+          //  setLoading(false);
+        } else {
+          //  setLoading(false);
+          setObservationAreaList([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        //  setLoading(false);
+      });
+  };
   useEffect(() => {
-    observationGet({
+    if (selectedObservationArea) {
+      observationGet({
+        is_student: tableView === 'teacher' ? false : true,
+        levels__id__in: user_level,
+        status: true,
+      });
+    } else {
+      setData([]);
+    }
+  }, [selectedObservationArea]);
+  useEffect(() => {
+    fetchObservationAreasList({
       is_student: tableView === 'teacher' ? false : true,
-      levels__id__in: user_level,
       status: true,
     });
   }, [tableView]);
@@ -71,8 +135,12 @@ const Evaluation = () => {
       })
       .then((result) => {
         if (result.status === 200) {
-          setData(result?.data);
-          modifyData(result?.data);
+          setData(
+            result?.data?.filter((item) => item?.id == selectedObservationArea?.value)
+          );
+          modifyData(
+            result?.data?.filter((item) => item?.id == selectedObservationArea?.value)
+          );
           setLoading(false);
         } else {
           setLoading(false);
@@ -483,22 +551,46 @@ const Evaluation = () => {
           </div>
 
           <div className='row mt-3'>
-            <div className='col-12'>
-              <Table
-                className='th-table'
-                rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                }
-                loading={loading}
-                columns={columns}
-                rowKey={(record) => record?.id}
-                dataSource={modifiedData}
-                pagination={false}
-                bordered
-                scroll={{ y: '58vh' }}
-              />
+            <div className='col-md-3 col-sm-6 col-12'>
+              <Select
+                className='th-width-100 th-br-6'
+                onChange={(e, value) => setSelectedObservationArea(value)}
+                getPopupContainer={(trigger) => trigger.parentNode}
+                placeholder={'Select Observation Area'}
+                value={selectedObservationArea}
+                showSearch
+                optionFilterProp='children'
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+              >
+                {observationAreaListOptions}
+              </Select>
             </div>
           </div>
+          {selectedObservationArea ? (
+            <div className='row mt-3'>
+              <div className='col-12'>
+                <Table
+                  className='th-table'
+                  rowClassName={(record, index) =>
+                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  }
+                  loading={loading}
+                  columns={columns}
+                  rowKey={(record) => record?.id}
+                  dataSource={modifiedData}
+                  pagination={false}
+                  bordered
+                  scroll={{ y: '58vh' }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className='row justify-content-center my-3 th-24 th-black-2'>
+              Please select the filter to show data!
+            </div>
+          )}
           {modifiedData?.length > 0 ? (
             <div className='row py-2 text-left align-items-center'>
               <div className='col-md-3 py-2'>
@@ -600,7 +692,8 @@ const Evaluation = () => {
               )}
 
               <div className='col-md-3 py-2'>
-                <Input
+                <Input.TextArea
+                  rows={4}
                   placeholder='Overall Remarks'
                   onChange={(e) => setOverallRemarks(e.target.value)}
                 />
@@ -611,8 +704,37 @@ const Evaluation = () => {
                   {marksObtained}/{overallScore}
                 </span>
               </div>
-              <div className='col-md-2 py-2'>
-                <Button onClick={handleSubmit} type='primary' className='w-100'>
+              <div className='col-md-3 py-2 th-16'>
+                <Upload {...uploadProps} className='w-75'>
+                  <Button icon={<UploadOutlined />}>
+                    {selectedFile ? 'Change' : 'Upload'} File
+                  </Button>
+                </Upload>
+
+                {!selectedFile ? (
+                  <div className='th-10 mt-2'>
+                    {' '}
+                    Accepted Files: Images , PDF, Audio & Video{' '}
+                  </div>
+                ) : (
+                  <div className='mt-2 th-14'>
+                    <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                      <div
+                        className='th-12 th-black-1 text-truncate th-width-90'
+                        title={selectedFile?.name}
+                      >
+                        {selectedFile?.name}
+                      </div>
+
+                      <div className='th-pointer ml-2'>
+                        <img src={smallCloseIcon} onClick={() => setSelectedFile(null)} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className='col-md-3 py-2'>
+                <Button onClick={handleSubmit} type='primary' className='w-50'>
                   Submit
                 </Button>
               </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createRef, useRef } from 'react';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
-import endpoints from 'config/endpoints';
+import endpoints from 'v2/config/endpoints';
 import {
   Table,
   Breadcrumb,
@@ -25,47 +25,50 @@ const { TextArea } = Input;
 
 const Observation = () => {
   const formRef = useRef();
-  const [data, setData] = useState([]);
-  const [obseravationAreaData, setObseravationAreaData] = useState([]);
+  const [obseravationsList, setObseravationsList] = useState([]);
+  const [isStudent, setIsStudent] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
+  const [observation, setObseravation] = useState({
+    title: '',
+    status: true,
+    isStudent: isStudent,
+    observations: [
+      {
+        label: '',
+        score: '',
+      },
+    ],
+  });
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [isStudent, setIsStudent] = useState(false);
   const [tableView, setTableView] = useState('teacher');
-
   useEffect(() => {
-    observationGet({ is_student: tableView === 'teacher' ? false : true });
-    getObservationArea({
-      status: true,
-      is_student: tableView === 'teacher' ? false : true,
-    });
+    fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
   }, [tableView]);
-  useEffect(() => {
-    getObservationArea({
-      status: true,
-      is_student: tableView === 'teacher' ? false : true,
-    });
-  }, []);
-  useEffect(() => {
-    getObservationArea({
-      status: true,
-      is_student: isStudent,
-    });
-  }, [isStudent]);
 
-  const observationGet = (params = {}) => {
+  const handleAddObservations = () => {
+    let newObservations = observation?.observations?.concat({ label: '', score: '' });
+    setObseravation({ ...observation, observations: newObservations });
+  };
+  const handleDeleteObservations = (index) => {
+    let newObservations = observation?.observations?.slice();
+    newObservations.splice(index, 1);
+    setObseravation({ ...observation, observations: newObservations });
+  };
+  const fetchObservationList = (params = {}) => {
     setLoading(true);
     axios
-      .get(`${endpoints.observationName.observationGet}`, {
+      .get(`${endpoints.observations.observationList}`, {
         params: { ...params },
       })
       .then((result) => {
-        if (result.status === 200) {
-          setData(result?.data);
+        if (result?.data?.status_code === 200) {
+          setObseravationsList(result?.data?.result);
           setLoading(false);
         } else {
           setLoading(false);
-          setData([]);
+          setObseravationsList([]);
         }
       })
       .catch((error) => {
@@ -73,34 +76,33 @@ const Observation = () => {
         setLoading(false);
       });
   };
+  console.log({ observation });
+  // const getObservationArea = (params = {}) => {
+  //   const result = axios
+  //     .get(`${endpoints.observationName.observationArea}`, {
+  //       params: { ...params },
+  //     })
+  //     .then((result) => {
+  //       if (result.status === 200) {
+  //         setObseravationsList(result?.data);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
-  const getObservationArea = (params = {}) => {
-    const result = axios
-      .get(`${endpoints.observationName.observationArea}`, {
-        params: { ...params },
-      })
-      .then((result) => {
-        if (result.status === 200) {
-          setObseravationAreaData(result?.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleEdit = (id) => {
-    setEditId(id);
+  const handleEdit = (data) => {
+    setEditId(data?.id);
+    // axios.get(`${endpoints.observations.observationList}${id}/`).then((res) => {
+    //   formRef.current.setFieldsValue({
+    //     observation: res.data.result.title,
+    //     is_student: res.data.result.is_student,
+    //   });
+    setObseravation(data);
+    setIsStudent(data.is_student);
     setDrawerOpen(true);
-    axios.get(`${endpoints.observationName.observationGet}${id}/`).then((res) => {
-      formRef.current.setFieldsValue({
-        observation: res.data.result.observation,
-        observation_area: res.data?.result.observation_area?.id,
-        score: res.data.result.score,
-        is_student: res.data.result.is_student,
-      });
-      setIsStudent(res.data.result.is_student);
-    });
+    // });
   };
 
   const handleStatus = (id, status) => {
@@ -108,20 +110,20 @@ const Observation = () => {
       status: status ? false : true,
     };
     axios
-      .put(`${endpoints.observationName.observationGet}${id}/`, body)
+      .put(`${endpoints.observations.observationList}${id}/`, body)
       .then((res) => {
-        observationGet({ is_student: tableView === 'teacher' ? false : true });
+        fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
       })
       .catch((error) => console.log(error));
   };
 
   const onDelete = (id) => {
     axios
-      .delete(`${endpoints.observationName.observationGet}${id}/`)
+      .delete(`${endpoints.observations.observationList}${id}/`)
       .then((result) => {
         if (result.status === 204) {
           message.success('Successfully Deleted');
-          observationGet({ is_student: tableView === 'teacher' ? false : true });
+          fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
         } else {
           message.error('Something went wrong');
         }
@@ -141,49 +143,79 @@ const Observation = () => {
   };
 
   const onSubmit = () => {
-    const updateValues = formRef.current.getFieldsValue();
-    if (updateValues.observation && updateValues.observation_area && updateValues.score) {
-      const valuess = new FormData();
-      valuess.append('observation', updateValues.observation);
-      valuess.append('score', updateValues.score);
-      valuess.append('observation_area', updateValues.observation_area);
-      valuess.append(
-        'is_student',
-        updateValues.is_student ? updateValues.is_student : false
-      );
-      if (!editId) {
-        valuess.append('status', true);
+    const isFieldNull = observation?.observations.forEach(function (v, i) {
+      if (
+        Object.keys(v).some(function (k) {
+          return v[k] == null || v[k] == '';
+        })
+      )
+        return true;
+      else {
+        return false;
       }
+    });
+    console.log({ isFieldNull });
+    // const updateValues = formRef.current.getFieldsValue();
+    if (!observation?.title) {
+      message.error('Please fill the observation title');
+      return;
+    }
+    if (isFieldNull) {
+      message.error('Please fill all the details');
+      return;
+    } else {
+      setRequestSent(true);
+      // const valuess = new FormData();
+      // valuess.append('observation', updateValues.observation);
+      // valuess.append('score', updateValues.score);
+      // valuess.append('observation_area', updateValues.observation_area);
+      // valuess.append(
+      //   'is_student',
+      //   updateValues.is_student ? updateValues.is_student : false
+      // );
+      // if (!editId) {
+      //   valuess.append('status', true);
+      // }
 
       if (editId) {
         axios
-          .put(`${endpoints.observationName.observationGet}${editId}/`, valuess)
+          .put(`${endpoints.observations.updateObservation}`, observation)
           .then((result) => {
-            onClose();
-            setTableView(updateValues.is_student ? 'student' : 'teacher');
-            observationGet({
-              is_student: updateValues.is_student ? true : false,
-            });
+            if (result?.data?.status_code == 200) {
+              message.success('Observation updated successfully');
+              setTableView(isStudent ? 'student' : 'teacher');
+              fetchObservationList({
+                is_student: isStudent ? true : false,
+              });
+              onClose();
+            }
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            setRequestSent(false);
           });
       } else {
         axios
-          .post(`${endpoints.observationName.observationGet}`, valuess)
+          .post(`${endpoints.observations.observationList}`, observation)
           .then((result) => {
-            onClose();
-            setTableView(updateValues.is_student ? 'student' : 'teacher');
-            observationGet({
-              is_student: updateValues.is_student ? true : false,
-            });
+            if (result?.data?.status_code == 200) {
+              message.success('Observation created successfully');
+              setTableView(isStudent ? 'student' : 'teacher');
+              fetchObservationList({
+                is_student: isStudent ? true : false,
+              });
+              onClose();
+            }
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            setRequestSent(false);
           });
       }
-    } else {
-      message.error('Enter All Required fields');
     }
   };
 
@@ -206,23 +238,49 @@ const Observation = () => {
     },
     {
       title: <span className='th-white th-fw-700'>Observation</span>,
-      dataIndex: 'observation',
+      dataIndex: 'title',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
+    // {
+    //   title: <span className='th-white th-fw-700'>Observation Area</span>,
+    //   key: 'observation_area',
+    //   render: (data) => (
+    //     <span className='th-black-1 th-14'>
+    //       {data?.observation_area?.observation_area_name}
+    //     </span>
+    //   ),
+    // },
+    // {
+    //   title: <span className='th-white th-fw-700'>Score</span>,
+    //   align: 'center',
+    //   dataIndex: 'score',
+    //   render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    // },
     {
-      title: <span className='th-white th-fw-700'>Observation Area</span>,
-      key: 'observation_area',
-      render: (data) => (
-        <span className='th-black-1 th-14'>
-          {data?.observation_area?.observation_area_name}
+      title: (
+        <span className='th-white th-fw-700'>
+          <div className='d-flex align-items-center'>
+            <div className='col-md-2'></div>
+            <div className='col-md-7'>Label</div>
+            <div className='col-md-3 text-center'>Score</div>
+          </div>
         </span>
       ),
-    },
-    {
-      title: <span className='th-white th-fw-700'>Score</span>,
-      align: 'center',
-      dataIndex: 'score',
-      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+      key: 'observation',
+      render: (record, item, index) =>
+        record.observations?.map((item, i) => {
+          return (
+            <div className='d-flex  align-items-center py-1 '>
+              <div className='col-md-2 th-14'>{i + 1}</div>
+              <div className='col-md-7'>
+                <div>{item?.label}</div>
+              </div>
+              <div className='col-md-3 text-center'>
+                <div>{item?.score}</div>
+              </div>
+            </div>
+          );
+        }),
     },
     {
       title: <span className='th-white th-fw-700'>Status</span>,
@@ -248,7 +306,7 @@ const Observation = () => {
               icon={<EditOutlined />}
               className='th-br-6 th-bg-primary th-white'
               style={{ cursor: 'pointer' }}
-              onClick={() => handleEdit(data.id)}
+              onClick={() => handleEdit(data)}
             >
               Edit
             </Tag>
@@ -267,14 +325,19 @@ const Observation = () => {
     },
   ];
 
-  const observationAreaOptions = obseravationAreaData?.map((item) => {
-    return (
-      <Option key={item.id} value={item.id}>
-        {item.observation_area_name}
-      </Option>
-    );
-  });
-
+  // const observationAreaOptions = obseravationsList?.map((item) => {
+  //   return (
+  //     <Option key={item.id} value={item.id}>
+  //       {item.observation_area_name}
+  //     </Option>
+  //   );
+  // });
+  console.log({ observation });
+  const handleChangeObservations = (value, index, type) => {
+    let updatedObservations = observation;
+    updatedObservations.observations[index][type] = value;
+    setObseravation({ ...updatedObservations });
+  };
   return (
     <React.Fragment>
       <Layout>
@@ -305,7 +368,7 @@ const Observation = () => {
                 loading={loading}
                 columns={columns}
                 rowKey={(record) => record?.id}
-                dataSource={data}
+                dataSource={obseravationsList}
                 pagination={false}
                 // scroll={{ y: '400px' }}
               />
@@ -326,7 +389,10 @@ const Observation = () => {
           title={editId ? 'Edit Observation' : 'Create Observation'}
           placement='right'
           onClose={onClose}
+          width={'40vw'}
           visible={drawerOpen}
+          closable={null}
+          className='th-activity-drawer'
           footer={
             <div
               style={{
@@ -339,6 +405,7 @@ const Observation = () => {
               <Button
                 form='incomeForm'
                 onClick={onSubmit}
+                disabled={requestSent}
                 type='primary'
                 htmlType='submit'
               >
@@ -349,13 +416,22 @@ const Observation = () => {
         >
           <Form id='filterForm' ref={formRef} layout={'vertical'}>
             <div className='col-md-12'>
-              <Form.Item
+              {/* <Form.Item
                 name='observation'
-                label='Enter Observation'
-                rules={[{ required: true, message: 'Please enter Observation' }]}
-              >
-                <TextArea placeholder='Enter Observation' rows={4} />
-              </Form.Item>
+                label='Enter Observation Title'
+                rules={[{ required: true, message: 'Please enter Observation Name' }]}
+              > */}
+              <Input
+                placeholder='Enter Observation Name'
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  e.preventDefault();
+                  setObseravation({ ...observation, title: e.target.value });
+                }}
+                value={observation.title}
+                className='th-br-5'
+              />
+              {/* </Form.Item> */}
             </div>
             <div className='col-md-12'>
               <Form.Item label='Applicable for' name='is_student' defaultValue={false}>
@@ -369,7 +445,7 @@ const Observation = () => {
                 </Radio.Group>
               </Form.Item>
             </div>
-            <div className='col-md-12'>
+            {/* <div className='col-md-12'>
               <Form.Item
                 name='observation_area'
                 label='Select Observation Area'
@@ -387,15 +463,66 @@ const Observation = () => {
                   {observationAreaOptions}
                 </Select>
               </Form.Item>
-            </div>
-            <div className='col-md-12'>
-              <Form.Item
-                name='score'
-                label='Enter Score'
-                rules={[{ required: true, message: 'Please enter Score' }]}
-              >
-                <InputNumber className='w-100' min={0} placeholder='Enter Score' />
-              </Form.Item>
+            </div> */}
+            {observation?.observations?.map((item, index) => {
+              return (
+                <div className='row py-2 align-item-center'>
+                  <div className='col-7'>
+                    {/* <Form.Item
+                      name='label'
+                      label='Enter Label'
+                      rules={[{ required: true, message: 'Please enter Label' }]}
+                    > */}
+                    <Input
+                      onChange={(e) => {
+                        e.preventDefault();
+                        handleChangeObservations(e.target.value, index, 'label');
+                      }}
+                      className='w-100 th-br-5'
+                      value={item?.label}
+                      placeholder='Enter Label'
+                    />
+                    {/* </Form.Item> */}
+                  </div>
+                  <div className='col-4'>
+                    {/* <Form.Item
+                      name='score'
+                      label='Enter Score'
+                      rules={[{ required: true, message: 'Please enter Score' }]}
+                    > */}
+                    <InputNumber
+                      onChange={(e) => {
+                        handleChangeObservations(e, index, 'score');
+                      }}
+                      className='w-100 th-br-5'
+                      value={item?.score}
+                      placeholder='Enter Score'
+                    />
+                    {/* </Form.Item> */}
+                  </div>
+                  {observation?.observations?.length > 1 && (
+                    <div className='col-1'>
+                      <CloseCircleOutlined
+                        className='th-pointer'
+                        onClick={() => handleDeleteObservations(index)}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            <div className='row'>
+              <div className='col-12 text-right'>
+                <Button
+                  icon={<PlusOutlined />}
+                  type='primary'
+                  className='th-br-8'
+                  onClick={handleAddObservations}
+                >
+                  Add
+                </Button>
+              </div>
             </div>
           </Form>
         </Drawer>
