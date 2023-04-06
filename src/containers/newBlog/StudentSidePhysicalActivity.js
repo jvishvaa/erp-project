@@ -13,6 +13,7 @@ import {
   PieChartOutlined,
   SnippetsOutlined,
   EyeOutlined,
+  CaretRightOutlined,
 } from '@ant-design/icons';
 import {
   Breadcrumb,
@@ -46,6 +47,9 @@ const StudentSidePhysicalActivity = () => {
   const [showBMIModal, setShowBMIModal] = useState(false);
   const [studentBMIData, setStudentBMIData] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [customRatingReview, setCustomRatingReview] = useState([]);
+  const [tableHeader, setTableHeader] = useState([]);
+  const [overallData, setOverAllData] = useState([]);
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
@@ -95,11 +99,16 @@ const StudentSidePhysicalActivity = () => {
   let array = [];
   const getRatingView = (id) => {
     axios
-      .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${id}`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
+      .get(
+        `${
+          endpoints.newBlog.studentReviewss
+        }?booking_detail_id=${id}&response_is_change=${true}`,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
       .then((response) => {
         response.data.map((obj) => {
           let temp = {};
@@ -110,7 +119,8 @@ const StudentSidePhysicalActivity = () => {
           temp['level'] = obj?.level?.rating;
           array.push(temp);
         });
-        setRatingReview(array);
+        setRatingReview(response.data);
+        setLoading(false);
       });
   };
 
@@ -253,6 +263,45 @@ const StudentSidePhysicalActivity = () => {
     },
   ];
 
+  useEffect(() => {
+    if (ratingReview.length > 0) {
+      transformTable(ratingReview);
+    }
+  }, [ratingReview]);
+
+  let rounds;
+  function transformTable(arr) {
+    let headersData = arr
+      .filter((item) => item?.name !== 'Overall')
+      .map((item) => item)
+      .reduce((acc, curr) => {
+        let obj = acc.find((item) => item?.name === curr?.name);
+        if (obj) {
+          return acc;
+        } else {
+          return acc.concat([curr]);
+        }
+      }, []);
+
+    let overValueAllData = arr
+      .filter((item) => item?.name.toLowerCase() === 'overall')
+      .map((item) => item);
+    setOverAllData(overValueAllData);
+    setTableHeader(headersData);
+
+    rounds = arr
+      .filter((item) => item.name !== 'Overall')
+      .reduce((initial, data) => {
+        let key = data.level;
+        if (!initial[key]) {
+          initial[key] = [];
+        }
+        initial[key].push(data);
+        return initial;
+      }, {});
+    setCustomRatingReview(rounds);
+  }
+
   return (
     <div>
       <Layout>
@@ -314,33 +363,37 @@ const StudentSidePhysicalActivity = () => {
           >
             <div className='row d-flex justify-content-end px-3 py-2'>
               <div className='col-md-4 px-0 col-12 d-flex justify-content-end'>
-              <div
-                className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
-                style={{ alignItems: 'center' }}
-              >
-                <span className='th-14 th-black pr-2'>Index : </span>
-                <Button
-                  icon={<EyeOutlined />}
-                  type='primary'
-                  onClick={() => setVisible(true)}
+                <div
+                  className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
+                  style={{ alignItems: 'center' }}
                 >
-                  Click Here To Check BMI Chart
-                </Button>
-              </div>
-              <Modal
-                title='BMI Chart'
-                centered
-                visible={visible}
-                open={visible}
-                footer={false}
-                onCancel={() => setVisible(false)}
-                width={1000}
-              >
-                <img
-                src={BMIDetailsImage}
-                style={{height:'100%', width:'100%', objectFit: '-webkit-fill-available'}}
-                />
-              </Modal>
+                  <span className='th-14 th-black pr-2'>Index : </span>
+                  <Button
+                    icon={<EyeOutlined />}
+                    type='primary'
+                    onClick={() => setVisible(true)}
+                  >
+                    Click Here To Check BMI Chart
+                  </Button>
+                </div>
+                <Modal
+                  title='BMI Chart'
+                  centered
+                  visible={visible}
+                  open={visible}
+                  footer={false}
+                  onCancel={() => setVisible(false)}
+                  width={1000}
+                >
+                  <img
+                    src={BMIDetailsImage}
+                    style={{
+                      height: '100%',
+                      width: '100%',
+                      objectFit: '-webkit-fill-available',
+                    }}
+                  />
+                </Modal>
               </div>
             </div>
             <div className='row'>
@@ -357,7 +410,7 @@ const StudentSidePhysicalActivity = () => {
               </div>
             </div>
           </Modal>
-          <Drawer
+          {/* <Drawer
             title={<span className='th-fw-500'>Check Review</span>}
             placement='right'
             onClose={handleCloseViewMore}
@@ -523,7 +576,116 @@ const StudentSidePhysicalActivity = () => {
                 </div>
               </div>
             </div>
-          </Drawer>
+          </Drawer> */}
+          <Modal
+            centered
+            visible={showDrawer}
+            onCancel={handleCloseViewMore}
+            footer={false}
+            width={1000}
+            className='th-upload-modal'
+            title={`Submit Review`}
+          >
+            <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
+              <div className='d-flex align-items-center pr-1'>
+                <Avatar
+                  size={50}
+                  aria-label='recipe'
+                  icon={
+                    <UserOutlined
+                      color='#F3F3F3'
+                      style={{ color: '#F3F3F3' }}
+                      twoToneColor='white'
+                    />
+                  }
+                />
+                <div className='text-left ml-3'>
+                  <div className=' th-fw-600 th-16'>
+                    {selectedActivity?.booked_user?.name}
+                  </div>
+                  <div className=' th-fw-500 th-14'>{selectedActivity?.branch?.name}</div>
+                  <div className=' th-fw-500 th-12'>{selectedActivity?.grade?.name}</div>
+                </div>
+              </div>
+
+              <div className='pr-1'>
+                <img
+                  src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                  alt='image'
+                  style={{
+                    height: 60,
+                    width: 150,
+                    objectFit: 'fill',
+                  }}
+                />
+              </div>
+            </div>
+            <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
+              <table className='w-100' style={{ background: '#eee' }}>
+                <thead>
+                  <tr
+                    style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}
+                  >
+                    <th> Rounds </th>
+                    {tableHeader?.map((item, i) => (
+                      <th>{item?.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(customRatingReview)?.length > 0 &&
+                    Object.keys(customRatingReview).map((item, index) => (
+                      <tr className='th-html-table'>
+                        <td
+                          style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}
+                        >
+                          {item}
+                        </td>
+                        {tableHeader?.map((each, i) => {
+                          let remarks = customRatingReview[item].filter(
+                            (round) => round.name === each.name
+                          )[0].remarks;
+                          return (
+                            <td style={{ padding: '5px' }}>
+                              <div className='text-center'>{remarks}</div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className='col-12 px-0'>
+              <div className='p-2 d-flex justify-content-start'>
+                {overallData.length > 0 &&
+                  overallData.map((item, index) => {
+                    return (
+                      <div className='col-6 pl-4 p-2 d-flex align-items-center justify-content-start'>
+                        <span
+                          style={{
+                            fontWeight: 500,
+                            marginRight: '5px',
+                            fontSize: '15px',
+                          }}
+                        >
+                          Overall {<CaretRightOutlined />}
+                        </span>
+                        <div
+                          className='text-center'
+                          style={{ fontSize: '15px', fontWeight: 600, color: 'blue' }}
+                        >
+                          {/* <Tag color='green'> */}
+                          {item?.remarks}
+                          {/* </Tag> */}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          </Modal>
         </div>
       </Layout>
     </div>

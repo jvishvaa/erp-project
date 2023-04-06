@@ -5,12 +5,14 @@ import axios from 'axios';
 import Layout from 'containers/Layout';
 import './styles.scss';
 import endpoints from '../../config/endpoints';
+
 import {
   CloseOutlined,
   UserOutlined,
   PlayCircleOutlined,
   PieChartOutlined,
 } from '@ant-design/icons';
+
 import {
   Breadcrumb,
   Table,
@@ -22,6 +24,7 @@ import {
   Space,
   Button,
 } from 'antd';
+
 import moment from 'moment';
 import ReactPlayer from 'react-player';
 
