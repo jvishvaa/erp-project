@@ -149,7 +149,8 @@ const CurriculumCompletion = (props) => {
       teacherSubjectTable({
         session_year: selectedAcademicYear?.id,
         teacher_erp_id: record?.teacher_erp_id,
-        acad_session: acad_sess_id,
+        // acad_session: acad_sess_id,
+        acad_session: selectedBranch?.id,
         central_gs: record?.central_gs.toString(),
         branch_id: branchId,
         volume: volumeId,
@@ -158,7 +159,8 @@ const CurriculumCompletion = (props) => {
       teacherSubjectTable({
         session_year: selectedAcademicYear?.id,
         teacher_erp_id: record?.teacher_erp_id,
-        acad_session: acad_sess_id,
+        // acad_session: acad_sess_id,
+        acad_session: selectedBranch?.id,
         central_gs: record?.central_gs.toString(),
         branch_id: branchId
       })
@@ -244,7 +246,7 @@ const CurriculumCompletion = (props) => {
 
 
   const teacherSubjectTable = (params = {}) => {
-    console.log(params);
+    console.log({params});
     setLoading(true);
     axiosInstance
       .get(`${endpoints.ownerDashboard.teacherSubjectWise}`, {
