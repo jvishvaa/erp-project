@@ -145,8 +145,8 @@ const AdminCreateBlog = () => {
     ? JSON.parse(localStorage?.getItem('PhysicalActivityId'))
     : '';
   const blogActId = localStorage?.getItem('BlogActivityId')
-  ? JSON.parse(localStorage?.getItem('BlogActivityId'))
-  : '';
+    ? JSON.parse(localStorage?.getItem('BlogActivityId'))
+    : '';
   const branch_update_user =
     JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const history = useHistory();
@@ -195,9 +195,9 @@ const AdminCreateBlog = () => {
   const [subActivityName, setSubActivityName] = useState([]);
   const [isVisualActivity, setIsVisualActivity] = useState(false);
   const [academicYear, setAcademicYear] = useState('');
-  const [criteriaTitle,setCriteriaTitle] = useState([]);
-  const [selectedCriteria,setSelectedCriteria] = useState('')
-  const [selectedCriteriaTitleId,setSelectedCriteriaTitleId] = useState(null)
+  const [criteriaTitle, setCriteriaTitle] = useState([]);
+  const [selectedCriteria, setSelectedCriteria] = useState('');
+  const [selectedCriteriaTitleId, setSelectedCriteriaTitleId] = useState(null);
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -233,7 +233,7 @@ const AdminCreateBlog = () => {
       setSubActivityName(value);
       setIsPhysicalActivity(true);
       setSelectedSubActivityId(value?.id);
-      fetchCriteria(value?.id)
+      fetchCriteria(value?.id);
       setVisible(true);
       console.log(value);
     }
@@ -347,16 +347,19 @@ const AdminCreateBlog = () => {
   // };
 
   useEffect(() => {
-    fetchSubActivityListData();  
+    fetchSubActivityListData();
   }, []);
 
   const fetchSubActivityListData = () => {
     axiosInstance
-      .get(`${endpoints.newBlog.subActivityListApi}?type_id=${sudActId}&is_type=${true}`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
+      .get(
+        `${endpoints.newBlog.subActivityListApi}?type_id=${sudActId}&is_type=${true}`,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
       .then((result) => {
         setLoading(false);
         setSubActivityListData(result?.data?.result);
@@ -371,7 +374,7 @@ const AdminCreateBlog = () => {
       })
       .then((result) => {
         setLoading(false);
-        setCriteriaTitle(result?.data?.result)
+        setCriteriaTitle(result?.data?.result);
       });
   };
   const fetchSections = (sessionId, branchIds, gradeIds, moduleId) => {
@@ -466,15 +469,15 @@ const AdminCreateBlog = () => {
     }
   };
 
-  const handleCriteriaTitle =(e,value) =>{
-    if(value){
-      setSelectedCriteriaTitleId(value?.id)
-      setSelectedCriteria(value?.value)
+  const handleCriteriaTitle = (e, value) => {
+    if (value) {
+      setSelectedCriteriaTitleId(value?.id);
+      setSelectedCriteria(value?.value);
       formRef.current.setFieldsValue({
         criteria: value,
       });
     }
-  }
+  };
 
   const handleRound = (e, value) => {
     if (value) {
@@ -598,7 +601,7 @@ const AdminCreateBlog = () => {
       message.error('Please Select Round');
       return;
     }
-    if (selectedCriteria?.length === 0) {
+    if (selectedCriteria?.length === 0 && physicalId !== "") {
       setLoading(false);
       message.error('Please Select Criteria Title');
       return;
@@ -626,8 +629,9 @@ const AdminCreateBlog = () => {
       formData.append('submission_date', startDate + hoursAndMinutes);
       formData.append('image', selectedFile);
       formData.append(
-        'activity_type_id', selectedCriteriaTitleId
-        // activityName?.id ? activityName?.id : selectedSubActivityId
+        'activity_type_id',
+        selectedCriteriaTitleId ? selectedSubActivityId : activityName?.id
+        // activityName?.id ? activityName?.id : selectedSubActivityId  
       );
       formData.append('session_year', selectedAcademicYear.session_year);
       formData.append('created_at', startDate + hoursAndMinutes);
@@ -878,12 +882,12 @@ const AdminCreateBlog = () => {
   });
 
   const criteriaOptions = criteriaTitle?.map((each) => {
-    return(
+    return (
       <Option id={each?.id} value={each?.criteria_title}>
-          {each?.criteria_title}
+        {each?.criteria_title}
       </Option>
-    )
-  })
+    );
+  });
 
   const handleAcademicYear = (event = {}, value = '') => {
     // formik.setFieldValue('academic', '');
@@ -916,10 +920,10 @@ const AdminCreateBlog = () => {
                 Activity Management
               </Breadcrumb.Item>
               <Breadcrumb.Item
-                href='/blog/blogview'
+                href= {activityDataType?.name.toLowerCase() === "physical activity" ? "/physical/activity" : '/blog/blogview' }
                 className='th-grey-1 th-18 th-pointer'
               >
-                Blog Activity
+                {activityDataType?.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-18'>
                 Create {activityDataType?.name}
@@ -1139,40 +1143,44 @@ const AdminCreateBlog = () => {
                       ) : (
                         ''
                       )}
-                      <div className='col-md-2 col-6'>
-                        <div className='mb-2 text-left'>Criteria Title</div>
-                        <Form.Item name='criteria'>
-                          <Select
-                            // allowClear
-                            placeholder={'Select Criteria Title'}
-                            // mode='multiple'
-                            // maxTagCount={2}
-                            // showArrow={2}
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            showSearch
-                            optionFilterProp='children'
-                            value={selectedCriteria || []}
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            onChange={(e, value) => {
-                              handleCriteriaTitle(e,value)
-                            }}
-                            onClear={handleClearGrade}
-                            className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                            bordered={true}
-                          >
-                            {criteriaOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
+                      {physicalId ? (
+                        <div className='col-md-2 col-6'>
+                          <div className='mb-2 text-left'>Criteria Title</div>
+                          <Form.Item name='criteria'>
+                            <Select
+                              // allowClear
+                              placeholder={'Select Criteria Title'}
+                              // mode='multiple'
+                              // maxTagCount={2}
+                              // showArrow={2}
+                              getPopupContainer={(trigger) => trigger.parentNode}
+                              showSearch
+                              optionFilterProp='children'
+                              value={selectedCriteria || []}
+                              suffixIcon={<DownOutlined className='th-grey' />}
+                              filterOption={(input, options) => {
+                                return (
+                                  options.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                              onChange={(e, value) => {
+                                handleCriteriaTitle(e, value);
+                              }}
+                              onClear={handleClearGrade}
+                              className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                              bordered={true}
+                            >
+                              {criteriaOptions}
+                            </Select>
+                          </Form.Item>
+                        </div>
+                      ) : (
+                        ''
+                      )}
 
-                      <div className='col-md-2 col-6 pl-0'>
+                      <div className='col-md-2 col-6 pl-md-3'>
                         <div className='mb-2 text-left'>Submission End Date</div>
                         <Space direction='vertical' className='w-100' size={12}>
                           <Form.Item name='date'>

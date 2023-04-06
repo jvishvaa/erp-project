@@ -69,7 +69,7 @@ const StudentSideVisualActivity = () => {
   useEffect(() => {
     fetchStudentActivityList({
       user_id: userIdLocal?.id,
-      activity_type: activityDetails?.id,
+      activity_type: activityDetails?.id.join(','),
       activity_detail_id: 'null',
       is_reviewed: 'True',
       is_submitted: 'True',
