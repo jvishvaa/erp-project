@@ -190,11 +190,12 @@ const RatingCreate = () => {
   const [filterData, setFilterData] = useState([]);
   const [search, setSearch] = useState('');
   const [viewing, setViewing] = useState(false);
-  const [ActivityType, setActivityType] = useState('');
-  const [remarksType, setRemarksType] = useState('');
+  const [ActivityType, setActivityType] = useState(null);
+  const [remarksType, setRemarksType] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [isEditData, setIsEditData] = useState([]);
   const [editOption, setEditOption] = useState([]);
+  const [activityCategory, setActivityCategory] = useState([]);
   const formRef = useRef();
 
   const columns = [
@@ -483,7 +484,8 @@ const RatingCreate = () => {
         } else {
           message.success(response?.data?.message);
           setLoading(false);
-          setActivityType('');
+          setActivityType(null);
+          setRemarksType(null);
           handleClose();
           getActivityCategory();
           return;
@@ -519,7 +521,7 @@ const RatingCreate = () => {
         } else {
           message.success(response?.data?.message);
           setLoading(false);
-          setActivityType('');
+          setActivityType(null);
           setFilterData([]);
           getActivityCategory();
           // handleActivity(isEditData?.name)
@@ -532,12 +534,11 @@ const RatingCreate = () => {
       });
   };
 
-  const [activityCategory, setActivityCategory] = useState([]);
   const getActivityCategory = () => {
     let array = [];
     setLoading(true);
     axios
-      .get(`${endpoints.newBlog.getActivityType}`, {
+      .get(`${endpoints.newBlog.getActivityType}?is_type=${true}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -654,14 +655,37 @@ const RatingCreate = () => {
   };
 
   const handleActivity = (e) => {
+    let array = [];
     if (e) {
       setSearch(e);
-      let res = activityCategory.filter((item) =>
-        item.name.toLowerCase()?.includes(e.toLowerCase())
-      );
-      setFilterData(res);
-    } else {
-      setFilterData(activityCategory);
+      setLoading(true)
+      axios
+      .get(`${endpoints.newBlog.getActivityType}?name=${e}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      }).then((response) => {
+        response.data.result.map((obj) => {
+          let temp = {};
+          temp['id'] = obj?.id;
+          temp['grading_scheme_id'] = obj?.grading_scheme_id;
+          temp['name'] = obj?.name;
+          temp['sub_type'] = obj?.sub_type;
+          temp['criteria_title'] = obj?.criteria_title;
+          temp['grading_scheme'] = obj?.grading_scheme;
+          temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
+          temp['va_rating'] = obj?.grading_scheme.map((item) =>
+            JSON.parse(item?.va_rating)
+          );
+          temp['is_editable'] = obj?.is_editable;
+          array.push(temp);
+        });
+        setFilterData(array);
+        setLoading(false)
+
+      }).catch((err) =>{
+        setLoading(false)
+      })
     }
   };
 
@@ -762,7 +786,15 @@ const RatingCreate = () => {
   const activityOption = activityCategory.map((each) => {
     return (
       <Option value={each?.id} key={each?.id} name={each.name} sub_type={each?.sub_type}>
-        {each?.name} {each?.sub_type ? ` - ${each.sub_type}` : ''}
+        {each?.name}
+      </Option>
+    );
+  });
+
+  const activityOptionSub = activityCategory.map((each) => {
+    return (
+      <Option value={each?.id} key={each?.id} name={each.name} sub_type={each?.sub_type}>
+        {each?.sub_type}
       </Option>
     );
   });
@@ -856,7 +888,8 @@ const RatingCreate = () => {
         } else {
           setLoading(false);
           message.success(res.data.message);
-          setActivityType('');
+          setActivityType(null);
+          setRemarksType(null);
           handleClose();
           getActivityCategory();
           setFilterData([]);
@@ -897,8 +930,9 @@ const RatingCreate = () => {
         } else {
           setLoading(false);
           message.success(res.data.message);
-          setActivityType('');
+          setActivityType(null);
           handleModalCloseEdit();
+          setFilterData([]);
           getActivityCategory();
           return;
         }
@@ -975,8 +1009,8 @@ const RatingCreate = () => {
 
   const handleModalClose = () => {
     setViewing(false);
-    setActivityType('');
-    setRemarksType('');
+    setActivityType(null);
+    setRemarksType(null);
     setInputList([{ name: '', rating: '', score: null }]);
     setVisualInputList([{ name: '', score: null }]);
     setOptionList([{ name: '', score: null, status: false }]);
@@ -1012,7 +1046,7 @@ const RatingCreate = () => {
           if (response?.data?.status_code) {
             message.success(response?.data?.message);
             // handleActivity(data?.name);
-            setActivityType('');
+            setActivityType(null);
             setFilterData([]);
             getActivityCategory();
             setLoading(false);
@@ -1046,8 +1080,8 @@ const RatingCreate = () => {
       <div className='row px-2'>
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-              Activity
+            <Breadcrumb.Item href='/blog/wall/central/redirect' className='th-grey th-16'>
+              Activity Management
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-grey th-16'>Create rating</Breadcrumb.Item>
           </Breadcrumb>
@@ -1083,7 +1117,7 @@ const RatingCreate = () => {
                       }}
                       onClear={handleClearActivityType}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={false}
+                      bordered={true}
                     >
                       {mainActivityOption}
                     </Select>
@@ -1154,8 +1188,9 @@ const RatingCreate = () => {
         >
           <div className='row p-2'>
             <div className='col-md-12 md-sm-0'>
-              <Form.Item name='activity_type'>
+              {/* <Form.Item name='activity_type'> */}
                 <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Activity Type'
                   showSearch
                   value={ActivityType}
@@ -1171,8 +1206,37 @@ const RatingCreate = () => {
                 >
                   {activityOption}
                 </Select>
-              </Form.Item>
+              {/* </Form.Item> */}
             </div>
+            {ActivityType && ActivityType?.name.toLowerCase() === 'physical activity' ? (
+              <div className='row m-2'>
+              <div className='col-md-12 md-sm-0'>
+              Sub-Activity
+              </div>
+                <div className='col-md-12 md-sm-0'>
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    placeholder='Sub Activity Type'
+                    showSearch
+                    disabled
+                    value={ActivityType}
+                    optionFilterProp='children'
+                    filterOption={(input, option) => {
+                      return (
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    onChange={(e, value) => handleActivityChange(e, value)}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={false}
+                  >
+                    {activityOptionSub}
+                  </Select>
+                </div>
+              </div>
+            ) : (
+              ''
+            )}
             <div className='col-md-12'>
               {ActivityType ? (
                 <>
@@ -1311,23 +1375,29 @@ const RatingCreate = () => {
                           ''
                         ) : (
                           <>
-                            <AntDivider
-                              orientation='left'
-                              orientationMargin='0'
-                              plain
-                              style={{ alignItems: 'flex-start' }}
-                            >
-                              Add Criteria Title
-                            </AntDivider>
-                            <div className='col-3'>
-                              <Input
-                                placeholder='Criteria Title'
-                                width={100}
-                                value={remarksType}
-                                onChange={(event) => handleInputRemarks(event)}
-                                inputList
-                              />
-                            </div>
+                            {showPhy ? (
+                              <>
+                                <AntDivider
+                                  orientation='left'
+                                  orientationMargin='0'
+                                  plain
+                                  style={{ alignItems: 'flex-start' }}
+                                >
+                                  Add Criteria Title
+                                </AntDivider>
+                                <div className='col-3'>
+                                  <Input
+                                    placeholder='Criteria Title'
+                                    width={100}
+                                    value={remarksType}
+                                    onChange={(event) => handleInputRemarks(event)}
+                                    inputList
+                                  />
+                                </div>
+                              </>
+                            ) : (
+                              ''
+                            )}
                           </>
                         )}
                       </div>
