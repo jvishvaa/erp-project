@@ -25,6 +25,7 @@ import {
   BookOutlined,
   SnippetsOutlined,
   FilePptOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -1451,32 +1452,62 @@ const PeriodListView = () => {
                                 <img src={getFileIcon(extension)} />
                               </div>
                               <div className='col-10 px-0 th-pointer'>
-                                <a
-                                  onClick={() => {
-                                    openPreview({
-                                      currentAttachmentIndex: 0,
-                                      attachmentsArray: [
-                                        {
-                                          src: `${endpoints.homework.resourcesFiles}/${each}`,
-
-                                          name: fileName,
-                                          extension: '.' + extension,
-                                        },
-                                      ],
-                                    });
-                                  }}
-                                  rel='noopener noreferrer'
-                                  target='_blank'
-                                >
                                   <div className='row align-items-center'>
-                                    <div className='col-10 px-0'>
-                                      {files.document_type}_{file}
+                                    <div className='col-9 px-0'>
+                                      <a
+                                        onClick={() => {
+                                          openPreview({
+                                            currentAttachmentIndex: 0,
+                                            attachmentsArray: [
+                                              {
+                                                src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                                name: fileName,
+                                                extension: '.' + extension,
+                                              },
+                                            ],
+                                          });
+                                        }}
+                                        rel='noopener noreferrer'
+                                        target='_blank'
+                                      >
+                                        {files.document_type}_{file}
+                                      </a>
                                     </div>
-                                    <div className='col-2'>
-                                      <EyeFilled />
+                                    
+                                    <div className='col-1'>
+                                      <a
+                                        onClick={() => {
+                                          openPreview({
+                                            currentAttachmentIndex: 0,
+                                            attachmentsArray: [
+                                              {
+                                                src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                                name: fileName,
+                                                extension: '.' + extension,
+                                              },
+                                            ],
+                                          });
+                                        }}
+                                        rel='noopener noreferrer'
+                                        target='_blank'
+                                      >
+                                        <EyeFilled />
+                                      </a>
                                     </div>
+                                    
+                                    {/* {files?.document_type == 'Teacher_Reading_Material' && (
+                                      <div className='col-1'>
+                                        <a
+                                          rel='noopener noreferrer'
+                                          target='_blank'
+                                        >
+                                          <DownloadOutlined />
+                                        </a>
+                                    </div>
+                                    )} */}
                                   </div>
-                                </a>
                               </div>
                             </div>
                           );
