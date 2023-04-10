@@ -50,6 +50,10 @@ const StudentSidePhysicalActivity = () => {
   const [customRatingReview, setCustomRatingReview] = useState([]);
   const [tableHeader, setTableHeader] = useState([]);
   const [overallData, setOverAllData] = useState([]);
+  const [totalCountAssigned, setTotalCountAssigned] = useState(0);
+  const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
+  const [limitAssigned, setLimitAssigned] = useState(10);
+  const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
@@ -68,6 +72,11 @@ const StudentSidePhysicalActivity = () => {
         console.log('response', response);
         if (response?.data?.status_code === 200) {
           setActivityListData(response?.data?.result);
+
+          setTotalCountAssigned(response?.data?.count);
+          setTotalPagesAssigned(response?.data?.page_size);
+          setCurrentPageAssigned(response?.data?.page);
+          setLimitAssigned(Number(limitAssigned));
         }
         setLoading(false);
       })
@@ -84,8 +93,10 @@ const StudentSidePhysicalActivity = () => {
       activity_detail_id: 'null',
       is_reviewed: 'True',
       is_submitted: 'True',
+      page :currentPageAssigned,
+      page_size :limitAssigned
     });
-  }, []);
+  }, [currentPageAssigned]);
   const handleShowReview = (data) => {
     getRatingView(data?.id);
     fetchMedia(data?.id);
@@ -176,7 +187,7 @@ const StudentSidePhysicalActivity = () => {
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned-1) *10}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -301,6 +312,9 @@ const StudentSidePhysicalActivity = () => {
       }, {});
     setCustomRatingReview(rounds);
   }
+  const handlePaginationAssign =(page) =>{
+    setCurrentPageAssigned(page);
+  }
 
   return (
     <div>
@@ -341,7 +355,16 @@ const StudentSidePhysicalActivity = () => {
                     `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                   }
                   loading={loading}
-                  pagination={false}
+                  pagination={{
+                    total: totalCountAssigned,
+                    current: Number(currentPageAssigned),
+                    pageSize: limitAssigned,
+                    showSizeChanger: false,
+                    onChange: (e) => {
+                      console.log('Pagination', e);
+                      handlePaginationAssign(e);
+                    },
+                  }}
                   scroll={{
                     x: window.innerWidth > 600 ? '100%' : 'max-content',
                     // y: 600,

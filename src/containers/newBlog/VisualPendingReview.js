@@ -133,8 +133,11 @@ const VisualPendingReview = (props) => {
         setView(false);
         setLoading(false);
         setRatingReview([]);
+        // console.log(fileRef.current,'kl1')
+        // console.log(file,'kl2 ')
+        fileRef.current.value = "";
+        // fileRef.current.input.value = ""
         setFile(null);
-        fileRef.current.value = null;
         erpAPI();
         message.success('Review Submitted Successfully');
         return;
@@ -367,7 +370,9 @@ const VisualPendingReview = (props) => {
             'X-DTS-HOST': X_DTS_HOST,
           },
         })
-        .then((res) => {})
+        .then((res) => {
+
+        })
         .catch((err) => {});
     } else {
       message.error('Please Upload File');
@@ -542,7 +547,6 @@ const VisualPendingReview = (props) => {
                         </div>
                         <Input
                           type='file'
-                          
                           inputRef={fileRef}
                           accept='image/x-png,image/gif,image/jpeg,image/jpeg,video/mp4'
                           inputProps={{ accept: '.mp4,.jpeg,.png' }}

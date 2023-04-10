@@ -601,7 +601,7 @@ const AdminCreateBlog = () => {
       message.error('Please Select Round');
       return;
     }
-    if (selectedCriteria?.length === 0 && physicalId !== "") {
+    if (selectedCriteria?.length === 0 && physicalId !== '') {
       setLoading(false);
       message.error('Please Select Criteria Title');
       return;
@@ -631,7 +631,7 @@ const AdminCreateBlog = () => {
       formData.append(
         'activity_type_id',
         selectedCriteriaTitleId ? selectedSubActivityId : activityName?.id
-        // activityName?.id ? activityName?.id : selectedSubActivityId  
+        // activityName?.id ? activityName?.id : selectedSubActivityId
       );
       formData.append('session_year', selectedAcademicYear.session_year);
       formData.append('created_at', startDate + hoursAndMinutes);
@@ -693,8 +693,17 @@ const AdminCreateBlog = () => {
       })
       .then((response) => {
         setLoading(false);
-        setActivityCategory(response.data.result);
+        if (activityDataType?.name.toLowerCase() == 'blog activity') {
+          blogActivityFun(response.data.result);
+        } else {
+          setActivityCategory(response.data.result);
+        }
       });
+  };
+
+  const blogActivityFun = (data) => {
+    let res = data.filter((item) => item?.name.toLowerCase() === 'blog activity');
+    setActivityCategory(res);
   };
   useEffect(() => {
     getActivityCategory();
@@ -920,7 +929,11 @@ const AdminCreateBlog = () => {
                 Activity Management
               </Breadcrumb.Item>
               <Breadcrumb.Item
-                href= {activityDataType?.name.toLowerCase() === "physical activity" ? "/physical/activity" : '/blog/blogview' }
+                href={
+                  activityDataType?.name.toLowerCase() === 'physical activity'
+                    ? '/physical/activity'
+                    : '/blog/blogview'
+                }
                 className='th-grey-1 th-18 th-pointer'
               >
                 {activityDataType?.name}
