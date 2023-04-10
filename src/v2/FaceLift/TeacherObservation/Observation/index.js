@@ -78,7 +78,7 @@ const Observation = () => {
         setLoading(false);
       });
   };
-  console.log({ isStudent }, { observation });
+
   // const getObservationArea = (params = {}) => {
   //   const result = axios
   //     .get(`${endpoints.observationName.observationArea}`, {
@@ -109,7 +109,6 @@ const Observation = () => {
   };
 
   const handleStatus = (id, data) => {
-    console.log('status', data);
     
     let body = {
       title: data?.title,
@@ -296,7 +295,6 @@ const Observation = () => {
       key: 'observation',
       render: (record, item, index) =>
         record.observations?.map((item, i) => {
-          console.log({ record });
           return (
             <div className='d-flex  align-items-center py-1 '>
               <div className='col-md-2 th-14'>

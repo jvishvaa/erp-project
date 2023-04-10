@@ -73,7 +73,6 @@ const Evaluation = () => {
     beforeUpload: (...file) => {
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      console.log({ type }, { file });
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file[1]);
       } else {
@@ -84,8 +83,8 @@ const Evaluation = () => {
     },
     selectedFile,
   };
-  console.log({ selectedFile });
 
+  
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
     //  setLoading(true);
@@ -231,27 +230,21 @@ const Evaluation = () => {
   };
 
   const handleScoreDesciption = (e, id, subId, field) => {
-    console.log('e',e)
     let tempData = modifiedData;
-    console.log('modifiedData', modifiedData, e);
     if (field === 'description') {
       e.preventDefault();
       tempData[id].observations[subId].description = e.target.value;
     } else {
-      console.log('score3', e, tempData[id].observations[subId].score, typeof( e), typeof(tempData[id].observations[subId].score));
       if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
         tempData[id].observations[subId].observationScore = e;
       } else {
         message.error("Obtained marks can't exceeds Observation max marks");
       }
     }
-    console.log();
     setModifiedData([...tempData]);
   };
 
   const handleSubmit = () => {
-    console.log('selectedFile',selectedFile)
-
     const formData = new FormData();
   
     // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
@@ -630,7 +623,6 @@ const Evaluation = () => {
     'observationScore'
   );
   // console.log({ tableData });
-  console.log({ modifiedData, marksObtained, overallScore });
   return (
     <React.Fragment>
       <Layout>
