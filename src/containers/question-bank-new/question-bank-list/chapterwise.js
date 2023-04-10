@@ -618,6 +618,7 @@ const Chapterwise = () => {
     handleClearGrade()
     setAnnualPlanData([])
     setHistoricData([])
+    setPage(1)
     if (Historic == false) {
       setHistoric(true)
     } else {
@@ -767,7 +768,7 @@ const Chapterwise = () => {
                         style={{ marginRight: '2%' }}
                         // size={'small'}
                         shape="round"
-                        className='th-br-6 w-30 th-fw-500'
+                        className='th-br-6 th-fw-500'
                       >
                         Historical Questions
                       </Button> :
@@ -788,7 +789,7 @@ const Chapterwise = () => {
                       style={{ marginRight: '2%' }}
                       // size={'small'}
                       shape="round"
-                      className='th-br-6 w-30 th-fw-500'
+                      className='th-br-6 th-fw-500'
                     >
                       <PlusOutlined size='small' />
                       Create New
