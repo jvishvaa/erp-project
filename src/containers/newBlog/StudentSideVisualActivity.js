@@ -39,6 +39,10 @@ const StudentSideVisualActivity = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
   const [mediaFiles, setMediaFiles] = useState(false);
+  const [totalCountAssigned, setTotalCountAssigned] = useState(0);
+  const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
+  const [limitAssigned, setLimitAssigned] = useState(10);
+  const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
@@ -54,9 +58,12 @@ const StudentSideVisualActivity = () => {
         },
       })
       .then((response) => {
-        console.log('response', response);
         if (response?.data?.status_code === 200) {
           setActivityListData(response?.data?.result);
+          setTotalCountAssigned(response?.data?.count);
+          setTotalPagesAssigned(response?.data?.page_size);
+          setCurrentPageAssigned(response?.data?.page);
+          setLimitAssigned(Number(limitAssigned));
         }
         setLoading(false);
       })
@@ -74,8 +81,10 @@ const StudentSideVisualActivity = () => {
       is_reviewed: 'True',
       is_submitted: 'True',
       update: 'True',
+      page :currentPageAssigned,
+      page_size :limitAssigned
     });
-  }, []);
+  }, [currentPageAssigned]);
   const handleShowReview = (data) => {
     getRatingView(data?.id);
     fetchMedia(data?.id);
@@ -118,11 +127,14 @@ const StudentSideVisualActivity = () => {
       });
   };
 
+  const handlePaginationAssign =(page) => {
+    setCurrentPageAssigned(page)
+  }
   const columns = [
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned -1) *10}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -196,7 +208,16 @@ const StudentSideVisualActivity = () => {
                     `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                   }
                   loading={loading}
-                  pagination={false}
+                  pagination={{
+                    total:totalCountAssigned,
+                    current: Number(currentPageAssigned),
+                    pageSize:limitAssigned,
+                    showSizeChanger:false,
+                    onChange: (e) => {
+                      console.log('Paggination',e);
+                      handlePaginationAssign(e);
+                    },
+                  }}
                   scroll={{
                     x: activityListData.length > 0 ? 'max-content' : null,
                     y: 600,

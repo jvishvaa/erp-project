@@ -122,7 +122,7 @@ function AddTemplates() {
       ];
 
       formData.append('activity_type_id', searchId);
-      formData.append('title', 'template 15sep 18:12pm');
+      formData.append('title', 'template');
       formData.append('image', selectedFile);
       formData.append(
         'html_file',
@@ -166,10 +166,15 @@ function AddTemplates() {
         },
       })
       .then((response) => {
-        setActivityCategory(response.data.result);
+        dummyFunction(response.data.result)
         setLoading(false);
       });
   };
+
+  const dummyFunction =(data) => {
+    let res = data.filter((item) => item?.name == "Blog Activity")
+    setActivityCategory(res)
+  }
 
   useEffect(() => {
     getActivityCategory();
@@ -215,10 +220,10 @@ function AddTemplates() {
           <div className='row'>
             <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
-                <Breadcrumb.Item href='/' className='th-black th-pointer th-16'>
-                  Activity
+                <Breadcrumb.Item href='/blog/wall/central/redirect' className='th-black th-pointer th-16'>
+                  Activity Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href='' className='th-black th-pointer th-16'>
+                <Breadcrumb.Item href='/blog/createratingtype' className='th-black th-pointer th-16'>
                   Create Rating
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href='' className='th-black th-pointer th-16'>

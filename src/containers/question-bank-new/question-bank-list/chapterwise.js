@@ -5,7 +5,7 @@ import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import './index.css';
+import './index.scss';
 import { useHistory, useLocation } from 'react-router-dom';
 import { CaretDownOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
@@ -431,6 +431,8 @@ const Chapterwise = () => {
       questionId: questionId,
       section: section,
       isEdit: isEdit,
+      showTab: showTab,
+      Historic: Historic
 
       // request_type : 1
     };
@@ -498,15 +500,15 @@ const Chapterwise = () => {
           return (
             // <span className='th-black-1'>{data}</span>
             <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <div className='w-20'>
-                {row?.eduvate_qp_count != 0 ? <div //onClick={fetchQuestionCards(data)}
+              <div className='w-20 eduvate'>
+                {row?.eduvate_qp_count >= 0 ? <div //onClick={fetchQuestionCards(data)}
                   style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color: '#3d69be', borderRadius: '15px' }}
                 >
                   {row?.eduvate_qp_count}
                 </div> : null}
               </div>
-              <div className='w-20'>
-                {row?.school_qp_count != 0 ? <div
+              <div className='w-20 school'>
+                {row?.school_qp_count >= 0 ? <div
                   style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%', color: '#b33dbe', borderRadius: '15px' }}
                 >
                   {row?.school_qp_count}
@@ -539,7 +541,7 @@ const Chapterwise = () => {
         pagination={false}
         showHeader={false}
         bordered={false}
-        rowClassName={(record, index) => 'th-pointer th-row'}
+        rowClassName={(record, index) => `th-pointer th-row ${Historic == true && showTab == 1 ? 'school-qp-count' : Historic == true && showTab == 2 ? 'eduvate-qp-count' : ''}`}
         onRow={(row, rowIndex) => {
           return {
             onClick: (event) => {
@@ -594,16 +596,16 @@ const Chapterwise = () => {
           // <div style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width:'45%' }}>{data}</div>
           // </div>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <div className='w-20'>{(row?.eduvate_qp_count != 0 && row?.eduvate_qp_count != null) ? <div
+            <div className='w-20 eduvate'>{(row?.eduvate_qp_count != null) ? <div
               style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color: '#3d69be', borderRadius: '15px' }}
             >
               {row?.eduvate_qp_count}
             </div> : null}</div>
-            <div className='w-20'>
-              {(row?.school_qp_count != 0 && row?.school_qp_count != null) ? <div
+            <div className='w-20 school'>
+              {(row?.school_qp_count != null) ? <div
                 style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%', color: '#b33dbe', borderRadius: '15px' }}
               >
-                {row?.school_qp_count === null ? 0 : row?.school_qp_count}
+                {row?.school_qp_count}
               </div> : null}
             </div>
 
@@ -906,7 +908,7 @@ const Chapterwise = () => {
                 <div className='col-12'>
                   <div className='th-tabs th-bg-white'>
                     <Tabs type='card' onChange={onChangeTab} activeKey={showTab}>
-                      <TabPane tab='Eduvate' key='1'>
+                      <TabPane tab='Eduvate' key='1' className='eduvateTab' >
                         <div>
                           <div className='col-md-6 ' style={{ zIndex: 2 }}>
                             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
@@ -993,7 +995,7 @@ const Chapterwise = () => {
                                   <Table
                                     className='th-table '
                                     rowClassName={(record, index) =>
-                                      `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                      `th-pointer school-qp-count ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                                     }
                                     expandRowByClick={true}
                                     columns={columns}
@@ -1035,7 +1037,7 @@ const Chapterwise = () => {
                           )}
                         </div>
                       </TabPane>
-                      <TabPane tab='School' key='2'>
+                      <TabPane tab='School' key='2' className='schoolTab' >
                         <div>
                           <div className='col-md-6' style={{ zIndex: 2 }}>
                             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
@@ -1122,7 +1124,7 @@ const Chapterwise = () => {
                                   <Table
                                     className='th-table '
                                     rowClassName={(record, index) =>
-                                      `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                      `th-pointer eduvate-qp-count ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                                     }
                                     expandRowByClick={true}
                                     columns={columns}
