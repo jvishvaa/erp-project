@@ -595,7 +595,7 @@ const Evaluation = () => {
               </div>
               <div className='col-md-3'>
                 <Input.TextArea
-                  placeholder='Description'
+                  placeholder='Description *'
                   onChange={(e) => handleScoreDesciption(e, index, i, 'description')}
                 />
               </div>
@@ -604,7 +604,7 @@ const Evaluation = () => {
                   className='w-100'
                   max={item?.score}
                   min={0}
-                  placeholder={`Score Max * (${item?.score}) ${item.observationScore}`}
+                  placeholder={`Score Max * (${item?.score})`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
