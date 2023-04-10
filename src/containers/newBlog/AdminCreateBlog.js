@@ -693,7 +693,7 @@ const AdminCreateBlog = () => {
       })
       .then((response) => {
         setLoading(false);
-        setActivityCategory(response.data.result);
+        setActivityCategory(response.data.result);       
       });
   };
   useEffect(() => {
