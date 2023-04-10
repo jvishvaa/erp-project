@@ -32,7 +32,7 @@ const Evaluation = () => {
   const [data, setData] = useState([]);
   const [observationAreaList, setObservationAreaList] = useState([]);
   const [selectedObservationArea, setSelectedObservationArea] = useState(null);
-  const [currentData, setCurrentData] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [modifiedData, setModifiedData] = useState([]);
   const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -107,33 +107,68 @@ const Evaluation = () => {
   };
   useEffect(() => {
     if (selectedObservationArea) {
-      setCurrentData({
-        id: 2,
-        title: 'ROHIT abcd',
-        status: true,
-        is_student: false,
-        observations: [
-          {
-            id: 378,
-            score: 5,
-            label: 'ABC2',
-          },
-          {
-            id: 379,
-            score: 4,
-            label: 'PQR2',
-          },
-        ],
-      });
+      setLoading(false);
+
+      axios
+        .get(
+          `${endpointsV2.observations.observationList}?id=${selectedObservationArea?.observation?.id}`
+        )
+        .then((result) => {
+          if (result.data?.status_code === 200) {
+            setTableData([
+              {
+                id: selectedObservationArea?.value,
+                observation_area_name: selectedObservationArea?.children,
+                observations: result.data?.result[0]?.observations,
+              },
+            ]);
+            modifyData([
+              {
+                id: selectedObservationArea?.value,
+                observation_area_name: selectedObservationArea?.children,
+                is_student: selectedObservationArea?.details?.is_student,
+                status: selectedObservationArea?.details?.status,
+                observation_area_name: selectedObservationArea?.children,
+                observations: result.data?.result[0]?.observations,
+              },
+            ]);
+            setLoading(false);
+          } else {
+            setLoading(false);
+            setTableData([]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
+      // setTableData({
+      //   id: 2,
+      //   title: 'ROHIT abcd',
+      //   status: true,
+      //   is_student: false,
+      //   observations: [
+      //     {
+      //       id: 378,
+      //       score: 5,
+      //       label: 'ABC2',
+      //     },
+      //     {
+      //       id: 379,
+      //       score: 4,
+      //       label: 'PQR2',
+      //     },
+      //   ],
+      // });
+      // }
+      //   observationGet({
+      //     is_student: tableView === 'teacher' ? false : true,
+      //     levels__id__in: user_level,
+      //     status: true,
+      //   });
+      // } else {
+      //   setData([]);
     }
-    //   observationGet({
-    //     is_student: tableView === 'teacher' ? false : true,
-    //     levels__id__in: user_level,
-    //     status: true,
-    //   });
-    // } else {
-    //   setData([]);
-    // }
   }, [selectedObservationArea]);
   useEffect(() => {
     fetchObservationAreasList({
@@ -176,18 +211,19 @@ const Evaluation = () => {
       obj.id = paramData[i].id;
       obj.status = paramData[i].status;
       obj.observation_area_name = paramData[i].observation_area_name;
-      for (let j = 0; j < paramData[i].observation?.length; j++) {
-        var innerObj = {};
-        innerObj.observationarea = paramData[i].observation[j].observation;
-        innerObj.id = paramData[i].observation[j].id;
-        innerObj.status = paramData[i].observation[j].status;
-        innerObj.observation = paramData[i].observation_area_name;
-        innerObj.description = '';
-        innerObj.score = 0;
-        innerObj.observationScore = paramData[i].observation[j].score;
-        innerArr.push(innerObj);
-      }
-      obj.observation = innerArr;
+      // for (let j = 0; j < paramData[i].observations?.length; j++) {
+      //   var innerObj = {};
+      //   innerObj.observationarea = paramData[i].observations[j].observation;
+      //   innerObj.id = paramData[i].observations[j].id;
+      //   // innerObj.status = paramData[i].observation[j].status;
+      //   innerObj.status = true;
+      //   // innerObj.observation = paramData[i].observation_area_name;
+      //   innerObj.description = '';
+      //   innerObj.score = 0;
+      //   // innerObj.observationScore = paramData[i].observations[j].score;
+      //   innerArr.push(innerObj);
+      // }
+      obj.observations = paramData[i].observations;
       obj.is_student = paramData[i].is_student;
       arr.push(obj);
     }
@@ -197,10 +233,12 @@ const Evaluation = () => {
   const handleScoreDesciption = (e, id, subId, field) => {
     let tempData = modifiedData;
     if (field === 'description') {
-      tempData[id].observation[subId].description = e.target.value;
+      e.preventDefault();
+      tempData[id].observations[subId].description = e.target.value;
     } else {
-      if (Number(e) <= tempData[id].observation[subId].observationScore) {
-        tempData[id].observation[subId].score = Number(e);
+      console.log('score3', e, tempData[id].observations[subId].score);
+      if (Number(e) <= tempData[id].observations[subId].score) {
+        tempData[id].observations[subId].observationScore = e;
       } else {
         message.error("Obtained marks can't exceeds Observation max marks");
       }
@@ -209,7 +247,7 @@ const Evaluation = () => {
   };
 
   const handleSubmit = () => {
-    let flatttenData = modifiedData?.map((item) => item?.observation).flat();
+    // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
     if (subjectID && teacherErp) {
       var obj = {
         acad_session: selectedBranch?.id,
@@ -218,7 +256,8 @@ const Evaluation = () => {
         teacher_name: teacherName,
         teacher_erp: teacherErp,
         remark: overallRemarks,
-        score: _.sumBy(flatttenData, 'score'),
+        // score: _.sumBy(flatttenData, 'score'),
+        score: marksObtained,
         report: JSON.stringify(modifiedData),
         subject_map: subjectID,
         // section_mapping: sectionID,
@@ -233,7 +272,8 @@ const Evaluation = () => {
         teacher_name: studentName,
         teacher_erp: studentErp,
         remark: overallRemarks,
-        score: _.sumBy(flatttenData, 'score'),
+        // score: _.sumBy(flatttenData, 'score'),
+        score: marksObtained,
         report: JSON.stringify(modifiedData),
         subject_map: subjectID,
         // section_mapping: sectionID,
@@ -251,9 +291,9 @@ const Evaluation = () => {
         if (res.status === 201) {
           message.success('Successfully Submitted');
 
-          setTimeout(function () {
-            window.location.reload(1);
-          }, 2000);
+          // setTimeout(function () {
+          //   window.location.reload(1);
+          // }, 2000);
         }
       })
       .catch((error) => {
@@ -482,7 +522,12 @@ const Evaluation = () => {
   });
   const observationAreaListOptions = observationAreaList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option
+        key={each?.id}
+        value={each.id}
+        observation={each?.observation}
+        details={each}
+      >
         {each?.observation_area_name}
       </Option>
     );
@@ -516,7 +561,7 @@ const Evaluation = () => {
       ),
       key: 'observation',
       render: (record, item, index) =>
-        currentData.observations?.map((item, i) => {
+        record.observations?.map((item, i) => {
           return (
             <div className='d-flex border-bottom align-items-center py-1 '>
               <div className='col-md-7 pl-0 th-14'>
@@ -543,15 +588,16 @@ const Evaluation = () => {
     },
   ];
 
-  let marksObtained = _.sumBy(
-    modifiedData?.map((item) => item?.observation).flat(),
+  let overallScore = _.sumBy(
+    modifiedData?.map((item) => item?.observations).flat(),
     'score'
   );
-  let overallScore = _.sumBy(
-    modifiedData?.map((item) => item?.observation).flat(),
+  let marksObtained = _.sumBy(
+    modifiedData?.map((item) => item?.observations).flat(),
     'observationScore'
   );
-
+  // console.log({ tableData });
+  console.log({ modifiedData, marksObtained, overallScore });
   return (
     <React.Fragment>
       <Layout>
@@ -590,7 +636,7 @@ const Evaluation = () => {
               </Select>
             </div>
           </div>
-          {selectedObservationArea ? (
+          {modifiedData.length > 0 ? (
             <div className='row mt-3'>
               <div className='col-12'>
                 <Table
@@ -601,7 +647,7 @@ const Evaluation = () => {
                   loading={loading}
                   columns={columns}
                   rowKey={(record) => record?.id}
-                  dataSource={[selectedObservationArea]}
+                  dataSource={modifiedData}
                   pagination={false}
                   bordered
                   scroll={{ y: '58vh' }}
@@ -726,7 +772,7 @@ const Evaluation = () => {
                   {marksObtained}/{overallScore}
                 </span>
               </div>
-              <div className='col-md-3 py-2 th-16'>
+              {/* <div className='col-md-3 py-2 th-16'>
                 <Upload {...uploadProps} className='w-75'>
                   <Button icon={<UploadOutlined />}>
                     {selectedFile ? 'Change' : 'Upload'} File
@@ -754,7 +800,7 @@ const Evaluation = () => {
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
               <div className='col-md-3 py-2'>
                 <Button onClick={handleSubmit} type='primary' className='w-50'>
                   Submit

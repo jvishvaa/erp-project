@@ -130,6 +130,11 @@ const ObservationReport = () => {
 
   const handleGrade = (e, value) => {
     setSectionDropdown([]);
+    setSubjectDropdown([]);
+    formRef.current.setFieldsValue({
+      section: null,
+      subject: null,
+    });
     if (e) {
       setGradeID(e);
       const params = {
@@ -154,13 +159,24 @@ const ObservationReport = () => {
     setGradeID(null);
     setSectionDropdown([]);
     setSubjectDropdown([]);
+    formRef.current.setFieldsValue({
+      section: null,
+      subject: null,
+    });
   };
 
   const handleClearSection = () => {
     setSectionID(null);
     setSubjectDropdown([]);
+    formRef.current.setFieldsValue({
+      subject: null,
+    });
   };
   const handleSection = (each) => {
+    setSubjectDropdown([]);
+    formRef.current.setFieldsValue({
+      subject: null,
+    });
     if (each) {
       setSectionID(each?.value);
       setSectionMappingID(each?.mappingId);
