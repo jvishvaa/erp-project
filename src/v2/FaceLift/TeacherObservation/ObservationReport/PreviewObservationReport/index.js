@@ -142,8 +142,8 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
           <table className='w-100 mt-1 th-12 th-report-table '>
             <colgroup>
               <col style={{ width: '15%' }} />
-              <col style={{ width: '65%' }} />
-              <col style={{ width: '15%' }} />
+              <col style={{ width: '40%' }} />
+              <col style={{ width: '40%' }} />
               <col style={{ width: '5%' }} />
             </colgroup>
             <tbody className='th-table-border'>
@@ -180,18 +180,18 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                   <tr>
                     <td
                       className='py-2 text-center th-fw-600'
-                      rowSpan={eachData?.observation?.length + 2}
+                      rowSpan={eachData?.observations?.length + 2}
                     >
                       {eachData?.observation_area_name}
                     </td>
                   </tr>
 
-                  {eachData?.observation?.map((eachParameter, i) => {
+                  {eachData?.observations?.map((eachParameter, i) => {
                     return (
                       <>
                         <tr>
                           <td className='py-2 ' style={{ background: '#ffffff' }}>
-                            {i + 1}. {eachParameter?.observationarea}
+                            {i + 1}. {eachParameter?.label}
                           </td>
                           <td className='py-2' style={{ background: '#ffffff' }}>
                             {eachParameter?.description}
@@ -200,7 +200,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                             className='py-2 text-center'
                             style={{ background: '#ffffff' }}
                           >
-                            {eachParameter?.score}
+                            {eachParameter?.observationScore}
                           </td>
                         </tr>
                       </>
@@ -276,9 +276,9 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
               </tr>
             </tbody>
           </table>
-          <div className='mt-2'>
+          {/* <div className='mt-2'>
             <span className='th-fw-500 th-black-1'>Supporting Document : </span>
-          </div>
+          </div> */}
         </div>
 
         <ReactToPrint
