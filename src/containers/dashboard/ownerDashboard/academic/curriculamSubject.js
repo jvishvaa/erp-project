@@ -129,6 +129,10 @@ const CurriculumCompletionSubject = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch)
+
   const [volumeListData, setVolumeListData] = useState([]);
   const [volumeId, setVolumeId] = useState([]);
   const [volumeName, setVolumeName] = useState('');
@@ -141,7 +145,6 @@ const CurriculumCompletionSubject = (props) => {
     },
   } = props;
 
-  console.log(props);
 
   useEffect(() => {
     setModuleId(history?.location?.state?.module_id);
@@ -151,7 +154,7 @@ const CurriculumCompletionSubject = (props) => {
     setTeacherView(history?.location?.state?.teacherView)
     if (history?.location?.state?.volume != null) {
       setVolumeId(history?.location?.state?.volume)
-    }
+    } 
     fetchVolumeListData()
   }, [history]);
 
@@ -161,19 +164,18 @@ const CurriculumCompletionSubject = (props) => {
   const { acad_session_id, module_id, acad_sess_id } = history.location.state;
 
   useEffect(() => {
-    console.log(dateToday);
     if (volumeId != null || volumeId != undefined) {
       gradeListTable({
         grade_id: history?.location?.state?.grade,
         session_year: selectedAcademicYear?.id,
-        acad_session: acad_sess_id,
+        acad_session: selectedBranch?.id,
         volume: volumeId
       });
     } else {
       gradeListTable({
         grade_id: history?.location?.state?.grade,
         session_year: selectedAcademicYear?.id,
-        acad_session: acad_sess_id
+        acad_session: selectedBranch?.id
       });
     }
   }, [volumeId]);
@@ -188,14 +190,13 @@ const CurriculumCompletionSubject = (props) => {
         },
       })
       .then((res) => {
-        console.log(res);
         setTableData(res?.data?.result);
         setLoading(false);
 
         // setStudentData(res.data.result);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         setLoading(false);
       });
   };
@@ -247,7 +248,6 @@ const CurriculumCompletionSubject = (props) => {
 
   const setVolumeFilters = () => {
     let volfind = volumeListData.filter(e => e?.id == history?.location?.state?.volumeId) || []
-    console.log(volfind);
     const temp = []
     const transform = volfind?.length > 0 && volfind.map((e) => {
       const data = {
@@ -257,7 +257,6 @@ const CurriculumCompletionSubject = (props) => {
       }
       temp.push(data)
     })
-    console.log(temp , transform);
     if(temp?.length > 0 ){
       handlevolume(temp[0])
       // setSelectedGrade(temp[0])
