@@ -707,10 +707,10 @@ const SubmissionData = withRouter(({
                             <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', width: '30%' }} >
                                 <Button onClick={handleSubmittedStd} style={{ color: '#50A167', borderColor: '#50A167' }} >Move to not Submitted</Button>
                             </div>
-
+                            {unevaluatedStudents?.length > 0 &&
                             <div className='card th-br-4' style={{ position: 'absolute', bottom: '0', right: 0, width: '30%' }} >
                                 <Button onClick={() => handleSubmittedEval(selectedRowKeys, false)} style={{ color: '#50A167', borderColor: '#50A167' }} >Move To Evaluated</Button>
-                            </div>
+                            </div>}
                         </>}
                     </>
                     : segment == 3 ?

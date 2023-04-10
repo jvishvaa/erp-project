@@ -106,16 +106,20 @@ const ObservationArea = () => {
           return each?.id;
         }),
         is_student: data?.is_student,
-        observation: data?.observation?.title,
+        observation: data?.observation?.id,
       });
     }, 100);
     setIsStudent(data.is_student);
     // });
   };
 
-  const handleStatus = (id, status) => {
+  const handleStatus = (id, data) => {
     let body = {
-      status: status ? false : true,
+      observation_area_name: data.observation_area_name,
+      is_student: data.is_student ? data.is_student : false,
+      levels: '13,11',
+      observation: data?.observation.id,
+      status: data.status ? false : true,
     };
     axios
       .put(`${endpoints.observations.updateObservationArea}${id}/`, body)
@@ -155,6 +159,7 @@ const ObservationArea = () => {
   console.log({ editId });
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
+    console.log({updateValues});
     if (updateValues.observation_area_name && updateValues.observation) {
       // const valuess = new FormData();
       // valuess.append('observation_area_name', updateValues.observation_area_name);
@@ -282,7 +287,7 @@ const ObservationArea = () => {
         return (
           <Switch
             checked={data.status ? true : false}
-            onChange={() => handleStatus(data.id, data.status)}
+            onChange={() => handleStatus(data.id, data)}
           />
         );
       },

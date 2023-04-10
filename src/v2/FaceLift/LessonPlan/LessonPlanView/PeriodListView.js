@@ -1497,7 +1497,7 @@ const PeriodListView = () => {
                                       </a>
                                     </div>
                                     
-                                    {/* {files?.document_type == 'Teacher_Reading_Material' && (
+                                    {files?.document_type == 'Teacher_Reading_Material' && (
                                       <div className='col-1'>
                                         <a
                                           rel='noopener noreferrer'
@@ -1506,7 +1506,7 @@ const PeriodListView = () => {
                                           <DownloadOutlined />
                                         </a>
                                     </div>
-                                    )} */}
+                                     )}
                                   </div>
                               </div>
                             </div>

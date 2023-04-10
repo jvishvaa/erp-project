@@ -84,7 +84,7 @@ const Evaluation = () => {
     },
     selectedFile,
   };
-  console.log({ selectedObservationArea });
+  console.log({ selectedFile });
 
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
@@ -236,64 +236,94 @@ const Evaluation = () => {
       e.preventDefault();
       tempData[id].observations[subId].description = e.target.value;
     } else {
-      console.log('score3', e, tempData[id].observations[subId].score);
-      if (Number(e) <= tempData[id].observations[subId].score) {
-        tempData[id].observations[subId].observationScore = e;
-      } else {
+      console.log('score3', e, tempData[id].observations[subId].score, typeof( e), typeof(tempData[id].observations[subId].score));
+      if (e > tempData[id].observations[subId].score) {
+        tempData[id].observations[subId].observationScore = tempData[id].observations[subId].score;
+        // tempData[id].observations[subId].observationScore = e;
         message.error("Obtained marks can't exceeds Observation max marks");
-      }
+      } 
     }
     setModifiedData([...tempData]);
   };
 
   const handleSubmit = () => {
+    console.log('selectedFile',selectedFile)
+
+    const formData = new FormData();
+  
     // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
     if (subjectID && teacherErp) {
-      var obj = {
-        acad_session: selectedBranch?.id,
-        date: moment().format('YYYY-MM-DD'),
-        erp_user: teacherId,
-        teacher_name: teacherName,
-        teacher_erp: teacherErp,
-        remark: overallRemarks,
+      formData.append('acad_session', selectedBranch?.id);
+      formData.append('date', moment().format('YYYY-MM-DD'));
+      formData.append('erp_user', teacherId);
+      formData.append('teacher_name', teacherName);
+      formData.append('teacher_erp', teacherErp);
+      formData.append('remark', overallRemarks);
+      formData.append('score', marksObtained);
+      formData.append('report', JSON.stringify(modifiedData));
+      formData.append('subject_map', subjectID);
+      formData.append('is_student', false);
+      formData.append('reviewed_by', role_details?.erp_user_id);
+      formData.append('file', selectedFile);
+      // var obj = {
+      //   acad_session: selectedBranch?.id,
+      //   date: moment().format('YYYY-MM-DD'),
+      //   erp_user: teacherId,
+      //   teacher_name: teacherName,
+      //   teacher_erp: teacherErp,
+      //   remark: overallRemarks,
         // score: _.sumBy(flatttenData, 'score'),
-        score: marksObtained,
-        report: JSON.stringify(modifiedData),
-        subject_map: subjectID,
+        // score: marksObtained,
+        // report: JSON.stringify(modifiedData),
+        // subject_map: subjectID,
         // section_mapping: sectionID,
-        is_student: false,
-        reviewed_by: role_details?.erp_user_id,
-      };
+        // is_student: false,
+        // reviewed_by: role_details?.erp_user_id,
+        // file: selectedFile,
+      // };
     } else if (studentErp && subjectID) {
-      var obj = {
-        acad_session: selectedBranch?.id,
-        date: moment().format('YYYY-MM-DD'),
-        erp_user: studentId,
-        teacher_name: studentName,
-        teacher_erp: studentErp,
-        remark: overallRemarks,
+      // var obj = {
+      //   acad_session: selectedBranch?.id,
+      //   date: moment().format('YYYY-MM-DD'),
+      //   erp_user: studentId,
+      //   teacher_name: studentName,
+      //   teacher_erp: studentErp,
+      //   remark: overallRemarks,
         // score: _.sumBy(flatttenData, 'score'),
-        score: marksObtained,
-        report: JSON.stringify(modifiedData),
-        subject_map: subjectID,
+        // score: marksObtained,
+        // report: JSON.stringify(modifiedData),
+        // subject_map: subjectID,
         // section_mapping: sectionID,
-        student: studentId,
-        is_student: true,
-        reviewed_by: role_details?.erp_user_id,
-      };
+      //   student: studentId,
+      //   is_student: true,
+      //   reviewed_by: role_details?.erp_user_id,
+      //   file: selectedFile,
+      // };
+      formData.append('acad_session', selectedBranch?.id);
+      formData.append('date', moment().format('YYYY-MM-DD'));
+      formData.append('erp_user', studentId);
+      formData.append('teacher_name', studentName);
+      formData.append('teacher_erp', studentErp);
+      formData.append('remark', overallRemarks);
+      formData.append('score', marksObtained);
+      formData.append('report', JSON.stringify(modifiedData));
+      formData.append('subject_map', subjectID);
+      formData.append('is_student', true);
+      formData.append('reviewed_by', role_details?.erp_user_id);
+      formData.append('file', selectedFile);
     } else {
       message.error('Please select all required fields ');
       return;
     }
     axios
-      .post(`${endpoints.observationName.observationReport}`, obj)
+      .post(`${endpoints.observationName.observationReport}`, formData)
       .then((res) => {
         if (res.status === 201) {
           message.success('Successfully Submitted');
 
-          // setTimeout(function () {
-          //   window.location.reload(1);
-          // }, 2000);
+          setTimeout(function () {
+            window.location.reload(1);
+          }, 2000);
         }
       })
       .catch((error) => {
@@ -568,7 +598,7 @@ const Evaluation = () => {
                 {i + 1}. {item.label}
               </div>
               <div className='col-md-3'>
-                <Input
+                <Input.TextArea
                   placeholder='Description'
                   onChange={(e) => handleScoreDesciption(e, index, i, 'description')}
                 />
@@ -578,7 +608,7 @@ const Evaluation = () => {
                   className='w-100'
                   max={item?.observationScore}
                   min={0}
-                  placeholder={`Score Max(${item?.score})`}
+                  placeholder={`Score Max * (${item?.score})`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
@@ -665,7 +695,7 @@ const Evaluation = () => {
                 <Select
                   className='th-width-100 th-br-6'
                   onChange={handleGrade}
-                  placeholder='Grade'
+                  placeholder='Grade *'
                   allowClear
                   onClear={handleClearGrade}
                   showSearch
@@ -684,7 +714,7 @@ const Evaluation = () => {
                 <Select
                   className='th-width-100 th-br-6'
                   onChange={(e, value) => handleSection(value)}
-                  placeholder='Section'
+                  placeholder='Section *'
                   allowClear
                   onClear={handleClearSection}
                   showSearch
@@ -704,7 +734,7 @@ const Evaluation = () => {
                 <Select
                   className='th-width-100 th-br-6'
                   onChange={(e, value) => handleSubject(value)}
-                  placeholder='Select Subject*'
+                  placeholder='Select Subject *'
                   allowClear
                   showSearch
                   optionFilterProp='children'
@@ -772,7 +802,7 @@ const Evaluation = () => {
                   {marksObtained}/{overallScore}
                 </span>
               </div>
-              {/* <div className='col-md-3 py-2 th-16'>
+              <div className='col-md-3 py-2 th-16'>
                 <Upload {...uploadProps} className='w-75'>
                   <Button icon={<UploadOutlined />}>
                     {selectedFile ? 'Change' : 'Upload'} File
@@ -800,7 +830,7 @@ const Evaluation = () => {
                     </div>
                   </div>
                 )}
-              </div> */}
+              </div>
               <div className='col-md-3 py-2'>
                 <Button onClick={handleSubmit} type='primary' className='w-50'>
                   Submit
