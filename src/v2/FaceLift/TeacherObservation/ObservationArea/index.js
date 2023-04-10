@@ -124,6 +124,9 @@ const ObservationArea = () => {
     axios
       .put(`${endpoints.observations.updateObservationArea}${id}/`, body)
       .then((res) => {
+        fetchObservationAreaList({
+          is_student: tableView === 'teacher' ? false : true,
+        });
         // // observationGet({ is_student: tableView === 'teacher' ? false : true });
       })
       .catch((error) => console.log(error));
@@ -136,7 +139,7 @@ const ObservationArea = () => {
         if (result.data?.status_code === 200) {
           message.success('Successfully Deleted');
           fetchObservationAreaList({
-            is_student: tableView === 'teacher' ? true : false,
+            is_student: tableView === 'teacher' ? false : true,
           });
           // observationGet({ is_student: tableView === 'teacher' ? false : true });
         } else {

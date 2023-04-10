@@ -231,18 +231,21 @@ const Evaluation = () => {
   };
 
   const handleScoreDesciption = (e, id, subId, field) => {
+    console.log('e',e)
     let tempData = modifiedData;
+    console.log('modifiedData', modifiedData, e);
     if (field === 'description') {
       e.preventDefault();
       tempData[id].observations[subId].description = e.target.value;
     } else {
       console.log('score3', e, tempData[id].observations[subId].score, typeof( e), typeof(tempData[id].observations[subId].score));
-      if (e > tempData[id].observations[subId].score) {
-        tempData[id].observations[subId].observationScore = tempData[id].observations[subId].score;
-        // tempData[id].observations[subId].observationScore = e;
+      if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
+        tempData[id].observations[subId].observationScore = e;
+      } else {
         message.error("Obtained marks can't exceeds Observation max marks");
-      } 
+      }
     }
+    console.log();
     setModifiedData([...tempData]);
   };
 
@@ -606,9 +609,9 @@ const Evaluation = () => {
               <div className='col-md-2 pl-0'>
                 <InputNumber
                   className='w-100'
-                  max={item?.observationScore}
+                  max={item?.score}
                   min={0}
-                  placeholder={`Score Max * (${item?.score})`}
+                  placeholder={`Score Max * (${item?.score}) ${item.observationScore}`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
