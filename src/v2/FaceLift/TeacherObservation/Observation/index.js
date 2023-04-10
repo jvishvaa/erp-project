@@ -108,12 +108,17 @@ const Observation = () => {
     // });
   };
 
-  const handleStatus = (id, status) => {
+  const handleStatus = (id, data) => {
+    console.log('status', data);
+    
     let body = {
-      status: status ? false : true,
+      title: data?.title,
+      status: data?.status ? false : true,
+      is_student: data?.is_student,
+      observations: data?.observations,
     };
     axios
-      .put(`${endpoints.observations.observationList}${id}/`, body)
+      .put(`${endpoints.observations.updateObservation}${id}/`, body)
       .then((res) => {
         fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
       })
@@ -172,6 +177,11 @@ const Observation = () => {
       message.error('Please fill the observation title');
       return;
     }
+    if (observation?.title.length > 100) {
+      message.error('Observation title must be less than 100 character');
+      return;
+    }
+    
     if (isFieldNull) {
       message.error('Please fill all the details');
       return;
@@ -179,7 +189,7 @@ const Observation = () => {
       setRequestSent(true);
       if (editId) {
         axios
-          .put(`${endpoints.observations.updateObservation}`, observation)
+          .put(`${endpoints.observations.updateObservation}${editId}/`, observation)
           .then((result) => {
             if (result?.data?.status_code == 200) {
               message.success('Observation updated successfully');
@@ -197,6 +207,22 @@ const Observation = () => {
             setRequestSent(false);
           });
       } else {
+        if (!observation?.observations[0]?.label) {
+          message.error('Please fill the Label');
+          return;
+        }
+        if (observation?.observations[0]?.label.length > 400) {
+          message.error('Label must be less than 400 character');
+          return;
+        }
+        if (!observation?.observations[0]?.score) {
+          message.error('Please Enter Score');
+          return;
+        }
+        if (observation?.observations[0]?.score.toString().length > 2) {
+          message.error('Score must be less than 3 character');
+          return;
+        }
         axios
           .post(`${endpoints.observations.observationList}`, observation)
           .then((result) => {
@@ -273,7 +299,9 @@ const Observation = () => {
           console.log({ record });
           return (
             <div className='d-flex  align-items-center py-1 '>
-              <div className='col-md-2 th-14'>{i + 1}</div>
+              <div className='col-md-2 th-14'>
+                {/* {i + 1} */}
+                </div>
               <div className='col-md-7'>
                 <div>{item?.label}</div>
               </div>
@@ -292,7 +320,8 @@ const Observation = () => {
         return (
           <Switch
             checked={data.status ? true : false}
-            onChange={() => handleStatus(data.id, data.status)}
+            // onChange={() => handleStatus(data.id, data.status)}
+            onChange={() => handleStatus(data.id, data)}
           />
         );
       },
@@ -475,6 +504,7 @@ const Observation = () => {
                       label='Enter Label'
                       rules={[{ required: true, message: 'Please enter Label' }]}
                     > */}
+                  {/* <div className='mb-2'>Enter Observation Title *</div> */}
                   <Input
                     onChange={(e) => {
                       e.preventDefault();
@@ -482,11 +512,12 @@ const Observation = () => {
                     }}
                     className='w-100 th-br-5'
                     value={item?.label}
-                    placeholder='Enter Label'
+                    required
+                    placeholder='Enter Label *'
                   />
                   {/* </Form.Item> */}
                 </div>
-                <div className='col-4'>
+                <div className='col-5'>
                   {/* <Form.Item
                       name='score'
                       label='Enter Score'
@@ -498,7 +529,8 @@ const Observation = () => {
                     }}
                     className='w-100 th-br-5'
                     value={item?.score}
-                    placeholder='Enter Score'
+                    placeholder='Enter Score *'
+                    type='number'
                   />
                   {/* </Form.Item> */}
                 </div>
