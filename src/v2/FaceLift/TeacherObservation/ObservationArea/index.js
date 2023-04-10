@@ -32,6 +32,7 @@ const ObservationArea = () => {
   const [isStudent, setIsStudent] = useState(false);
   const [tableView, setTableView] = useState('teacher');
   const [userLevelList, setUserLevelList] = useState([]);
+  const [requestSent, setRequestSent] = useState(false);
 
   useEffect(() => {
     fetchUserLevel();
@@ -40,7 +41,6 @@ const ObservationArea = () => {
     fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
     fetchObservationAreaList({ is_student: tableView === 'teacher' ? false : true });
   }, [tableView]);
-  console.log({ observationsList });
   const fetchObservationList = (params = {}) => {
     axios
       .get(`${endpoints.observations.observationList}`, {
@@ -165,10 +165,8 @@ const ObservationArea = () => {
     setEditId(null);
     formRef.current.resetFields();
   };
-  console.log({ editId });
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
-    console.log({ updateValues });
     if (updateValues.observation_area_name && updateValues.observation) {
       // const valuess = new FormData();
       // valuess.append('observation_area_name', updateValues.observation_area_name);
@@ -190,6 +188,7 @@ const ObservationArea = () => {
         observation: updateValues.observation,
         status: true,
       };
+      setRequestSent(true);
       if (editId) {
         axios
           .put(`${endpoints.observations.updateObservationArea}${editId}/`, payload)
@@ -204,6 +203,9 @@ const ObservationArea = () => {
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            setRequestSent(false);
           });
       } else {
         axios
@@ -219,6 +221,9 @@ const ObservationArea = () => {
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            setRequestSent(false);
           });
       }
     } else {
@@ -398,6 +403,7 @@ const ObservationArea = () => {
               <Button
                 form='incomeForm'
                 onClick={onSubmit}
+                disabled={requestSent}
                 type='primary'
                 htmlType='submit'
               >

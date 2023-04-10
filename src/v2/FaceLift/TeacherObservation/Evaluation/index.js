@@ -73,7 +73,6 @@ const Evaluation = () => {
     beforeUpload: (...file) => {
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      console.log({ type }, { file });
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file[1]);
       } else {
@@ -84,7 +83,6 @@ const Evaluation = () => {
     },
     selectedFile,
   };
-  console.log({ selectedFile });
 
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
@@ -236,21 +234,18 @@ const Evaluation = () => {
       e.preventDefault();
       tempData[id].observations[subId].description = e.target.value;
     } else {
-      console.log('score3', e, tempData[id].observations[subId].score, typeof( e), typeof(tempData[id].observations[subId].score));
-      if (e > tempData[id].observations[subId].score) {
-        tempData[id].observations[subId].observationScore = tempData[id].observations[subId].score;
-        // tempData[id].observations[subId].observationScore = e;
+      if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
+        tempData[id].observations[subId].observationScore = e;
+      } else {
         message.error("Obtained marks can't exceeds Observation max marks");
-      } 
+      }
     }
     setModifiedData([...tempData]);
   };
 
   const handleSubmit = () => {
-    console.log('selectedFile',selectedFile)
-
     const formData = new FormData();
-  
+
     // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
     if (subjectID && teacherErp) {
       formData.append('acad_session', selectedBranch?.id);
@@ -272,14 +267,14 @@ const Evaluation = () => {
       //   teacher_name: teacherName,
       //   teacher_erp: teacherErp,
       //   remark: overallRemarks,
-        // score: _.sumBy(flatttenData, 'score'),
-        // score: marksObtained,
-        // report: JSON.stringify(modifiedData),
-        // subject_map: subjectID,
-        // section_mapping: sectionID,
-        // is_student: false,
-        // reviewed_by: role_details?.erp_user_id,
-        // file: selectedFile,
+      // score: _.sumBy(flatttenData, 'score'),
+      // score: marksObtained,
+      // report: JSON.stringify(modifiedData),
+      // subject_map: subjectID,
+      // section_mapping: sectionID,
+      // is_student: false,
+      // reviewed_by: role_details?.erp_user_id,
+      // file: selectedFile,
       // };
     } else if (studentErp && subjectID) {
       // var obj = {
@@ -289,11 +284,11 @@ const Evaluation = () => {
       //   teacher_name: studentName,
       //   teacher_erp: studentErp,
       //   remark: overallRemarks,
-        // score: _.sumBy(flatttenData, 'score'),
-        // score: marksObtained,
-        // report: JSON.stringify(modifiedData),
-        // subject_map: subjectID,
-        // section_mapping: sectionID,
+      // score: _.sumBy(flatttenData, 'score'),
+      // score: marksObtained,
+      // report: JSON.stringify(modifiedData),
+      // subject_map: subjectID,
+      // section_mapping: sectionID,
       //   student: studentId,
       //   is_student: true,
       //   reviewed_by: role_details?.erp_user_id,
@@ -320,10 +315,9 @@ const Evaluation = () => {
       .then((res) => {
         if (res.status === 201) {
           message.success('Successfully Submitted');
-
           setTimeout(function () {
             window.location.reload(1);
-          }, 2000);
+          }, 1000);
         }
       })
       .catch((error) => {
@@ -493,6 +487,8 @@ const Evaluation = () => {
     setGradeID(null);
     setSectionID(null);
     setSubjectID(null);
+    setSelectedObservationArea(null);
+    setModifiedData([]);
     setTeacherData([]);
     setStudentData([]);
     handleClearGrade();
@@ -583,9 +579,9 @@ const Evaluation = () => {
       title: (
         <span className='th-white th-fw-700'>
           <div className='d-flex align-items-center'>
-            <div className='col-md-7 pl-0'> {'Observation'}</div>
+            <div className='col-md-6 pl-0'> {'Observation'}</div>
             <div className='col-md-3'>Description</div>
-            <div className='col-md-2 pl-0'>Score</div>
+            <div className='col-md-3 pl-0'>Score</div>
           </div>
         </span>
       ),
@@ -594,7 +590,7 @@ const Evaluation = () => {
         record.observations?.map((item, i) => {
           return (
             <div className='d-flex border-bottom align-items-center py-1 '>
-              <div className='col-md-7 pl-0 th-14'>
+              <div className='col-md-6 pl-0 th-14'>
                 {i + 1}. {item.label}
               </div>
               <div className='col-md-3'>
@@ -603,12 +599,12 @@ const Evaluation = () => {
                   onChange={(e) => handleScoreDesciption(e, index, i, 'description')}
                 />
               </div>
-              <div className='col-md-2 pl-0'>
+              <div className='col-md-3 pl-0'>
                 <InputNumber
                   className='w-100'
-                  max={item?.observationScore}
+                  max={item?.score}
                   min={0}
-                  placeholder={`Score Max * (${item?.score})`}
+                  placeholder={`Score Max * (${item?.score}) ${item.observationScore}`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
@@ -627,7 +623,6 @@ const Evaluation = () => {
     'observationScore'
   );
   // console.log({ tableData });
-  console.log({ modifiedData, marksObtained, overallScore });
   return (
     <React.Fragment>
       <Layout>
@@ -655,7 +650,7 @@ const Evaluation = () => {
                 onChange={(e, value) => setSelectedObservationArea(value)}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 placeholder={'Select Observation Area'}
-                // value={selectedObservationArea}
+                value={selectedObservationArea}
                 showSearch
                 optionFilterProp='children'
                 filterOption={(input, options) => {
