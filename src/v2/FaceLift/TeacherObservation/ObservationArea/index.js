@@ -40,7 +40,6 @@ const ObservationArea = () => {
     fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
     fetchObservationAreaList({ is_student: tableView === 'teacher' ? false : true });
   }, [tableView]);
-  console.log({ observationsList });
   const fetchObservationList = (params = {}) => {
     axios
       .get(`${endpoints.observations.observationList}`, {
@@ -124,6 +123,9 @@ const ObservationArea = () => {
     axios
       .put(`${endpoints.observations.updateObservationArea}${id}/`, body)
       .then((res) => {
+        fetchObservationAreaList({
+          is_student: tableView === 'teacher' ? false : true,
+        });
         // // observationGet({ is_student: tableView === 'teacher' ? false : true });
       })
       .catch((error) => console.log(error));
@@ -136,7 +138,7 @@ const ObservationArea = () => {
         if (result.data?.status_code === 200) {
           message.success('Successfully Deleted');
           fetchObservationAreaList({
-            is_student: tableView === 'teacher' ? true : false,
+            is_student: tableView === 'teacher' ? false : true,
           });
           // observationGet({ is_student: tableView === 'teacher' ? false : true });
         } else {
@@ -156,10 +158,8 @@ const ObservationArea = () => {
     setEditId(null);
     formRef.current.resetFields();
   };
-  console.log({ editId });
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
-    console.log({updateValues});
     if (updateValues.observation_area_name && updateValues.observation) {
       // const valuess = new FormData();
       // valuess.append('observation_area_name', updateValues.observation_area_name);

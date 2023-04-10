@@ -73,7 +73,6 @@ const Evaluation = () => {
     beforeUpload: (...file) => {
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      console.log({ type }, { file });
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file[1]);
       } else {
@@ -84,8 +83,8 @@ const Evaluation = () => {
     },
     selectedFile,
   };
-  console.log({ selectedFile });
 
+  
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
     //  setLoading(true);
@@ -236,19 +235,16 @@ const Evaluation = () => {
       e.preventDefault();
       tempData[id].observations[subId].description = e.target.value;
     } else {
-      console.log('score3', e, tempData[id].observations[subId].score, typeof( e), typeof(tempData[id].observations[subId].score));
-      if (e > tempData[id].observations[subId].score) {
-        tempData[id].observations[subId].observationScore = tempData[id].observations[subId].score;
-        // tempData[id].observations[subId].observationScore = e;
+      if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
+        tempData[id].observations[subId].observationScore = e;
+      } else {
         message.error("Obtained marks can't exceeds Observation max marks");
-      } 
+      }
     }
     setModifiedData([...tempData]);
   };
 
   const handleSubmit = () => {
-    console.log('selectedFile',selectedFile)
-
     const formData = new FormData();
   
     // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
@@ -606,9 +602,9 @@ const Evaluation = () => {
               <div className='col-md-2 pl-0'>
                 <InputNumber
                   className='w-100'
-                  max={item?.observationScore}
+                  max={item?.score}
                   min={0}
-                  placeholder={`Score Max * (${item?.score})`}
+                  placeholder={`Score Max * (${item?.score}) ${item.observationScore}`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
@@ -627,7 +623,6 @@ const Evaluation = () => {
     'observationScore'
   );
   // console.log({ tableData });
-  console.log({ modifiedData, marksObtained, overallScore });
   return (
     <React.Fragment>
       <Layout>
