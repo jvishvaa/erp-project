@@ -84,7 +84,6 @@ const Evaluation = () => {
     selectedFile,
   };
 
-  
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
     //  setLoading(true);
@@ -246,7 +245,7 @@ const Evaluation = () => {
 
   const handleSubmit = () => {
     const formData = new FormData();
-  
+
     // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
     if (subjectID && teacherErp) {
       formData.append('acad_session', selectedBranch?.id);
@@ -268,14 +267,14 @@ const Evaluation = () => {
       //   teacher_name: teacherName,
       //   teacher_erp: teacherErp,
       //   remark: overallRemarks,
-        // score: _.sumBy(flatttenData, 'score'),
-        // score: marksObtained,
-        // report: JSON.stringify(modifiedData),
-        // subject_map: subjectID,
-        // section_mapping: sectionID,
-        // is_student: false,
-        // reviewed_by: role_details?.erp_user_id,
-        // file: selectedFile,
+      // score: _.sumBy(flatttenData, 'score'),
+      // score: marksObtained,
+      // report: JSON.stringify(modifiedData),
+      // subject_map: subjectID,
+      // section_mapping: sectionID,
+      // is_student: false,
+      // reviewed_by: role_details?.erp_user_id,
+      // file: selectedFile,
       // };
     } else if (studentErp && subjectID) {
       // var obj = {
@@ -285,11 +284,11 @@ const Evaluation = () => {
       //   teacher_name: studentName,
       //   teacher_erp: studentErp,
       //   remark: overallRemarks,
-        // score: _.sumBy(flatttenData, 'score'),
-        // score: marksObtained,
-        // report: JSON.stringify(modifiedData),
-        // subject_map: subjectID,
-        // section_mapping: sectionID,
+      // score: _.sumBy(flatttenData, 'score'),
+      // score: marksObtained,
+      // report: JSON.stringify(modifiedData),
+      // subject_map: subjectID,
+      // section_mapping: sectionID,
       //   student: studentId,
       //   is_student: true,
       //   reviewed_by: role_details?.erp_user_id,
@@ -316,10 +315,9 @@ const Evaluation = () => {
       .then((res) => {
         if (res.status === 201) {
           message.success('Successfully Submitted');
-
           setTimeout(function () {
             window.location.reload(1);
-          }, 2000);
+          }, 1000);
         }
       })
       .catch((error) => {
@@ -489,6 +487,8 @@ const Evaluation = () => {
     setGradeID(null);
     setSectionID(null);
     setSubjectID(null);
+    setSelectedObservationArea(null);
+    setModifiedData([]);
     setTeacherData([]);
     setStudentData([]);
     handleClearGrade();
@@ -579,9 +579,9 @@ const Evaluation = () => {
       title: (
         <span className='th-white th-fw-700'>
           <div className='d-flex align-items-center'>
-            <div className='col-md-7 pl-0'> {'Observation'}</div>
+            <div className='col-md-6 pl-0'> {'Observation'}</div>
             <div className='col-md-3'>Description</div>
-            <div className='col-md-2 pl-0'>Score</div>
+            <div className='col-md-3 pl-0'>Score</div>
           </div>
         </span>
       ),
@@ -590,21 +590,21 @@ const Evaluation = () => {
         record.observations?.map((item, i) => {
           return (
             <div className='d-flex border-bottom align-items-center py-1 '>
-              <div className='col-md-7 pl-0 th-14'>
+              <div className='col-md-6 pl-0 th-14'>
                 {i + 1}. {item.label}
               </div>
               <div className='col-md-3'>
                 <Input.TextArea
-                  placeholder='Description'
+                  placeholder='Description *'
                   onChange={(e) => handleScoreDesciption(e, index, i, 'description')}
                 />
               </div>
-              <div className='col-md-2 pl-0'>
+              <div className='col-md-3 pl-0'>
                 <InputNumber
                   className='w-100'
                   max={item?.score}
                   min={0}
-                  placeholder={`Score Max * (${item?.score}) ${item.observationScore}`}
+                  placeholder={`Score Max * (${item?.score})`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
@@ -650,7 +650,7 @@ const Evaluation = () => {
                 onChange={(e, value) => setSelectedObservationArea(value)}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 placeholder={'Select Observation Area'}
-                // value={selectedObservationArea}
+                value={selectedObservationArea}
                 showSearch
                 optionFilterProp='children'
                 filterOption={(input, options) => {
