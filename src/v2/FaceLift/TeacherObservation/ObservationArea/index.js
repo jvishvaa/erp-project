@@ -117,14 +117,23 @@ const ObservationArea = () => {
     let body = {
       observation_area_name: data.observation_area_name,
       is_student: data.is_student ? data.is_student : false,
-      levels: '13,11',
+      levels: data?.levels?.map((item) => item.id).toString(),
       observation: data?.observation.id,
       status: data.status ? false : true,
     };
     axios
       .put(`${endpoints.observations.updateObservationArea}${id}/`, body)
-      .then((res) => {
+      .then((result) => {
         // // observationGet({ is_student: tableView === 'teacher' ? false : true });
+        if (result.data?.status_code === 200) {
+          message.success('Successfully Updated');
+          fetchObservationAreaList({
+            is_student: tableView === 'teacher' ? false : true,
+          });
+          // observationGet({ is_student: tableView === 'teacher' ? false : true });
+        } else {
+          message.error('Something went wrong');
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -136,7 +145,7 @@ const ObservationArea = () => {
         if (result.data?.status_code === 200) {
           message.success('Successfully Deleted');
           fetchObservationAreaList({
-            is_student: tableView === 'teacher' ? true : false,
+            is_student: tableView === 'teacher' ? false : true,
           });
           // observationGet({ is_student: tableView === 'teacher' ? false : true });
         } else {
@@ -159,7 +168,7 @@ const ObservationArea = () => {
   console.log({ editId });
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
-    console.log({updateValues});
+    console.log({ updateValues });
     if (updateValues.observation_area_name && updateValues.observation) {
       // const valuess = new FormData();
       // valuess.append('observation_area_name', updateValues.observation_area_name);
@@ -177,7 +186,7 @@ const ObservationArea = () => {
       let payload = {
         observation_area_name: updateValues.observation_area_name,
         is_student: updateValues.is_student ? updateValues.is_student : false,
-        levels: '13,11',
+        levels: updateValues?.levels?.toString(),
         observation: updateValues.observation,
         status: true,
       };
@@ -272,7 +281,7 @@ const ObservationArea = () => {
         <span className='th-black-1 th-14'>
           {data
             ?.map((item) => {
-              return item?.id;
+              return userLevelList.filter((each) => each.id == item?.id)[0]?.level_name;
             })
             ?.toString()}
         </span>

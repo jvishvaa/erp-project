@@ -110,7 +110,7 @@ const Observation = () => {
 
   const handleStatus = (id, data) => {
     console.log('status', data);
-    
+
     let body = {
       title: data?.title,
       status: data?.status ? false : true,
@@ -173,7 +173,7 @@ const Observation = () => {
         return false;
       }
     });
-    if (!observation?.title) {
+    if (!observation?.title.trim().length) {
       message.error('Please fill the observation title');
       return;
     }
@@ -181,7 +181,7 @@ const Observation = () => {
       message.error('Observation title must be less than 100 character');
       return;
     }
-    
+
     if (isFieldNull) {
       message.error('Please fill all the details');
       return;
@@ -299,9 +299,7 @@ const Observation = () => {
           console.log({ record });
           return (
             <div className='d-flex  align-items-center py-1 '>
-              <div className='col-md-2 th-14'>
-                {/* {i + 1} */}
-                </div>
+              <div className='col-md-2 th-14'>{/* {i + 1} */}</div>
               <div className='col-md-7'>
                 <div>{item?.label}</div>
               </div>
