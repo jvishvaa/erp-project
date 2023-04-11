@@ -463,7 +463,7 @@ const RatingCreate = () => {
       return;
     }
     let body = {
-      sub_type: subActivityType?.sub_type,
+      sub_type: subActivityType?.name,
       activity_type: ActivityType?.name,
       grading_scheme: inputList,
       criteria_title:
@@ -1188,23 +1188,23 @@ const RatingCreate = () => {
             <div className='row mt-1'>
               <div className='col-md-6 md-sm-0'>
                 {/* <Form.Item name='activity_type'> */}
-                  <Select
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    placeholder='Select Activity Type'
-                    showSearch
-                    value={ActivityType}
-                    optionFilterProp='children'
-                    filterOption={(input, option) => {
-                      return (
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => handleActivityChange(e, value)}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={true}
-                  >
-                    {activityOption}
-                  </Select>
+                <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  placeholder='Select Activity Type'
+                  showSearch
+                  value={ActivityType}
+                  optionFilterProp='children'
+                  filterOption={(input, option) => {
+                    return (
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => handleActivityChange(e, value)}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={true}
+                >
+                  {activityOption}
+                </Select>
                 {/* </Form.Item> */}
               </div>
             </div>
