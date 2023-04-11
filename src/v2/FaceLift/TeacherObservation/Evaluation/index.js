@@ -59,14 +59,11 @@ const Evaluation = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [requestSent, setRequestSent] = useState(false);
   const allowedFiles = ['.jpeg', '.jpg', '.png', '.pdf', '.mp4'];
-  // useEffect(() => {
-  //   observationGet({ levels__id__in: user_level, status: true });
-  // }, []);
+
   const uploadProps = {
     showUploadList: false,
     disabled: false,
     accept: allowedFiles.join(),
-    // '.xls,.xlsx',
     multiple: false,
     onRemove: () => {
       setSelectedFile(null);
@@ -74,6 +71,10 @@ const Evaluation = () => {
     beforeUpload: (...file) => {
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      if (file[0]?.size > 31457280) {
+        message.error('Selected file size should be less than 30MB');
+        return false;
+      }
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file[1]);
       } else {
@@ -141,7 +142,7 @@ const Evaluation = () => {
           console.log(error);
           setLoading(false);
         });
-      // setTableData({
+
       //   id: 2,
       //   title: 'ROHIT abcd',
       //   status: true,
@@ -792,7 +793,7 @@ const Evaluation = () => {
                 {!selectedFile ? (
                   <div className='th-10 mt-2'>
                     {' '}
-                    Accepted Files: Images , PDF, Audio & Video{' '}
+                    Accepted Files: Images , PDF, Audio & Video (max. 30MB){' '}
                   </div>
                 ) : (
                   <div className='mt-2 th-14'>
