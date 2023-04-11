@@ -130,6 +130,11 @@ const ObservationReport = () => {
 
   const handleGrade = (e, value) => {
     setSectionDropdown([]);
+    setSubjectDropdown([]);
+    formRef.current.setFieldsValue({
+      section: null,
+      subject: null,
+    });
     if (e) {
       setGradeID(e);
       const params = {
@@ -154,13 +159,24 @@ const ObservationReport = () => {
     setGradeID(null);
     setSectionDropdown([]);
     setSubjectDropdown([]);
+    formRef.current.setFieldsValue({
+      section: null,
+      subject: null,
+    });
   };
 
   const handleClearSection = () => {
     setSectionID(null);
     setSubjectDropdown([]);
+    formRef.current.setFieldsValue({
+      subject: null,
+    });
   };
   const handleSection = (each) => {
+    setSubjectDropdown([]);
+    formRef.current.setFieldsValue({
+      subject: null,
+    });
     if (each) {
       setSectionID(each?.value);
       setSectionMappingID(each?.mappingId);
@@ -243,7 +259,12 @@ const ObservationReport = () => {
       title: <span className='th-white th-fw-700'>Remark</span>,
       align: 'center',
       dataIndex: 'remark',
-      render: (data) => <span className='th-black-1 th-16'>{data}</span>,
+      width: '35%',
+      render: (data) => (
+        <span className='th-black-1 th-16 th-truncate-4' title={data}>
+          {data}
+        </span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Evaluation Date</span>,
@@ -421,7 +442,7 @@ const ObservationReport = () => {
                 rowKey={(record) => record?.id}
                 dataSource={data}
                 pagination={false}
-                // scroll={{ y: '400px' }}
+                scroll={{ y: '400px' }}
               />
             </div>
           </div>

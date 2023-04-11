@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'config/endpoints';
+import endpointsV2 from 'v2/config/endpoints';
 import {
   Breadcrumb,
   Select,
@@ -11,10 +12,13 @@ import {
   message,
   Table,
   InputNumber,
+  Upload,
 } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
+import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 
 const { Option } = Select;
 
@@ -26,6 +30,9 @@ const Evaluation = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [data, setData] = useState([]);
+  const [observationAreaList, setObservationAreaList] = useState([]);
+  const [selectedObservationArea, setSelectedObservationArea] = useState(null);
+  const [tableData, setTableData] = useState([]);
   const [modifiedData, setModifiedData] = useState([]);
   const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -43,48 +50,132 @@ const Evaluation = () => {
   const [studentId, setStudentId] = useState();
   const [studentName, setStudentName] = useState();
   const [studentErp, setStudentErp] = useState();
-
   const [overallRemarks, setOverallRemarks] = useState('');
   const [teacherData, setTeacherData] = useState([]);
   const [studentData, setStudentData] = useState([]);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { role_details } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [tableView, setTableView] = useState('teacher');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [requestSent, setRequestSent] = useState(false);
+  const allowedFiles = ['.jpeg', '.jpg', '.png', '.pdf', '.mp4'];
 
-  // useEffect(() => {
-  //   observationGet({ levels__id__in: user_level, status: true });
-  // }, []);
+  const uploadProps = {
+    showUploadList: false,
+    disabled: false,
+    accept: allowedFiles.join(),
+    multiple: false,
+    onRemove: () => {
+      setSelectedFile(null);
+    },
+    beforeUpload: (...file) => {
+      setSelectedFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      if (file[0]?.size > 31457280) {
+        message.error('Selected file size should be less than 30MB');
+        return false;
+      }
+      if (allowedFiles.includes(type)) {
+        setSelectedFile(...file[1]);
+      } else {
+        message.error(' Please select the correct file type');
+      }
 
-  useEffect(() => {
-    observationGet({
-      is_student: tableView === 'teacher' ? false : true,
-      levels__id__in: user_level,
-      status: true,
-    });
-  }, [tableView]);
+      return false;
+    },
+    selectedFile,
+  };
 
-  const observationGet = (params = {}) => {
-    setLoading(true);
+  const fetchObservationAreasList = (params = {}) => {
+    setSelectedObservationArea(null);
+    //  setLoading(true);
     axios
-      .get(`${endpoints.observationName.observationData}`, {
-        params: { ...params },
-      })
+      .get(`${endpointsV2.observations.observationAreaList}`, { params: { ...params } })
       .then((result) => {
-        if (result.status === 200) {
-          setData(result?.data);
-          modifyData(result?.data);
-          setLoading(false);
+        if (result.data?.status_code === 200) {
+          setObservationAreaList(result?.data?.result);
+          //  setLoading(false);
         } else {
-          setLoading(false);
-          setData([]);
+          //  setLoading(false);
+          setObservationAreaList([]);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
+        //  setLoading(false);
       });
   };
+  useEffect(() => {
+    if (selectedObservationArea) {
+      setLoading(false);
 
+      axios
+        .get(
+          `${endpointsV2.observations.observationList}?id=${selectedObservationArea?.observation?.id}`
+        )
+        .then((result) => {
+          if (result.data?.status_code === 200) {
+            setTableData([
+              {
+                id: selectedObservationArea?.value,
+                observation_area_name: selectedObservationArea?.children,
+                observations: result.data?.result[0]?.observations,
+              },
+            ]);
+            modifyData([
+              {
+                id: selectedObservationArea?.value,
+                observation_area_name: selectedObservationArea?.children,
+                is_student: selectedObservationArea?.details?.is_student,
+                status: selectedObservationArea?.details?.status,
+                observation_area_name: selectedObservationArea?.children,
+                observations: result.data?.result[0]?.observations,
+              },
+            ]);
+            setLoading(false);
+          } else {
+            setLoading(false);
+            setTableData([]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
+
+      //   id: 2,
+      //   title: 'ROHIT abcd',
+      //   status: true,
+      //   is_student: false,
+      //   observations: [
+      //     {
+      //       id: 378,
+      //       score: 5,
+      //       label: 'ABC2',
+      //     },
+      //     {
+      //       id: 379,
+      //       score: 4,
+      //       label: 'PQR2',
+      //     },
+      //   ],
+      // });
+      // }
+      //   observationGet({
+      //     is_student: tableView === 'teacher' ? false : true,
+      //     levels__id__in: user_level,
+      //     status: true,
+      //   });
+      // } else {
+      //   setData([]);
+    }
+  }, [selectedObservationArea]);
+  useEffect(() => {
+    fetchObservationAreasList({
+      is_student: tableView === 'teacher' ? false : true,
+      status: true,
+    });
+  }, [tableView]);
   const modifyData = (paramData) => {
     let arr = [];
     for (let i = 0; i < paramData?.length; i++) {
@@ -93,18 +184,19 @@ const Evaluation = () => {
       obj.id = paramData[i].id;
       obj.status = paramData[i].status;
       obj.observation_area_name = paramData[i].observation_area_name;
-      for (let j = 0; j < paramData[i].observation?.length; j++) {
-        var innerObj = {};
-        innerObj.observationarea = paramData[i].observation[j].observation;
-        innerObj.id = paramData[i].observation[j].id;
-        innerObj.status = paramData[i].observation[j].status;
-        innerObj.observation = paramData[i].observation_area_name;
-        innerObj.description = '';
-        innerObj.score = 0;
-        innerObj.observationScore = paramData[i].observation[j].score;
-        innerArr.push(innerObj);
-      }
-      obj.observation = innerArr;
+      // for (let j = 0; j < paramData[i].observations?.length; j++) {
+      //   var innerObj = {};
+      //   innerObj.observationarea = paramData[i].observations[j].observation;
+      //   innerObj.id = paramData[i].observations[j].id;
+      //   // innerObj.status = paramData[i].observation[j].status;
+      //   innerObj.status = true;
+      //   // innerObj.observation = paramData[i].observation_area_name;
+      //   innerObj.description = '';
+      //   innerObj.score = 0;
+      //   // innerObj.observationScore = paramData[i].observations[j].score;
+      //   innerArr.push(innerObj);
+      // }
+      obj.observations = paramData[i].observations;
       obj.is_student = paramData[i].is_student;
       arr.push(obj);
     }
@@ -114,10 +206,11 @@ const Evaluation = () => {
   const handleScoreDesciption = (e, id, subId, field) => {
     let tempData = modifiedData;
     if (field === 'description') {
-      tempData[id].observation[subId].description = e.target.value;
+      e.preventDefault();
+      tempData[id].observations[subId].description = e.target.value;
     } else {
-      if (Number(e) <= tempData[id].observation[subId].observationScore) {
-        tempData[id].observation[subId].score = Number(e);
+      if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
+        tempData[id].observations[subId].observationScore = e;
       } else {
         message.error("Obtained marks can't exceeds Observation max marks");
       }
@@ -126,55 +219,93 @@ const Evaluation = () => {
   };
 
   const handleSubmit = () => {
-    let flatttenData = modifiedData?.map((item) => item?.observation).flat();
+    setRequestSent(true);
+    const formData = new FormData();
+
+    // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
     if (subjectID && teacherErp) {
-      var obj = {
-        acad_session: selectedBranch?.id,
-        date: moment().format('YYYY-MM-DD'),
-        erp_user: teacherId,
-        teacher_name: teacherName,
-        teacher_erp: teacherErp,
-        remark: overallRemarks,
-        score: _.sumBy(flatttenData, 'score'),
-        report: JSON.stringify(modifiedData),
-        subject_map: subjectID,
-        // section_mapping: sectionID,
-        is_student: false,
-        reviewed_by: role_details?.erp_user_id,
-      };
+      formData.append('acad_session', selectedBranch?.id);
+      formData.append('date', moment().format('YYYY-MM-DD'));
+      formData.append('erp_user', teacherId);
+      formData.append('teacher_name', teacherName);
+      formData.append('teacher_erp', teacherErp);
+      formData.append('remark', overallRemarks);
+      formData.append('score', marksObtained);
+      formData.append('report', JSON.stringify(modifiedData));
+      formData.append('subject_map', subjectID);
+      formData.append('is_student', false);
+      formData.append('reviewed_by', role_details?.erp_user_id);
+      if (selectedFile) {
+        formData.append('file', selectedFile);
+      }
+      // var obj = {
+      //   acad_session: selectedBranch?.id,
+      //   date: moment().format('YYYY-MM-DD'),
+      //   erp_user: teacherId,
+      //   teacher_name: teacherName,
+      //   teacher_erp: teacherErp,
+      //   remark: overallRemarks,
+      // score: _.sumBy(flatttenData, 'score'),
+      // score: marksObtained,
+      // report: JSON.stringify(modifiedData),
+      // subject_map: subjectID,
+      // section_mapping: sectionID,
+      // is_student: false,
+      // reviewed_by: role_details?.erp_user_id,
+      // file: selectedFile,
+      // };
     } else if (studentErp && subjectID) {
-      var obj = {
-        acad_session: selectedBranch?.id,
-        date: moment().format('YYYY-MM-DD'),
-        erp_user: studentId,
-        teacher_name: studentName,
-        teacher_erp: studentErp,
-        remark: overallRemarks,
-        score: _.sumBy(flatttenData, 'score'),
-        report: JSON.stringify(modifiedData),
-        subject_map: subjectID,
-        // section_mapping: sectionID,
-        student: studentId,
-        is_student: true,
-        reviewed_by: role_details?.erp_user_id,
-      };
+      // var obj = {
+      //   acad_session: selectedBranch?.id,
+      //   date: moment().format('YYYY-MM-DD'),
+      //   erp_user: studentId,
+      //   teacher_name: studentName,
+      //   teacher_erp: studentErp,
+      //   remark: overallRemarks,
+      // score: _.sumBy(flatttenData, 'score'),
+      // score: marksObtained,
+      // report: JSON.stringify(modifiedData),
+      // subject_map: subjectID,
+      // section_mapping: sectionID,
+      //   student: studentId,
+      //   is_student: true,
+      //   reviewed_by: role_details?.erp_user_id,
+      //   file: selectedFile,
+      // };
+      formData.append('acad_session', selectedBranch?.id);
+      formData.append('date', moment().format('YYYY-MM-DD'));
+      formData.append('erp_user', studentId);
+      formData.append('teacher_name', studentName);
+      formData.append('teacher_erp', studentErp);
+      formData.append('remark', overallRemarks);
+      formData.append('score', marksObtained);
+      formData.append('report', JSON.stringify(modifiedData));
+      formData.append('subject_map', subjectID);
+      formData.append('is_student', true);
+      formData.append('reviewed_by', role_details?.erp_user_id);
+      if (selectedFile) {
+        formData.append('file', selectedFile);
+      }
     } else {
       message.error('Please select all required fields ');
       return;
     }
     axios
-      .post(`${endpoints.observationName.observationReport}`, obj)
+      .post(`${endpoints.observationName.observationReport}`, formData)
       .then((res) => {
         if (res.status === 201) {
           message.success('Successfully Submitted');
-
           setTimeout(function () {
-            window.location.reload(1);
-          }, 2000);
+            window.location.reload();
+          }, 1000);
         }
       })
       .catch((error) => {
+        message.error(error.message);
         console.log('error');
+      })
+      .finally(() => {
+        setRequestSent(false);
       });
   };
   useEffect(() => {
@@ -340,6 +471,8 @@ const Evaluation = () => {
     setGradeID(null);
     setSectionID(null);
     setSubjectID(null);
+    setSelectedObservationArea(null);
+    setModifiedData([]);
     setTeacherData([]);
     setStudentData([]);
     handleClearGrade();
@@ -397,6 +530,18 @@ const Evaluation = () => {
       </Option>
     );
   });
+  const observationAreaListOptions = observationAreaList?.map((each) => {
+    return (
+      <Option
+        key={each?.id}
+        value={each.id}
+        observation={each?.observation}
+        details={each}
+      >
+        {each?.observation_area_name}
+      </Option>
+    );
+  });
 
   const columns = [
     {
@@ -418,32 +563,33 @@ const Evaluation = () => {
       title: (
         <span className='th-white th-fw-700'>
           <div className='d-flex align-items-center'>
-            <div className='col-md-7 pl-0'> {'Observation'}</div>
+            <div className='col-md-6 pl-0'> {'Observation'}</div>
             <div className='col-md-3'>Description</div>
-            <div className='col-md-2 pl-0'>Score</div>
+            <div className='col-md-3 pl-0'>Score</div>
           </div>
         </span>
       ),
       key: 'observation',
       render: (record, item, index) =>
-        record.observation?.map((item, i) => {
+        record.observations?.map((item, i) => {
           return (
             <div className='d-flex border-bottom align-items-center py-1 '>
-              <div className='col-md-7 pl-0 th-14'>
-                {i + 1}. {item.observationarea}
+              <div className='col-md-6 pl-0 th-14'>
+                {i + 1}. {item.label}
               </div>
               <div className='col-md-3'>
-                <Input
-                  placeholder='Description'
+                <Input.TextArea
+                  placeholder='Description *'
+                  maxLength={500}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'description')}
                 />
               </div>
-              <div className='col-md-2 pl-0'>
+              <div className='col-md-3 pl-0'>
                 <InputNumber
                   className='w-100'
-                  max={item?.observationScore}
+                  max={item?.score}
                   min={0}
-                  placeholder={`Score Max(${item?.observationScore})`}
+                  placeholder={`Score Max * (${item?.score})`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
@@ -453,15 +599,14 @@ const Evaluation = () => {
     },
   ];
 
-  let marksObtained = _.sumBy(
-    modifiedData?.map((item) => item?.observation).flat(),
+  let overallScore = _.sumBy(
+    modifiedData?.map((item) => item?.observations).flat(),
     'score'
   );
-  let overallScore = _.sumBy(
-    modifiedData?.map((item) => item?.observation).flat(),
+  let marksObtained = _.sumBy(
+    modifiedData?.map((item) => item?.observations).flat(),
     'observationScore'
   );
-
   return (
     <React.Fragment>
       <Layout>
@@ -483,29 +628,53 @@ const Evaluation = () => {
           </div>
 
           <div className='row mt-3'>
-            <div className='col-12'>
-              <Table
-                className='th-table'
-                rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                }
-                loading={loading}
-                columns={columns}
-                rowKey={(record) => record?.id}
-                dataSource={modifiedData}
-                pagination={false}
-                bordered
-                scroll={{ y: '58vh' }}
-              />
+            <div className='col-md-3 col-sm-6 col-12'>
+              <Select
+                className='th-width-100 th-br-6'
+                onChange={(e, value) => setSelectedObservationArea(value)}
+                getPopupContainer={(trigger) => trigger.parentNode}
+                placeholder={'Select Observation Area'}
+                value={selectedObservationArea}
+                showSearch
+                optionFilterProp='children'
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+              >
+                {observationAreaListOptions}
+              </Select>
             </div>
           </div>
+          {modifiedData.length > 0 ? (
+            <div className='row mt-3'>
+              <div className='col-12'>
+                <Table
+                  className='th-table'
+                  rowClassName={(record, index) =>
+                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  }
+                  loading={loading}
+                  columns={columns}
+                  rowKey={(record) => record?.id}
+                  dataSource={modifiedData}
+                  pagination={false}
+                  bordered
+                  scroll={{ y: '58vh' }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className='row justify-content-center my-3 th-24 th-black-2'>
+              Please select the filter to show data!
+            </div>
+          )}
           {modifiedData?.length > 0 ? (
             <div className='row py-2 text-left align-items-center'>
               <div className='col-md-3 py-2'>
                 <Select
                   className='th-width-100 th-br-6'
                   onChange={handleGrade}
-                  placeholder='Grade'
+                  placeholder='Grade *'
                   allowClear
                   onClear={handleClearGrade}
                   showSearch
@@ -524,7 +693,7 @@ const Evaluation = () => {
                 <Select
                   className='th-width-100 th-br-6'
                   onChange={(e, value) => handleSection(value)}
-                  placeholder='Section'
+                  placeholder='Section *'
                   allowClear
                   onClear={handleClearSection}
                   showSearch
@@ -544,7 +713,7 @@ const Evaluation = () => {
                 <Select
                   className='th-width-100 th-br-6'
                   onChange={(e, value) => handleSubject(value)}
-                  placeholder='Select Subject*'
+                  placeholder='Select Subject *'
                   allowClear
                   showSearch
                   optionFilterProp='children'
@@ -600,19 +769,56 @@ const Evaluation = () => {
               )}
 
               <div className='col-md-3 py-2'>
-                <Input
-                  placeholder='Overall Remarks'
+                <Input.TextArea
+                  maxLength={600}
+                  showCount
+                  rows={4}
+                  placeholder='Overall Remarks *'
                   onChange={(e) => setOverallRemarks(e.target.value)}
                 />
               </div>
               <div className='col-md-3 py-2 th-16'>
                 Total Score:{' '}
                 <span className='pl-1 th-fw-600'>
-                  {marksObtained}/{overallScore}
+                  {marksObtained ? marksObtained : 0}/{overallScore}
                 </span>
               </div>
-              <div className='col-md-2 py-2'>
-                <Button onClick={handleSubmit} type='primary' className='w-100'>
+              <div className='col-md-3 py-2 th-16'>
+                <Upload {...uploadProps} className='w-75'>
+                  <Button icon={<UploadOutlined />}>
+                    {selectedFile ? 'Change' : 'Upload'} File
+                  </Button>
+                </Upload>
+
+                {!selectedFile ? (
+                  <div className='th-10 mt-2'>
+                    {' '}
+                    Accepted Files: Images , PDF, Audio & Video (max. 30MB){' '}
+                  </div>
+                ) : (
+                  <div className='mt-2 th-14'>
+                    <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                      <div
+                        className='th-12 th-black-1 text-truncate th-width-90'
+                        title={selectedFile?.name}
+                      >
+                        {selectedFile?.name}
+                      </div>
+
+                      <div className='th-pointer ml-2'>
+                        <img src={smallCloseIcon} onClick={() => setSelectedFile(null)} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className='col-md-3 py-2'>
+                <Button
+                  onClick={handleSubmit}
+                  type='primary'
+                  className='w-50'
+                  disabled={requestSent}
+                >
                   Submit
                 </Button>
               </div>

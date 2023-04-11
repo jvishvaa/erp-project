@@ -395,7 +395,8 @@ console.log(history?.location?.state , 'history');
         central_gs: record?.central_gs,
         chapter_id: record?.chapter_id,
         teacher_erp: teacherId,
-        acad_session: history?.location?.state?.acad_sess_id,
+        // acad_session: history?.location?.state?.acad_sess_id,
+        acad_session: selectedBranch?.id,
         subject_id: subjectId,
         volume: volumeId
       })
@@ -405,7 +406,8 @@ console.log(history?.location?.state , 'history');
         session_year: selectedAcademicYear?.id,
         central_gs: record?.central_gs,
         chapter_id: record?.chapter_id,
-        acad_session: history?.location?.state?.acad_sess_id,
+        // acad_session: history?.location?.state?.acad_sess_id,
+        acad_session: selectedBranch?.id,
         subject_id: subjectId,
         volume: volumeId
       })
@@ -465,7 +467,8 @@ console.log(history?.location?.state , 'history');
             grade_id: gradeId,
             session_year: selectedAcademicYear?.id,
             teacher_erp: history?.location?.state?.teacher_id,
-            acad_session: history?.location?.state?.acad_sess_id,
+            // acad_session: history?.location?.state?.acad_sess_id,
+            acad_session: selectedBranch?.id,
             volume: volumeId,
             central_gs: centralGSID,
             subject_id: subjectId
@@ -475,7 +478,8 @@ console.log(history?.location?.state , 'history');
             grade_id: gradeId,
             session_year: selectedAcademicYear?.id,
             teacher_erp: history?.location?.state?.teacher_id,
-            acad_session: history?.location?.state?.acad_sess_id,
+            // acad_session: history?.location?.state?.acad_sess_id,
+            acad_session: selectedBranch?.id,
             central_gs: centralGSID,
             subject_id: subjectId
           });
@@ -486,7 +490,8 @@ console.log(history?.location?.state , 'history');
             grade_id: gradeId,
             session_year: selectedAcademicYear?.id,
             central_gs: centralGSID,
-            acad_session: history?.location?.state?.acad_sess_id,
+            // acad_session: history?.location?.state?.acad_sess_id,
+            acad_session: selectedBranch?.id,
             volume: volumeId,
             subject_id: subjectId
 
@@ -496,7 +501,8 @@ console.log(history?.location?.state , 'history');
             grade_id: gradeId,
             session_year: selectedAcademicYear?.id,
             central_gs: centralGSID,
-            acad_session: history?.location?.state?.acad_sess_id,
+            // acad_session: history?.location?.state?.acad_sess_id,
+            acad_session: selectedBranch?.id,
             subject_id: subjectId
           });
         }
@@ -648,7 +654,8 @@ console.log(history?.location?.state , 'history');
     const data = {
       session_year: selectedAcademicYear?.id,
       grade_id: gradeId,
-      acad_session: history?.location?.state?.acad_sess_id,
+      // acad_session: history?.location?.state?.acad_sess_id,
+      acad_session: selectedBranch?.id,
       central_gs: history?.location?.state?.central_gs,
       export_as_excel: true,
       volume: volumeId,

@@ -8,6 +8,9 @@ import EduvateLogo from 'v2/Assets/images/eduvate-logo.png';
 import ReactToPrint from 'react-to-print';
 import PrintIcon from '@material-ui/icons/Print';
 import { Paper, makeStyles, Box, IconButton } from '@material-ui/core';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import endpoints from 'v2/config/endpoints';
+import { EyeFilled } from '@ant-design/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PreviewObservationReport({ reportCardDataNew }) {
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const history = useHistory();
   const classes = useStyles();
   const componentRef = useRef();
@@ -72,10 +76,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                   </div>
                 </td>
                 <td width='15%' className='text-center'>
-                  <img
-                    src={`https://d3ka3pry54wyko.cloudfront.net/${schoolData?.school_logo}`}
-                    width={'80px'}
-                  />
+                  <img src={schoolData?.school_logo} width={'80px'} />
                 </td>
               </tr>
             </tbody>
@@ -142,8 +143,8 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
           <table className='w-100 mt-1 th-12 th-report-table '>
             <colgroup>
               <col style={{ width: '15%' }} />
-              <col style={{ width: '65%' }} />
-              <col style={{ width: '15%' }} />
+              <col style={{ width: '40%' }} />
+              <col style={{ width: '40%' }} />
               <col style={{ width: '5%' }} />
             </colgroup>
             <tbody className='th-table-border'>
@@ -180,18 +181,18 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                   <tr>
                     <td
                       className='py-2 text-center th-fw-600'
-                      rowSpan={eachData?.observation?.length + 2}
+                      rowSpan={eachData?.observations?.length + 2}
                     >
                       {eachData?.observation_area_name}
                     </td>
                   </tr>
 
-                  {eachData?.observation?.map((eachParameter, i) => {
+                  {eachData?.observations?.map((eachParameter, i) => {
                     return (
                       <>
                         <tr>
                           <td className='py-2 ' style={{ background: '#ffffff' }}>
-                            {i + 1}. {eachParameter?.observationarea}
+                            {i + 1}. {eachParameter?.label}
                           </td>
                           <td className='py-2' style={{ background: '#ffffff' }}>
                             {eachParameter?.description}
@@ -200,7 +201,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                             className='py-2 text-center'
                             style={{ background: '#ffffff' }}
                           >
-                            {eachParameter?.score}
+                            {eachParameter?.observationScore}
                           </td>
                         </tr>
                       </>
@@ -246,7 +247,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                 <td className='th-width-50 py-2 pl-3 th-fw-600'>
                   {' '}
                   Teacher’s Signature
-                  {pricipalSignData?.length ? (
+                  {pricipalSignData?.length > 0 ? (
                     <span className='pl-2'>
                       <img
                         src={
@@ -258,10 +259,10 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                     </span>
                   ) : null}
                 </td>
-
+                {console.log({ schoolData })}
                 <td className='th-width-50 py-2 pl-3 th-fw-600 text-right'>
                   Observer’s Signature{' '}
-                  {pricipalSignData?.length ? (
+                  {pricipalSignData?.length > 0 ? (
                     <span className='pl-2'>
                       <img
                         src={
@@ -276,6 +277,46 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
               </tr>
             </tbody>
           </table>
+          {previewData?.file && (
+            <div className='row mt-3 align-items-center th-fw-500'>
+              <div className=' col-2 px-0 th-fw-400 th-black-1'>
+                Supporting Document :{' '}
+              </div>
+              <div className='col-10 pl-0 th-pointer'>
+                <a
+                  onClick={() => {
+                    const fileName = previewData?.file;
+                    const fileSrc = `${endpoints.announcementList.s3erp}${fileName}`;
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: [
+                        {
+                          src: fileSrc,
+                          name: 'Portion Document',
+                          extension:
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                        },
+                      ],
+                    });
+                  }}
+                >
+                  <div className='d-flex'>
+                    <div>
+                      {
+                        previewData?.file.split('/')[
+                          previewData?.file?.split('/')?.length - 1
+                        ]
+                      }
+                    </div>
+
+                    <div className='ml-2'>
+                      <EyeFilled />
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          )}
         </div>
 
         <ReactToPrint

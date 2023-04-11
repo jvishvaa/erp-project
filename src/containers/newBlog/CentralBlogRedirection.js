@@ -9,7 +9,7 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { Breadcrumb, Tabs, Spin, Button } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-
+import {RightCircleOutlined} from '@ant-design/icons';
 import axios from 'axios';
 import moment from 'moment';
 import { getActivityIcon } from 'v2/generalActivityFunction';
@@ -146,7 +146,6 @@ const CentralBlogRedirection = () => {
     ) {
       return;
     } else if (dataLower === 'public speaking') {
-      // handlePublicSpeaking()
       // return
     } else if (dataLower === 'physical activity') {
       localStorage.setItem('ActivityData', JSON.stringify(physicalSubId));
@@ -157,6 +156,7 @@ const CentralBlogRedirection = () => {
       localStorage.setItem('BlogActivityId', JSON.stringify(blogSubId));
       localStorage.setItem('ActivityData', JSON.stringify(blogSubIdValue));
       if (user_level === 2 || user_level === 8 || user_level === 11) {
+        localStorage.setItem('BlogActivityId', JSON.stringify(blogSubId));
         handleBlogActivity();
         return;
       } else if (user_level === 13) {
@@ -354,8 +354,9 @@ const CentralBlogRedirection = () => {
                               <Button
                                 className='th-button-active th-br-6 text-truncate th-pointer'
                                 onClick={() => handleExplore(each)}
+                                icon={<RightCircleOutlined />}
                               >
-                                Explore &gt;
+                                Explore
                               </Button>
                             </div>
                           </div>

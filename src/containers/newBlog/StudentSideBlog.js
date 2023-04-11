@@ -8,7 +8,18 @@ import endpoints from '../../config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import moment from 'moment';
-import { Breadcrumb, Button, Tabs, Rate, Drawer, Space, Input, Avatar, Spin } from 'antd';
+import {
+  Breadcrumb,
+  Button,
+  Tabs,
+  Rate,
+  Drawer,
+  Space,
+  Input,
+  Avatar,
+  Spin,
+  Pagination,
+} from 'antd';
 import { SketchOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 
@@ -25,6 +36,8 @@ const StudentSideBlog = () => {
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
   const [ratingReview, setRatingReview] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const activityId = localStorage.getItem('BlogActivityId')
     ? JSON.parse(localStorage.getItem('BlogActivityId'))
     : {};
@@ -54,9 +67,7 @@ const StudentSideBlog = () => {
         });
         setRatingReview(array);
       })
-      .catch((err) => {
-        console.log('error', err);
-      });
+      .catch((err) => {});
   };
 
   const EditActivity = (blogData) => {
@@ -84,11 +95,13 @@ const StudentSideBlog = () => {
       .then((response) => {
         if (response?.data?.status_code == 200) {
           setBlogsList(response?.data?.result);
+          setTotalPages(
+            response?.data?.total ? response?.data?.total : response?.data?.count
+          );
         }
         setLoading(false);
       })
       .catch((error) => {
-        console.log('error', error);
         setLoading(false);
       });
   };
@@ -106,48 +119,50 @@ const StudentSideBlog = () => {
         </div>
       ) : blogsList.length > 0 ? (
         blogsList?.map((each) => (
-          <div className='col-md-4 col-sm-6 mb-3'>
-            <div className='row shadow-sm th-bg-grey th-br-5 wall_card'>
-              <div className='col-12 py-2'>
-                <span className='th-16 th-fw-600'>{each?.title}</span>
-              </div>
-              <div className='col-12 py-1'>
-                <div className='d-flex justify-content-between th-12 th-primary'>
-                  <div>
-                    Assigned On : {moment(each?.issue_date).format('MMM Do, YYYY')}
-                  </div>
-                  <div>
-                    Due Date : {moment(each?.submission_date).format('MMM Do, YYYY')}
+          <>
+            <div className='col-md-4 col-sm-6 mb-3'>
+              <div className='row shadow-sm th-bg-grey th-br-5 wall_card'>
+                <div className='col-12 py-2'>
+                  <span className='th-16 th-fw-600'>{each?.title}</span>
+                </div>
+                <div className='col-12 py-1'>
+                  <div className='d-flex justify-content-between th-12 th-primary'>
+                    <div>
+                      Assigned On : {moment(each?.issue_date).format('MMM Do, YYYY')}
+                    </div>
+                    <div>
+                      Due Date : {moment(each?.submission_date).format('MMM Do, YYYY')}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className='col-12 py-2 th-pointer'>
-                <img
-                  src={each?.template?.template_path}
-                  loading='lazy'
-                  style={{
-                    width: '100%',
-                    height: '240px',
-                    objectFit: 'contain',
-                  }}
-                />
-              </div>
-              <div className='col-12 py-2 text-center'>
-                {moment().diff(moment(each?.submission_date), 'hours') > 24 ? (
-                  <Button type='dashed' danger>
-                    Expired
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => EditActivity(each)}
-                    className='th-button-active th-br-5 '
-                  >
-                    Start Writing
-                  </Button>
-                )}
+                <div className='col-12 py-2 th-pointer'>
+                  <img
+                    src={each?.template?.template_path}
+                    loading='lazy'
+                    style={{
+                      width: '100%',
+                      height: '240px',
+                      objectFit: 'contain',
+                    }}
+                  />
+                </div>
+                <div className='col-12 py-2 text-center'>
+                  {moment().diff(moment(each?.submission_date), 'hours') > 24 ? (
+                    <Button type='dashed' danger>
+                      Expired
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => EditActivity(each)}
+                      className='th-button-active th-br-5 '
+                    >
+                      Start Writing
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          </>
         ))
       ) : (
         <div className='d-flex justify-content-center py-5 w-100'>
@@ -220,9 +235,9 @@ const StudentSideBlog = () => {
         section_ids: 'null',
         user_id: UserData.id,
         is_draft: 'false',
-        activity_type: activityId,
+        activity_type: activityId.join(','),
         page_size: 12,
-        page: 1,
+        page: page,
       });
     } else if (tabValue == '1') {
       fetchBlogsList({
@@ -231,7 +246,9 @@ const StudentSideBlog = () => {
         activity_detail_id: 'null',
         is_reviewed: 'False',
         is_submitted: 'True',
-        activity_type: activityId,
+        activity_type: activityId.join(','),
+        page_size: 12,
+        page: page,
       });
     } else if (tabValue == '2') {
       fetchBlogsList({
@@ -239,7 +256,9 @@ const StudentSideBlog = () => {
         user_id: UserData.id,
         activity_detail_id: 'null',
         is_reviewed: 'True',
-        activity_type: activityId,
+        activity_type: activityId.join(','),
+        page_size: 12,
+        page: page,
       });
     } else if (tabValue == '3') {
       fetchBlogsList({
@@ -247,10 +266,16 @@ const StudentSideBlog = () => {
         user_id: UserData.id,
         activity_detail_id: 'null',
         is_published: 'True',
-        activity_type: activityId,
+        activity_type: activityId.join(','),
+        page_size: 10,
+        page: page,
       });
     }
-  }, [tabValue]);
+  }, [tabValue, page]);
+
+  const handlePageChange = (page, pageSize) => {
+    setPage(page);
+  };
   return (
     <div>
       <Layout>
@@ -267,22 +292,62 @@ const StudentSideBlog = () => {
               </Breadcrumb>
             </div>
           </div>
-
           <div className='row pb-3 th-br-5'>
             <div className='col-12'>
               <div className='th-tabs th-bg-white'>
                 <Tabs type='card' onChange={handleTab} defaultActiveKeys={tabValue}>
                   <TabPane tab='ASSIGNED' key='0'>
                     <div className='row pt-3'>{showContent()}</div>
+                    <div>
+                      <Pagination
+                        defaultCurrent={page}
+                        total={totalPages}
+                        defaultPageSize={12}
+                        size='default'
+                        showSizeChanger={false}
+                        onChange={handlePageChange}
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      />
+                    </div>
                   </TabPane>
                   <TabPane tab='TOTAL SUBMITTED' key='1'>
                     <div className='row pt-3'>{showContent()}</div>
+                    <div>
+                      <Pagination
+                        defaultCurrent={page}
+                        defaultPageSize={12}
+                        total={totalPages}
+                        showSizeChanger={false}
+                        onChange={handlePageChange}
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      />
+                    </div>
                   </TabPane>
                   <TabPane tab='REVIEWED' key='2'>
                     <div className='row pt-3'>{showContent()}</div>
+                    <div>
+                      <Pagination
+                        defaultCurrent={page}
+                        defaultPageSize={12}
+                        total={totalPages}
+                        showSizeChanger={false}
+                        onChange={handlePageChange}
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      />
+                    </div>
                   </TabPane>
                   <TabPane tab='PUBLISHED' key='3'>
                     <div className='row pt-3'>{showContent()}</div>
+                    <div>
+                      <Pagination
+                        defaultCurrent={page}
+                        defaultPageSize={10}
+                        total={totalPages}
+                        showSizeChanger={false}
+                        onChange={handlePageChange}
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      />
+                    </div>
                   </TabPane>
                 </Tabs>
               </div>
