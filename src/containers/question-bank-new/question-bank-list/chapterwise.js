@@ -586,7 +586,7 @@ const Chapterwise = () => {
       render: (data) => <span className='th-black-1'>{data === null ? 0 : data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>Question Count</span>,
+      title: <span className='th-white th-fw-700'>QUESTION COUNT</span>,
       dataIndex: '',
       width: '15%',
       align: 'center',
