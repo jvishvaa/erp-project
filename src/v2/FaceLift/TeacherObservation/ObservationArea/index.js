@@ -364,7 +364,7 @@ const ObservationArea = () => {
                 rowKey={(record) => record?.id}
                 dataSource={observationAreaList}
                 pagination={false}
-                // scroll={{ y: '400px' }}
+                scroll={{ y: '400px' }}
               />
             </div>
           </div>
@@ -385,7 +385,7 @@ const ObservationArea = () => {
           onClose={onClose}
           visible={drawerOpen}
           closable={null}
-          width={window.innerwidth < 600 ? '90vw' : ' 40vw'}
+          width={window.innerWidth < 600 ? '90vw' : ' 40vw'}
           className='th-activity-drawer'
           footer={
             <div

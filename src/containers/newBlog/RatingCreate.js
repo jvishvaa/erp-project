@@ -463,7 +463,7 @@ const RatingCreate = () => {
       return;
     }
     let body = {
-      sub_type: ActivityType?.sub_type,
+      sub_type: subActivityType?.sub_type,
       activity_type: ActivityType?.name,
       grading_scheme: inputList,
       criteria_title:
