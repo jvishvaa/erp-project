@@ -1003,7 +1003,8 @@ export default {
     bmiRemarksApi: `${newBlogURL}/api/get_category/`,
     gradesERP:`/erp_user/grademapping/`,
     criteriaTitleList:`${newBlogURL}/api/activity_types_criteria/`,
-    criteriaDelete: `${newBlogURL}/api/activity_type_scheme_delete/`
+    criteriaDelete: `${newBlogURL}/api/activity_type_scheme_delete/`,
+    getActivityTypesApi: `${newBlogURL}/api/get_activity_types/`,
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

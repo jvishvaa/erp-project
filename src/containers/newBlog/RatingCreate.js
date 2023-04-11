@@ -190,7 +190,9 @@ const RatingCreate = () => {
   const [filterData, setFilterData] = useState([]);
   const [search, setSearch] = useState('');
   const [viewing, setViewing] = useState(false);
+  const [mainActivityType, setMainActivityType] = useState(null);
   const [ActivityType, setActivityType] = useState(null);
+  const [subActivityType, setSubActivityType] = useState(null);
   const [remarksType, setRemarksType] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [isEditData, setIsEditData] = useState([]);
@@ -538,28 +540,28 @@ const RatingCreate = () => {
     let array = [];
     setLoading(true);
     axios
-      .get(`${endpoints.newBlog.getActivityType}?is_type=${true}`, {
+      .get(`${endpoints.newBlog.getActivityTypesApi}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
       .then((response) => {
-        response.data.result.map((obj) => {
-          let temp = {};
-          temp['id'] = obj?.id;
-          temp['grading_scheme_id'] = obj?.grading_scheme_id;
-          temp['name'] = obj?.name;
-          temp['sub_type'] = obj?.sub_type;
-          temp['criteria_title'] = obj?.criteria_title;
-          temp['grading_scheme'] = obj?.grading_scheme;
-          temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
-          temp['va_rating'] = obj?.grading_scheme.map((item) =>
-            JSON.parse(item?.va_rating)
-          );
-          temp['is_editable'] = obj?.is_editable;
-          array.push(temp);
-        });
-        setActivityCategory(array);
+        // response.data.result.map((obj) => {
+        //   let temp = {};
+        //   temp['id'] = obj?.id;
+        //   temp['grading_scheme_id'] = obj?.grading_scheme_id;
+        //   temp['name'] = obj?.name;
+        //   temp['sub_type'] = obj?.sub_type;
+        //   temp['criteria_title'] = obj?.criteria_title;
+        //   temp['grading_scheme'] = obj?.grading_scheme;
+        //   temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
+        //   temp['va_rating'] = obj?.grading_scheme.map((item) =>
+        //     JSON.parse(item?.va_rating)
+        //   );
+        //   temp['is_editable'] = obj?.is_editable;
+        //   array.push(temp);
+        // });
+        setActivityCategory(response?.data);
         setLoading(false);
       });
   };
@@ -658,34 +660,35 @@ const RatingCreate = () => {
     let array = [];
     if (e) {
       setSearch(e);
-      setLoading(true)
+      setLoading(true);
       axios
-      .get(`${endpoints.newBlog.getActivityType}?name=${e}`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      }).then((response) => {
-        response.data.result.map((obj) => {
-          let temp = {};
-          temp['id'] = obj?.id;
-          temp['grading_scheme_id'] = obj?.grading_scheme_id;
-          temp['name'] = obj?.name;
-          temp['sub_type'] = obj?.sub_type;
-          temp['criteria_title'] = obj?.criteria_title;
-          temp['grading_scheme'] = obj?.grading_scheme;
-          temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
-          temp['va_rating'] = obj?.grading_scheme.map((item) =>
-            JSON.parse(item?.va_rating)
-          );
-          temp['is_editable'] = obj?.is_editable;
-          array.push(temp);
+        .get(`${endpoints.newBlog.getActivityType}?name=${e}`, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          response.data.result.map((obj) => {
+            let temp = {};
+            temp['id'] = obj?.id;
+            temp['grading_scheme_id'] = obj?.grading_scheme_id;
+            temp['name'] = obj?.name;
+            temp['sub_type'] = obj?.sub_type;
+            temp['criteria_title'] = obj?.criteria_title;
+            temp['grading_scheme'] = obj?.grading_scheme;
+            temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
+            temp['va_rating'] = obj?.grading_scheme.map((item) =>
+              JSON.parse(item?.va_rating)
+            );
+            temp['is_editable'] = obj?.is_editable;
+            array.push(temp);
+          });
+          setFilterData(array);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setLoading(false);
         });
-        setFilterData(array);
-        setLoading(false)
-
-      }).catch((err) =>{
-        setLoading(false)
-      })
     }
   };
 
@@ -770,30 +773,25 @@ const RatingCreate = () => {
     setOnOptionModal(true);
   };
 
-  const mainActivityOption = activityCategory.map((each) => {
+  const mainActivityOption = activityCategory?.result?.map((each) => {
     return (
-      <Option
-        value={each?.name}
-        key={each?.id}
-        name={each.name}
-        sub_type={each?.sub_type}
-      >
+      <Option value={each?.name} name={each?.name}>
         {each?.name}
       </Option>
     );
   });
 
-  const activityOption = activityCategory.map((each) => {
+  const activityOption = activityCategory?.result?.map((each) => {
     return (
-      <Option value={each?.id} key={each?.id} name={each.name} sub_type={each?.sub_type}>
+      <Option value={each?.name} name={each?.name}>
         {each?.name}
       </Option>
     );
   });
 
-  const activityOptionSub = activityCategory.map((each) => {
+  const activityOptionSub = activityCategory?.sub_types?.map((each) => {
     return (
-      <Option value={each?.id} key={each?.id} name={each.name} sub_type={each?.sub_type}>
+      <Option value={each?.sub_type} name={each?.sub_type}>
         {each?.sub_type}
       </Option>
     );
@@ -991,20 +989,16 @@ const RatingCreate = () => {
     setIsEditData({ ...isEditData, grading_scheme: newFileList });
   };
 
-  const activityOptions = activityCategory?.map((each) => {
-    return (
-      <Option key={each?.id} value={each?.name}>
-        {each?.name}
-      </Option>
-    );
-  });
-
   const handleClearActivityType = () => {
     setSearch('');
   };
 
   const handleActivityChange = (event, value) => {
     setActivityType(value);
+  };
+
+  const handleSubActivityChange = (event, value) => {
+    setSubActivityType(value);
   };
 
   const handleModalClose = () => {
@@ -1106,6 +1100,7 @@ const RatingCreate = () => {
                       getPopupContainer={(trigger) => trigger.parentNode}
                       placeholder='Select Activity Type'
                       showSearch
+                      value={search}
                       optionFilterProp='children'
                       filterOption={(input, options) => {
                         return (
@@ -1115,7 +1110,7 @@ const RatingCreate = () => {
                       onChange={(e) => {
                         handleActivity(e);
                       }}
-                      onClear={handleClearActivityType}
+                      // onClear={handleClearActivityType}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       bordered={true}
                     >
@@ -1142,7 +1137,7 @@ const RatingCreate = () => {
                       className='th-br-5 th-pointer py-1 th-14 th-fw-500'
                       onClick={viewDisplay}
                     >
-                      Add Remarks
+                      Add Criteria
                     </Tag>
                   </div>
                 </div>
@@ -1187,53 +1182,55 @@ const RatingCreate = () => {
           width={1000}
         >
           <div className='row p-2'>
-            <div className='col-md-12 md-sm-0'>
+            <div className='col-md-6 md-sm-0'>Activity Types</div>
+          </div>
+          <div className='row'>
+            <div className='col-md-6 md-sm-0'>
               {/* <Form.Item name='activity_type'> */}
-                <Select
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  placeholder='Activity Type'
-                  showSearch
-                  value={ActivityType}
-                  optionFilterProp='children'
-                  filterOption={(input, option) => {
-                    return (
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  onChange={(e, value) => handleActivityChange(e, value)}
-                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                  bordered={false}
-                >
-                  {activityOption}
-                </Select>
+              <Select
+                getPopupContainer={(trigger) => trigger.parentNode}
+                placeholder='Activity Type'
+                showSearch
+                value={ActivityType}
+                optionFilterProp='children'
+                filterOption={(input, option) => {
+                  return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                onChange={(e, value) => handleActivityChange(e, value)}
+                className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                bordered={true}
+              >
+                {activityOption}
+              </Select>
               {/* </Form.Item> */}
             </div>
             {ActivityType && ActivityType?.name.toLowerCase() === 'physical activity' ? (
-              <div className='row m-2'>
-              <div className='col-md-12 md-sm-0'>
-              Sub-Activity
-              </div>
-                <div className='col-md-12 md-sm-0'>
-                  <Select
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    placeholder='Sub Activity Type'
-                    showSearch
-                    disabled
-                    value={ActivityType}
-                    optionFilterProp='children'
-                    filterOption={(input, option) => {
-                      return (
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => handleActivityChange(e, value)}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={false}
-                  >
-                    {activityOptionSub}
-                  </Select>
+              <>
+                <div className='row mt-2'>
+                  <div className='col-md-6 md-sm-0'>Sub-Activity</div>
                 </div>
-              </div>
+                <div className='row mt-2'>
+                  <div className='col-md-6 md-sm-0'>
+                    <Select
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      placeholder='Sub Activity Type'
+                      showSearch
+                      value={subActivityType}
+                      optionFilterProp='children'
+                      filterOption={(input, option) => {
+                        return (
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(e, value) => handleSubActivityChange(e, value)}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      bordered={true}
+                    >
+                      {activityOptionSub}
+                    </Select>
+                  </div>
+                </div>
+              </>
             ) : (
               ''
             )}
@@ -1474,7 +1471,7 @@ const RatingCreate = () => {
                             className='th-br-5 th-pointer py-1 th-14 th-fw-500'
                             onClick={handleListAdd}
                           >
-                            Add Remarks
+                            Add Criteria
                           </Button>
                         </div>
                       </div>
