@@ -38,7 +38,10 @@ const ObservationArea = () => {
     fetchUserLevel();
   }, []);
   useEffect(() => {
-    fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
+    fetchObservationList({
+      is_student: tableView === 'teacher' ? false : true,
+      status: true,
+    });
     fetchObservationAreaList({ is_student: tableView === 'teacher' ? false : true });
   }, [tableView]);
   const fetchObservationList = (params = {}) => {

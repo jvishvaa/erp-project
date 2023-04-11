@@ -259,7 +259,12 @@ const ObservationReport = () => {
       title: <span className='th-white th-fw-700'>Remark</span>,
       align: 'center',
       dataIndex: 'remark',
-      render: (data) => <span className='th-black-1 th-16'>{data}</span>,
+      width: '35%',
+      render: (data) => (
+        <span className='th-black-1 th-16 th-truncate-4' title={data}>
+          {data}
+        </span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Evaluation Date</span>,

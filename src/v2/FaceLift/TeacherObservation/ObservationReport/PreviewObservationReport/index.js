@@ -277,42 +277,46 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
               </tr>
             </tbody>
           </table>
-          <div className='row mt-3 align-items-center th-fw-500'>
-            <div className=' col-2 px-0 th-fw-400 th-black-1'>Supporting Document : </div>
-            <div className='col-10 pl-0 th-pointer'>
-              <a
-                onClick={() => {
-                  const fileName = previewData?.file;
-                  const fileSrc = `${endpoints.announcementList.s3erp}${fileName}`;
-                  openPreview({
-                    currentAttachmentIndex: 0,
-                    attachmentsArray: [
+          {previewData?.file && (
+            <div className='row mt-3 align-items-center th-fw-500'>
+              <div className=' col-2 px-0 th-fw-400 th-black-1'>
+                Supporting Document :{' '}
+              </div>
+              <div className='col-10 pl-0 th-pointer'>
+                <a
+                  onClick={() => {
+                    const fileName = previewData?.file;
+                    const fileSrc = `${endpoints.announcementList.s3erp}${fileName}`;
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: [
+                        {
+                          src: fileSrc,
+                          name: 'Portion Document',
+                          extension:
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                        },
+                      ],
+                    });
+                  }}
+                >
+                  <div className='d-flex'>
+                    <div>
                       {
-                        src: fileSrc,
-                        name: 'Portion Document',
-                        extension:
-                          '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
-                      },
-                    ],
-                  });
-                }}
-              >
-                <div className='d-flex'>
-                  <div>
-                    {
-                      previewData?.file.split('/')[
-                        previewData?.file?.split('/')?.length - 1
-                      ]
-                    }
-                  </div>
+                        previewData?.file.split('/')[
+                          previewData?.file?.split('/')?.length - 1
+                        ]
+                      }
+                    </div>
 
-                  <div className='ml-2'>
-                    <EyeFilled />
+                    <div className='ml-2'>
+                      <EyeFilled />
+                    </div>
                   </div>
-                </div>
-              </a>
+                </a>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <ReactToPrint
