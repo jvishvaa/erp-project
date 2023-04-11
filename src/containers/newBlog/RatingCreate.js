@@ -283,7 +283,7 @@ const RatingCreate = () => {
                 <Tag
                   icon={<EditFilled className='th-14' />}
                   color={'geekblue'}
-                  className='th-br-5 th-pointer py-1'
+                  className='th-br-5 th-pointer py-1 px-1'
                   onClick={(e) => handleEdit(e, row)}
                 >
                   Edit
@@ -1181,28 +1181,32 @@ const RatingCreate = () => {
           onCancel={handleModalClose}
           width={1000}
         >
-          <div className='row p-2'>
-            <div className='col-md-6 md-sm-0'>Activity Types</div>
-          </div>
           <div className='row'>
-            <div className='col-md-6 md-sm-0'>
-              {/* <Form.Item name='activity_type'> */}
-              <Select
-                getPopupContainer={(trigger) => trigger.parentNode}
-                placeholder='Activity Type'
-                showSearch
-                value={ActivityType}
-                optionFilterProp='children'
-                filterOption={(input, option) => {
-                  return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
-                onChange={(e, value) => handleActivityChange(e, value)}
-                className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                bordered={true}
-              >
-                {activityOption}
-              </Select>
-              {/* </Form.Item> */}
+            <div className='row mt-1'>
+              <div className='col-md-6 md-sm-0'>Activity Types</div>
+            </div>
+            <div className='row mt-1'>
+              <div className='col-md-6 md-sm-0'>
+                {/* <Form.Item name='activity_type'> */}
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    placeholder='Select Activity Type'
+                    showSearch
+                    value={ActivityType}
+                    optionFilterProp='children'
+                    filterOption={(input, option) => {
+                      return (
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    onChange={(e, value) => handleActivityChange(e, value)}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={true}
+                  >
+                    {activityOption}
+                  </Select>
+                {/* </Form.Item> */}
+              </div>
             </div>
             {ActivityType && ActivityType?.name.toLowerCase() === 'physical activity' ? (
               <>
@@ -1241,7 +1245,7 @@ const RatingCreate = () => {
                   ActivityType?.name.toLowerCase() === 'music' ||
                   ActivityType?.name.toLowerCase() === 'dance' ||
                   ActivityType?.name.toLowerCase() === 'theatre' ? (
-                    <div className='row m-2'>
+                    <div className='row mt-2'>
                       <AntDivider
                         orientation='left'
                         orientationMargin='0'
@@ -1254,6 +1258,8 @@ const RatingCreate = () => {
                         <Input
                           placeholder='Criteria Title'
                           width={100}
+                          showCount
+                          maxLength='100'
                           value={remarksType}
                           onChange={(e) => handleInputRemarks(e)}
                         />
@@ -1274,6 +1280,8 @@ const RatingCreate = () => {
                                 <Input
                                   placeholder='Question'
                                   width={100}
+                                  maxLength='500'
+                                  showCount
                                   value={input?.name}
                                   onChange={(event) => handleQuestion(event, index)}
                                 />
@@ -1316,6 +1324,8 @@ const RatingCreate = () => {
                                 <Input
                                   value={input?.name}
                                   placeholder='Option'
+                                  maxLength='100'
+                                  showCount
                                   width={100}
                                   onChange={(event) => handleOptionInput(event, index)}
                                 />
@@ -1325,6 +1335,8 @@ const RatingCreate = () => {
                                   placeholder='Marks'
                                   value={input?.score}
                                   width={100}
+                                  maxLength='3'
+                                  showCount
                                   onChange={(event) => handleMarksInput(event, index)}
                                 />
                               </div>
@@ -1366,7 +1378,7 @@ const RatingCreate = () => {
                     </div>
                   ) : (
                     <>
-                      <div className='row m-2'>
+                      <div className='row mt-2'>
                         {ActivityType &&
                         ActivityType.name.toLowerCase() === 'public speaking' ? (
                           ''
@@ -1382,10 +1394,12 @@ const RatingCreate = () => {
                                 >
                                   Add Criteria Title
                                 </AntDivider>
-                                <div className='col-3'>
+                                <div className='col-3 px-0'>
                                   <Input
                                     placeholder='Criteria Title'
                                     width={100}
+                                    maxLength='100'
+                                    showCount
                                     value={remarksType}
                                     onChange={(event) => handleInputRemarks(event)}
                                     inputList
@@ -1398,7 +1412,7 @@ const RatingCreate = () => {
                           </>
                         )}
                       </div>
-                      <div className='row m-2'>
+                      <div className='row mt-2'>
                         <AntDivider
                           orientation='left'
                           orientationMargin='0'
@@ -1411,11 +1425,13 @@ const RatingCreate = () => {
                       {inputList
                         ? inputList.map((input, index) => (
                             <>
-                              <div className='row m-2'>
-                                <div className='col-3'>
+                              <div className='row mt-2'>
+                                <div className='col-3 px-0'>
                                   <Input
                                     placeholder='Criteria'
                                     width={100}
+                                    showCount
+                                    maxLength='500'
                                     value={input?.name}
                                     onChange={(event) =>
                                       handleInputCreativity(event, index)
@@ -1430,6 +1446,8 @@ const RatingCreate = () => {
                                       <Input
                                         placeholder='Rating'
                                         width={100}
+                                        showCount
+                                        maxLength='1'
                                         value={input?.rating}
                                         onChange={(event) =>
                                           handleInputRating(event, index)
@@ -1440,6 +1458,8 @@ const RatingCreate = () => {
                                       <Input
                                         placeholder='Score'
                                         width={100}
+                                        showCount
+                                        maxLength='3'
                                         value={input?.score}
                                         onChange={(event) =>
                                           handleInputChange1(event, index)
@@ -1463,8 +1483,8 @@ const RatingCreate = () => {
                             </>
                           ))
                         : 'No item in the list '}
-                      <div className='row m-2'>
-                        <div className='col-12 mb-2 th-black-1  text-truncate'>
+                      <div className='row mt-2'>
+                        <div className='col-12 mb-2 th-black-1  text-truncate px-0'>
                           <Button
                             icon={<PlusOutlined />}
                             type='primary'
@@ -1477,7 +1497,7 @@ const RatingCreate = () => {
                       </div>
                       <AntDivider />
                       <div className='row mb-3 ml-1'>
-                        <div className='col-12 th-black-1'>
+                        <div className='col-12 th-black-1 px-0'>
                           <Button
                             icon={<CheckCircleOutlined />}
                             color='green'
@@ -1512,7 +1532,6 @@ const RatingCreate = () => {
             </div>
           </div>
         </ModalAnt>
-        {console.log(isEditData, 'k22')}
         <ModalAnt
           title='Edit Rating'
           centered
@@ -1525,7 +1544,7 @@ const RatingCreate = () => {
           width={1000}
         >
           <div className='row p-2'>
-            <div className='col-md-12 md-sm-0 pt-2'>
+            <div className='col-md-12 md-sm-0'>
               {/* <Form ref={formRef}> */}
               {/* <Form.Item name='activity_type'>
                 <Select
@@ -1549,7 +1568,33 @@ const RatingCreate = () => {
               </Form.Item> */}
 
               {/* </Form> */}
-              <Input disabled placeholder={isEditData?.name} />
+              <div className='row mt-2'>
+                <div className='col-md-6 md-sm-0'>Activity Types</div>
+              </div>
+              <div className='row mt-2'>
+                <dv className='col-md-6 md-sm-0'>
+                  <Input className='mt-2' disabled placeholder={isEditData?.name} />
+                </dv>
+              </div>
+
+              {isEditData && isEditData?.name === 'Physical Activity' ? (
+                <>
+                  <div className='row mt-2'>
+                    <div className='col-md-6 md-sm-0'>Sub-Activity</div>
+                  </div>
+                  <div className='row mt-2'>
+                    <dv className='col-md-6 md-sm-0'>
+                      <Input
+                        className='mt-2'
+                        disabled
+                        placeholder={isEditData?.sub_type}
+                      />
+                    </dv>
+                  </div>
+                </>
+              ) : (
+                ''
+              )}
             </div>
             <div className='col-md-12'>
               {Object.keys(isEditData).length > 0 ? (
@@ -1571,6 +1616,8 @@ const RatingCreate = () => {
                         <Input
                           placeholder='Criteria Title'
                           width={100}
+                          maxLength='100'
+                          showCount
                           defaultValue={isEditData?.criteria_title}
                           value={
                             Object.keys(isEditData)
@@ -1595,6 +1642,8 @@ const RatingCreate = () => {
                                 <Input
                                   placeholder='Question'
                                   width={100}
+                                  maxLength='100'
+                                  showCount
                                   value={input?.name}
                                   onChange={(event) => handleQuestionEdit(event, index)}
                                 />
@@ -1641,6 +1690,8 @@ const RatingCreate = () => {
                                   value={input?.name}
                                   placeholder='Option'
                                   width={100}
+                                  maxLength='100'
+                                  showCount
                                   onChange={(event) =>
                                     handleOptionInputEdit(event, index)
                                   }
@@ -1651,6 +1702,8 @@ const RatingCreate = () => {
                                   placeholder='Marks'
                                   value={input?.score}
                                   width={100}
+                                  maxLength='2'
+                                  showCount
                                   onChange={(event) => handleMarksInputEdit(event, index)}
                                 />
                               </div>
