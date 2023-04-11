@@ -22,6 +22,7 @@ import { Button, Grid } from '@material-ui/core';
 import './styles.scss';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import axios from 'v2/config/axios';
+import Loader from 'components/loader/loader';
 
 const BackButton = withStyles({
   root: {
@@ -41,6 +42,7 @@ class EditUser extends Component {
       activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
+      loading : false,
       user: null,
       isNext: false,
       collectData: {},
@@ -179,6 +181,9 @@ class EditUser extends Component {
   };
 
   onEditUser = (requestWithParentorGuradianDetails) => {
+    this.setState({
+      loading: true
+    })
     const { user } = this.state;
     const { editUser, history, selectedUser } = this.props;
     let requestObj = user;
@@ -299,10 +304,12 @@ class EditUser extends Component {
     const requestObjFormData = jsonToFormData(requestObj);
     editUser(requestObjFormData)
       .then(() => {
+        this.setState({loading: false})
         history.push('/user-management/view-users');
         setAlert('success', 'User updated');
       })
       .catch(() => {
+        this.setState({loading: false})
         setAlert('error', 'User update failed');
       });
   };
@@ -392,6 +399,7 @@ class EditUser extends Component {
 
     return (
       <Layout>
+        {this.state.loading == true ? <Loader /> : ''}
         <CommonBreadcrumbs
           componentName='User Management'
           childComponentName='Edit User'
