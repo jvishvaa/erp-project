@@ -234,6 +234,7 @@ export default {
     gradesERP: `/erp_user/grademapping/`,
     showVisualMedia: `${newBlogURL}/api/uploaded_content/`,
     criteriaTitleList:`${newBlogURL}/api/activity_types_criteria`,
+    getActivityTypesApi: `${newBlogURL}/api/get_activity_types/`,
   },
   fileDrive: {
     fileList: `/schools/school_file_list/`,
