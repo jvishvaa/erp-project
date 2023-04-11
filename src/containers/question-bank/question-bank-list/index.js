@@ -154,7 +154,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabIsErpCentral(isErpCentral);
     setTabValue(newValue);
     setErpCategory(erp_category)
-    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
+    let requestUrl = filtersDetails?.Historic == true ? `/assessment/v2/questions-list/?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}` :  `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${tabIsErpCentral? 2 : 1}`;  
     if (subjMapId && !erp_category) {
       requestUrl += `&subject=${subjMapId}`;

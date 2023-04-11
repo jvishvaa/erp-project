@@ -330,8 +330,9 @@ const Chapterwise = () => {
 
   const fetchKeyConceptsData = (params = {}) => {
     setLoadingInner(true);
+    const url = Historic == true ? "assessment/v2/question_count/" : "assessment/question_count/"
     axios
-      .get(`assessment/question_count/?chapter_id=${params?.chapter_id}&is_central=${params?.is_central ? 1 : 0}`, {
+      .get(`${url}?chapter_id=${params?.chapter_id}&is_central=${params?.is_central ? 1 : 0}`, {
         // .get(`academic/annual-plan/key-concepts/`, { 
         // params: { ...params },
       })
