@@ -53,6 +53,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import EbookList from './viewEbooks';
 import IbookList from './viewIbooks';
+import { saveAs } from 'file-saver';
 const { Option } = Select;
 
 const PeriodListView = () => {
@@ -823,6 +824,12 @@ const PeriodListView = () => {
     }
   }, [volumeId]);
 
+  const downloadMaterial = async (url, filename) => {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    saveAs(blob, filename);
+  }
+
   return (
     <div className='row '>
       <div className='row align-items-center mb-2'>
@@ -1502,11 +1509,13 @@ const PeriodListView = () => {
                                         <a
                                           rel='noopener noreferrer'
                                           target='_blank'
+                                          // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
+                                          onClick={() => downloadMaterial(`${endpoints.lessonPlan.bucket}/${files?.media_file}`, `${files.document_type}_{file}`)}
                                         >
                                           <DownloadOutlined />
                                         </a>
                                     </div>
-                                     )}
+                                    )} 
                                   </div>
                               </div>
                             </div>
