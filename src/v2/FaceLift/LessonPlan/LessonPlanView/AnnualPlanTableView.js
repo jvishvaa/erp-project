@@ -26,6 +26,7 @@ import {
   BookOutlined,
   SnippetsOutlined,
   FilePptOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
@@ -49,6 +50,7 @@ import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIco
 import _ from 'lodash';
 import EbookList from './viewEbooks';
 import IbookList from './viewIbooks';
+import { saveAs } from 'file-saver';
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -641,6 +643,13 @@ const TableView = (props) => {
       });
     }
   }, [subjectId, volumeId]);
+
+  const downloadMaterial = async (url, filename) => {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    saveAs(blob, filename);
+  }
+
   const expandedRowRender = (record) => {
     const innerColumn = [
       {
@@ -1193,7 +1202,7 @@ const TableView = (props) => {
                               <div className='col-2'>
                                 <img src={getFileIcon(extension)} />
                               </div>
-                              <div className='col-10 px-0 th-pointer'>
+                              {/* <div className='col-10 px-0 th-pointer'>
                                 <a
                                   onClick={() => {
                                     openPreview({
@@ -1220,6 +1229,66 @@ const TableView = (props) => {
                                     </div>
                                   </div>
                                 </a>
+                              </div> */}
+                               <div className='col-10 px-0 th-pointer'>
+                                  <div className='row align-items-center'>
+                                    <div className='col-9 px-0'>
+                                      <a
+                                        onClick={() => {
+                                          openPreview({
+                                            currentAttachmentIndex: 0,
+                                            attachmentsArray: [
+                                              {
+                                                src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                                name: fileName,
+                                                extension: '.' + extension,
+                                              },
+                                            ],
+                                          });
+                                        }}
+                                        rel='noopener noreferrer'
+                                        target='_blank'
+                                      >
+                                        {files.document_type}_{file}
+                                      </a>
+                                    </div>
+                                    
+                                    <div className='col-1'>
+                                      <a
+                                        onClick={() => {
+                                          openPreview({
+                                            currentAttachmentIndex: 0,
+                                            attachmentsArray: [
+                                              {
+                                                src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                                name: fileName,
+                                                extension: '.' + extension,
+                                              },
+                                            ],
+                                          });
+                                        }}
+                                        rel='noopener noreferrer'
+                                        target='_blank'
+                                      >
+                                        <EyeFilled />
+                                      </a>
+                                    </div>
+                                    
+                                    {files?.document_type == 'Teacher_Reading_Material' && (
+                                      <div className='col-1'>
+                                        <a
+                                          rel='noopener noreferrer'
+                                          target='_blank'
+                                          // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
+                                          onClick={() => downloadMaterial(`${endpoints.lessonPlan.bucket}/${files?.media_file}`, `${files.document_type}_{file}`)}
+                                        >
+                                          <DownloadOutlined />
+                                        </a>
+                                    </div>
+                                    )} 
+                                  </div>
                               </div>
                             </div>
                           );
