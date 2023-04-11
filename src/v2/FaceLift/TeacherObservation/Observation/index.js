@@ -80,14 +80,12 @@ const Observation = () => {
   };
 
   const handleEdit = (data) => {
-    console.log('edit', data);
     setEditId(data?.id);
+    setDrawerOpen(true);
     let currentData = Object.assign({}, data);
     setObservation(currentData);
     setIsStudent(data.is_student);
-    setDrawerOpen(true);
   };
-  console.log({ observation });
   const handleStatus = (id, data) => {
     let body = {
       title: data?.title,
@@ -98,7 +96,10 @@ const Observation = () => {
     axios
       .put(`${endpoints.observations.updateObservation}${id}/`, body)
       .then((res) => {
-        fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
+        if (res?.data?.status_code == 200) {
+          message.success('Observation status updated');
+          fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -153,7 +154,12 @@ const Observation = () => {
         return false;
       }
     });
-
+    const isLimit = observation?.observations.filter(function (el) {
+      return el.score >= 99;
+    });
+    const isLabelCharacterExceed = observation?.observations.filter(function (el) {
+      return el.label.length > 399;
+    });
     if (!observation?.title.trim().length) {
       message.error('Please fill the observation title');
       return;
@@ -162,25 +168,16 @@ const Observation = () => {
       message.error('Observation title must be less than 100 character');
       return;
     }
-
     if (isFieldNull) {
       message.error('Please fill all the details');
       return;
     }
-    if (!observation?.observations[0]?.label) {
-      message.error('Please fill the Label');
+    if (isLimit.length > 0) {
+      message.error('Scores must be less than 100');
       return;
     }
-    if (observation?.observations[0]?.label.length > 400) {
-      message.error('Label must be less than 400 character');
-      return;
-    }
-    if (!observation?.observations[0]?.score) {
-      message.error('Please Enter Score');
-      return;
-    }
-    if (observation?.observations[0]?.score.toString().length > 2) {
-      message.error('Score must be less than 3 character');
+    if (isLabelCharacterExceed.length > 0) {
+      message.error('Labels must be less than 400 character');
       return;
     } else {
       setRequestSent(true);
@@ -195,6 +192,8 @@ const Observation = () => {
                 is_student: isStudent ? true : false,
               });
               onClose();
+            } else {
+              message.error('Observation update failed, please try again');
             }
           })
           .catch((error) => {
@@ -217,7 +216,7 @@ const Observation = () => {
             }
           })
           .catch((error) => {
-            console.log(error);
+            message.error('Observation creation failed, please try again');
           })
           .finally(() => {
             setRequestSent(false);
@@ -404,6 +403,7 @@ const Observation = () => {
               placeholder='Enter Observation Title'
               onChange={(e) => {
                 e.preventDefault();
+
                 setObservation({ ...observation, title: e.target.value });
               }}
               value={observation.title}
@@ -428,7 +428,11 @@ const Observation = () => {
                   <Input
                     onChange={(e) => {
                       e.preventDefault();
-                      handleChangeObservations(e.target.value, index, 'label');
+                      if (e.target.value.toString().length > 400) {
+                        message.error('Label must be less than 400 character');
+                      } else {
+                        handleChangeObservations(e.target.value, index, 'label');
+                      }
                     }}
                     className='w-100 th-br-5'
                     value={item?.label}
@@ -439,7 +443,11 @@ const Observation = () => {
                 <div className='col-4'>
                   <InputNumber
                     onChange={(e) => {
-                      handleChangeObservations(e, index, 'score');
+                      if (e > 99) {
+                        message.error('Score must be 2 digit only');
+                      } else {
+                        handleChangeObservations(e, index, 'score');
+                      }
                     }}
                     className='w-100 th-br-5'
                     value={item?.score}
