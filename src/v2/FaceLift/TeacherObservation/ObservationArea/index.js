@@ -32,6 +32,7 @@ const ObservationArea = () => {
   const [isStudent, setIsStudent] = useState(false);
   const [tableView, setTableView] = useState('teacher');
   const [userLevelList, setUserLevelList] = useState([]);
+  const [requestSent, setRequestSent] = useState(false);
 
   useEffect(() => {
     fetchUserLevel();
@@ -116,17 +117,23 @@ const ObservationArea = () => {
     let body = {
       observation_area_name: data.observation_area_name,
       is_student: data.is_student ? data.is_student : false,
-      levels: '13,11',
+      levels: data?.levels?.map((item) => item.id).toString(),
       observation: data?.observation.id,
       status: data.status ? false : true,
     };
     axios
       .put(`${endpoints.observations.updateObservationArea}${id}/`, body)
-      .then((res) => {
-        fetchObservationAreaList({
-          is_student: tableView === 'teacher' ? false : true,
-        });
+      .then((result) => {
         // // observationGet({ is_student: tableView === 'teacher' ? false : true });
+        if (result.data?.status_code === 200) {
+          message.success('Successfully Updated');
+          fetchObservationAreaList({
+            is_student: tableView === 'teacher' ? false : true,
+          });
+          // observationGet({ is_student: tableView === 'teacher' ? false : true });
+        } else {
+          message.error('Something went wrong');
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -177,10 +184,11 @@ const ObservationArea = () => {
       let payload = {
         observation_area_name: updateValues.observation_area_name,
         is_student: updateValues.is_student ? updateValues.is_student : false,
-        levels: '13,11',
+        levels: updateValues?.levels?.toString(),
         observation: updateValues.observation,
         status: true,
       };
+      setRequestSent(true);
       if (editId) {
         axios
           .put(`${endpoints.observations.updateObservationArea}${editId}/`, payload)
@@ -195,6 +203,9 @@ const ObservationArea = () => {
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            setRequestSent(false);
           });
       } else {
         axios
@@ -210,6 +221,9 @@ const ObservationArea = () => {
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            setRequestSent(false);
           });
       }
     } else {
@@ -272,7 +286,7 @@ const ObservationArea = () => {
         <span className='th-black-1 th-14'>
           {data
             ?.map((item) => {
-              return item?.id;
+              return userLevelList.filter((each) => each.id == item?.id)[0]?.level_name;
             })
             ?.toString()}
         </span>
@@ -389,6 +403,7 @@ const ObservationArea = () => {
               <Button
                 form='incomeForm'
                 onClick={onSubmit}
+                disabled={requestSent}
                 type='primary'
                 htmlType='submit'
               >

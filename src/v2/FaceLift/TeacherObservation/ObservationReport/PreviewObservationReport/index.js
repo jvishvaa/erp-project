@@ -8,6 +8,9 @@ import EduvateLogo from 'v2/Assets/images/eduvate-logo.png';
 import ReactToPrint from 'react-to-print';
 import PrintIcon from '@material-ui/icons/Print';
 import { Paper, makeStyles, Box, IconButton } from '@material-ui/core';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import endpoints from 'v2/config/endpoints';
+import { EyeFilled } from '@ant-design/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PreviewObservationReport({ reportCardDataNew }) {
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const history = useHistory();
   const classes = useStyles();
   const componentRef = useRef();
@@ -276,9 +280,41 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
               </tr>
             </tbody>
           </table>
-          {/* <div className='mt-2'>
-            <span className='th-fw-500 th-black-1'>Supporting Document : </span>
-          </div> */}
+          <div className='mt-2 d-flex align-items-center th-fw-500'>
+            <div className=' th-fw-400 th-black-1'>Supporting Document : </div>
+            <div className='ml-3 th-pointer'>
+              <a
+                onClick={() => {
+                  const fileName = previewData?.file;
+                  const fileSrc = `${endpoints.announcementList.s3erp}${fileName}`;
+                  openPreview({
+                    currentAttachmentIndex: 0,
+                    attachmentsArray: [
+                      {
+                        src: fileSrc,
+                        name: 'Portion Document',
+                        extension:
+                          '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                      },
+                    ],
+                  });
+                }}
+              >
+                <div className='row align-items-center py-2'>
+                  <div className='col-9'>
+                    {
+                      previewData?.file.split('/')[
+                        previewData?.file?.split('/')?.length - 1
+                      ]
+                    }
+                  </div>
+                  <div className='col-2'>
+                    <EyeFilled />
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
 
         <ReactToPrint

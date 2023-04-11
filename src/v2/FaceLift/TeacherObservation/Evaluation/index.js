@@ -57,6 +57,7 @@ const Evaluation = () => {
   const { role_details } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [tableView, setTableView] = useState('teacher');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [requestSent, setRequestSent] = useState(false);
   const allowedFiles = ['.jpeg', '.jpg', '.png', '.pdf', '.mp4'];
   // useEffect(() => {
   //   observationGet({ levels__id__in: user_level, status: true });
@@ -84,7 +85,6 @@ const Evaluation = () => {
     selectedFile,
   };
 
-  
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
     //  setLoading(true);
@@ -175,33 +175,6 @@ const Evaluation = () => {
       status: true,
     });
   }, [tableView]);
-
-  const observationGet = (params = {}) => {
-    setLoading(true);
-    axios
-      .get(`${endpoints.observationName.observationData}`, {
-        params: { ...params },
-      })
-      .then((result) => {
-        if (result.status === 200) {
-          // setData(
-          //   result?.data?.filter((item) => item?.id == selectedObservationArea?.value)
-          // );
-          modifyData(
-            result?.data?.filter((item) => item?.id == selectedObservationArea?.value)
-          );
-          setLoading(false);
-        } else {
-          setLoading(false);
-          setData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  };
-
   const modifyData = (paramData) => {
     let arr = [];
     for (let i = 0; i < paramData?.length; i++) {
@@ -245,8 +218,9 @@ const Evaluation = () => {
   };
 
   const handleSubmit = () => {
+    setRequestSent(true);
     const formData = new FormData();
-  
+
     // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
     if (subjectID && teacherErp) {
       formData.append('acad_session', selectedBranch?.id);
@@ -260,7 +234,9 @@ const Evaluation = () => {
       formData.append('subject_map', subjectID);
       formData.append('is_student', false);
       formData.append('reviewed_by', role_details?.erp_user_id);
-      formData.append('file', selectedFile);
+      if (selectedFile) {
+        formData.append('file', selectedFile);
+      }
       // var obj = {
       //   acad_session: selectedBranch?.id,
       //   date: moment().format('YYYY-MM-DD'),
@@ -268,14 +244,14 @@ const Evaluation = () => {
       //   teacher_name: teacherName,
       //   teacher_erp: teacherErp,
       //   remark: overallRemarks,
-        // score: _.sumBy(flatttenData, 'score'),
-        // score: marksObtained,
-        // report: JSON.stringify(modifiedData),
-        // subject_map: subjectID,
-        // section_mapping: sectionID,
-        // is_student: false,
-        // reviewed_by: role_details?.erp_user_id,
-        // file: selectedFile,
+      // score: _.sumBy(flatttenData, 'score'),
+      // score: marksObtained,
+      // report: JSON.stringify(modifiedData),
+      // subject_map: subjectID,
+      // section_mapping: sectionID,
+      // is_student: false,
+      // reviewed_by: role_details?.erp_user_id,
+      // file: selectedFile,
       // };
     } else if (studentErp && subjectID) {
       // var obj = {
@@ -285,11 +261,11 @@ const Evaluation = () => {
       //   teacher_name: studentName,
       //   teacher_erp: studentErp,
       //   remark: overallRemarks,
-        // score: _.sumBy(flatttenData, 'score'),
-        // score: marksObtained,
-        // report: JSON.stringify(modifiedData),
-        // subject_map: subjectID,
-        // section_mapping: sectionID,
+      // score: _.sumBy(flatttenData, 'score'),
+      // score: marksObtained,
+      // report: JSON.stringify(modifiedData),
+      // subject_map: subjectID,
+      // section_mapping: sectionID,
       //   student: studentId,
       //   is_student: true,
       //   reviewed_by: role_details?.erp_user_id,
@@ -306,7 +282,9 @@ const Evaluation = () => {
       formData.append('subject_map', subjectID);
       formData.append('is_student', true);
       formData.append('reviewed_by', role_details?.erp_user_id);
-      formData.append('file', selectedFile);
+      if (selectedFile) {
+        formData.append('file', selectedFile);
+      }
     } else {
       message.error('Please select all required fields ');
       return;
@@ -316,14 +294,17 @@ const Evaluation = () => {
       .then((res) => {
         if (res.status === 201) {
           message.success('Successfully Submitted');
-
           setTimeout(function () {
-            window.location.reload(1);
-          }, 2000);
+            window.location.reload();
+          }, 1000);
         }
       })
       .catch((error) => {
+        message.error(error.message);
         console.log('error');
+      })
+      .finally(() => {
+        setRequestSent(false);
       });
   };
   useEffect(() => {
@@ -489,6 +470,8 @@ const Evaluation = () => {
     setGradeID(null);
     setSectionID(null);
     setSubjectID(null);
+    setSelectedObservationArea(null);
+    setModifiedData([]);
     setTeacherData([]);
     setStudentData([]);
     handleClearGrade();
@@ -579,9 +562,9 @@ const Evaluation = () => {
       title: (
         <span className='th-white th-fw-700'>
           <div className='d-flex align-items-center'>
-            <div className='col-md-7 pl-0'> {'Observation'}</div>
+            <div className='col-md-6 pl-0'> {'Observation'}</div>
             <div className='col-md-3'>Description</div>
-            <div className='col-md-2 pl-0'>Score</div>
+            <div className='col-md-3 pl-0'>Score</div>
           </div>
         </span>
       ),
@@ -590,21 +573,21 @@ const Evaluation = () => {
         record.observations?.map((item, i) => {
           return (
             <div className='d-flex border-bottom align-items-center py-1 '>
-              <div className='col-md-7 pl-0 th-14'>
+              <div className='col-md-6 pl-0 th-14'>
                 {i + 1}. {item.label}
               </div>
               <div className='col-md-3'>
                 <Input.TextArea
-                  placeholder='Description'
+                  placeholder='Description *'
                   onChange={(e) => handleScoreDesciption(e, index, i, 'description')}
                 />
               </div>
-              <div className='col-md-2 pl-0'>
+              <div className='col-md-3 pl-0'>
                 <InputNumber
                   className='w-100'
                   max={item?.score}
                   min={0}
-                  placeholder={`Score Max * (${item?.score}) ${item.observationScore}`}
+                  placeholder={`Score Max * (${item?.score})`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
                 />
               </div>
@@ -622,7 +605,6 @@ const Evaluation = () => {
     modifiedData?.map((item) => item?.observations).flat(),
     'observationScore'
   );
-  // console.log({ tableData });
   return (
     <React.Fragment>
       <Layout>
@@ -650,7 +632,7 @@ const Evaluation = () => {
                 onChange={(e, value) => setSelectedObservationArea(value)}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 placeholder={'Select Observation Area'}
-                // value={selectedObservationArea}
+                value={selectedObservationArea}
                 showSearch
                 optionFilterProp='children'
                 filterOption={(input, options) => {
@@ -787,14 +769,14 @@ const Evaluation = () => {
               <div className='col-md-3 py-2'>
                 <Input.TextArea
                   rows={4}
-                  placeholder='Overall Remarks'
+                  placeholder='Overall Remarks *'
                   onChange={(e) => setOverallRemarks(e.target.value)}
                 />
               </div>
               <div className='col-md-3 py-2 th-16'>
                 Total Score:{' '}
                 <span className='pl-1 th-fw-600'>
-                  {marksObtained}/{overallScore}
+                  {marksObtained ? marksObtained : 0}/{overallScore}
                 </span>
               </div>
               <div className='col-md-3 py-2 th-16'>
@@ -827,7 +809,12 @@ const Evaluation = () => {
                 )}
               </div>
               <div className='col-md-3 py-2'>
-                <Button onClick={handleSubmit} type='primary' className='w-50'>
+                <Button
+                  onClick={handleSubmit}
+                  type='primary'
+                  className='w-50'
+                  disabled={requestSent}
+                >
                   Submit
                 </Button>
               </div>

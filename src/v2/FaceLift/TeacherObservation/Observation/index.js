@@ -79,37 +79,14 @@ const Observation = () => {
       });
   };
 
-  // const getObservationArea = (params = {}) => {
-  //   const result = axios
-  //     .get(`${endpoints.observationName.observationArea}`, {
-  //       params: { ...params },
-  //     })
-  //     .then((result) => {
-  //       if (result.status === 200) {
-  //         setObservationsList(result?.data);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
-
   const handleEdit = (data) => {
     setEditId(data?.id);
-    // axios.get(`${endpoints.observations.observationList}${id}/`).then((res) => {
-    //   formRef.current.setFieldsValue({
-    //     observation: res.data.result.title,
-    //     is_student: res.data.result.is_student,
-    //   });
-    let currentData = data;
+    setDrawerOpen(true);
+    let currentData = Object.assign({}, data);
     setObservation(currentData);
     setIsStudent(data.is_student);
-    setDrawerOpen(true);
-    // });
   };
-
   const handleStatus = (id, data) => {
-    
     let body = {
       title: data?.title,
       status: data?.status ? false : true,
@@ -119,7 +96,10 @@ const Observation = () => {
     axios
       .put(`${endpoints.observations.updateObservation}${id}/`, body)
       .then((res) => {
-        fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
+        if (res?.data?.status_code == 200) {
+          message.success('Observation status updated');
+          fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -145,6 +125,9 @@ const Observation = () => {
   };
   const onClose = () => {
     setDrawerOpen(false);
+    if (editId) {
+      fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
+    }
     setEditId(null);
     setObservation({
       title: '',
@@ -157,7 +140,6 @@ const Observation = () => {
         },
       ],
     });
-    // formRef.current.resetFields();
   };
 
   const onSubmit = () => {
@@ -172,7 +154,13 @@ const Observation = () => {
         return false;
       }
     });
-    if (!observation?.title) {
+    const isLimit = observation?.observations.filter(function (el) {
+      return el.score >= 99;
+    });
+    const isLabelCharacterExceed = observation?.observations.filter(function (el) {
+      return el.label.length > 399;
+    });
+    if (!observation?.title.trim().length) {
       message.error('Please fill the observation title');
       return;
     }
@@ -180,9 +168,16 @@ const Observation = () => {
       message.error('Observation title must be less than 100 character');
       return;
     }
-    
     if (isFieldNull) {
       message.error('Please fill all the details');
+      return;
+    }
+    if (isLimit.length > 0) {
+      message.error('Scores must be less than 100');
+      return;
+    }
+    if (isLabelCharacterExceed.length > 0) {
+      message.error('Labels must be less than 400 character');
       return;
     } else {
       setRequestSent(true);
@@ -197,6 +192,8 @@ const Observation = () => {
                 is_student: isStudent ? true : false,
               });
               onClose();
+            } else {
+              message.error('Observation update failed, please try again');
             }
           })
           .catch((error) => {
@@ -206,22 +203,6 @@ const Observation = () => {
             setRequestSent(false);
           });
       } else {
-        if (!observation?.observations[0]?.label) {
-          message.error('Please fill the Label');
-          return;
-        }
-        if (observation?.observations[0]?.label.length > 400) {
-          message.error('Label must be less than 400 character');
-          return;
-        }
-        if (!observation?.observations[0]?.score) {
-          message.error('Please Enter Score');
-          return;
-        }
-        if (observation?.observations[0]?.score.toString().length > 2) {
-          message.error('Score must be less than 3 character');
-          return;
-        }
         axios
           .post(`${endpoints.observations.observationList}`, observation)
           .then((result) => {
@@ -235,7 +216,7 @@ const Observation = () => {
             }
           })
           .catch((error) => {
-            console.log(error);
+            message.error('Observation creation failed, please try again');
           })
           .finally(() => {
             setRequestSent(false);
@@ -247,7 +228,6 @@ const Observation = () => {
   const handleApplicableFor = (e) => {
     setIsStudent(e.target.value);
     setObservation({ ...observation, is_student: e.target.value });
-    // formRef.current.resetFields(['observation_area']);
   };
 
   const handleTableView = (e) => {
@@ -267,21 +247,6 @@ const Observation = () => {
       dataIndex: 'title',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
-    // {
-    //   title: <span className='th-white th-fw-700'>Observation Area</span>,
-    //   key: 'observation_area',
-    //   render: (data) => (
-    //     <span className='th-black-1 th-14'>
-    //       {data?.observation_area?.observation_area_name}
-    //     </span>
-    //   ),
-    // },
-    // {
-    //   title: <span className='th-white th-fw-700'>Score</span>,
-    //   align: 'center',
-    //   dataIndex: 'score',
-    //   render: (data) => <span className='th-black-1 th-14'>{data}</span>,
-    // },
     {
       title: (
         <span className='th-white th-fw-700'>
@@ -293,13 +258,12 @@ const Observation = () => {
         </span>
       ),
       key: 'observation',
-      render: (record, item, index) =>
-        record.observations?.map((item, i) => {
+      dataIndex: 'observations',
+      render: (data) =>
+        data?.map((item, i) => {
           return (
             <div className='d-flex  align-items-center py-1 '>
-              <div className='col-md-2 th-14'>
-                {/* {i + 1} */}
-                </div>
+              <div className='col-md-2 th-14'>{/* {i + 1} */}</div>
               <div className='col-md-7'>
                 <div>{item?.label}</div>
               </div>
@@ -318,7 +282,6 @@ const Observation = () => {
         return (
           <Switch
             checked={data.status ? true : false}
-            // onChange={() => handleStatus(data.id, data.status)}
             onChange={() => handleStatus(data.id, data)}
           />
         );
@@ -335,7 +298,7 @@ const Observation = () => {
               icon={<EditOutlined />}
               className='th-br-6 th-bg-primary th-white'
               style={{ cursor: 'pointer' }}
-              onClick={() => handleEdit(data)}
+              onClick={(e) => handleEdit(data)}
             >
               Edit
             </Tag>
@@ -354,15 +317,8 @@ const Observation = () => {
     },
   ];
 
-  // const observationAreaOptions = obseravationsList?.map((item) => {
-  //   return (
-  //     <Option key={item.id} value={item.id}>
-  //       {item.observation_area_name}
-  //     </Option>
-  //   );
-  // });
   const handleChangeObservations = (value, index, type) => {
-    let updatedObservations = observation;
+    let updatedObservations = Object.assign({}, observation);
     updatedObservations.observations[index][type] = value;
     setObservation({ ...updatedObservations });
   };
@@ -431,7 +387,6 @@ const Observation = () => {
                 Cancel
               </Button>
               <Button
-                // form='incomeForm'
                 onClick={onSubmit}
                 disabled={requestSent}
                 type='primary'
@@ -442,27 +397,20 @@ const Observation = () => {
             </div>
           }
         >
-          {/* <Form id='filterForm' ref={formRef} layout={'vertical'}> */}
           <div className='col-md-12'>
-            {/* <Form.Item
-                name='observation'
-                label='Enter Observation Title'
-                rules={[{ required: true, message: 'Please enter Observation Name' }]}
-              > */}
             <div className='mb-2'>Enter Observation Title *</div>
             <Input
               placeholder='Enter Observation Title'
               onChange={(e) => {
                 e.preventDefault();
+
                 setObservation({ ...observation, title: e.target.value });
               }}
               value={observation.title}
               className='th-br-5'
             />
-            {/* </Form.Item> */}
           </div>
           <div className='col-md-12 py-2'>
-            {/* <Form.Item label='Applicable for' name='is_student' defaultValue={false}> */}
             <div className='mb-2'>Applicable for</div>
             <Radio.Group
               value={isStudent}
@@ -472,65 +420,41 @@ const Observation = () => {
               <Radio value={false}> Teacher </Radio>
               <Radio value={true}> Student </Radio>
             </Radio.Group>
-            {/* </Form.Item> */}
           </div>
-          {/* <div className='col-md-12'>
-              <Form.Item
-                name='observation_area'
-                label='Select Observation Area'
-                rules={[{ required: true, message: 'Please Select Observation Area' }]}
-              >
-                <Select
-                  showSearch
-                  placeholder='Select Observation Area'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                >
-                  {observationAreaOptions}
-                </Select>
-              </Form.Item>
-            </div> */}
           {observation?.observations?.map((item, index) => {
             return (
               <div className='row py-2 align-item-center'>
                 <div className='col-7'>
-                  {/* <Form.Item
-                      name='label'
-                      label='Enter Label'
-                      rules={[{ required: true, message: 'Please enter Label' }]}
-                    > */}
-                  {/* <div className='mb-2'>Enter Observation Title *</div> */}
                   <Input
                     onChange={(e) => {
                       e.preventDefault();
-                      handleChangeObservations(e.target.value, index, 'label');
+                      if (e.target.value.toString().length > 400) {
+                        message.error('Label must be less than 400 character');
+                      } else {
+                        handleChangeObservations(e.target.value, index, 'label');
+                      }
                     }}
                     className='w-100 th-br-5'
                     value={item?.label}
                     required
                     placeholder='Enter Label *'
                   />
-                  {/* </Form.Item> */}
                 </div>
-                <div className='col-5'>
-                  {/* <Form.Item
-                      name='score'
-                      label='Enter Score'
-                      rules={[{ required: true, message: 'Please enter Score' }]}
-                    > */}
+                <div className='col-4'>
                   <InputNumber
                     onChange={(e) => {
-                      handleChangeObservations(e, index, 'score');
+                      if (e > 99) {
+                        message.error('Score must be 2 digit only');
+                      } else {
+                        handleChangeObservations(e, index, 'score');
+                      }
                     }}
                     className='w-100 th-br-5'
                     value={item?.score}
                     placeholder='Enter Score *'
                     type='number'
+                    maxLength={3}
                   />
-                  {/* </Form.Item> */}
                 </div>
                 {observation?.observations?.length > 1 && (
                   <div className='col-1'>
@@ -556,7 +480,6 @@ const Observation = () => {
               </Button>
             </div>
           </div>
-          {/* </Form> */}
         </Drawer>
       </Layout>
     </React.Fragment>
