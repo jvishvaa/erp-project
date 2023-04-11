@@ -24,7 +24,6 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const Observation = () => {
-  const formRef = useRef();
   const [obseravationsList, setObservationsList] = useState([]);
   const [isStudent, setIsStudent] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
@@ -245,7 +244,6 @@ const Observation = () => {
     {
       title: <span className='th-white th-fw-700'>Observation</span>,
       dataIndex: 'title',
-      width: '40%',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
     {
@@ -254,7 +252,7 @@ const Observation = () => {
           <div className='d-flex align-items-center'>
             <div className='col-md-2'></div>
             <div className='col-md-7'>Label</div>
-            <div className='col-md-3 text-center'>Score</div>
+            <div className='col-md-3 text-center px-0'>Score</div>
           </div>
         </span>
       ),
@@ -355,7 +353,7 @@ const Observation = () => {
                 rowKey={(record) => record?.id}
                 dataSource={obseravationsList}
                 pagination={false}
-                // scroll={{ y: '400px' }}
+                scroll={{ y: '400px' }}
               />
             </div>
           </div>
@@ -374,7 +372,7 @@ const Observation = () => {
           title={editId ? 'Edit Observation' : 'Create Observation'}
           placement='right'
           onClose={onClose}
-          width={window.innerwidth < 600 ? '90vw' : ' 50vw'}
+          width={window.innerWidth < 600 ? '90vw' : ' 50vw'}
           visible={drawerOpen}
           closable={null}
           className='th-activity-drawer'

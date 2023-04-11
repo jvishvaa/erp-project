@@ -442,7 +442,7 @@ const ObservationReport = () => {
                 rowKey={(record) => record?.id}
                 dataSource={data}
                 pagination={false}
-                // scroll={{ y: '400px' }}
+                scroll={{ y: '400px' }}
               />
             </div>
           </div>

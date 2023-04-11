@@ -828,7 +828,7 @@ const PeriodListView = () => {
     const res = await fetch(url);
     const blob = await res.blob();
     saveAs(blob, filename);
-  }
+  };
 
   return (
     <div className='row '>
@@ -1459,64 +1459,69 @@ const PeriodListView = () => {
                                 <img src={getFileIcon(extension)} />
                               </div>
                               <div className='col-10 px-0 th-pointer'>
-                                  <div className='row align-items-center'>
-                                    <div className='col-9 px-0'>
-                                      <a
-                                        onClick={() => {
-                                          openPreview({
-                                            currentAttachmentIndex: 0,
-                                            attachmentsArray: [
-                                              {
-                                                src: `${endpoints.homework.resourcesFiles}/${each}`,
+                                <div className='row align-items-center'>
+                                  <div className='col-9 px-0'>
+                                    <a
+                                      onClick={() => {
+                                        openPreview({
+                                          currentAttachmentIndex: 0,
+                                          attachmentsArray: [
+                                            {
+                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
 
-                                                name: fileName,
-                                                extension: '.' + extension,
-                                              },
-                                            ],
-                                          });
-                                        }}
-                                        rel='noopener noreferrer'
-                                        target='_blank'
-                                      >
-                                        {files.document_type}_{file}
-                                      </a>
-                                    </div>
-                                    
+                                              name: fileName,
+                                              extension: '.' + extension,
+                                            },
+                                          ],
+                                        });
+                                      }}
+                                      rel='noopener noreferrer'
+                                      target='_blank'
+                                    >
+                                      {files.document_type}_{file}
+                                    </a>
+                                  </div>
+
+                                  <div className='col-1'>
+                                    <a
+                                      onClick={() => {
+                                        openPreview({
+                                          currentAttachmentIndex: 0,
+                                          attachmentsArray: [
+                                            {
+                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                              name: fileName,
+                                              extension: '.' + extension,
+                                            },
+                                          ],
+                                        });
+                                      }}
+                                      rel='noopener noreferrer'
+                                      target='_blank'
+                                    >
+                                      <EyeFilled />
+                                    </a>
+                                  </div>
+
+                                  {files?.document_type == 'Teacher_Reading_Material' && (
                                     <div className='col-1'>
                                       <a
-                                        onClick={() => {
-                                          openPreview({
-                                            currentAttachmentIndex: 0,
-                                            attachmentsArray: [
-                                              {
-                                                src: `${endpoints.homework.resourcesFiles}/${each}`,
-
-                                                name: fileName,
-                                                extension: '.' + extension,
-                                              },
-                                            ],
-                                          });
-                                        }}
                                         rel='noopener noreferrer'
                                         target='_blank'
+                                        // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
+                                        onClick={() =>
+                                          downloadMaterial(
+                                            `${endpoints.lessonPlan.bucket}/${files?.media_file}`,
+                                            `${files.document_type}_${file}`
+                                          )
+                                        }
                                       >
-                                        <EyeFilled />
+                                        <DownloadOutlined />
                                       </a>
                                     </div>
-                                    
-                                    {files?.document_type == 'Teacher_Reading_Material' && (
-                                      <div className='col-1'>
-                                        <a
-                                          rel='noopener noreferrer'
-                                          target='_blank'
-                                          // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
-                                          onClick={() => downloadMaterial(`${endpoints.lessonPlan.bucket}/${files?.media_file}`, `${files.document_type}_{file}`)}
-                                        >
-                                          <DownloadOutlined />
-                                        </a>
-                                    </div>
-                                    )} 
-                                  </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           );
