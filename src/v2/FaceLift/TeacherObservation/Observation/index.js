@@ -245,6 +245,7 @@ const Observation = () => {
     {
       title: <span className='th-white th-fw-700'>Observation</span>,
       dataIndex: 'title',
+      width: '40%',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
     {
@@ -373,7 +374,7 @@ const Observation = () => {
           title={editId ? 'Edit Observation' : 'Create Observation'}
           placement='right'
           onClose={onClose}
-          width={'40vw'}
+          width={window.innerwidth < 600 ? '90vw' : ' 50vw'}
           visible={drawerOpen}
           closable={null}
           className='th-activity-drawer'
@@ -403,7 +404,6 @@ const Observation = () => {
               placeholder='Enter Observation Title'
               onChange={(e) => {
                 e.preventDefault();
-
                 setObservation({ ...observation, title: e.target.value });
               }}
               value={observation.title}
@@ -424,7 +424,7 @@ const Observation = () => {
           {observation?.observations?.map((item, index) => {
             return (
               <div className='row py-2 align-item-center'>
-                <div className='col-7'>
+                <div className='col-8'>
                   <Input
                     onChange={(e) => {
                       e.preventDefault();
@@ -440,7 +440,7 @@ const Observation = () => {
                     placeholder='Enter Label *'
                   />
                 </div>
-                <div className='col-4'>
+                <div className='col-3'>
                   <InputNumber
                     onChange={(e) => {
                       if (e > 99) {

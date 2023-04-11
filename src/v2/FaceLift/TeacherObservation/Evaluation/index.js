@@ -579,6 +579,7 @@ const Evaluation = () => {
               <div className='col-md-3'>
                 <Input.TextArea
                   placeholder='Description *'
+                  maxLength={500}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'description')}
                 />
               </div>
@@ -768,6 +769,8 @@ const Evaluation = () => {
 
               <div className='col-md-3 py-2'>
                 <Input.TextArea
+                  maxLength={600}
+                  showCount
                   rows={4}
                   placeholder='Overall Remarks *'
                   onChange={(e) => setOverallRemarks(e.target.value)}

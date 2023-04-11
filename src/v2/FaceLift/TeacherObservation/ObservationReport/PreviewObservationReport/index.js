@@ -76,10 +76,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                   </div>
                 </td>
                 <td width='15%' className='text-center'>
-                  <img
-                    src={`https://d3ka3pry54wyko.cloudfront.net/${schoolData?.school_logo}`}
-                    width={'80px'}
-                  />
+                  <img src={schoolData?.school_logo} width={'80px'} />
                 </td>
               </tr>
             </tbody>
@@ -250,7 +247,7 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                 <td className='th-width-50 py-2 pl-3 th-fw-600'>
                   {' '}
                   Teacher’s Signature
-                  {pricipalSignData?.length ? (
+                  {pricipalSignData?.length > 0 ? (
                     <span className='pl-2'>
                       <img
                         src={
@@ -262,10 +259,10 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                     </span>
                   ) : null}
                 </td>
-
+                {console.log({ schoolData })}
                 <td className='th-width-50 py-2 pl-3 th-fw-600 text-right'>
                   Observer’s Signature{' '}
-                  {pricipalSignData?.length ? (
+                  {pricipalSignData?.length > 0 ? (
                     <span className='pl-2'>
                       <img
                         src={
@@ -280,9 +277,9 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
               </tr>
             </tbody>
           </table>
-          <div className='mt-2 d-flex align-items-center th-fw-500'>
-            <div className=' th-fw-400 th-black-1'>Supporting Document : </div>
-            <div className='ml-3 th-pointer'>
+          <div className='row mt-3 align-items-center th-fw-500'>
+            <div className=' col-2 px-0 th-fw-400 th-black-1'>Supporting Document : </div>
+            <div className='col-10 pl-0 th-pointer'>
               <a
                 onClick={() => {
                   const fileName = previewData?.file;
@@ -300,15 +297,16 @@ export default function PreviewObservationReport({ reportCardDataNew }) {
                   });
                 }}
               >
-                <div className='row align-items-center py-2'>
-                  <div className='col-9'>
+                <div className='d-flex'>
+                  <div>
                     {
                       previewData?.file.split('/')[
                         previewData?.file?.split('/')?.length - 1
                       ]
                     }
                   </div>
-                  <div className='col-2'>
+
+                  <div className='ml-2'>
                     <EyeFilled />
                   </div>
                 </div>

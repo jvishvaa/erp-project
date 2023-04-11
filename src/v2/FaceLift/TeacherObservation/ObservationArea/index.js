@@ -98,7 +98,7 @@ const ObservationArea = () => {
   const handleEdit = (data) => {
     setEditId(data?.id);
     setDrawerOpen(true);
-    // axios.get(`${endpoints.observations.observationAreaList}${id}/`).then((res) => {
+
     setTimeout(() => {
       formRef.current.setFieldsValue({
         observation_area_name: data?.observation_area_name,
@@ -124,13 +124,11 @@ const ObservationArea = () => {
     axios
       .put(`${endpoints.observations.updateObservationArea}${id}/`, body)
       .then((result) => {
-        // // observationGet({ is_student: tableView === 'teacher' ? false : true });
         if (result.data?.status_code === 200) {
           message.success('Successfully Updated');
           fetchObservationAreaList({
             is_student: tableView === 'teacher' ? false : true,
           });
-          // observationGet({ is_student: tableView === 'teacher' ? false : true });
         } else {
           message.error('Something went wrong');
         }
@@ -168,19 +166,14 @@ const ObservationArea = () => {
   const onSubmit = () => {
     const updateValues = formRef.current.getFieldsValue();
     if (updateValues.observation_area_name && updateValues.observation) {
-      // const valuess = new FormData();
-      // valuess.append('observation_area_name', updateValues.observation_area_name);
-      // valuess.append(
-      //   'is_student',
-      //   updateValues.is_student ? updateValues.is_student : false
-      // );
-      // valuess.append('levels', '13,11');
-      // // valuess.append('levels', updateValues.levels?.toString());
-      // valuess.append('observation', updateValues.observation);
-
-      // if (!editId) {
-      //   valuess.append('status', true);
-      // }
+      if (!updateValues.observation_area_name.trim().length) {
+        message.error('Observation Area name can not be empty');
+        return false;
+      }
+      if (updateValues.observation_area_name.length > 100) {
+        message.error('Observation Area name should be less than 100 characters');
+        return false;
+      }
       let payload = {
         observation_area_name: updateValues.observation_area_name,
         is_student: updateValues.is_student ? updateValues.is_student : false,
@@ -389,7 +382,7 @@ const ObservationArea = () => {
           onClose={onClose}
           visible={drawerOpen}
           closable={null}
-          width='40vw'
+          width={window.innerwidth < 600 ? '90vw' : ' 40vw'}
           className='th-activity-drawer'
           footer={
             <div
@@ -463,7 +456,7 @@ const ObservationArea = () => {
                   className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                   placement='bottomRight'
                   showArrow={true}
-                  dropdownMatchSelectWidth={false}
+                  dropdownMatchSelectWidth={true}
                   filterOption={(input, options) => {
                     return (
                       options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
