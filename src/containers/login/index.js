@@ -86,7 +86,6 @@ function SignIn({ history, setTheme }) {
       .get(`${endpoints.schoolDetails}?sub_domain=${subDomain}`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
-          // Authorization: '',
         },
       })
       .then((response) => {
