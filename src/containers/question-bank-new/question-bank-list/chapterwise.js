@@ -146,6 +146,12 @@ const Chapterwise = () => {
     }
   }, [filters])
 
+  useEffect(() => {
+    if(history?.location?.state?.filters?.Historic == true){
+      setHistoric(true)
+    }
+  },[history])
+
   // useEffect(()=>{
   //   if(filters && gradeId){
 
@@ -598,13 +604,13 @@ const Chapterwise = () => {
           // </div>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div className='w-20 eduvate'>{(row?.eduvate_qp_count != null) ? <div
-              style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color: '#3d69be', borderRadius: '15px' }}
+              style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color: '#3d69be', borderRadius: '15px' , whiteSpace: 'nowrap' }}
             >
               {row?.eduvate_qp_count}
             </div> : null}</div>
             <div className='w-20 school'>
               {(row?.school_qp_count != null) ? <div
-                style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%', color: '#b33dbe', borderRadius: '15px' }}
+                style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%', color: '#b33dbe', borderRadius: '15px' ,  whiteSpace: 'nowrap' }}
               >
                 {row?.school_qp_count}
               </div> : null}
@@ -937,6 +943,7 @@ const Chapterwise = () => {
                                       }}
                                       onChange={(e, value) => {
                                         handleGrade(value);
+                                        setPage(1)
                                       }}
                                       onClear={handleClearGrade}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -969,6 +976,7 @@ const Chapterwise = () => {
                                       }}
                                       onChange={(e, value) => {
                                         handleSubject(value);
+                                        setPage(1)
                                       }}
                                       onClear={handleClearSubject}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1026,7 +1034,7 @@ const Chapterwise = () => {
                                   <div className='d-flex justify-content-end my-2' >
                                     <Pagination current={page} total={totalPage} onChange={(page) => {
                                       setPage(page);
-                                    }} />
+                                    }} showSizeChanger={false} />
                                   </div>
                                 </div>
                               ) : (
@@ -1066,6 +1074,7 @@ const Chapterwise = () => {
                                       }}
                                       onChange={(e, value) => {
                                         handleGrade(value);
+                                        setPage(1)
                                       }}
                                       onClear={handleClearGrade}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1098,6 +1107,7 @@ const Chapterwise = () => {
                                       }}
                                       onChange={(e, value) => {
                                         handleSubject(value);
+                                        setPage(1)
                                       }}
                                       onClear={handleClearSubject}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1155,7 +1165,7 @@ const Chapterwise = () => {
                                      <div className='d-flex justify-content-end my-2' >
                                     <Pagination current={page} total={totalPage} onChange={(page) => {
                                       setPage(page);
-                                    }} />
+                                    }} showSizeChanger={false} />
                                   </div>
                                 </div>
                               ) : (
