@@ -86,7 +86,6 @@ function SignIn({ history, setTheme }) {
       .get(`${endpoints.schoolDetails}?sub_domain=${subDomain}`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
-          // Authorization: '',
         },
       })
       .then((response) => {
@@ -174,9 +173,9 @@ function SignIn({ history, setTheme }) {
                 <div className='th-24 th-fw-500 text-uppercase'>
                   {schoolInfo?.school_name}
                 </div>
-                <div className='th-14 th-fw-400 th-black-1'>
+                {/* <div className='th-14 th-fw-400 th-black-1'>
                   {schoolInfo?.school_address}
-                </div>
+                </div> */}
               </div>
             </div>
             {/* <Avatar className={classes.avatar}>
