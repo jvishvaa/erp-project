@@ -174,6 +174,7 @@ const Evaluation = () => {
     fetchObservationAreasList({
       is_student: tableView === 'teacher' ? false : true,
       status: true,
+      userlevel: user_level,
     });
   }, [tableView]);
   const modifyData = (paramData) => {
@@ -209,10 +210,12 @@ const Evaluation = () => {
       e.preventDefault();
       tempData[id].observations[subId].description = e.target.value;
     } else {
-      if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
-        tempData[id].observations[subId].observationScore = e;
-      } else {
-        message.error("Obtained marks can't exceeds Observation max marks");
+      if (e !== null) {
+        if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
+          tempData[id].observations[subId].observationScore = e;
+        } else {
+          message.error("Obtained marks can't exceeds Observation max marks");
+        }
       }
     }
     setModifiedData([...tempData]);
@@ -312,7 +315,7 @@ const Evaluation = () => {
           message.success('Successfully Submitted');
           setTimeout(function () {
             window.location.reload();
-          }, 1000);
+          }, 100);
         }
       })
       .catch((error) => {
@@ -541,7 +544,7 @@ const Evaluation = () => {
         id={each?.id}
         studentName={each?.user?.first_name + ' ' + each?.user?.last_name}
       >
-        {each?.user?.first_name + ' ' + each?.user?.last_name}
+        {`${each?.user?.first_name}  ${each?.user?.last_name} (${each?.user?.username})`}
       </Option>
     );
   });
@@ -602,7 +605,7 @@ const Evaluation = () => {
               <div className='col-md-3 pl-0'>
                 <InputNumber
                   className='w-100'
-                  max={item?.score}
+                  // max={item?.score}
                   min={0}
                   placeholder={`Score Max * (${item?.score})`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}

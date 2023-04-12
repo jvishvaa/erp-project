@@ -101,7 +101,10 @@ const Observation = () => {
           fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        message.success('Observation status updation failed');
+        console.log(error);
+      });
   };
 
   const onDelete = (id) => {
@@ -439,7 +442,7 @@ const Observation = () => {
                     }}
                     className='w-100 th-br-5'
                     value={item?.score}
-                    placeholder='Enter Score *'
+                    placeholder='Max. Score *'
                     type='number'
                     maxLength={3}
                   />
