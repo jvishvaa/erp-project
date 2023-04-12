@@ -94,7 +94,7 @@ const VisualReviews = (props) => {
             setCurrentPage(response?.data?.page);
             setLimit(Number(limit));
             // props.setFlag(false);
-            message.success(response?.data?.message)
+            // message.success(response?.data?.message)
             setTotalSubmitted(response?.data?.result);
           }
           setLoading(false);
