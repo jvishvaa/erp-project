@@ -943,6 +943,7 @@ const Chapterwise = () => {
                                       }}
                                       onChange={(e, value) => {
                                         handleGrade(value);
+                                        setPage(1)
                                       }}
                                       onClear={handleClearGrade}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -975,6 +976,7 @@ const Chapterwise = () => {
                                       }}
                                       onChange={(e, value) => {
                                         handleSubject(value);
+                                        setPage(1)
                                       }}
                                       onClear={handleClearSubject}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1072,6 +1074,7 @@ const Chapterwise = () => {
                                       }}
                                       onChange={(e, value) => {
                                         handleGrade(value);
+                                        setPage(1)
                                       }}
                                       onClear={handleClearGrade}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1104,6 +1107,7 @@ const Chapterwise = () => {
                                       }}
                                       onChange={(e, value) => {
                                         handleSubject(value);
+                                        setPage(1)
                                       }}
                                       onClear={handleClearSubject}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
