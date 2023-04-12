@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useRef, createRef } from 'react
 import { Avatar, Divider, Table, Drawer, Tabs, Collapse, Button, message, Empty, Modal , Input, Space} from 'antd';
 import moment from 'moment';
 import { groupBy } from 'lodash';
-import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, SearchOutlined, FileDoneOutlined, FileTextOutlined, } from '@ant-design/icons';
 import HomeworkAssigned from 'v2/Assets/images/hwassign.png';
 import HomeworkSubmit from 'v2/Assets/images/hwsubmit.png';
 import HomeworkEvaluate from 'v2/Assets/images/task.png';
@@ -289,6 +289,47 @@ const SubmissionData = withRouter(({
         },
     ];
 
+    const submittedColumns = [
+        {
+            title: getTitle(),
+            dataIndex: 'first_name',
+            key: 'user_id',
+        },
+        {
+            title: 'Search User',
+            align: 'right',
+            width: '30%',
+            key: 'icon',
+            ...getColumnSearchProps('first_name'),
+            render: (text, row) => (
+                <>
+                    <div className='d-flex justify-content-center'>
+                        {row?.hw_submission_mode == "Online Submission" ?
+                            <span
+                                onClick={(e) =>
+                                    handleSubView(row)
+                                }
+                                className=' th-pointer'
+                            >
+                                
+                                <div className='th-13 p-2 th-br-5' style={{ border: '1px solid #d1d1d1' }} ><img src={OnlineSub} style={{ height: '30px', width: '30px', marginTop: '5px', marginRight: '5px' }} /> View</div>
+                            </span>  : ''} 
+
+                        {row?.hw_status == "3" &&
+                            <div className='th-pointer p-2 ml-2' title='Evaluated'>
+                            <FileDoneOutlined  style={{ fontSize: '30px', color:'#1b4ccb', marginTop: '5px' }} />
+                        </div>}
+
+                        {row?.hw_status == "2" &&
+                            <div className='th-pointer p-2 ml-2' title='Unevaluated'>
+                            <FileTextOutlined  style={{ fontSize: '30px', color:'#ff0000cf', marginTop: '5px' }} />
+                        </div>}
+                    </div>
+                </>
+            )
+        },
+    ];
+
     useEffect(() => {
         if (props?.submitData?.hw_data?.data?.hw_id) {
             getHomeworkDetailsById(props?.submitData?.hw_data?.data?.hw_id)
@@ -297,6 +338,7 @@ const SubmissionData = withRouter(({
 
     const handleSegment = (e) => {
         setSegment(e)
+        setSelectedRowKeys([])
     }
 
     const onSelectChange = (newSelectedRowKeys) => {
@@ -625,7 +667,7 @@ const SubmissionData = withRouter(({
                     <div style={{ width: '100%' }} >
                         {submittedStudents?.length > 0 ?
                             <Table rowSelection={{ ...rowSelection }}
-                                columns={columns} dataSource={submittedStudents}
+                                columns={submittedColumns} dataSource={submittedStudents}
                                 rowKey={(record) => record?.student_homework_id}
                                 pagination={false}
                                 rowClassName={(record, index) =>
