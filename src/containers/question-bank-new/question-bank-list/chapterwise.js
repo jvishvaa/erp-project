@@ -1026,7 +1026,7 @@ const Chapterwise = () => {
                                   <div className='d-flex justify-content-end my-2' >
                                     <Pagination current={page} total={totalPage} onChange={(page) => {
                                       setPage(page);
-                                    }} />
+                                    }} showSizeChanger={false} />
                                   </div>
                                 </div>
                               ) : (
@@ -1155,7 +1155,7 @@ const Chapterwise = () => {
                                      <div className='d-flex justify-content-end my-2' >
                                     <Pagination current={page} total={totalPage} onChange={(page) => {
                                       setPage(page);
-                                    }} />
+                                    }} showSizeChanger={false} />
                                   </div>
                                 </div>
                               ) : (
