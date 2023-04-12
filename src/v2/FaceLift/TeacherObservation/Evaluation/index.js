@@ -88,21 +88,17 @@ const Evaluation = () => {
 
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
-    //  setLoading(true);
     axios
       .get(`${endpointsV2.observations.observationAreaList}`, { params: { ...params } })
       .then((result) => {
         if (result.data?.status_code === 200) {
           setObservationAreaList(result?.data?.result);
-          //  setLoading(false);
         } else {
-          //  setLoading(false);
           setObservationAreaList([]);
         }
       })
       .catch((error) => {
         console.log(error);
-        //  setLoading(false);
       });
   };
   useEffect(() => {
