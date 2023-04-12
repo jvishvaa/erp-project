@@ -198,6 +198,7 @@ const RatingCreate = () => {
   const [isEditData, setIsEditData] = useState([]);
   const [editOption, setEditOption] = useState([]);
   const [activityCategory, setActivityCategory] = useState([]);
+  const [activityCategoryRemarks, setActivityCategoryRemarks] = useState([]);
   const formRef = useRef();
 
   const columns = [
@@ -562,6 +563,13 @@ const RatingCreate = () => {
         //   array.push(temp);
         // });
         setActivityCategory(response?.data);
+        if(response){
+          let res = response?.data?.result.filter((item) =>{
+            return item.name !== "Public Speaking" && item.name !== "Blog Activity"
+          })
+          setActivityCategoryRemarks(res)
+
+        }
         setLoading(false);
       });
   };
@@ -781,7 +789,7 @@ const RatingCreate = () => {
     );
   });
 
-  const activityOption = activityCategory?.result?.map((each) => {
+  const activityOption = activityCategoryRemarks?.map((each) => {
     return (
       <Option value={each?.name} name={each?.name}>
         {each?.name}
