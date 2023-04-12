@@ -1,7 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import endpoints from '../../config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
@@ -17,13 +14,14 @@ import {
   Table as TableAnt,
   message,
   Modal,
+  Spin,
 } from 'antd';
 import {
   MonitorOutlined,
   ScheduleOutlined,
   UserOutlined,
   ArrowRightOutlined,
-  CaretRightOutlined
+  CaretRightOutlined,
 } from '@ant-design/icons';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
@@ -133,16 +131,17 @@ const PhysicalPendingReview = (props) => {
   };
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
+    setLoading(true);
     setView(false);
     let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
     if (!mandatory[0].remarks) {
       message.error('Overall Remarks Is Compulsory');
+      setLoading(false)
       return;
     }
     let body = ratingReview;
     let overAllIndex = body.findIndex((each) => each?.name === 'Overall');
     body[overAllIndex].given_rating = calculateOverallRating();
-    setLoading(true);
     axios
       .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
         headers: {
@@ -154,17 +153,17 @@ const PhysicalPendingReview = (props) => {
         setView(false);
         erpAPI();
         message.success(' Review Submitted Successfully');
-        setCustomRatingReview([])
-        setOverAllRemarks([])
+        setOverAllRemarks([]);
         setLoading(false);
+        setCustomRatingReview({});
+        setRatingReview([]);
+        setTableHeader([]);
       })
       .catch((err) => {
         message.error(err);
         setLoading(false);
       });
   };
-
-
 
   const handleInputCreativity = (event, index) => {
     let arr = [...ratingReview];
@@ -182,8 +181,6 @@ const PhysicalPendingReview = (props) => {
   const expandMore = () => {
     setSubmit(false);
   };
-
-  
 
   const functionFilter = (sourceData, targetData) => {
     setLoading(true);
@@ -506,19 +503,31 @@ const PhysicalPendingReview = (props) => {
 
   return (
     <>
-      <div className='col-12 px-0'>
-        <TableAnt
-          columns={columns}
-          dataSource={totalSubmitted}
-          className='th-table'
-          rowClassName={(record, index) =>
-            `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-          }
-          loading={loading}
-          scroll={{ x: totalSubmitted.length > 0 ? 'max-content' : null, y: 600 }}
-          pagination={false}
-        />
+      <div className='row th-bg-white th-br-5 m-3'>
+        {loading ? (
+          <div
+            className='d-flex align-items-center justify-content-center w-100'
+            style={{ height: '50vh' }}
+          >
+            <Spin tip='Loading' />
+          </div>
+        ) : (
+          <div className='col-12 px-0'>
+            <TableAnt
+              columns={columns}
+              dataSource={totalSubmitted}
+              className='th-table'
+              rowClassName={(record, index) =>
+                `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+              }
+              loading={loading}
+              scroll={{ x: totalSubmitted.length > 0 ? 'max-content' : null, y: 600 }}
+              pagination={false}
+            />
+          </div>
+        )}
       </div>
+
       {/* <Drawer
         title={<span className='th-fw-500'>Submit Review</span>}
         placement='right'
@@ -732,6 +741,11 @@ const PhysicalPendingReview = (props) => {
                     {tableHeader?.map((each, i) => (
                       <td style={{ padding: '5px' }}>
                         <Input
+                          value={
+                            ratingReview.filter(
+                              (el) => el?.name == each?.name && el.level == item
+                            )[0]?.remarks
+                          }
                           className='text-center'
                           placeholder={`Enter ${each?.name} for ${item}`}
                           onChange={(event) => handleInputEvent(event, item, each)}
@@ -749,7 +763,17 @@ const PhysicalPendingReview = (props) => {
               overallData.map((item, index) => {
                 return (
                   <div className='col-6 px-0 d-flex align-items-center justify-content-start'>
-                    <span style={{ fontWeight: 500, marginRight: '5px', fontSize: '15px', display: 'flex', alignItems:'center' }}>Overall  {<CaretRightOutlined/>}</span>
+                    <span
+                      style={{
+                        fontWeight: 500,
+                        marginRight: '5px',
+                        fontSize: '15px',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      Overall {<CaretRightOutlined />}
+                    </span>
                     <Input
                       value={overallRemarks}
                       placeholder={`Enter for OverAll`}
