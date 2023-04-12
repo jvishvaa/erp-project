@@ -296,15 +296,36 @@ const SubmissionData = withRouter(({
             key: 'user_id',
         },
         {
+            title: '',
+            align: 'left',
+            width: '30%',
+            render: (text, row) => (
+                <>
+                    <div>
+                        {row?.hw_status == "3" &&
+                            <div className='th-pointer px-2 mr-2' >
+                            <FileDoneOutlined title='Evaluated' style={{ fontSize: '20px', color:'#1b4ccb', }} />
+                        </div>}
+
+                        {row?.hw_status == "2" &&
+                            <div className='th-pointer px-2 mr-2'>
+                            <FileTextOutlined  title='Unevaluated' style={{ fontSize: '20px', color:'#ff0000cf', }} />
+                        </div>}
+                    </div>
+                </>
+            )
+        },
+        {
             title: 'Search User',
             align: 'right',
             width: '30%',
             key: 'icon',
             ...getColumnSearchProps('first_name'),
             render: (text, row) => (
-                <>
-                    <div className='d-flex justify-content-center'>
-                        {row?.hw_submission_mode == "Online Submission" ?
+                <div className='d-flex justify-content-space-between my-0 py-0' style={{float: 'right'}}>
+                    
+                    <div className=''>
+                        {row?.hw_submission_mode == "Online Submission" &&
                             <span
                                 onClick={(e) =>
                                     handleSubView(row)
@@ -312,20 +333,12 @@ const SubmissionData = withRouter(({
                                 className=' th-pointer'
                             >
                                 
-                                <div className='th-13 p-2 th-br-5' style={{ border: '1px solid #d1d1d1' }} ><img src={OnlineSub} style={{ height: '30px', width: '30px', marginTop: '5px', marginRight: '5px' }} /> View</div>
-                            </span>  : ''} 
+                                <div className='th-13 px-2 th-br-5' style={{ border: '1px solid #d1d1d1' }} ><img src={OnlineSub} style={{ height: '15px', width: '15px', marginRight: '5px' }} /> View</div>
+                            </span> }
 
-                        {row?.hw_status == "3" &&
-                            <div className='th-pointer p-2 ml-2' title='Evaluated'>
-                            <FileDoneOutlined  style={{ fontSize: '30px', color:'#1b4ccb', marginTop: '5px' }} />
-                        </div>}
-
-                        {row?.hw_status == "2" &&
-                            <div className='th-pointer p-2 ml-2' title='Unevaluated'>
-                            <FileTextOutlined  style={{ fontSize: '30px', color:'#ff0000cf', marginTop: '5px' }} />
-                        </div>}
+                        
                     </div>
-                </>
+                </div>
             )
         },
     ];
