@@ -1166,7 +1166,7 @@ const RatingCreate = () => {
                           `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                         }
                         pagination={false}
-                        scroll={{ x: filterData.length > 0 ? 'max-content' : null, y: 600 }}
+                        scroll={{ y: 600 }}
                         loading={loading}
                         columns={columns}
                         dataSource={filterData}
