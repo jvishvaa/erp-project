@@ -217,13 +217,27 @@ const Evaluation = () => {
     }
     setModifiedData([...tempData]);
   };
-
   const handleSubmit = () => {
-    setRequestSent(true);
     const formData = new FormData();
-
-    // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
+    const isFieldNull = modifiedData[0]?.observations.filter(function (el) {
+      return (
+        el?.description?.trim() == '' ||
+        el?.observationScore == '' ||
+        !el.hasOwnProperty('description') ||
+        !el.hasOwnProperty('observationScore')
+      );
+    });
+    if (!overallRemarks.trim().length) {
+      message.error('Please fill overall remarks');
+      return false;
+    }
+    console.log({ isFieldNull });
+    if (isFieldNull.length > 0) {
+      message.error('Please fill all the descriptions and scores');
+      return false;
+    }
     if (subjectID && teacherErp) {
+      // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
       formData.append('acad_session', selectedBranch?.id);
       formData.append('date', moment().format('YYYY-MM-DD'));
       formData.append('erp_user', teacherId);
@@ -290,6 +304,7 @@ const Evaluation = () => {
       message.error('Please select all required fields ');
       return;
     }
+    setRequestSent(true);
     axios
       .post(`${endpoints.observationName.observationReport}`, formData)
       .then((res) => {
@@ -659,7 +674,7 @@ const Evaluation = () => {
                   dataSource={modifiedData}
                   pagination={false}
                   bordered
-                  scroll={{ y: '58vh' }}
+                  scroll={{ x: 'max-content', y: 'calc(100vh - 220px)' }}
                 />
               </div>
             </div>
