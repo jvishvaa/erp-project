@@ -629,8 +629,8 @@ const AdminCreateBlog = () => {
       formData.append('submission_date', startDate + hoursAndMinutes);
       formData.append('image', selectedFile);
       formData.append(
-        'activity_type_id',
-        selectedCriteriaTitleId ? selectedSubActivityId : activityName?.id
+        'activity_type_id', 
+        selectedCriteriaTitleId ? selectedCriteriaTitleId : activityName?.id
         // activityName?.id ? activityName?.id : selectedSubActivityId
       );
       formData.append('session_year', selectedAcademicYear.session_year);

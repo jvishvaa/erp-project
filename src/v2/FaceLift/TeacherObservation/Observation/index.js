@@ -19,7 +19,7 @@ import {
   Radio,
 } from 'antd';
 import { PlusOutlined, EditOutlined, CloseCircleOutlined } from '@ant-design/icons';
-
+import _ from 'lodash';
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -42,6 +42,7 @@ const Observation = () => {
   const [editId, setEditId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [tableView, setTableView] = useState('teacher');
+
   useEffect(() => {
     fetchObservationList({
       is_student: tableView === 'teacher' ? false : true,
@@ -81,7 +82,7 @@ const Observation = () => {
   const handleEdit = (data) => {
     setEditId(data?.id);
     setDrawerOpen(true);
-    let currentData = Object.assign({}, data);
+    var currentData = _.cloneDeep(data);
     setObservation(currentData);
     setIsStudent(data.is_student);
   };
@@ -100,7 +101,10 @@ const Observation = () => {
           fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        message.success('Observation status updation failed');
+        console.log(error);
+      });
   };
 
   const onDelete = (id) => {
@@ -124,9 +128,6 @@ const Observation = () => {
   };
   const onClose = () => {
     setDrawerOpen(false);
-    if (editId) {
-      fetchObservationList({ is_student: tableView === 'teacher' ? false : true });
-    }
     setEditId(null);
     setObservation({
       title: '',
@@ -142,16 +143,8 @@ const Observation = () => {
   };
 
   const onSubmit = () => {
-    const isFieldNull = observation?.observations.forEach(function (v, i) {
-      if (
-        Object.keys(v).some(function (k) {
-          return v[k] == null || v[k] == '';
-        })
-      )
-        return true;
-      else {
-        return false;
-      }
+    const isFieldNull = observation?.observations.filter(function (el) {
+      return el.score == '' || el.label.trim() == '';
     });
     const isLimit = observation?.observations.filter(function (el) {
       return el.score >= 99;
@@ -167,8 +160,8 @@ const Observation = () => {
       message.error('Observation title must be less than 100 character');
       return;
     }
-    if (isFieldNull) {
-      message.error('Please fill all the details');
+    if (isFieldNull.length > 0) {
+      message.error('Labels and Score can not be empty');
       return;
     }
     if (isLimit.length > 0) {
@@ -353,7 +346,7 @@ const Observation = () => {
                 rowKey={(record) => record?.id}
                 dataSource={obseravationsList}
                 pagination={false}
-                scroll={{ y: '400px' }}
+                scroll={{ x: 'max-content', y: 'calc(100vh - 220px)' }}
               />
             </div>
           </div>
@@ -372,7 +365,7 @@ const Observation = () => {
           title={editId ? 'Edit Observation' : 'Create Observation'}
           placement='right'
           onClose={onClose}
-          width={window.innerWidth < 600 ? '90vw' : ' 50vw'}
+          width={window.innerWidth < 600 ? '90vw' : ' 40vw'}
           visible={drawerOpen}
           closable={null}
           className='th-activity-drawer'
@@ -422,7 +415,7 @@ const Observation = () => {
           {observation?.observations?.map((item, index) => {
             return (
               <div className='row py-2 align-item-center'>
-                <div className='col-8'>
+                <div className='col-7'>
                   <Input
                     onChange={(e) => {
                       e.preventDefault();
@@ -438,18 +431,18 @@ const Observation = () => {
                     placeholder='Enter Label *'
                   />
                 </div>
-                <div className='col-3'>
+                <div className='col-4'>
                   <InputNumber
                     onChange={(e) => {
                       if (e > 99) {
-                        message.error('Score must be 2 digit only');
+                        message.error('Score must be of 2 digit only');
                       } else {
                         handleChangeObservations(e, index, 'score');
                       }
                     }}
                     className='w-100 th-br-5'
                     value={item?.score}
-                    placeholder='Enter Score *'
+                    placeholder='Max. Score *'
                     type='number'
                     maxLength={3}
                   />

@@ -229,10 +229,15 @@ const ObservationArea = () => {
 
   const handleApplicableFor = (e) => {
     setIsStudent(e.target.value);
+    fetchObservationList({
+      is_student: e.target.value,
+      status: true,
+    });
   };
 
   const handleTableView = (e) => {
     setTableView(e.target.value);
+    console.log(e.target.value);
   };
   const userLevelListOptions = userLevelList?.map((each) => {
     return (
@@ -271,6 +276,7 @@ const ObservationArea = () => {
     {
       title: <span className='th-white th-fw-700'>Overall Score</span>,
       align: 'center',
+      width: '10%',
       dataIndex: 'over_all',
       render: (data) => <span className='th-black-1 th-16'>{data?.over_all}</span>,
     },
@@ -364,7 +370,7 @@ const ObservationArea = () => {
                 rowKey={(record) => record?.id}
                 dataSource={observationAreaList}
                 pagination={false}
-                scroll={{ y: '400px' }}
+                scroll={{ x: 'max-content', y: 'calc(100vh - 220px)' }}
               />
             </div>
           </div>

@@ -198,6 +198,7 @@ const RatingCreate = () => {
   const [isEditData, setIsEditData] = useState([]);
   const [editOption, setEditOption] = useState([]);
   const [activityCategory, setActivityCategory] = useState([]);
+  const [activityCategoryRemarks, setActivityCategoryRemarks] = useState([]);
   const formRef = useRef();
 
   const columns = [
@@ -562,6 +563,13 @@ const RatingCreate = () => {
         //   array.push(temp);
         // });
         setActivityCategory(response?.data);
+        if(response){
+          let res = response?.data?.result.filter((item) =>{
+            return item.name !== "Public Speaking" && item.name !== "Blog Activity"
+          })
+          setActivityCategoryRemarks(res)
+
+        }
         setLoading(false);
       });
   };
@@ -781,7 +789,7 @@ const RatingCreate = () => {
     );
   });
 
-  const activityOption = activityCategory?.result?.map((each) => {
+  const activityOption = activityCategoryRemarks?.map((each) => {
     return (
       <Option value={each?.name} name={each?.name}>
         {each?.name}
@@ -880,7 +888,12 @@ const RatingCreate = () => {
       })
       .then((res) => {
         if (res.data.status_code == 400) {
-          message.error(res.data.message);
+          message.error({
+            content: res?.data?.message,
+            style: {
+              zIndex: '2000',
+            },
+          });
           setLoading(false);
           return;
         } else {
@@ -1094,8 +1107,9 @@ const RatingCreate = () => {
           ) : (
             <div className='row p-3' style={{ height: '68vh', overflowY: 'auto' }}>
               <div className='col-12 d-flex' style={{ height: '6%' }}>
-                <div className='col-md-6 mb-sm-0 p-0'>
-                  <Form.Item name='activity type'>
+                <div className='col-md-3 mb-sm-0 p-0'>
+                  {/* <Form.Item name='activity type'> */}
+                  <div className='py-1'>Select Activity Type</div>
                     <Select
                       getPopupContainer={(trigger) => trigger.parentNode}
                       placeholder='Select Activity Type'
@@ -1116,10 +1130,10 @@ const RatingCreate = () => {
                     >
                       {mainActivityOption}
                     </Select>
-                  </Form.Item>
+                  {/* </Form.Item> */}
                 </div>
 
-                <div className='d-flex align-item-center justify-content-end col-md-6 mb-sm-0 p-0'>
+                <div className='d-flex align-item-center justify-content-end col-md-9 mb-sm-0 p-0'>
                   <div className='col-mb-3 mb-sm-0 text-sm-right px-0 px-sm-2 pt-1 pt-sm-0'>
                     <Tag
                       icon={<SnippetsOutlined className='th-14' />}
@@ -1142,7 +1156,7 @@ const RatingCreate = () => {
                   </div>
                 </div>
               </div>
-              <div className='row' style={{ height: '55vh', overflowY: 'auto' }}>
+              <div className='row mt-4' style={{ height: '55vh', overflowY: 'auto' }}>
                 <div className='col-md-12'>
                   <>
                     {filterData?.length !== 0 ? (
@@ -1152,6 +1166,7 @@ const RatingCreate = () => {
                           `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                         }
                         pagination={false}
+                        scroll={{ y: 600 }}
                         loading={loading}
                         columns={columns}
                         dataSource={filterData}
@@ -1186,7 +1201,7 @@ const RatingCreate = () => {
               <div className='col-md-6 md-sm-0'>Activity Types</div>
             </div>
             <div className='row mt-1'>
-              <div className='col-md-6 md-sm-0'>
+              <div className='col-md-10 md-sm-0'>
                 {/* <Form.Item name='activity_type'> */}
                 <Select
                   getPopupContainer={(trigger) => trigger.parentNode}
@@ -1214,7 +1229,7 @@ const RatingCreate = () => {
                   <div className='col-md-6 md-sm-0'>Sub-Activity</div>
                 </div>
                 <div className='row mt-2'>
-                  <div className='col-md-6 md-sm-0'>
+                  <div className='col-md-10 md-sm-0'>
                     <Select
                       getPopupContainer={(trigger) => trigger.parentNode}
                       placeholder='Sub Activity Type'
@@ -1394,7 +1409,7 @@ const RatingCreate = () => {
                                 >
                                   Add Criteria Title
                                 </AntDivider>
-                                <div className='col-3 px-0'>
+                                <div className='col-10 px-0'>
                                   <Input
                                     placeholder='Criteria Title'
                                     width={100}
@@ -1426,7 +1441,7 @@ const RatingCreate = () => {
                         ? inputList.map((input, index) => (
                             <>
                               <div className='row mt-2'>
-                                <div className='col-3 px-0'>
+                                <div className='col-10 px-0'>
                                   <Input
                                     placeholder='Criteria'
                                     width={100}
@@ -1442,7 +1457,7 @@ const RatingCreate = () => {
                                   ''
                                 ) : (
                                   <>
-                                    <div className='col-3'>
+                                    <div className='col-10'>
                                       <Input
                                         placeholder='Rating'
                                         width={100}
@@ -1454,7 +1469,7 @@ const RatingCreate = () => {
                                         }
                                       />
                                     </div>
-                                    <div className='col-3'>
+                                    <div className='col-10'>
                                       <Input
                                         placeholder='Score'
                                         width={100}

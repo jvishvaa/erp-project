@@ -88,21 +88,17 @@ const Evaluation = () => {
 
   const fetchObservationAreasList = (params = {}) => {
     setSelectedObservationArea(null);
-    //  setLoading(true);
     axios
       .get(`${endpointsV2.observations.observationAreaList}`, { params: { ...params } })
       .then((result) => {
         if (result.data?.status_code === 200) {
           setObservationAreaList(result?.data?.result);
-          //  setLoading(false);
         } else {
-          //  setLoading(false);
           setObservationAreaList([]);
         }
       })
       .catch((error) => {
         console.log(error);
-        //  setLoading(false);
       });
   };
   useEffect(() => {
@@ -174,6 +170,7 @@ const Evaluation = () => {
     fetchObservationAreasList({
       is_student: tableView === 'teacher' ? false : true,
       status: true,
+      userlevel: user_level,
     });
   }, [tableView]);
   const modifyData = (paramData) => {
@@ -209,21 +206,37 @@ const Evaluation = () => {
       e.preventDefault();
       tempData[id].observations[subId].description = e.target.value;
     } else {
-      if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
-        tempData[id].observations[subId].observationScore = e;
-      } else {
-        message.error("Obtained marks can't exceeds Observation max marks");
+      if (e !== null) {
+        if (parseInt(e) <= parseInt(tempData[id].observations[subId].score)) {
+          tempData[id].observations[subId].observationScore = e;
+        } else {
+          message.error("Obtained marks can't exceeds Observation max marks");
+        }
       }
     }
     setModifiedData([...tempData]);
   };
-
   const handleSubmit = () => {
-    setRequestSent(true);
     const formData = new FormData();
-
-    // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
+    const isFieldNull = modifiedData[0]?.observations.filter(function (el) {
+      return (
+        el?.description?.trim() == '' ||
+        el?.observationScore == '' ||
+        !el.hasOwnProperty('description') ||
+        !el.hasOwnProperty('observationScore')
+      );
+    });
+    if (!overallRemarks.trim().length) {
+      message.error('Please fill overall remarks');
+      return false;
+    }
+    console.log({ isFieldNull });
+    if (isFieldNull.length > 0) {
+      message.error('Please fill all the descriptions and scores');
+      return false;
+    }
     if (subjectID && teacherErp) {
+      // let flatttenData = modifiedData?.map((item) => item?.observation).flat();
       formData.append('acad_session', selectedBranch?.id);
       formData.append('date', moment().format('YYYY-MM-DD'));
       formData.append('erp_user', teacherId);
@@ -290,6 +303,7 @@ const Evaluation = () => {
       message.error('Please select all required fields ');
       return;
     }
+    setRequestSent(true);
     axios
       .post(`${endpoints.observationName.observationReport}`, formData)
       .then((res) => {
@@ -297,7 +311,7 @@ const Evaluation = () => {
           message.success('Successfully Submitted');
           setTimeout(function () {
             window.location.reload();
-          }, 1000);
+          }, 100);
         }
       })
       .catch((error) => {
@@ -526,7 +540,7 @@ const Evaluation = () => {
         id={each?.id}
         studentName={each?.user?.first_name + ' ' + each?.user?.last_name}
       >
-        {each?.user?.first_name + ' ' + each?.user?.last_name}
+        {`${each?.user?.first_name}  ${each?.user?.last_name} (${each?.user?.username})`}
       </Option>
     );
   });
@@ -587,7 +601,7 @@ const Evaluation = () => {
               <div className='col-md-3 pl-0'>
                 <InputNumber
                   className='w-100'
-                  max={item?.score}
+                  // max={item?.score}
                   min={0}
                   placeholder={`Score Max * (${item?.score})`}
                   onChange={(e) => handleScoreDesciption(e, index, i, 'score')}
@@ -659,7 +673,7 @@ const Evaluation = () => {
                   dataSource={modifiedData}
                   pagination={false}
                   bordered
-                  scroll={{ y: '58vh' }}
+                  scroll={{ x: 'max-content', y: 'calc(100vh - 220px)' }}
                 />
               </div>
             </div>

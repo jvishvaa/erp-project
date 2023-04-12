@@ -182,14 +182,14 @@ const PhysicalReviewed = (props) => {
         <span className='th-black-1'>{row?.submitted_on?.substring(0, 10)}</span>
       ),
     },
-    {
-      title: <span className='th-white th-fw-700'>Reviewed By</span>,
-      align: 'center',
-      render: (text, row) => <span className='th-black-1'>{row?.reviewer}</span>,
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>Reviewed By</span>,
+    //   align: 'center',
+    //   render: (text, row) => <span className='th-black-1'>{row?.reviewer}</span>,
+    // },
 
     {
-      title: <span className='th-white th-fw-700'>Overall Score</span>,
+      title: <span className='th-white th-fw-700'>Overall Remarks</span>,
       align: 'center',
       render: (text, row) => (
         <span className='th-black-1'>{row?.user_reviews?.remarks}</span>
