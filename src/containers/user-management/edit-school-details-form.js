@@ -44,9 +44,10 @@ const EditSchoolDetailsForm = ({
   const [subjects, setSubjects] = useState([]);
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const { is_superuser: isSuperUser } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -342,7 +343,10 @@ const EditSchoolDetailsForm = ({
             <Autocomplete
               id='year'
               name='year'
-              disabled={!isAcadDisabled}
+              disabled={
+                details?.user_level == 13 ? (isSuperUser ? false : true) : !isAcadDisabled
+              }
+              // disabled={!isAcadDisabled}
               key={`acad_year_${index}`}
               onChange={(e, value) => {
                 handleChangeAcademicYear(value);
@@ -374,7 +378,10 @@ const EditSchoolDetailsForm = ({
             <Autocomplete
               id='branch'
               name='branch'
-              disabled={isEditable}
+              // disabled={isEditable}
+              disabled={
+                details?.user_level == 13 ? (isSuperUser ? false : true) : isEditable
+              }
               key={`branch_${index}`}
               onChange={(e, value) => {
                 formik.setFieldValue('grade', []);
@@ -411,7 +418,10 @@ const EditSchoolDetailsForm = ({
               id='grade'
               name='grade'
               key={`grade_${index}`}
-              disabled={isEditable}
+              // disabled={isEditable}
+              disabled={
+                details?.user_level == 13 ? (isSuperUser ? false : true) : isEditable
+              }
               onChange={(e, value) => {
                 formik.setFieldValue('section', []);
                 formik.setFieldValue('subjects', []);
