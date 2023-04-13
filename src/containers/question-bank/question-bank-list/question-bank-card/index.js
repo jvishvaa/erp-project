@@ -230,6 +230,7 @@ const QuestionBankCard = ({
           ? { margin: '0rem auto' }
           : {
               margin: '0rem auto -1.1rem auto',
+              height: 250,
               // background: period?.question_status === '2' ? '#FCEEEE ' : '',
               // border: period?.question_status === '2' ? '1px solid red ' : '',
             }
@@ -355,7 +356,7 @@ const QuestionBankCard = ({
             </Box>
           </Grid>
         )}
-        <Grid item xs={12} sm={12} >
+        <Grid item xs={12} sm={12} className='bank-card'>
         {period.question_type === 7 ? (
               <Typography
                 className={classes.content}
