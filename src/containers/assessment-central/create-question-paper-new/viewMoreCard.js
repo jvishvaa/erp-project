@@ -285,7 +285,8 @@ const ViewMoreCard = ({
               <div className={classes.questionContainer}>
                 {Data?.map((p) => (
                   <div>
-                    {extractContentOption(p?.question)}
+                    {/* {extractContentOption(p?.question)} */}
+                    {ReactHtmlParser(p?.question)}
                     <div>
                       {p?.question?.split('"').filter((str) => str.startsWith('https'))
                         ?.length > 0 && (

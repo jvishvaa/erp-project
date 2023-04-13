@@ -404,7 +404,7 @@ const Evaluation = () => {
   const fetchStudentList = (sectionID) => {
     const params = {
       session_year: selectedAcademicYear?.id,
-      branch_id: selectedBranch?.branch?.id,
+      branch: selectedBranch?.branch?.id,
       grade: gradeID,
       section: sectionID,
     };
