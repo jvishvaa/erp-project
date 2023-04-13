@@ -295,7 +295,7 @@ const ViewMoreCard = ({
               <div className={classes.questionContainer}>
                 {Data?.map((p) => (
                   <div>
-                   {checkName(p?.question)}
+                   {ReactHtmlParser(p?.question)}
                     <div>
                       {p?.question?.split('"').filter((str) => str.startsWith('https'))
                         ?.length > 0 && (
@@ -1475,7 +1475,7 @@ const ViewMoreCard = ({
               {Data &&
                 Data?.map((p) => (
                   <div>
-                    {checkName(p.question)}
+                    {ReactHtmlParser(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
                         <div>
