@@ -404,7 +404,10 @@ const VisualPendingReview = (props) => {
           },
         })
         .then((res) => {
-          setFile(null);
+          if(res.data.status_code === 200){
+            message.success(res.data.message)
+            setFile(null);
+          }   
         })
         .catch((err) => {
           setFile(null);
