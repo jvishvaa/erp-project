@@ -58,7 +58,7 @@ const Evaluation = () => {
   const [tableView, setTableView] = useState('teacher');
   const [selectedFile, setSelectedFile] = useState(null);
   const [requestSent, setRequestSent] = useState(false);
-  const allowedFiles = ['.jpeg', '.jpg', '.png', '.pdf', '.mp4'];
+  const allowedFiles = ['.jpeg', '.jpg', '.png', '.pdf', '.mp4', '.mp3'];
 
   const uploadProps = {
     showUploadList: false,
