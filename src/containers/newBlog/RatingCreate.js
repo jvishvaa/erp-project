@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -10,7 +9,6 @@ import {
   Divider as AntDivider,
   Breadcrumb,
   Spin,
-  Form,
   Table,
   Modal as ModalAnt,
   Tag,
@@ -28,17 +26,10 @@ import {
   StopOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-
 import axios from 'axios';
-
 import { makeStyles } from '@material-ui/core';
-
 import Layout from 'containers/Layout';
-
-import { useTheme } from '@material-ui/core/styles';
-
 import './styles.scss';
-
 import endpoints from '../../config/endpoints';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 
@@ -142,8 +133,6 @@ const visualOptionData = [
 ];
 
 const RatingCreate = () => {
-  const classes = useStyles();
-  const themeContext = useTheme();
   const history = useHistory();
   const { Option } = Select;
   const [moduleId, setModuleId] = React.useState();
@@ -199,7 +188,6 @@ const RatingCreate = () => {
   const [editOption, setEditOption] = useState([]);
   const [activityCategory, setActivityCategory] = useState([]);
   const [activityCategoryRemarks, setActivityCategoryRemarks] = useState([]);
-  const formRef = useRef();
 
   const columns = [
     {
@@ -213,14 +201,14 @@ const RatingCreate = () => {
       dataIndex: 'erp_id',
       key: 'erp_id',
       align: 'center',
-      render: (text, row, index) => <p>{row?.sub_type ? row?.sub_type : <b>NA</b>}</p>,
+      render: (text, row) => <p>{row?.sub_type ? row?.sub_type : <b>NA</b>}</p>,
     },
     {
       title: <span className='th-white th-fw-700 '>Criteria Title</span>,
       dataIndex: 'criteria_title',
       key: 'erp_id',
       align: 'center',
-      render: (text, row, index) => (
+      render: (text, row) => (
         <p>{row?.criteria_title ? row?.criteria_title : <b>NA</b>}</p>
       ),
     },
@@ -229,7 +217,7 @@ const RatingCreate = () => {
       dataIndex: 'gender',
       key: 'gender',
       align: 'center',
-      render: (text, row, index) => {
+      render: (text, row) => {
         return (
           <p>
             {row.grading_scheme.map((item) => (
@@ -244,7 +232,7 @@ const RatingCreate = () => {
       dataIndex: 'gender',
       key: 'gender',
       align: 'center',
-      render: (text, row, index) => {
+      render: (text, row) => {
         return (
           <>
             <p>
@@ -261,7 +249,7 @@ const RatingCreate = () => {
       dataIndex: 'gender',
       key: 'gender',
       align: 'center',
-      render: (text, row, index) => {
+      render: (text, row) => {
         return (
           <p>
             {row.grading_scheme.map((item) => (
@@ -276,9 +264,9 @@ const RatingCreate = () => {
       dataIndex: 'gender',
       key: 'gender',
       align: 'center',
-      render: (text, row, index) => {
+      render: (text, row) => {
         return (
-          <div>
+          <div style={{ display: 'flex' }}>
             {row?.is_editable ? (
               <>
                 <Tag
@@ -292,7 +280,7 @@ const RatingCreate = () => {
                 <Popconfirm
                   title='Delete the Remarks ?'
                   description='Are you sure to delete this remarks?'
-                  onConfirm={(e) => handleDelete(row)}
+                  onConfirm={() => handleDelete(row)}
                   onOpenChange={() => console.log('open change')}
                   icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                 >
@@ -343,68 +331,12 @@ const RatingCreate = () => {
     setIsEditData({ ...isEditData, grading_scheme: newData });
   };
 
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
 
-  const months = [
-    {
-      label: 'January',
-      value: '1',
-    },
-    {
-      label: 'Febraury',
-      value: '2',
-    },
-    {
-      label: 'March',
-      value: '3',
-    },
-    {
-      label: 'April',
-      value: '4',
-    },
-    {
-      label: 'May',
-      value: '5',
-    },
-    {
-      label: 'June',
-      value: '6',
-    },
-    {
-      label: 'July',
-      value: '7',
-    },
-    {
-      label: 'August',
-      value: '8',
-    },
-    {
-      label: 'September',
-      value: '9',
-    },
-    {
-      label: 'October',
-      value: '10',
-    },
-    {
-      label: 'November',
-      value: '11',
-    },
-    {
-      label: 'December',
-      value: '12',
-    },
-  ];
 
   const [view, setViewed] = useState(false);
   const [branchView, setBranchView] = useState(true);
   const [branchSearch, setBranchSearch] = useState(true);
 
-  const viewed = () => {
-    setViewed(true);
-  };
   const handleClose = () => {
     setViewing(false);
     setInputList([{ name: '', rating: '', score: null }]);
@@ -412,29 +344,11 @@ const RatingCreate = () => {
     setOptionList([{ name: '', score: null, status: false }]);
   };
 
-  const handleParameterClose = () => {
-    setViewParameterFlag(false);
-  };
 
-  const branchViewed = () => {
-    setBranchView(false);
-    setBranchSearch(true);
-  };
 
-  const shortList = () => {
-    history.push('/blog/short');
-  };
   const [data, setData] = useState('');
-  const handleDate = (data) => {
-    setBranchView(true);
-    setBranchSearch(false);
-    setData(data);
-  };
   const [assigned, setAssigned] = useState(false);
 
-  const assignIcon = () => {
-    setAssigned(true);
-  };
 
   const [assingeds, setAssigneds] = useState([]);
   const getAssinged = () => {
@@ -469,8 +383,6 @@ const RatingCreate = () => {
       grading_scheme: inputList,
       criteria_title:
         ActivityType?.name.toLowerCase() === 'public speaking' ? '' : remarksType,
-
-      // {ActivityType.toLowerCase() === "public speaking" ?  criteria_title: remarksType : ""},
     };
     setLoading(true);
     axios
@@ -494,7 +406,7 @@ const RatingCreate = () => {
           return;
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
       });
   };
@@ -519,10 +431,21 @@ const RatingCreate = () => {
       .then((response) => {
         if (response?.data?.status_code == 400 || response?.data?.status_code == 422) {
           setLoading(false);
-          message.error(response?.data?.message);
+          message.error({
+            content: response?.data?.message,
+            style: {
+              zIndex: '2000',
+            },
+          });
           return;
         } else {
-          message.success(response?.data?.message);
+          message.success({
+            content: response?.data?.message,
+            style: {
+              zIndex: '2000',
+            },
+          });
+          setSearch('');
           setLoading(false);
           setActivityType(null);
           setFilterData([]);
@@ -532,13 +455,12 @@ const RatingCreate = () => {
           return;
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
       });
   };
 
   const getActivityCategory = () => {
-    let array = [];
     setLoading(true);
     axios
       .get(`${endpoints.newBlog.getActivityTypesApi}`, {
@@ -547,28 +469,12 @@ const RatingCreate = () => {
         },
       })
       .then((response) => {
-        // response.data.result.map((obj) => {
-        //   let temp = {};
-        //   temp['id'] = obj?.id;
-        //   temp['grading_scheme_id'] = obj?.grading_scheme_id;
-        //   temp['name'] = obj?.name;
-        //   temp['sub_type'] = obj?.sub_type;
-        //   temp['criteria_title'] = obj?.criteria_title;
-        //   temp['grading_scheme'] = obj?.grading_scheme;
-        //   temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
-        //   temp['va_rating'] = obj?.grading_scheme.map((item) =>
-        //     JSON.parse(item?.va_rating)
-        //   );
-        //   temp['is_editable'] = obj?.is_editable;
-        //   array.push(temp);
-        // });
         setActivityCategory(response?.data);
-        if(response){
-          let res = response?.data?.result.filter((item) =>{
-            return item.name !== "Public Speaking" && item.name !== "Blog Activity"
-          })
-          setActivityCategoryRemarks(res)
-
+        if (response) {
+          let res = response?.data?.result.filter((item) => {
+            return item.name !== 'Public Speaking' && item.name !== 'Blog Activity';
+          });
+          setActivityCategoryRemarks(res);
         }
         setLoading(false);
       });
@@ -577,12 +483,6 @@ const RatingCreate = () => {
     getActivityCategory();
   }, []);
 
-  const activityScore1 = (e) => {
-    const re = /^[0-5\b]+$/;
-    if (e.target.value === '' || re.test(e.target.value)) {
-      setScore1(e.target.value);
-    }
-  };
 
   const handleInputCreativity = (event, index) => {
     const { value } = event.target;
@@ -638,12 +538,6 @@ const RatingCreate = () => {
     setIsEditData(modifiedData);
   };
 
-  const viewParameter = () => {
-    setAntDrawer(true);
-  };
-  const viewOption = () => {
-    setOnOptionVisible(true);
-  };
   const viewDisplay = () => {
     setViewing(true);
   };
@@ -694,7 +588,7 @@ const RatingCreate = () => {
           setFilterData(array);
           setLoading(false);
         })
-        .catch((err) => {
+        .catch(() => {
           setLoading(false);
         });
     }
@@ -716,10 +610,6 @@ const RatingCreate = () => {
     }
   }, [isEditData]);
 
-  const onCloseAnt = () => {
-    setAntDrawer(false);
-    setOnOptionVisible(false);
-  };
 
   const handleVisualInputApp = () => {
     setVisualInputList([
@@ -740,46 +630,11 @@ const RatingCreate = () => {
     setIsEditData({ ...isEditData, grading_scheme: newData });
   };
 
-  const handleVisualOption = (event, index) => {
-    let newInputList = [...visualInputlList];
-    newInputList[index].option = value;
-    setVisualInputList(newInputList);
-  };
 
-  const handleRemoveVisual = (index) => {
-    const indexList = visualInputlList.indexOf(index);
-    const newList = [...visualInputlList];
-    newList.splice(indexList, 1);
-    setVisualInputList(newList);
-  };
 
-  const handleVisualTypeSubmit = () => {
-    let uniqueValues = new Set(visualInputlList.map((e) => e.name));
-    if (uniqueValues.size < visualInputlList.length) {
-      setAlert('error', 'Duplicate Name Found');
-      return;
-    }
-  };
 
-  const visulaOptions = visualOptionData?.map((each) => {
-    return (
-      <Option value={each?.name} key={each?.id}>
-        {each?.name}
-      </Option>
-    );
-  });
 
-  const handleVisualChange = (e, value) => {
-    if (e) {
-      setSelectedOption(value?.value);
-    } else {
-      setSelectedOption('');
-    }
-  };
 
-  const onOptionModalFun = () => {
-    setOnOptionModal(true);
-  };
 
   const mainActivityOption = activityCategory?.result?.map((each) => {
     return (
@@ -799,20 +654,14 @@ const RatingCreate = () => {
 
   const activityOptionSub = activityCategory?.sub_types?.map((each) => {
     return (
-      <Option value={each?.sub_type} name={each?.sub_type}>
+      <Option value={each?.sub_type} name={each?.sub_type} sub_type={each?.sub_type}>
         {each?.sub_type}
       </Option>
     );
   });
 
-  const handleActivityAnt = (e, value) => {
-    setVisualActivity('');
-    if (value) {
-      setVisualActivity(value);
-    }
-  };
 
-  const handleOptionInputAdd = (e, value) => {
+  const handleOptionInputAdd = () => {
     setOptionList([
       ...optionList,
       {
@@ -823,7 +672,7 @@ const RatingCreate = () => {
     ]);
   };
 
-  const handleOptionInputAddEdit = (e, value) => {
+  const handleOptionInputAddEdit = () => {
     const newData = editOption.concat({
       id: '',
       name: '',
@@ -864,7 +713,6 @@ const RatingCreate = () => {
     const { value } = event.target;
     let newInputList = [...editOption];
     newInputList[index].score = value;
-    let modifiedData = [...newInputList];
     setEditOption(newInputList);
   };
 
@@ -898,7 +746,12 @@ const RatingCreate = () => {
           return;
         } else {
           setLoading(false);
-          message.success(res.data.message);
+          message.success({
+            content: res.data.message,
+            style: {
+              zIndex: '2000',
+            },
+          });
           setActivityType(null);
           setRemarksType(null);
           handleClose();
@@ -907,7 +760,7 @@ const RatingCreate = () => {
           return;
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
       });
   };
@@ -934,13 +787,25 @@ const RatingCreate = () => {
       })
       .then((res) => {
         if (res.data.status_code == 400 || res?.data?.status_code == 422) {
-          message.error(res.data.message);
+          // message.error(res.data.message);
+          message.error({
+            content: res.data.message,
+            style: {
+              zIndex: '2000',
+            },
+          });
+          setSearch('');
           setLoading(false);
           handleModalCloseEdit();
           return;
         } else {
           setLoading(false);
-          message.success(res.data.message);
+          message.success({
+            content: res.data.message,
+            style: {
+              zIndex: '2000',
+            },
+          });
           setActivityType(null);
           handleModalCloseEdit();
           setFilterData([]);
@@ -948,23 +813,19 @@ const RatingCreate = () => {
           return;
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
       });
   };
 
-  const handleOptionTitle = (e) => {
-    const { value } = e.target;
-    setOptionTitle(value);
-  };
 
-  const handleOptionDelete = (id, index) => {
+  const handleOptionDelete = (id) => {
     let newOptionList = [...optionList];
     let newList = newOptionList.filter((item) => item?.name !== id?.name);
     setOptionList(newList);
   };
 
-  const handleOptionDeleteEdit = (id, index) => {
+  const handleOptionDeleteEdit = (id) => {
     let newOptionList = [...editOption];
     let newList = newOptionList.filter((item) => item?.name !== id?.name);
     setEditOption(newList);
@@ -990,7 +851,7 @@ const RatingCreate = () => {
     }
   };
 
-  const handleRemoveVisualQuestion = (id, index) => {
+  const handleRemoveVisualQuestion = (id) => {
     let newVisualList = [...visualInputlList];
     const newList = newVisualList.filter((item) => item?.name !== id?.name);
     setVisualInputList(newList);
@@ -1002,9 +863,6 @@ const RatingCreate = () => {
     setIsEditData({ ...isEditData, grading_scheme: newFileList });
   };
 
-  const handleClearActivityType = () => {
-    setSearch('');
-  };
 
   const handleActivityChange = (event, value) => {
     setActivityType(value);
@@ -1056,6 +914,7 @@ const RatingCreate = () => {
             setActivityType(null);
             setFilterData([]);
             getActivityCategory();
+            setSearch('');
             setLoading(false);
 
             return;
@@ -1081,6 +940,9 @@ const RatingCreate = () => {
     }
   };
 
+  useEffect(() => {
+    setRemarksType(null);
+  }, [ActivityType]);
   return (
     <Layout>
       {''}
@@ -1105,31 +967,31 @@ const RatingCreate = () => {
               <Spin tip='Loading' />
             </div>
           ) : (
-            <div className='row p-3' style={{ height: '68vh', overflowY: 'auto' }}>
+            <div className='row p-3' style={{ height: '70vh', overflowY: 'auto' }}>
               <div className='col-12 d-flex' style={{ height: '6%' }}>
                 <div className='col-md-3 mb-sm-0 p-0'>
                   {/* <Form.Item name='activity type'> */}
                   <div className='py-1'>Select Activity Type</div>
-                    <Select
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      placeholder='Select Activity Type'
-                      showSearch
-                      value={search}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e) => {
-                        handleActivity(e);
-                      }}
-                      // onClear={handleClearActivityType}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={true}
-                    >
-                      {mainActivityOption}
-                    </Select>
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    placeholder='Select Activity Type'
+                    showSearch
+                    value={search}
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    onChange={(e) => {
+                      handleActivity(e);
+                    }}
+                    // onClear={handleClearActivityType}
+                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    bordered={true}
+                  >
+                    {mainActivityOption}
+                  </Select>
                   {/* </Form.Item> */}
                 </div>
 
@@ -1156,7 +1018,7 @@ const RatingCreate = () => {
                   </div>
                 </div>
               </div>
-              <div className='row mt-4' style={{ height: '55vh', overflowY: 'auto' }}>
+              <div className='row mt-5' style={{ height: '55vh', overflowY: 'auto' }}>
                 <div className='col-md-12'>
                   <>
                     {filterData?.length !== 0 ? (
@@ -1202,7 +1064,6 @@ const RatingCreate = () => {
             </div>
             <div className='row mt-1'>
               <div className='col-md-10 md-sm-0'>
-                {/* <Form.Item name='activity_type'> */}
                 <Select
                   getPopupContainer={(trigger) => trigger.parentNode}
                   placeholder='Select Activity Type'
@@ -1220,7 +1081,6 @@ const RatingCreate = () => {
                 >
                   {activityOption}
                 </Select>
-                {/* </Form.Item> */}
               </div>
             </div>
             {ActivityType && ActivityType?.name.toLowerCase() === 'physical activity' ? (
@@ -1233,7 +1093,7 @@ const RatingCreate = () => {
                     <Select
                       getPopupContainer={(trigger) => trigger.parentNode}
                       placeholder='Sub Activity Type'
-                      showSearch
+                      // showSearch
                       value={subActivityType}
                       optionFilterProp='children'
                       filterOption={(input, option) => {
@@ -1560,29 +1420,6 @@ const RatingCreate = () => {
         >
           <div className='row p-2'>
             <div className='col-md-12 md-sm-0'>
-              {/* <Form ref={formRef}> */}
-              {/* <Form.Item name='activity_type'>
-                <Select
-                  placeholder='Activity Type'
-                  showSearch
-                  disabled
-                  optionFilterProp='children'
-                  defaultValue={`${isEditData?.name}`}
-                  // value={isEditData?.name}
-                  filterOption={(input, option) => {
-                    return (
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  onChange={(e, value) => handleActivityChange(e, value)}
-                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                  bordered={false}
-                >
-                  {activityOption}
-                </Select>
-              </Form.Item> */}
-
-              {/* </Form> */}
               <div className='row mt-2'>
                 <div className='col-md-6 md-sm-0'>Activity Types</div>
               </div>

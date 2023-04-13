@@ -160,7 +160,8 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType == 1 && (
             <div className='mcq-container'>
               <div className={classes.questionContainer}>
-                {checkName(question.question_answer[0].question)}
+                {/* {checkName(question.question_answer[0].question)} */}
+                {ReactHtmlParser(question.question_answer[0].question)}
               </div>
               <div className={classes.answersContainer}>
                 <div className={classes.answersHeader}>Options</div>
@@ -252,7 +253,7 @@ const QuestionView = ({ question, showHeader, index }) => {
             {questionType == 2 && (
               <div className='mcq-container'>
                 <div className='question-container'>
-                  {checkName(question.question_answer[0].question)}
+                  {ReactHtmlParser(question.question_answer[0].question)}
                 </div>
                 <div className='answers-container'>
                   <div className={classes.answersHeader}>Options</div>
@@ -402,7 +403,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 8 && (
             <div className='true-false-container'>
               <div className='question-container'>
-                {checkName(question.question_answer[0]?.question)}
+                {ReactHtmlParser(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
 
