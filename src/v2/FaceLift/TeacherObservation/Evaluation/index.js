@@ -404,7 +404,7 @@ const Evaluation = () => {
   const fetchStudentList = (sectionID) => {
     const params = {
       session_year: selectedAcademicYear?.id,
-      branch_id: selectedBranch?.branch?.id,
+      branch: selectedBranch?.branch?.id,
       grade: gradeID,
       section: sectionID,
     };
@@ -673,7 +673,10 @@ const Evaluation = () => {
                   dataSource={modifiedData}
                   pagination={false}
                   bordered
-                  scroll={{ x: 'max-content', y: 'calc(100vh - 220px)' }}
+                  scroll={{
+                    x: window.innerWidth < 600 ? 'max-content' : null,
+                    y: 'calc(100vh - 220px)',
+                  }}
                 />
               </div>
             </div>

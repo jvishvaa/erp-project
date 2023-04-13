@@ -346,7 +346,10 @@ const Observation = () => {
                 rowKey={(record) => record?.id}
                 dataSource={obseravationsList}
                 pagination={false}
-                scroll={{ x: 'max-content', y: 'calc(100vh - 220px)' }}
+                scroll={{
+                  x: window.innerWidth < 600 ? 'max-content' : null,
+                  y: 'calc(100vh - 220px)',
+                }}
               />
             </div>
           </div>
