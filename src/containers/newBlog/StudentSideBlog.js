@@ -273,6 +273,9 @@ const StudentSideBlog = () => {
     }
   }, [tabValue, page]);
 
+  useEffect(() =>{
+    setPage(1)
+  },[tabValue])
   const handlePageChange = (page, pageSize) => {
     setPage(page);
   };
@@ -301,6 +304,7 @@ const StudentSideBlog = () => {
                     <div>
                       <Pagination
                         defaultCurrent={page}
+                        current={page}
                         total={totalPages}
                         defaultPageSize={12}
                         size='default'
@@ -315,6 +319,7 @@ const StudentSideBlog = () => {
                     <div>
                       <Pagination
                         defaultCurrent={page}
+                        current={page}
                         defaultPageSize={12}
                         total={totalPages}
                         showSizeChanger={false}
@@ -328,6 +333,7 @@ const StudentSideBlog = () => {
                     <div>
                       <Pagination
                         defaultCurrent={page}
+                        current={page}
                         defaultPageSize={12}
                         total={totalPages}
                         showSizeChanger={false}
@@ -341,6 +347,7 @@ const StudentSideBlog = () => {
                     <div>
                       <Pagination
                         defaultCurrent={page}
+                        current={page}
                         defaultPageSize={10}
                         total={totalPages}
                         showSizeChanger={false}
