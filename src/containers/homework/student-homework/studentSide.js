@@ -121,27 +121,23 @@ const StudentHomeworkNew = withRouter(
       setSegment(e);
     };
     useEffect(() => {
-      console.log(dates);
       if (dates != null) {
         handleDate(dates);
       }
     }, [dates]);
 
     const handleDate = (value) => {
-      console.log(value);
       if (value[0] != null) {
         setStartDate(moment(value[0]).format('YYYY-MM-DD'));
         setEndDate(moment(value[1]).format('YYYY-MM-DD'));
       }
     };
 
-    console.log(acad_session_id, 'acadd');
     const dateToday = moment();
     const startDay = moment().subtract(1, 'w');
     const dateFrom = moment().subtract(3, 'd');
     const dateTo = moment().add(3, 'd');
 
-    console.log(startDay, 'start');
     useEffect(() => {
       setDates([moment(dateFrom), moment(dateTo)]);
       formRef.current.setFieldsValue({
@@ -156,10 +152,8 @@ const StudentHomeworkNew = withRouter(
 
     useEffect(() => {
       if (acad_session_id && endDate != undefined && endDate != 'Invalid date') {
-        console.log(acad_session_id, endDate, 'acadd');
 
         if (SubjectSelected == 'all') {
-          console.log(acad_session_id, 'acadd');
           getTodayshw({
             acad_session_id: acad_session_id,
             start_date: startDate,
@@ -174,12 +168,14 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 3) {
             getSubmitshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
             });
           }
           if (segment == 4) {
             getEvaluatedshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
             });
@@ -203,6 +199,7 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 3) {
             getSubmitshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
               subject_id: SubjectSelected?.id,
@@ -210,6 +207,7 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 4) {
             getEvaluatedshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
               subject_id: SubjectSelected?.id,
@@ -227,7 +225,6 @@ const StudentHomeworkNew = withRouter(
         hwSelect == false
       ) {
         if (SubjectSelected == 'all') {
-          console.log(acad_session_id, 'acadd');
           getTodayshw({
             acad_session_id: acad_session_id,
             start_date: startDate,
@@ -242,12 +239,14 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 3) {
             getSubmitshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
             });
           }
           if (segment == 4) {
             getEvaluatedshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
             });
@@ -271,6 +270,7 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 3) {
             getSubmitshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
               subject_id: SubjectSelected?.id,
@@ -278,6 +278,7 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 4) {
             getEvaluatedshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
               subject_id: SubjectSelected?.id,
@@ -296,7 +297,6 @@ const StudentHomeworkNew = withRouter(
           },
         })
         .then((res) => {
-          console.log(res);
           setSubjectList(res.data.result);
         })
         .catch((error) => {
@@ -312,7 +312,6 @@ const StudentHomeworkNew = withRouter(
           // }
         })
         .then((res) => {
-          console.log(res);
           setToday(res.data.result);
           setTodaySubject(res.data.result);
         })
@@ -329,7 +328,6 @@ const StudentHomeworkNew = withRouter(
           // }
         })
         .then((res) => {
-          console.log(res);
           setPending(res.data.result);
           setPendingSubject(res.data.result);
         })
@@ -346,7 +344,6 @@ const StudentHomeworkNew = withRouter(
           // }
         })
         .then((res) => {
-          console.log(res);
           setSubmit(res.data.result);
           setSubmitSubject(res.data.result);
         })
@@ -363,7 +360,6 @@ const StudentHomeworkNew = withRouter(
           // }
         })
         .then((res) => {
-          console.log(res);
           setEvaluated(res.data.result);
           setEvaluatedSubject(res.data.result);
         })
@@ -396,16 +392,13 @@ const StudentHomeworkNew = withRouter(
     let hwKeys = [];
     let allData = [];
     useEffect(() => {
-      console.log(hwData);
       if (hwData != undefined) {
-        console.log(Object.keys(hwData), 'pen');
         hwKeys = Object.keys(hwData);
         let tempData = hwKeys?.map((item) => {
           let arr = hwData[item]?.map((each) => {
             allData.push(each);
           });
         });
-        console.log(allData, 'all');
         setPendingData(allData);
       }
     }, [hwData]);
@@ -417,14 +410,12 @@ const StudentHomeworkNew = withRouter(
     let allSubmitData = [];
     useEffect(() => {
       if (submitDataObj != undefined) {
-        console.log(Object.keys(submitDataObj), 'pen');
         submitKeys = Object.keys(submitDataObj);
         let tempSubData = submitKeys?.map((item) => {
           let arr = submitDataObj[item]?.map((each) => {
             allSubmitData.push(each);
           });
         });
-        console.log(allSubmitData, 'all');
         setSubmitData(allSubmitData);
       }
     }, [submitDataObj]);
@@ -435,20 +426,17 @@ const StudentHomeworkNew = withRouter(
     let allevaData = [];
     useEffect(() => {
       if (evaDataObj != undefined) {
-        console.log(Object.keys(evaDataObj), 'pen');
         evaKeys = Object.keys(evaDataObj);
         let tempSubData = evaKeys?.map((item) => {
           let arr = evaDataObj[item]?.map((each) => {
             allevaData.push(each);
           });
         });
-        console.log(allevaData, 'all');
         setEvaluatedData(allevaData);
       }
     }, [evaDataObj]);
 
     const getTabName = (key) => {
-      console.log(key, 'key');
       return (
         <div>
           {key == 1 ? (
@@ -527,7 +515,6 @@ const StudentHomeworkNew = withRouter(
     };
 
     const handleHw = (item, tab) => {
-      console.log(item);
       setDeuDate(item?.last_submission_dt);
       setHwSelect(true);
       if (tab == 1 || tab == 2) {
@@ -558,10 +545,8 @@ const StudentHomeworkNew = withRouter(
     const handleSubjectFilter = (sub) => {
       setSubjectSelected(sub);
 
-      console.log(sub, pendingData, submitData, evaluatedData);
       if (sub != 'all') {
         if (acad_session_id && endDate != undefined && hwSelect == false) {
-          console.log(acad_session_id, 'acadd');
           getTodayshw({
             acad_session_id: acad_session_id,
             start_date: startDate,
@@ -579,6 +564,7 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 3) {
             getSubmitshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
               subject_id: sub?.id,
@@ -586,6 +572,7 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 4) {
             getEvaluatedshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
               subject_id: sub?.id,
@@ -595,7 +582,6 @@ const StudentHomeworkNew = withRouter(
       }
       if (sub == 'all') {
         if (acad_session_id && endDate != undefined && hwSelect == false) {
-          console.log(acad_session_id, 'acadd');
 
           getTodayshw({
             acad_session_id: acad_session_id,
@@ -611,12 +597,14 @@ const StudentHomeworkNew = withRouter(
           }
           if (segment == 3) {
             getSubmitshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
             });
           }
           if (segment == 4) {
             getEvaluatedshw({
+              acad_session_id: acad_session_id,
               start_date: startDate,
               end_date: endDate,
             });
