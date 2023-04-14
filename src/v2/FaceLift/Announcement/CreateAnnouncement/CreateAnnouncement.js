@@ -50,6 +50,11 @@ const CreateAnnouncement = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const isStudentIncluded = selectedUserLevels?.includes(13);
   const [allGradesSelected, setAllGradesSelected] = useState(false);
+  const [ email , setEmail ] = useState(false)
+  const [ sms , setSMS ] = useState(false)
+  const [ whatsapp , setWhatsapp ] = useState(false)
+
+  const [ notiConfig , setNotiConfig ] = useState()
   const { TextArea } = Input;
 
   const handleUploadModalClose = () => {
@@ -74,6 +79,25 @@ const CreateAnnouncement = () => {
   const handleChange = (value) => {
     setSelectedCategory(value);
   };
+
+
+  useEffect(()=> {
+    fetchConfig()
+  },[])
+
+  const fetchConfig = () => {
+    axiosInstance
+      .get(`${endpoints.academics.getConfigAnnouncement}?config_key=anncmt_cumctn_config&config_type=json`)
+      .then((res) => {
+        console.log(res);
+        setNotiConfig(res?.data?.result)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
 
   const fetchUserLevel = () => {
     axios
@@ -318,16 +342,16 @@ const CreateAnnouncement = () => {
     if (asDraft) {
       payLoad['is_draft'] = true;
     }
-    if (intimation.includes('Intimate Via SMS')) {
+    if (sms == true) {
       payLoad['intimate_via_sms'] = true;
     }
-    if (intimation.includes('Intimate Via Whatsapp')) {
+    if (whatsapp == true) {
       payLoad['intimate_via_whatsapp'] = true;
     }
     if (isStudentIncluded) {
       payLoad['section_mapping_id'] = sectionMappingIds.join(',');
     }
-    if (intimation.includes('Intimate Via Email')) {
+    if (email == true) {
       payLoad['intimate_via_email'] = true;
     }
     if (uploadedFiles?.length > 0) {
@@ -750,10 +774,13 @@ const CreateAnnouncement = () => {
 
                 <div className='row mt-4 py-2'>
                   <div className='col-md-8 d-flex align-items-center'>
-                    <Checkbox.Group
+                    {/* <Checkbox.Group
                       options={intimationOptions}
                       onChange={(e) => setIntimation(e)}
-                    />
+                    /> */}
+                    {notiConfig?.is_email == true ? <Checkbox onChange={(e) => setEmail(e.target.checked)} >Intimate Via Email</Checkbox> : ''}
+                    {notiConfig?.is_sms == true ? <Checkbox onChange={(e) => setSMS(e.target.checked)} >Intimate Via SMS</Checkbox> : ''}
+                    {notiConfig?.is_whatsapp == true ? <Checkbox onChange={(e) => setWhatsapp(e.target.checked)} >Intimate Via Whatsapp</Checkbox> : ''}
                   </div>
                   <div className='col-md-4 d-flex justify-content-md-end py-4 py-md-0'>
                     <Button

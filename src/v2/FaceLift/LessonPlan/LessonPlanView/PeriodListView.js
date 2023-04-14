@@ -25,6 +25,7 @@ import {
   BookOutlined,
   SnippetsOutlined,
   FilePptOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -52,6 +53,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import EbookList from './viewEbooks';
 import IbookList from './viewIbooks';
+import { saveAs } from 'file-saver';
 const { Option } = Select;
 
 const PeriodListView = () => {
@@ -822,6 +824,12 @@ const PeriodListView = () => {
     }
   }, [volumeId]);
 
+  const downloadMaterial = async (url, filename) => {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    saveAs(blob, filename);
+  };
+
   return (
     <div className='row '>
       <div className='row align-items-center mb-2'>
@@ -1451,32 +1459,69 @@ const PeriodListView = () => {
                                 <img src={getFileIcon(extension)} />
                               </div>
                               <div className='col-10 px-0 th-pointer'>
-                                <a
-                                  onClick={() => {
-                                    openPreview({
-                                      currentAttachmentIndex: 0,
-                                      attachmentsArray: [
-                                        {
-                                          src: `${endpoints.homework.resourcesFiles}/${each}`,
+                                <div className='row align-items-center'>
+                                  <div className='col-9 px-0'>
+                                    <a
+                                      onClick={() => {
+                                        openPreview({
+                                          currentAttachmentIndex: 0,
+                                          attachmentsArray: [
+                                            {
+                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
 
-                                          name: fileName,
-                                          extension: '.' + extension,
-                                        },
-                                      ],
-                                    });
-                                  }}
-                                  rel='noopener noreferrer'
-                                  target='_blank'
-                                >
-                                  <div className='row align-items-center'>
-                                    <div className='col-10 px-0'>
+                                              name: fileName,
+                                              extension: '.' + extension,
+                                            },
+                                          ],
+                                        });
+                                      }}
+                                      rel='noopener noreferrer'
+                                      target='_blank'
+                                    >
                                       {files.document_type}_{file}
-                                    </div>
-                                    <div className='col-2'>
-                                      <EyeFilled />
-                                    </div>
+                                    </a>
                                   </div>
-                                </a>
+
+                                  <div className='col-1'>
+                                    <a
+                                      onClick={() => {
+                                        openPreview({
+                                          currentAttachmentIndex: 0,
+                                          attachmentsArray: [
+                                            {
+                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                              name: fileName,
+                                              extension: '.' + extension,
+                                            },
+                                          ],
+                                        });
+                                      }}
+                                      rel='noopener noreferrer'
+                                      target='_blank'
+                                    >
+                                      <EyeFilled />
+                                    </a>
+                                  </div>
+
+                                  {files?.document_type == 'Teacher_Reading_Material' && (
+                                    <div className='col-1'>
+                                      <a
+                                        rel='noopener noreferrer'
+                                        target='_blank'
+                                        // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
+                                        onClick={() =>
+                                          downloadMaterial(
+                                            `${endpoints.lessonPlan.bucket}/${files?.media_file}`,
+                                            `${files.document_type}_${file}`
+                                          )
+                                        }
+                                      >
+                                        <DownloadOutlined />
+                                      </a>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           );

@@ -63,7 +63,6 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const [tabYearId, setTabYearId] = useState('');
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabChapterId, setTabChapterId] = useState('');
-  const [tabIsErpCentral, setTabIsErpCentral] = useState(true);
   const [tabValue, setTabValue] = useState(2);
   const location = useLocation();
   // const query = new URLSearchParams(location.search);
@@ -87,6 +86,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const questionId = filtersDetails?.questionId	
   const section = filtersDetails?.section;	
   const isEdit = filtersDetails?.isEdit;
+  const [tabIsErpCentral, setTabIsErpCentral] = useState(filtersDetails?.showTab == "1" ? true : false);
+
 
   const addQuestionToPaper = (question, questionId, section) => {
     initAddQuestionToSection(question, questionId, section);
@@ -153,7 +154,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabIsErpCentral(isErpCentral);
     setTabValue(newValue);
     setErpCategory(erp_category)
-    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
+    let requestUrl = filtersDetails?.Historic == true ? `/assessment/v2/questions-list/?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}` :  `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${tabIsErpCentral? 2 : 1}`;  
     if (subjMapId && !erp_category) {
       requestUrl += `&subject=${subjMapId}`;
@@ -641,7 +642,8 @@ if(filtersDetails){
               </div>
               </div>
               <div className= {tabIsErpCentral ? 'col-md-3 col-6' : 'col-md-2 col-6'}  ></div>
-
+              {filtersDetails?.Historic == true ? '' : 
+              <>
               <div className='col-md-2 col-6' >
                 <Button
                   className={`${ tabIsErpCentral ? 'highlightbtn th-button-active' : 'nonHighlightbtn th-button'
@@ -664,6 +666,7 @@ if(filtersDetails){
                 </Button>
                 {!tabIsErpCentral && <hr className='my-1' style={{borderTop : '1px solid #1B4CCB'}}/>}
                 </div>
+                </>}
             </div>
             {isVisible?.length > 0 && !questionId ?  (
               <Grid item xs={12} sm={12}>
