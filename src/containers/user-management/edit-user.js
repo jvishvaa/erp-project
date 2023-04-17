@@ -42,11 +42,12 @@ class EditUser extends Component {
       activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
-      loading : false,
+      loading: false,
       user: null,
       isNext: false,
       collectData: {},
       mappingBgsLength: 0,
+      curentmappingBgsLength: 0,
       collectDataCount: 0,
       isEditable: false,
       isSuper: false,
@@ -79,6 +80,7 @@ class EditUser extends Component {
       this.setState({
         user: selectedUser,
         mappingBgsLength: selectedUser.mapping_bgs?.length,
+        curentmappingBgsLength: selectedUser.mapping_bgs?.length,
       });
     }
   }
@@ -182,8 +184,8 @@ class EditUser extends Component {
 
   onEditUser = (requestWithParentorGuradianDetails) => {
     this.setState({
-      loading: true
-    })
+      loading: true,
+    });
     const { user } = this.state;
     const { editUser, history, selectedUser } = this.props;
     let requestObj = user;
@@ -304,12 +306,12 @@ class EditUser extends Component {
     const requestObjFormData = jsonToFormData(requestObj);
     editUser(requestObjFormData)
       .then(() => {
-        this.setState({loading: false})
+        this.setState({ loading: false });
         history.push('/user-management/view-users');
         setAlert('success', 'User updated');
       })
       .catch(() => {
-        this.setState({loading: false})
+        this.setState({ loading: false });
         setAlert('error', 'User update failed');
       });
   };
@@ -443,6 +445,7 @@ class EditUser extends Component {
                               index={index}
                               handleDelete={() => this.handleDeleteMappingObject(index)}
                               isEditable={this.state.isEditable}
+                              currentFormLength={this.state.curentmappingBgsLength}
                               // selectedYearIds={this.state.selectedYearIds}
                             />
                           )
