@@ -1,7 +1,7 @@
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable camelcase */
 /* eslint-disable no-nested-ternary */
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -474,7 +474,16 @@ class EditUser extends Component {
                           variant='contained'
                           color='primary'
                           onClick={() => {
-                            this.setState({ isNext: true });
+                            if (
+                              this.state?.user?.mapping_bgs[
+                                this.state.mappingBgsLength - 1
+                              ]?.subjects.length === 0
+                            ) {
+                              this.context.setAlert('error', 'Please select all fields');
+                              return;
+                            } else {
+                              this.setState({ isNext: true });
+                            }
                           }}
                         >
                           Next
