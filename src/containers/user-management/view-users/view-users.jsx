@@ -110,7 +110,6 @@ const debounce = (fn, delay) => {
 };
 
 const ViewUsers = withRouter(({ history, ...props }) => {
-  console.log(history.location.state,'state')
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -143,7 +142,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [deactivateStatus, setDeactivateStatus] = useState(null);
   const [deactivateAlert, setDeactivateAlert] = useState(false);
   const [accordianOpen, setAccordianOpen] = useState(false);
-  const [isFilter,setIsFilter] = useState(false)
+  const [isFilter, setIsFilter] = useState(false);
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -159,13 +158,16 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [restoreIndex, setRestoreIndex] = useState(null);
   const [restoreId, setRestoreId] = useState(null);
   const [restoreStatus, setRestoreStatus] = useState(null);
-  const [isEdit , setIsEdit] = useState()
-  const filteredData = JSON.parse(sessionStorage.getItem('userFilterData'))
-  const filteredDataList = JSON.parse(sessionStorage.getItem('userFilterDataList'))
+  const [isEdit, setIsEdit] = useState();
+  const filteredData = JSON.parse(sessionStorage.getItem('userFilterData'));
+  const filteredDataList = JSON.parse(sessionStorage.getItem('userFilterDataList'));
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const user_level = userData?.user_level;
-
-
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
 
   const headers = [
     { label: 'ERP ID', key: 'erp_id' },
@@ -201,34 +203,34 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-if(history?.location?.state?.isEdit && filteredData && filteredDataList){
-  setIsEdit(false)
-  setAccordianOpen(true)
-  // getBranchApi()
-  const { searchText ,role , branch , grade , section ,status} = filteredData
-  // handleBranch('',branch)
-  setBranchList(filteredDataList?.branchList)
-  setGradeList(filteredDataList?.gradeList)
-  setSectionList(filteredDataList?.sectionList)
-  setRoleList(filteredDataList?.roleList)
-  setSearchText(searchText)
-  if(searchText.length > 0) setIsNewSearch(true)
-  setSelectedBranch(branch)
-  setSelectedGrades(grade)
-  if (grade?.length) {
-    const ids = grade?.map((el) => el?.grade_id);
-    setGradeIds(ids);
-  }
-  setSelectedRoles(role)
-  setStatus(status)
-  setSelectedSection(section)
-  if (section?.length) {
-    const sectionId = section?.map((el) => el.id);
-    setSectionIds(sectionId);
-  } 
-  history.replace({ state: { isEdit: false } })
-}
-  },[history?.location?.state?.isEdit])
+    if (history?.location?.state?.isEdit && filteredData && filteredDataList) {
+      setIsEdit(false);
+      setAccordianOpen(true);
+      // getBranchApi()
+      const { searchText, role, branch, grade, section, status } = filteredData;
+      // handleBranch('',branch)
+      setBranchList(filteredDataList?.branchList);
+      setGradeList(filteredDataList?.gradeList);
+      setSectionList(filteredDataList?.sectionList);
+      setRoleList(filteredDataList?.roleList);
+      setSearchText(searchText);
+      if (searchText.length > 0) setIsNewSearch(true);
+      setSelectedBranch(branch);
+      setSelectedGrades(grade);
+      if (grade?.length) {
+        const ids = grade?.map((el) => el?.grade_id);
+        setGradeIds(ids);
+      }
+      setSelectedRoles(role);
+      setStatus(status);
+      setSelectedSection(section);
+      if (section?.length) {
+        const sectionId = section?.map((el) => el.id);
+        setSectionIds(sectionId);
+      }
+      history.replace({ state: { isEdit: false } });
+    }
+  }, [history?.location?.state?.isEdit]);
 
   const getRoleApi = async () => {
     try {
@@ -281,24 +283,24 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
   };
 
   const getSectionApi = async () => {
-    try {    
+    try {
       const result = await axiosInstance.get(
         `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${
           selectedBranch.id
         }&grade_id=${gradeIds.toString()}&module_id=${moduleId}`
       );
-      if (result.data.status_code === 200) { 
+      if (result.data.status_code === 200) {
         setSectionList(result.data.data);
-      } else {      
+      } else {
         setAlert('error', result.data.message);
       }
-    } catch (error) { 
+    } catch (error) {
       setAlert('error', error.message);
     }
   };
 
   const getUsersData = async () => {
-    setIsFilter(false)
+    setIsFilter(false);
     const rolesId = [];
     const gradesId = [];
     if (selectedRoles && selectedRoles !== 'All') {
@@ -313,23 +315,29 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
       selectedBranch !== null ||
       gradeIds.length > 0
     ) {
-      sessionStorage.setItem('userFilterData', JSON.stringify({
-        searchText : searchText.length > 0 ?  searchText : '',
-        role : rolesId.length > 0 ? selectedRoles : [],
-        branch : selectedBranch ? selectedBranch : null,
-        grade : selectedGrades.length > 0 ? selectedGrades : [],
-        section : selectedSection.length > 0 ? selectedSection : [],
-        status : status
-      }))
-      sessionStorage.setItem('userFilterDataList', JSON.stringify({
-        // searchText : searchText,
-        roleList : roleList ,
-        branchList : branchList,
-        gradeList : gradeList ? gradeList : [],
-        sectionList : sectionList || [],
-        // status : status
-      }))
-      setIsFilter(true)
+      sessionStorage.setItem(
+        'userFilterData',
+        JSON.stringify({
+          searchText: searchText.length > 0 ? searchText : '',
+          role: rolesId.length > 0 ? selectedRoles : [],
+          branch: selectedBranch ? selectedBranch : null,
+          grade: selectedGrades.length > 0 ? selectedGrades : [],
+          section: selectedSection.length > 0 ? selectedSection : [],
+          status: status,
+        })
+      );
+      sessionStorage.setItem(
+        'userFilterDataList',
+        JSON.stringify({
+          // searchText : searchText,
+          roleList: roleList,
+          branchList: branchList,
+          gradeList: gradeList ? gradeList : [],
+          sectionList: sectionList || [],
+          // status : status
+        })
+      );
+      setIsFilter(true);
       setLoading(true);
       let getUserListUrl = `${endpoints.communication.viewUser}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
       if (classStatus && classStatus != 1 && classStatus != 0) {
@@ -373,7 +381,7 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
               emails: items.user.email,
               role: items?.roles?.role_name,
               active: items.is_active,
-              level : items?.level
+              level: items?.level,
             })
           );
           setUsersData(resultUsers);
@@ -427,9 +435,9 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
       getUserListUrl += `&branch=${selectedBranch?.id}`;
     }
     // /*
-   if (gradesId.length > 0 && !selectedGrades.includes('All')) {
-        getUserListUrl += `&grade=${gradesId.toString()}`;
-      }
+    if (gradesId.length > 0 && !selectedGrades.includes('All')) {
+      getUserListUrl += `&grade=${gradesId.toString()}`;
+    }
     if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
       getUserListUrl += `&status=${status.toString()}`;
@@ -628,7 +636,7 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
     setDeactivateAlert(false);
   };
   const handleEdit = (id) => {
-    setIsEdit(true)
+    setIsEdit(true);
     history.push({
       pathname: `/user-management/edit-user/${id}`,
       state: {
@@ -688,11 +696,11 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
 
   const handleBranch = (event, value) => {
     setSelectedBranch('');
-    setSelectedGrades([])
-    setSelectedSection([])
-    setSectionList([])
+    setSelectedGrades([]);
+    setSelectedSection([]);
+    setSectionList([]);
     setGradeList([]);
-    setGradeIds([])
+    setGradeIds([]);
     setSectionIds([]);
     if (value) {
       setSelectedBranch(value);
@@ -707,8 +715,8 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
     } else {
       setGradeIds([]);
       setSelectedGrades([]);
-      setSelectedSection([])
-      setSectionList([])
+      setSelectedSection([]);
+      setSectionList([]);
       setSectionIds([]);
     }
   };
@@ -760,7 +768,7 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
     'test.orchids.letseduvate.com',
-    'orchids.letseduvate.com'
+    'orchids.letseduvate.com',
   ];
 
   return (
@@ -793,7 +801,7 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
             <Tooltip title='Create User' placement='bottom' arrow>
               <IconButton
                 className='create-user-button'
-                style={isV2 ? {backgroundColor: '#4a77e8' } : null }
+                style={isV2 ? { backgroundColor: '#4a77e8' } : null}
                 onClick={() => {
                   history.push('/user-management/create-user');
                 }}
@@ -1112,17 +1120,8 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
                               />
                             </IconButton>
                           ) : items.status === 'active' ? (
-                            (isOfOrchids.includes(window.location.host) && (items.level !== 13 || user_level === 1 )) ? (
-                              <IconButton
-                              aria-label='deactivate'
-                              onClick={() => handleDeactivate(items.userId, i, '2')}
-                              title='Deactivate'
-                            >
-                              <BlockIcon
-                                style={{ color: themeContext.palette.primary.main }}
-                              />
-                            </IconButton>
-                            ) : (!isOfOrchids.includes(window.location.host) && <>
+                            isOfOrchids.includes(window.location.host) &&
+                            (items.level !== 13 || user_level === 1) ? (
                               <IconButton
                                 aria-label='deactivate'
                                 onClick={() => handleDeactivate(items.userId, i, '2')}
@@ -1132,7 +1131,21 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
                                   style={{ color: themeContext.palette.primary.main }}
                                 />
                               </IconButton>
-                            </>)
+                            ) : (
+                              !isOfOrchids.includes(window.location.host) && (
+                                <>
+                                  <IconButton
+                                    aria-label='deactivate'
+                                    onClick={() => handleDeactivate(items.userId, i, '2')}
+                                    title='Deactivate'
+                                  >
+                                    <BlockIcon
+                                      style={{ color: themeContext.palette.primary.main }}
+                                    />
+                                  </IconButton>
+                                </>
+                              )
+                            )
                           ) : (
                             <button
                               type='submit'
@@ -1153,14 +1166,16 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
                           )}
                           {items && items.status !== 'deleted' ? (
                             <>
-                              <IconButton
-                                title='Delete'
-                                onClick={() => handleDelete(items.userId, i, '3')}
-                              >
-                                <DeleteOutlinedIcon
-                                  style={{ color: themeContext.palette.primary.main }}
-                                />
-                              </IconButton>
+                              {isOrchids && items?.level == 13 ? null : (
+                                <IconButton
+                                  title='Delete'
+                                  onClick={() => handleDelete(items.userId, i, '3')}
+                                >
+                                  <DeleteOutlinedIcon
+                                    style={{ color: themeContext.palette.primary.main }}
+                                  />
+                                </IconButton>
+                              )}
                               <IconButton
                                 title='Edit'
                                 onClick={() => handleEdit(items.userId)}
@@ -1191,8 +1206,14 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
                   alignItems: 'center',
                 }}
               >
-                {((selectedRoles && selectedRoles.length > 0) || selectedBranch || searchText.length > 0) && isFilter ? <NoFilterData data = 'No Data Found' /> :
-                <p style={{ fontWeight: '600' }}> Please Apply Filters</p>}
+                {((selectedRoles && selectedRoles.length > 0) ||
+                  selectedBranch ||
+                  searchText.length > 0) &&
+                isFilter ? (
+                  <NoFilterData data='No Data Found' />
+                ) : (
+                  <p style={{ fontWeight: '600' }}> Please Apply Filters</p>
+                )}
               </div>
             )}
             <TablePagination
