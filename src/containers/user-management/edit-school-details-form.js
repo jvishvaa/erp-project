@@ -33,6 +33,7 @@ const EditSchoolDetailsForm = ({
   isNext = false,
   index = 0,
   handleDelete,
+  currentFormLength,
   isAcadDisabled = false,
   isEditable = false,
 }) => {
@@ -48,6 +49,11 @@ const EditSchoolDetailsForm = ({
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -344,7 +350,9 @@ const EditSchoolDetailsForm = ({
               id='year'
               name='year'
               disabled={
-                details?.user_level == 13 ? (isSuperUser ? false : true) : !isAcadDisabled
+                details?.user_level == 13 && index < currentFormLength && isOrchids
+                  ? !isSuperUser
+                  : !isAcadDisabled
               }
               // disabled={!isAcadDisabled}
               key={`acad_year_${index}`}
@@ -380,7 +388,9 @@ const EditSchoolDetailsForm = ({
               name='branch'
               // disabled={isEditable}
               disabled={
-                details?.user_level == 13 ? (isSuperUser ? false : true) : isEditable
+                details?.user_level == 13 && index < currentFormLength && isOrchids
+                  ? !isSuperUser
+                  : isEditable
               }
               key={`branch_${index}`}
               onChange={(e, value) => {
@@ -420,7 +430,9 @@ const EditSchoolDetailsForm = ({
               key={`grade_${index}`}
               // disabled={isEditable}
               disabled={
-                details?.user_level == 13 ? (isSuperUser ? false : true) : isEditable
+                details?.user_level == 13 && index < currentFormLength && isOrchids
+                  ? !isSuperUser
+                  : isEditable
               }
               onChange={(e, value) => {
                 formik.setFieldValue('section', []);
@@ -534,20 +546,22 @@ const EditSchoolDetailsForm = ({
             </FormHelperText>
           </FormControl>
         </Grid>
-        {!formik.values.academic_year?.[0]?.is_default && (
-          <Grid item md={2} xs={12}>
-            <Button
-              variant='contained'
-              color='secondary'
-              // className={classes.button}
-              // onClick={() => handleDelete(index)}
-              onClick={() => handleClick()}
-              startIcon={<DeleteIcon />}
-            >
-              Delete
-            </Button>
-          </Grid>
-        )}
+        {details?.user_level == 13 && index < currentFormLength && isOrchids
+          ? null
+          : !formik.values.academic_year?.[0]?.is_default && (
+              <Grid item md={2} xs={12}>
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  // className={classes.button}
+                  // onClick={() => handleDelete(index)}
+                  onClick={() => handleClick()}
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete
+                </Button>
+              </Grid>
+            )}
       </Grid>
       <Dialog id={id} open={open} onClose={handleClose}>
         <DialogTitle id='draggable-dialog-title'>Delete</DialogTitle>
