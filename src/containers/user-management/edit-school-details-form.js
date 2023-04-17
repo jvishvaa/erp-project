@@ -390,6 +390,8 @@ const EditSchoolDetailsForm = ({
               disabled={
                 details?.user_level == 13 && index < currentFormLength && isOrchids
                   ? !isSuperUser
+                  : index >= currentFormLength
+                  ? false
                   : isEditable
               }
               key={`branch_${index}`}
@@ -432,6 +434,8 @@ const EditSchoolDetailsForm = ({
               disabled={
                 details?.user_level == 13 && index < currentFormLength && isOrchids
                   ? !isSuperUser
+                  : index >= currentFormLength
+                  ? false
                   : isEditable
               }
               onChange={(e, value) => {

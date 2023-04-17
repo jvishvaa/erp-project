@@ -10,14 +10,26 @@ import BlockOutlined from '@material-ui/icons/BlockOutlined';
 import RestoreIcon from '@material-ui/icons/Restore';
 import useStyles from './useStyles';
 
-const ViewUserCard = ({ user, onEdit, onRestore, onDelete, onStatusChange, index, showContactInfo }) => {
+const ViewUserCard = ({
+  user,
+  onEdit,
+  onRestore,
+  onDelete,
+  onStatusChange,
+  index,
+  showContactInfo,
+}) => {
   const userStatus = user.active
     ? user.status === 'deleted'
       ? 'Deleted'
       : 'Activated'
     : 'Deactivated';
   const classes = useStyles();
-
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
   return (
     <Paper className={classes.root}>
       <Grid container spacing={3}>
@@ -187,15 +199,17 @@ const ViewUserCard = ({ user, onEdit, onRestore, onDelete, onStatusChange, index
                   </IconButton>
                 </Box>
               </Grid>
-              <Grid item xs={4} className={classes.textRight}>
-                <IconButton
-                  onClick={() => {
-                    onDelete(user.userId);
-                  }}
-                >
-                  <DeleteOutlineIcon color='primary' />
-                </IconButton>
-              </Grid>
+              {isOrchids && user?.level == 13 ? null : (
+                <Grid item xs={4} className={classes.textRight}>
+                  <IconButton
+                    onClick={() => {
+                      onDelete(user.userId);
+                    }}
+                  >
+                    <DeleteOutlineIcon color='primary' />
+                  </IconButton>
+                </Grid>
+              )}
             </>
           )}
         </Grid>
