@@ -30,6 +30,8 @@ const ViewUserCard = ({
     window.location.host.split('.')[0] === 'qa'
       ? true
       : false;
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const user_level = userData?.user_level;
   return (
     <Paper className={classes.root}>
       <Grid container spacing={3}>
@@ -161,13 +163,17 @@ const ViewUserCard = ({
             <>
               <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
                 {user.active ? (
-                  <IconButton
-                    aria-label='deactivate'
-                    onClick={() => onStatusChange(user.userId, '2')}
-                    title='Deactivate'
-                  >
-                    <BlockOutlined color='primary' />
-                  </IconButton>
+                  isOrchids && user.level == 13 ? null : (
+                    <>
+                      <IconButton
+                        aria-label='deactivate'
+                        onClick={() => onStatusChange(user.userId, '2')}
+                        title='Deactivate'
+                      >
+                        <BlockOutlined color='primary' />
+                      </IconButton>
+                    </>
+                  )
                 ) : (
                   <button
                     className='group_view_activate_button group_view_button'
