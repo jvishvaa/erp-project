@@ -295,7 +295,6 @@ class EditUser extends Component {
       guardian_photo,
       parent: parentDetail,
     };
-
     if (!requestWithParentorGuradianDetails) {
       delete requestObj.parent;
       delete requestObj.father_photo;
@@ -474,21 +473,13 @@ class EditUser extends Component {
                           variant='contained'
                           color='primary'
                           onClick={() => {
-                            if (
-                              this.state?.user?.mapping_bgs[
-                                this.state.mappingBgsLength - 1
-                              ]?.subjects.length === 0
-                            ) {
-                              this.context.setAlert('error', 'Please select all fields');
-                              return;
-                            } else {
-                              this.setState({ isNext: true });
-                            }
+                            this.setState({ isNext: true });
                           }}
                         >
                           Next
                         </Button>
                       </Grid>
+
                       <Grid item md={8} />
                       <Grid item md={1}>
                         {this.state?.isSuper || this.state.hasAddAccess ? (

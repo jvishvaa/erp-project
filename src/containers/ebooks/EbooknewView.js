@@ -142,7 +142,7 @@ const EbookView = (props) => {
         branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
         grade: item.value,
-        // book_id: props?.showTab == 1 ? 3 : 4,
+        book_id: props?.showTab == 1 ? 3 : 4,
       });
     }
   };
