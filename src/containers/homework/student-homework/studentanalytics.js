@@ -222,7 +222,9 @@ const StudentAnalytics = withRouter(({
             })
             .then((res) => {
                 console.log(res);
-                setData(res.data.result)
+                if(res?.data?.status_code == 200){
+                    setData(res.data.result)
+                }
             })
             .catch((error) => {
                 message.error(error.message);
