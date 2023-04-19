@@ -89,6 +89,12 @@ const [ loading , setLoading ] = useState(false)
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
+
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -429,7 +435,7 @@ const [ loading , setLoading ] = useState(false)
       setSelectedUsers(selectedRows)
     },
     getCheckboxProps: (record) => ({
-      disabled: record.userlevelid == 13 
+      disabled: record.userlevelid == 13 && isOrchids
     }),
   };
 
