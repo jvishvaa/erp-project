@@ -1,7 +1,7 @@
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable camelcase */
 /* eslint-disable no-nested-ternary */
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -295,7 +295,6 @@ class EditUser extends Component {
       guardian_photo,
       parent: parentDetail,
     };
-
     if (!requestWithParentorGuradianDetails) {
       delete requestObj.parent;
       delete requestObj.father_photo;
@@ -480,6 +479,7 @@ class EditUser extends Component {
                           Next
                         </Button>
                       </Grid>
+
                       <Grid item md={8} />
                       <Grid item md={1}>
                         {this.state?.isSuper || this.state.hasAddAccess ? (
