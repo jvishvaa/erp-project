@@ -82,6 +82,12 @@ const AssignRole = (props) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -666,7 +672,7 @@ const AssignRole = (props) => {
       setSelectedUsers(selectedRows)
     },
     getCheckboxProps: (record) => ({
-      disabled: record.role === 'Student' || record.role === 'student' || record.role === "Anvesh_Student",
+      disabled: (record.role === 'Student' || record.role === 'student' || record.role === "Anvesh_Student") && isOrchids,
     
     }),
   };
