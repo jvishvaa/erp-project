@@ -429,7 +429,8 @@ const [ loading , setLoading ] = useState(false)
       setSelectedUsers(selectedRows)
     },
     getCheckboxProps: (record) => ({
-      disabled: record.userlevelid == 13 
+
+      disabled: record.userlevelid == 13 && window.location.host == 'localhost:3000'
     }),
   };
 

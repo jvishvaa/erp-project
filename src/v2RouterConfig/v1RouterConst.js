@@ -474,6 +474,7 @@ import StudentHwConfig from 'containers/homework/student-homework/StudentHwConfi
 import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
+import CreateNoAcademicStaff from 'containers/user-management/staff/create-non-academic-staff';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -1825,6 +1826,9 @@ const V1Router = [
 </Route>,
   <Route path='/student-analytics'>
   {({ match }) => <Studentanalytics match={match} />}
+</Route>,
+<Route path='/user-management/create-no-academic-staff'>
+  {({ match }) => <CreateNoAcademicStaff match={match} />}
 </Route>,
 
   <Route path='*'>
