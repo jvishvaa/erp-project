@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -14,6 +15,9 @@ import { AttachmentPreviewerContext } from '../attachment-previewer-contexts';
 import './attachment-previewer-ui-styles.css';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/umd/Page/AnnotationLayer.css';
+import endpoints from 'v2/config/endpoints';
+import axiosInstance from 'config/axios';
+import Loader from 'components/loader/loader';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;
@@ -34,6 +38,30 @@ function AttachmentPreviewerUI() {
     controls: { isOpen, next, prev, isNextAvailable, isPrevAvailable },
   } = React.useContext(AttachmentPreviewerContext) || {};
   const { extension, src = '', name } = (attachments || [])[currentAttachmentIndex] || {};
+  const history = useHistory()
+  const [webviewer, setWebViewer] = useState(false)
+
+  useEffect(() => {
+    fetchConfig()
+  }, [])
+
+  const fetchConfig = () => {
+    axiosInstance
+      .get(`${endpoints.academics.getConfigAnnouncement}?config_key=ppt-viewer`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result[0] == 'True' || response?.data?.result == 'True') {
+            setWebViewer(true);
+          } else {
+            setWebViewer(false);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+
+      });
+  };
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -85,6 +113,15 @@ function AttachmentPreviewerUI() {
     false
   );
 
+  const handlePPt = () => {
+    history.push({
+      pathname: '/pptview', state: {
+        src: src
+      }
+    })
+    closePreview()
+  }
+
   const previewerUI = (
     <>
       <Dialog fullScreen open TransitionComponent={Transition}>
@@ -133,36 +170,41 @@ function AttachmentPreviewerUI() {
                     Your browser does not support HTML5 video.
                   </video>
                 ) : isPPt ? (
-                  <iframe
-                    id='attachment-iframe'
-                    title='attachment-iframe'
-                    src={pptFileSrc}
-                    // src={isPPt ? pptFileSrc : `${src}#toolbar=0&navpanes=0&scrollbar=0`}
-                    // src={isPPt ? pptFileSrc : `http://docs.google.com/gview?url=${src}&embedded=true#toolbar=0&navpanes=0&scrollbar=0`}
-                    className='attachment-viewer-frame-preview-iframe'
-                  />
+                  <>
+                  { webviewer == true ?
+                    <>
+                      {handlePPt()}
+                    </> :
+                    <iframe
+                      id='attachment-iframe'
+                      title='attachment-iframe'
+                      src={pptFileSrc}
+                      className='attachment-viewer-frame-preview-iframe'
+                    />
+                  }
+                  </>
                 ) : (
                   // <PdfjsPreview url={src} />
-                  <div>
-                    <Document
-                      file={src}
-                      className='pdf-document'
-                      externalLinkTarget='_blank'
-                      onLoadError={(error) =>
-                        alert('Error while loading document! ' + error.message)
-                      }
-                      onLoadSuccess={onDocumentLoadSuccess}
-                    >
-                      <Page
-                        height={550}
-                        scale={scaleValue || 1}
-                        width={500}
-                        renderAnnotationLayer={true}
-                        className='pdf-page'
-                        pageNumber={pageNumber}
-                      />
-                    </Document>
-                  </div>
+                <div>
+                  <Document
+                    file={src}
+                    className='pdf-document'
+                    externalLinkTarget='_blank'
+                    onLoadError={(error) =>
+                      alert('Error while loading document! ' + error.message)
+                    }
+                    onLoadSuccess={onDocumentLoadSuccess}
+                  >
+                    <Page
+                      height={550}
+                      scale={scaleValue || 1}
+                      width={500}
+                      renderAnnotationLayer={true}
+                      className='pdf-page'
+                      pageNumber={pageNumber}
+                    />
+                  </Document>
+                </div>
                 )}
                 {/* <iframe src="http://docs.google.com/gview?url=http://infolab.stanford.edu/pub/papers/google.pdf&embedded=true" style="width:600px; height:500px;" frameborder="0"></iframe> */}
                 {/* <p className='attachment-viewer-frame-preview-placeholder'>
