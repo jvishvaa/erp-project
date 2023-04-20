@@ -183,11 +183,9 @@ const AdminEditCreateBlogs = () => {
   let allGradeIds = [];
 
   const getGrades = async (acadId, branchId) => {
-    // const ids = value.map((el) => el.id) || [];
     setLoading(true);
     try {
       setGrades([]);
-      // setSubjects([]);
       const data = await fetchGrades(acadId, branchId, moduleId);
       setGrades(data);
       setGradeList(data);
@@ -215,10 +213,6 @@ const AdminEditCreateBlogs = () => {
           if (result.data) {
             setSectionList(result.data?.data);
             const gradeData = result?.data?.result || [];
-            // gradeData.unshift({
-            //   name: 'Select All',
-            //   id: 'all',
-            // });
             setSectionDropdown(gradeData);
           }
         });
@@ -229,41 +223,88 @@ const AdminEditCreateBlogs = () => {
     getBranch(academicYear?.id);
   }, [editFlag]);
 
-  const handleBranch = (e, value) => {
+  const handleBranch = (value) => {
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
+    setGrades([]);
+    formRef.current.setFieldsValue({
+      branch: [],
+      grade: [],
+      section: [],
+    });
     if (value?.length > 0) {
-      const branchIds = value?.map((element) => parseInt(element?.key)) || [];
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...branchList].filter(({ id }) => id !== 'all')
-          : value;
-      setSelectedBranch(value);
-      getGrades(selectedAcademicYear?.id, branchIds);
+      setSelectedGrade([]);
+      setSelectedSection([]);
+      const all = branchList.slice();
+      const allBranchIds = all.map((item) => parseInt(item?.branch?.id));
+      if (value.includes('All')) {
+        setSelectedBranch(allBranchIds);
+        formRef.current.setFieldsValue({
+          branch: allBranchIds,
+          grade: [],
+          section: [],
+          // data: null,
+        });
+        getGrades(selectedAcademicYear?.id, allBranchIds);
+      } else {
+        setSelectedBranch(value);
+        formRef.current.setFieldsValue({
+          branch: value,
+          grade: [],
+          section: [],
+          // data: null,
+        });
+        getGrades(selectedAcademicYear?.id, value);
+      }
     }
   };
 
-  const handleGrade = (e, value) => {
+  const handleGrade = (value) => {
     setSelectedSection([]);
+    setSectionList([]);
+    formRef.current.setFieldsValue({
+      grade: [],
+      section: [],
+    });
     if (value) {
-      const branchIds = selectedBranch.map((element) => parseInt(element?.key));
-      const gradeId = value?.map((element) => parseInt(element?.key));
-      // value =
-      //   value.filter(({ name }) => name === 'Select All').length === 1
-      //     ? [...gradeList].filter(({ name }) => name !== 'Select All')
-      //     : value;
-      setSelectedGrade(value);
-      fetchSections(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
+      const all = grades.slice();
+      const allGradeIds = all.map((item) => item?.grade_id);
+      if (value.includes('All')) {
+        setSelectedGrade(allGradeIds);
+        formRef.current.setFieldsValue({
+          grade: allGradeIds,
+          section: [],
+        });
+        fetchSections(selectedAcademicYear?.id, selectedBranch, allGradeIds, moduleId);
+      } else {
+        setSelectedGrade(value);
+        formRef.current.setFieldsValue({
+          grade: value,
+          section: [],
+        });
+        fetchSections(selectedAcademicYear?.id, selectedBranch, value, moduleId);
+      }
     }
   };
-  const handleSection = (e, value) => {
+  const handleSection = (value) => {
+    formRef.current.setFieldsValue({
+      section: [],
+    });
     if (value) {
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...sectionDropdown].filter(({ id }) => id !== 'all')
-          : value;
-      setSelectedSection(value);
+      const all = sectionList.slice();
+      const allSectionIds = all.map((item) => parseInt(item?.section_id));
+      if (value.includes('All')) {
+        setSelectedSection(allSectionIds);
+        formRef.current.setFieldsValue({
+          section: allSectionIds,
+        });
+      } else {
+        setSelectedSection(value);
+        formRef.current.setFieldsValue({
+          section: value,
+        });
+      }
     }
   };
   const handleStartDateChange = (val) => {
@@ -296,26 +337,22 @@ const AdminEditCreateBlogs = () => {
     formatdate.getSeconds();
   const dataPost = () => {
     setLoading(true);
-    const branchIds = selectedBranch.map((obj) => obj?.branch_id);
-    const gradeIds = selectedGrade.map((obj) => obj?.grade_id);
-    const sectionIds = selectedSection.map((obj) => obj?.section_id);
-
     if (activityName.length === 0) {
       message.error('Please Add Activity Name');
       setLoading(false);
       return;
     }
-    if (branchIds?.length === 0) {
+    if (selectedBranch?.length === 0) {
       message.error('Please Select Branch');
       setLoading(false);
       return;
     }
-    if (gradeIds?.length === 0) {
+    if (selectedGrade?.length === 0) {
       message.error('Please Select Grade');
       setLoading(false);
       return;
     }
-    if (sectionIds?.length === 0) {
+    if (selectedSection?.length === 0) {
       message.error('Please Select Section');
       setLoading(false);
       return;
@@ -345,9 +382,9 @@ const AdminEditCreateBlogs = () => {
         session_year: selectedAcademicYear.session_year,
         created_at: flag ? startDate + hoursAndMinutes : startDate,
         created_by: user_id.id,
-        branch_ids: branchIds,
-        grade_ids: gradeIds,
-        section_ids: sectionIds,
+        branch_ids: selectedBranch,
+        grade_ids: selectedGrade,
+        section_ids: selectedSection,
         is_draft: true,
         template_type: changeText.name,
         template_id: templateId,
@@ -406,9 +443,18 @@ const AdminEditCreateBlogs = () => {
           setTemplatesId(response?.data?.result?.template?.id);
           setPreviewData(response?.data?.result);
           setActivityName(response?.data?.result?.activity_type);
-          setSelectedBranch(response?.data?.result?.branches.map((obj) => obj));
-          setSelectedGrade(response?.data?.result?.grades?.map((obj) => obj));
-          setSelectedSection(response?.data?.result?.sections?.map((obj) => obj));
+          formRef.current.setFieldsValue({
+            branch: response?.data?.result.branches.map((obj) => obj?.branch_id),
+            grade: response?.data?.result?.grades?.map((obj) => obj?.grade_id),
+            section: response?.data?.result?.sections.map((obj) => obj?.section_id),
+          });
+          setSelectedBranch(
+            response?.data?.result?.branches.map((obj) => obj?.branch_id)
+          );
+          setSelectedGrade(response?.data?.result?.grades?.map((obj) => obj?.grade_id));
+          setSelectedSection(
+            response?.data?.result?.sections?.map((obj) => obj?.section_id)
+          );
           setFileUrl(response?.data?.result?.template_path);
           setStartDate(response?.data?.result?.submission_date);
           setEditFlag(true);
@@ -579,29 +625,12 @@ const AdminEditCreateBlogs = () => {
       </Option>
     );
   });
-  // const roundOptions = roundDropdown.map((each) => {
-  //   return (
-  //     <Option key={each?.id} value={each?.name} id={each?.id}>
-  //       {each?.name}
-  //     </Option>
-  //   );
-  // });
-
-  // const subActionTypeOption = subActivityListData.map((each) => {
-  //   return (
-  //     <Option key={each?.id} value={each?.sub_type} id={each?.id}>
-  //       {each?.sub_type}
-  //     </Option>
-  //   );
-  // });
 
   const handleAcademicYear = (event = {}, value = '') => {
-    // formik.setFieldValue('academic', '');
     setAcademicYear('');
     if (value) {
       getBranch(value?.id);
       setAcademicYear(value);
-      // formik.setFieldValue('academic', value);
     }
   };
   const getAcademic = async () => {
@@ -651,32 +680,6 @@ const AdminEditCreateBlogs = () => {
               <div className='col-12 py-3'>
                 <Form id='filterForm' layout={'horizontal'} ref={formRef}>
                   <div className='row align-items-center'>
-                    {/* <div className='col-md-2 col-6 pl-0'>
-                      <div className='mb-2 text-left'>Sub-Activity Categories</div>
-                      <Form.Item name='sub_activity'>
-                        <Select
-                          allowClear
-                          placeholder={'Select Sub-Activity'}
-                          showSearch
-                          optionFilterProp='children'
-                          value={subActivityName || []}
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                          onChange={handleSubActivity}
-                          className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                          bordered={true}
-                        >
-                          {subActionTypeOption}
-                        </Select>
-                      </Form.Item>
-                    </div> */}
-                    {console.log(activityName, 'kl')}
                     <div className='col-md-2 col-6 pl-0'>
                       <div className='mb-2 text-left'>Activity Categories</div>
                       <Form.Item name='activity_categories'>
@@ -724,20 +727,19 @@ const AdminEditCreateBlogs = () => {
                             );
                           }}
                           value={selectedBranch || []}
-                          onChange={(e, value) => {
-                            handleBranch(e, value);
+                          onChange={(value) => {
+                            handleBranch(value);
                           }}
-                          // onClear={handleClearBoard}
                           className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                           bordered={true}
                         >
-                          {/* {branchDropdown.length > 1 && (
-                          <>
-                            <Option key={0} value={'all'}>
-                              All
-                            </Option>
-                          </>
-                        )} */}
+                          {branchList?.length > 1 && (
+                            <>
+                              <Option key={0} value={'All'}>
+                                All
+                              </Option>
+                            </>
+                          )}
                           {branchOptions}
                         </Select>
                       </Form.Item>
@@ -763,13 +765,18 @@ const AdminEditCreateBlogs = () => {
                                 .indexOf(input.toLowerCase()) >= 0
                             );
                           }}
-                          onChange={(e, value) => {
-                            handleGrade(e, value);
+                          onChange={(value) => {
+                            handleGrade(value);
                           }}
                           onClear={handleClearGrade}
                           className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                           bordered={true}
                         >
+                          {grades.length > 1 && (
+                            <Option key='0' value='All'>
+                              All
+                            </Option>
+                          )}
                           {gradeOptions}
                         </Select>
                       </Form.Item>
@@ -787,7 +794,6 @@ const AdminEditCreateBlogs = () => {
                           value={selectedSection || []}
                           showSearch
                           optionFilterProp='children'
-                          // defaultValue={subjectName}
                           filterOption={(input, options) => {
                             return (
                               options.children
@@ -795,13 +801,17 @@ const AdminEditCreateBlogs = () => {
                                 .indexOf(input.toLowerCase()) >= 0
                             );
                           }}
-                          onChange={(e, value) => {
-                            handleSection(e, value);
+                          onChange={(value) => {
+                            handleSection(value);
                           }}
-                          // onClear={handleClearSubject}
                           className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                           bordered={true}
                         >
+                          {sectionList.length > 1 && (
+                            <Option key='0' value='All'>
+                              All
+                            </Option>
+                          )}
                           {sectionOptions}
                         </Select>
                       </Form.Item>

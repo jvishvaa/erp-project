@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useContext, createRef } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import { useSelector } from 'react-redux';
-
 import Layout from 'containers/Layout';
-
 import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -17,15 +15,12 @@ import {
   Input,
   message,
   Modal,
-  Spin,
 } from 'antd';
 
 import axios from 'axios';
 import {
-  fetchAcademicYears,
   fetchBranches as fetchBranchRedux,
   fetchGrades,
-  fetchSection,
 } from '../lesson-plan/create-lesson-plan/apis';
 import { DownOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -46,7 +41,6 @@ const VisualActivityCreate = () => {
   const history = useHistory();
   const [branchList, setBranchList] = useState([]);
   const [maxWidth, setMaxWidth] = React.useState('lg');
-  // const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = React.useState('');
   const [assigned, setAssigned] = useState(false);
@@ -134,10 +128,6 @@ const VisualActivityCreate = () => {
           id: obj?.branch?.id,
           branch_name: obj?.branch?.branch_name,
         }));
-        // transformedData.unshift({
-        //   branch_name: 'Select All',
-        //   id: 'all',
-        // });
         setBranchDropdown(transformedData);
         setBranchList(transformedData);
         setLoading(false);
@@ -154,16 +144,13 @@ const VisualActivityCreate = () => {
     setLoading(true);
     try {
       setGrades([]);
-      if (branchId) {
+      setGradeList([]);
+      if (branchId.length !== 0) {
         const data = await fetchGrades(acadId, branchId, moduleId);
         const transformedData = data?.map((obj) => ({
           id: obj?.grade_id,
           name: obj?.grade__grade_name,
         }));
-        // transformedData.unshift({
-        //   name: 'Select All',
-        //   id: 'all',
-        // });
         setGradeList(transformedData);
         setLoading(false);
       }
@@ -205,8 +192,10 @@ const VisualActivityCreate = () => {
   };
 
   const fetchSectionsFun = (sessionId, branchIds, gradeIds, moduleId) => {
-    if (gradeIds) {
+    setSectionDropdown([]);
+    if (gradeIds.length !== 0) {
       setLoading(true);
+      setSectionList([]);
       axiosInstance
         .get(
           `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
@@ -233,55 +222,79 @@ const VisualActivityCreate = () => {
     fetchBranches();
   }, []);
   const handleBranch = (value) => {
+    if (value) {
+      setSelectedBranch([]);
+      setSelectedGrade([]);
+      setSelectedSection([]);
+      const all = branchList.slice();
+      const allBranchIds = all.map((item) => item.id);
+      if (value.includes('All')) {
+        setSelectedBranch(allBranchIds);
+        formRef.current.setFieldsValue({
+          branch: allBranchIds,
+          grade: [],
+          section: [],
+          date: null,
+        });
+        fetchGradesFun(selectedAcademicYear?.id, allBranchIds);
+      } else {
+        setSelectedBranch(value);
+        formRef.current.setFieldsValue({
+          branch: value,
+          grade: [],
+          section: [],
+          date: null,
+        });
+        fetchGradesFun(selectedAcademicYear?.id, value);
+      }
+    }
+    getTemplate(activityName.id);
+  };
+
+  const handleGrade = (value) => {
     setSelectedGrade([]);
     setSelectedSection([]);
     if (value) {
       setSelectedGrade([]);
       setSelectedSection([]);
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...branchList].filter(({ id }) => id !== 'all')
-          : value;
-      let branchId = value?.map((item) => item?.id);
-      formRef.current.setFieldsValue({
-        branch: value,
-        grade: [],
-        section: [],
-        date: null,
-      });
-      setSelectedBranch(value);
-      fetchGradesFun(selectedAcademicYear?.id, branchId);
-    }
-    getTemplate(activityName.id);
-  };
-
-  const handleGrade = (e, value) => {
-    if (value) {
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...gradeList].filter(({ id }) => id !== 'all')
-          : value;
-      let gradeId = value?.map((item) => item?.id);
-      let branchIds = selectedBranch?.map((element) => parseInt(element?.id));
-      formRef.current.setFieldsValue({
-        grade: value,
-        section: [],
-        data: null,
-      });
-      setSelectedGrade(value);
-      fetchSectionsFun(selectedAcademicYear?.id, branchIds, gradeId, moduleId);
+      const all = gradeList.slice();
+      const allGradeId = all.map((item) => item.id);
+      if (value.includes('All')) {
+        setSelectedGrade(allGradeId);
+        formRef.current.setFieldsValue({
+          grade: allGradeId,
+          section: [],
+          date: null,
+        });
+        fetchSectionsFun(selectedAcademicYear?.id, selectedBranch, allGradeId, moduleId);
+      } else {
+        setSelectedGrade(value);
+        fetchSectionsFun(selectedAcademicYear?.id, selectedBranch, value, moduleId);
+        formRef.current.setFieldsValue({
+          grade: value,
+          section: [],
+          date: null,
+        });
+      }
     }
   };
   const handleSection = (value) => {
+    setSelectedSection([]);
     if (value) {
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...sectionDropdown].filter(({ id }) => id !== 'all')
-          : value;
-      formRef.current.setFieldsValue({
-        section: value,
-      });
-      setSelectedSection(value);
+      setSelectedSection([]);
+      const all = sectionDropdown.slice();
+      const allSectionId = all.map((item) => item?.id);
+      if (value.includes('All')) {
+        setSelectedSection(allSectionId);
+        formRef.current.setFieldsValue({
+          section: allSectionId,
+        });
+      } else {
+        setSelectedSection(value);
+        formRef.current.setFieldsValue({
+          section: value,
+        });
+      }
     }
   };
 
@@ -329,21 +342,17 @@ const VisualActivityCreate = () => {
 
   const dataPost = () => {
     setLoading(true);
-    const branchIds = selectedBranch.map((obj) => obj?.id);
-    const gradeIds = selectedGrade.map((obj) => obj?.id);
-    const sectionIds = selectedSection.map((obj) => obj?.id);
-
-    if (branchIds?.length === 0) {
+    if (selectedBranch?.length === 0) {
       setLoading(false);
       message.error('Please Select Branch');
       return;
     }
-    if (gradeIds?.length === 0) {
+    if (selectedGrade?.length === 0) {
       setLoading(false);
       message.error('Please Select Grade');
       return;
     }
-    if (sectionIds?.length === 0) {
+    if (selectedSection?.length === 0) {
       setLoading(false);
       message.error('Please Select Section');
       return;
@@ -379,9 +388,9 @@ const VisualActivityCreate = () => {
       formData.append('session_year', selectedAcademicYear.session_year);
       formData.append('created_at', startDate + hoursAndMinutes);
       formData.append('created_by', user_id.id);
-      formData.append('branch_ids', branchIds);
-      formData.append('grade_ids', gradeIds);
-      formData.append('section_ids', sectionIds);
+      formData.append('branch_ids', selectedBranch);
+      formData.append('grade_ids', selectedGrade);
+      formData.append('section_ids', selectedSection);
       formData.append('is_draft', false);
       formData.append('template_type', 'template');
       formData.append('template_id', checked);
@@ -389,7 +398,6 @@ const VisualActivityCreate = () => {
       axios
         .post(`${endpoints.newBlog.activityCreate}`, formData, {
           headers: {
-            // Authorization: `${token}`,
             'X-DTS-HOST': X_DTS_HOST,
           },
         })
@@ -497,10 +505,9 @@ const VisualActivityCreate = () => {
     return (
       <Option
         key={each?.id}
-        value={each?.branch_name}
-        children={each?.id}
+        value={each?.id}
         id={each?.id}
-        name={each?.branch_name}
+        branch_name={each?.branch_name}
       >
         {each?.branch_name}
       </Option>
@@ -509,13 +516,7 @@ const VisualActivityCreate = () => {
 
   const gradeOption = gradeList.map((each) => {
     return (
-      <Option
-        key={each?.id}
-        value={each?.id}
-        id={each?.id}
-        children={each?.id}
-        name={each?.name}
-      >
+      <Option key={each?.id} value={each?.id} id={each?.id} name={each?.name}>
         {each?.name}
       </Option>
     );
@@ -609,7 +610,7 @@ const VisualActivityCreate = () => {
                         showArrow={true}
                         suffixIcon={<DownOutlined className='th-grey' />}
                         optionFilterProp='children'
-                        value={selectedBranch}
+                        // value={selectedBranch}
                         dropdownMatchSelectWidth={false}
                         getPopupContainer={(trigger) => trigger.parentNode}
                         filterOption={(input, options) => {
@@ -618,13 +619,18 @@ const VisualActivityCreate = () => {
                             0
                           );
                         }}
-                        onChange={(event, value) => {
+                        onChange={(value) => {
                           handleBranch(value);
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={true}
                         onClear={handleClearBranch}
                       >
+                        {branchList?.length > 0 && (
+                          <Option key='0' value='All'>
+                            All
+                          </Option>
+                        )}
                         {branchOption}
                       </Select>
                     </Form.Item>
@@ -642,7 +648,7 @@ const VisualActivityCreate = () => {
                         showArrow={true}
                         suffixIcon={<DownOutlined className='th-grey' />}
                         optionFilterProp='children'
-                        value={selectedGrade}
+                        // value={selectedGrade}
                         dropdownMatchSelectWidth={false}
                         getPopupContainer={(trigger) => trigger.parentNode}
                         filterOption={(input, options) => {
@@ -651,13 +657,18 @@ const VisualActivityCreate = () => {
                             0
                           );
                         }}
-                        onChange={(event, value) => {
-                          handleGrade(event, value);
+                        onChange={(value) => {
+                          handleGrade(value);
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={true}
                         onClear={handleClearGrade}
                       >
+                        {gradeList.length > 0 && (
+                          <Option key='0' value='All'>
+                            All
+                          </Option>
+                        )}
                         {gradeOption}
                       </Select>
                     </Form.Item>
@@ -675,7 +686,7 @@ const VisualActivityCreate = () => {
                         showArrow={true}
                         suffixIcon={<DownOutlined className='th-grey' />}
                         optionFilterProp='children'
-                        value={selectedSection}
+                        // value={selectedSection}
                         dropdownMatchSelectWidth={false}
                         getPopupContainer={(trigger) => trigger.parentNode}
                         filterOption={(input, options) => {
@@ -684,13 +695,18 @@ const VisualActivityCreate = () => {
                             0
                           );
                         }}
-                        onChange={(event, value) => {
+                        onChange={(value) => {
                           handleSection(value);
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={true}
                         onClear={handleClearSection}
                       >
+                        {sectionDropdown.length > 0 && (
+                          <Option key='0' value='All'>
+                            All
+                          </Option>
+                        )}
                         {sectionOption}
                       </Select>
                     </Form.Item>
@@ -718,7 +734,7 @@ const VisualActivityCreate = () => {
                           );
                         }}
                         onChange={(event, value) => {
-                          handleCriteriaTitle(event,value)
+                          handleCriteriaTitle(event, value);
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={true}
