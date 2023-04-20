@@ -28,6 +28,7 @@ import axios from 'axios';
 import Layout from '../../Layout';
 import Loader from 'components/loader/loader'
 import { SearchOutlined } from '@material-ui/icons';
+import { Pagination, Table } from 'antd';
 // import './assign-role.css';
 
 const debounce = (fn, delay) => {
@@ -53,6 +54,7 @@ const UserLevelTable = (props) => {
   const [usersRow, setUsersRow] = useState([]);
   const [completeData, setCompleteData] = useState([]);
   const [headers, setHeaders] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [roles, setRoles] = useState('');
   const [academicYearList, setAcademicYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -84,6 +86,14 @@ const [ loading , setLoading ] = useState(false)
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
 
 
   useEffect(() => {
@@ -175,6 +185,7 @@ const [ loading , setLoading ] = useState(false)
 
 
   const displayUsersList = async () => {
+    setLoading(true)
     setSelectAll(false)
     let getUserListUrl = `${endpoints.userManagement.getUserLevel}?page_num=${pageno}&page_size=15`;
     if (searchText) {
@@ -197,6 +208,12 @@ const [ loading , setLoading ] = useState(false)
           { field: 'userlevel', headerName: 'User Level', width: 250, headerAlign: 'center' },
           { field: 'userlevelid', headerName: 'User Level ID', width: 250 , headerAlign: 'center'},
         ]);
+        setColumns([
+          { dataIndex: 'name', title: 'Name', width: 250 , headerAlign: 'center' },
+          { dataIndex: 'erp_id', title: 'ERP Id', width: 250, headerAlign: 'center' },
+          { dataIndex: 'userlevel', title: 'User Level', width: 250, headerAlign: 'center' },
+          { dataIndex: 'userlevelid', title: 'User Level ID', width: 250 , headerAlign: 'center'},
+        ])
         const rows = [];
         const selectionRows = [];
         result.data.result.results.forEach((items, index) => {
@@ -218,11 +235,11 @@ const [ loading , setLoading ] = useState(false)
               userlevel: items?.level,
               userid: items?.user_id,
             },
-            selected: selectAll
-            ? true
-            : selectedUsers.length
-              ? selectedUsers[pageno - 1].selected.includes(items.user_id)
-              : false,
+            // selected: selectAll
+            // ? true
+            // : selectedUsers.length
+            //   ? selectedUsers[pageno - 1].selected.includes(items.user_id)
+            //   : false,
           });
         });
 
@@ -234,7 +251,6 @@ const [ loading , setLoading ] = useState(false)
           for (let page = 1; page <= result.data.result.total_pages; page += 1) {
             tempSelectedUser.push({ pageNo: page, selected: [] });
           }
-          console.log(tempSelectedUser , "selectedUser");
           setSelectedUsers(tempSelectedUser);
         }
         UnSelectAll()
@@ -246,8 +262,10 @@ const [ loading , setLoading ] = useState(false)
         //   }
         //   setSelectAllObj(tempSelectAll);
         // }
+        setLoading(false)
       } else {
         setAlert('error', result.data.message);
+        setLoading(false)
       }
     } catch (error) {
       setAlert('error', error.message);
@@ -349,16 +367,15 @@ const [ loading , setLoading ] = useState(false)
     if (selectAll) {
       completeData
         .forEach((items) => {
-          console.log(items);
           selectionArray.push(items.data.userid);
         });
       // selectionArray.push(0);
     }
     if(!selectAll){
     selectedUsers.forEach((item) => {
-      item.selected.forEach((ids) => {
-        selectionArray.push(ids);
-      });
+      // item.selected.forEach((ids) => {
+        selectionArray.push(item.userid);
+      // });
     });
   }
 
@@ -411,6 +428,16 @@ const [ loading , setLoading ] = useState(false)
   };
 
   const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
+
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedUsers(selectedRows)
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.userlevelid == 13 && isOrchids
+    }),
+  };
 
   return (
     <Layout>
@@ -523,7 +550,7 @@ const [ loading , setLoading ] = useState(false)
               </div> : ' ' }
             </Grid>
             <Grid item md={2} xs={4}>
-              <Typography color="secondary">
+              {/* <Typography color="secondary">
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -534,7 +561,7 @@ const [ loading , setLoading ] = useState(false)
                   }
                   label='Select all'
                 />
-              </Typography>
+              </Typography> */}
             </Grid>
             <Grid item md={2} xs={4}>
               <Button
@@ -555,7 +582,7 @@ const [ loading , setLoading ] = useState(false)
         {loading && <Loader />}
           <div className='tableLevelArea' >
             <span className='create_group_error_span'>{selectectUserError}</span>
-            <CustomSelectionTable
+            {/* <CustomSelectionTable
 
               header={
                 isMobile
@@ -580,6 +607,36 @@ const [ loading , setLoading ] = useState(false)
               setSelectedUsers={setSelectedUsers}
               pageSize={15}
               name='assign_level'
+            /> */}
+
+            {/* <Table
+              rowSelection={{ ...rowSelection }}
+              rowKey={(record) => record?.erp_id}
+              columns={coloumn}
+              dataSource={usersRow} /> */}
+            
+
+            <Table
+              rowSelection={{ ...rowSelection }}
+              columns={columns}
+              dataSource={usersRow}
+              rowKey={(record) => record?.id}
+              pagination={false}
+              rowClassName={(record, index) =>
+                `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+              }
+              className=' th-homework-table-head-bg'
+            />
+
+          </div>
+          <div className='pt-3 bg-white'>
+            <Pagination 
+              current={pageno} 
+              total={totalPage} 
+              showSizeChanger={false}  
+              pageSize={15}
+              onChange={(current) => setPageno(current)} 
+              className='text-center'
             />
           </div>
         

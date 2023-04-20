@@ -9,7 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Divider, Grid, TextField, Button, OutlinedInput,Typography } from '@material-ui/core';
+import { Divider, Grid, TextField, Button, OutlinedInput, Typography } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -25,14 +25,14 @@ import useStyles from './useStyles';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import './styles.scss';
 import Loader from '../../../components/loader/loader';
-
+import { Table , Pagination, Spin } from 'antd';
 import Layout from '../../Layout';
 import { SearchOutlined } from '@material-ui/icons';
 // import './assign-role.css';
 
 const debounce = (fn, delay) => {
   let timeoutId;
-  return function(...args) {
+  return function (...args) {
     clearInterval(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), delay);
   };
@@ -82,6 +82,12 @@ const AssignRole = (props) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -105,8 +111,8 @@ const AssignRole = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId && selectedYear ) getBranchApi();
-  }, [moduleId , selectedYear]);
+    if (moduleId && selectedYear) getBranchApi();
+  }, [moduleId, selectedYear]);
 
   // useEffect(() => {
   //   if (selectedYear) {
@@ -243,75 +249,65 @@ const AssignRole = (props) => {
   };
 
   const displayUsersList = async () => {
-    if(moduleId){
+    setLoading(true)
+    if (moduleId) {
       let getUserListUrl = ''
-      if (window.location.host == 'orchids.letseduvate.com' || window.location.host == 'qa.olvorchidnaigaon.letseduvate.com' || window.location.host == 'test.orchids.letseduvate.com'){
-        if(isSuper != true){
-        getUserListUrl = `${endpoints.communication.userListV2}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+      if (window.location.host == 'orchids.letseduvate.com' || window.location.host == 'qa.olvorchidnaigaon.letseduvate.com' || window.location.host == 'test.orchids.letseduvate.com') {
+        if (isSuper != true) {
+          getUserListUrl = `${endpoints.communication.userListV2}?page=${pageno}&page_size=15&module_id=${moduleId}`;
         } else {
-        getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+          getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
         }
       } else {
         getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
       }
 
-    if (selectedMultipleRoles.length) {
-      const selectedRoleId = selectedMultipleRoles.map((el) => el.id);
-      getUserListUrl += `&role=${selectedRoleId.toString()}`;
-    }
-    if (selectedYear) {
-      getUserListUrl += `&session_year=${selectedYear.id}`;
-    }
-    if (selectedBranch) {
-      getUserListUrl += `&branch_id=${selectedBranch.id}`;
-    }
-    if (selectedGrades.length) {
-      const selectedGradeId = selectedGrades.map((el) => el.grade_id);
-      getUserListUrl += `&grade=${selectedGradeId.toString()}`;
-    }
-    if (selectedSections.length) {
-      const selectedSectionId = selectedSections.map((el) => el.section_id);
-      getUserListUrl += `&section=${selectedSectionId.toString()}`;
-    }
-    if (searchText) {
-      getUserListUrl += `&search=${searchText}`;
-    }
-    try {
-      const result = await axiosInstance.get(getUserListUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (result.status === 200) {
-        setHeaders([
-          // { field: 'id', headerName: 'ID', width: 250 },
-          { field: 'fullName', headerName: 'Name', width: 250 },
-          { field: 'email', headerName: 'Email Id', width: 250 },
-          { field: 'erp_id', headerName: 'ERP Id', width: 150 },
-          { field: 'gender', headerName: 'Gender', width: 150 },
-          { field: 'contact', headerName: 'Contact', width: 150 },
-          {
-            field: 'role',
-            headerName: 'Role',
-            width: 150,
+      if (selectedMultipleRoles.length) {
+        const selectedRoleId = selectedMultipleRoles.map((el) => el.id);
+        getUserListUrl += `&role=${selectedRoleId.toString()}`;
+      }
+      if (selectedYear) {
+        getUserListUrl += `&session_year=${selectedYear.id}`;
+      }
+      if (selectedBranch) {
+        getUserListUrl += `&branch_id=${selectedBranch.id}`;
+      }
+      if (selectedGrades.length) {
+        const selectedGradeId = selectedGrades.map((el) => el.grade_id);
+        getUserListUrl += `&grade=${selectedGradeId.toString()}`;
+      }
+      if (selectedSections.length) {
+        const selectedSectionId = selectedSections.map((el) => el.section_id);
+        getUserListUrl += `&section=${selectedSectionId.toString()}`;
+      }
+      if (searchText) {
+        getUserListUrl += `&search=${searchText}`;
+      }
+      try {
+        const result = await axiosInstance.get(getUserListUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        ]);
-        const rows = [];
-        const selectionRows = [];
+        });
+        if (result.status === 200) {
+          setHeaders([
+            // { field: 'id', headerName: 'ID', width: 250 },
+            { field: 'fullName', headerName: 'Name', width: 250 },
+            { field: 'email', headerName: 'Email Id', width: 250 },
+            { field: 'erp_id', headerName: 'ERP Id', width: 150 },
+            { field: 'gender', headerName: 'Gender', width: 150 },
+            { field: 'contact', headerName: 'Contact', width: 150 },
+            {
+              field: 'role',
+              headerName: 'Role',
+              width: 150,
+            },
+          ]);
+          const rows = [];
+          const selectionRows = [];
 
-        result.data.results.forEach((items) => {
-          rows.push({
-            id: items.id,
-            fullName: `${items.user.first_name} ${items.user.last_name}`,
-            email: items.user.email,
-            erp_id: items.erp_id,
-            gender: items.gender,
-            contact: items.contact,
-            role: items.roles?.role_name,
-          });
-          selectionRows.push({
-            id: items.id,
-            data: {
+          result.data.results.forEach((items) => {
+            rows.push({
               id: items.id,
               fullName: `${items.user.first_name} ${items.user.last_name}`,
               email: items.user.email,
@@ -319,42 +315,55 @@ const AssignRole = (props) => {
               gender: items.gender,
               contact: items.contact,
               role: items.roles?.role_name,
-            },
-            selected: selectedUsers.length
-              ? selectedUsers[pageno - 1].selected.includes(items.id)
-              : false,
+            });
+            // selectionRows.push({
+            //   id: items.id,
+            //   data: {
+            //     id: items.id,
+            //     fullName: `${items.user.first_name} ${items.user.last_name}`,
+            //     email: items.user.email,
+            //     erp_id: items.erp_id,
+            //     gender: items.gender,
+            //     contact: items.contact,
+            //     role: items.roles?.role_name,
+            //   },
+            //   selected: selectedUsers.length
+            //     ? selectedUsers[pageno - 1].selected.includes(items.id)
+            //     : false,
+            // });
           });
-        });
 
-        setUsersRow(rows);
-        setCompleteData(selectionRows);
-        setTotalPage(result.data.count);
-        if (!selectedUsers.length) {
-          const tempSelectedUser = [];
-          for (let page = 1; page <= result.data.total_pages; page += 1) {
-            tempSelectedUser.push({ pageNo: page, selected: [] });
+          setUsersRow(rows);
+          setCompleteData(selectionRows);
+          setTotalPage(result.data.count);
+          if (!selectedUsers.length) {
+            const tempSelectedUser = [];
+            for (let page = 1; page <= result.data.total_pages; page += 1) {
+              tempSelectedUser.push({ pageNo: page, selected: [] });
+            }
+            setSelectedUsers(tempSelectedUser);
           }
-          setSelectedUsers(tempSelectedUser);
-        }
 
-        if (result.data.total_pages !== selectAllObj.length) {
-          const tempSelectAll = [];
-          for (let page = 1; page <= result.data.total_pages; page += 1) {
-            tempSelectAll.push({ selectAll: false });
+          if (result.data.total_pages !== selectAllObj.length) {
+            const tempSelectAll = [];
+            for (let page = 1; page <= result.data.total_pages; page += 1) {
+              tempSelectAll.push({ selectAll: false });
+            }
+            setSelectAllObj(tempSelectAll);
           }
-          setSelectAllObj(tempSelectAll);
+          setLoading(false)
+        } else {
+          setLoading(false)
+          setAlert('error', result.data.message);
         }
-      } else {
-        setAlert('error', result.data.message);
+      } catch (error) {
+        setLoading(false)
+        setAlert('error', error.message);
       }
-    } catch (error) {
-      setAlert('error', error.message);
     }
-  }
   };
 
   const showContactInfo = async (index, id, type) => {
-    setLoading(true);
     try {
       const statusChange = await axiosInstance.get(
         `${endpoints.communication.fetchContactInfoByErp}?erp_id=${id}`,
@@ -367,18 +376,27 @@ const AssignRole = (props) => {
       if (statusChange.status === 200) {
         // setLoading(false);
         let newData;
-        if(type === "email"){
+        let newContact;
+        if (type === "email") {
           const email = statusChange?.data?.data?.email;
           newData = { ...usersRow[index], email };
+          console.log(newData , 'new');
+          usersRow[index] = newData
+          setUsersRow(usersRow)
+          console.log(usersRow , 'user');
           // console.log(statusChange?.data?.data?.email)
         }
-        else{
-          let details = statusChange?.data?.data?.contact;
-          const contact =
-            details?.split('-').length > 1 ? details?.split('-')[1] : details;
-          newData = { ...usersRow[index], contact }; //emails
+        else {
+          const contact = statusChange?.data?.data?.contact;
+          newContact = { ...usersRow[index], contact };
+          console.log(newContact , 'newcontact');
+          usersRow[index] = newContact
+          setUsersRow(usersRow)
+          console.log(usersRow , 'usercontact');
         }
-        usersRow.splice(index, 1, newData);
+        
+        // console.log(newArr , 'newArr');
+        // setUsersRow(newArr)
         setAlert('success', statusChange.data.message);
         setLoading(false);
       } else {
@@ -393,7 +411,7 @@ const AssignRole = (props) => {
 
   useEffect(() => {
     displayUsersList();
-  },[pageno,clearAllActive]);
+  }, [pageno, clearAllActive]);
 
   const handleFilterCheck = () => {
     if (
@@ -440,7 +458,7 @@ const AssignRole = (props) => {
   const handleTextSearch = (e) => {
     let search = e.target.value;
     setSearchText(e.target.value);
-    if(search.length > 1) {
+    if (search.length > 1) {
       debounceCallback(search);
     }
     else {
@@ -531,12 +549,12 @@ const AssignRole = (props) => {
   };
 
   const assignRole = async () => {
+    setLoading(true)
+    console.log(selectedUsers);
     const assignRoleApi = endpoints.communication.assignRole;
     const selectionArray = [];
     selectedUsers.forEach((item) => {
-      item.selected.forEach((ids) => {
-        selectionArray.push(ids);
-      });
+        selectionArray.push(item?.id);
     });
 
     if (!selectionArray.length) {
@@ -572,6 +590,7 @@ const AssignRole = (props) => {
       );
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
+        setLoading(false)
         // props.history.push('/user-management/assign-role')
         displayUsersList()
         setAlert('success', 'Role successfully assigned to user');
@@ -586,20 +605,81 @@ const AssignRole = (props) => {
         //setSelectAllObj([]);
         setSelectectUserError('');
         setAssigenedRole();
+        setSelectedUsers([])
         clearSelectAll();
       } else {
         setAlert('error', response.data.message);
+        setLoading(false)
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false)
     }
   };
 
   const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
 
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'fullName',
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      onCell: (record, rowIndex ) => {
+        return {
+            onClick: (ev) => {
+              handleCLickCellEmail(record, rowIndex , 'email' );
+            },
+        };
+    },
+    },
+    {
+      title: 'ERP ID',
+      dataIndex: 'erp_id',
+    },
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+    },
+     {
+      title: 'Contact',
+      dataIndex: 'contact',
+      onCell: (record, rowIndex ) => {
+        return {
+            onClick: (ev) => {
+              handleCLickCellEmail(record, rowIndex , 'contact' );
+            },
+        };
+    },
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+    },
+  ];
+
+  const handleCLickCellEmail = (record, rowIndex , type ) => {
+    console.log(record, rowIndex  ,'record');
+    showContactInfo(rowIndex , record?.erp_id , type )
+  }
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      setSelectedUsers(selectedRows)
+    },
+    getCheckboxProps: (record) => ({
+      disabled: (record.role === 'Student' || record.role === 'student' || record.role === "Anvesh_Student") && isOrchids,
+    
+    }),
+  };
+
   return (
     <Layout>
-      {loading && <Loader />}
+      {/* {loading && <Loader />} */}
       <CommonBreadcrumbs
         componentName='User Management'
         childComponentName='Assign role'
@@ -637,7 +717,7 @@ const AssignRole = (props) => {
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
-                    className='message_log-textfield' 
+                    className='message_log-textfield'
                     {...params}
                     variant='outlined'
                     label='Role'
@@ -794,20 +874,20 @@ const AssignRole = (props) => {
                 )}
               />
             </Grid>
-            <Grid item md={2} xs={4}>
+            {/* <Grid item md={2} xs={4}>
               <Typography color="secondary">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={!!checkAll}
-                    onChange={(e) => handleSelectAll(e)}
-                    color='primary'
-                  />
-                }
-                label='Select all'
-              />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!checkAll}
+                      onChange={(e) => handleSelectAll(e)}
+                      color='primary'
+                    />
+                  }
+                  label='Select all'
+                />
               </Typography>
-            </Grid>
+            </Grid> */}
             <Grid item md={2} xs={4}>
               <Button
                 onClick={assignRole}
@@ -840,7 +920,7 @@ const AssignRole = (props) => {
         ) : (
           <>
             <span className='create_group_error_span'>{selectectUserError}</span>
-            <CustomSelectionTable
+            {/* <CustomSelectionTable
 
               header={
                 isMobile
@@ -864,9 +944,36 @@ const AssignRole = (props) => {
               name='assign_role'
               setSelectedUsers={setSelectedUsers}
               pageSize={15}
-              showContactInfo = {showContactInfo}
-              setLoading = {setLoading}
+              showContactInfo={showContactInfo}
+              setLoading={setLoading}
+            /> */}
+            {console.log(usersRow , 'row')}
+            {loading ? <div style={{display: 'flex' , justifyContent: 'center' }} >
+              <Spin size='large' tip='Loading...'  />
+            </div>  : 
+            <>
+            <Table
+              rowSelection={{ ...rowSelection }}
+              columns={columns}
+              dataSource={[...usersRow]}
+              rowKey={(record) => record?.id}
+              pagination={false}
+              rowClassName={(record, index) =>
+                `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+              }
+              className=' th-homework-table-head-bg '
             />
+            <div className='bg-white pt-3' >
+            <Pagination
+              current={pageno}
+              total={totalPage}
+              showSizeChanger={false}
+              pageSize={15}
+              onChange={(current) => setPageno(current)}
+              className='text-center'
+              />
+              </div>
+            </>}
           </>
         )}
       </div>
