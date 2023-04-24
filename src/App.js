@@ -481,7 +481,7 @@ import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
 import StudentSideVisualActivity from 'containers/newBlog/StudentSideVisualActivity';
-import PPTView from './components/attachment-previewer/attachment-previewer-ui/pptview';
+// import PPTView from './components/attachment-previewer/attachment-previewer-ui/pptview';
 
 
 function App({ alert, isMsAPI, erpConfig }) {
@@ -2285,9 +2285,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/student-analytics'>
                               {({ match }) => <Studentanalytics match={match} />}
                             </Route>
-                            <Route exact path='/pptview'>
+                            {/* <Route exact path='/pptview'>
                               {({ match }) => <PPTView match={match} />}
-                            </Route>
+                            </Route> */}
 
                             <Route path='/bmi/view'>
                               {({ match }) => <ViewBMI match={match} />}
