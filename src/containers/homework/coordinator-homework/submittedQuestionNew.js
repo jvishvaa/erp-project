@@ -10,7 +10,8 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import { Input } from 'antd';
 
-import Attachment from './attachment';
+// import Attachment from './attachment';
+import Attachment from 'containers/homework/teacher-homework/attachment';
 import endpoints from '../../../config/endpoints';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { IconButton } from '@material-ui/core';
