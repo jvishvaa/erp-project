@@ -20,6 +20,7 @@
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/pickers-4.2": "npm:@material-ui/pickers@^4.0.0-alpha.12",
     "@mikecousins/react-pdf": "^5.5.1",
+    "@pdftron/webviewer": "^10.0.0",
     "@syncfusion/ej2-react-buttons": "^18.4.46",
     "@syncfusion/ej2-react-grids": "^18.4.49",
     "@syncfusion/ej2-react-schedule": "^18.4.49",
