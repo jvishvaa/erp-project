@@ -57,6 +57,7 @@ import {
 } from 'antd';
 import { LeftOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import Loader from 'components/loader/loader';
 const useStyles = makeStyles((theme) => ({
     attachmentIcon: {
         color: '#ff6b6b',
@@ -204,6 +205,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     const [qwiseEvaluated, setQwiseEvaluated] = useState([])
     const [bulkTeacherRemark , setBulkTeacherRemark ] = useState()
     const fileUploadInput = useRef(null);
+    const [ uploadLoading , setUploadLoading ] = useState(false)
 
     // const [quesComments, setQuesComments] = useState([]);
     console.log(history, props);
@@ -440,7 +442,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
                 fil.name.toLowerCase().lastIndexOf('.mp4') > 0
             ) {
-                // setLoading(true);
+                setUploadLoading(true);
                 const formData = new FormData();
                 formData.append('file', fil);
                 axiosInstance
@@ -455,25 +457,25 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     list.push(arr[k]);
                                     setBulkDataDisplay(list);
                                 }
-                                setLoading(false);
+                                setUploadLoading(false);
                             } else {
                                 list.push(e.target.files[0]);
                                 setBulkDataDisplay(list);
                                 bulkData.push(result.data.data);
-                                setLoading(false);
+                                setUploadLoading(false);
                             }
                             setAlert('success', result.data.message);
                         } else {
-                            setLoading(false);
+                            setUploadLoading(false);
                             setAlert('error', result.data.message);
                         }
                     })
                     .catch((error) => {
-                        setLoading(false);
+                        setUploadLoading(false);
                         // setAlert('error',error.message)
                     });
             } else {
-                setLoading(false);
+                setUploadLoading(false);
                 setAlert(
                     'error',
                     'Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable'
@@ -816,6 +818,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
 
     return (
         <div className='create_group_filter_container'>
+            {uploadLoading ? <Loader /> : ''}
             <div style={{ width: '90%', margin: '0 auto' }} >
                 <div
                     className='th-br-5 p-4 my-2 d-flex'
@@ -1356,6 +1359,11 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                                     </div>
                                                 )}
                                         </>
+                                    )}
+                                    {isQuestionWise && homeworkSubmission.status == 3 && (
+                                           <div className='scoreBox1 w-50 m-5'  >
+                                           Question Wise Remarks : {question?.remark}
+                                       </div>
                                     )}
                                 </div>
                             </>

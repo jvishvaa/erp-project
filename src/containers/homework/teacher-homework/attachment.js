@@ -135,6 +135,7 @@ const Attachment = (props) => {
     );
   } else {
     if (isVideoFile) {
+      console.log(isVideoFile , 'isvideo');
       markup = (
         <>
           <div className='file-card-container'>
@@ -155,7 +156,7 @@ const Attachment = (props) => {
                       </a>
                     </IconButton>
                   )}
-                  {actions?.includes('pentool') && (
+                  {/* {actions?.includes('pentool') && (
                     <IconButton
                       size='small'
                       onClick={() =>
@@ -164,7 +165,7 @@ const Attachment = (props) => {
                     >
                       <CreateIcon style={{ color: '#ffffff' }} />
                     </IconButton>
-                  )}
+                  )} */}
                   {actions?.includes('delete') && (
                     <IconButton
                       size='small'

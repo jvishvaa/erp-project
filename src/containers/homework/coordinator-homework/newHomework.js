@@ -19,7 +19,14 @@ import {
     resetSelectedCoFilters,
     fetchTeacherHomeworkDetailsById
 } from '../../../redux/actions';
-import Attachment from './attachment';
+import {
+    Typography,
+    IconButton,
+    Grid
+} from '@material-ui/core';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import Attachment from 'containers/homework/teacher-homework/attachment';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
@@ -75,6 +82,7 @@ const SubmissionData = withRouter(({
         setIsModalOpen(true);
     };
   const { setAlert } = useContext(AlertNotificationContext);
+  const attachmentsRef = useRef(null);
 
     const handleOk = () => {
         axiosInstance
@@ -317,15 +325,11 @@ const SubmissionData = withRouter(({
         setCollapse(key)
     }
 
-    const handleScroll = (dir, index) => {
-        let cara = document.getElementsByClassName(`attachbox${index}`)
-        let attachArr = cara?.length > 0 ? cara[0] : ''
-        console.log(dir, index, cara, 'dir');
-
+    const handleScroll = (dir) => {
         if (dir === 'left') {
-            attachArr.scrollLeft -= 150;
+            attachmentsRef.current.scrollLeft -= 150;
         } else {
-            attachArr.scrollLeft += 150;
+            attachmentsRef.current.scrollLeft += 150;
         }
     };
 
@@ -414,6 +418,16 @@ const SubmissionData = withRouter(({
         })
     }
 
+
+    const handleScrolleachques = (index, dir) => {
+        const ele = document.getElementById(`homework_student_question_container_${index}`);
+        if (dir === 'left') {
+            ele.scrollLeft -= 150;
+        } else {
+            ele.scrollLeft += 150;
+        }
+    };
+
     return (
         <div className='submissionDrawer' >
             <div className='card w-100 ' style={{ background: '#F0F2F5', borderRadius: '10px' }}>
@@ -480,71 +494,142 @@ const SubmissionData = withRouter(({
                                             <div className='homework-question' style={{ border: '0px' , width: '100%' }} >
                                                 <div className='th-12 th-fw-600 ' style={{ color: '#556778', background: '#F4F9FF', padding: '5px' }}>{question.question}</div>
                                             </div>
-                                            <div className='attachments-container'>
-                                                {question.question_files.length > 0 && (
-                                                    <p style={{ color: '#A0A0A1' }} className='th-12 p-2 m-0'>
-                                                        Attachments
-                                                    </p>
-                                                )}
-                                                <div className='attachments-list-outer-container'  >
-                                                    <div className='prev-btn'>
-                                                        {question.question_files.length > 1 && (
-                                                            <LeftOutlined onClick={() => handleScroll('left', index)} />
-                                                        )}
-                                                    </div>
-                                                    <SimpleReactLightbox>
-                                                        <div
-                                                            className={`attachbox${index} attachments-list`}
-                                                            key={index}
-                                                            onScroll={(e) => {
-                                                                e.preventDefault();
-                                                            }}
-                                                        >
 
-                                                            {question.question_files.map((url, i) => (
-                                                                <>
-                                                                    <div className='attachment'>
-                                                                        <Attachment
-                                                                            key={`homework_student_question_attachment_${i}`}
-                                                                            fileUrl={url}
-                                                                            fileName={`Attachment-${i + 1}`}
-                                                                            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                                                            index={i}
-                                                                            actions={['preview', 'download']}
-                                                                        />
-                                                                    </div>
-                                                                </>
-                                                            ))}
-                                                            <div
-                                                                style={{
-                                                                    position: 'absolute',
-                                                                    width: '0',
-                                                                    height: '0',
-                                                                    visibility: 'hidden',
-                                                                }}
-                                                            >
-                                                                <SRLWrapper>
-                                                                    {question.question_files.map((url, i) => (
+                                            {/* attachment */}
+
+                                            {question?.question_files?.length > 0 && (
+                                <Grid item xs={12} className='attachments-grid'>
+                                    <div className='attachments-list-outer-container'>
+                                        <div className='prev-btn'>
+                                            {question?.question_files?.length > 0 && (
+                                                <IconButton onClick={() => handleScroll('left')}>
+                                                    <ArrowBackIosIcon />
+                                                </IconButton>
+                                            )}
+                                        </div>
+                                        <SimpleReactLightbox>
+                                            <div
+                                                className='attachments-list'
+                                                ref={attachmentsRef}
+                                                onScroll={(e) => {
+                                                    e.preventDefault();
+                                                }}
+                                            >
+                                                {question?.question_files.map((url, pdfindex) => {
+                                                    let cindex = 0;
+                                                    let qfiles = question?.question_files
+                                                    qfiles.forEach((item, index) => {
+                                                        if (index < pdfindex) {
+                                                            if (typeof item == 'string') {
+                                                                cindex = cindex + 1;
+                                                            } else {
+                                                                cindex = Object.keys(item).length + cindex;
+                                                            }
+                                                        }
+                                                    });
+                                                    if (typeof url == 'object') {
+                                                        return Object.values(url).map((item, i) => {
+                                                            let imageIndex = Object.keys(url)[i];
+                                                            return (
+                                                                <div className='attachment' style={{width: '200px' , height: '200px'}} >
+                                                                    <Attachment
+                                                                        key={`homework_student_question_attachment_${i}`}
+                                                                        fileUrl={item}
+                                                                        fileName={`Attachment-${i + 1 + cindex}`}
+                                                                        urlPrefix={
+                                                                            item.includes('/lesson_plan_file/')
+                                                                                ? `${endpoints.homework.resourcesFiles}`
+                                                                                : `${endpoints.discussionForum.s3}/homework`
+                                                                        }
+                                                                        index={i + cindex}
+                                                                        actions={
+                                                                            item.includes('/lesson_plan_file/')
+                                                                                ? ['download']
+                                                                                : ['preview', 'download']
+                                                                        }
+                                                                       
+                                                                        ispdf={
+                                                                            item.includes('/lesson_plan_file/') ? false : true
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                            );
+                                                        });
+                                                    } else
+                                                        return (
+                                                            <div className='attachment' style={{width: '200px' , height: '200px'}} >
+                                                                <Attachment
+                                                                    key={`homework_student_question_attachment_${pdfindex}`}
+                                                                    fileUrl={url}
+                                                                    fileName={`Attachment-${1 + cindex}`}
+                                                                    urlPrefix={
+                                                                        url.includes('/lesson_plan_file/')
+                                                                            ? `${endpoints.homework.resourcesFiles}`
+                                                                            : `${endpoints.discussionForum.s3}/homework`
+                                                                    }
+                                                                    index={cindex}
+                                                                    actions={
+                                                                        url.includes('/lesson_plan_file/') &&
+                                                                            !url.includes('png')
+                                                                            ? ['download']
+                                                                            : ['preview', 'download']
+                                                                    }
+                                                                    ispdf={
+                                                                        url.includes('/lesson_plan_file/') ? false : true
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        );
+                                                })}
+                                                <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                                                    <SRLWrapper>
+                                                        {question?.question_files.map((url, i) => {
+                                                            if (typeof url == 'object') {
+                                                                return Object.values(url).map((item, i) => {
+                                                                    return (
                                                                         <img
-                                                                            src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                                                            src={
+                                                                                item.includes('/lesson_plan_file/')
+                                                                                    ? `${endpoints.homework.resourcesFiles}/${item}`
+                                                                                    : `${endpoints.discussionForum.s3}/homework/${item}`
+                                                                            }
                                                                             onError={(e) => {
                                                                                 e.target.src = placeholder;
                                                                             }}
                                                                             alt={`Attachment-${i + 1}`}
-                                                                            style={{ width: '0', height: '0' }}
                                                                         />
-                                                                    ))}
-                                                                </SRLWrapper>
-                                                            </div>
-                                                        </div>
-                                                    </SimpleReactLightbox>
-                                                    <div className='next-btn'>
-                                                        {question.question_files.length > 1 && (
-                                                            <RightOutlined onClick={() => handleScroll('right', index)} />
-                                                        )}
-                                                    </div>
+                                                                    );
+                                                                });
+                                                            } else
+                                                                return (
+                                                                    <img
+                                                                        src={
+                                                                            url.includes('/lesson_plan_file/')
+                                                                                ? `${endpoints.homework.resourcesFiles}/${url}`
+                                                                                : `${endpoints.discussionForum.s3}/homework/${url}`
+                                                                        }
+                                                                        onError={(e) => {
+                                                                            e.target.src = placeholder;
+                                                                        }}
+                                                                        alt={`Attachment-${i + 1}`}
+                                                                    />
+                                                                );
+                                                        })}
+                                                    </SRLWrapper>
                                                 </div>
                                             </div>
+                                        </SimpleReactLightbox>
+                                        <div className='next-btn'>
+                                            {question?.question_files?.length > 0 && (
+                                                <IconButton onClick={() => handleScroll('right')}>
+                                                    <ArrowForwardIosIcon color='primary' />
+                                                </IconButton>
+                                            )}
+                                        </div>
+                                    </div>
+                                </Grid>
+                            )}
+                                   
                                         </div>
                                     ))}
                                 </div>
