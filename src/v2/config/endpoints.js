@@ -24,6 +24,7 @@ export default {
   },
   userManagement: {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
+    userDesignation: `${baseURLCentral}/central-admin/user_designation/`,
   },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
@@ -255,6 +256,11 @@ export default {
   appVersion: `${baseURLCentral}/central-admin/app-versioning/`,
   schoolDetails: `${baseURLCentral}/central-admin/school_details/`,
 
+  nonAcademicStaff: {
+    roles: '/erp_user/roles/',
+    createStaff: '/erp_user/add_non_acadamic_user/',
+    uploadBulkStaff: '/erp_user/bulk_upload_non_acad/',
+  },
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
