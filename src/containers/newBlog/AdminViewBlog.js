@@ -1,43 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
-import Loader from '../../components/loader/loader';
 
 import {
-  IconButton,
   Divider,
-  TextField,
   Button,
-  makeStyles,
-  Typography,
-  Grid,
-  Breadcrumbs,
-  Paper,
-  TableCell,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableContainer,
-  // Table,
-  TablePagination,
-  InputAdornment,
   DialogActions,
 } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import SearchIcon from '@material-ui/icons/Search';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Layout from 'containers/Layout';
-import Close from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { useTheme } from '@material-ui/core/styles';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import ForumIcon from '@material-ui/icons/Forum';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import CloseIcon from '@material-ui/icons/Close';
 import './styles.scss';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -47,8 +23,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import {
   Breadcrumb,
   Button as ButtonAnt,
-  Form,
-  Select,
   message,
   Tabs,
   Table,
@@ -623,7 +597,6 @@ const AdminViewBlog = () => {
               <ButtonAnt
                 icon={<SketchOutlined />}
                 className='th-600 th-white th-border-white'
-                // style={{ backgroundColor: '#F7B519' }}
                 type='primary'
                 onClick={createPushBlogWall}
               >

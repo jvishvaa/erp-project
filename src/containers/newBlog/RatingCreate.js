@@ -288,7 +288,6 @@ const RatingCreate = () => {
                     icon={<DeleteFilled className='="th-14' />}
                     color={'red'}
                     className='th-br-5 th-pointer py-1'
-                    // onClick={(e) => handleDelete(row)}
                   >
                     Delete
                   </Tag>
@@ -331,8 +330,6 @@ const RatingCreate = () => {
     setIsEditData({ ...isEditData, grading_scheme: newData });
   };
 
-
-
   const [view, setViewed] = useState(false);
   const [branchView, setBranchView] = useState(true);
   const [branchSearch, setBranchSearch] = useState(true);
@@ -344,11 +341,8 @@ const RatingCreate = () => {
     setOptionList([{ name: '', score: null, status: false }]);
   };
 
-
-
   const [data, setData] = useState('');
   const [assigned, setAssigned] = useState(false);
-
 
   const [assingeds, setAssigneds] = useState([]);
   const getAssinged = () => {
@@ -450,7 +444,6 @@ const RatingCreate = () => {
           setActivityType(null);
           setFilterData([]);
           getActivityCategory();
-          // handleActivity(isEditData?.name)
           handleModalCloseEdit();
           return;
         }
@@ -482,7 +475,6 @@ const RatingCreate = () => {
   useEffect(() => {
     getActivityCategory();
   }, []);
-
 
   const handleInputCreativity = (event, index) => {
     const { value } = event.target;
@@ -610,7 +602,6 @@ const RatingCreate = () => {
     }
   }, [isEditData]);
 
-
   const handleVisualInputApp = () => {
     setVisualInputList([
       ...visualInputlList,
@@ -629,12 +620,6 @@ const RatingCreate = () => {
     });
     setIsEditData({ ...isEditData, grading_scheme: newData });
   };
-
-
-
-
-
-
 
   const mainActivityOption = activityCategory?.result?.map((each) => {
     return (
@@ -659,7 +644,6 @@ const RatingCreate = () => {
       </Option>
     );
   });
-
 
   const handleOptionInputAdd = () => {
     setOptionList([
@@ -787,7 +771,6 @@ const RatingCreate = () => {
       })
       .then((res) => {
         if (res.data.status_code == 400 || res?.data?.status_code == 422) {
-          // message.error(res.data.message);
           message.error({
             content: res.data.message,
             style: {
@@ -817,7 +800,6 @@ const RatingCreate = () => {
         setLoading(false);
       });
   };
-
 
   const handleOptionDelete = (id) => {
     let newOptionList = [...optionList];
@@ -862,7 +844,6 @@ const RatingCreate = () => {
     newFileList.splice(index, 1);
     setIsEditData({ ...isEditData, grading_scheme: newFileList });
   };
-
 
   const handleActivityChange = (event, value) => {
     setActivityType(value);
@@ -910,7 +891,6 @@ const RatingCreate = () => {
         .then((response) => {
           if (response?.data?.status_code) {
             message.success(response?.data?.message);
-            // handleActivity(data?.name);
             setActivityType(null);
             setFilterData([]);
             getActivityCategory();
@@ -955,9 +935,6 @@ const RatingCreate = () => {
             <Breadcrumb.Item className='th-grey th-16'>Create rating</Breadcrumb.Item>
           </Breadcrumb>
         </div>
-
-        {/* //body - */}
-
         <div className='row th-bg-white th-br-5 m-3 h-50'>
           {loading ? (
             <div
@@ -967,10 +944,9 @@ const RatingCreate = () => {
               <Spin tip='Loading' />
             </div>
           ) : (
-            <div className='row p-3' style={{ height: '70vh', overflowY: 'auto' }}>
+            <div className='row p-3'>
               <div className='col-12 d-flex' style={{ height: '6%' }}>
                 <div className='col-md-3 mb-sm-0 p-0'>
-                  {/* <Form.Item name='activity type'> */}
                   <div className='py-1'>Select Activity Type</div>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -986,13 +962,11 @@ const RatingCreate = () => {
                     onChange={(e) => {
                       handleActivity(e);
                     }}
-                    // onClear={handleClearActivityType}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={true}
                   >
                     {mainActivityOption}
                   </Select>
-                  {/* </Form.Item> */}
                 </div>
 
                 <div className='d-flex align-item-center justify-content-end col-md-9 mb-sm-0 p-0'>
@@ -1018,7 +992,7 @@ const RatingCreate = () => {
                   </div>
                 </div>
               </div>
-              <div className='row mt-5' style={{ height: '55vh', overflowY: 'auto' }}>
+              <div className='row mt-5'>
                 <div className='col-md-12'>
                   <>
                     {filterData?.length !== 0 ? (
@@ -1028,7 +1002,7 @@ const RatingCreate = () => {
                           `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                         }
                         pagination={false}
-                        scroll={{ y: 600 }}
+                        scroll={{ y: '50vh' }}
                         loading={loading}
                         columns={columns}
                         dataSource={filterData}
@@ -1144,7 +1118,6 @@ const RatingCreate = () => {
                         orientationMargin='0'
                         plain
                         style={{ alignItems: 'flex-start' }}
-                        // setIsEdit(false);
                       >
                         Add Questions
                       </AntDivider>
@@ -1345,7 +1318,6 @@ const RatingCreate = () => {
                                 )}
                                 <div className='col-2 d-flex align-items-center'>
                                   <DeleteFilled
-                                    // onClick={() => handleRemoveVisualQuestion(input, index)}
                                     onClick={() => handleRemoveItem(index)}
                                     style={{
                                       cursor: 'pointer',
