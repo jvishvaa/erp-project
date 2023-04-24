@@ -53,12 +53,15 @@ const VisualActivityCreate = () => {
   const [grades, setGrades] = useState([]);
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedBranchName, setSelectedBranchName] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
+  const [selectedGradeName, setSelectedGradeName] = useState([]);
   const [selectedRound, setSelectedRound] = useState([]);
   const [selectedRoundID, setSelectedRoundID] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
+  const [selectedSectionName, setSelectedSectionName] = useState([]);
   const [desc, setDesc] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
@@ -221,15 +224,17 @@ const VisualActivityCreate = () => {
   useEffect(() => {
     fetchBranches();
   }, []);
-  const handleBranch = (value) => {
+  const handleBranch = (value, event) => {
     if (value) {
       setSelectedBranch([]);
       setSelectedGrade([]);
       setSelectedSection([]);
       const all = branchList.slice();
       const allBranchIds = all.map((item) => item.id);
+      const allBranchName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedBranch(allBranchIds);
+        setSelectedBranchName(allBranchName);
         formRef.current.setFieldsValue({
           branch: allBranchIds,
           grade: [],
@@ -239,6 +244,7 @@ const VisualActivityCreate = () => {
         fetchGradesFun(selectedAcademicYear?.id, allBranchIds);
       } else {
         setSelectedBranch(value);
+        setSelectedBranchName(event);
         formRef.current.setFieldsValue({
           branch: value,
           grade: [],
@@ -251,7 +257,7 @@ const VisualActivityCreate = () => {
     getTemplate(activityName.id);
   };
 
-  const handleGrade = (value) => {
+  const handleGrade = (value, event) => {
     setSelectedGrade([]);
     setSelectedSection([]);
     if (value) {
@@ -259,8 +265,10 @@ const VisualActivityCreate = () => {
       setSelectedSection([]);
       const all = gradeList.slice();
       const allGradeId = all.map((item) => item.id);
+      const allGradeName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedGrade(allGradeId);
+        setSelectedGradeName(allGradeName);
         formRef.current.setFieldsValue({
           grade: allGradeId,
           section: [],
@@ -268,7 +276,9 @@ const VisualActivityCreate = () => {
         });
         fetchSectionsFun(selectedAcademicYear?.id, selectedBranch, allGradeId, moduleId);
       } else {
+        // const gradeName = value.map((item) => item?.name)
         setSelectedGrade(value);
+        setSelectedGradeName(event);
         fetchSectionsFun(selectedAcademicYear?.id, selectedBranch, value, moduleId);
         formRef.current.setFieldsValue({
           grade: value,
@@ -278,19 +288,22 @@ const VisualActivityCreate = () => {
       }
     }
   };
-  const handleSection = (value) => {
+  const handleSection = (value, event) => {
     setSelectedSection([]);
     if (value) {
       setSelectedSection([]);
       const all = sectionDropdown.slice();
       const allSectionId = all.map((item) => item?.id);
+      const allSectionName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedSection(allSectionId);
+        setSelectedSectionName(allSectionName);
         formRef.current.setFieldsValue({
           section: allSectionId,
         });
       } else {
         setSelectedSection(value);
+        setSelectedSectionName(event);
         formRef.current.setFieldsValue({
           section: value,
         });
@@ -304,11 +317,11 @@ const VisualActivityCreate = () => {
       date: val,
     });
   };
-  let branchIdss = selectedBranch.map((obj) => obj?.name).join(', ');
+  let branchIdss = selectedBranchName.map((obj) => obj?.branch_name).join(', ');
   let branchname = [...branchIdss];
-  let gradeIdss = selectedGrade.map((obj) => obj?.name).join(', ');
+  let gradeIdss = selectedGradeName.map((obj) => obj?.name).join(', ');
   let gradename = [...gradeIdss];
-  let sectionIdss = selectedSection.map((obj) => obj?.name).join(', ');
+  let sectionIdss = selectedSectionName.map((obj) => obj?.name).join(', ');
   let sectionname = [...sectionIdss];
 
   const PreviewBlog = () => {
@@ -503,12 +516,7 @@ const VisualActivityCreate = () => {
 
   const branchOption = branchList.map((each) => {
     return (
-      <Option
-        key={each?.id}
-        value={each?.id}
-        id={each?.id}
-        branch_name={each?.branch_name}
-      >
+      <Option key={each?.id} value={each?.id} id={each?.id} branch_name={each?.branch_name}>
         {each?.branch_name}
       </Option>
     );
@@ -619,8 +627,8 @@ const VisualActivityCreate = () => {
                             0
                           );
                         }}
-                        onChange={(value) => {
-                          handleBranch(value);
+                        onChange={(value, e) => {
+                          handleBranch(value, e);
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={true}
@@ -657,8 +665,8 @@ const VisualActivityCreate = () => {
                             0
                           );
                         }}
-                        onChange={(value) => {
-                          handleGrade(value);
+                        onChange={(value, e) => {
+                          handleGrade(value, e);
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={true}
@@ -695,8 +703,8 @@ const VisualActivityCreate = () => {
                             0
                           );
                         }}
-                        onChange={(value) => {
-                          handleSection(value);
+                        onChange={(value, e) => {
+                          handleSection(value, e);
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={true}

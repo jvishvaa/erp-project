@@ -144,15 +144,18 @@ const AdminCreateBlog = () => {
   const [mobileViewFlag, setMobileViewFlag] = useState(window.innerWidth < 700);
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedBranchName, setSelectedBranchName] = useState([]);
   const [selectedBranchIds, setSelectedBranchIds] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
+  const [selectedGradeName, setSelectedGradeName] = useState([]);
   const [selectedRound, setSelectedRound] = useState([]);
   const [selectedRoundID, setSelectedRoundID] = useState('');
   const [gradeIds, setGradeIds] = useState('');
   const [sectionId, setSectionId] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
+  const [selectedSectionName, setSelectedSectionName] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState('');
   const [desc, setDesc] = useState('');
   const [startDate, setStartDate] = useState(null);
@@ -346,26 +349,28 @@ const AdminCreateBlog = () => {
     fetchBranches();
   }, []);
 
-  const handleBranch = (value) => {
+  const handleBranch = (value, event) => {
     setSelectedSection([]);
     setSelectedGrade([]);
     setGradeList([]);
-    setSectionList([])
-    setSelectedSection([])
-    setSelectedBranch([])
+    setSectionList([]);
+    setSelectedSection([]);
+    setSelectedBranch([]);
     setGrades([]);
     formRef.current.setFieldsValue({
-      // branch:[], 
-      grade:[],
-      section:[]
-    })
+      // branch:[],
+      grade: [],
+      section: [],
+    });
     if (value?.length > 0) {
       setSelectedGrade([]);
       setSelectedSection([]);
       const all = branchDropdown.slice();
       const allBranchIds = all.map((item) => parseInt(item?.id));
+      const allBranchNames = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedBranch(allBranchIds);
+        setSelectedBranchName(allBranchNames);
         formRef.current.setFieldsValue({
           branch: allBranchIds,
           grade: [],
@@ -375,6 +380,7 @@ const AdminCreateBlog = () => {
         getGrades(selectedAcademicYear?.id, allBranchIds);
       } else {
         setSelectedBranch(value);
+        setSelectedBranchName(event);
         formRef.current.setFieldsValue({
           branch: value,
           grade: [],
@@ -387,20 +393,22 @@ const AdminCreateBlog = () => {
     getTemplate(activityName?.id);
   };
 
-  const handleGrade = (value) => {
+  const handleGrade = (value, event) => {
     setSelectedGrade([]);
     setSelectedSection([]);
     setSectionList([]);
 
     formRef.current.setFieldsValue({
-      section:[],
-    })
+      section: [],
+    });
     if (value) {
       setSelectedSection([]);
       const all = grades.slice();
       const allGradeIds = all.map((item) => parseInt(item?.grade_id));
+      const allGradeName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedGrade(allGradeIds);
+        setSelectedGradeName(allGradeName);
         formRef.current.setFieldsValue({
           grade: allGradeIds,
           section: [],
@@ -409,17 +417,20 @@ const AdminCreateBlog = () => {
         fetchSections(selectedAcademicYear?.id, selectedBranch, allGradeIds, moduleId);
       } else {
         setSelectedGrade(value);
+        setSelectedGradeName(event);
         fetchSections(selectedAcademicYear?.id, selectedBranch, value, moduleId);
       }
     }
   };
-  const handleSection = (value) => {
+  const handleSection = (value, event) => {
     setSelectedSection([]);
     if (value) {
       const all = sectionList.slice();
       const allSectionIds = all.map((item) => parseInt(item.section_id));
+      const allSectionName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedSection(allSectionIds);
+        setSelectedSectionName(allSectionName)
         formRef.current.setFieldsValue({
           section: allSectionIds,
           date: null,
@@ -430,6 +441,7 @@ const AdminCreateBlog = () => {
           date: null,
         });
         setSelectedSection(value);
+        setSelectedSectionName(event)
       }
     }
   };
@@ -818,12 +830,7 @@ const AdminCreateBlog = () => {
 
   const branchOptions = branchDropdown?.map((each) => {
     return (
-      <Option
-        key={each?.id}
-        value={each?.id}
-        id={each?.id}
-        branch_name={each?.branch_name}
-      >
+      <Option key={each?.id} value={each?.id} id={each?.id} branch_name={each?.branch_name}>
         {each?.branch_name}
       </Option>
     );
@@ -837,7 +844,7 @@ const AdminCreateBlog = () => {
         key={each?.grade_id}
         value={each?.grade_id}
         id={each?.grade_id}
-        name={each?.grade__grade_name}
+        grade__grade_name={each?.grade__grade_name}
       >
         {each?.grade__grade_name}
       </Option>
@@ -845,7 +852,12 @@ const AdminCreateBlog = () => {
   });
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.section_id} value={each?.section_id} id={each?.section_id}>
+      <Option
+        key={each?.section_id}
+        value={each?.section_id}
+        id={each?.section_id}
+        section__section_name={each?.section__section_name}
+      >
         {each?.section__section_name}
       </Option>
     );
@@ -999,8 +1011,8 @@ const AdminCreateBlog = () => {
                                   .indexOf(input.toLowerCase()) >= 0
                               );
                             }}
-                            onChange={(value) => {
-                              handleBranch(value);
+                            onChange={(value, e) => {
+                              handleBranch(value, e);
                             }}
                             className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                             bordered={true}
@@ -1036,8 +1048,8 @@ const AdminCreateBlog = () => {
                                   .indexOf(input.toLowerCase()) >= 0
                               );
                             }}
-                            onChange={(value) => {
-                              handleGrade(value);
+                            onChange={(value, e) => {
+                              handleGrade(value, e);
                             }}
                             onClear={handleClearGrade}
                             className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1071,8 +1083,8 @@ const AdminCreateBlog = () => {
                                   .indexOf(input.toLowerCase()) >= 0
                               );
                             }}
-                            onChange={(value) => {
-                              handleSection(value);
+                            onChange={(value, e) => {
+                              handleSection(value, e);
                             }}
                             className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                             bordered={true}
@@ -1281,9 +1293,9 @@ const AdminCreateBlog = () => {
                 <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
                   Branch -&nbsp;
                   <span style={{ color: 'black' }}>
-                    {selectedBranch.map((each) => (
+                    {selectedBranchName.map((each) => (
                       <b style={{ padding: '4px', fontWeight: '500' }}>
-                        {each?.children}
+                        {each?.branch_name}
                       </b>
                     ))}
                   </span>
@@ -1291,9 +1303,9 @@ const AdminCreateBlog = () => {
                 <div style={{ fontSize: '10px', color: 'gray' }}>
                   Grade -&nbsp;
                   <span style={{ color: 'black' }}>
-                    {selectedGrade.map((each) => (
+                    {selectedGradeName.map((each) => (
                       <b style={{ padding: '4px', fontWeight: '500' }}>
-                        {each?.children}
+                        {each?.grade__grade_name}
                       </b>
                     ))}
                   </span>
@@ -1301,9 +1313,9 @@ const AdminCreateBlog = () => {
                 <div style={{ fontSize: '10px', color: 'gray' }}>
                   Section -&nbsp;
                   <span style={{ color: 'black' }}>
-                    {selectedSection.map((each) => (
+                    {selectedSectionName.map((each) => (
                       <b style={{ padding: '4px', fontWeight: '500' }}>
-                        {each?.children}
+                        {each?.section__section_name}
                       </b>
                     ))}
                   </span>
