@@ -16,7 +16,10 @@ const StudentSidePublicSpeaking = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
   const [mediaFiles, setMediaFiles] = useState(null);
-
+  const [totalCountAssigned, setTotalCountAssigned] = useState(0);
+  const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
+  const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
+  const [limitAssigned, setLimitAssigned] = useState(10);
   const handleCloseDrawer = () => {
     setShowDrawer(false);
     setSelectedActivity(null);
@@ -34,6 +37,11 @@ const StudentSidePublicSpeaking = () => {
       .then((response) => {
         console.log('response', response);
         if (response?.data?.status_code === 200) {
+          setTotalCountAssigned(response?.data?.total);
+          setTotalPagesAssigned(response?.data?.page_size);
+          setCurrentPageAssigned(response?.data?.page);
+          setLimitAssigned(Number(limitAssigned));
+
           setPublicSpeakingList(response?.data?.result);
         }
         setLoading(false);
@@ -47,6 +55,8 @@ const StudentSidePublicSpeaking = () => {
   useEffect(() => {
     fetchPublicSpeakingList({
       user_id: userIdLocal?.id,
+      // page: currentPageAssigned,
+      // page_size: limitAssigned
     });
   }, []);
   const handleShowReview = (data) => {
@@ -130,6 +140,10 @@ const StudentSidePublicSpeaking = () => {
     },
   ];
 
+  const handlePaginationAssign = (page) => {
+    setCurrentPageAssigned(page);
+  };
+
   return (
     <div>
       <Layout>
@@ -161,6 +175,15 @@ const StudentSidePublicSpeaking = () => {
                   }
                   loading={loading}
                   pagination={false}
+                  // pagination={{
+                  //   total: totalCountAssigned,
+                  //   current: Number(currentPageAssigned),
+                  //   pageSize: limitAssigned,
+                  //   showSizeChanger: false,
+                  //   onChange: (e) => {
+                  //     handlePaginationAssign(e);
+                  //   },
+                  // }}
                   scroll={{
                     x: window.innerWidth > 600 ? '100%' : 'max-content',
                     // y: 600,

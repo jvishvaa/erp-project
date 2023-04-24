@@ -336,8 +336,7 @@ const CurriculumCompletionSubjectStudent = (props) => {
                                 Dashboard
                             </Breadcrumb.Item>
                             <Breadcrumb.Item
-                                onClick={() => history.goBack()}
-                                className='th-grey th-pointer'
+                                className='th-grey '
                             >
                                 Curriculum Completion
                             </Breadcrumb.Item>

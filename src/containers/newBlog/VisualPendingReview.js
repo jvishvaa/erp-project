@@ -3,6 +3,7 @@ import endpoints from '../../config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import {
   Button as ButtonAnt,
@@ -14,6 +15,8 @@ import {
   Drawer,
   Space,
   message,
+  Upload,
+  Button,
 } from 'antd';
 import {
   MonitorOutlined,
@@ -21,6 +24,7 @@ import {
   UserOutlined,
   DownOutlined,
   CheckOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -103,9 +107,37 @@ const VisualPendingReview = (props) => {
     setView(false);
   };
 
+  const [values, setValues] = useState();
   const [loading, setLoading] = useState(false);
   const [publish, setPublish] = useState(false);
   const [submit, setSubmit] = useState(false);
+
+  const allowedFiles = ['.jpeg', '.jpg', '.png', '.mp4'];
+
+  const uploadProps = {
+    showUploadList: false,
+    disabled: false,
+    accept: allowedFiles.join(),
+    multiple: false,
+    onRemove: () => {
+      setFile(null);
+    },
+    beforeUpload: (...file) => {
+      setFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      if (file[0]?.size > 31457280) {
+        message.error('Selected file size should be less than 30MB');
+        return false;
+      }
+      if (allowedFiles.includes(type)) {
+        setFile(...file[1]);
+      } else {
+        message.error(' Please select the correct file type');
+      }
+      return false;
+    },
+    file,
+  };
   const submitReview = () => {
     let body = [];
     let checkSelected = ratingReview.every((item) => item.checked);
@@ -114,7 +146,7 @@ const VisualPendingReview = (props) => {
       return;
     } else {
       ratingReview.forEach((item) => {
-        let record = { ...item, booking_id: bookingID };
+        let record = { ...item };
         delete record.checked;
         body.push(record);
       });
@@ -127,17 +159,24 @@ const VisualPendingReview = (props) => {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
-      .then(() => {
-        uploadFile();
+      .then((res) => {
+        if (file) {
+          uploadFile();
+        }
         setView(false);
         setLoading(false);
-        setBookingID(null);
+        setRatingReview([]);
+        // console.log(fileRef.current,'kl1')
+        // console.log(file,'kl2 ')
+        fileRef.current.value = '';
+        // fileRef.current.input.value = ""
+        setFile(null);
         erpAPI();
         message.success('Review Submitted Successfully');
+        return;
       })
       .catch(() => {
         setLoading(false);
-        setBookingID(null);
       });
   };
 
@@ -181,7 +220,7 @@ const VisualPendingReview = (props) => {
         setSourceData(response?.data?.result);
         ActivityManagement(response?.data?.result);
         // props.setFlag(false);
-        // message.success(response?.data?.message);
+        message.success(response?.data?.message);
         setLoading(false);
       })
       .catch(() => {
@@ -336,12 +375,10 @@ const VisualPendingReview = (props) => {
   const handleFileChange = (event) => {
     const { files } = event.target;
     const fil = files[0] || '';
-    console.log('File', fil);
     if (
       fil.name.lastIndexOf('.mp4') > 0 ||
       fil.name.lastIndexOf('.jpeg') > 0 ||
-      fil.name.lastIndexOf('.jpg') > 0 ||
-      fil.name.lastIndexOf('.png') > 0
+      fil.name.lastIndexOf('.jpg') > 0
     ) {
       setFile(fil);
       return;
@@ -366,10 +403,17 @@ const VisualPendingReview = (props) => {
             'X-DTS-HOST': X_DTS_HOST,
           },
         })
-        .then((res) => {})
-        .catch((err) => {});
+        .then((res) => {
+          if(res.data.status_code === 200){
+            message.success(res.data.message)
+            setFile(null);
+          }   
+        })
+        .catch((err) => {
+          setFile(null);
+        });
     } else {
-      // message.error('Please Upload File');
+      message.error('Please Upload File');
       setLoading(false);
       return;
     }
@@ -394,6 +438,19 @@ const VisualPendingReview = (props) => {
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.erp_id}</span>,
     },
+    // {
+    //   title: <span className='th-white th-fw-700'>Attendance</span>,
+    //   align: 'center',
+    //   render: (text, row) => (
+    //     <span className='th-black-1'>
+    //       {row?.attendence_status === null ? (
+    //         <Tag color='red'>Absent</Tag>
+    //       ) : (
+    //         <Tag color='green'>Present</Tag>
+    //       )}
+    //     </span>
+    //   ),
+    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -512,7 +569,7 @@ const VisualPendingReview = (props) => {
                               >
                                 {obj?.remarks?.map((each) => {
                                   return (
-                                    <Option value={each?.score} key={each?.score}>
+                                    <Option value={each?.name} key={each?.score}>
                                       {each?.name}
                                     </Option>
                                   );
@@ -522,7 +579,7 @@ const VisualPendingReview = (props) => {
                           </div>
                         );
                       })}
-                      <div className='col-12 py-2'>
+                      {/* <div className='col-12 py-2'>
                         <div className='th-12 px-0 py-1 th-grey'>
                           Upload .jpeg,.png,.mp4 file only
                         </div>
@@ -533,6 +590,38 @@ const VisualPendingReview = (props) => {
                           inputProps={{ accept: '.mp4,.jpeg,.png' }}
                           onChange={handleFileChange}
                         />
+                      </div> */}
+                      <div className='row align-items-center'>
+                        <div className='col-md-4 py-2 th-16'>
+                          <Upload {...uploadProps} className='w-75'>
+                            <Button icon={<UploadOutlined />}>
+                              {file ? 'Change' : 'Upload'} File
+                            </Button>
+                          </Upload>
+                        </div>
+                        <div className='col-md-8 py-2 th-10'>
+                          {!file ? (
+                            'Upload .jpeg,.png,.mp4 file only'
+                          ) : (
+                            <div className='th-14'>
+                              <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                                <div
+                                  className='th-12 th-black-1 text-truncate th-width-90'
+                                  title={file?.name}
+                                >
+                                  {file?.name}
+                                </div>
+
+                                <div className='th-pointer ml-2'>
+                                  <img
+                                    src={smallCloseIcon}
+                                    onClick={() => setFile(null)}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div
                         style={{

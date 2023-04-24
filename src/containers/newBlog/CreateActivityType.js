@@ -260,7 +260,7 @@ const CreateActivityType = () => {
   const getActivityCategory = () => {
     setLoading(true);
     axios
-      .get(`${endpoints.newBlog.getActivityType}`, {
+      .get(`${endpoints.newBlog.getActivityType}?is_type=${true}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },

@@ -18,6 +18,8 @@ import moment from 'moment';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { Drawer } from 'antd';
+import ReactHtmlParser from 'react-html-parser';
+
 
 const QuestionBankCard = ({
   period,
@@ -228,6 +230,7 @@ const QuestionBankCard = ({
           ? { margin: '0rem auto' }
           : {
               margin: '0rem auto -1.1rem auto',
+              height: 250,
               // background: period?.question_status === '2' ? '#FCEEEE ' : '',
               // border: period?.question_status === '2' ? '1px solid red ' : '',
             }
@@ -353,7 +356,7 @@ const QuestionBankCard = ({
             </Box>
           </Grid>
         )}
-        <Grid item xs={12} sm={12} >
+        <Grid item xs={12} sm={12} className='bank-card'>
         {period.question_type === 7 ? (
               <Typography
                 className={classes.content}
@@ -363,6 +366,7 @@ const QuestionBankCard = ({
                 noWrap
               >
                 {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
+                {/* {extractContent(questionName[0]?.question).length > 70 ? ReactHtmlParser(questionName[0]?.question).substring(0,70) + '...' : ReactHtmlParser(questionName[0]?.question)} */}
               </Typography>
           ) : (
               <Typography
@@ -372,7 +376,8 @@ const QuestionBankCard = ({
                 color='secondary'
                 noWrap
               >
-                Question4: {extractContentOption(questionName[0]?.question).length > 70 ? extractContentOption(questionName[0]?.question).substring(0,70) + '...' : extractContentOption(questionName[0]?.question)}
+                {/* Question: {extractContentOption(questionName[0]?.question).length > 70 ? ReactHtmlParser(questionName[0]?.question).substring(0,70) + '...' : ReactHtmlParser(questionName[0]?.question)} */}
+                Question: {ReactHtmlParser(questionName[0]?.question)}
               </Typography>
           )}
         </Grid>
