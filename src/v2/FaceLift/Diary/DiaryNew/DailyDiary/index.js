@@ -130,7 +130,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [todaysAssessment, setTodaysAssessment] = useState([]);
   const [upcomingAssessment, setUpcomingAssessment] = useState([]);
   const [activityData, setActivityData] = useState([]);
-
+  const [requestSent, setRequestSent] = useState(false);
   const questionModify = (questions) => {
     let arr = [];
     questions.map((question) => {
@@ -327,6 +327,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     if (hwMappingID && homeworkMapped) {
       payload['hw_dairy_mapping_id'] = hwMappingID;
     }
+    setRequestSent(true);
     axios
       .put(
         `${endpoints?.dailyDiary?.updateDelete}${diaryID}/update-delete-dairy/`,
@@ -335,11 +336,13 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           message.success('Daily Diary Updated Successfully');
+          setRequestSent(false);
           history.push('/diary/teacher');
         }
       })
       .catch((error) => {
         message.error('Something went wrong');
+        setRequestSent(false);
       });
   };
   const handleSubmit = () => {
@@ -360,6 +363,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
     setLoading(true);
+    setRequestSent(true);
     let payload = {
       academic_year: acadID,
       branch: branchID,
@@ -410,12 +414,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
             } else {
               message.error('Daily Diary Already Exists');
             }
-            setLoading(false);
           }
         })
         .catch((error) => {
           setLoading(false);
           message.error(error?.message);
+        })
+        .finally(() => {
+          setRequestSent(false);
+          setLoading(false);
         });
     } else {
       message.error("Please enter either of Today's Topic, Homework or Notes");
@@ -1900,6 +1907,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     <Button
                       className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
                       onClick={isDiaryEdit ? handleEdit : handleSubmit}
+                      loading={requestSent}
                     >
                       {isDiaryEdit ? 'Update' : 'Submit'}
                     </Button>
