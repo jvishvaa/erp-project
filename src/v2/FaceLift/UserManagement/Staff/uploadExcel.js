@@ -1,22 +1,28 @@
 import { FileExcelTwoTone, UploadOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Select, Upload } from 'antd';
+import { Button, Card, Form, Select, Upload, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchBranchesForCreateUser } from 'redux/actions';
+import axiosInstance from 'v2/config/axios';
+import endpoints from 'v2/config/endpoints';
+import { useHistory } from 'react-router-dom';
 
 const UploadExcel = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState();
+  const [selectedBranchCode, setSelectedBranchCode] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const { Option } = Select;
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileTypeError, setFileTypeError] = useState(null);
+  const [requestSent, setRequestSent] = useState(false);
+  const [acadId, setAcadId] = useState('');
 
   const formRef = useRef();
 
-  console.log({ selectedYear });
+  const history = useHistory();
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -48,14 +54,8 @@ const UploadExcel = () => {
           id: obj.id,
           branch_name: obj.branch_name,
           branch_code: obj.branch_code,
+          acadId: obj.acadId,
         }));
-        // if (transformedData?.length > 1) {
-        //   transformedData.unshift({
-        //     id: 'all',
-        //     branch_name: 'Select All',
-        //     branch_code: 'all',
-        //   });
-        // }
         setBranches(transformedData);
       });
     }
@@ -63,7 +63,12 @@ const UploadExcel = () => {
 
   const branchListOptions = branches?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option
+        key={each?.id}
+        value={each.id}
+        branch_code={each?.branch_code}
+        acadId={each?.acadId}
+      >
         {each?.branch_name}
       </Option>
     );
@@ -83,7 +88,7 @@ const UploadExcel = () => {
       const file = e.dataTransfer.files;
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      console.log({ type }, { file });
+      // console.log({ type }, { file });
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file);
         setFileTypeError(false);
@@ -96,7 +101,7 @@ const UploadExcel = () => {
     beforeUpload: (...file) => {
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      console.log({ type }, { file });
+      // console.log({ type }, { file });
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file[1]);
         setFileTypeError(false);
@@ -109,22 +114,92 @@ const UploadExcel = () => {
     selectedFile,
   };
 
-  const handleBranch = (e) => {
-    setSelectedBranch(e.join(','));
-  }
+  const handleBranch = (e, data) => {
+    setSelectedBranch(e);
+    setSelectedBranchCode(data?.branch_code);
+    setAcadId(data?.acadId);
+  };
 
   const clearAll = () => {
-    setSelectedFile(null)
-    setSelectedBranch()
-    formRef.current.resetFields()
-  }
+    setSelectedFile(null);
+    setSelectedBranch();
+    setSelectedBranchCode('');
+    formRef.current.resetFields();
+  };
 
-  console.log({selectedBranch});
+  const handleFileUpload = () => {
+    if (selectedBranch === '' || selectedBranch === undefined) {
+      message.error('Please Select Branch');
+      return;
+    }
+    setRequestSent(true);
+    const formData = new FormData();
+    formData.append('branch', selectedBranch);
+    formData.append('branch_code', selectedBranchCode);
+    formData.append('academic_year_value', selectedYear?.session_year);
+    formData.append('academic_year', acadId);
+    formData.append('file', selectedFile);
+
+    axiosInstance
+      .post(`${endpoints.nonAcademicStaff.uploadBulkStaff}`, formData)
+      .then((res) => {
+        if (res.status === 200) {
+          message.success(res?.data?.message);
+          history.push('/user-management/non-academic-staff');
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        // console.log('error');
+      })
+      .finally(() => {
+        setRequestSent(false);
+      });
+  };
+
+  const guidelines = [
+    {
+      name: '',
+      field: "Please don't remove or manipulate any header in the file format",
+    },
+    { name: 'user_first_name', field: ' is a required field, Example: Vikash' },
+    { name: 'user_middle_name', field: ' is a non-required field, Example: Kumar' },
+    { name: 'user_last_name', field: ' is a required field, Example: Singh' },
+    {
+      name: 'date_of_birth',
+      field: ' is a mandatory field with following format (YYYY-MM-DD)',
+    },
+    { name: 'contact', field: ' is a mandatory field, Example: 996565xxxx' },
+    { name: 'email', field: ' is a mandatory field, Example: john.doe@gmail.com' },
+    { name: 'address', field: ' is a mandatory field, Example: Next to Brookfield Mall' },
+    {
+      name: 'gender',
+      field:
+        ' is a mandatory field in which ID has to be passed for Male, Female and Others as 0, 1, 2 respectively',
+    },
+    {
+      name: 'designation',
+      field: ' is a required field, Example: 1',
+    },
+    {
+      name: 'user_level',
+      field: 'is a required field, Example: 15',
+    },
+    {
+      name: 'role',
+      field: 'is a required field, Example: 207',
+    },
+    // {
+    //   name: 'How to use Suggestions ?',
+    //   field:
+    //     " From the following dropdowns select grade & section and use the respective Id's for user creation",
+    // },
+  ];
 
   return (
     <>
       <Form ref={formRef} id='excelUploadForm' layout={'vertical'}>
-        <div className='row'>
+        <div className='row mt-3'>
           <div className='col-md-4 col-sm-6 col-12'>
             <Form.Item
               name='branch'
@@ -132,7 +207,6 @@ const UploadExcel = () => {
               rules={[{ required: true, message: 'Please select Branch' }]}
             >
               <Select
-                mode='multiple'
                 allowClear={true}
                 className='th-grey th-bg-white  w-100 text-left'
                 placement='bottomRight'
@@ -165,7 +239,7 @@ const UploadExcel = () => {
                 Download format :
                 <a
                   style={{ cursor: 'pointer' }}
-                  href='/assets/download-format/erp_user.xlsx'
+                  href='/assets/download-format/bulk_user_upload_tesing.xlsx'
                   download='format.xlsx'
                 >
                   Download format
@@ -176,12 +250,21 @@ const UploadExcel = () => {
         </div>
 
         <div className='row'>
-            <div className='col-md-2 col-sm-4'>
-                <Button type='secondary' className='btn btn-block' onClick={clearAll}>Clear All</Button>
-            </div>
-            <div className='col-md-2 col-sm-4'>
-                <Button type='primary' className='btn btn-block btn-primary'>Upload</Button>
-            </div>
+          <div className='col-md-2 col-sm-4'>
+            <Button type='secondary' className='btn btn-block' onClick={clearAll}>
+              Clear All
+            </Button>
+          </div>
+          <div className='col-md-2 col-sm-4'>
+            <Button
+              type='primary'
+              className='btn btn-block btn-primary'
+              onClick={handleFileUpload}
+              disabled={requestSent}
+            >
+              Upload
+            </Button>
+          </div>
         </div>
       </Form>
 
@@ -192,41 +275,13 @@ const UploadExcel = () => {
 
           <Card bordered={false} style={{ width: '100%' }} className='pl-3 th-br-8'>
             <ol>
-              <li className='mt-2'>
-                Please don't remove or manipulate any header in the file format
-              </li>
-              <li className='mt-2'>
-                <b className='text-primary'>user_first_name</b> is a required field,
-                Example: Vikash
-              </li>
-              <li className='mt-2'>
-                <b className='text-primary'>user_middle_name</b> is a required field,
-                Example: Kumar
-              </li>
-              <li className='mt-2'>
-                <b className='text-primary'>user_last_name</b> is a required field,
-                Example: Singh
-              </li>
-              <li className='mt-2'>
-                <b className='text-primary'>date_of_birth</b> is a mandatory field with
-                following format (YYYY-MM-DD)
-              </li>
-              <li className='mt-2'>
-                <b className='text-primary'>contact</b> is a mandatory field, Example:
-                996565xxxx
-              </li>
-              <li className='mt-2'>
-                <b className='text-primary'>email</b> is a mandatory field, Example:
-                john.doe@gmail.com
-              </li>
-              <li className='mt-2'>
-                <b className='text-primary'>address</b> is a mandatory field, Example:
-                Next to Brookfield Mall
-              </li>
-              <li className='mt-2'>
-                <b className='text-primary'>gender</b> is a mandatory field in which ID
-                has to be passed for Male, Female and Others as 0, 1, 2 respectively
-              </li>
+              {Array.isArray(guidelines) &&
+                guidelines.length > 0 &&
+                guidelines?.map((item, index) => (
+                  <li className='mt-2' key={index}>
+                    <b className='text-primary'>{item.name}</b> {item.field}
+                  </li>
+                ))}
             </ol>
           </Card>
         </div>

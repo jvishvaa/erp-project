@@ -1,20 +1,22 @@
 import { DownOutlined } from '@ant-design/icons';
 import { Form, Input, Select } from 'antd';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchBranchesForCreateUser } from 'redux/actions';
+import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 
-const SchoolDetails = () => {
+const SchoolDetails = ({ userDetails, setUserDetails }) => {
   const [userLevelList, setUserLevelList] = useState([]);
-  const [selectedUserLevels, setSelectedUserLevels] = useState();
+  const [userDesignationList, setUserDesignationList] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [branches, setBranches] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const { Option } = Select;
-
+  const formRef = useRef();
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -39,6 +41,7 @@ const SchoolDetails = () => {
       fetchBranches(selectedYear?.id);
     }
     fetchUserLevel();
+    fetchRole();
   }, [moduleId, selectedYear]);
 
   const fetchBranches = () => {
@@ -48,23 +51,20 @@ const SchoolDetails = () => {
           id: obj.id,
           branch_name: obj.branch_name,
           branch_code: obj.branch_code,
+          acadId: obj.acadId,
         }));
-        // if (transformedData?.length > 1) {
-        //   transformedData.unshift({
-        //     id: 'all',
-        //     branch_name: 'Select All',
-        //     branch_code: 'all',
-        //   });
-        // }
         setBranches(transformedData);
       });
     }
   };
-
-
   const branchListOptions = branches?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option
+        key={each?.id}
+        value={each.id}
+        branch_code={each?.branch_code}
+        acadId={each?.acadId}
+      >
         {each?.branch_name}
       </Option>
     );
@@ -87,6 +87,36 @@ const SchoolDetails = () => {
       });
   };
 
+  const fetchUserDesignation = (value) => {
+    axios
+      .get(`${endpoints.userManagement.userDesignation}?user_level=${value}`, {
+        headers: {
+          'X-Api-Key': 'vikash@12345#1231',
+        },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setUserDesignationList(res?.data?.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchRole = () => {
+    axiosInstance
+      .get(`${endpoints.nonAcademicStaff.roles}`)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setRoles(res?.data?.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const userLevelListOptions = userLevelList?.map((each) => {
     return (
       <Option key={each?.id} value={each.id}>
@@ -95,16 +125,73 @@ const SchoolDetails = () => {
     );
   });
 
-  const handleUserLevel = (e) => {
-    setSelectedUserLevels(e);
+  const userDesignationListOptions = userDesignationList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.designation}
+      </Option>
+    );
+  });
+
+  const rolesOptions = roles?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.role_name}
+      </Option>
+    );
+  });
+
+  const userData = [...userDetails];
+
+  const handleUserDesignation = (e) => {
+    if (e != undefined) {
+      userData[0].userDesignation = e;
+    } else {
+      userData[0].userDesignation = '';
+    }
+    setUserDetails(userData);
   };
-  const handleClearUserLevel = () => {
-    setSelectedUserLevels();
+
+  const handleUserLevel = (e) => {
+    if (e != undefined) {
+      userData[0].userLevel = e;
+      setUserDesignationList([]);
+      formRef.current.setFieldsValue({
+        user_designation: null,
+      });
+      fetchUserDesignation(e);
+      userData[0].userDesignation = e;
+    } else {
+      userData[0].userLevel = '';
+    }
+    setUserDetails(userData);
+  };
+
+  const handleUserBranch = (e, data) => {
+    if (e != undefined) {
+      userData[0].userBranch = e;
+      userData[0].userBranchCode = data?.branch_code;
+      userData[0].academicYear = data?.acadId;
+    } else {
+      userData[0].userBranch = '';
+      userData[0].userBranchCode = '';
+      userData[0].academicYear = '';
+    }
+    setUserDetails(userData);
+  };
+
+  const handleUserRole = (e) => {
+    if (e != undefined) {
+      userData[0].userRole = e;
+    } else {
+      userData[0].userRole = '';
+    }
+    setUserDetails(userData);
   };
 
   return (
     <React.Fragment>
-      <Form id='schoolDetailsForm' layout={'vertical'}>
+      <Form id='schoolDetailsForm' ref={formRef} layout={'vertical'}>
         <div className='row mt-5'>
           <div className='col-md-4 col-sm-6 col-12'>
             <Form.Item
@@ -121,12 +208,12 @@ const SchoolDetails = () => {
                 placement='bottomRight'
                 showArrow={true}
                 onChange={(e, value) => handleUserLevel(e, value)}
-                onClear={handleClearUserLevel}
                 dropdownMatchSelectWidth={false}
+                showSearch
                 filterOption={(input, options) => {
                   return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
-                placeholder='Select user Level'
+                placeholder='Select User Level'
               >
                 {userLevelListOptions}
               </Select>
@@ -146,15 +233,41 @@ const SchoolDetails = () => {
                 className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                 placement='bottomRight'
                 showArrow={true}
-                onChange={(e, value) => handleUserLevel(e, value)}
-                onClear={handleClearUserLevel}
+                onChange={(e, value) => handleUserDesignation(e, value)}
                 dropdownMatchSelectWidth={false}
                 filterOption={(input, options) => {
                   return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
-                placeholder='Select user Designation'
+                showSearch
+                placeholder='Select User Designation'
               >
-                {userLevelListOptions}
+                {userDesignationListOptions}
+              </Select>
+            </Form.Item>
+          </div>
+          <div className='col-md-4 col-sm-6 col-12'>
+            <Form.Item
+              name='user_role'
+              label='Select User Role'
+              rules={[{ required: true, message: 'Please select User Role' }]}
+            >
+              <Select
+                getPopupContainer={(trigger) => trigger.parentNode}
+                maxTagCount={5}
+                allowClear={true}
+                suffixIcon={<DownOutlined className='th-grey' />}
+                className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                placement='bottomRight'
+                showArrow={true}
+                onChange={(e, value) => handleUserRole(e, value)}
+                dropdownMatchSelectWidth={false}
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                showSearch
+                placeholder='Select User Role'
+              >
+                {rolesOptions}
               </Select>
             </Form.Item>
           </div>
@@ -181,15 +294,16 @@ const SchoolDetails = () => {
               rules={[{ required: true, message: 'Please select Branch' }]}
             >
               <Select
-                mode='multiple'
                 allowClear={true}
                 className='th-grey th-bg-white  w-100 text-left'
                 placement='bottomRight'
                 showArrow={true}
+                onChange={(e, value) => handleUserBranch(e, value)}
                 dropdownMatchSelectWidth={false}
                 filterOption={(input, options) => {
                   return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
+                showSearch
                 getPopupContainer={(trigger) => trigger.parentNode}
                 placeholder='Select Branch'
               >

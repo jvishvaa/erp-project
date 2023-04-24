@@ -474,7 +474,7 @@ import StudentHwConfig from 'containers/homework/student-homework/StudentHwConfi
 import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
-import CreateNoAcademicStaff from 'containers/user-management/staff/create-non-academic-staff';
+import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
