@@ -41,9 +41,9 @@ function AttachmentPreviewerUI() {
   const history = useHistory()
   const [webviewer, setWebViewer] = useState(false)
 
-  useEffect(() => {
-    fetchConfig()
-  }, [])
+  // useEffect(() => {
+  //   fetchConfig()
+  // }, [])
 
   const fetchConfig = () => {
     axiosInstance
@@ -171,7 +171,7 @@ function AttachmentPreviewerUI() {
                   </video>
                 ) : isPPt ? (
                   <>
-                  { webviewer == true ?
+                  {/* { webviewer == true ?
                     <>
                       {handlePPt()}
                     </> :
@@ -181,7 +181,13 @@ function AttachmentPreviewerUI() {
                       src={pptFileSrc}
                       className='attachment-viewer-frame-preview-iframe'
                     />
-                  }
+                  } */}
+                     <iframe
+                      id='attachment-iframe'
+                      title='attachment-iframe'
+                      src={pptFileSrc}
+                      className='attachment-viewer-frame-preview-iframe'
+                    />
                   </>
                 ) : (
                   // <PdfjsPreview url={src} />
