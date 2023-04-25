@@ -115,6 +115,8 @@ console.log({userDetails});
     setUserDetails(data);
   };
 
+  console.log({userDetails});
+
   const { Step } = Steps;
   const steps = [
     {

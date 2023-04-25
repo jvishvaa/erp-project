@@ -44,7 +44,7 @@ const UploadExcel = () => {
   };
 
   const fetchUserDesignation = (value) => {
-    setLoading(true)
+    setLoading(true);
     axios
       .get(`${endpoints.userManagement.userDesignation}?user_level=${value}`, {
         headers: {
@@ -55,7 +55,7 @@ const UploadExcel = () => {
         if (res?.data?.status_code === 200) {
           setUserDesignationList(res?.data?.result);
         }
-        setLoading(false)
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -202,7 +202,7 @@ const UploadExcel = () => {
       .then((res) => {
         if (res.status === 200) {
           message.success(res?.data?.message);
-          history.push('/user-management/non-academic-staff');
+          history.push('/user-management/bulk-upload-status');
         }
       })
       .catch((error) => {
@@ -423,7 +423,9 @@ const UploadExcel = () => {
             {userLevelListOptions}
           </Select>
 
-          <small className='mt-2'><b>Note :</b> After selecting User Level, You'll get User Designation.</small>
+          <small className='mt-2'>
+            <b>Note :</b> After selecting User Level, You'll get User Designation.
+          </small>
         </div>
       </div>
 
@@ -447,21 +449,21 @@ const UploadExcel = () => {
         </div>
         <div className='col-md-4'>
           {/* {userDesignationList?.length > 0 && ( */}
-            <Table
-              className='th-table mt-3'
-              rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-              }
-              loading={loading}
-              columns={designationColumns}
-              rowKey={(record) => record?.id}
-              dataSource={userDesignationList}
-              pagination={false}
-              scroll={{
-                x: window.innerWidth < 600 ? 'max-content' : null,
-                y: 'calc(300px)',
-              }}
-            />
+          <Table
+            className='th-table mt-3'
+            rowClassName={(record, index) =>
+              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+            }
+            loading={loading}
+            columns={designationColumns}
+            rowKey={(record) => record?.id}
+            dataSource={userDesignationList}
+            pagination={false}
+            scroll={{
+              x: window.innerWidth < 600 ? 'max-content' : null,
+              y: 'calc(300px)',
+            }}
+          />
           {/* )} */}
         </div>
 
