@@ -52,6 +52,8 @@ import StudentSideVisualActivity from 'containers/newBlog/StudentSideVisualActiv
 import FileDrive from 'v2/FaceLift/FileDrive';
 import FileCategory from 'v2/FaceLift/FileDrive/FileCategory';
 import FileFolder from 'v2/FaceLift/FileDrive/FileFolder';
+import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
+import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff';
 
 const V2Router = () => {
   useEffect(() => {
@@ -243,6 +245,12 @@ const V2Router = () => {
                         <Route exact path='/file-folder'>
                           {({ match }) => <FileFolder match={match} />}
                         </Route>
+                        <Route path='/user-management/non-academic-staff'>
+                          {({ match }) => <NonAcademicStaff match={match} />}
+                        </Route>,
+                        <Route path='/user-management/create-non-academic-staff'>
+                          {({ match }) => <CreateNoAcademicStaff match={match} />}
+                        </Route>,
                         {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;

@@ -29,7 +29,7 @@ import moment from 'moment';
 import { message, Tabs, Input, Select, Drawer, Form, DatePicker, Button, Breadcrumb } from 'antd';
 import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DownOutlined, CalendarOutlined, MoreOutlined } from '@ant-design/icons';
 import QuestionCardNew from './questioncardnew'
-
+import Loader from 'components/loader/loader';
 
 const validateQuestions = (obj) => {
   let error = false;
@@ -105,7 +105,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
   const [date, setDate] = useState(new Date());
   const [dateValue, setDateValue] = useState(moment(params.date).format('YYYY-MM-DD'));
   const [hwId, sethwId] = useState(propData?.viewHomework?.hw_data?.data?.hw_id);
-
+  const [ loading , setLoading ] = useState(false)
   const handleDateChange = (event, value) => {
     setDateValue(value);
   };
@@ -365,6 +365,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
+      {loading == true ? <Loader /> : ''}
       <div className='card row' style={{ margin: '10px auto', width: '90%', padding: '15px', background: '#EEF2F8', cursor: 'pointer' }} onClick={() => goback()} >
         <LeftOutlined style={{ display: 'flex', alignItems: 'center', color: '#535BA0' }} />
         <p style={{ display: 'flex', alignItems: 'center', color: '#535BA0', fontWeight: '600' }} className='th-14 mx-1 my-0' >Back to Homework</p>
@@ -443,6 +444,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
                   grade={grade}
                   subject={params?.id}
                   queIndexCounter={queIndexCounter}
+                  setLoading={setLoading}
                 />
               ))}
             </div>

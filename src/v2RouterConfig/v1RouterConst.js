@@ -474,7 +474,8 @@ import StudentHwConfig from 'containers/homework/student-homework/StudentHwConfi
 import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
-import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
+import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
+// import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -1827,9 +1828,12 @@ const V1Router = [
   <Route path='/student-analytics'>
   {({ match }) => <Studentanalytics match={match} />}
 </Route>,
-    <Route path='/pptview'>
-    {({ match }) => <PPTView match={match} />}
-  </Route>,
+<Route path='/user-management/create-no-academic-staff'>
+  {({ match }) => <CreateNoAcademicStaff match={match} />}
+</Route>,
+  //   <Route path='/pptview'>
+  //   {({ match }) => <PPTView match={match} />}
+  // </Route>,
 
   <Route path='*'>
     <ErrorBoundary404 HomeButton={true} />
