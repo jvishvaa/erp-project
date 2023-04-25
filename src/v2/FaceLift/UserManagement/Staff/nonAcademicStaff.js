@@ -61,7 +61,7 @@ const NonAcademicStaff = () => {
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>Cntact</span>,
+      title: <span className='th-white th-fw-700'>Contact</span>,
       key: 'contact',
       dataIndex: 'contact',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
@@ -96,6 +96,7 @@ const NonAcademicStaff = () => {
               icon={<EditOutlined />}
               className='th-br-6 th-bg-primary th-white'
               style={{ cursor: 'pointer' }}
+              onClick={() => history.push(`/user-management/edit-non-academic-staff/${data.id}`)}
             >
               Edit
             </Tag> */}
@@ -359,7 +360,7 @@ const NonAcademicStaff = () => {
                 Dashboard
               </Breadcrumb.Item>
               <Breadcrumb.Item
-                href='/user-management/view-users'
+                href='/user-management/non-academic-staff'
                 className='th-grey th-16'
               >
                 User Management

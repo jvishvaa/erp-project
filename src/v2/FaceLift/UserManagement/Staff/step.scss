@@ -16,10 +16,14 @@
   .ant-picker-input:first-child > input {
     text-align: left;
   }
-  .ant-picker{
+  .ant-picker {
     display: block;
   }
-  .ant-input-number.ant-input-number{
+  .ant-input-number.ant-input-number {
     width: 100%;
+  }
+
+  .ant-table-cell-scrollbar:not([rowspan]) {
+    box-shadow: none;
   }
 }
