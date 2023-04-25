@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import _ from 'lodash';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 
@@ -29,7 +29,6 @@ const Evaluation = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const [data, setData] = useState([]);
   const [observationAreaList, setObservationAreaList] = useState([]);
   const [selectedObservationArea, setSelectedObservationArea] = useState(null);
   const [tableData, setTableData] = useState([]);
@@ -138,32 +137,6 @@ const Evaluation = () => {
           console.log(error);
           setLoading(false);
         });
-
-      //   id: 2,
-      //   title: 'ROHIT abcd',
-      //   status: true,
-      //   is_student: false,
-      //   observations: [
-      //     {
-      //       id: 378,
-      //       score: 5,
-      //       label: 'ABC2',
-      //     },
-      //     {
-      //       id: 379,
-      //       score: 4,
-      //       label: 'PQR2',
-      //     },
-      //   ],
-      // });
-      // }
-      //   observationGet({
-      //     is_student: tableView === 'teacher' ? false : true,
-      //     levels__id__in: user_level,
-      //     status: true,
-      //   });
-      // } else {
-      //   setData([]);
     }
   }, [selectedObservationArea]);
   useEffect(() => {
@@ -181,18 +154,6 @@ const Evaluation = () => {
       obj.id = paramData[i].id;
       obj.status = paramData[i].status;
       obj.observation_area_name = paramData[i].observation_area_name;
-      // for (let j = 0; j < paramData[i].observations?.length; j++) {
-      //   var innerObj = {};
-      //   innerObj.observationarea = paramData[i].observations[j].observation;
-      //   innerObj.id = paramData[i].observations[j].id;
-      //   // innerObj.status = paramData[i].observation[j].status;
-      //   innerObj.status = true;
-      //   // innerObj.observation = paramData[i].observation_area_name;
-      //   innerObj.description = '';
-      //   innerObj.score = 0;
-      //   // innerObj.observationScore = paramData[i].observations[j].score;
-      //   innerArr.push(innerObj);
-      // }
       obj.observations = paramData[i].observations;
       obj.is_student = paramData[i].is_student;
       arr.push(obj);
@@ -212,6 +173,8 @@ const Evaluation = () => {
         } else {
           message.error("Obtained marks can't exceeds Observation max marks");
         }
+      } else {
+        tempData[id].observations[subId].observationScore = null;
       }
     }
     setModifiedData([...tempData]);
@@ -221,18 +184,18 @@ const Evaluation = () => {
     const isFieldNull = modifiedData[0]?.observations.filter(function (el) {
       return (
         el?.description?.trim() == '' ||
-        el?.observationScore == '' ||
+        el?.observationScore == null ||
+        isNaN(el?.observationScore) ||
         !el.hasOwnProperty('description') ||
         !el.hasOwnProperty('observationScore')
       );
     });
-    if (!overallRemarks.trim().length) {
-      message.error('Please fill overall remarks');
-      return false;
-    }
-    console.log({ isFieldNull });
     if (isFieldNull.length > 0) {
       message.error('Please fill all the descriptions and scores');
+      return false;
+    }
+    if (!overallRemarks.trim().length) {
+      message.error('Please fill overall remarks');
       return false;
     }
     if (subjectID && teacherErp) {
@@ -251,40 +214,7 @@ const Evaluation = () => {
       if (selectedFile) {
         formData.append('file', selectedFile);
       }
-      // var obj = {
-      //   acad_session: selectedBranch?.id,
-      //   date: moment().format('YYYY-MM-DD'),
-      //   erp_user: teacherId,
-      //   teacher_name: teacherName,
-      //   teacher_erp: teacherErp,
-      //   remark: overallRemarks,
-      // score: _.sumBy(flatttenData, 'score'),
-      // score: marksObtained,
-      // report: JSON.stringify(modifiedData),
-      // subject_map: subjectID,
-      // section_mapping: sectionID,
-      // is_student: false,
-      // reviewed_by: role_details?.erp_user_id,
-      // file: selectedFile,
-      // };
     } else if (studentErp && subjectID) {
-      // var obj = {
-      //   acad_session: selectedBranch?.id,
-      //   date: moment().format('YYYY-MM-DD'),
-      //   erp_user: studentId,
-      //   teacher_name: studentName,
-      //   teacher_erp: studentErp,
-      //   remark: overallRemarks,
-      // score: _.sumBy(flatttenData, 'score'),
-      // score: marksObtained,
-      // report: JSON.stringify(modifiedData),
-      // subject_map: subjectID,
-      // section_mapping: sectionID,
-      //   student: studentId,
-      //   is_student: true,
-      //   reviewed_by: role_details?.erp_user_id,
-      //   file: selectedFile,
-      // };
       formData.append('acad_session', selectedBranch?.id);
       formData.append('date', moment().format('YYYY-MM-DD'));
       formData.append('erp_user', studentId);
