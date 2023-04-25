@@ -90,7 +90,8 @@ const QuestionCardNew = ({
     grade,
     branch,
     subject,
-    queIndexCounter
+    queIndexCounter,
+    setLoading
 }) => {
     const classes = useStyles();
     const selectedAcademicYear = useSelector(
@@ -193,7 +194,8 @@ const QuestionCardNew = ({
                 ) {
                     const fd = new FormData();
                     fd.append('file', file);
-                    setFileUploadInProgress(true);
+                    // setFileUploadInProgress(true);
+                    setLoading(true)
                     const filePath = await uploadFile(fd);
                     const final = Object.assign({}, filePath);
                     if (file.type === 'application/pdf') {
@@ -211,14 +213,16 @@ const QuestionCardNew = ({
                             setAttachmentPreviews((prevState) => [...prevState, filePath]);
                         }
                     }
-                    setFileUploadInProgress(false);
+                    // setFileUploadInProgress(false);
+                    setLoading(false)
                     setAlert('success', 'File uploaded successfully');
                     setSizeValied('');
                 } else {
                     setAlert('error', 'Please upload valid file');
                 }
             } catch (e) {
-                setFileUploadInProgress(false);
+                // setFileUploadInProgress(false);
+                setLoading(false)
                 setAlert('error', 'File upload failed');
             }
         }
