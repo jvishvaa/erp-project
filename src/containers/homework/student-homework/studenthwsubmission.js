@@ -231,6 +231,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         if (count !== 0) {
             if (isupdate) {
                 setisupdate(true);
+                setUploadLoading(true)
                 axiosInstance
                     .put(
                         `${endpoints.homeworkStudent.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`,
@@ -252,6 +253,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     });
             } else {
                 setLoading(true);
+                setUploadLoading(true)
                 axiosInstance
                     .post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
                     .then((result) => {
@@ -259,9 +261,11 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             setAlert('success', result.data.message);
                             handleHomeworkCancel();
                             setLoading(false);
+                setUploadLoading(false)
                         } else {
                             setAlert('error', result.data.message);
                             setLoading(false);
+                setUploadLoading(false)
                         }
                     })
                     .catch((error) => {
@@ -269,8 +273,10 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         setLoading(false);
                     });
             }
-        } else setAlert('error', 'No file attached!');
-    };
+        } else {
+            setAlert('error', 'No file attached!');
+setUploadLoading(false)
+        }     };
 
     const handleHomeworkCancel = () => {
         // setDisplayRatingBox(false);
