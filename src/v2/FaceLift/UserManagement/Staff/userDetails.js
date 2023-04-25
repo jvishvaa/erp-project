@@ -27,7 +27,7 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
 
   const countryCodeOptions = countryList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.callingCode}>
+      <Option key={each?.country} value={each.callingCode}>
         {each?.country}({each.callingCode})
       </Option>
     );
@@ -45,36 +45,6 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
     if (input === 'profile') {
       userData[0].userProfile = e;
     }
-    // if (input === 'firstname') {
-    //   userData[0].userFirstName = e;
-    // }
-    // if (input === 'middlename') {
-    //   userData[0].userMiddleName = e;
-    // }
-    // if (input === 'lastname') {
-    //   userData[0].userLastName = e;
-    // }
-    // if (input === 'gender') {
-    //   userData[0].userGender = e;
-    // }
-    // if (input === 'dob') {
-    //   userData[0].userDOB = e;
-    // }
-    // if (input === 'code') {
-    //   userData[0].userCode = e;
-    // }
-    // if (input === 'mobile') {
-    //   userData[0].userMobile = e;
-    // }
-    // if (input === 'username') {
-    //   userData[0].userUsername = e;
-    // }
-    // if (input === 'email') {
-    //   userData[0].userEmail = e;
-    // }
-    // if (input === 'address') {
-    //   userData[0].userAddress = e;
-    // }
     setUserDetails(userData);
   };
 
@@ -173,7 +143,15 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
             <Form.Item
               name='first_name'
               label='First Name'
-              rules={[{ required: true, message: 'Please enter First Name' }]}
+              // rules={[{ required: true, message: 'Please enter First Name' }]}
+              rules={[
+                {
+                  pattern: /^[a-zA-Z ]*$/,
+                  message: 'First Name should contain only character',
+                },
+                { required: true, message: 'Please Enter First Name' },
+              ]}
+              validationTrigger='onChange'
             >
               <Input
                 placeholder='First Name'
@@ -182,7 +160,17 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
             </Form.Item>
           </div>
           <div className='col-md-4 col-sm -12'>
-            <Form.Item name='middle_name' label='Middle Name'>
+            <Form.Item
+              name='middle_name'
+              label='Middle Name'
+              rules={[
+                {
+                  pattern: /^[a-zA-Z ]*$/,
+                  message: 'First Name should contain only character',
+                },
+              ]}
+              validationTrigger='onChange'
+            >
               <Input
                 placeholder='Middle Name'
                 // onChange={(e) => handleInput('middlename', e.target.value)}
@@ -193,7 +181,13 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
             <Form.Item
               name='last_name'
               label='Last Name'
-              rules={[{ required: true, message: 'Please enter Last Name' }]}
+              rules={[
+                {
+                  pattern: /^[a-zA-Z ]*$/,
+                  message: 'Last Name should contain only character',
+                },
+                { required: true, message: 'Please Enter Last Name' },
+              ]}
             >
               <Input
                 placeholder='Last Name'
@@ -273,16 +267,30 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
             <Form.Item
               name='mobile'
               label='Mobile No.'
-              rules={[{ required: true, message: 'Please Enter Mobile No.' }]}
+              rules={[
+                {
+                  pattern: /^(?:\d*)$/,
+                  message: 'Mobie number should contain only number',
+                },
+                { required: true, message: 'Please Enter Mobile No.' },
+                {
+                  maxLength: 12,
+                  message: 'Mobile number should be 10 to 12 digit long.',
+                },
+              ]}
+              validationTrigger='onChange'
+
+              // validateTrigger="onBlur"
             >
-              <InputNumber
+              <Input
                 placeholder='Mobile No.'
+                maxLength={12}
                 // onChange={(e) => {
-                //   if (e.toString().length > 10) {
+                //   if (e.target.value.toString().length > 10) {
+                //     e.preventDefault()
                 //     message.error('Mobile no. must be 10 digit only');
-                //   } else {
-                //     setMobile(e);
-                //     handleInput('mobile', e);
+                //   }else{
+                //     e.preventDefault()
                 //   }
                 // }}
               />

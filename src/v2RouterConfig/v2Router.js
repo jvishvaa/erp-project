@@ -54,6 +54,7 @@ import FileCategory from 'v2/FaceLift/FileDrive/FileCategory';
 import FileFolder from 'v2/FaceLift/FileDrive/FileFolder';
 import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
 import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff';
+import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 
 const V2Router = () => {
   useEffect(() => {
@@ -250,6 +251,9 @@ const V2Router = () => {
                         </Route>,
                         <Route path='/user-management/create-non-academic-staff'>
                           {({ match }) => <CreateNoAcademicStaff match={match} />}
+                        </Route>,
+                        <Route path='/user-management/edit-non-academic-staff/:id'>
+                          {({ match }) => <EditNonAcademicStaff match={match} />}
                         </Route>,
                         {/* v1 router */}
                         {V1Router?.map((item) => {
