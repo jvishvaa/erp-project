@@ -1172,6 +1172,10 @@ const Layout = ({ children, history }) => {
         history.push('/file-category/');
         break;
       }
+      case 'Non Academic Staff': {
+        history.push('/user-management/non-academic-staff');
+        break;
+      }
 
       default:
         break;

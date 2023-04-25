@@ -102,7 +102,7 @@ const Observation = () => {
         }
       })
       .catch((error) => {
-        message.success('Observation status updation failed');
+        message.error('Observation status updation failed');
         console.log(error);
       });
   };
