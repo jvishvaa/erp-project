@@ -25,7 +25,7 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails }) => {
   const formRef = useRef();
 
   console.log({ userDetails });
-const current_mappings = _.cloneDeep(userDetails);
+var current_mappings = _.cloneDeep(userDetails);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -69,13 +69,14 @@ const current_mappings = _.cloneDeep(userDetails);
 
   useEffect(() => {
     if (formRef.current) {
+        console.log('userDetails?.user_level?.id', userDetails);
       formRef.current.setFieldsValue({
-        user_level: userDetails?.user_level,
-        user_role: userDetails?.role?.role_name,
-        user_designation: userDetails?.designation,
+        user_level: userDetails?.user_level?.id,
+        user_role: userDetails?.role?.id,
+        user_designation: userDetails?.designation?.id,
       });
     }
-  }, [formRef.current]);
+  }, [userDetails]);
 
   const fetchBranches = (acadId) => {
     if (selectedYear) {
@@ -253,8 +254,8 @@ const current_mappings = _.cloneDeep(userDetails);
                 getPopupContainer={(trigger) => trigger.parentNode}
                 maxTagCount={5}
                 allowClear={true}
-                disabled={userDetails?.id}
-                value={userDetails?.user_level}
+                // disabled={userDetails?.id}
+                // defaultValue={userDetails?.user_level?.id}
                 suffixIcon={<DownOutlined className='th-grey' />}
                 className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                 placement='bottomRight'
@@ -280,9 +281,9 @@ const current_mappings = _.cloneDeep(userDetails);
               <Select
                 getPopupContainer={(trigger) => trigger.parentNode}
                 maxTagCount={5}
-                disabled={userDetails?.id}
+                // disabled={userDetails?.id}
                 allowClear={true}
-                value={userDetails?.designation}
+                // value={userDetails?.designation?.id}
                 suffixIcon={<DownOutlined className='th-grey' />}
                 className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                 placement='bottomRight'
@@ -310,7 +311,7 @@ const current_mappings = _.cloneDeep(userDetails);
                 maxTagCount={5}
                 allowClear={true}
                 disabled={userDetails?.id}
-                value={userDetails?.role?.id}
+                // value={userDetails?.role?.id}
                 suffixIcon={<DownOutlined className='th-grey' />}
                 className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                 placement='bottomRight'

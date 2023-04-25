@@ -142,9 +142,11 @@ const CreateNoAcademicStaff = () => {
         message.error('First Name should only contains character');
         return;
       }
-      if (!userDetails[0]?.userMiddleName.match(letterRegx)) {
-        message.error('Middle Name should only contains character');
-        return;
+      if (userDetails[0]?.userMiddleName !== '') {
+        if (!userDetails[0]?.userMiddleName.match(letterRegx)) {
+          message.error('Middle Name should only contains character');
+          return;
+        }
       }
       if (
         userDetails[0]?.userLastName === '' ||
