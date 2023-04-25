@@ -1017,7 +1017,7 @@ const AdminCreateBlog = () => {
                             className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                             bordered={true}
                           >
-                            {branchDropdown.length > 1 && (
+                            {branchDropdown.length > 0 && (
                               <>
                                 <Option key={0} value={'All'}>
                                   All
