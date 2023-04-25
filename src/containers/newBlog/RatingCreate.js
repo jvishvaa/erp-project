@@ -1300,7 +1300,7 @@ const RatingCreate = () => {
                               <div className='row mt-2'>
                                 <div className='col-10 px-0'>
                                   <Input
-                                    placeholder='Criteria'
+                                    placeholder='Criteria Name'
                                     width={100}
                                     showCount
                                     maxLength='500'
