@@ -188,6 +188,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
     }
     const isFormValid = validateHomework();
     if (isFormValid) {
+      setLoading(true)
       const reqObj = {
         name,
         description,
@@ -207,9 +208,11 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
         if(propData?.isEdit == true){
           const response = await onAddHomeworkedit(reqObj , propData?.isEdit , hwId);
         setAlert('success', 'Homework Updated');  
+        setLoading(false)
         }else {
           const response = await onAddHomework(reqObj );
         setAlert('success', 'Homework Added');  
+        setLoading(false)
         }
         // setAlert('success', 'Homework added');
         if (propData?.isTeacher == true) {
@@ -225,6 +228,7 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
         }
       } catch (error) {
         setAlert('error', 'Failed to add homework');
+        setLoading(false)
       }
     }
   };

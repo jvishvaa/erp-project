@@ -48,7 +48,7 @@ import DescriptiveTestcorrectionModule from '../../../components/EvaluationTool'
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DownOutlined, CalendarOutlined, MoreOutlined } from '@ant-design/icons';
 import { message, Tabs, Input, Select, Drawer, Form, DatePicker, Button, Breadcrumb } from 'antd';
-
+import Loader from 'components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
     attachmentIcon: {
@@ -133,6 +133,7 @@ const ViewHomeworkNew = withRouter(
         const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
         const [disableEv, setDisableEv] = useState(true)
         const scrollableContainer = useRef(null);
+        const [ loading , setLoading ] = useState(false)
 
         const [qWiseSaveCount, setQwiseSaveCount] = useState(0)
 
@@ -175,10 +176,13 @@ const ViewHomeworkNew = withRouter(
             //   return;
             // }
             try {
+                setLoading(true)
                 await finalEvaluationForHomework(homeworkId, reqData);
                 setAlert('success', 'Homework Evaluated');
                 onClose();
+                setLoading(false)
             } catch (e) {
+                setLoading(false)
                 setAlert('error', 'Homework Evaluation Failed');
             }
         };
@@ -365,6 +369,7 @@ const ViewHomeworkNew = withRouter(
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
+                {loading ? <Loader /> : ''}
                 <div className='view-homework-container-coordinator create_group_filter_container'>
                     <div className='card row' style={{ margin: '10px auto', width: '100%', padding: '15px', background: '#EEF2F8', cursor: 'pointer' }} onClick={() => onClose()} >
                         <LeftOutlined style={{ display: 'flex', alignItems: 'center', color: '#535BA0' }} />
