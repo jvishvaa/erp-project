@@ -30,7 +30,7 @@ class CreateUser extends Component {
       showParentForm: false,
       showGuardianForm: false,
       isOrchids : window.location.host.split('.')[0] === 'orchids' ||
-      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3001'
+      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
         ? true
         : false,
       loading: false,
@@ -250,7 +250,9 @@ class CreateUser extends Component {
 
     if(this.state.isOrchids == true){
       requestObj['user_level'] = userLevel?.id
-      requestObj['designation'] = designation?.id
+      if(userLevel?.id != 13){
+        requestObj['designation'] = designation?.id
+      }
     }
 
 
