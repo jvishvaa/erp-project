@@ -363,12 +363,16 @@ const RatingCreate = () => {
 
   const handleActivityTypeSubmit = () => {
     if (!ActivityType?.name || isEdit?.name) {
-      setAlert('error', 'Please Enter Activity Type');
+      message.error('Please Enter Activity Type');
+      return;
+    }
+    if (!subActivityType?.name) {
+      message.error('Please Select Sub-Activity Type');
       return;
     }
     const uniqueValues = new Set(inputList.map((e) => e.name));
     if (uniqueValues.size < inputList.length) {
-      setAlert('error', 'Duplicate Name Found');
+      message.error('Duplicate Name Found');
       return;
     }
     let body = {
@@ -406,12 +410,12 @@ const RatingCreate = () => {
   };
   const handleActivityTypeSubmitEdit = () => {
     if (!isEditData?.name) {
-      setAlert('error', 'Please Enter Activity Type');
+      message.error('Please Enter Activity Type');
       return;
     }
     const uniqueValues = new Set(isEditData?.grading_scheme?.map((e) => e.name));
     if (uniqueValues.size < isEditData?.grading_scheme?.length) {
-      setAlert('error', 'Duplicate Name Found');
+      message.error('Duplicate Name Found');
       return;
     }
     let body = { ...isEditData };
@@ -544,7 +548,7 @@ const RatingCreate = () => {
     setInputList(newList);
   };
 
-  const handleRemoveItemEdit = (index) => {
+  const handleRemoveItemEdit = (input, index) => {
     const newFileList = isEditData.grading_scheme.slice();
     newFileList.splice(index, 1);
     setIsEditData({ ...isEditData, grading_scheme: newFileList });
@@ -701,52 +705,60 @@ const RatingCreate = () => {
   };
 
   const handleOptionSubmit = () => {
-    const arr1 = visualInputlList?.map((obj) => {
-      return { ...obj, rating: optionList };
-      return obj;
-    });
-    let body = {
-      activity_type: ActivityType?.name,
-      criteria_title: remarksType,
-      grading_scheme: arr1,
-    };
-
-    setLoading(true);
-    axios
-      .post(`${endpoints.newBlog.visualOptionSubmit}`, body, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((res) => {
-        if (res.data.status_code == 400) {
-          message.error({
-            content: res?.data?.message,
-            style: {
-              zIndex: '2000',
-            },
-          });
-          setLoading(false);
-          return;
-        } else {
-          setLoading(false);
-          message.success({
-            content: res.data.message,
-            style: {
-              zIndex: '2000',
-            },
-          });
-          setActivityType(null);
-          setRemarksType(null);
-          handleClose();
-          getActivityCategory();
-          setFilterData([]);
-          return;
-        }
-      })
-      .catch(() => {
-        setLoading(false);
+    if (!ActivityType?.name) {
+      message.error('Please Select Activity Type');
+      return;
+    } else if (!remarksType) {
+      message.error('Please Select Criteria Title');
+      return;
+    } else {
+      const arr1 = visualInputlList?.map((obj) => {
+        return { ...obj, rating: optionList };
+        return obj;
       });
+      let body = {
+        activity_type: ActivityType?.name,
+        criteria_title: remarksType,
+        grading_scheme: arr1,
+      };
+
+      setLoading(true);
+      axios
+        .post(`${endpoints.newBlog.visualOptionSubmit}`, body, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((res) => {
+          if (res.data.status_code == 400) {
+            message.error({
+              content: res?.data?.message,
+              style: {
+                zIndex: '2000',
+              },
+            });
+            setLoading(false);
+            return;
+          } else {
+            setLoading(false);
+            message.success({
+              content: res.data.message,
+              style: {
+                zIndex: '2000',
+              },
+            });
+            setActivityType(null);
+            setRemarksType(null);
+            handleClose();
+            getActivityCategory();
+            setFilterData([]);
+            return;
+          }
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
   };
 
   const handleOptionSubmitEdit = () => {
@@ -754,7 +766,6 @@ const RatingCreate = () => {
       return { ...obj, rating: editOption };
       return obj;
     });
-    console.log(arr1);
     let body = {
       name: isEditData?.name,
       id: isEditData?.id,
@@ -801,16 +812,18 @@ const RatingCreate = () => {
       });
   };
 
-  const handleOptionDelete = (id) => {
+  const handleOptionDelete = (id, index) => {
     let newOptionList = [...optionList];
-    let newList = newOptionList.filter((item) => item?.name !== id?.name);
-    setOptionList(newList);
+    // let newList = newOptionList.filter((item) => item?.name !== id?.name);
+    newOptionList.splice(index, 1);
+    setOptionList(newOptionList);
   };
 
-  const handleOptionDeleteEdit = (id) => {
+  const handleOptionDeleteEdit = (id, index) => {
     let newOptionList = [...editOption];
-    let newList = newOptionList.filter((item) => item?.name !== id?.name);
-    setEditOption(newList);
+    // let newList = newOptionList.filter((item) => item?.name !== id?.name);
+    newOptionList.splice(index, 1);
+    setEditOption(newOptionList);
   };
 
   const handleQuestion = (event, index) => {
@@ -833,10 +846,11 @@ const RatingCreate = () => {
     }
   };
 
-  const handleRemoveVisualQuestion = (id) => {
+  const handleRemoveVisualQuestion = (id, index) => {
     let newVisualList = [...visualInputlList];
-    const newList = newVisualList.filter((item) => item?.name !== id?.name);
-    setVisualInputList(newList);
+    // const newList = newVisualList.filter((item) => item?.name !== id?.name);
+    newVisualList.splice(index, 1);
+    setVisualInputList(newVisualList);
   };
 
   const handleRemoveVisualQuestionEdit = (id, index) => {
@@ -1135,14 +1149,20 @@ const RatingCreate = () => {
                                 />
                               </div>
                               <div className='col-2 delete-visual-icon'>
-                                <DeleteFilled
-                                  onClick={() => handleRemoveVisualQuestion(input, index)}
-                                  style={{
-                                    cursor: 'pointer',
-                                    fontSize: '18px',
-                                    color: 'darkblue',
-                                  }}
-                                />
+                                {visualInputlList && visualInputlList.length > 1 ? (
+                                  <DeleteFilled
+                                    onClick={() =>
+                                      handleRemoveVisualQuestion(input, index)
+                                    }
+                                    style={{
+                                      cursor: 'pointer',
+                                      fontSize: '18px',
+                                      color: 'darkblue',
+                                    }}
+                                  />
+                                ) : (
+                                  ''
+                                )}
                               </div>
                             </>
                           ))
@@ -1163,7 +1183,7 @@ const RatingCreate = () => {
                         plain
                         style={{ alignItems: 'flex-start' }}
                       >
-                        Add Options
+                        Add Options & Marks
                       </AntDivider>
                       {optionList
                         ? optionList.map((input, index) => (
@@ -1189,14 +1209,18 @@ const RatingCreate = () => {
                                 />
                               </div>
                               <div className='col-3 delete-visual-icon'>
-                                <DeleteFilled
-                                  style={{
-                                    cursor: 'pointer',
-                                    fontSize: '18px',
-                                    color: 'darkblue',
-                                  }}
-                                  onClick={() => handleOptionDelete(input, index)}
-                                />
+                                {optionList && optionList.length > 1 ? (
+                                  <DeleteFilled
+                                    style={{
+                                      cursor: 'pointer',
+                                      fontSize: '18px',
+                                      color: 'darkblue',
+                                    }}
+                                    onClick={() => handleOptionDelete(input, index)}
+                                  />
+                                ) : (
+                                  ''
+                                )}
                               </div>
                             </div>
                           ))
@@ -1276,7 +1300,7 @@ const RatingCreate = () => {
                               <div className='row mt-2'>
                                 <div className='col-10 px-0'>
                                   <Input
-                                    placeholder='Criteria'
+                                    placeholder='Criteria Name'
                                     width={100}
                                     showCount
                                     maxLength='500'
@@ -1317,14 +1341,18 @@ const RatingCreate = () => {
                                   </>
                                 )}
                                 <div className='col-2 d-flex align-items-center'>
-                                  <DeleteFilled
-                                    onClick={() => handleRemoveItem(index)}
-                                    style={{
-                                      cursor: 'pointer',
-                                      fontSize: '18px',
-                                      color: 'darkblue',
-                                    }}
-                                  />
+                                  {inputList && inputList.length > 1 ? (
+                                    <DeleteFilled
+                                      onClick={() => handleRemoveItem(index)}
+                                      style={{
+                                        cursor: 'pointer',
+                                        fontSize: '18px',
+                                        color: 'darkblue',
+                                      }}
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
                                 </div>
                               </div>
                             </>
@@ -1503,9 +1531,8 @@ const RatingCreate = () => {
                         plain
                         style={{ alignItems: 'flex-start' }}
                       >
-                        Add Options
+                        Add Options & Marks
                       </AntDivider>
-                      {console.log(editOption, 'kl88')}
                       {Object.keys(editOption)
                         ? editOption?.map((input, index) => (
                             <div className='row'>
@@ -1675,7 +1702,7 @@ const RatingCreate = () => {
                                 )}
                                 <div className='col-2 d-flex align-items-center'>
                                   <DeleteFilled
-                                    onClick={() => handleRemoveItemEdit(index)}
+                                    onClick={() => handleRemoveItemEdit(input, index)}
                                     style={{
                                       cursor: 'pointer',
                                       fontSize: '18px',

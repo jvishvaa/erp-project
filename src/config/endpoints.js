@@ -297,6 +297,7 @@ export default {
     chapterList: `/academic/central-chapters-list/`,
     gradeListCentral: `${baseURLCentral}/lesson_plan/list-grade/`,
     chapterListCentral: `${baseURLCentral}/lesson_plan/chapter/`,
+    designation : `${baseURLCentral}/central-admin/user_designation/`,
     periodCompleted: '/academic/v2/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/v2/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
