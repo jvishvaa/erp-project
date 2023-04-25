@@ -74,7 +74,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3001'
+  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
     ? true
     : false;
 
@@ -350,8 +350,7 @@ let levelObj = {};
     }
     else if(formik.values.userLevel == '' && isOrchids == true || formik.values.userLevel == null && isOrchids == true){
       setAlert('error', 'Please select User Level')
-    }
-    else {
+    } else {
       formik.handleSubmit()
     }
   }

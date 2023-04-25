@@ -26,6 +26,8 @@ import {
   TextField,
   Button,
 } from '@material-ui/core';
+import axios from 'axios';
+import endpoints from 'config/endpoints';
 
 const EditSchoolDetailsForm = ({
   details,
@@ -49,11 +51,15 @@ const EditSchoolDetailsForm = ({
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
+  const [roles, setRoles] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
+  const [designation, setDesignation] = useState('');
+  const [selectedDesignation, setSelectedDesignation] = useState('');
   const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
+    ? true
+    : false;
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -71,7 +77,7 @@ const EditSchoolDetailsForm = ({
       });
     }
   }, []);
-
+  console.log(details , 'details edit');
   const formik = useFormik({
     initialValues: {
       academic_year: details.academic_year,
@@ -79,6 +85,8 @@ const EditSchoolDetailsForm = ({
       grade: details.grade,
       section: details.section,
       subjects: details.subjects,
+      designation: details.designation,
+      userLevel: details.user_level
     },
     // validationSchema,
     onSubmit: (values) => {
@@ -269,6 +277,8 @@ const EditSchoolDetailsForm = ({
   useEffect(() => {
     if (moduleId) {
       fetchAcademicYears();
+      getRoleApi()
+      getDesignation()
       if (details?.academic_year?.length > 0) {
         handleChangeAcademicYear(details.academic_year[0]);
         if (details.branch) {
@@ -338,9 +348,111 @@ const EditSchoolDetailsForm = ({
 
   const classes = useStyles();
 
+  const getRoleApi = async () => {
+    try {
+      const result = await axios.get(endpoints.userManagement.userLevelList, {
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          'x-api-key': 'vikash@12345#1231',
+        },
+      });
+      if (result.status === 200) {
+        setRoles(result?.data?.result)
+        let filter = result?.data?.result.filter((e) => e?.id == details.user_level )
+        console.log(filter , 'fil');
+        if(filter?.length > 0){
+          formik.setFieldValue('userLevel' , filter[0])
+          setSelectedRole(filter[0])
+        }
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error?.message);
+    }
+  };
+
+  const getDesignation = async () => {
+    try {
+      const result = await axios.get(endpoints.lessonPlan.designation, {
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          'x-api-key': 'vikash@12345#1231',
+        },
+      });
+      if (result.status === 200) {
+        console.log(result);
+        setDesignation(result?.data?.result)
+    
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error?.message);
+    }
+  };
+
   return (
     <>
       <Grid container spacing={4} className='school-details-form-container'>
+      {isOrchids == true && index == 0 ? 
+      <div className='w-100 d-flex' >
+        <div className='col-md-4' >
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={(event, value) => {
+            setSelectedRole(value);
+            formik.setFieldValue('userLevel', value);
+            console.log(value);
+            if(value?.id == 13){
+              setSelectedDesignation('');
+              formik.setFieldValue('designation', '');
+            }
+          }}
+          id='branch_id'
+          className='dropdownIcon'
+          value={formik.values.userLevel || ''}
+          options={roles}
+          getOptionLabel={(option) => option?.level_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='User Level'
+              placeholder='Select User Level'
+            />
+          )}
+        />
+        </div> 
+        {selectedRole?.id == 13 ? '' : 
+        <div className='col-md-4' >
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={(event, value) => {
+            setSelectedDesignation(value);
+            formik.setFieldValue('designation', value);
+          }}
+          id='branch_id'
+          className='dropdownIcon'
+          value={formik.values.designation || ''}
+          options={designation}
+          getOptionLabel={(option) => option?.designation}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Designation'
+              placeholder='Select Designation'
+            />
+          )}
+        />
+        </div>
+        }
+      </div> : '' }
         <Grid item xs={12}>
           <Divider />
         </Grid>
