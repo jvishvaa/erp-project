@@ -204,6 +204,7 @@ const Attachment = (props) => {
               openModal={openModal}
               setOpenModal={setOpenModal}
               ispdf={ispdf}
+            isfile={'file'}
             />
           )}
           {openVideoModal && <VideoModal openVideoModal={openVideoModal} src={`${urlPrefix}/${fileUrl}`}  setOpenVideoModal={setOpenVideoModal} />}
@@ -280,6 +281,7 @@ const Attachment = (props) => {
               openModal={openModal}
               setOpenModal={setOpenModal}
               ispdf={ispdf}
+            isfile={'file'}
             />
           )}
           {openAudioModal && <AudioModal openAudioModal={openAudioModal} src={`${urlPrefix}/${fileUrl}`}  setOpenAudioModal={setOpenAudioModal} />}
