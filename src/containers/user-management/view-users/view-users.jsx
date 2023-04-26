@@ -604,7 +604,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         }
       );
       if (statusChange.status === 200) {
-        setAlert('success', statusChange.data.message);
+        setAlert('success', 'User Deleted');
         const tempGroupData = usersData.slice();
         tempGroupData.splice(deleteIndex, 1);
         setUsersData(tempGroupData);
