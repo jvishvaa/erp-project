@@ -69,7 +69,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       });
     }
     getRoleApi()
-    getDesignation()
   }, []);
 
   const isOrchids =
@@ -107,9 +106,9 @@ let levelObj = {};
     }
   };
 
-  const getDesignation = async () => {
+  const getDesignation = async (id) => {
     try {
-      const result = await axios.get(endpoints.lessonPlan.designation, {
+      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
         headers: {
           // Authorization: `Bearer ${token}`,
           'x-api-key': 'vikash@12345#1231',
@@ -372,6 +371,9 @@ let levelObj = {};
             if(value?.id == 13){
               setSelectedDesignation('');
               formik.setFieldValue('designation', '');
+            }
+            if(value?.id){
+              getDesignation(value?.id)
             }
           }}
           id='branch_id'

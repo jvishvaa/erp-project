@@ -159,7 +159,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const [sectionDisp, setSectionDisp] = useState({});
   const [roles, setRoles] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
-  const [designation, setDesignation] = useState('');
+  const [designation, setDesignation] = useState([]);
   const [selectedDesignation, setSelectedDesignation] = useState('');
 
   const [acadId, setacadId] = useState();
@@ -195,7 +195,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       });
     }
     getRoleApi()
-    getDesignation()
+    // getDesignation()
   }, []);
 
   const guidelines = [
@@ -429,9 +429,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
     }
   };
 
-  const getDesignation = async () => {
+  const getDesignation = async (id) => {
     try {
-      const result = await axios.get(endpoints.lessonPlan.designation, {
+      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
         headers: {
           // Authorization: `Bearer ${token}`,
           'x-api-key': 'vikash@12345#1231',
@@ -758,6 +758,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 size='small'
                 onChange={(event, value) => {
                   setSelectedRole(value);
+                  if(value?.id){
+                    getDesignation(value?.id)
+                  }
                 }}
                 id='branch_id'
                 className='dropdownIcon'
@@ -812,6 +815,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </TableContainer>
               </Paper>
             </Grid>
+            {designation?.length > 0 ?  
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 style={{ width: '100%' }}
@@ -871,7 +875,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                   </Table>
                 </TableContainer>
               </Paper>
-            </Grid>
+            </Grid> : ''}
           </Grid>
         </>
       )}
