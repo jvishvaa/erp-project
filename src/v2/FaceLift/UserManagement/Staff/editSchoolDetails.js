@@ -10,8 +10,8 @@ import {
 import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import EditSchoolBranch from './editSchoolBranch';
-import _ from 'lodash'
-const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails }) => {
+import _ from 'lodash';
+const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails }) => {
   const [userLevelList, setUserLevelList] = useState([]);
   const [userDesignationList, setUserDesignationList] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -22,10 +22,44 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails }) => {
   const [selectedAcademicYears, setSelectedAcademicYears] = useState();
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const { Option } = Select;
+  //eslint-disable-next-line
+  const [fakeState, setFakeState] = useState('');
   const formRef = useRef();
 
-  console.log({ userDetails });
-var current_mappings = _.cloneDeep(userDetails);
+  var current_mappings = _.cloneDeep(userDetails);
+
+  const newBranch = {
+    session_year: [
+      {
+        session_year_id: '',
+        is_current_session: '',
+        acad_session_year: '',
+      },
+    ],
+    branch: [
+      {
+        branch_id: '',
+        branch__branch_name: '',
+      },
+    ],
+    isEdit: true,
+  };
+
+  let newAcad = {
+    id: '',
+    branch: '',
+  };
+
+  const handleAddMore = () => {
+    let data = [...userDetails?.mapping_bgs, newBranch];
+    let acadData = [...userDetails?.acad_session, newAcad];
+    userDetails.mapping_bgs = data;
+    userDetails.acad_session = acadData;
+    handleUpdateUserDetails(userDetails);
+    setUserDetails(userDetails);
+    setFakeState(data);
+    // handleUpdateUserDetails(data)
+  };
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -55,7 +89,6 @@ var current_mappings = _.cloneDeep(userDetails);
   }, [moduleId, selectedYear]);
 
   const fetchAcademicYears = () => {
-    console.log('hit');
     getAcademicYears(moduleId).then((data) => {
       let transformedData = '';
       transformedData = data?.map((obj = {}) => ({
@@ -68,8 +101,10 @@ var current_mappings = _.cloneDeep(userDetails);
   };
 
   useEffect(() => {
+    if (userDetails) {
+      fetchUserDesignation(userDetails?.user_level?.id);
+    }
     if (formRef.current) {
-        console.log('userDetails?.user_level?.id', userDetails);
       formRef.current.setFieldsValue({
         user_level: userDetails?.user_level?.id,
         user_role: userDetails?.role?.id,
@@ -254,7 +289,7 @@ var current_mappings = _.cloneDeep(userDetails);
                 getPopupContainer={(trigger) => trigger.parentNode}
                 maxTagCount={5}
                 allowClear={true}
-                // disabled={userDetails?.id}
+                disabled={userDetails?.id}
                 // defaultValue={userDetails?.user_level?.id}
                 suffixIcon={<DownOutlined className='th-grey' />}
                 className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
@@ -281,7 +316,7 @@ var current_mappings = _.cloneDeep(userDetails);
               <Select
                 getPopupContainer={(trigger) => trigger.parentNode}
                 maxTagCount={5}
-                // disabled={userDetails?.id}
+                disabled={userDetails?.id}
                 allowClear={true}
                 // value={userDetails?.designation?.id}
                 suffixIcon={<DownOutlined className='th-grey' />}
@@ -391,9 +426,15 @@ var current_mappings = _.cloneDeep(userDetails);
           </>
         ))} */}
 
-        {current_mappings?.mapping_bgs?.map((item,index) => (
+        {userDetails?.mapping_bgs?.map((item, index) => (
           <>
-            <EditSchoolBranch userDetails={userDetails} details={item} index={index} handleUpdateUserDetails={handleUpdateUserDetails}/>
+            <EditSchoolBranch
+              userDetails={userDetails}
+              details={item}
+              index={index}
+              handleUpdateUserDetails={handleUpdateUserDetails}
+              setUserDetails={setUserDetails}
+            />
           </>
         ))}
         <div className='row mt-3 justify-content-end'>
@@ -402,6 +443,7 @@ var current_mappings = _.cloneDeep(userDetails);
               type='primary'
               className='float-right text-center px-3'
               icon={<PlusCircleOutlined />}
+              onClick={handleAddMore}
             >
               Add
             </Button>

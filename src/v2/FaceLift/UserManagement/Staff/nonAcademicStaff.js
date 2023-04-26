@@ -92,14 +92,14 @@ const NonAcademicStaff = () => {
       render: (data) => {
         return (
           <Space>
-            {/* <Tag
+            <Tag
               icon={<EditOutlined />}
               className='th-br-6 th-bg-primary th-white'
               style={{ cursor: 'pointer' }}
               onClick={() => history.push(`/user-management/edit-non-academic-staff/${data.id}`)}
             >
               Edit
-            </Tag> */}
+            </Tag>
             <Popconfirm title='Sure to delete?' onConfirm={(e) => handleDelete(data.id)}>
               <Tag
                 icon={<CloseCircleOutlined />}
