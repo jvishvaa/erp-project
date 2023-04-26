@@ -6,7 +6,7 @@ import Layout from 'containers/Layout';
 import {
   fetchBranches as fetchBranchRedux,
   fetchGrades,
-} from './apis';
+} from '../lesson-plan/create-lesson-plan/apis';
 import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -328,7 +328,7 @@ const AdminCreateBlog = () => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.newBlog.erpSectionmapppingV3}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
+          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
         )
         .then((result) => {
           setLoading(false);
@@ -404,21 +404,23 @@ const AdminCreateBlog = () => {
     if (value) {
       setSelectedSection([]);
       const all = grades.slice();
-      const allGradeIds = all.map((item) => parseInt(item?.grade_id));
+      const allGradeIds = all.map((item) => parseInt(item?.id));
+      const reqAllGradeIds = all.map((item) => parseInt(item?.grade_id));
+      const reqAllGradeIds2 = grades.filter((item)=>value.includes(item.id)).map((item) => parseInt(item?.grade_id))
       const allGradeName = all.map((item) => item);
       if (value.includes('All')) {
-        setSelectedGrade(allGradeIds);
+        setSelectedGrade(reqAllGradeIds);
         setSelectedGradeName(allGradeName);
         formRef.current.setFieldsValue({
           grade: allGradeIds,
           section: [],
           data: null,
         });
-        fetchSections(selectedAcademicYear?.id, selectedBranch, allGradeIds, moduleId);
+        fetchSections(selectedAcademicYear?.id, selectedBranch, reqAllGradeIds, moduleId);
       } else {
-        setSelectedGrade(value);
+        setSelectedGrade(reqAllGradeIds2);
         setSelectedGradeName(event);
-        fetchSections(selectedAcademicYear?.id, selectedBranch, value, moduleId);
+        fetchSections(selectedAcademicYear?.id, selectedBranch, reqAllGradeIds2, moduleId);
       }
     }
   };
@@ -426,21 +428,23 @@ const AdminCreateBlog = () => {
     setSelectedSection([]);
     if (value) {
       const all = sectionList.slice();
-      const allSectionIds = all.map((item) => parseInt(item.section_id));
+      const reqAllSectionIds = all.map((item) => parseInt(item.section_id));
+      const allSectionIds = all.map((item) => parseInt(item.id));
+      const reqAllSectionIds2 = sectionList.filter((item)=>value.includes(item.id)).map((item) => parseInt(item?.section_id))
       const allSectionName = all.map((item) => item);
       if (value.includes('All')) {
-        setSelectedSection(allSectionIds);
+        setSelectedSection(reqAllSectionIds);
         setSelectedSectionName(allSectionName)
         formRef.current.setFieldsValue({
           section: allSectionIds,
           date: null,
         });
       } else {
-        formRef.current.setFieldsValue({
-          section: value,
-          date: null,
-        });
-        setSelectedSection(value);
+        // formRef.current.setFieldsValue({
+        //   section: value,
+        //   date: null,
+        // });
+        setSelectedSection(reqAllSectionIds2);
         setSelectedSectionName(event)
       }
     }
@@ -840,9 +844,9 @@ const AdminCreateBlog = () => {
   const gradeOptions = grades?.map((each) => {
     return (
       <Option
-        key={each?.grade_id}
-        value={each?.grade_id}
-        id={each?.grade_id}
+        key={each?.id}
+        value={each?.id}
+        id={each?.id}
         grade__grade_name={each?.grade__grade_name}
       >
         {each?.grade__grade_name}
@@ -852,8 +856,8 @@ const AdminCreateBlog = () => {
   const sectionOptions = sectionList?.map((each) => {
     return (
       <Option
-        key={each?.section_id}
-        value={each?.section_id}
+        key={each?.id}
+        value={each?.id}
         id={each?.section_id}
         section__section_name={each?.section__section_name}
       >

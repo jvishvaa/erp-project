@@ -38,7 +38,7 @@ export const fetchBranches = async (acadId, moduleId) => {
 export const fetchGrades = async (acadId, branchId, moduleId) => {
   try {
     const response = await axios.get(
-      `${endpoints.newBlog.erpGradeMappingV3}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
+      `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
     );
     return response.data?.data;
   } catch (e) {
