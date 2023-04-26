@@ -347,10 +347,15 @@ let levelObj = {};
     if (formik.values.subjects.length === 0) {
       setAlert('error', 'Please select all fields')
     }
-    else if(formik.values.userLevel == '' && isOrchids == true || formik.values.userLevel == null && isOrchids == true){
+    else if(formik.values.userLevel == '' && isOrchids == true || formik.values.userLevel == null && isOrchids == true ){
       setAlert('error', 'Please select User Level')
     } else {
-      formik.handleSubmit()
+      if(formik.values.userLevel?.id != 13 && isOrchids == true && formik.values.designation == '' || formik.values.userLevel?.id != 13 && isOrchids == true && formik.values.designation == null ){
+      setAlert('error', 'Please select Designation')
+      }else{
+        formik.handleSubmit()
+        console.log(formik.values.designation);
+      }
     }
   }
 
