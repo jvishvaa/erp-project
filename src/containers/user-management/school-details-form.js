@@ -46,7 +46,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const [moduleId, setModuleId] = useState('');
   const [roles, setRoles] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
-  const [designation, setDesignation] = useState('');
+  const [designation, setDesignation] = useState([]);
   const [selectedDesignation, setSelectedDesignation] = useState('');
   const selectedYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -409,7 +409,7 @@ let levelObj = {};
           id='branch_id'
           className='dropdownIcon'
           value={formik.values.designation || ''}
-          options={designation}
+          options={designation || []}
           getOptionLabel={(option) => option?.designation}
           filterSelectedOptions
           renderInput={(params) => (
