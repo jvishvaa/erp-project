@@ -214,6 +214,8 @@ export default {
 
     activityTypeSubmit: `${newBlogURL}/api/activity_type_create/`,
     activityTypeSubmitEdit: `${newBlogURL}/api/activity_type_edit/`,
+    erpSectionmapppingV3: '/erp_user/V3/sectionmapping/',
+    erpGradeMappingV3:'/erp_user/V3/grademapping/',
 
     studentReviews: `${newBlogURL}/api/student_review/`,
     studentReviewss: `${newBlogURL}/api/student_reviews/`,

@@ -278,7 +278,7 @@ const EditSchoolDetailsForm = ({
     if (moduleId) {
       fetchAcademicYears();
       getRoleApi()
-      getDesignation()
+      getDesignation(details.user_level)
       if (details?.academic_year?.length > 0) {
         handleChangeAcademicYear(details.academic_year[0]);
         if (details.branch) {
@@ -372,9 +372,9 @@ const EditSchoolDetailsForm = ({
     }
   };
 
-  const getDesignation = async () => {
+  const getDesignation = async (id) => {
     try {
-      const result = await axios.get(endpoints.lessonPlan.designation, {
+      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
         headers: {
           // Authorization: `Bearer ${token}`,
           'x-api-key': 'vikash@12345#1231',

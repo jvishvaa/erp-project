@@ -953,6 +953,8 @@ export default {
     activityGrade: `${newBlogURL}/api/grades/`,
     activitySection: `${newBlogURL}/api/sections/`,
     erpSectionmappping: '/erp_user/sectionmapping/',
+    erpSectionmapppingV3: '/erp_user/V3/sectionmapping/',
+    erpGradeMappingV3:'/erp_user/V3/grademapping/',
     getActivityType: `${newBlogURL}/api/activity_types/`,
     getTemplates: `${newBlogURL}/api/get_templates/`,
 

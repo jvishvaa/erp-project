@@ -21,7 +21,7 @@ import axios from 'axios';
 import {
   fetchBranches as fetchBranchRedux,
   fetchGrades,
-} from '../lesson-plan/create-lesson-plan/apis';
+} from './apis';
 import { DownOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -201,7 +201,7 @@ const VisualActivityCreate = () => {
       setSectionList([]);
       axiosInstance
         .get(
-          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
+          `${endpoints.newBlog.erpSectionmapppingV3}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
         )
         .then((result) => {
           setLoading(false);
@@ -563,7 +563,7 @@ const VisualActivityCreate = () => {
   };
 
   const handleClearSection = () => {
-    selectedSection([]);
+    setSelectedSection([])
   };
 
   const handleCriteriaTitle = (e, value) => {
@@ -746,7 +746,6 @@ const VisualActivityCreate = () => {
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                         bordered={true}
-                        onClear={handleClearSection}
                       >
                         {criteriaOption}
                       </Select>
