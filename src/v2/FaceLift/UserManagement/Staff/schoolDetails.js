@@ -160,7 +160,6 @@ const SchoolDetails = ({ userDetails, setUserDetails }) => {
         user_designation: null,
       });
       fetchUserDesignation(e);
-      userData[0].userDesignation = e;
     } else {
       userData[0].userLevel = '';
     }

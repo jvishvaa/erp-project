@@ -117,6 +117,39 @@ const NonAcademicStaff = () => {
     },
   ];
 
+  const deletedColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>Name</span>,
+      dataIndex: 'name',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>ERP Id</span>,
+      dataIndex: 'erp_id',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Contact</span>,
+      key: 'contact',
+      dataIndex: 'contact',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Role</span>,
+      key: 'role',
+      dataIndex: 'role',
+      render: (data) => <span className='th-black-1 th-14'>{data?.role_name}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Status</span>,
+      align: 'center',
+      key: 'status',
+      render: (data) => {
+        return <Switch checked={data.status === '1' ? true : false} />;
+      },
+    },
+  ];
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -551,7 +584,7 @@ const NonAcademicStaff = () => {
                   index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                 }
                 loading={loading}
-                columns={columns}
+                columns={status === 3 ? deletedColumns : columns}
                 rowKey={(record) => record?.id}
                 dataSource={userData}
                 pagination={false}
