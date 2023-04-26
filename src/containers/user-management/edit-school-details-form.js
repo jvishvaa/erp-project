@@ -404,6 +404,8 @@ const EditSchoolDetailsForm = ({
           onChange={(event, value) => {
             setSelectedRole(value);
             formik.setFieldValue('userLevel', value);
+            getDesignation(value?.id)
+            formik.setFieldValue('designation', '');
             console.log(value);
             if(value?.id == 13){
               setSelectedDesignation('');
