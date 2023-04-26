@@ -251,7 +251,7 @@ const [ loading , setLoading ] = useState(false)
           for (let page = 1; page <= result.data.result.total_pages; page += 1) {
             tempSelectedUser.push({ pageNo: page, selected: [] });
           }
-          setSelectedUsers(tempSelectedUser);
+          // setSelectedUsers(tempSelectedUser);
         }
         UnSelectAll()
 
@@ -380,7 +380,8 @@ const [ loading , setLoading ] = useState(false)
   }
 
     if (!selectionArray.length) {
-      setSelectectUserError('Please select some users');
+      // setSelectectUserError('Please select some users');
+      setAlert('error','Please select some users')
       return;
     }
     if (!selectedRole) {
@@ -570,7 +571,7 @@ const [ loading , setLoading ] = useState(false)
                 color='primary'
                 size='medium'
                 style={{ width: '100%', color: 'white' }}
-                disabled={!selectedRole } 
+                disabled={!selectedRole} 
               >
                 Assign User Level
               </Button>
