@@ -415,6 +415,7 @@ const EditSchoolDetailsForm = ({
           value={formik.values.userLevel || ''}
           options={roles}
           getOptionLabel={(option) => option?.level_name}
+          disabled={details?.user_level == 13 ? true : false}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
