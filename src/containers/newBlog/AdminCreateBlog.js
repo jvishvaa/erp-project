@@ -6,7 +6,7 @@ import Layout from 'containers/Layout';
 import {
   fetchBranches as fetchBranchRedux,
   fetchGrades,
-} from '../lesson-plan/create-lesson-plan/apis';
+} from './apis';
 import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -328,7 +328,7 @@ const AdminCreateBlog = () => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
+          `${endpoints.newBlog.erpSectionmapppingV3}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
         )
         .then((result) => {
           setLoading(false);
@@ -836,7 +836,6 @@ const AdminCreateBlog = () => {
     );
   });
 
-  console.log(grades, 'jk');
 
   const gradeOptions = grades?.map((each) => {
     return (
