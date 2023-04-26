@@ -259,6 +259,7 @@ export default {
   nonAcademicStaff: {
     roles: '/erp_user/roles/',
     createStaff: '/erp_user/add_non_acadamic_user/',
+    updateStaff: '/erp_user/update_non_acadamic_user/',
     uploadBulkStaff: '/erp_user/bulk_upload_non_acad/',
     viewStaff: '/erp_user/non_acad_user_data/',
     bulkUpload: '/erp_user/uploaded-users-status/',
