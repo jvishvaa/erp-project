@@ -1,11 +1,12 @@
-import { FileExcelTwoTone, UploadOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Select, Upload, message } from 'antd';
+import { DownOutlined, FileExcelTwoTone, UploadOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Input, Select, Table, Upload, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchBranchesForCreateUser } from 'redux/actions';
 import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
 const UploadExcel = () => {
   const [branches, setBranches] = useState([]);
@@ -20,11 +21,54 @@ const UploadExcel = () => {
   const [requestSent, setRequestSent] = useState(false);
   const [acadId, setAcadId] = useState('');
 
+  const [userLevelList, setUserLevelList] = useState([]);
+  const [userDesignationList, setUserDesignationList] = useState([]);
+  const [userRoleList, setUserRoleList] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchUserLevel = () => {
+    axios
+      .get(`${endpoints.userManagement.userLevelList}`, {
+        headers: {
+          'X-Api-Key': 'vikash@12345#1231',
+        },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setUserLevelList(res?.data?.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchUserDesignation = (value) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.userManagement.userDesignation}?user_level=${value}`, {
+        headers: {
+          'X-Api-Key': 'vikash@12345#1231',
+        },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setUserDesignationList(res?.data?.result);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const formRef = useRef();
 
   const history = useHistory();
 
   useEffect(() => {
+    fetchUserLevel();
+    fetchUserRole();
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -73,6 +117,19 @@ const UploadExcel = () => {
       </Option>
     );
   });
+
+  const fetchUserRole = () => {
+    axiosInstance
+      .get(`${endpoints.nonAcademicStaff.roles}`)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setUserRoleList(res?.data?.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const allowedFiles = ['.xls', '.xlsx'];
   const draggerProps = {
@@ -145,7 +202,7 @@ const UploadExcel = () => {
       .then((res) => {
         if (res.status === 200) {
           message.success(res?.data?.message);
-          history.push('/user-management/non-academic-staff');
+          history.push('/user-management/bulk-upload-status');
         }
       })
       .catch((error) => {
@@ -189,11 +246,66 @@ const UploadExcel = () => {
       name: 'role',
       field: 'is a required field, Example: 207',
     },
-    // {
-    //   name: 'How to use Suggestions ?',
-    //   field:
-    //     " From the following dropdowns select grade & section and use the respective Id's for user creation",
-    // },
+    {
+      name: 'How to use Suggestions ?',
+      field:
+        " From the following dropdowns select User Level to get User Designation details and use the respective Id's for user creation",
+    },
+  ];
+
+  const userLevelListOptions = userLevelList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.level_name}
+      </Option>
+    );
+  });
+
+  const handleUserLevel = (e) => {
+    if (e != undefined) {
+      fetchUserDesignation(e);
+    } else {
+      setUserDesignationList([]);
+    }
+  };
+
+  const userLevelColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>ID</span>,
+      dataIndex: 'id',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>User Level</span>,
+      dataIndex: 'level_name',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+  ];
+
+  const designationColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>ID</span>,
+      dataIndex: 'id',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Designation</span>,
+      dataIndex: 'designation',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+  ];
+
+  const roleColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>ID</span>,
+      dataIndex: 'id',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Role</span>,
+      dataIndex: 'role_name',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
   ];
 
   return (
@@ -284,6 +396,95 @@ const UploadExcel = () => {
                 ))}
             </ol>
           </Card>
+        </div>
+      </div>
+
+      <div className='row'>
+        <div className='col-md-12 mt-1 mb-3'>
+          <h4>Suggestions</h4>
+        </div>
+        <div className='col-md-4'>
+          <Select
+            getPopupContainer={(trigger) => trigger.parentNode}
+            maxTagCount={5}
+            allowClear={true}
+            suffixIcon={<DownOutlined className='th-grey' />}
+            className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+            placement='bottomRight'
+            showArrow={true}
+            onChange={(e, value) => handleUserLevel(e, value)}
+            dropdownMatchSelectWidth={false}
+            showSearch
+            filterOption={(input, options) => {
+              return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+            }}
+            placeholder='Select User Level'
+          >
+            {userLevelListOptions}
+          </Select>
+
+          <small className='mt-2'>
+            <b>Note :</b> After selecting User Level, You'll get User Designation.
+          </small>
+        </div>
+      </div>
+
+      <div className='row my-3 academic-staff '>
+        <div className='col-md-4'>
+          <Table
+            className='th-table mt-3'
+            rowClassName={(record, index) =>
+              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+            }
+            loading={loading}
+            columns={userLevelColumns}
+            rowKey={(record) => record?.id}
+            dataSource={userLevelList}
+            pagination={false}
+            scroll={{
+              x: window.innerWidth < 600 ? 'max-content' : null,
+              y: 'calc(300px)',
+            }}
+          />
+        </div>
+        <div className='col-md-4'>
+          {/* {userDesignationList?.length > 0 && ( */}
+          <Table
+            className='th-table mt-3'
+            rowClassName={(record, index) =>
+              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+            }
+            loading={loading}
+            columns={designationColumns}
+            rowKey={(record) => record?.id}
+            dataSource={userDesignationList}
+            pagination={false}
+            scroll={{
+              x: window.innerWidth < 600 ? 'max-content' : null,
+              y: 'calc(300px)',
+            }}
+          />
+          {/* )} */}
+        </div>
+
+        <div className='col-md-4'>
+          {userRoleList?.length > 0 && (
+            <Table
+              className='th-table mt-3'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+              }
+              loading={loading}
+              columns={roleColumns}
+              rowKey={(record) => record?.id}
+              dataSource={userRoleList}
+              pagination={false}
+              scroll={{
+                x: window.innerWidth < 600 ? 'max-content' : null,
+                y: 'calc(300px)',
+              }}
+            />
+          )}
         </div>
       </div>
     </>

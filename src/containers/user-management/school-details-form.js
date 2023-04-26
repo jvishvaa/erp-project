@@ -69,12 +69,11 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       });
     }
     getRoleApi()
-    getDesignation()
   }, []);
 
   const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3001'
+  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
     ? true
     : false;
 
@@ -107,9 +106,9 @@ let levelObj = {};
     }
   };
 
-  const getDesignation = async () => {
+  const getDesignation = async (id) => {
     try {
-      const result = await axios.get(endpoints.lessonPlan.designation, {
+      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
         headers: {
           // Authorization: `Bearer ${token}`,
           'x-api-key': 'vikash@12345#1231',
@@ -348,11 +347,15 @@ let levelObj = {};
     if (formik.values.subjects.length === 0) {
       setAlert('error', 'Please select all fields')
     }
-    else if(formik.values.userLevel == '' && isOrchids == true || formik.values.userLevel == null && isOrchids == true){
+    else if(formik.values.userLevel == '' && isOrchids == true || formik.values.userLevel == null && isOrchids == true ){
       setAlert('error', 'Please select User Level')
-    }
-    else {
-      formik.handleSubmit()
+    } else {
+      if(formik.values.userLevel?.id != 13 && isOrchids == true && formik.values.designation == '' || formik.values.userLevel?.id != 13 && isOrchids == true && formik.values.designation == null ){
+      setAlert('error', 'Please select Designation')
+      }else{
+        formik.handleSubmit()
+        console.log(formik.values.designation);
+      }
     }
   }
 
@@ -373,6 +376,9 @@ let levelObj = {};
             if(value?.id == 13){
               setSelectedDesignation('');
               formik.setFieldValue('designation', '');
+            }
+            if(value?.id){
+              getDesignation(value?.id)
             }
           }}
           id='branch_id'

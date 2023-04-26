@@ -9,17 +9,19 @@ import {
   Space,
   message,
 } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './step.scss';
 import countryList from '../../../../containers/user-management/list';
 import moment from 'moment';
+import { _ } from 'lodash';
 
-const UserDetails = ({ userDetails, setUserDetails }) => {
+const EditUserDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails }) => {
   const [image, setImage] = useState('');
   const [profile, setProfile] = useState('');
   const { Option } = Select;
 
-  const userData = [...userDetails];
+  const formRef = useRef();
+  const userData = [userDetails];
 
   const selectDob = (date, dateString) => {
     handleInput('dob', dateString);
@@ -41,49 +43,83 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
     }
   }, [profile]);
 
+  useEffect(() => {
+    if (formRef.current) {
+      let gender;
+      if (userDetails?.gender === 'male') {
+        gender = 1;
+      } else if (userDetails?.gender === 'female') {
+        gender = 2;
+      } else {
+        gender = 3;
+      }
+      let contact = userDetails?.contact.split('-');
+      userDetails?.profile !== null || userDetails?.profile !== undefined
+        ? setImage(userDetails?.profile)
+        : setImage('');
+      formRef.current.setFieldsValue({
+        first_name: userDetails?.user?.first_name,
+        middle_name: userDetails?.user_middle_name,
+        last_name: userDetails?.user?.last_name,
+        gender: gender,
+        dob: moment(userDetails?.date_of_birth),
+        country_code: contact[0],
+        mobile: contact[1],
+        username: userDetails?.user?.username,
+        email: userDetails?.user?.email,
+        address: userDetails?.address,
+      });
+    }
+  }, []);
+
   const handleInput = (input, e) => {
     if (input === 'profile') {
-      userData[0].userProfile = e;
+      userData[0].profile = e;
     }
-    setUserDetails(userData);
+    setUserDetails(userData[0]);
   };
 
   const handleInput2 = (e) => {
     let formData = e[0];
+    // const updatedDetails = _.cloneDeep(userDetails);
+    let contact = userDetails?.contact.split('-');
 
     if (formData.name[0] === 'image') {
-      userData[0].userProfile = formData.value;
+      userData[0].profile = formData.value;
     }
     if (formData.name[0] === 'first_name') {
-      userData[0].userFirstName = formData.value;
+      userData[0].user.first_name = formData.value;
     }
     if (formData.name[0] === 'middle_name') {
-      userData[0].userMiddleName = formData.value;
+      userData[0].user_middle_name = formData.value;
     }
     if (formData.name[0] === 'last_name') {
-      userData[0].userLastName = formData.value;
+      userData[0].user.last_name = formData.value;
     }
     if (formData.name[0] === 'gender') {
-      userData[0].userGender = formData.value;
+      userData[0].gender = formData.value;
     }
     if (formData.name[0] === 'dob') {
-      userData[0].userDOB = moment(formData.value).format('YYYY-MM-DD');
+      userData[0].date_of_birth = moment(formData.value).format('YYYY-MM-DD');
     }
     if (formData.name[0] === 'country_code') {
-      userData[0].userCode = formData.value;
+      userData[0].contact = `${formData.value}-${contact[1]}`;
     }
     if (formData.name[0] === 'mobile') {
-      userData[0].userMobile = formData.value;
+      userData[0].contact = `${contact[0]}-${formData.value}`;
     }
     if (formData.name[0] === 'username') {
-      userData[0].userUsername = formData.value;
+      userData[0].erp_id = formData.value;
+      userData[0].user.username = formData.value;
     }
     if (formData.name[0] === 'email') {
-      userData[0].userEmail = formData.value;
+      userData[0].email = formData.value;
+      userData[0].user.email = formData.value;
     }
     if (formData.name[0] === 'address') {
-      userData[0].userAddress = formData.value;
+      userData[0].address = formData.value;
     }
+    setUserDetails(userData[0]);
   };
   return (
     <React.Fragment>
@@ -92,6 +128,7 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
         layout={'vertical'}
         className='academic-staff'
         onFieldsChange={(e) => handleInput2(e)}
+        ref={formRef}
       >
         <div className='row mt-5'>
           <div className='col-md-5 col-sm-6 col-12'>
@@ -155,6 +192,7 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
             >
               <Input
                 placeholder='First Name'
+                value={userData?.user?.first_name}
                 // onChange={(e) => handleInput('firstname', e.target.value)}
               />
             </Form.Item>
@@ -173,6 +211,7 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
             >
               <Input
                 placeholder='Middle Name'
+                value={userData?.user_middle_name}
                 // onChange={(e) => handleInput('middlename', e.target.value)}
               />
             </Form.Item>
@@ -191,6 +230,7 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
             >
               <Input
                 placeholder='Last Name'
+                value={userData?.user?.last_name}
                 // onChange={(e) => handleInput('lastname', e.target.value)}
               />
             </Form.Item>
@@ -224,6 +264,7 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
               <DatePicker
                 disabledDate={(current) => current.isAfter(moment().subtract(1, 'day'))}
                 onChange={selectDob}
+                format={'YYYY-MM-DD'}
               />
             </Form.Item>
           </div>
@@ -348,4 +389,4 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
   );
 };
 
-export default UserDetails;
+export default EditUserDetails;

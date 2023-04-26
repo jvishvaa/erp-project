@@ -483,6 +483,8 @@ import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
 import StudentSideVisualActivity from 'containers/newBlog/StudentSideVisualActivity';
 import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
 import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff';
+import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
+import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
 // import PPTView from './components/attachment-previewer/attachment-previewer-ui/pptview';
 
 function App({ alert, isMsAPI, erpConfig }) {
@@ -2292,6 +2294,14 @@ function App({ alert, isMsAPI, erpConfig }) {
                             ,
                             <Route path='/user-management/create-non-academic-staff'>
                               {({ match }) => <CreateNoAcademicStaff match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/user-management/edit-non-academic-staff/:id'>
+                              {({ match }) => <EditNonAcademicStaff match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/user-management/bulk-upload-status'>
+                              {({ match }) => <ExcelUploadStatus match={match} />}
                             </Route>
                             ,
                             <Route path='/bmi/view'>

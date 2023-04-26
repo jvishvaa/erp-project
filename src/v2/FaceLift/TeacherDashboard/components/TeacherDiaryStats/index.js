@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { message, Spin, Progress } from 'antd';
 import diaryBG from 'v2/Assets/dashboardIcons/studentDashboardIcons/diary.png';
 import './index.css';
-
+import moment from 'moment';
 const DiaryStats = () => {
   const history = useHistory();
   const selectedAcademicYear = useSelector(
@@ -62,7 +62,15 @@ const DiaryStats = () => {
               backgroundSize: 'contain',
               backgroundRepeat: 'no-repeat',
             }}
-            onClick={() => history.push('/diary/teacher')}
+            onClick={() =>
+              history.push({
+                pathname: '/gradewise-diary-report',
+                state: {
+                  date: moment().format('YYYY-MM-DD'),
+                  diaryType: 2,
+                },
+              })
+            }
           >
             <div className='col-2 px-0 '>&nbsp;</div>
             <div className='col-9 pr-0'>

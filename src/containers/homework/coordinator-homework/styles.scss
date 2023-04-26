@@ -569,3 +569,9 @@
     padding: 0.25rem!important;
   }
 }
+.tabledrawsub{
+
+  .ant-drawer-body{
+    overflow-x: hidden;
+  }
+}

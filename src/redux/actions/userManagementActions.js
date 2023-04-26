@@ -183,6 +183,8 @@ export const fetchUser = (id) => (dispatch) => {
           guardian_mobile: user.parent_details.guardian_mobile || '',
           guardian_photo: user.parent_details.guardian_photo || '',
         },
+        user_level: user.user_level,
+        designation: user.designation
       };
       dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });
     })

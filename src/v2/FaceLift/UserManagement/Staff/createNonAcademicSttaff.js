@@ -84,6 +84,7 @@ const CreateNoAcademicStaff = () => {
   };
 
   const submitData = (userDetails) => {
+    setRequestSent(true);
     let userData = userDetails[0];
     let fd = new FormData();
     fd.append('academic_year', userData?.academicYear);
@@ -121,14 +122,15 @@ const CreateNoAcademicStaff = () => {
   };
 
   const handleSubmit = () => {
+    let letterRegx = /^[A-Za-z ]+$/;
     if (current === 1) {
-      if (
-        userDetails[0]?.userProfile === '' ||
-        userDetails[0]?.userProfile === undefined
-      ) {
-        message.error('Please Select User Profile');
-        return;
-      }
+      // if (
+      //   userDetails[0]?.userProfile === '' ||
+      //   userDetails[0]?.userProfile === undefined
+      // ) {
+      //   message.error('Please Select User Profile');
+      //   return;
+      // }
       if (
         userDetails[0]?.userFirstName === '' ||
         userDetails[0]?.userFirstName === undefined
@@ -136,11 +138,25 @@ const CreateNoAcademicStaff = () => {
         message.error('Please Enter User First Name');
         return;
       }
+      if (!userDetails[0]?.userFirstName.match(letterRegx)) {
+        message.error('First Name should only contains character');
+        return;
+      }
+      if (userDetails[0]?.userMiddleName !== '') {
+        if (!userDetails[0]?.userMiddleName.match(letterRegx)) {
+          message.error('Middle Name should only contains character');
+          return;
+        }
+      }
       if (
         userDetails[0]?.userLastName === '' ||
         userDetails[0]?.userLastName === undefined
       ) {
         message.error('Please Enter User Last Name');
+        return;
+      }
+      if (!userDetails[0]?.userLastName.match(letterRegx)) {
+        message.error('Last Name should only contains character');
         return;
       }
       if (userDetails[0]?.userGender === '' || userDetails[0]?.userGender === undefined) {
@@ -155,17 +171,32 @@ const CreateNoAcademicStaff = () => {
         message.error('Please Select User Country Code');
         return;
       }
+      if (isNaN(userDetails[0]?.userMobile)) {
+        message.error('Mobile No. should only contains numbers');
+        return;
+      }
       if (userDetails[0]?.userMobile === '' || userDetails[0]?.userMobile === undefined) {
         message.error('Please Enter User Mobile No.');
         return;
       }
-      if (
-        userDetails[0]?.userMobile.toString().length < 10 ||
-        userDetails[0]?.userMobile.toString().length > 10
-      ) {
-        message.error('Mobile No. must be 10 digit long');
-        return;
+      if (userDetails[0]?.userCode === '+91') {
+        if (
+          userDetails[0]?.userMobile.toString().length < 10 ||
+          userDetails[0]?.userMobile.toString().length > 10
+        ) {
+          message.error('Mobile No. must be 10 digit long');
+          return;
+        }
+      } else {
+        if (
+          userDetails[0]?.userMobile.toString().length < 10 ||
+          userDetails[0]?.userMobile.toString().length > 12
+        ) {
+          message.error('Mobile No. must be 10 to 12 digit long');
+          return;
+        }
       }
+
       // if (
       //   userDetails[0]?.userUsername === '' ||
       //   userDetails[0]?.userUsername === undefined
@@ -188,6 +219,26 @@ const CreateNoAcademicStaff = () => {
     }
   };
   const prev = () => {
+    setUserDetails([
+      {
+        userLevel: '',
+        userDesignation: '',
+        academicYear: '',
+        userBranch: '',
+        userBranchCode: '',
+        userProfile: '',
+        userFirstName: '',
+        userMiddleName: '',
+        userLastName: '',
+        userGender: 1,
+        userDOB: '',
+        userCode: '',
+        userMobile: '',
+        userUsername: '',
+        userEmail: '',
+        userAddress: '',
+      },
+    ]);
     setCurrent(current - 1);
   };
   const items = steps.map((item) => ({
@@ -206,7 +257,7 @@ const CreateNoAcademicStaff = () => {
                 Dashboard
               </Breadcrumb.Item>
               <Breadcrumb.Item
-                href='/user-management/view-users'
+                href='/user-management/non-academic-staff'
                 className='th-grey th-16'
               >
                 User Management
