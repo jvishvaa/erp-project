@@ -84,9 +84,29 @@ const CreateNoAcademicStaff = () => {
   };
 
   const submitData = (userDetails) => {
-    setRequestSent(true);
     let userData = userDetails[0];
     let fd = new FormData();
+
+    if (userData?.userUsername) {
+      //  userData[0].userUsername = formData.value;
+      if (
+        userData.userUsername.toString().slice(0, 4) ==
+          selectedYear?.session_year.toString().slice(0, 4) &&
+        userData.userUsername.toString().slice(4, 7) ==
+          userData?.userBranchCode.toString() &&
+        userData.userUsername.toString().charAt(11) == '_' &&
+        (userData.userUsername.toString().toLowerCase().slice(12, 15) == 'olv' ||
+          userData.userUsername.toString().toLowerCase().slice(12, 15) == 'ois')
+      ) {
+        // console.log(userData?.userUsername, 'debug2');
+      } else {
+        // console.log('debug2 - wrong format', selectedYear?.session_year, userData);
+        message.error('Wrong Format of username.');
+        return false;
+      }
+    }
+    setRequestSent(true);
+
     fd.append('academic_year', userData?.academicYear);
     fd.append('academic_year_value', selectedYear?.session_year);
     fd.append('branch', userData?.userBranch);
@@ -197,13 +217,12 @@ const CreateNoAcademicStaff = () => {
         }
       }
 
-      // if (
-      //   userDetails[0]?.userUsername === '' ||
-      //   userDetails[0]?.userUsername === undefined
-      // ) {
-      //   message.error('Please Enter User Username');
-      //   return;
-      // }
+      if (userDetails[0]?.userUsername !== '') {
+        if (userDetails[0]?.userUsername.length !== 15) {
+          message.error('The username must be of 15 characters');
+          return;
+        }
+      }
       if (userDetails[0]?.userEmail === '' || userDetails[0]?.userEmail === undefined) {
         message.error('Please Enter User Email');
         return;

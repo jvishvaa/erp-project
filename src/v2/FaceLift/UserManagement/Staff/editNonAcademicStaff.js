@@ -155,6 +155,7 @@ const EditNonAcademicStaff = () => {
     } else {
       gender = userDetails?.gender;
     }
+
     const fd = new FormData();
     fd.append('academic_year', acadId.join(','));
     fd.append('branch', brachId.join(','));
@@ -188,11 +189,20 @@ const EditNonAcademicStaff = () => {
   };
 
   const next = () => {
+    if (userDetails?.user_level?.id === '' || userDetails?.user_level?.id === undefined) {
+      message.error('Please select user level');
+      return;
+    }
     if (
       userDetails?.designation?.id === '' ||
       userDetails?.designation?.id === undefined
     ) {
-      message.error('Designation is required');
+      message.error('Please select designation');
+      return;
+    }
+
+    if (userDetails?.role?.id === '' || userDetails?.role?.id === undefined) {
+      message.error('Please select role');
       return;
     }
 
@@ -207,6 +217,14 @@ const EditNonAcademicStaff = () => {
 
     if (isFieldNull.length > 0) {
       message.error('Academic year and Branch can not be empty');
+      return;
+    }
+    let acadId = [];
+    let mappingData = userDetails?.acad_session?.forEach((item) => {
+      acadId.push(item?.id);
+    });
+    if (new Set(acadId).size !== acadId.length) {
+      message.error('Academic year can not be duplicate');
       return;
     }
 

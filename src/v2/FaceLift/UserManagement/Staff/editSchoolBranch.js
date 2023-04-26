@@ -5,6 +5,7 @@ import {
   fetchBranchesForCreateUser,
   fetchAcademicYears as getAcademicYears,
 } from 'redux/actions';
+import axiosInstance from 'config/axios';
 import UserDetails from './userDetails';
 import _ from 'lodash';
 import { CloseCircleOutlined } from '@ant-design/icons';
@@ -41,15 +42,19 @@ const EditSchoolBranch = ({
 
   const fetchBranches = (acadId) => {
     if (selectedYear) {
-      fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
-        const transformedData = data?.map((obj) => ({
-          id: obj.id,
-          branch_name: obj.branch_name,
-          branch_code: obj.branch_code,
-          acadId: obj.acadId,
-        }));
-        setBranches(transformedData);
-      });
+      axiosInstance
+        .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            const transformedData = res?.data?.data?.results?.map((obj) => ({
+              acadId: obj.id,
+              branch_name: obj.branch?.branch_name,
+              branch_code: obj.branch?.branch_code,
+              id: obj.branch?.id,
+            }));
+            setBranches(transformedData);
+          }
+        });
     }
   };
   const branchListOptions = branches?.map((each) => {
@@ -59,6 +64,7 @@ const EditSchoolBranch = ({
         value={each.id}
         branch_code={each?.branch_code}
         acadId={each?.acadId}
+        branchId={each?.id}
       >
         {each?.branch_name}
       </Option>
@@ -100,7 +106,6 @@ const EditSchoolBranch = ({
         selectedYear?.value;
     }
   }, []);
-
   const academicYearOptions = academicYears?.map((each) => {
     return (
       <Option key={each?.id} value={each.id}>
@@ -113,11 +118,11 @@ const EditSchoolBranch = ({
     if (e != undefined) {
       // let updatedDetails = Object.assign({}, userDetails);
       const updatedDetails = _.cloneDeep(userDetails);
-      updatedDetails.acad_session[index].id = selectedYear?.value;
       updatedDetails.mapping_bgs[index].session_year[0]['acad_session_year'] =
         selectedYear?.children;
       updatedDetails.mapping_bgs[index].session_year[0]['session_year_id'] =
         selectedYear?.value;
+        
       //   setSelectedAcademicYears(e);
       handleUpdateUserDetails(updatedDetails);
       fetchBranches(e);
@@ -144,12 +149,16 @@ const EditSchoolBranch = ({
       updatedDetails.acad_session[index].branch = data?.value;
       updatedDetails.mapping_bgs[index].branch[0]['branch__branch_name'] = data?.children;
       updatedDetails.mapping_bgs[index].branch[0]['branch_id'] = e;
+      updatedDetails.acad_session[index].id = data?.acadId;
+
       //   setSelectedAcademicYears(e);
       handleUpdateUserDetails(updatedDetails);
     } else {
       updatedDetails.acad_session[index].branch = '';
       updatedDetails.mapping_bgs[index].branch[0]['branch__branch_name'] = '';
       updatedDetails.mapping_bgs[index].branch[0]['branch_id'] = '';
+      updatedDetails.acad_session[index].id = '';
+
     }
     // setUserDetails(userData);
   };
@@ -196,7 +205,7 @@ const EditSchoolBranch = ({
             {branchListOptions}
           </Select>
         </div>
-        {userDetails?.mapping_bgs[index]?.isEdit && (
+        {userDetails?.mapping_bgs.length > 1 && (
           <div className='col-md-2'>
             <Button
               icon={<CloseCircleOutlined />}
