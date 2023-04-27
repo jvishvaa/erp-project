@@ -225,12 +225,12 @@ const GuardianDetailsForm = ({
                     id='father_mobile'
                     name='father_mobile'
                     onChange={(e)=>handleFatherMobileNumber(e)}
-                    inputProps={{ maxLength: 15 }}
+                    inputProps={{ maxLength: 10 }}
                     type='number'
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
                     // inputProps={{ pattern: { min: 5, max: 15 } }}
@@ -393,14 +393,14 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='mother_mobile'
                     name='mother_mobile'
-                    inputProps={{ maxLength: 15 }}
+                    inputProps={{ maxLength: 10 }}
                     // inputProps={{ pattern: { min: 10, max: 10 } }}
                     placeholder='Ex: 995656xxxx'
                     type='number'
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
                     onChange={(e)=>handleMotherMobileNumber(e)}
@@ -562,7 +562,7 @@ const GuardianDetailsForm = ({
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
                     inputProps={{ maxLength: 15 }}
