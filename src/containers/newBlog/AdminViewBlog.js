@@ -625,7 +625,7 @@ const AdminViewBlog = () => {
                           }
                           loading={loading}
                           pagination={{
-                            total: totalCountAssigned,
+                            total: totalCountUnassign,
                             current: Number(currentPageAssigned),
                             pageSize: limitAssigned,
                             showSizeChanger: false,
