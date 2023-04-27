@@ -230,7 +230,7 @@ const GuardianDetailsForm = ({
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
                     // inputProps={{ pattern: { min: 5, max: 15 } }}
@@ -400,7 +400,7 @@ const GuardianDetailsForm = ({
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
                     onChange={(e)=>handleMotherMobileNumber(e)}
