@@ -562,7 +562,7 @@ const GuardianDetailsForm = ({
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
                     inputProps={{ maxLength: 15 }}
