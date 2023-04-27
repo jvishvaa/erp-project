@@ -56,7 +56,7 @@ const ImageUpload = ({ id, value, onChange }) => {
             <input
               style={{ visibility: 'hidden', position: 'absolute' }}
               type='file'
-              accept="image/*"
+              accept='.png, .jpg, .jpeg, .PNG, .JPG, .JPEG'
               id={id ? `image=${id}` : 'image'}
               name={id ? `image=${id}` : 'image'}
               onChange={(e) => {

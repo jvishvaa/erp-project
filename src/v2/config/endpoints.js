@@ -24,6 +24,7 @@ export default {
   },
   userManagement: {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
+    userDesignation: `${baseURLCentral}/central-admin/user_designation/`,
   },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
@@ -213,6 +214,8 @@ export default {
 
     activityTypeSubmit: `${newBlogURL}/api/activity_type_create/`,
     activityTypeSubmitEdit: `${newBlogURL}/api/activity_type_edit/`,
+    erpSectionmapppingV3: '/erp_user/V3/sectionmapping/',
+    erpGradeMappingV3:'/erp_user/V3/grademapping/',
 
     studentReviews: `${newBlogURL}/api/student_review/`,
     studentReviewss: `${newBlogURL}/api/student_reviews/`,
@@ -255,6 +258,14 @@ export default {
   appVersion: `${baseURLCentral}/central-admin/app-versioning/`,
   schoolDetails: `${baseURLCentral}/central-admin/school_details/`,
 
+  nonAcademicStaff: {
+    roles: '/erp_user/roles/',
+    createStaff: '/erp_user/add_non_acadamic_user/',
+    updateStaff: '/erp_user/update_non_acadamic_user/',
+    uploadBulkStaff: '/erp_user/bulk_upload_non_acad/',
+    viewStaff: '/erp_user/non_acad_user_data/',
+    bulkUpload: '/erp_user/uploaded-users-status/',
+  },
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing

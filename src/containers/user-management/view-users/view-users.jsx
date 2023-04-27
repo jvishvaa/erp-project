@@ -40,6 +40,7 @@ import ViewUserCard from '../../../components/view-user-card';
 import FileSaver from 'file-saver';
 import { connect, useSelector } from 'react-redux';
 import './styles.scss';
+import axios from 'axios';
 import {
   Tooltip,
   Accordion,
@@ -232,22 +233,22 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   }, [history?.location?.state?.isEdit]);
 
-  const getRoleApi = async () => {
-    try {
-      const result = await axiosInstance.get(endpoints.communication.roles, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (result.status === 200) {
-        setRoleList(result.data.result);
-      } else {
-        setAlert('error', result.data.message);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
-    }
-  };
+  // const getRoleApi = async () => {
+  //   try {
+  //     const result = await axiosInstance.get(endpoints.communication.roles, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     if (result.status === 200) {
+  //       setRoleList(result.data.result);
+  //     } else {
+  //       setAlert('error', result.data.message);
+  //     }
+  //   } catch (error) {
+  //     setAlert('error', error.message);
+  //   }
+  // };
 
   const getBranchApi = async () => {
     try {
@@ -285,8 +286,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const getSectionApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${
-          selectedBranch.id
+        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id
         }&grade_id=${gradeIds.toString()}&module_id=${moduleId}`
       );
       if (result.data.status_code === 200) {
@@ -345,7 +345,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         getUserListUrl += `&status=${status.toString()}`;
       }
       if (rolesId && rolesId.length > 0 && selectedRoles !== 'All') {
-        getUserListUrl += `&role=${rolesId.toString()}`;
+        getUserListUrl += `&user_level=${rolesId.toString()}`;
       }
       if (selectedBranch && selectedBranch !== null) {
         getUserListUrl += `&branch_id=${selectedBranch?.id.toString()}`;
@@ -429,7 +429,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
     let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}&session_year=${selectedYear.id}`;
     if (rolesId.length > 0 && selectedRoles !== 'All') {
-      getUserListUrl += `&role=${rolesId.toString()}`;
+      getUserListUrl += `&user_level=${rolesId.toString()}`;
     }
     if (selectedBranch && selectedBranch !== 'All') {
       getUserListUrl += `&branch=${selectedBranch?.id}`;
@@ -604,7 +604,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         }
       );
       if (statusChange.status === 200) {
-        setAlert('success', statusChange.data.message);
+        setAlert('success', 'User Deleted');
         const tempGroupData = usersData.slice();
         tempGroupData.splice(deleteIndex, 1);
         setUsersData(tempGroupData);
@@ -763,6 +763,23 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
 
+  const getRoleApi = async () => {
+    try {
+      const result = await axios.get(endpoints.userManagement.userLevelList, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      });
+      if (result.status === 200) {
+        setRoleList(result?.data?.result)
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error?.message);
+    }
+  };
+
   const isOfOrchids = [
     'localhost:3000',
     'ui-revamp1.letseduvate.com',
@@ -834,18 +851,18 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                       onChange={(event, value) => {
                         setSelectedRoles(value);
                       }}
-                      id='role_id'
+                      id='branch_id'
                       className='dropdownIcon'
                       value={selectedRoles || []}
                       options={roleList}
-                      getOptionLabel={(option) => option?.role_name}
+                      getOptionLabel={(option) => option?.level_name}
                       filterSelectedOptions
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           variant='outlined'
-                          label='Role'
-                          placeholder='Select Role'
+                          label='User Level'
+                          placeholder='Select User Level'
                         />
                       )}
                     />

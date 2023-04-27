@@ -705,6 +705,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'File Category',
       Path: '/file-category',
     },
+    {
+      name: 'Non Academic Staff',
+      Path: '/user-management/non-academic-staff',
+    },
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);

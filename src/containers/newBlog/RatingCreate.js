@@ -288,7 +288,6 @@ const RatingCreate = () => {
                     icon={<DeleteFilled className='="th-14' />}
                     color={'red'}
                     className='th-br-5 th-pointer py-1'
-                    // onClick={(e) => handleDelete(row)}
                   >
                     Delete
                   </Tag>
@@ -331,8 +330,6 @@ const RatingCreate = () => {
     setIsEditData({ ...isEditData, grading_scheme: newData });
   };
 
-
-
   const [view, setViewed] = useState(false);
   const [branchView, setBranchView] = useState(true);
   const [branchSearch, setBranchSearch] = useState(true);
@@ -344,11 +341,8 @@ const RatingCreate = () => {
     setOptionList([{ name: '', score: null, status: false }]);
   };
 
-
-
   const [data, setData] = useState('');
   const [assigned, setAssigned] = useState(false);
-
 
   const [assingeds, setAssigneds] = useState([]);
   const getAssinged = () => {
@@ -369,12 +363,16 @@ const RatingCreate = () => {
 
   const handleActivityTypeSubmit = () => {
     if (!ActivityType?.name || isEdit?.name) {
-      setAlert('error', 'Please Enter Activity Type');
+      message.error('Please Enter Activity Type');
+      return;
+    }
+    if (!subActivityType?.name) {
+      message.error('Please Select Sub-Activity Type');
       return;
     }
     const uniqueValues = new Set(inputList.map((e) => e.name));
     if (uniqueValues.size < inputList.length) {
-      setAlert('error', 'Duplicate Name Found');
+      message.error('Duplicate Name Found');
       return;
     }
     let body = {
@@ -412,12 +410,12 @@ const RatingCreate = () => {
   };
   const handleActivityTypeSubmitEdit = () => {
     if (!isEditData?.name) {
-      setAlert('error', 'Please Enter Activity Type');
+      message.error('Please Enter Activity Type');
       return;
     }
     const uniqueValues = new Set(isEditData?.grading_scheme?.map((e) => e.name));
     if (uniqueValues.size < isEditData?.grading_scheme?.length) {
-      setAlert('error', 'Duplicate Name Found');
+      message.error('Duplicate Name Found');
       return;
     }
     let body = { ...isEditData };
@@ -450,7 +448,6 @@ const RatingCreate = () => {
           setActivityType(null);
           setFilterData([]);
           getActivityCategory();
-          // handleActivity(isEditData?.name)
           handleModalCloseEdit();
           return;
         }
@@ -482,7 +479,6 @@ const RatingCreate = () => {
   useEffect(() => {
     getActivityCategory();
   }, []);
-
 
   const handleInputCreativity = (event, index) => {
     const { value } = event.target;
@@ -552,7 +548,7 @@ const RatingCreate = () => {
     setInputList(newList);
   };
 
-  const handleRemoveItemEdit = (index) => {
+  const handleRemoveItemEdit = (input, index) => {
     const newFileList = isEditData.grading_scheme.slice();
     newFileList.splice(index, 1);
     setIsEditData({ ...isEditData, grading_scheme: newFileList });
@@ -610,7 +606,6 @@ const RatingCreate = () => {
     }
   }, [isEditData]);
 
-
   const handleVisualInputApp = () => {
     setVisualInputList([
       ...visualInputlList,
@@ -629,12 +624,6 @@ const RatingCreate = () => {
     });
     setIsEditData({ ...isEditData, grading_scheme: newData });
   };
-
-
-
-
-
-
 
   const mainActivityOption = activityCategory?.result?.map((each) => {
     return (
@@ -659,7 +648,6 @@ const RatingCreate = () => {
       </Option>
     );
   });
-
 
   const handleOptionInputAdd = () => {
     setOptionList([
@@ -717,52 +705,60 @@ const RatingCreate = () => {
   };
 
   const handleOptionSubmit = () => {
-    const arr1 = visualInputlList?.map((obj) => {
-      return { ...obj, rating: optionList };
-      return obj;
-    });
-    let body = {
-      activity_type: ActivityType?.name,
-      criteria_title: remarksType,
-      grading_scheme: arr1,
-    };
-
-    setLoading(true);
-    axios
-      .post(`${endpoints.newBlog.visualOptionSubmit}`, body, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((res) => {
-        if (res.data.status_code == 400) {
-          message.error({
-            content: res?.data?.message,
-            style: {
-              zIndex: '2000',
-            },
-          });
-          setLoading(false);
-          return;
-        } else {
-          setLoading(false);
-          message.success({
-            content: res.data.message,
-            style: {
-              zIndex: '2000',
-            },
-          });
-          setActivityType(null);
-          setRemarksType(null);
-          handleClose();
-          getActivityCategory();
-          setFilterData([]);
-          return;
-        }
-      })
-      .catch(() => {
-        setLoading(false);
+    if (!ActivityType?.name) {
+      message.error('Please Select Activity Type');
+      return;
+    } else if (!remarksType) {
+      message.error('Please Select Criteria Title');
+      return;
+    } else {
+      const arr1 = visualInputlList?.map((obj) => {
+        return { ...obj, rating: optionList };
+        return obj;
       });
+      let body = {
+        activity_type: ActivityType?.name,
+        criteria_title: remarksType,
+        grading_scheme: arr1,
+      };
+
+      setLoading(true);
+      axios
+        .post(`${endpoints.newBlog.visualOptionSubmit}`, body, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((res) => {
+          if (res.data.status_code == 400) {
+            message.error({
+              content: res?.data?.message,
+              style: {
+                zIndex: '2000',
+              },
+            });
+            setLoading(false);
+            return;
+          } else {
+            setLoading(false);
+            message.success({
+              content: res.data.message,
+              style: {
+                zIndex: '2000',
+              },
+            });
+            setActivityType(null);
+            setRemarksType(null);
+            handleClose();
+            getActivityCategory();
+            setFilterData([]);
+            return;
+          }
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
   };
 
   const handleOptionSubmitEdit = () => {
@@ -770,7 +766,6 @@ const RatingCreate = () => {
       return { ...obj, rating: editOption };
       return obj;
     });
-    console.log(arr1);
     let body = {
       name: isEditData?.name,
       id: isEditData?.id,
@@ -787,7 +782,6 @@ const RatingCreate = () => {
       })
       .then((res) => {
         if (res.data.status_code == 400 || res?.data?.status_code == 422) {
-          // message.error(res.data.message);
           message.error({
             content: res.data.message,
             style: {
@@ -818,17 +812,18 @@ const RatingCreate = () => {
       });
   };
 
-
-  const handleOptionDelete = (id) => {
+  const handleOptionDelete = (id, index) => {
     let newOptionList = [...optionList];
-    let newList = newOptionList.filter((item) => item?.name !== id?.name);
-    setOptionList(newList);
+    // let newList = newOptionList.filter((item) => item?.name !== id?.name);
+    newOptionList.splice(index, 1);
+    setOptionList(newOptionList);
   };
 
-  const handleOptionDeleteEdit = (id) => {
+  const handleOptionDeleteEdit = (id, index) => {
     let newOptionList = [...editOption];
-    let newList = newOptionList.filter((item) => item?.name !== id?.name);
-    setEditOption(newList);
+    // let newList = newOptionList.filter((item) => item?.name !== id?.name);
+    newOptionList.splice(index, 1);
+    setEditOption(newOptionList);
   };
 
   const handleQuestion = (event, index) => {
@@ -851,10 +846,11 @@ const RatingCreate = () => {
     }
   };
 
-  const handleRemoveVisualQuestion = (id) => {
+  const handleRemoveVisualQuestion = (id, index) => {
     let newVisualList = [...visualInputlList];
-    const newList = newVisualList.filter((item) => item?.name !== id?.name);
-    setVisualInputList(newList);
+    // const newList = newVisualList.filter((item) => item?.name !== id?.name);
+    newVisualList.splice(index, 1);
+    setVisualInputList(newVisualList);
   };
 
   const handleRemoveVisualQuestionEdit = (id, index) => {
@@ -862,7 +858,6 @@ const RatingCreate = () => {
     newFileList.splice(index, 1);
     setIsEditData({ ...isEditData, grading_scheme: newFileList });
   };
-
 
   const handleActivityChange = (event, value) => {
     setActivityType(value);
@@ -910,7 +905,6 @@ const RatingCreate = () => {
         .then((response) => {
           if (response?.data?.status_code) {
             message.success(response?.data?.message);
-            // handleActivity(data?.name);
             setActivityType(null);
             setFilterData([]);
             getActivityCategory();
@@ -955,9 +949,6 @@ const RatingCreate = () => {
             <Breadcrumb.Item className='th-grey th-16'>Create rating</Breadcrumb.Item>
           </Breadcrumb>
         </div>
-
-        {/* //body - */}
-
         <div className='row th-bg-white th-br-5 m-3 h-50'>
           {loading ? (
             <div
@@ -967,10 +958,9 @@ const RatingCreate = () => {
               <Spin tip='Loading' />
             </div>
           ) : (
-            <div className='row p-3' style={{ height: '70vh', overflowY: 'auto' }}>
+            <div className='row p-3'>
               <div className='col-12 d-flex' style={{ height: '6%' }}>
                 <div className='col-md-3 mb-sm-0 p-0'>
-                  {/* <Form.Item name='activity type'> */}
                   <div className='py-1'>Select Activity Type</div>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -986,13 +976,11 @@ const RatingCreate = () => {
                     onChange={(e) => {
                       handleActivity(e);
                     }}
-                    // onClear={handleClearActivityType}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={true}
                   >
                     {mainActivityOption}
                   </Select>
-                  {/* </Form.Item> */}
                 </div>
 
                 <div className='d-flex align-item-center justify-content-end col-md-9 mb-sm-0 p-0'>
@@ -1018,7 +1006,7 @@ const RatingCreate = () => {
                   </div>
                 </div>
               </div>
-              <div className='row mt-5' style={{ height: '55vh', overflowY: 'auto' }}>
+              <div className='row mt-5'>
                 <div className='col-md-12'>
                   <>
                     {filterData?.length !== 0 ? (
@@ -1028,7 +1016,7 @@ const RatingCreate = () => {
                           `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                         }
                         pagination={false}
-                        scroll={{ y: 600 }}
+                        scroll={{ y: '50vh' }}
                         loading={loading}
                         columns={columns}
                         dataSource={filterData}
@@ -1144,7 +1132,6 @@ const RatingCreate = () => {
                         orientationMargin='0'
                         plain
                         style={{ alignItems: 'flex-start' }}
-                        // setIsEdit(false);
                       >
                         Add Questions
                       </AntDivider>
@@ -1162,14 +1149,20 @@ const RatingCreate = () => {
                                 />
                               </div>
                               <div className='col-2 delete-visual-icon'>
-                                <DeleteFilled
-                                  onClick={() => handleRemoveVisualQuestion(input, index)}
-                                  style={{
-                                    cursor: 'pointer',
-                                    fontSize: '18px',
-                                    color: 'darkblue',
-                                  }}
-                                />
+                                {visualInputlList && visualInputlList.length > 1 ? (
+                                  <DeleteFilled
+                                    onClick={() =>
+                                      handleRemoveVisualQuestion(input, index)
+                                    }
+                                    style={{
+                                      cursor: 'pointer',
+                                      fontSize: '18px',
+                                      color: 'darkblue',
+                                    }}
+                                  />
+                                ) : (
+                                  ''
+                                )}
                               </div>
                             </>
                           ))
@@ -1190,7 +1183,7 @@ const RatingCreate = () => {
                         plain
                         style={{ alignItems: 'flex-start' }}
                       >
-                        Add Options
+                        Add Options & Marks
                       </AntDivider>
                       {optionList
                         ? optionList.map((input, index) => (
@@ -1216,14 +1209,18 @@ const RatingCreate = () => {
                                 />
                               </div>
                               <div className='col-3 delete-visual-icon'>
-                                <DeleteFilled
-                                  style={{
-                                    cursor: 'pointer',
-                                    fontSize: '18px',
-                                    color: 'darkblue',
-                                  }}
-                                  onClick={() => handleOptionDelete(input, index)}
-                                />
+                                {optionList && optionList.length > 1 ? (
+                                  <DeleteFilled
+                                    style={{
+                                      cursor: 'pointer',
+                                      fontSize: '18px',
+                                      color: 'darkblue',
+                                    }}
+                                    onClick={() => handleOptionDelete(input, index)}
+                                  />
+                                ) : (
+                                  ''
+                                )}
                               </div>
                             </div>
                           ))
@@ -1303,7 +1300,7 @@ const RatingCreate = () => {
                               <div className='row mt-2'>
                                 <div className='col-10 px-0'>
                                   <Input
-                                    placeholder='Criteria'
+                                    placeholder='Criteria Name'
                                     width={100}
                                     showCount
                                     maxLength='500'
@@ -1344,15 +1341,18 @@ const RatingCreate = () => {
                                   </>
                                 )}
                                 <div className='col-2 d-flex align-items-center'>
-                                  <DeleteFilled
-                                    // onClick={() => handleRemoveVisualQuestion(input, index)}
-                                    onClick={() => handleRemoveItem(index)}
-                                    style={{
-                                      cursor: 'pointer',
-                                      fontSize: '18px',
-                                      color: 'darkblue',
-                                    }}
-                                  />
+                                  {inputList && inputList.length > 1 ? (
+                                    <DeleteFilled
+                                      onClick={() => handleRemoveItem(index)}
+                                      style={{
+                                        cursor: 'pointer',
+                                        fontSize: '18px',
+                                        color: 'darkblue',
+                                      }}
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
                                 </div>
                               </div>
                             </>
@@ -1531,9 +1531,8 @@ const RatingCreate = () => {
                         plain
                         style={{ alignItems: 'flex-start' }}
                       >
-                        Add Options
+                        Add Options & Marks
                       </AntDivider>
-                      {console.log(editOption, 'kl88')}
                       {Object.keys(editOption)
                         ? editOption?.map((input, index) => (
                             <div className='row'>
@@ -1703,7 +1702,7 @@ const RatingCreate = () => {
                                 )}
                                 <div className='col-2 d-flex align-items-center'>
                                   <DeleteFilled
-                                    onClick={() => handleRemoveItemEdit(index)}
+                                    onClick={() => handleRemoveItemEdit(input, index)}
                                     style={{
                                       cursor: 'pointer',
                                       fontSize: '18px',

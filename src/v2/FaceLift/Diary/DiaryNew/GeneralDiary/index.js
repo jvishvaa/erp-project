@@ -30,6 +30,7 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
   const [studentCheckedID, setStudentCheckedID] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [requestSent, setRequestSent] = useState(false);
 
   const formRef = createRef();
   const { Option } = Select;
@@ -169,6 +170,7 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
     if (isSubstituteDiary) {
       payload['is_substitute_diary'] = true;
     }
+    setRequestSent(true);
     axios
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {
@@ -183,6 +185,9 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
       })
       .catch((error) => {
         message.error(error.message);
+      })
+      .finally(() => {
+        setRequestSent(false);
       });
   };
 
@@ -462,6 +467,7 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
                   <Button
                     className='th-width-100 th-br-6 th-bg-primary th-white th-pointer'
                     onClick={publishGeneralDiary}
+                    loading={requestSent}
                   >
                     Submit
                   </Button>

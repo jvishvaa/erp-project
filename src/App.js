@@ -61,7 +61,7 @@ import BookAppointment from './containers/BookAppointments/BookAppointment';
 import Appointments from './containers/BookAppointments/Appointments';
 import ResponderView from './containers/BookAppointments/ResponderView';
 import AssessmentForm from './containers/sure-learning/assessment_form/assessment_form';
-import Chapterwise from './containers/question-bank-new/question-bank-list/chapterwise'
+import Chapterwise from './containers/question-bank-new/question-bank-list/chapterwise';
 import PostActivityView from 'containers/newBlog/postActivityView';
 
 import {
@@ -442,7 +442,7 @@ import ResourcesFolderList from './containers/sure-learning/Resources_Folders/re
 import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
 import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
-import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject'
+import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject';
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
@@ -469,7 +469,7 @@ import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalA
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
 import NewEbookView from 'containers/ebooks/NewEbook';
 import ViewBMI from 'containers/newBlog/ViewBMI';
-import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
+import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper';
 import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
 import AddHomeworkCordNew from 'containers/homework/coordinator-homework/newAddHomework';
@@ -481,6 +481,11 @@ import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
 import StudentSideVisualActivity from 'containers/newBlog/StudentSideVisualActivity';
+import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
+import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff';
+import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
+import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
+// import PPTView from './components/attachment-previewer/attachment-previewer-ui/pptview';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -560,7 +565,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                               {({ match }) => <MessageLog match={match} />}
                             </Route>
                             <Route path='/student/phycial/activity'>
-                              {({ match }) => <StudentSidePhysicalActivity match={match} />}
+                              {({ match }) => (
+                                <StudentSidePhysicalActivity match={match} />
+                              )}
                             </Route>
                             <Route path='/student/visual/activity'>
                               {({ match }) => <StudentSideVisualActivity match={match} />}
@@ -620,7 +627,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/create-questionpaper'>
                               {({ match }) => <CreatequestionPaperNew match={match} />}
                             </Route>
-
                             <Route path='/create-assesment'>
                               {({ match }) => <CreateAssesment match={match} />}
                             </Route>
@@ -979,7 +985,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                             {/* <Route exact path='/homework/coordinator'>
                               {({ match }) => <CoordinatorTeacherHomeworkv2 match={match} />}
                             </Route> */}
-                            <Route exact path='/homework/addhomework/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'>
+                            <Route
+                              exact
+                              path='/homework/addhomework/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'
+                            >
                               {({ match }) => <AddHomeworkCordNew match={match} />}
                             </Route>
                             <Route
@@ -2079,21 +2088,16 @@ function App({ alert, isMsAPI, erpConfig }) {
                                 <CurriculumChapterWiseSubject match={match} />
                               )}
                             </Route>
-
                             <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
                               {({ match }) => (
                                 <CurriculumCompletionSection match={match} />
                               )}
                             </Route>
                             <Route path='/curriculum-completion-teacher-subject/:branchId'>
-                              {({ match }) => (
-                                <TeacherSubject match={match} />
-                              )}
+                              {({ match }) => <TeacherSubject match={match} />}
                             </Route>
                             <Route path='/curriculum-completion-student-subject/'>
-                              {({ match }) => (
-                                <StudentSubject match={match} />
-                              )}
+                              {({ match }) => <StudentSubject match={match} />}
                             </Route>
                             <Route path='/sure-learning-trainee-courses'>
                               {({ match }) => <CoursesView match={match} />}
@@ -2271,9 +2275,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/lesson-plan/student-view/list-view'>
                               {({ match }) => <LessonPlan match={match} />}
                             </Route>
-
                             {/* ebook v2 */}
-
                             <Route path='/online-books/'>
                               {({ match }) => <NewEbookView match={match} />}
                             </Route>
@@ -2283,7 +2285,25 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/student-analytics'>
                               {({ match }) => <Studentanalytics match={match} />}
                             </Route>
-
+                            {/* <Route exact path='/pptview'>
+                              {({ match }) => <PPTView match={match} />}
+                            </Route> */}
+                            <Route path='/user-management/non-academic-staff'>
+                              {({ match }) => <NonAcademicStaff match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/user-management/create-non-academic-staff'>
+                              {({ match }) => <CreateNoAcademicStaff match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/user-management/edit-non-academic-staff/:id'>
+                              {({ match }) => <EditNonAcademicStaff match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/user-management/bulk-upload-status'>
+                              {({ match }) => <ExcelUploadStatus match={match} />}
+                            </Route>
+                            ,
                             <Route path='/bmi/view'>
                               {({ match }) => <ViewBMI match={match} />}
                             </Route>

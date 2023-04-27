@@ -52,6 +52,12 @@ class EditUser extends Component {
       isEditable: false,
       isSuper: false,
       hasAddAccess: false,
+      userLevel: '',
+      designation: '',
+      isOrchids : window.location.host.split('.')[0] === 'orchids' ||
+      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
+        ? true
+        : false,
     };
   }
 
@@ -106,6 +112,7 @@ class EditUser extends Component {
   };
 
   handleCollectData = (details, index) => {
+    console.log(details , 'details');
     const {
       academic_year = [],
       branch = [],
@@ -113,6 +120,10 @@ class EditUser extends Component {
       section = [],
       subjects = [],
     } = { ...details };
+    this.setState({
+      userLevel: details.userLevel,
+      designation: details.designation
+    })
     const {
       academic_year: academicYear = [],
       branch: collectedBranch = [],
@@ -139,6 +150,7 @@ class EditUser extends Component {
   };
 
   onSubmitSchoolDetails = (details) => {
+    console.log(details , 'sub');
     const { selectedUser } = this.props;
     this.state.user.mapping_bgs.forEach(({ is_delete }, index) => {
       if (is_delete) {
@@ -295,6 +307,12 @@ class EditUser extends Component {
       guardian_photo,
       parent: parentDetail,
     };
+    if(this.state.isOrchids == true){
+      requestObj['user_level'] = this.state.userLevel?.id
+      if(this.state.userLevel?.id != 13){
+        requestObj['designation'] = this.state.designation?.id
+      }
+    }
     if (!requestWithParentorGuradianDetails) {
       delete requestObj.parent;
       delete requestObj.father_photo;

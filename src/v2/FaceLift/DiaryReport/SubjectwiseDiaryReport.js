@@ -200,10 +200,14 @@ const SubjectwiseDiaryReport = () => {
       },
       {
         title: <span className='th-white th-fw-700 '>TEACHER'S NAME</span>,
-        dataIndex: 'name',
+        // dataIndex: 'name',
         align: 'center',
         width: '20%',
-        render: (data) => <span className='th-black-2'>{data}</span>,
+        render: (data, text) => (
+          <span className='th-black-2'>
+            {data?.name} {data?.is_substitute_diary ? `(Substitute)` : null}
+          </span>
+        ),
       },
       {
         title: <span className='th-white th-fw-700 '>CREATED AT</span>,

@@ -341,7 +341,7 @@ const AssignRole = (props) => {
             for (let page = 1; page <= result.data.total_pages; page += 1) {
               tempSelectedUser.push({ pageNo: page, selected: [] });
             }
-            setSelectedUsers(tempSelectedUser);
+            // setSelectedUsers(tempSelectedUser);
           }
 
           if (result.data.total_pages !== selectAllObj.length) {
@@ -558,7 +558,9 @@ const AssignRole = (props) => {
     });
 
     if (!selectionArray.length) {
-      setSelectectUserError('Please select some users');
+      // setSelectectUserError('Please select some users');
+      setAlert('error','Please select some users')
+      setLoading(false)
       return;
     }
     if (!selectedRole) {

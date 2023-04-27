@@ -12,7 +12,9 @@ import { isVideo, isAudio } from '../../../utility-functions';
 import './styles.scss';
 import PDFIcon from 'v2/Assets/images/pdfImage.png';
 import PowerPointIcon from 'v2/Assets/images/PowerPointIcon.png';
-
+import VideoModal from './videoplayer';
+import AudioModal from './audioplayer';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 const Attachment = (props) => {
   const {
     fileName,
@@ -28,6 +30,8 @@ const Attachment = (props) => {
   const [imagePreviewAvailable, setImagePreviewAvailable] = useState(true);
   const { openLightbox } = useLightbox();
   const [openModal, setOpenModal] = useState(false);
+  const [openVideoModal, setOpenVideoModal] = useState(false);
+  const [openAudioModal, setOpenAudioModal] = useState(false);
 
   let isAudioVideo = false;
   let isAudioFile = false;
@@ -135,6 +139,7 @@ const Attachment = (props) => {
     );
   } else {
     if (isVideoFile) {
+      console.log(isVideoFile , 'isvideo');
       markup = (
         <>
           <div className='file-card-container'>
@@ -155,7 +160,7 @@ const Attachment = (props) => {
                       </a>
                     </IconButton>
                   )}
-                  {actions?.includes('pentool') && (
+                  {/* {actions?.includes('pentool') && (
                     <IconButton
                       size='small'
                       onClick={() =>
@@ -164,7 +169,7 @@ const Attachment = (props) => {
                     >
                       <CreateIcon style={{ color: '#ffffff' }} />
                     </IconButton>
-                  )}
+                  )} */}
                   {actions?.includes('delete') && (
                     <IconButton
                       size='small'
@@ -175,6 +180,14 @@ const Attachment = (props) => {
                       <DeleteIcon style={{ color: '#ffffff' }} />
                     </IconButton>
                   )}
+                   <IconButton
+                      size='small'
+                      onClick={(e) => {
+                        setOpenVideoModal(true);
+                      }}
+                    >
+                      <PlayArrowIcon style={{ color: '#ffffff' }} />
+                    </IconButton>
                 </div>
               </div>
             </div>
@@ -191,8 +204,11 @@ const Attachment = (props) => {
               openModal={openModal}
               setOpenModal={setOpenModal}
               ispdf={ispdf}
+            isfile={'file'}
             />
           )}
+          {openVideoModal && <VideoModal openVideoModal={openVideoModal} src={`${urlPrefix}/${fileUrl}`}  setOpenVideoModal={setOpenVideoModal} />}
+
         </>
       );
     }
@@ -221,7 +237,7 @@ const Attachment = (props) => {
                       </a>
                     </IconButton>
                   )}
-                  {actions?.includes('pentool') && (
+                  {/* {actions?.includes('pentool') && (
                     <IconButton
                       size='small'
                       onClick={() =>
@@ -230,7 +246,7 @@ const Attachment = (props) => {
                     >
                       <CreateIcon style={{ color: '#ffffff' }} />
                     </IconButton>
-                  )}
+                  )} */}
                   {actions?.includes('delete') && (
                     <IconButton
                       size='small'
@@ -241,6 +257,14 @@ const Attachment = (props) => {
                       <DeleteIcon style={{ color: '#ffffff' }} />
                     </IconButton>
                   )}
+                    <IconButton
+                      size='small'
+                      onClick={(e) => {
+                        setOpenAudioModal(true);
+                      }}
+                    >
+                      <PlayArrowIcon style={{ color: '#ffffff' }} />
+                    </IconButton>
                 </div>
               </div>
             </div>
@@ -257,8 +281,11 @@ const Attachment = (props) => {
               openModal={openModal}
               setOpenModal={setOpenModal}
               ispdf={ispdf}
+            isfile={'file'}
             />
           )}
+          {openAudioModal && <AudioModal openAudioModal={openAudioModal} src={`${urlPrefix}/${fileUrl}`}  setOpenAudioModal={setOpenAudioModal} />}
+
         </>
       );
     }
