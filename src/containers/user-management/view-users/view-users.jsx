@@ -1165,6 +1165,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                               )
                             )
                           ) : (
+                            !isOfOrchids.includes(window.location.host) && (
                             <button
                               type='submit'
                               title='Activate'
@@ -1180,7 +1181,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                               }}
                             >
                               A
-                            </button>
+                            </button> )
                           )}
                           {items && items.status !== 'deleted' ? (
                             <>
