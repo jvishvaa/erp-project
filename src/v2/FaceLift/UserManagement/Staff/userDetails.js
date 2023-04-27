@@ -256,6 +256,7 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
                   );
                 }}
                 showSearch
+                defaultValue={userDetails[0].userCode}
                 placeholder='Country Code'
                 getPopupContainer={(trigger) => trigger.parentNode}
                 // onChange={(e) => {

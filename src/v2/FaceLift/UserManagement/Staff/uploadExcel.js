@@ -200,9 +200,11 @@ const UploadExcel = () => {
     axiosInstance
       .post(`${endpoints.nonAcademicStaff.uploadBulkStaff}`, formData)
       .then((res) => {
-        if (res.status === 200) {
+        if (res.data.status_code === 200) {
           message.success(res?.data?.message);
           history.push('/user-management/bulk-upload-status');
+        } else {
+          message.error('Uploaded format is incorrect');
         }
       })
       .catch((error) => {

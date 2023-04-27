@@ -28,7 +28,7 @@ const CreateNoAcademicStaff = () => {
       userLastName: '',
       userGender: 1,
       userDOB: '',
-      userCode: '',
+      userCode: '+91',
       userMobile: '',
       userUsername: '',
       userEmail: '',
