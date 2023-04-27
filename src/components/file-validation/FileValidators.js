@@ -14,7 +14,7 @@ const FileValidators = (file) => {
         }
         else {
             const isFileValid = {
-                msg: 'Document size should be less than 50MB !',
+                msg: 'Document size should be less than 40MB !',
                 msgColor: 'red',
                 isValid: false
             };
