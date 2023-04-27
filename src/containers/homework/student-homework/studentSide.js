@@ -41,6 +41,7 @@ import {
 import Atachment from 'assets/images/attachmenticon.svg';
 import HomeworkSubmissionNew from './studenthwsubmission';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+import Loader from 'components/loader/loader';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -629,6 +630,7 @@ const StudentHomeworkNew = withRouter(
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
+          {loading == true ? <Loader /> : ''}
           <Divider />
           {hwSelect == false ? (
             <>

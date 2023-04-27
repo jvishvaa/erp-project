@@ -176,6 +176,7 @@ const QuestionCardNew = ({
     };
 
     const handleFileUpload = async (file) => {
+        console.log(file);
         if (!file) {
             return null;
         }

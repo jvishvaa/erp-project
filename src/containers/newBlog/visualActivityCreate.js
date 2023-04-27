@@ -21,7 +21,7 @@ import axios from 'axios';
 import {
   fetchBranches as fetchBranchRedux,
   fetchGrades,
-} from './apis';
+} from '../lesson-plan/create-lesson-plan/apis';
 import { DownOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -153,6 +153,7 @@ const VisualActivityCreate = () => {
         const transformedData = data?.map((obj) => ({
           id: obj?.grade_id,
           name: obj?.grade__grade_name,
+          mapping_id:obj?.id
         }));
         setGradeList(transformedData);
         setLoading(false);
@@ -201,7 +202,7 @@ const VisualActivityCreate = () => {
       setSectionList([]);
       axiosInstance
         .get(
-          `${endpoints.newBlog.erpSectionmapppingV3}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
+          `${endpoints.newBlog.erpSectionmappping}?session_year=${sessionId}&branch_id=${branchIds}&module_id=${moduleId}&grade_id=${gradeIds}`
         )
         .then((result) => {
           setLoading(false);
@@ -210,6 +211,7 @@ const VisualActivityCreate = () => {
             const transformedData = result.data?.data.map((obj) => ({
               id: obj?.section_id,
               name: obj?.section__section_name,
+              mapping_id: obj?.id,
             }));
             setSectionDropdown(transformedData);
           }
@@ -265,26 +267,28 @@ const VisualActivityCreate = () => {
       setSelectedSection([]);
       const all = gradeList.slice();
       const allGradeId = all.map((item) => item.id);
+      const reqAllGradeIds = all.map((item)=> parseInt(item?.mapping_id))
+      const reqAllGradeIds2 = gradeList.filter((item)=> value.includes(item.mapping_id)).map((item) => item.id)
       const allGradeName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedGrade(allGradeId);
         setSelectedGradeName(allGradeName);
         formRef.current.setFieldsValue({
-          grade: allGradeId,
+          grade: reqAllGradeIds,
           section: [],
           date: null,
         });
         fetchSectionsFun(selectedAcademicYear?.id, selectedBranch, allGradeId, moduleId);
       } else {
         // const gradeName = value.map((item) => item?.name)
-        setSelectedGrade(value);
+        setSelectedGrade(reqAllGradeIds2);
         setSelectedGradeName(event);
-        fetchSectionsFun(selectedAcademicYear?.id, selectedBranch, value, moduleId);
-        formRef.current.setFieldsValue({
-          grade: value,
-          section: [],
-          date: null,
-        });
+        fetchSectionsFun(selectedAcademicYear?.id, selectedBranch, reqAllGradeIds2, moduleId);
+        // formRef.current.setFieldsValue({
+        //   grade: value,
+        //   section: [],
+        //   date: null,
+        // });
       }
     }
   };
@@ -293,20 +297,22 @@ const VisualActivityCreate = () => {
     if (value) {
       setSelectedSection([]);
       const all = sectionDropdown.slice();
-      const allSectionId = all.map((item) => item?.id);
+      const allSectionId = all.map((item) => item?.mapping_id);
+      const reqAllSectionIds = all.map((item) => parseInt(item?.section_id));
       const allSectionName = all.map((item) => item);
+      const reqAllSectionIds2 = sectionList.filter((item)=>value.includes(item.id)).map((item) => item?.section_id)
       if (value.includes('All')) {
-        setSelectedSection(allSectionId);
+        setSelectedSection(reqAllSectionIds);
         setSelectedSectionName(allSectionName);
         formRef.current.setFieldsValue({
           section: allSectionId,
         });
       } else {
-        setSelectedSection(value);
+        setSelectedSection(reqAllSectionIds2);
         setSelectedSectionName(event);
-        formRef.current.setFieldsValue({
-          section: value,
-        });
+        // formRef.current.setFieldsValue({
+        //   section: value,
+        // });
       }
     }
   };
@@ -524,7 +530,7 @@ const VisualActivityCreate = () => {
 
   const gradeOption = gradeList.map((each) => {
     return (
-      <Option key={each?.id} value={each?.id} id={each?.id} name={each?.name}>
+      <Option key={each?.mapping_id} value={each?.mapping_id} id={each?.id} name={each?.name}>
         {each?.name}
       </Option>
     );
@@ -533,9 +539,9 @@ const VisualActivityCreate = () => {
   const sectionOption = sectionDropdown.map((each) => {
     return (
       <Option
-        id={each?.id}
-        value={each?.id}
-        key={each?.id}
+        id={each?.mapping_id}
+        value={each?.mapping_id}
+        key={each?.mapping_id}
         children={each?.id}
         name={each?.name}
       >
