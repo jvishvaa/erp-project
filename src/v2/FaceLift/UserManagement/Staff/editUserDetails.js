@@ -165,9 +165,14 @@ const EditUserDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails 
                   name={'image'}
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
-                      setProfile(e.target.files[0]);
-                      // userData[0].profile = e.target.files[0];
-                      handleInput('profile', e.target.files[0]);
+                      if (!e.target.files[0]?.type.includes('image/')) {
+                        message.error('Please select image files only');
+                        return false;
+                      } else {
+                        setProfile(e.target.files[0]);
+                        // userData[0].profile = e.target.files[0];
+                        handleInput('profile', e.target.files[0]);
+                      }
                     }
                   }}
                 />
@@ -347,6 +352,7 @@ const EditUserDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails 
             >
               <Input
                 placeholder='Username'
+                disabled
                 // onChange={(e) => handleInput('username', e.target.value)}
               />
             </Form.Item>

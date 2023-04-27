@@ -96,7 +96,9 @@ const NonAcademicStaff = () => {
               icon={<EditOutlined />}
               className='th-br-6 th-bg-primary th-white'
               style={{ cursor: 'pointer' }}
-              onClick={() => history.push(`/user-management/edit-non-academic-staff/${data.id}`)}
+              onClick={() =>
+                history.push(`/user-management/edit-non-academic-staff/${data.id}`)
+              }
             >
               Edit
             </Tag>
@@ -111,6 +113,39 @@ const NonAcademicStaff = () => {
             </Popconfirm>
           </Space>
         );
+      },
+    },
+  ];
+
+  const deletedColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>Name</span>,
+      dataIndex: 'name',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>ERP Id</span>,
+      dataIndex: 'erp_id',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Contact</span>,
+      key: 'contact',
+      dataIndex: 'contact',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Role</span>,
+      key: 'role',
+      dataIndex: 'role',
+      render: (data) => <span className='th-black-1 th-14'>{data?.role_name}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Status</span>,
+      align: 'center',
+      key: 'status',
+      render: (data) => {
+        return <Switch checked={data.status === '1' ? true : false} />;
       },
     },
   ];
@@ -247,10 +282,10 @@ const NonAcademicStaff = () => {
       message.error('Please Select Branch');
       return;
     }
-    if (userRole === '' || userRole === undefined) {
-      message.error('Please Select Role');
-      return;
-    }
+    // if (userRole === '' || userRole === undefined) {
+    //   message.error('Please Select Role');
+    //   return;
+    // }
     // if (status === '' || status === undefined) {
     //   message.error('Please Select Status');
     //   return;
@@ -259,10 +294,11 @@ const NonAcademicStaff = () => {
     setShowFilter(false);
     searchRef.current.resetFields();
     let statusparams = status !== undefined || status !== '' ? status : '';
+    let roleParams = userRole !== undefined || userRole !== '' ? userRole : '';
 
     let params = `?page=${pageNo}&page_size=${pageLimit}&session_year=${
       selectedYear?.id
-    }&role=${userRole}&branch_id=${branch}${
+    } ${roleParams !== '' ? `&role=${userRole}` : ''} &branch_id=${branch}${
       statusparams !== '' ? `&status=${statusparams}` : ''
     }`;
     // let params = `?page=1&page_size=${pageLimit}&session_year=2&role=207&branch_id=83&status=2`;
@@ -548,7 +584,7 @@ const NonAcademicStaff = () => {
                   index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                 }
                 loading={loading}
-                columns={columns}
+                columns={status === 3 ? deletedColumns : columns}
                 rowKey={(record) => record?.id}
                 dataSource={userData}
                 pagination={false}

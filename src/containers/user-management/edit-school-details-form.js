@@ -404,6 +404,8 @@ const EditSchoolDetailsForm = ({
           onChange={(event, value) => {
             setSelectedRole(value);
             formik.setFieldValue('userLevel', value);
+            getDesignation(value?.id)
+            formik.setFieldValue('designation', '');
             console.log(value);
             if(value?.id == 13){
               setSelectedDesignation('');
@@ -415,6 +417,7 @@ const EditSchoolDetailsForm = ({
           value={formik.values.userLevel || ''}
           options={roles}
           getOptionLabel={(option) => option?.level_name}
+          disabled={details?.user_level == 13 ? true : false}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField

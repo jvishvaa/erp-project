@@ -1,5 +1,5 @@
 import { DownloadOutlined } from '@ant-design/icons';
-import { Breadcrumb, Pagination, Select, Table, message } from 'antd';
+import { Breadcrumb, Pagination, Select, Table, Tag, message } from 'antd';
 import Layout from 'containers/Layout';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -95,7 +95,13 @@ const ExcelUploadStatus = () => {
       render: (data) => (
         <span className='th-black-1 th-14'>
           <a href={data} target='_blank'>
-            <DownloadOutlined />
+            <Tag
+              icon={<DownloadOutlined />}
+              className='th-br-6 th-bg-primary th-white'
+              style={{ cursor: 'pointer' }}
+            >
+              Download
+            </Tag>
           </a>
         </span>
       ),

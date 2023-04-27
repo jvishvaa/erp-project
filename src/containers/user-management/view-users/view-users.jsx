@@ -604,7 +604,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         }
       );
       if (statusChange.status === 200) {
-        setAlert('success', statusChange.data.message);
+        setAlert('success', 'User Deleted');
         const tempGroupData = usersData.slice();
         tempGroupData.splice(deleteIndex, 1);
         setUsersData(tempGroupData);
@@ -1139,15 +1139,16 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                           ) : items.status === 'active' ? (
                             isOfOrchids.includes(window.location.host) &&
                             (items.level !== 13 || user_level === 1) ? (
-                              <IconButton
-                                aria-label='deactivate'
-                                onClick={() => handleDeactivate(items.userId, i, '2')}
-                                title='Deactivate'
-                              >
-                                <BlockIcon
-                                  style={{ color: themeContext.palette.primary.main }}
-                                />
-                              </IconButton>
+                              // <IconButton
+                              //   aria-label='deactivate'
+                              //   onClick={() => handleDeactivate(items.userId, i, '2')}
+                              //   title='Deactivate'
+                              // >
+                              //   <BlockIcon
+                              //     style={{ color: themeContext.palette.primary.main }}
+                              //   />
+                              // </IconButton>
+                              <></>
                             ) : (
                               !isOfOrchids.includes(window.location.host) && (
                                 <>

@@ -52,11 +52,13 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
 
   const handleAddMore = () => {
     let data = [...userDetails?.mapping_bgs, newBranch];
+
     let acadData = [...userDetails?.acad_session, newAcad];
+
     userDetails.mapping_bgs = data;
     userDetails.acad_session = acadData;
     handleUpdateUserDetails(userDetails);
-    setUserDetails(userDetails);
+    // setUserDetails(userDetails);
     setFakeState(data);
     // handleUpdateUserDetails(data)
   };
@@ -108,7 +110,9 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
       formRef.current.setFieldsValue({
         user_level: userDetails?.user_level?.id,
         user_role: userDetails?.role?.id,
-        user_designation: userDetails?.designation?.id,
+        user_designation: userDetails?.designation?.id
+          ? userDetails?.designation?.id
+          : null,
       });
     }
   }, [userDetails]);
@@ -196,7 +200,12 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
 
   const userLevelListOptions = userLevelList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option
+        key={each?.id}
+        value={each.id}
+        description={each.description}
+        is_delete={each.is_delete}
+      >
         {each?.level_name}
       </Option>
     );
@@ -204,7 +213,7 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
 
   const userDesignationListOptions = userDesignationList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option key={each?.id} value={each.id} is_delete={each.is_delete}>
         {each?.designation}
       </Option>
     );
@@ -212,7 +221,12 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
 
   const rolesOptions = roles?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option
+        key={each?.id}
+        value={each.id}
+        created_at={each.created_at}
+        created_by={each.created_by}
+      >
         {each?.role_name}
       </Option>
     );
@@ -220,48 +234,64 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
 
   const userData = userDetails;
 
-  const handleUserDesignation = (e) => {
+  const handleUserDesignation = (e, data) => {
+    const updatedDetails = _.cloneDeep(userDetails);
     if (e != undefined) {
-      userData[0].userDesignation = e;
+      updatedDetails.designation.id = data?.value;
+      updatedDetails.designation.designation = data?.children;
+      updatedDetails.designation.is_delete = data?.is_delete;
+      handleUpdateUserDetails(updatedDetails);
     } else {
-      userData[0].userDesignation = '';
+      updatedDetails.designation.designation = '';
+      updatedDetails.designation.is_delete = '';
+      handleUpdateUserDetails(updatedDetails);
     }
-    // setUserDetails(userData);
   };
-
-  const handleUserLevel = (e) => {
+  const handleUserLevel = (e, data) => {
+    const updatedDetails = _.cloneDeep(userDetails);
     if (e != undefined) {
-      userData[0].userLevel = e;
-      setUserDesignationList([]);
+      updatedDetails.user_level.id = data?.value;
+      updatedDetails.user_level.is_delete = data?.is_delete;
+      updatedDetails.user_level.description = data?.description;
+      updatedDetails.user_level.level_name = data?.level_name;
+      updatedDetails.designation.user_level = data?.value;
+      updatedDetails.designation.designation = '';
+      updatedDetails.designation.id = '';
+      updatedDetails.designation.user_level = data?.value;
       formRef.current.setFieldsValue({
         user_designation: null,
       });
       fetchUserDesignation(e);
-      userData[0].userDesignation = e;
+      handleUpdateUserDetails(updatedDetails);
     } else {
       userData[0].userLevel = '';
+      updatedDetails.user_level.id = '';
+      updatedDetails.user_level.is_delete = '';
+      updatedDetails.user_level.description = '';
+      updatedDetails.user_level.level_name = '';
+      updatedDetails.designation.user_level = '';
+      updatedDetails.designation.designation = '';
+      updatedDetails.designation.id = '';
+      setUserDesignationList([]);
+      handleUpdateUserDetails(updatedDetails);
     }
     // setUserDetails(userData);
   };
 
-  const handleUserBranch = (e, data) => {
+  const handleUserRole = (e, data) => {
+    const updatedDetails = _.cloneDeep(userDetails);
     if (e != undefined) {
-      userData[0].userBranch = e;
-      userData[0].userBranchCode = data?.branch_code;
-      userData[0].academicYear = data?.acadId;
+      updatedDetails.role.role_name = data?.children;
+      updatedDetails.role.id = data?.value;
+      updatedDetails.role.created_at = data?.created_at;
+      updatedDetails.role.created_by = data?.created_by;
+      handleUpdateUserDetails(updatedDetails);
     } else {
-      userData[0].userBranch = '';
-      userData[0].userBranchCode = '';
-      userData[0].academicYear = '';
-    }
-    // setUserDetails(userData);
-  };
-
-  const handleUserRole = (e) => {
-    if (e != undefined) {
-      userData[0].userRole = e;
-    } else {
-      userData[0].userRole = '';
+      updatedDetails.role.role_name = '';
+      updatedDetails.role.id = undefined;
+      updatedDetails.role.created_at = '';
+      updatedDetails.role.created_by = '';
+      handleUpdateUserDetails(updatedDetails);
     }
     // setUserDetails(userData);
   };
@@ -289,7 +319,7 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
                 getPopupContainer={(trigger) => trigger.parentNode}
                 maxTagCount={5}
                 allowClear={true}
-                disabled={userDetails?.id}
+                // disabled={userDetails?.id}
                 // defaultValue={userDetails?.user_level?.id}
                 suffixIcon={<DownOutlined className='th-grey' />}
                 className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
@@ -316,7 +346,7 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
               <Select
                 getPopupContainer={(trigger) => trigger.parentNode}
                 maxTagCount={5}
-                disabled={userDetails?.id}
+                // disabled={userDetails?.id}
                 allowClear={true}
                 // value={userDetails?.designation?.id}
                 suffixIcon={<DownOutlined className='th-grey' />}
@@ -345,7 +375,7 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
                 getPopupContainer={(trigger) => trigger.parentNode}
                 maxTagCount={5}
                 allowClear={true}
-                disabled={userDetails?.id}
+                // disabled={userDetails?.id}
                 // value={userDetails?.role?.id}
                 suffixIcon={<DownOutlined className='th-grey' />}
                 className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
@@ -364,67 +394,6 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
             </Form.Item>
           </div>
         </div>
-
-        {/* {userDetails?.mapping_bgs?.map((item) => (
-          <>
-            <div className='row mt-3'>
-              <div className='col-md-4 col-sm-6 col-12'>
-                <Form.Item
-                  name='academic_year'
-                  label='Select Academic Year'
-                  rules={[{ required: true, message: 'Please select Academic Year' }]}
-                >
-                  <Select
-                    allowClear={true}
-                    className='th-grey th-bg-white  w-100 text-left'
-                    placement='bottomRight'
-                    showArrow={true}
-                    defaultValue={item?.session_year[0]?.session_year_id}
-                    onChange={(e, value) => handleAcademicYear(e, value)}
-                    dropdownMatchSelectWidth={false}
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    showSearch
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    placeholder='Select Academic Year'
-                  >
-                    {academicYearOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className='col-md-4 col-sm-6 col-12'>
-                <Form.Item
-                  name='branch'
-                  label='Select Branch'
-                  rules={[{ required: true, message: 'Please select Branch' }]}
-                >
-                  <Select
-                    allowClear={true}
-                    defaultValue={item?.branch[0]?.branch_id}
-                    className='th-grey th-bg-white  w-100 text-left'
-                    placement='bottomRight'
-                    showArrow={true}
-                    onChange={(e, value) => handleUserBranch(e, value)}
-                    dropdownMatchSelectWidth={false}
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    showSearch
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    placeholder='Select Branch'
-                  >
-                    {branchListOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-            </div>
-          </>
-        ))} */}
 
         {userDetails?.mapping_bgs?.map((item, index) => (
           <>
