@@ -178,6 +178,12 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3001'
+    ? true
+    : false;
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -509,6 +515,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               onChange={handleFileChange}
             />
             <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
+              {isOrchids == true ? 
               <Box p={1}>
                 {`Download Format: `}
                 <a
@@ -518,7 +525,18 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 >
                   Download format
                 </a>
+              </Box> : 
+                <Box p={1}>
+                {`Download Format: `}
+                <a
+                  style={{ cursor: 'pointer' }}
+                  href='/assets/download-format/erp_userb2b.xlsx'
+                  download='format.xlsx'
+                >
+                  Download format
+                </a>
               </Box>
+              }
             </Box>
           </Box>
         </Grid>
@@ -752,6 +770,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </Paper>
               </Grid>
             )}
+            {isOrchids ? <>
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 style={{ width: '100%' }}
@@ -876,6 +895,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </TableContainer>
               </Paper>
             </Grid> : ''}
+            </> : '' }
           </Grid>
         </>
       )}
