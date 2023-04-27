@@ -300,10 +300,7 @@ const VisualActivityCreate = () => {
       const allSectionId = all.map((item) => item?.mapping_id);
       const reqAllSectionIds = all.map((item) => parseInt(item?.section_id));
       const allSectionName = all.map((item) => item);
-      debugger;
       const reqAllSectionIds2 = sectionList.filter((item)=>value.includes(item.id)).map((item) => item?.section_id)
-      console.log(reqAllSectionIds2)
-
       if (value.includes('All')) {
         setSelectedSection(reqAllSectionIds);
         setSelectedSectionName(allSectionName);
