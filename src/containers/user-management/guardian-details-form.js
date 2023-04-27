@@ -225,7 +225,7 @@ const GuardianDetailsForm = ({
                     id='father_mobile'
                     name='father_mobile'
                     onChange={(e)=>handleFatherMobileNumber(e)}
-                    inputProps={{ maxLength: 15 }}
+                    inputProps={{ maxLength: 10 }}
                     type='number'
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
@@ -393,7 +393,7 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='mother_mobile'
                     name='mother_mobile'
-                    inputProps={{ maxLength: 15 }}
+                    inputProps={{ maxLength: 10 }}
                     // inputProps={{ pattern: { min: 10, max: 10 } }}
                     placeholder='Ex: 995656xxxx'
                     type='number'
