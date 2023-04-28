@@ -398,7 +398,7 @@ let levelObj = {};
         />
         </div> 
         {console.log(selectedRole , 'rol')}
-        {selectedRole?.id == 13 || selectedRole == '' || selectedRole == null ? '' : 
+        {formik.values.userLevel?.id == 13 || formik.values.userLevel == '' || formik.values.userLevel == null ? '' : 
         <div className='col-md-4' >
         <Autocomplete
           style={{ width: '100%' }}

@@ -35,7 +35,6 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
         is_subject_dependent: optional,
       })
       .then((result) => {
-        debugger
         if (result.status === 200) {
           setSubjectName('');
           setDescription('');
