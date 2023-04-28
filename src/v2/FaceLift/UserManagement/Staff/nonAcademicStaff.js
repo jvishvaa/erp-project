@@ -194,6 +194,7 @@ const NonAcademicStaff = () => {
   });
 
   const handleUserRole = (e) => {
+    setPageNo(1);
     if (e != undefined) {
       setUserRole(e);
     } else {
@@ -223,6 +224,7 @@ const NonAcademicStaff = () => {
   });
 
   const handleUserBranch = (e) => {
+    setPageNo(1);
     if (e != undefined) {
       setBranch(e);
     } else {
@@ -241,6 +243,7 @@ const NonAcademicStaff = () => {
   ));
 
   const handleStatus = (e) => {
+    setPageNo(1);
     if (e != undefined) {
       setStatus(e);
     } else {
