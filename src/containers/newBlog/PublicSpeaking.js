@@ -200,6 +200,7 @@ const StudentSidePublicSpeaking = () => {
             placement='right'
             onClose={handleCloseDrawer}
             zIndex={1300}
+            destroyOnClose={true}
             visible={showDrawer}
             width={
               window.innerWidth < 600 ? '95vw' : mediaFiles?.signed_URL ? '70vw' : '35vw'
