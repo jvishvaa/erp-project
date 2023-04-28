@@ -114,7 +114,7 @@ const ExcelUploadStatus = () => {
     setPageNo(1);
     setSelectedBranch(e);
     if (e != undefined) {
-      let params = `${endpoints.nonAcademicStaff.bulkUpload}?page=${1}&page_size=${pageLimit}`;
+      let params = `${endpoints.nonAcademicStaff.bulkUpload}?page=1&page_size=${pageLimit}`;
       if (selectedYear) params += `&academic_year=${selectedYear?.id}`;
       if (e) params += `&branch=${e}`;
       getUploadStatus(params);
