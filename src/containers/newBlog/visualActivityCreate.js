@@ -297,10 +297,10 @@ const VisualActivityCreate = () => {
     if (value) {
       setSelectedSection([]);
       const all = sectionDropdown.slice();
-      const allSectionId = all.map((item) => item?.mapping_id);
-      const reqAllSectionIds = all.map((item) => parseInt(item?.section_id));
+      const allSectionId = all.map((item) => parseInt(item?.mapping_id));
+      const reqAllSectionIds = sectionDropdown.map((item) => parseInt(item?.id));
       const allSectionName = all.map((item) => item);
-      const reqAllSectionIds2 = sectionList.filter((item)=>value.includes(item.id)).map((item) => item?.section_id)
+      const reqAllSectionIds2 = sectionList.filter((item)=>value.includes(item.id)).map((item) => parseInt(item?.section_id))
       if (value.includes('All')) {
         setSelectedSection(reqAllSectionIds);
         setSelectedSectionName(allSectionName);
