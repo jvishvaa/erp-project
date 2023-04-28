@@ -169,7 +169,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     window.location.host.split('.')[0] === 'qa'
       ? true
       : false;
-
   const headers = [
     { label: 'ERP ID', key: 'erp_id' },
     { label: 'Firstname', key: 'first_name' },
@@ -286,7 +285,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const getSectionApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id
+        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${
+          selectedBranch.id
         }&grade_id=${gradeIds.toString()}&module_id=${moduleId}`
       );
       if (result.data.status_code === 200) {
@@ -771,7 +771,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         },
       });
       if (result.status === 200) {
-        setRoleList(result?.data?.result)
+        setRoleList(result?.data?.result);
       } else {
         setAlert('error', result?.data?.message);
       }
@@ -1137,35 +1137,20 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                               />
                             </IconButton>
                           ) : items.status === 'active' ? (
-                            isOfOrchids.includes(window.location.host) &&
-                            (items.level !== 13 || user_level === 1) ? (
-                              // <IconButton
-                              //   aria-label='deactivate'
-                              //   onClick={() => handleDeactivate(items.userId, i, '2')}
-                              //   title='Deactivate'
-                              // >
-                              //   <BlockIcon
-                              //     style={{ color: themeContext.palette.primary.main }}
-                              //   />
-                              // </IconButton>
-                              <></>
-                            ) : (
-                              !isOfOrchids.includes(window.location.host) && (
-                                <>
-                                  <IconButton
-                                    aria-label='deactivate'
-                                    onClick={() => handleDeactivate(items.userId, i, '2')}
-                                    title='Deactivate'
-                                  >
-                                    <BlockIcon
-                                      style={{ color: themeContext.palette.primary.main }}
-                                    />
-                                  </IconButton>
-                                </>
-                              )
+                            isOrchids && items?.level == 13 ? null : (
+                              <>
+                                <IconButton
+                                  aria-label='deactivate'
+                                  onClick={() => handleDeactivate(items.userId, i, '2')}
+                                  title='Deactivate'
+                                >
+                                  <BlockIcon
+                                    style={{ color: themeContext.palette.primary.main }}
+                                  />
+                                </IconButton>
+                              </>
                             )
-                          ) : (
-                            !isOfOrchids.includes(window.location.host) && (
+                          ) : isOrchids && items?.level == 13 ? null : (
                             <button
                               type='submit'
                               title='Activate'
@@ -1181,8 +1166,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                               }}
                             >
                               A
-                            </button> )
+                            </button>
                           )}
+
                           {items && items.status !== 'deleted' ? (
                             <>
                               {isOrchids && items?.level == 13 ? null : (
