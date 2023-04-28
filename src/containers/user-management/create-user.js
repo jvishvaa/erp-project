@@ -168,6 +168,7 @@ class CreateUser extends Component {
       userLevel,
       designation
     } = requestObj;
+
     const {
       father_first_name,
       father_middle_name,

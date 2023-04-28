@@ -667,7 +667,7 @@ const EditSchoolDetailsForm = ({
         </Grid>
         {details?.user_level == 13 && index < currentFormLength && isOrchids
           ? null
-          : !formik.values.academic_year?.[0]?.is_default && (
+          : !formik.values.academic_year?.[0]?.is_default && details.mapping_bgs?.length > 1 && (
               <Grid item md={2} xs={12}>
                 <Button
                   variant='contained'

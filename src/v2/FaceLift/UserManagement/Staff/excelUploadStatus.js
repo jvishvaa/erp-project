@@ -1,5 +1,5 @@
-import { DownloadOutlined } from '@ant-design/icons';
-import { Breadcrumb, Pagination, Select, Table, Tag, message } from 'antd';
+import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { Breadcrumb, Button, Pagination, Select, Table, Tag, message } from 'antd';
 import Layout from 'containers/Layout';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -7,6 +7,7 @@ import { fetchBranchesForCreateUser } from 'redux/actions';
 import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import moment from 'moment';
+import { useHistory } from 'react-router-dom';
 
 const ExcelUploadStatus = () => {
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ const ExcelUploadStatus = () => {
   const [pageNo, setPageNo] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [pageLimit, setPageLimit] = useState(15);
+  const history = useHistory();
 
   useEffect(() => {
     if (moduleId && selectedYear) {
@@ -109,9 +111,10 @@ const ExcelUploadStatus = () => {
   ];
 
   const handleUserBranch = (e, data) => {
+    setPageNo(1);
     setSelectedBranch(e);
     if (e != undefined) {
-      let params = `${endpoints.nonAcademicStaff.bulkUpload}?page=${pageNo}&page_size=${pageLimit}`;
+      let params = `${endpoints.nonAcademicStaff.bulkUpload}?page=1&page_size=${pageLimit}`;
       if (selectedYear) params += `&academic_year=${selectedYear?.id}`;
       if (e) params += `&branch=${e}`;
       getUploadStatus(params);
@@ -181,6 +184,17 @@ const ExcelUploadStatus = () => {
               {branchListOptions}
             </Select>
           </div>
+          {/* <div className='col-md-6'></div>
+          <div className='col-md-3'>
+            <Button
+              onClick={() => history.push(`/user-management/create-non-academic-staff`)}
+              className='btn-block th-br-4'
+              type='primary'
+              icon={<PlusCircleOutlined style={{ color: '#fffff' }} />}
+            >
+              Create Staff
+            </Button>
+          </div> */}
           <div className='col-md-12 mt-2 academic-staff'>
             <Table
               className='th-table mt-3'
