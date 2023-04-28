@@ -379,7 +379,7 @@ const UploadExcel = () => {
               Upload
             </Button>
           </div>
-          <div className='col-md-2 col-sm-4'>
+          {/* <div className='col-md-2 col-sm-4'>
             <Button
               type='primary'
               className='btn btn-block btn-primary'
@@ -387,7 +387,7 @@ const UploadExcel = () => {
             >
               Bulk Upload Status
             </Button>
-          </div>
+          </div> */}
         </div>
       </Form>
 

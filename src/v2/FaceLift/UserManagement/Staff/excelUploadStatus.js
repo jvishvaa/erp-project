@@ -111,9 +111,10 @@ const ExcelUploadStatus = () => {
   ];
 
   const handleUserBranch = (e, data) => {
+    setPageNo(1);
     setSelectedBranch(e);
     if (e != undefined) {
-      let params = `${endpoints.nonAcademicStaff.bulkUpload}?page=${pageNo}&page_size=${pageLimit}`;
+      let params = `${endpoints.nonAcademicStaff.bulkUpload}?page=${1}&page_size=${pageLimit}`;
       if (selectedYear) params += `&academic_year=${selectedYear?.id}`;
       if (e) params += `&branch=${e}`;
       getUploadStatus(params);
@@ -183,7 +184,7 @@ const ExcelUploadStatus = () => {
               {branchListOptions}
             </Select>
           </div>
-          <div className='col-md-6'></div>
+          {/* <div className='col-md-6'></div>
           <div className='col-md-3'>
             <Button
               onClick={() => history.push(`/user-management/create-non-academic-staff`)}
@@ -193,7 +194,7 @@ const ExcelUploadStatus = () => {
             >
               Create Staff
             </Button>
-          </div>
+          </div> */}
           <div className='col-md-12 mt-2 academic-staff'>
             <Table
               className='th-table mt-3'
