@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 
-const ConformDeleteMOdel = ({ openModal, setOpenModal, submit ,ispdf}) => {
+const ConformDeleteMOdel = ({ openModal, setOpenModal, submit ,ispdf , isfile}) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+  console.log(ispdf , 'is');
 
   return (
     <Dialog
@@ -43,7 +44,8 @@ const ConformDeleteMOdel = ({ openModal, setOpenModal, submit ,ispdf}) => {
             handleCloseModal();
           }}
         >
-          Delete this pdf
+        {isfile == 'file' ? 'Delete This File' :
+          'Delete This Pdf'}
         </Button>
         }
       </DialogActions>

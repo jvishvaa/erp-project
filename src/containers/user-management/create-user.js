@@ -29,6 +29,10 @@ class CreateUser extends Component {
       activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
+      isOrchids : window.location.host.split('.')[0] === 'orchids' ||
+      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
+        ? true
+        : false,
       loading: false,
       user: {
         first_name: '',
@@ -47,6 +51,8 @@ class CreateUser extends Component {
         gender: '',
         profile: '',
         address: '',
+        userLevel: '',
+        designation: '',
         // erp_user:'',
         branch_code: '',
         parent: {
@@ -130,6 +136,7 @@ class CreateUser extends Component {
     );
   };
 
+
   onCreateUser = (requestWithParentorGuradianDetails) => {
     this.setState({
       loading: true
@@ -158,7 +165,10 @@ class CreateUser extends Component {
       branch_code,
       profile,
       parent,
+      userLevel,
+      designation
     } = requestObj;
+
     const {
       father_first_name,
       father_middle_name,
@@ -235,7 +245,17 @@ class CreateUser extends Component {
       mother_photo,
       guardian_photo,
       parent: parentDetail,
+      // user_level: userLevel?.id,
+      // designation: designation?.id
     };
+
+    if(this.state.isOrchids == true){
+      requestObj['user_level'] = userLevel?.id
+      if(userLevel?.id != 13){
+        requestObj['designation'] = designation?.id
+      }
+    }
+
 
     if (!requestWithParentorGuradianDetails) {
       delete requestObj.parent;
@@ -276,6 +296,7 @@ class CreateUser extends Component {
     return (
       <Layout>
         {this.state.loading == true ? <Loader /> : ''}
+        {console.log(this.state.isOrchids)}
         <CommonBreadcrumbs
           componentName='User Management'
           childComponentName='Create User'

@@ -64,7 +64,7 @@ const columns = [
   {
     title: <span className='th-white th-fw-600'>Remarks</span>,
     align: 'center',
-    render: (text, row) => row?.levels?.filter((item) => item.status == true)[0].name,
+    render: (text, row) => row?.levels?.filter((item) => item?.status == true)[0]?.name,
   },
 ];
 
@@ -76,6 +76,9 @@ const BlogWall = () => {
   const history = useHistory();
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
   );
   const [loading, setLoading] = useState(false);
   const [gradeList, setGradeList] = useState([]);
@@ -353,35 +356,41 @@ const BlogWall = () => {
     if (showTab == 1) {
       fetchPostWall({
         user_id: userId,
+        session_year:selectedAcademicYear?.session_year,
       });
     } else if (showTab == 2) {
       fetchPostWall({
         publish_level: 'Intra Orchids Level',
         user_id: userId,
+        session_year:selectedAcademicYear?.session_year,
       });
     } else if (showTab == 3) {
       fetchPostWall({
         publish_level: 'Branch Level',
         user_id: userId,
         branch_ids: selectedBranch?.branch?.id,
+        session_year:selectedAcademicYear?.session_year,
       });
     } else if (showTab == 4) {
       fetchPostWall({
         publish_level: 'Grade Level',
         branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
+        session_year:selectedAcademicYear?.session_year,
       });
     } else if (showTab == 5) {
       fetchPostWall({
         is_best_blog: 'true',
         user_id: userId,
         branch_ids: selectedBranch?.branch?.id,
+        session_year:selectedAcademicYear?.session_year,
       });
     } else if (showTab == 6) {
       fetchPostWall({
         publish_level: 'Section Level',
         branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
+        session_year:selectedAcademicYear?.session_year,
       });
     }
   };
@@ -1434,21 +1443,27 @@ const BlogWall = () => {
                   </div>
                   <div className='col-12 py-2 px-0'>
                     {selectedOtherActivity?.type == 'Public Speaking' ? (
-                      <Table
-                        className='th-table'
-                        columns={columns}
-                        loading={loading}
-                        dataSource={
-                          selectedOtherActivity?.type == 'Public Speaking'
-                            ? publicSpeakingrating
-                            : null
-                        }
-                        pagination={false}
-                        rowClassName={(record, index) =>
-                          index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                        }
-                        scroll={{ x: 'max-content' }}
-                      />
+                      <>
+                        {selectedOtherActivity?.state == 'graded' ? (
+                          <Table
+                            className='th-table'
+                            columns={columns}
+                            loading={loading}
+                            dataSource={
+                              selectedOtherActivity?.type == 'Public Speaking'
+                                ? publicSpeakingrating
+                                : null
+                            }
+                            pagination={false}
+                            rowClassName={(record, index) =>
+                              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                            }
+                            scroll={{ x: 'max-content' }}
+                          />
+                        ) : (
+                          ''
+                        )}
+                      </>
                     ) : (
                       <>
                         <div

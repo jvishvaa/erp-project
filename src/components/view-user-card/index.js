@@ -174,7 +174,7 @@ const ViewUserCard = ({
                       </IconButton>
                     </>
                   )
-                ) : (
+                ) : isOrchids && user.level == 13 ? null : (
                   <button
                     className='group_view_activate_button group_view_button'
                     title='Activate'

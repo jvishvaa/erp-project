@@ -9,7 +9,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Autocomplete } from '@material-ui/lab';
-import axios from '../../config/axios';
+// import axios from '../../config/axios';
+import axios from 'axios';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Paper from '@material-ui/core/Paper';
@@ -71,6 +72,39 @@ const columnsGrade = [
   },
 ];
 
+const columnsLevel = [
+  {
+    id: 'user_level',
+    label: 'Id',
+    minWidth: 100,
+    align: 'center',
+    labelAlign: 'center',
+  },
+  {
+    id: 'levelName',
+    label: 'User Level',
+    minWidth: 100,
+    align: 'center',
+    labelAlign: 'center',
+  },
+];
+const columnsDesi = [
+  {
+    id: 'designation',
+    label: 'ID',
+    minWidth: 100,
+    align: 'center',
+    labelAlign: 'center',
+  },
+  {
+    id: 'designationName',
+    label: 'Designation',
+    minWidth: 100,
+    align: 'center',
+    labelAlign: 'center',
+  },
+];
+
 const columnsSection = [
   {
     id: 'section_id',
@@ -123,6 +157,11 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const [searchSection, setSearchSection] = useState([]);
   const [searchGradeId, setSearchGradeId] = useState('');
   const [sectionDisp, setSectionDisp] = useState({});
+  const [roles, setRoles] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
+  const [designation, setDesignation] = useState([]);
+  const [selectedDesignation, setSelectedDesignation] = useState('');
+
   const [acadId, setacadId] = useState();
   const genders = [
     { id: '1', gender: 'Male' },
@@ -131,13 +170,19 @@ const BulkUpload = ({ onUploadSuccess }) => {
   ];
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
+  // const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const fileRef = useRef();
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3001'
+    ? true
+    : false;
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -155,6 +200,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
         }
       });
     }
+    getRoleApi()
+    // getDesignation()
   }, []);
 
   const guidelines = [
@@ -221,7 +268,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
     formData.append('file', file);
     if (branch && selectedAcademicYear && file) {
       setUploadFlag(true);
-      axios
+      axiosInstance
         .post('/erp_user/upload_bulk_user/', formData)
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -370,6 +417,44 @@ const BulkUpload = ({ onUploadSuccess }) => {
     }
   };
 
+
+  const getRoleApi = async () => {
+    try {
+      const result = await axios.get(endpoints.userManagement.userLevelList, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      });
+      if (result.status === 200) {
+        setRoles(result?.data?.result)
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error?.message);
+    }
+  };
+
+  const getDesignation = async (id) => {
+    try {
+      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          'x-api-key': 'vikash@12345#1231',
+        },
+      });
+      if (result.status === 200) {
+        console.log(result);
+        setDesignation(result?.data?.result)
+
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error?.message);
+    }
+  };
+
   return (
     <>
       <Grid container spacing={4} style={{ marginBottom: 20 }}>
@@ -430,6 +515,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               onChange={handleFileChange}
             />
             <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
+              {isOrchids == true ? 
               <Box p={1}>
                 {`Download Format: `}
                 <a
@@ -439,7 +525,18 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 >
                   Download format
                 </a>
+              </Box> : 
+                <Box p={1}>
+                {`Download Format: `}
+                <a
+                  style={{ cursor: 'pointer' }}
+                  href='/assets/download-format/erp_userb2b.xlsx'
+                  download='format.xlsx'
+                >
+                  Download format
+                </a>
               </Box>
+              }
             </Box>
           </Box>
         </Grid>
@@ -494,7 +591,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 {guidelines.map((val, i) => {
                   return (
                     <div className={classes.guideline}>
-                      {i + 1}. 
+                      {i + 1}.
                       <span className={classes.guidelineval}>{val.name}</span>
                       <span>{val.field}</span>
                     </div>
@@ -673,6 +770,132 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </Paper>
               </Grid>
             )}
+            {isOrchids ? <>
+            <Grid item xs={12} sm={4}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  setSelectedRole(value);
+                  if(value?.id){
+                    getDesignation(value?.id)
+                  }
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedRole || ''}
+                options={roles}
+                getOptionLabel={(option) => option?.level_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='User Level'
+                    placeholder='Select User Level'
+                  />
+                )}
+              />
+              <Paper className={`${classes.root} common-table`}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className='table-header-row'>
+                      <TableRow>
+                        {columnsLevel.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                            className={classes.columnHeader}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    {selectedRole?.id ?
+                      <TableBody>
+                        <TableRow
+                          hover
+                          grade='checkbox'
+                          tabIndex={-1}
+                          key={selectedRole?.id}
+                        >
+                          <TableCell className={classes.tableCell}>
+                            {selectedRole?.id}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {selectedRole?.level_name}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                      : ''}
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+            {designation?.length > 0 ?  
+            <Grid item xs={12} sm={4}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  setSelectedDesignation(value);
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedDesignation}
+                options={designation}
+                getOptionLabel={(option) => option?.designation}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Designation'
+                    placeholder='Select Designation'
+                  />
+                )}
+              />
+              <Paper className={`${classes.root} common-table`}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className='table-header-row'>
+                      <TableRow>
+                        {columnsDesi.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                            className={classes.columnHeader}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    {selectedDesignation?.id ?
+                      <TableBody>
+                        <TableRow
+                          hover
+                          grade='checkbox'
+                          tabIndex={-1}
+                          key={selectedDesignation?.id}
+                        >
+                          <TableCell className={classes.tableCell}>
+                            {selectedDesignation?.id}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {selectedDesignation?.designation}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                      : ''}
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid> : ''}
+            </> : '' }
           </Grid>
         </>
       )}

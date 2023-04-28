@@ -43,8 +43,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '95vw',
     width: '100%',
-    // margin: '20px auto',
-    // marginTop: theme.spacing(4),
     paddingLeft: '20px',
     boxShadow: 'none',
   },
@@ -105,6 +103,8 @@ const VisualPendingReview = (props) => {
 
   const handleCloseViewMore = () => {
     setView(false);
+    setRatingReview([]);
+    setFile(null);
   };
 
   const [values, setValues] = useState();
@@ -166,10 +166,7 @@ const VisualPendingReview = (props) => {
         setView(false);
         setLoading(false);
         setRatingReview([]);
-        // console.log(fileRef.current,'kl1')
-        // console.log(file,'kl2 ')
         fileRef.current.value = '';
-        // fileRef.current.input.value = ""
         setFile(null);
         erpAPI();
         message.success('Review Submitted Successfully');
@@ -219,7 +216,6 @@ const VisualPendingReview = (props) => {
       .then((response) => {
         setSourceData(response?.data?.result);
         ActivityManagement(response?.data?.result);
-        // props.setFlag(false);
         message.success(response?.data?.message);
         setLoading(false);
       })
@@ -241,7 +237,6 @@ const VisualPendingReview = (props) => {
       .then((response) => {
         setTargetData(response?.data?.result);
         functionFilter(sourceData, response?.data?.result);
-        // functionFilter(sourceData,dummyData1)
         setLoading(false);
       })
       .catch(() => {
@@ -404,10 +399,10 @@ const VisualPendingReview = (props) => {
           },
         })
         .then((res) => {
-          if(res.data.status_code === 200){
-            message.success(res.data.message)
+          if (res.data.status_code === 200) {
+            message.success(res.data.message);
             setFile(null);
-          }   
+          }
         })
         .catch((err) => {
           setFile(null);
@@ -419,38 +414,22 @@ const VisualPendingReview = (props) => {
     }
   };
   const columns = [
-    {
-      title: <span className='th-white th-fw-700'>SL No.</span>,
-      // dataIndex: 'lp_count',
-      align: 'center',
-      width: '15%',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>SL No.</span>,
+    //   align: 'center',
+    //   width: '15%',
+    //   render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+    // },
     {
       title: <span className='th-white th-fw-700'>Student's Name</span>,
-      // dataIndex: 'title',
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.student_name}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>ERP ID</span>,
-      // dataIndex: 'created_at',
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.erp_id}</span>,
     },
-    // {
-    //   title: <span className='th-white th-fw-700'>Attendance</span>,
-    //   align: 'center',
-    //   render: (text, row) => (
-    //     <span className='th-black-1'>
-    //       {row?.attendence_status === null ? (
-    //         <Tag color='red'>Absent</Tag>
-    //       ) : (
-    //         <Tag color='green'>Present</Tag>
-    //       )}
-    //     </span>
-    //   ),
-    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -549,13 +528,11 @@ const VisualPendingReview = (props) => {
                                 className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
                                 bordered={true}
                                 getPopupContainer={(trigger) => trigger.parentNode}
-                                // value={selectedCategoryName}
                                 placement='bottomRight'
                                 placeholder='Select Option'
                                 suffixIcon={<DownOutlined className='th-black-1' />}
                                 dropdownMatchSelectWidth={false}
                                 onChange={(e, val) => handleRemark(val, obj?.id)}
-                                // allowClear
                                 filterOption={(input, options) => {
                                   return (
                                     options.children
@@ -579,18 +556,6 @@ const VisualPendingReview = (props) => {
                           </div>
                         );
                       })}
-                      {/* <div className='col-12 py-2'>
-                        <div className='th-12 px-0 py-1 th-grey'>
-                          Upload .jpeg,.png,.mp4 file only
-                        </div>
-                        <Input
-                          type='file'
-                          inputRef={fileRef}
-                          accept='image/x-png,image/gif,image/jpeg,image/jpeg,video/mp4'
-                          inputProps={{ accept: '.mp4,.jpeg,.png' }}
-                          onChange={handleFileChange}
-                        />
-                      </div> */}
                       <div className='row align-items-center'>
                         <div className='col-md-4 py-2 th-16'>
                           <Upload {...uploadProps} className='w-75'>

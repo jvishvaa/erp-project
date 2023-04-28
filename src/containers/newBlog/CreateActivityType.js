@@ -8,8 +8,8 @@ import Layout from 'containers/Layout';
 import { useTheme } from '@material-ui/core/styles';
 import './styles.scss';
 import endpoints from '../../config/endpoints';
-import { Input, Button, Breadcrumb, Table, Tag, message } from 'antd';
-import { CheckCircleOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Input, Button, Breadcrumb, Table, Tag, message, Popconfirm } from 'antd';
+import { CheckCircleOutlined, DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 const CreateActivityType = () => {
   // const classes = useStyles();
@@ -75,23 +75,22 @@ const CreateActivityType = () => {
       width: '25%',
       render: (text, row) => (
         <div className='th-black-1 d-flex justify-content-around'>
-          <Tag
-            icon={<DeleteOutlined className='th-14' />}
-            color='red'
-            className='th-br-5 th-pointer py-1'
-            // onClick={() => viewedAssign(row)}
-            onClick={() => handleDeleteActivity(row)}
+          <Popconfirm
+            title='Delete the Activity ?'
+            description='Are you sure to delete this remarks?'
+            onConfirm={() => handleDeleteActivity(row)}
+            onOpenChange={() => console.log('open change')}
+            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           >
-            <span className='th-fw-500 th-14'>Delete</span>
-          </Tag>
-          {/* <Tag
-            icon={<IdcardOutlined className='th-14' />}
-            color='success'
-            className='th-br-5 th-pointer py-1'
-            onClick={() => handlePreview(row)}
-          >
-            <span className='th-fw-500 th-14'>Edit</span>
-          </Tag> */}
+            <Tag
+              icon={<DeleteOutlined className='th-14' />}
+              color='red'
+              className='th-br-5 th-pointer py-1'
+              // onClick={() => handleDeleteActivity(row)}
+            >
+              <span className='th-fw-500 th-14'>Delete</span>
+            </Tag>
+          </Popconfirm>
         </div>
       ),
     },
@@ -291,30 +290,34 @@ const CreateActivityType = () => {
     setInputList(newInputList);
   };
 
-  const handleDeleteActivity =(data) =>{
-
-    if(data){
-      setLoading(true)
+  const handleDeleteActivity = (data) => {
+    if (data) {
+      setLoading(true);
       axios
-      .delete(`${endpoints.newBlog.activityDelete}${data?.id}/`,{
-        headers:{
-          'X-DTS-HOST' : X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        message.success(response?.data?.message)
-        getActivityCategory()
-        setLoading(false)
-        return
-      })
-      .catch((err) =>{
-        message.error(err)
-        setLoading(false)
-        return
-      })
+        .delete(`${endpoints.newBlog.activityDelete}${data?.id}/`, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if(response?.data?.status_code === 200){
+            message.success(response?.data?.message);
+            getActivityCategory();
+            setLoading(false);
+            return;
+          }else{
+            message.error(response?.data?.message);
+            getActivityCategory();
+            setLoading(false)
+          }
+        })
+        .catch((err) => {
+          message.error(err);
+          setLoading(false);
+          return;
+        });
     }
-
-  }
+  };
 
   return (
     <div>

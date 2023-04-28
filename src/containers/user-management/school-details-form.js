@@ -17,6 +17,8 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
+import axios from 'axios';
+import endpoints from 'config/endpoints';
 import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -42,6 +44,10 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const [roles, setRoles] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
+  const [designation, setDesignation] = useState([]);
+  const [selectedDesignation, setSelectedDesignation] = useState('');
   const selectedYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -62,7 +68,63 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         }
       });
     }
+    getRoleApi()
   }, []);
+
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
+    ? true
+    : false;
+
+let levelObj = {};
+
+  const getRoleApi = async () => {
+    try {
+      const result = await axios.get(endpoints.userManagement.userLevelList, {
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          'x-api-key': 'vikash@12345#1231',
+        },
+      });
+      if (result.status === 200) {
+        setRoles(result?.data?.result)
+        // const activeRole = [];
+        // const levels = result?.data?.result;
+        // levels.forEach((item) => {
+        //   if (!item?.is_delete) {
+        //     activeRole.push(item)
+        //   }
+        // })
+        // setRoles(activeRole);
+        // levels.forEach(({ id = 3, level_name = 'Student' }) => levelObj[id] = level_name)
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error?.message);
+    }
+  };
+
+  const getDesignation = async (id) => {
+    try {
+      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          'x-api-key': 'vikash@12345#1231',
+        },
+      });
+      if (result.status === 200) {
+        console.log(result);
+        setDesignation(result?.data?.result)
+    
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error?.message);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -71,6 +133,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       grade: details.grade,
       section: details.section,
       subjects: details.subjects,
+      userLevel: details.userLevel,
+      designation: details.designation
     },
     validationSchema,
     onSubmit: (values) => {
@@ -160,11 +224,11 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       fetchGrades(selectedYear?.id, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
-              item_id: grade?.id,
-              id: grade?.grade_id,
-              grade_name: grade?.grade__grade_name,
-              branch_id: grade?.acad_session__branch_id,
-            }))
+            item_id: grade?.id,
+            id: grade?.grade_id,
+            grade_name: grade?.grade__grade_name,
+            branch_id: grade?.acad_session__branch_id,
+          }))
           : [];
         if (transformedData?.length > 1) {
           transformedData.unshift({
@@ -192,12 +256,12 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       fetchSections(selectedYear?.id, branchList, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
-              item_id: section.id,
-              id: section.section_id,
-              section_name: `${section.section__section_name}`,
-              branch_id: section?.branch_id,
-              grade_id: section?.grade_id,
-            }))
+            item_id: section.id,
+            id: section.section_id,
+            section_name: `${section.section__section_name}`,
+            branch_id: section?.branch_id,
+            grade_id: section?.grade_id,
+          }))
           : [];
         if (transformedData?.length > 1) {
           transformedData.unshift({
@@ -257,34 +321,41 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   useEffect(() => {
     if (moduleId && selectedYear) {
-        fetchBranches(selectedYear?.id);
-        if (details.branch) {
-          handleChangeBranch(details.branch, selectedYear?.id);
-          if (details.grade && details.grade.length > 0) {
-            handleChangeGrade(details.grade, selectedYear?.id, details.branch);
-            if (details.section && details.section.length > 0) {
-              handleChangeSection(
-                details.section,
-                selectedYear?.id,
-                details.branch,
-                details.grade
-              );
-              if (details.subjects && details.subjects.length > 0) {
-                formik.setFieldValue('subjects', details.subjects);
-              }
+      fetchBranches(selectedYear?.id);
+      if (details.branch) {
+        handleChangeBranch(details.branch, selectedYear?.id);
+        if (details.grade && details.grade.length > 0) {
+          handleChangeGrade(details.grade, selectedYear?.id, details.branch);
+          if (details.section && details.section.length > 0) {
+            handleChangeSection(
+              details.section,
+              selectedYear?.id,
+              details.branch,
+              details.grade
+            );
+            if (details.subjects && details.subjects.length > 0) {
+              formik.setFieldValue('subjects', details.subjects);
             }
           }
         }
       }
-  }, [moduleId , selectedYear]);
+    }
+  }, [moduleId, selectedYear]);
 
   const handleSubmit = () => {
 
-    if(formik.values.subjects.length === 0){
-      setAlert('error','Please select all fields')
+    if (formik.values.subjects.length === 0) {
+      setAlert('error', 'Please select all fields')
     }
-    else {
-      formik.handleSubmit()
+    else if(formik.values.userLevel == '' && isOrchids == true || formik.values.userLevel == null && isOrchids == true ){
+      setAlert('error', 'Please select User Level')
+    } else {
+      if(formik.values.userLevel?.id != 13 && isOrchids == true && formik.values.designation == '' || formik.values.userLevel?.id != 13 && isOrchids == true && formik.values.designation == null ){
+      setAlert('error', 'Please select Designation')
+      }else{
+        formik.handleSubmit()
+        console.log(formik.values.designation);
+      }
     }
   }
 
@@ -292,6 +363,68 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   return (
     <Grid container spacing={4} className='school-details-form-container'>
+    {isOrchids == true ? 
+      <div className='w-100 d-flex' >
+        <div className='col-md-4' >
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={(event, value) => {
+            setSelectedRole(value);
+            formik.setFieldValue('userLevel', value);
+            console.log(value);
+            if(value?.id == 13){
+              setSelectedDesignation('');
+              formik.setFieldValue('designation', '');
+            }
+            if(value?.id){
+              getDesignation(value?.id)
+            }
+          }}
+          id='branch_id'
+          className='dropdownIcon'
+          value={formik.values.userLevel || ''}
+          options={roles}
+          getOptionLabel={(option) => option?.level_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='User Level'
+              placeholder='Select User Level'
+            />
+          )}
+        />
+        </div> 
+        {console.log(selectedRole , 'rol')}
+        {formik.values.userLevel?.id == 13 || formik.values.userLevel == '' || formik.values.userLevel == null ? '' : 
+        <div className='col-md-4' >
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={(event, value) => {
+            setSelectedDesignation(value);
+            formik.setFieldValue('designation', value);
+          }}
+          id='branch_id'
+          className='dropdownIcon'
+          value={formik.values.designation || ''}
+          options={designation || []}
+          getOptionLabel={(option) => option?.designation}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Designation'
+              placeholder='Select Designation'
+            />
+          )}
+        />
+        </div>
+        }
+      </div> : '' }
       <Grid item xs={12}>
         <Divider />
       </Grid>
@@ -299,7 +432,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         <TextField
           id="outlined-required"
           label="Academic Year"
-          style={{width:'100%', padding:'0px !important', height:'7px !important'}}
+          style={{ width: '100%', padding: '0px !important', height: '7px !important' }}
           defaultValue={details?.erp_id ? details?.academic_year?.session_year : selectedYear?.session_year}
           variant="outlined"
           disabled
