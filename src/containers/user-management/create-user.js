@@ -168,15 +168,7 @@ class CreateUser extends Component {
       userLevel,
       designation
     } = requestObj;
-    if(username == ''){
-      console.log(username, 'user');
-      this.setState({
-        loading: false
-      })
-    const { setAlert } = this.context;
-    setAlert('error', 'Please Add Username');
-    return;
-    }
+
     const {
       father_first_name,
       father_middle_name,
