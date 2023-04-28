@@ -15,6 +15,7 @@ const StudentSidePublicSpeaking = () => {
   const [publicSpeakingList, setPublicSpeakingList] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
+  const [permissionState, setPermissionState] = useState('');
   const [mediaFiles, setMediaFiles] = useState(null);
   const [totalCountAssigned, setTotalCountAssigned] = useState(0);
   const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
@@ -62,6 +63,7 @@ const StudentSidePublicSpeaking = () => {
   const handleShowReview = (data) => {
     let rating = JSON.parse(data?.grading?.grade_scheme_markings);
     fetchMedia({ asset_id: data?.asset?.id });
+    setPermissionState(data?.state);
     setShowDrawer(true);
     setSelectedActivity(rating);
   };
@@ -198,6 +200,7 @@ const StudentSidePublicSpeaking = () => {
             placement='right'
             onClose={handleCloseDrawer}
             zIndex={1300}
+            destroyOnClose={true}
             visible={showDrawer}
             width={
               window.innerWidth < 600 ? '95vw' : mediaFiles?.signed_URL ? '70vw' : '35vw'
@@ -221,35 +224,39 @@ const StudentSidePublicSpeaking = () => {
                     height='95%'
                   />
                 </div>
-                <div
-                  className={`${
-                    mediaFiles?.signed_URL ? 'col-md-5' : 'col-12'
-                  } px-0 th-bg-white`}
-                >
-                  <div className='row'>
-                    <div className='col-12 px-1'>
-                      <div className='mt-3'>
-                        <div className='th-fw-500 th-16 mb-2'>Remarks</div>
-                        <div
-                          className='px-1 py-2 th-br-5'
-                          style={{ outline: '1px solid #d9d9d9' }}
-                        >
-                          <Table
-                            className='th-table'
-                            columns={columnMarks}
-                            loading={loading}
-                            dataSource={selectedActivity}
-                            pagination={false}
-                            rowClassName={(record, index) =>
-                              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                            }
-                            scroll={{ x: 'max-content' }}
-                          />
+                {permissionState === 'graded' ? (
+                  <div
+                    className={`${
+                      mediaFiles?.signed_URL ? 'col-md-5' : 'col-12'
+                    } px-0 th-bg-white`}
+                  >
+                    <div className='row'>
+                      <div className='col-12 px-1'>
+                        <div className='mt-3'>
+                          <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                          <div
+                            className='px-1 py-2 th-br-5'
+                            style={{ outline: '1px solid #d9d9d9' }}
+                          >
+                            <Table
+                              className='th-table'
+                              columns={columnMarks}
+                              loading={loading}
+                              dataSource={selectedActivity}
+                              pagination={false}
+                              rowClassName={(record, index) =>
+                                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                              }
+                              scroll={{ x: 'max-content' }}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div className='col-md-5 d-flex justify-content-center align-items-center h4'> No Remarks Found</div>
+                )}
               </div>
             </div>
           </Drawer>
