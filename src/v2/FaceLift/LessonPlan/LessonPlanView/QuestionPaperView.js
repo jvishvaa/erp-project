@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Collapse, Divider } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import ReactHtmlParser from 'react-html-parser';
@@ -7,7 +7,7 @@ import { AttachmentPreviewerContext } from 'components/attachment-previewer/atta
 const { Panel } = Collapse;
 
 const QuestionPaperView = ({ questionData }) => {
-  console.log({ questionData });
+  const [answerHidden, setAnswerHidden] = useState([]);
 
   const resolveQuestionTypeName = (type) => {
     switch (type) {
@@ -43,12 +43,34 @@ const QuestionPaperView = ({ questionData }) => {
     return span.textContent || span.innerText;
   };
 
-  const showAnswer = (id) => {
-    console.log(id);
+  const toggleAnswer = (id) => {
+    if (answerHidden.includes(id)) {
+      let removeArr = answerHidden?.filter((each) => {
+        return each !== id;
+      });
+      setAnswerHidden(removeArr);
+    } else {
+      let arr = [];
+      arr.push(id);
+      setAnswerHidden(arr);
+    }
+  };
+
+  const showAnswer = (id, btnid) => {
     let element = document.getElementsByClassName(id);
-    console.log(element);
+    let btn = document.getElementById(btnid);
     for (var i = 0; i < element.length; i++) {
       element[i].style.display = 'block';
+      btn.innerText = 'Hide Answer';
+    }
+  };
+
+  const hideAnswer = (id, btnid) => {
+    let element = document.getElementsByClassName(id);
+    let btn = document.getElementById(btnid);
+    for (var i = 0; i < element.length; i++) {
+      element[i].style.display = 'none';
+      btn.innerText = 'Show Answer';
     }
   };
 
@@ -187,22 +209,30 @@ const QuestionPaperView = ({ questionData }) => {
                             <Button
                               type='primary'
                               className='th-br-4 mb-2'
-                              onClick={() => showAnswer(`${item.name}q-${qindex + 1}`)}
+                              // onClick={() => showAnswer(`${item.name}q-${qindex + 1}`)}
+                              onClick={() => {
+                                toggleAnswer(qitem.id);
+                              }}
                             >
-                              Show Answer
+                              {answerHidden?.includes(qitem.id)
+                                ? 'Hide Answer'
+                                : 'Show Answer'}
                             </Button>
                             {Array.isArray(qitem.question_answer[0].answer) &&
                               qitem.question_answer[0].answer.length > 0 &&
                               qitem.question_answer[0].answer.map((ansitem, ansindex) => (
                                 <>
-                                  <p
-                                    className={`mb-1 ${item.name}q-${qindex + 1}`}
-                                    id={`${item.name}q-${qindex + 1}`}
-                                    style={{ display: 'none' }}
-                                    key={ansindex}
-                                  >
-                                    {ansitem}
-                                  </p>
+                                  {answerHidden?.includes(qitem.id) ? (
+                                    <p
+                                      className={`mb-1 ${item.name}q-${qindex + 1}`}
+                                      id={`${item.name}q-${qindex + 1}`}
+                                      key={ansindex}
+                                    >
+                                      {ansitem}
+                                    </p>
+                                  ) : null}
+                                  {/* {ansitem} */}
+                                  {/* {ansitem.split('')[ansitem.length-1]} */}
                                 </>
                               ))}
                           </div>
@@ -392,11 +422,13 @@ const QuestionPaperView = ({ questionData }) => {
                                             <Button
                                               type='primary'
                                               className='th-br-4 mb-2'
-                                              onClick={() =>
-                                                showAnswer(`${item.name}q-${qindex + 1}`)
-                                              }
+                                              onClick={() => {
+                                                toggleAnswer(subitem.id);
+                                              }}
                                             >
-                                              Show Answer
+                                              {answerHidden?.includes(subitem.id)
+                                                ? 'Hide Answer'
+                                                : 'Show Answer'}
                                             </Button>
                                             {Array.isArray(
                                               subitem.question_answer[0].answer
@@ -406,16 +438,17 @@ const QuestionPaperView = ({ questionData }) => {
                                               subitem.question_answer[0].answer.map(
                                                 (subansitem, subansindex) => (
                                                   <>
-                                                    <p
-                                                      className={`mb-1 ${item.name}q-${
-                                                        qindex + 1
-                                                      }`}
-                                                      id={`${item.name}q-${qindex + 1}`}
-                                                      style={{ display: 'none' }}
-                                                      key={subansindex}
-                                                    >
-                                                      {subansitem}
-                                                    </p>
+                                                    {answerHidden?.includes(subitem.id) ? (
+                                                      <p
+                                                        className={`mb-1 ${item.name}q-${
+                                                          qindex + 1
+                                                        }`}
+                                                        id={`${item.name}q-${qindex + 1}`}
+                                                        key={subansindex}
+                                                      >
+                                                        {subansitem}
+                                                      </p>
+                                                    ) : null}
                                                   </>
                                                 )
                                               )}
@@ -561,13 +594,18 @@ const QuestionPaperView = ({ questionData }) => {
                                             <Button
                                               type='primary'
                                               className='th-br-4 mb-2'
-                                              onClick={() =>
-                                                showAnswer(
-                                                  `${item.name}subq-${subindex + 1}`
-                                                )
-                                              }
+                                              // onClick={() =>
+                                              //   showAnswer(
+                                              //     `${item.name}subq-${subindex + 1}`
+                                              //   )
+                                              // }
+                                              onClick={() => {
+                                                toggleAnswer(subitem.id);
+                                              }}
                                             >
-                                              Show Answer
+                                              {answerHidden?.includes(subitem.id)
+                                                ? 'Hide Answer'
+                                                : 'Show Answer'}
                                             </Button>
                                             {Array.isArray(
                                               subitem.question_answer[0].answer
@@ -577,14 +615,32 @@ const QuestionPaperView = ({ questionData }) => {
                                               subitem.question_answer[0].answer.map(
                                                 (ansitem, ansindex) => (
                                                   <>
-                                                    <p
-                                                      className={`mb-1 ${item.name}subq-${subindex + 1}`}
-                                                      id={`${item.name}subq-${subindex + 1}`}
+                                                    {/* <p
+                                                      className={`mb-1 ${item.name}subq-${
+                                                        subindex + 1
+                                                      }`}
+                                                      id={`${item.name}subq-${
+                                                        subindex + 1
+                                                      }`}
                                                       style={{ display: 'none' }}
                                                       key={ansindex}
                                                     >
                                                       {ansitem}
-                                                    </p>
+                                                    </p> */}
+
+                                                    {answerHidden?.includes(subitem.id) ? (
+                                                      <p
+                                                        className={`mb-1 ${
+                                                          item.name
+                                                        }subq-${subindex + 1}`}
+                                                        id={`${item.name}subq-${
+                                                          subindex + 1
+                                                        }`}
+                                                        key={ansindex}
+                                                      >
+                                                        {ansitem}
+                                                      </p>
+                                                    ) : null}
                                                   </>
                                                 )
                                               )}
@@ -619,25 +675,33 @@ const QuestionPaperView = ({ questionData }) => {
                                             <Button
                                               type='primary'
                                               className='th-br-4 mb-2'
-                                              onClick={() =>
-                                                showAnswer(
-                                                  `${item.name}q-${subindex + 1}`
-                                                )
-                                              }
+                                              // onClick={() =>
+                                              //   showAnswer(
+                                              //     `${item.name}q-${subindex + 1}`
+                                              //   )
+                                              // }
+                                              onClick={() => {
+                                                toggleAnswer(subitem.id);
+                                              }}
                                             >
+                                              {answerHidden?.includes(subitem.id)
+                                                ? 'Hide Answer'
+                                                : 'Show Answer'}
                                               Show Answer
                                             </Button>
-                                            <p
-                                              className={`mb-1 ${item.name}q-${
-                                                subindex + 1
-                                              } lp-question`}
-                                              id={`${item.name}q-${subindex + 1}`}
-                                              style={{ display: 'none' }}
-                                            >
-                                              {ReactHtmlParser(
-                                                subitem.question_answer[0].answer
-                                              )}
-                                            </p>
+
+                                            {answerHidden?.includes(subitem.id) ? (
+                                              <p
+                                                className={`mb-1 ${item.name}q-${
+                                                  subindex + 1
+                                                } lp-question`}
+                                                id={`${item.name}q-${subindex + 1}`}
+                                              >
+                                                {ReactHtmlParser(
+                                                  subitem.question_answer[0].answer
+                                                )}
+                                              </p>
+                                            ) : null}
                                           </div>
                                         </div>
                                       </div>
@@ -750,22 +814,34 @@ const QuestionPaperView = ({ questionData }) => {
                             <Button
                               type='primary'
                               className='th-br-4 mb-2'
-                              onClick={() => showAnswer(`${item.name}q-${qindex + 1}`)}
+                              // onClick={() =>
+                              //   showAnswer(
+                              //     `${item.name}q-${qindex + 1}`,
+                              //     `${item.name}btn-${qindex + 1}`
+                              //   )
+                              // }
+                              onClick={() => {
+                                toggleAnswer(qitem.id);
+                              }}
+                              id={`${item.name}btn-${qindex + 1}`}
                             >
-                              Show Answer
+                              {answerHidden?.includes(qitem.id)
+                                ? 'Hide Answer'
+                                : 'Show Answer'}
                             </Button>
                             {Array.isArray(qitem.question_answer[0].answer) &&
                               qitem.question_answer[0].answer.length > 0 &&
                               qitem.question_answer[0].answer.map((ansitem, ansindex) => (
                                 <>
-                                  <p
-                                    className={`mb-1 ${item.name}q-${qindex + 1}`}
-                                    id={`${item.name}q-${qindex + 1}`}
-                                    style={{ display: 'none' }}
-                                    key={ansindex}
-                                  >
-                                    {ansitem}
-                                  </p>
+                                  {answerHidden?.includes(qitem.id) ? (
+                                    <p
+                                      className={`mb-1 ${item.name}q-${qindex + 1}`}
+                                      id={`${item.name}q-${qindex + 1}`}
+                                      key={ansindex}
+                                    >
+                                      {ansitem}
+                                    </p>
+                                  ) : null}
                                 </>
                               ))}
                           </div>
@@ -795,16 +871,22 @@ const QuestionPaperView = ({ questionData }) => {
                             <Button
                               type='primary'
                               className='th-br-4 mb-2'
-                              onClick={() => showAnswer(`${item.name}q-${qindex + 1}`)}
+                              // onClick={() => showAnswer(`${item.name}q-${qindex + 1}`)}
+                              onClick={() => {
+                                toggleAnswer(qitem.id);
+                              }}
                             >
-                              Show Answer
+                              {answerHidden?.includes(qitem.id)
+                                ? 'Hide Answer'
+                                : 'Show Answer'}
                             </Button>
                             <p
                               className={`mb-1 ${item.name}q-${qindex + 1} lp-question`}
                               id={`${item.name}q-${qindex + 1}`}
-                              style={{ display: 'none' }}
                             >
-                              {ReactHtmlParser(qitem.question_answer[0].answer)}
+                              {answerHidden?.includes(qitem.id) ? (
+                                <>{ReactHtmlParser(qitem.question_answer[0].answer)}</>
+                              ) : null}
                             </p>
                           </div>
                         </div>

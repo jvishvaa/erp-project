@@ -103,3 +103,11 @@
   width: 200px !important;
   height: auto !important;
 }
+
+.lp-question p {
+  text-align: justify;
+}
+
+.lp-question-box p {
+  text-align: justify;
+}
