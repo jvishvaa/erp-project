@@ -1373,13 +1373,18 @@ const TableView = (props) => {
                       </div>
                       <hr />
 
-                      {user_level !== 13 && (
-                        <div className='row mt-3'>
-                          <div className='col-12 text-through pl-0'>
-                            <span className='th-grey'>Quiz</span>
-                          </div>
-                        </div>
-                      )}
+                      {item?.lp_files?.map((files, i) => (
+                        <>
+                          {user_level !== 13 &&
+                          files?.document_type == 'QuestionPaper' ? (
+                            <div className='row mt-3'>
+                              <div className='col-12 text-through pl-0'>
+                                <span className='th-grey'>Quiz</span>
+                              </div>
+                            </div>
+                          ) : null}
+                        </>
+                      ))}
 
                       {item?.lp_files?.map((files, i) => (
                         <>
