@@ -1139,7 +1139,11 @@ const TableView = (props) => {
       <div>
         <Drawer
           zIndex={1300}
-          title={<div className='th-bg-grey'>Resources</div>}
+          title={
+            <div className='th-bg-grey'>
+              {isPeriodView ? 'Resources' : 'Question Paper'}
+            </div>
+          }
           placement='right'
           onClose={isPeriodView ? closeDrawer : closeQpDrawer}
           visible={drawerVisible}
@@ -1369,11 +1373,13 @@ const TableView = (props) => {
                       </div>
                       <hr />
 
-                      <div className='row mt-3'>
-                        <div className='col-12 text-through pl-0'>
-                          <span className='th-grey'>Quiz</span>
+                      {user_level !== 13 && (
+                        <div className='row mt-3'>
+                          <div className='col-12 text-through pl-0'>
+                            <span className='th-grey'>Quiz</span>
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       {item?.lp_files?.map((files, i) => (
                         <>
@@ -1393,7 +1399,7 @@ const TableView = (props) => {
                                 <div className='col-2'>
                                   <FileUnknownOutlined style={{ fontSize: 35 }} />
                                 </div>
-                                <div className='col-10 px-0'>
+                                <div className='col-10'>
                                   <div className='row align-items-center'>
                                     <div className='col-9 px-0'>
                                       <p
@@ -1403,10 +1409,21 @@ const TableView = (props) => {
                                         {files.question_paper_name}
                                       </p>
                                     </div>
+                                    {/* <div className='col-3'>
+                                      <Button
+                                        type='primary'
+                                        className='th-br-4 mr-3'
+                                        onClick={() =>
+                                          openQpDrawer(files.question_paper_id)
+                                        }
+                                      >
+                                        View
+                                      </Button>
+                                    </div> */}
                                     <div className='col-3'>
                                       <Button
                                         type='primary'
-                                        className='btn-block th-br-4'
+                                        className='th-br-4'
                                         onClick={() =>
                                           openQpDrawer(files.question_paper_id)
                                         }
@@ -1552,10 +1569,15 @@ const TableView = (props) => {
               ) : (
                 <>
                   <QuestionPaperView questionData={questionData} />
-                  <div className='row justify-content-center mt-3'>
+                  <div className='row justify-content-end mt-3'>
                     <div className='col-md-4 col-sm-8'>
-                      <Button type='primary' className='th-br-4' onClick={closeQpDrawer}>
-                        Go to Resourses
+                      <Button
+                        type='primary'
+                        className='th-br-4'
+                        onClick={closeQpDrawer}
+                        style={{ float: 'right', marginRight: '-15px' }}
+                      >
+                        Back
                       </Button>
                     </div>
                   </div>
