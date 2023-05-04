@@ -68,8 +68,46 @@
   border: 1px solid #1b4ccb !important;
 }
 .highlighted-period {
-   border: 3px solid #1b4ccb !important;
+  border: 3px solid #1b4ccb !important;
 }
 .th-divider .ant-divider-horizontal.ant-divider-with-text {
   margin: 5px 0px !important;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.th-question-collapse .ant-collapse-item {
+  border: 3px solid #f8f8f8 !important;
+}
+
+.lp-question-box {
+  border-bottom: 2px solid #d9d9d9;
+  margin-left: -15px;
+  margin-right: -15px;
+  border-radius: 0;
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+
+.lp-sub-question-box {
+  margin-left: -15px;
+  margin-right: -15px;
+  border-radius: 0;
+}
+
+.lp-question img {
+  width: 200px !important;
+  height: auto !important;
+}
+
+.lp-question p {
+  text-align: justify;
+}
+
+.lp-question-box p {
+  text-align: justify;
 }
