@@ -56,30 +56,11 @@ const QuestionPaperView = ({ questionData }) => {
     }
   };
 
-  const showAnswer = (id, btnid) => {
-    let element = document.getElementsByClassName(id);
-    let btn = document.getElementById(btnid);
-    for (var i = 0; i < element.length; i++) {
-      element[i].style.display = 'block';
-      btn.innerText = 'Hide Answer';
-    }
-  };
-
-  const hideAnswer = (id, btnid) => {
-    let element = document.getElementsByClassName(id);
-    let btn = document.getElementById(btnid);
-    for (var i = 0; i < element.length; i++) {
-      element[i].style.display = 'none';
-      btn.innerText = 'Show Answer';
-    }
-  };
-
   const getS3DomainURL = (fileSrc) => {
     return `${endpoints.lessonPlan.bucket}/${fileSrc}`;
   };
 
-  const { openPreview, closePreview } =
-    React.useContext(AttachmentPreviewerContext) || {};
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
 
   return (
     <>
@@ -209,7 +190,6 @@ const QuestionPaperView = ({ questionData }) => {
                             <Button
                               type='primary'
                               className='th-br-4 mb-2'
-                              // onClick={() => showAnswer(`${item.name}q-${qindex + 1}`)}
                               onClick={() => {
                                 toggleAnswer(qitem.id);
                               }}
@@ -438,7 +418,9 @@ const QuestionPaperView = ({ questionData }) => {
                                               subitem.question_answer[0].answer.map(
                                                 (subansitem, subansindex) => (
                                                   <>
-                                                    {answerHidden?.includes(subitem.id) ? (
+                                                    {answerHidden?.includes(
+                                                      subitem.id
+                                                    ) ? (
                                                       <p
                                                         className={`mb-1 ${item.name}q-${
                                                           qindex + 1
@@ -460,13 +442,6 @@ const QuestionPaperView = ({ questionData }) => {
                                     {subitem.question_type == 8 ? (
                                       <div className='lp-question-box'>
                                         <div className='row'>
-                                          {/* <div className='col-12'>
-                                            <p className='text-right '>
-                                              {resolveQuestionTypeName(
-                                                subitem.question_type
-                                              )}
-                                            </p>
-                                          </div> */}
                                           <div className='col-12'>
                                             <p className='th-black th-fw-600 mb-0'>
                                               Question {subindex + 1}
@@ -594,11 +569,6 @@ const QuestionPaperView = ({ questionData }) => {
                                             <Button
                                               type='primary'
                                               className='th-br-4 mb-2'
-                                              // onClick={() =>
-                                              //   showAnswer(
-                                              //     `${item.name}subq-${subindex + 1}`
-                                              //   )
-                                              // }
                                               onClick={() => {
                                                 toggleAnswer(subitem.id);
                                               }}
@@ -628,7 +598,9 @@ const QuestionPaperView = ({ questionData }) => {
                                                       {ansitem}
                                                     </p> */}
 
-                                                    {answerHidden?.includes(subitem.id) ? (
+                                                    {answerHidden?.includes(
+                                                      subitem.id
+                                                    ) ? (
                                                       <p
                                                         className={`mb-1 ${
                                                           item.name
@@ -675,11 +647,6 @@ const QuestionPaperView = ({ questionData }) => {
                                             <Button
                                               type='primary'
                                               className='th-br-4 mb-2'
-                                              // onClick={() =>
-                                              //   showAnswer(
-                                              //     `${item.name}q-${subindex + 1}`
-                                              //   )
-                                              // }
                                               onClick={() => {
                                                 toggleAnswer(subitem.id);
                                               }}
@@ -687,7 +654,6 @@ const QuestionPaperView = ({ questionData }) => {
                                               {answerHidden?.includes(subitem.id)
                                                 ? 'Hide Answer'
                                                 : 'Show Answer'}
-                                              Show Answer
                                             </Button>
 
                                             {answerHidden?.includes(subitem.id) ? (
@@ -747,7 +713,6 @@ const QuestionPaperView = ({ questionData }) => {
                                         'true'
                                         ? 'True'
                                         : 'False'}
-                                      {/* {extractContent(opitem[`option${opindex + 1}`].optionValue) === true || extractContent(opitem[`option${opindex + 1}`].optionValue) == "True" ? "True" : "False"} */}
 
                                       {Array.isArray(
                                         opitem[`option${opindex + 1}`].images
@@ -778,7 +743,6 @@ const QuestionPaperView = ({ questionData }) => {
                                                             .slice(-1)[0]
                                                         }`,
                                                       };
-                                                      // console.log('attachmentObj', attachmentObj)
                                                       attachmentsArray.push(
                                                         attachmentObj
                                                       );
@@ -788,11 +752,6 @@ const QuestionPaperView = ({ questionData }) => {
                                                   })(),
                                                 });
                                               }}
-                                              // src={getS3DomainURL(
-                                              //   `${opitem[`option${opindex + 1}`].images}`.split(
-                                              //     ','
-                                              //   )
-                                              // )}
                                               src={getS3DomainURL(imgitem)}
                                               alt={getS3DomainURL(
                                                 `${opitem[`option${opindex + 1}`].images}`
@@ -814,12 +773,6 @@ const QuestionPaperView = ({ questionData }) => {
                             <Button
                               type='primary'
                               className='th-br-4 mb-2'
-                              // onClick={() =>
-                              //   showAnswer(
-                              //     `${item.name}q-${qindex + 1}`,
-                              //     `${item.name}btn-${qindex + 1}`
-                              //   )
-                              // }
                               onClick={() => {
                                 toggleAnswer(qitem.id);
                               }}
@@ -896,183 +849,6 @@ const QuestionPaperView = ({ questionData }) => {
                 ))}
             </Panel>
           ))}
-        {/* 
-        <Panel
-          header={
-            <div className='row'>
-              <div className='th-black-1 px-0 col-12 pl-0'>
-                <div className='row justify-content-between'>
-                  <span className='th-fw-500'>Section</span>
-                </div>
-              </div>
-            </div>
-          }
-          key='2'
-          className='site-collapse-custom-panel mb-2 th-br-8'
-        >
-          {Array.isArray([1, 2]) &&
-            [1, 2].length > 0 &&
-            [1, 2].map((item, index) => (
-              <div className='lp-question-box'>
-                <div className='row'>
-                  <div className='col-12'>
-                    <p className='text-right'>{resolveQuestionTypeName(8)}</p>
-                  </div>
-                  <div className='col-12'>
-                    <p className='th-black th-fw-600 mb-0'>Question 1</p>
-                    <p className=''>
-                      Identifies and describes shapes learnt Identifies and describes
-                      shapes learnt Identifies and describes shapes learnt Identifies and
-                      describes shapes learnt
-                    </p>
-                  </div>
-                  <div className='col-12'>
-                    <p className='th-black th-fw-600 mb-0'>Options</p>
-                    <ul style={{ listStyle: 'none' }}>
-                      <li>
-                        <span className='pr-2'>Option 1. </span> True
-                      </li>
-                      <li>
-                        <span className='pr-2'>Option 2. </span> False
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className='row'>
-                  <div className='col-12'>
-                    <Button type='primary' className='th-br-4'>
-                      Show Answer
-                    </Button>
-                    <p className='mt-3' style={{ display: 'none' }}>
-                      Option 4
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </Panel> */}
-
-        {/* 
-        <Panel
-          header={
-            <div className='row'>
-              <div className='th-black-1 px-0 col-12 pl-0'>
-                <div className='row justify-content-between'>
-                  <span className='th-fw-500'>Section</span>
-                </div>
-              </div>
-            </div>
-          }
-          key='3'
-          className='site-collapse-custom-panel mb-2 th-br-8'
-          style={{
-            borderWidth: 3,
-            borderStyle: 'solid',
-            borderColor: '#f8f8f8',
-            borderBottomWidth: 3,
-          }}
-        >
-          {Array.isArray([1, 2]) &&
-            [1, 2].length > 0 &&
-            [1, 2].map((item, index) => (
-              <div className='lp-question-box'>
-                <div className='row'>
-                  <div className='col-12'>
-                    <p className='text-right'>{resolveQuestionTypeName(7)}</p>
-                  </div>
-                  <div className='col-12'>
-                    <p className='th-black th-fw-600 mb-0'>Question {index + 1}</p>
-                    <p className=''>
-                      Identifies and describes shapes learnt Identifies and describes
-                      shapes learnt Identifies and describes shapes learnt Identifies and
-                      describes shapes learnt
-                    </p>
-                  </div>
-                  <div className='col-12'>
-                    {Array.isArray([1, 2]) &&
-                      [1, 2].length > 0 &&
-                      [1, 2].map((item, index) => (
-                        <Collapse
-                          expandIcon={({ isActive }) => (
-                            <CaretRightOutlined rotate={isActive ? 90 : 0} />
-                          )}
-                          expandIconPosition='end'
-                          className='th-br-6 my-2 th-collapse th-question-collapse'
-                          style={{
-                            border: '0px solid #d9d9d9',
-                            backgroundColor: 'transparent',
-                          }}
-                        >
-                          <Panel
-                            header={
-                              <div className='row'>
-                                <div className='th-black-1 px-0 col-12 pl-0'>
-                                  <div className='row justify-content-between'>
-                                    <span className='th-fw-500'>
-                                      {resolveQuestionTypeName(1)}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            }
-                            key={index + 1}
-                            className='site-collapse-custom-panel mb-2 th-br-8'
-                          >
-                            <div className='lp-sub-question-box'>
-                              <div className='row'>
-                                <div className='col-12'>
-                                  <p className='th-black th-fw-600 mb-0'>
-                                    Question {index + 1}
-                                  </p>
-                                  <p className=''>
-                                    Identifies and describes shapes learnt Identifies and
-                                    describes shapes learnt Identifies and describes
-                                    shapes learnt Identifies and describes shapes learnt
-                                  </p>
-                                </div>
-                                <div className='col-12'>
-                                  <p className='th-black th-fw-600 mb-0'>Options</p>
-                                  <ul style={{ listStyle: 'none' }}>
-                                    <li>
-                                      <span className='pr-2'>Option 1. </span>{' '}
-                                      Identification of notes and coins
-                                    </li>
-                                    <li>
-                                      <span className='pr-2'>Option 2. </span>{' '}
-                                      Identification of notes and coins
-                                    </li>
-                                    <li>
-                                      <span className='pr-2'>Option 3. </span>{' '}
-                                      Identification of notes and coins
-                                    </li>
-                                    <li>
-                                      <span className='pr-2'>Option 4. </span>{' '}
-                                      Identification of notes and coins
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
-
-                              <div className='row'>
-                                <div className='col-12'>
-                                  <Button type='primary' className='th-br-4'>
-                                    Show Answer
-                                  </Button>
-                                  <p className='mt-3' style={{ display: 'none' }}>
-                                    Option 4
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </Panel>
-                        </Collapse>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-        </Panel> */}
       </Collapse>
     </>
   );
