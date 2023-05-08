@@ -186,6 +186,7 @@ export default {
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     chapterList: 'academic/central-chapters-list-v3/',
     keyConceptList: 'academic/get-key-concept-list/',
+    questionPaperPreview: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     bucket: `${CENTRAL_BUCKET}`,
   },
   homework: {

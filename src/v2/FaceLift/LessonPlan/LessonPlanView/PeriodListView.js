@@ -26,8 +26,10 @@ import {
   SnippetsOutlined,
   FilePptOutlined,
   DownloadOutlined,
+  FileUnknownOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
+import axios2 from 'axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
@@ -54,6 +56,7 @@ import _ from 'lodash';
 import EbookList from './viewEbooks';
 import IbookList from './viewIbooks';
 import { saveAs } from 'file-saver';
+import QuestionPaperView from './QuestionPaperView';
 const { Option } = Select;
 
 const PeriodListView = () => {
@@ -112,6 +115,9 @@ const PeriodListView = () => {
   const [ebookCount, setEbookCount] = useState();
   const [ibookCount, setIbookCount] = useState();
 
+  const [isPeriodView, setIsPeriodView] = useState(true);
+  const [questionData, setQuestionData] = useState([]);
+
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -151,6 +157,20 @@ const PeriodListView = () => {
     setDrawerVisible(false);
     setShowError(false);
   };
+
+  const openQpDrawer = (id) => {
+    fetchQuestionData(id);
+    setIsPeriodView(false);
+  };
+
+  const closeQpDrawer = () => {
+    setLoadingDrawer(true);
+    setIsPeriodView(true);
+    setTimeout(() => {
+      setLoadingDrawer(false);
+    }, 1000);
+  };
+
   const showModal = () => {
     setShowCompletionStatusModal(true);
   };
@@ -830,6 +850,43 @@ const PeriodListView = () => {
     saveAs(blob, filename);
   };
 
+  const fetchQuestionData = (paperid) => {
+    setLoadingDrawer(true);
+    const url = endpoints.lessonPlan.questionPaperPreview.replace(
+      '<question-paper-id>',
+      paperid
+    );
+    axios2
+      .get(url, { headers: { 'x-api-key': 'vikash@12345#1231' } })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          const { sections, questions } = result.data.result;
+          const parsedResponse = [];
+          sections.forEach((sec) => {
+            const sectionObject = { name: '', questions: [] };
+            const sectionName = Object.keys(sec)[0];
+            sectionObject.name = sectionName;
+            sec[sectionName].forEach((qId) => {
+              const questionFound = questions.find((q) => q?.id === qId);
+              if (questionFound) {
+                sectionObject.questions.push(questionFound);
+              }
+            });
+            parsedResponse.push(sectionObject);
+          });
+          setLoadingDrawer(false);
+          setQuestionData(parsedResponse);
+        } else {
+          setLoadingDrawer(false);
+          message.error(result.data.message);
+        }
+      })
+      .catch((error) => {
+        setLoadingDrawer(false);
+        message.error(error.message);
+      });
+  };
+
   return (
     <div className='row '>
       <div className='row align-items-center mb-2'>
@@ -1360,9 +1417,13 @@ const PeriodListView = () => {
 
       <div>
         <Drawer
-          title={<span className='th-fw-500'>{resourcesData?.period_name}</span>}
+          title={
+            <span className='th-fw-500'>
+              {isPeriodView ? resourcesData?.period_name : 'Question Paper'}
+            </span>
+          }
           placement='right'
-          onClose={closeDrawer}
+          onClose={isPeriodView ? closeDrawer : closeQpDrawer}
           zIndex={1300}
           visible={drawerVisible}
           width={window.innerWidth < 768 ? '90vw' : '450px'}
@@ -1370,298 +1431,394 @@ const PeriodListView = () => {
           className='th-resources-drawer'
           extra={
             <Space>
-              <CloseOutlined onClick={closeDrawer} />
+              <CloseOutlined onClick={isPeriodView ? closeDrawer : closeQpDrawer} />
             </Space>
           }
         >
-          {loadingDrawer ? (
-            <div className='text-center mt-5'>
-              <Spin tip='Loading...' />
-            </div>
-          ) : resourcesData ? (
-            <div>
-              {boardFilterArr.includes(window.location.host) && (
-                <div className='row mt-1 th-fw-600'>
-                  <div className='col-2 th-black-1 px-0'>
-                    <div className='d-flex justify-content-between'>
-                      <span>Module </span>
-                      <span>:&nbsp;</span>
+          {isPeriodView ? (
+            <>
+              {loadingDrawer ? (
+                <div className='text-center mt-5'>
+                  <Spin tip='Loading...' />
+                </div>
+              ) : resourcesData ? (
+                <div>
+                  {boardFilterArr.includes(window.location.host) && (
+                    <div className='row mt-1 th-fw-600'>
+                      <div className='col-2 th-black-1 px-0'>
+                        <div className='d-flex justify-content-between'>
+                          <span>Module </span>
+                          <span>:&nbsp;</span>
+                        </div>
+                      </div>
+
+                      <div className='col-10 th-primary px-0'>
+                        {resourcesData.module_name}
+                      </div>
+                    </div>
+                  )}
+                  <div className='row mt-2 th-fw-600'>
+                    <div className='col-2 th-black-1 px-0'>
+                      <div className='d-flex justify-content-between'>
+                        <span>Chapter </span>
+                        <span>:&nbsp;</span>
+                      </div>
+                    </div>
+
+                    <div className='col-10 th-primary px-0'>
+                      {resourcesData.chapter_name}
                     </div>
                   </div>
+                  <div className='row mt-2 th-fw-600'>
+                    <div className='col-3 th-black-1 px-0'>
+                      <div className='d-flex justify-content-between'>
+                        <span>Key Concept </span>
+                        <span>:&nbsp;</span>
+                      </div>
+                    </div>
 
-                  <div className='col-10 th-primary px-0'>
-                    {resourcesData.module_name}
+                    <div className='col-9 th-primary px-0'>
+                      {resourcesData.topic_name}
+                    </div>
                   </div>
-                </div>
-              )}
-              <div className='row mt-2 th-fw-600'>
-                <div className='col-2 th-black-1 px-0'>
-                  <div className='d-flex justify-content-between'>
-                    <span>Chapter </span>
-                    <span>:&nbsp;</span>
+                  <div className='row'>
+                    <div className='col-12 text-through pl-0'>
+                      <span className='th-grey'>Resources</span>
+                    </div>
                   </div>
-                </div>
+                  {resourcesData?.lp_files?.map((each) => each?.media_file).flat()
+                    .length > 0 ? (
+                    <div
+                      style={{
+                        overflowY: 'scroll',
+                        overflowX: 'hidden',
+                        maxHeight: '40vh',
+                      }}
+                    >
+                      {resourcesData?.lp_files?.map((files, i) => (
+                        <>
+                          {files?.media_file?.map((each, index) => {
+                            if (
+                              (user_level == 13 &&
+                                files?.document_type == 'Lesson_Plan') ||
+                              (user_level == 13 &&
+                                files?.document_type == 'Teacher_Reading_Material')
+                            ) {
+                            } else {
+                              let fullName = each?.split(
+                                `${files?.document_type.toLowerCase()}/`
+                              )[1];
+                              let textIndex = fullName
+                                ?.split('_')
+                                .indexOf(fullName.split('_').find((item) => isNaN(item)));
+                              let displayName = fullName
+                                .split('_')
+                                .slice(textIndex)
+                                .join('_');
+                              let fileName = displayName ? displayName.split('.') : null;
+                              let file = fileName ? fileName[fileName?.length - 2] : '';
+                              let extension = fileName
+                                ? fileName[fileName?.length - 1]
+                                : '';
+                              return (
+                                <div
+                                  className='row mt-2 py-2 align-items-center'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                >
+                                  <div className='col-2'>
+                                    <img src={getFileIcon(extension)} />
+                                  </div>
+                                  <div className='col-10 px-0 th-pointer'>
+                                    <div className='row align-items-center'>
+                                      <div className='col-9 px-0'>
+                                        <a
+                                          onClick={() => {
+                                            openPreview({
+                                              currentAttachmentIndex: 0,
+                                              attachmentsArray: [
+                                                {
+                                                  src: `${endpoints.homework.resourcesFiles}/${each}`,
 
-                <div className='col-10 th-primary px-0'>{resourcesData.chapter_name}</div>
-              </div>
-              <div className='row mt-2 th-fw-600'>
-                <div className='col-3 th-black-1 px-0'>
-                  <div className='d-flex justify-content-between'>
-                    <span>Key Concept </span>
-                    <span>:&nbsp;</span>
-                  </div>
-                </div>
+                                                  name: fileName,
+                                                  extension: '.' + extension,
+                                                },
+                                              ],
+                                            });
+                                          }}
+                                          rel='noopener noreferrer'
+                                          target='_blank'
+                                        >
+                                          {files.document_type}_{file}
+                                        </a>
+                                      </div>
 
-                <div className='col-9 th-primary px-0'>{resourcesData.topic_name}</div>
-              </div>
-              <div className='row'>
-                <div className='col-12 text-through pl-0'>
-                  <span className='th-grey'>Resources</span>
-                </div>
-              </div>
-              {resourcesData?.lp_files?.map((each) => each?.media_file).flat().length >
-              0 ? (
-                <div
-                  style={{
-                    overflowY: 'scroll',
-                    overflowX: 'hidden',
-                    maxHeight: '40vh',
-                  }}
-                >
+                                      <div className='col-1'>
+                                        <a
+                                          onClick={() => {
+                                            openPreview({
+                                              currentAttachmentIndex: 0,
+                                              attachmentsArray: [
+                                                {
+                                                  src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                                  name: fileName,
+                                                  extension: '.' + extension,
+                                                },
+                                              ],
+                                            });
+                                          }}
+                                          rel='noopener noreferrer'
+                                          target='_blank'
+                                        >
+                                          <EyeFilled />
+                                        </a>
+                                      </div>
+
+                                      {files?.document_type ==
+                                        'Teacher_Reading_Material' && (
+                                        <div className='col-1'>
+                                          <a
+                                            rel='noopener noreferrer'
+                                            target='_blank'
+                                            // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
+                                            onClick={() =>
+                                              downloadMaterial(
+                                                `${endpoints.lessonPlan.bucket}/${files?.media_file}`,
+                                                `${files.document_type}_${file}`
+                                              )
+                                            }
+                                          >
+                                            <DownloadOutlined />
+                                          </a>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            }
+                          })}
+                        </>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className='row'>
+                      <div className='col-12 text-center'> No Resources Available</div>
+                    </div>
+                  )}
+
                   {resourcesData?.lp_files?.map((files, i) => (
                     <>
-                      {files?.media_file?.map((each, index) => {
-                        if (
-                          (user_level == 13 && files?.document_type == 'Lesson_Plan') ||
-                          (user_level == 13 &&
-                            files?.document_type == 'Teacher_Reading_Material')
-                        ) {
-                        } else {
-                          let fullName = each?.split(
-                            `${files?.document_type.toLowerCase()}/`
-                          )[1];
-                          let textIndex = fullName
-                            ?.split('_')
-                            .indexOf(fullName.split('_').find((item) => isNaN(item)));
-                          let displayName = fullName
-                            .split('_')
-                            .slice(textIndex)
-                            .join('_');
-                          let fileName = displayName ? displayName.split('.') : null;
-                          let file = fileName ? fileName[fileName?.length - 2] : '';
-                          let extension = fileName ? fileName[fileName?.length - 1] : '';
-                          return (
-                            <div
-                              className='row mt-2 py-2 align-items-center'
-                              style={{ border: '1px solid #d9d9d9' }}
-                            >
-                              <div className='col-2'>
-                                <img src={getFileIcon(extension)} />
-                              </div>
-                              <div className='col-10 px-0 th-pointer'>
-                                <div className='row align-items-center'>
-                                  <div className='col-9 px-0'>
-                                    <a
-                                      onClick={() => {
-                                        openPreview({
-                                          currentAttachmentIndex: 0,
-                                          attachmentsArray: [
-                                            {
-                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
+                      {user_level !== 13 && files?.document_type == 'QuestionPaper' ? (
+                        <div className='row mt-3'>
+                          <div className='col-12 text-through pl-0'>
+                            <span className='th-grey'>Quiz</span>
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+                  ))}
 
-                                              name: fileName,
-                                              extension: '.' + extension,
-                                            },
-                                          ],
-                                        });
-                                      }}
-                                      rel='noopener noreferrer'
-                                      target='_blank'
-                                    >
-                                      {files.document_type}_{file}
-                                    </a>
-                                  </div>
-
-                                  <div className='col-1'>
-                                    <a
-                                      onClick={() => {
-                                        openPreview({
-                                          currentAttachmentIndex: 0,
-                                          attachmentsArray: [
-                                            {
-                                              src: `${endpoints.homework.resourcesFiles}/${each}`,
-
-                                              name: fileName,
-                                              extension: '.' + extension,
-                                            },
-                                          ],
-                                        });
-                                      }}
-                                      rel='noopener noreferrer'
-                                      target='_blank'
-                                    >
-                                      <EyeFilled />
-                                    </a>
-                                  </div>
-
-                                  {files?.document_type == 'Teacher_Reading_Material' && (
-                                    <div className='col-1'>
-                                      <a
-                                        rel='noopener noreferrer'
-                                        target='_blank'
-                                        // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
-                                        onClick={() =>
-                                          downloadMaterial(
-                                            `${endpoints.lessonPlan.bucket}/${files?.media_file}`,
-                                            `${files.document_type}_${file}`
-                                          )
-                                        }
-                                      >
-                                        <DownloadOutlined />
-                                      </a>
-                                    </div>
-                                  )}
+                  {resourcesData?.lp_files?.map((files, i) => (
+                    <>
+                      {user_level !== 13 && files?.document_type == 'QuestionPaper' ? (
+                        <div
+                          style={{
+                            overflowY: 'scroll',
+                            overflowX: 'hidden',
+                            maxHeight: '40vh',
+                          }}
+                        >
+                          <div
+                            className='row mt-1 py-2 align-items-center'
+                            style={{ border: '1px solid #d9d9d9' }}
+                          >
+                            <div className='col-2'>
+                              <FileUnknownOutlined style={{ fontSize: 35 }} />
+                            </div>
+                            <div className='col-10 px-0'>
+                              <div className='row align-items-center'>
+                                <div className='col-9 px-0'>
+                                  <p
+                                    className='text-ellipsis'
+                                    title={files.question_paper_name}
+                                  >
+                                    {files.question_paper_name}
+                                  </p>
+                                </div>
+                                <div className='col-3'>
+                                  <Button
+                                    type='primary'
+                                    className='th-br-4'
+                                    onClick={() => openQpDrawer(files.question_paper_id)}
+                                  >
+                                    View
+                                  </Button>
                                 </div>
                               </div>
                             </div>
-                          );
-                        }
-                      })}
+                          </div>
+                        </div>
+                      ) : null}
                     </>
                   ))}
-                </div>
-              ) : (
-                <div className='row'>
-                  <div className='col-12 text-center'> No Resources Available</div>
-                </div>
-              )}
 
-              <div className='mt-2'>
-                <div className='row mt-2'>
-                  <div className='col-12 th-black-2 pl-0'>
-                    Status :{' '}
-                    {resourcesData?.section_wise_completion?.filter(
-                      (item) => item?.is_completed === true
-                    )?.length > 0 ? (
-                      <span>
-                        <span className='th-green th-fw-500'>Completed</span>
-                        {!isStudent && (
-                          <>
-                            {' '}
-                            for Section{' '}
-                            {resourcesData?.section_wise_completion
-                              .filter((item) => item?.is_completed === true)
-                              .map((item) =>
-                                item?.section__section_name.slice(-1).toUpperCase()
-                              )
-                              .join(', ')}
-                          </>
+                  <div className='mt-3'>
+                    <div className='row mt-2'>
+                      <div className='col-12 th-black-2 pl-0'>
+                        Status :{' '}
+                        {resourcesData?.section_wise_completion?.filter(
+                          (item) => item?.is_completed === true
+                        )?.length > 0 ? (
+                          <span>
+                            <span className='th-green th-fw-500'>Completed</span>
+                            {!isStudent && (
+                              <>
+                                {' '}
+                                for Section{' '}
+                                {resourcesData?.section_wise_completion
+                                  .filter((item) => item?.is_completed === true)
+                                  .map((item) =>
+                                    item?.section__section_name.slice(-1).toUpperCase()
+                                  )
+                                  .join(', ')}
+                              </>
+                            )}
+                          </span>
+                        ) : (
+                          <span className='th-fw-500 th-red'> Not Completed</span>
                         )}
-                      </span>
-                    ) : (
-                      <span className='th-fw-500 th-red'> Not Completed</span>
-                    )}
-                  </div>
-                </div>
-                {!isStudent && (
-                  <div className='row th-black-2 mt-2 '>
-                    <div className='col-12' style={{ border: '1px solid #d9d9d9' }}>
-                      <div
-                        className='row justify-content-between py-2 th-pointer'
-                        onClick={() => {
-                          showSectionList();
-                        }}
-                      >
-                        <div>Add / Update Status</div>
-                        <div>
-                          <CaretRightOutlined
-                            style={{ transform: showSection ? `rotate(90deg)` : null }}
-                          />
-                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-                {showSection && (
-                  <div className='row' style={{ border: '1px solid #d9d9d9' }}>
-                    {resourcesData?.section_wise_completion?.map((each, i) => (
-                      <div className='col-2 p-2'>
-                        {each.is_completed ? (
-                          <Button disabled>
-                            {each?.section__section_name.slice(-1).toUpperCase()}
-                          </Button>
-                        ) : (
-                          <Button
-                            type={completeSections.includes(each) ? 'primary' : 'default'}
+                    {!isStudent && (
+                      <div className='row th-black-2 mt-2 '>
+                        <div className='col-12' style={{ border: '1px solid #d9d9d9' }}>
+                          <div
+                            className='row justify-content-between py-2 th-pointer'
                             onClick={() => {
-                              if (completeSections.includes(each)) {
-                                const index = completeSections.indexOf(each);
-                                const newFileList = completeSections.slice();
-                                newFileList.splice(index, 1);
-                                setCompleteSections(newFileList);
-                              } else {
-                                setCompleteSections([...completeSections, each]);
-                              }
+                              showSectionList();
                             }}
                           >
-                            {each?.section__section_name.slice(-1).toUpperCase()}
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-
-                    <div
-                      className='row justify-content-end py-2 mt-2 text-center'
-                      style={{ borderTop: '1px solid #d9d9d9' }}
-                    >
-                      {completeSections?.length > 0 && (
-                        <div
-                          className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
-                          style={{ border: '1px solid #d9d9d9' }}
-                          onClick={() => setCompleteSections([])}
-                        >
-                          Clear
+                            <div>Add / Update Status</div>
+                            <div>
+                              <CaretRightOutlined
+                                style={{
+                                  transform: showSection ? `rotate(90deg)` : null,
+                                }}
+                              />
+                            </div>
+                          </div>
                         </div>
-                      )}
-
-                      {resourcesData?.section_wise_completion?.filter(
-                        (item) => item.is_completed
-                      )?.length === resourcesData?.section_wise_completion?.length ? (
-                        <div
-                          className='col-3 th-white p-2 mx-2 th-br-6'
-                          style={{
-                            background: '#8dadff',
-                            cursor: 'not-allowed',
-                          }}
-                        >
-                          Update
-                        </div>
-                      ) : (
-                        <div
-                          className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
-                          onClick={() => {
-                            markPeriodComplete(resourcesData);
-                          }}
-                        >
-                          Update
-                        </div>
-                      )}
-                    </div>
-                    {showError && completeSections?.length < 1 && (
-                      <div className='th-red'>
-                        Please select at least one section first!
                       </div>
                     )}
-                    <div className='row th-black-2 mt-2 '>
-                      <div className='col-12 th-grey pl-2 th-12'>
-                        Last Updated {getTimeInterval(resourcesData?.updated_at)}
+                    {showSection && (
+                      <div className='row' style={{ border: '1px solid #d9d9d9' }}>
+                        {resourcesData?.section_wise_completion?.map((each, i) => (
+                          <div className='col-2 p-2'>
+                            {each.is_completed ? (
+                              <Button disabled>
+                                {each?.section__section_name.slice(-1).toUpperCase()}
+                              </Button>
+                            ) : (
+                              <Button
+                                type={
+                                  completeSections.includes(each) ? 'primary' : 'default'
+                                }
+                                onClick={() => {
+                                  if (completeSections.includes(each)) {
+                                    const index = completeSections.indexOf(each);
+                                    const newFileList = completeSections.slice();
+                                    newFileList.splice(index, 1);
+                                    setCompleteSections(newFileList);
+                                  } else {
+                                    setCompleteSections([...completeSections, each]);
+                                  }
+                                }}
+                              >
+                                {each?.section__section_name.slice(-1).toUpperCase()}
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+
+                        <div
+                          className='row justify-content-end py-2 mt-2 text-center'
+                          style={{ borderTop: '1px solid #d9d9d9' }}
+                        >
+                          {completeSections?.length > 0 && (
+                            <div
+                              className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
+                              style={{ border: '1px solid #d9d9d9' }}
+                              onClick={() => setCompleteSections([])}
+                            >
+                              Clear
+                            </div>
+                          )}
+
+                          {resourcesData?.section_wise_completion?.filter(
+                            (item) => item.is_completed
+                          )?.length === resourcesData?.section_wise_completion?.length ? (
+                            <div
+                              className='col-3 th-white p-2 mx-2 th-br-6'
+                              style={{
+                                background: '#8dadff',
+                                cursor: 'not-allowed',
+                              }}
+                            >
+                              Update
+                            </div>
+                          ) : (
+                            <div
+                              className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
+                              onClick={() => {
+                                markPeriodComplete(resourcesData);
+                              }}
+                            >
+                              Update
+                            </div>
+                          )}
+                        </div>
+                        {showError && completeSections?.length < 1 && (
+                          <div className='th-red'>
+                            Please select at least one section first!
+                          </div>
+                        )}
+                        <div className='row th-black-2 mt-2 '>
+                          <div className='col-12 th-grey pl-2 th-12'>
+                            Last Updated {getTimeInterval(resourcesData?.updated_at)}
+                          </div>
+                        </div>
                       </div>
+                    )}
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <>
+              {loadingDrawer ? (
+                <div className='text-center mt-5'>
+                  <Spin tip='Loading...' />
+                </div>
+              ) : (
+                <>
+                  <QuestionPaperView questionData={questionData} />
+                  <div className='row justify-content-end mt-3'>
+                    <div className='col-md-4 col-sm-8'>
+                      <Button
+                        type='primary'
+                        className='th-br-4'
+                        onClick={closeQpDrawer}
+                        style={{ float: 'right', marginRight: '-15px' }}
+                      >
+                        Back
+                      </Button>
                     </div>
                   </div>
-                )}
-              </div>
-            </div>
-          ) : null}
+                </>
+              )}
+            </>
+          )}
         </Drawer>
       </div>
       <div>
