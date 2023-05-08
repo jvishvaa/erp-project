@@ -131,7 +131,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [upcomingAssessment, setUpcomingAssessment] = useState([]);
   const [activityData, setActivityData] = useState([]);
   const [requestSent, setRequestSent] = useState(false);
-  const [isAutoAssignDiary, setIsAutoAssignDiary] = useState(true);
 
   const questionModify = (questions) => {
     let arr = [];
@@ -669,7 +668,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
   const handleGrade = (e) => {
     formRef.current.setFieldsValue({
-      section: isAutoAssignDiary ? [] : null,
+      section: null,
       subject: null,
     });
     setSectionDropdown([]);
@@ -1234,7 +1233,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <Form.Item name='section'>
                   <Select
                     disabled={isDiaryEdit}
-                    mode={isAutoAssignDiary ? 'multiple' : 'single'}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleSection(value)}
                     getPopupContainer={(trigger) => trigger.parentNode}

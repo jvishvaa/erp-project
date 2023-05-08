@@ -1937,15 +1937,6 @@ const PeriodListView = () => {
                 </div>
               </div>
             ) : null}
-            <div className='col-12 text-center'>
-              <Button
-                type='default'
-                // onClick={handleNextPeriodResource}
-                className='my-1 th-primary th-bg-grey th-br-8'
-              >
-                Assign Diary & Homework
-              </Button>
-            </div>
           </div>
         </Modal>
       </div>
