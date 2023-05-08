@@ -485,7 +485,6 @@ import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAca
 import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff';
 import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
-import PrincipalDashboardTableActivity from 'containers/newBlog/PrincipalDashboardTableActivity';
 // import PPTView from './components/attachment-previewer/attachment-previewer-ui/pptview';
 
 function App({ alert, isMsAPI, erpConfig }) {
@@ -746,9 +745,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/visual/activity/review'>
                               {({ match }) => <VisualActivityReview match={match} />}
-                            </Route>
-                            <Route exact path='/principal-dashboard-activity'>
-                              {({ match }) => <PrincipalDashboardTableActivity match={match} />}
                             </Route>
                             <Route exact path='/blog/wall/central/redirect'>
                               {({ match }) => <CentralBlogRedirection match={match} />}
