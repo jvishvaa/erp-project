@@ -203,7 +203,7 @@ const StudentSidePublicSpeaking = () => {
             destroyOnClose={true}
             visible={showDrawer}
             width={
-              window.innerWidth < 600 ? '95vw' : mediaFiles?.signed_URL ? '70vw' : '35vw'
+              window.innerWidth < 600 ? '95vw' : mediaFiles?.signed_URL ?  permissionState === 'graded' ? '70vw' : '40vw' : '35vw'
             }
             closable={false}
             className='th-activity-drawer'
@@ -215,7 +215,7 @@ const StudentSidePublicSpeaking = () => {
           >
             <div>
               <div className='row'>
-                <div className={mediaFiles?.signed_URL ? 'col-md-7' : 'd-none'}>
+                <div className={mediaFiles?.signed_URL ? permissionState === 'graded' ? 'col-md-7' : 'col-md-12' : 'd-none'}>
                   <video
                     src={mediaFiles?.signed_URL}
                     controls
@@ -255,7 +255,7 @@ const StudentSidePublicSpeaking = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className='col-md-5 d-flex justify-content-center align-items-center h4'> No Remarks Found</div>
+                  null
                 )}
               </div>
             </div>

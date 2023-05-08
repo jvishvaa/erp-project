@@ -239,6 +239,10 @@ export default {
     showVisualMedia: `${newBlogURL}/api/uploaded_content/`,
     criteriaTitleList:`${newBlogURL}/api/activity_types_criteria`,
     getActivityTypesApi: `${newBlogURL}/api/get_activity_types/`,
+    getIndividualActivity: `${newBlogURL}/api/get_ps_activities/`,
+    getPublicSpeakingStudents: `${newBlogURL}/api/ps_activity_data/`,
+    getPublicSpeakingVideos: `${newBlogURL}/api/participation/`,
+    getStudentPublicView :`${newBlogURL}/api/ps_submissions_data/`,
   },
   fileDrive: {
     fileList: `/schools/school_file_list/`,
