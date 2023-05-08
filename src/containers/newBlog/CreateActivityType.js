@@ -9,7 +9,11 @@ import { useTheme } from '@material-ui/core/styles';
 import './styles.scss';
 import endpoints from '../../config/endpoints';
 import { Input, Button, Breadcrumb, Table, Tag, message, Popconfirm } from 'antd';
-import { CheckCircleOutlined, DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  DeleteOutlined,
+  QuestionCircleOutlined,
+} from '@ant-design/icons';
 
 const CreateActivityType = () => {
   // const classes = useStyles();
@@ -246,6 +250,7 @@ const CreateActivityType = () => {
             return;
           } else {
             setActivityType('');
+            setSubActivityType('');
             setAccordianBulkFilter(false);
             getActivityCategory();
             message.success('Activity Created Successfully');
@@ -300,15 +305,15 @@ const CreateActivityType = () => {
           },
         })
         .then((response) => {
-          if(response?.data?.status_code === 200){
+          if (response?.data?.status_code === 200) {
             message.success(response?.data?.message);
             getActivityCategory();
             setLoading(false);
             return;
-          }else{
+          } else {
             message.error(response?.data?.message);
             getActivityCategory();
-            setLoading(false)
+            setLoading(false);
           }
         })
         .catch((err) => {
@@ -339,16 +344,22 @@ const CreateActivityType = () => {
               <Input
                 placeholder='Enter Activity Type'
                 type='text'
+                value={ActivityType}
                 onChange={(e) => setActivityType(e.target.value)}
               />
             </div>
-            <div className='col-md-4 col-6 p-2'>
-              <div className='mb-2 text-left'>Sub Activity Type</div>
-              <Input
-                placeholder='Enter Sub Activity Type.'
-                type='text'
-                onChange={(e) => setSubActivityType(e.target.value)}
-              />
+            <div className='col-md-4 col-6 p-2' style={{display: ActivityType === "Physical Activity" ? '' : 'none'}}>
+              {/* {ActivityType === 'Physical Activity' ? ( */}
+                <>
+                  <div className='mb-2 text-left'>Sub Activity Type</div>
+                  <Input
+                    placeholder='Enter Sub Activity Type.'
+                    type='text'
+                    value={SubActivityType}
+                    onChange={(e) => setSubActivityType(e.target.value)}
+                  />
+                </>
+              {/* ) : null} */}
             </div>
             <div className='col-md-4 col-6 pt-4'>
               <Button

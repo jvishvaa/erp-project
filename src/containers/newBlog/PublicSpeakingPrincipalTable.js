@@ -1,0 +1,619 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Button as ButtonAnt,
+  Table,
+  Modal,
+  message,
+  Select,
+  Avatar,
+  Comment,
+  Tag,
+} from 'antd';
+import { EyeOutlined, TeamOutlined, UserOutlined, RedoOutlined } from '@ant-design/icons';
+import endpoints from '../../config/endpoints';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import axios from 'axios';
+import moment from 'moment';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+
+const PublicSpeakingPrincipalTable = (props) => {
+  let userERP = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
+  const { Option } = Select;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openBigModal, setOpenBigModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
+  const [totalSubmitted, setTotalSubmitted] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [studentListData, setStudentListData] = useState([]);
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [age, setAge] = useState(null);
+  const [remarks, setRemarks] = useState('');
+  const [bmi, setBmi] = useState('');
+  const [bmiDetails, setBmiDetails] = useState([]);
+  const [editData, setEditData] = useState([]);
+  const [rowData, setRowData] = useState([]);
+  const [selectedStudentDetails, setSelectedStudentsDetails] = useState([]);
+  const [bmiRemarks, setBmiRemarks] = useState('');
+  const [visibleVideo, setVisibleVideo] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState(null);
+  const [permissionState, setPermissionState] = useState('');
+  const [selectedActivity, setSelectedActivity] = useState(false);
+  const [chatDetails, setChatDetails] = useState([]);
+  const [totalCountAssigned, setTotalCountAssigned] = useState(0);
+  const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
+  const [limitAssigned, setLimitAssigned] = useState(10);
+  const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
+  const [totalSubmittedCount, setTotalSubmittedCount] = useState(0);
+
+  const dummyData = {
+    status_code: 200,
+    message: 'Success',
+    result: {
+      name: 'Hello all\nThis is a test message ',
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
+      subject: '127',
+      section: '129',
+      grade: '103',
+      branch: '191',
+      subject_mapping_id: '5201',
+      submission_type: 'individual',
+      submission_filetype: 'video',
+      scheduled_time: '2022-07-26T12:00:17+00:00',
+      requires_username: true,
+      options: '',
+      id: 149,
+      user_id: 29,
+      scheme_id: 2,
+      state: 'ongoing',
+      groups: [
+        {
+          user_id: 31,
+          group_id: 121,
+          state: 'yet_to_submit',
+          name: 'Mahi_Student S',
+          username: '2209850002_OLV',
+        },
+      ],
+    },
+  };
+
+  const columns = [
+    {
+      title: <span className='th-white th-fw-700 '> Sl.No</span>,
+      dataIndex: 'student_name',
+      key: 'student_name',
+      align: 'center',
+      render: (text, row, index) => {
+        return <span>{index + 1}</span>;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-700 '> Activity Name</span>,
+      dataIndex: 'student_name',
+      key: 'student_name',
+      align: 'center',
+      render: (text, row) => {
+        return <span>{row?.name}</span>;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Activity Description</span>,
+      dataIndex: 'weight',
+      key: 'weight',
+      align: 'center',
+      render: (text, row) => <a>{row?.description}</a>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Teacher</span>,
+      dataIndex: 'weight',
+      key: 'weight',
+      align: 'center',
+      render: (text, row) => <a>{row?.teacher_name}</a>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Submission Date</span>,
+      dataIndex: 'gender',
+      key: 'gender',
+      align: 'center',
+      render: (text, row) => {
+        return <p>{moment(row?.scheduled_tim).format('MMMM Do YYYY')}</p>;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Videos Uploaded</span>,
+      dataIndex: 'weight',
+      key: 'weight',
+      align: 'center',
+      render: (text, row) => <Tag color='volcano'>{row?.student_submitted_count}</Tag>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Action</span>,
+      dataIndex: 'actions',
+      key: 'actions',
+      align: 'center',
+      render: (text, row) => (
+        <>
+          <span style={{ margin: '0.5rem 1rem' }}>
+            <ButtonAnt
+              type='primary'
+              icon={<TeamOutlined />}
+              size={'medium'}
+              onClick={() => showBigModal(row)}
+            >
+              Student List
+            </ButtonAnt>
+          </span>
+        </>
+      ),
+    },
+  ];
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const showBigModal = (data) => {
+    if (data) {
+      StudentCheckFun(data);
+      setRowData(data);
+    }
+  };
+
+  const columnMarks = [
+    {
+      title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
+      align: 'left',
+      render: (text, row) => {
+        return row.criterion;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-600'>Remarks</span>,
+      align: 'center',
+      render: (text, row) => row?.levels?.filter((item) => item.status == true)[0].name,
+    },
+  ];
+
+  const columnsBigTable = [
+    {
+      title: <span className='th-white th-fw-700 '>Student Name</span>,
+      dataIndex: 'height',
+      key: 'height',
+      align: 'center',
+      render: (text, row) => <a>{row?.user_name}</a>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>ERP ID</span>,
+      dataIndex: 'weight',
+      key: 'weight',
+      align: 'center',
+      render: (text, row) => <a>{row?.user_erp_id}</a>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Action</span>,
+      dataIndex: 'actions',
+      key: 'actions',
+      align: 'center',
+      render: (text, row) => (
+        <>
+          <span style={{ margin: '0.5rem 1rem' }}>
+            <ButtonAnt
+              type='primary'
+              icon={<EyeOutlined />}
+              size={'medium'}
+              onClick={() => handleShowStudent(row)}
+            >
+              View Activity
+            </ButtonAnt>
+          </span>
+        </>
+      ),
+    },
+  ];
+
+  const fetchMedia = (params = {}) => {
+    axios
+      .get(`${endpoints.newBlog.studentPSContentApi}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response.data?.status_code === 200) {
+          setMediaFiles(response?.data?.result);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+
+  const erpAPI = () => {
+    axios
+      .get(
+        `${endpoints.newBlog.getIndividualActivity}?branch=${
+          props?.selectedBranch
+        }&grade=${props?.selectedGrade}&section=${
+          props?.selectedSubject
+        }&offset=${0}&finished=${'True'}&start_date=${props?.startDate}&end_date=${
+          props?.endDate
+        }&page=${currentPageAssigned}&page_size=${limitAssigned}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setTotalCountAssigned(response?.data?.result?.count);
+          setTotalPagesAssigned(response?.data?.result?.page_size);
+          setCurrentPageAssigned(response?.data?.result?.page);
+          setTotalSubmitted(response?.data?.result?.activities);
+          setTotalSubmittedCount(response?.data?.result?.overall_submitted_count);
+          props.setFlag(false);
+          message.success(response?.data?.message);
+          setLoading(false);
+        } else {
+          message.error(response?.data?.message);
+        }
+      });
+  };
+
+  useEffect(() => {
+    if (props.selectedBranch === undefined || props.selectedGrade === undefined) {
+      setTotalSubmitted([]);
+    }
+  }, [props.selectedBranch, props.selectedGrade, props.flag]);
+
+  useEffect(() => {
+    if (props.flag) {
+      getTotalSubmitted();
+    }
+  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
+
+  const StudentCheckFun = (data) => {
+    setSelectedStudentsDetails([]);
+    if (data) {
+      setSelectedStudentsDetails(data);
+      setLoading(true);
+      axios
+        .get(
+          `${endpoints.newBlog.getStudentPublicView}?activity_id=${data?.id}`,
+          {
+            headers: {
+              Authorization: `${token}`,
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
+        .then((response) => {
+          if (response?.data?.status_code == 200) {
+            setStudentListData(response?.data?.result);
+            setOpenBigModal(true);
+            setLoading(false);
+          } else {
+            setLoading(false);
+            setOpenBigModal(false);
+            return;
+          }
+        });
+    }
+  };
+
+  const getTotalSubmitted = () => {
+    if (props) {
+      setLoading(true);
+      erpAPI();
+      setLoading(false);
+    }
+  };
+
+  const handleShowStudent = (data) => {
+    if (data) {
+      setLoading(true);
+
+      let rating = JSON.parse(data?.grading?.grade_scheme_markings);
+      setSelectedActivity(rating);
+      setPermissionState(data?.state);
+
+      axios
+        .get(`${endpoints.newBlog.studentPSContentApi}?asset_id=${data?.asset?.id}`, {
+          headers: {
+            // Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if (response?.data?.status_code == 200) {
+            getWhatsAppDetails({
+              erp_id: studentListData[0]?.user_erp_id,
+              created_at__date__gte: response?.data?.result?.created_at__date__gte,
+              created_at__date__lte: response?.data?.result?.created_at__date__lte,
+              activity_id: response?.data?.result?.activity,
+            });
+            setLoading(false);
+            message.success(response?.data?.message);
+            setMediaFiles(response?.data?.result);
+            setVisibleVideo(true);
+            return;
+          } else {
+            setVisibleVideo(false);
+            setLoading(false);
+            return;
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          message.error(err);
+        });
+    }
+  };
+
+  const getWhatsAppDetails = (params = {}) => {
+    axios
+      .get(`${endpoints.newBlog.whatsAppChatGetApi}`, {
+        params: { ...params },
+        headers: {
+          HOST: X_DTS_HOST,
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setChatDetails(response?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handlePaginationAssign = (page) => {
+    setCurrentPageAssigned(page);
+  };
+
+  return (
+    <>
+      <div className='row'>
+        <div className='col-12'>
+          <p style={{ fontSize: '15px', fontWeight: 'bold' }}>
+            {totalSubmitted?.length ? (
+              <Tag color='blue'>
+                Total Videos Uploaded : {totalSubmittedCount} (
+                {moment(props.startDate).format('MMMM Do')} -{' '}
+                {moment(props.endDate).format('MMMM Do')})
+              </Tag>
+            ) : null}
+          </p>
+        </div>
+        <div className='col-12'>
+          {totalSubmitted?.length !== 0 ? (
+            <Table
+              style={{ maxHeight: '60vh', OverflowY: 'auto' }}
+              className='th-table'
+              rowClassName={(record, index) =>
+                `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+              }
+              pagination={{
+                total: totalCountAssigned,
+                current: Number(currentPageAssigned),
+                pageSize: limitAssigned,
+                showSizeChanger: false,
+                onChange: (e) => {
+                  handlePaginationAssign(e);
+                },
+              }}
+              loading={props?.loading}
+              columns={columns}
+              dataSource={totalSubmitted}
+            />
+          ) : (
+            <div className='row justify-content-center mt-5'>
+              <img src={NoDataIcon} />
+            </div>
+          )}
+        </div>
+      </div>
+      <Modal
+        title={`Students Details (${selectedStudentDetails?.student_submitted_count})`}
+        visible={openBigModal}
+        className='th-upload-modal'
+        centered
+        open={openBigModal}
+        onOk={() => setOpenBigModal(false)}
+        onCancel={() => setOpenBigModal(false)}
+        width={1000}
+        zIndex={1000}
+        footer={null}
+      >
+        <div className='row'>
+          <div
+            className='col-12 px-3'
+            style={{ display: 'flex', borderRadius: '10px', padding: '0.5rem 1rem' }}
+          >
+            <div className='col-3'>
+              Total Students Count : {selectedStudentDetails?.student_submitted_count}
+            </div>
+          </div>
+          <div className='row d-flex px-3 justify-content-end'>
+            <div className='col-md-5 px-0 col-12 d-flex justify-content-end'>
+              <Modal
+                title='View Activity'
+                className='th-upload-modal'
+                centered
+                visible={visibleVideo}
+                open={visibleVideo}
+                zIndex={1300}
+                destroyOnClose={true}
+                footer={false}
+                onCancel={() => setVisibleVideo(false)}
+                width={
+                  window.innerWidth < 600
+                    ? '95vw'
+                    : mediaFiles?.signed_URL
+                    ? permissionState === 'graded'
+                      ? '70vw'
+                      : '40vw'
+                    : '35vw'
+                }
+              >
+                <div>
+                  <div className='row'>
+                    <div
+                      className={
+                        mediaFiles?.signed_URL
+                          ? permissionState === 'graded'
+                            ? 'col-md-7'
+                            : 'col-md-12'
+                          : 'd-none'
+                      }
+                    >
+                      <video
+                        src={mediaFiles?.signed_URL}
+                        controls
+                        preload='auto'
+                        className='th-br-5'
+                        alt={'image'}
+                        // width='100%'
+                        // height='95%'
+                        style={{
+                          height: '500px',
+                          width: '100%',
+                          objectFit: 'fill',
+                        }}
+                      />
+                    </div>
+                    {permissionState === 'graded' ? (
+                      <div
+                        className={`${
+                          mediaFiles?.signed_URL ? 'col-md-5' : 'col-12'
+                        } px-0 th-bg-white`}
+                      >
+                        <div className='row'>
+                          <div className='col-12 px-1'>
+                            <div className='mt-3'>
+                              <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                              <div
+                                className='px-1 py-2 th-br-5'
+                                style={{ outline: '1px solid #d9d9d9' }}
+                              >
+                                <Table
+                                  className='th-table'
+                                  columns={columnMarks}
+                                  loading={loading}
+                                  dataSource={selectedActivity}
+                                  pagination={false}
+                                  rowClassName={(record, index) =>
+                                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                                  }
+                                  scroll={{ x: 'max-content' }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className='col-12 px-1'>
+                            <div className='row mt-2 align-item-center'>
+                              <div className='col-6 px-0'>
+                                <span className='th-18 th-fw-600'>
+                                  Comments
+                                  {chatDetails?.length > 0
+                                    ? `(${chatDetails?.length})`
+                                    : null}
+                                </span>
+                              </div>
+                              <div className='col-6 text-right'>
+                                <span
+                                  className='th-pointer'
+                                  onClick={() =>
+                                    getWhatsAppDetails({
+                                      erp_id: studentListData[0]?.user_erp_id,
+                                      created_at__date__gte:
+                                        mediaFiles?.created_at__date__gte,
+                                      created_at__date__lte:
+                                        mediaFiles?.created_at__date__lte,
+                                      activity_id: mediaFiles?.activity,
+                                    })
+                                  }
+                                >
+                                  <RedoOutlined />
+                                </span>
+                              </div>
+
+                              <div className='row'>
+                                {chatDetails.length > 0 ? (
+                                  <>
+                                    {chatDetails.map((item, index) => {
+                                      if (item?.is_reply == true) {
+                                        return (
+                                          <Comment
+                                            author={
+                                              <div className='th-fw-500 th-16'>
+                                                {item?.name}
+                                              </div>
+                                            }
+                                            avatar={
+                                              <Avatar size={40} icon={<UserOutlined />} />
+                                            }
+                                            content={<p>{item?.message}</p>}
+                                            datetime={
+                                              <>
+                                                <div
+                                                  title={moment(item?.sent_at).format(
+                                                    'MMM Do,YYYY'
+                                                  )}
+                                                >
+                                                  {moment(item?.sent_at).format(
+                                                    'MMM Do,YYYY'
+                                                  )}
+                                                </div>
+                                              </>
+                                            }
+                                          />
+                                        );
+                                      }
+                                    })}
+                                  </>
+                                ) : (
+                                  <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
+                                    No Comments Submitted
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </Modal>
+            </div>
+          </div>
+          <div className='col-12' style={{ padding: '1rem 1rem' }}>
+            <Table
+              className='th-table'
+              rowClassName={(record, index) =>
+                `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+              }
+              pagination={false}
+              loading={loading}
+              columns={columnsBigTable}
+              dataSource={studentListData}
+              //   scroll={{ y: 300 }}
+            />
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+};
+
+export default PublicSpeakingPrincipalTable;
