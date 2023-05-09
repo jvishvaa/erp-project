@@ -363,7 +363,7 @@ const PublicSpeakingPrincipalTable = (props) => {
               activity_id: response?.data?.result?.activity,
             });
             setLoading(false);
-            message.success(response?.data?.message);
+            // message.success(response?.data?.message);
             setMediaFiles(response?.data?.result);
             setVisibleVideo(true);
             return;
