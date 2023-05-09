@@ -1,6 +1,14 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Breadcrumb, Button as ButtonAnt, Form, Select, message, Tabs, DatePicker } from 'antd';
+import {
+  Breadcrumb,
+  Button as ButtonAnt,
+  Form,
+  Select,
+  message,
+  Tabs,
+  DatePicker,
+} from 'antd';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { DownOutlined } from '@ant-design/icons';
 import Layout from 'containers/Layout';
@@ -32,7 +40,6 @@ const PrincipalDashboardTableActivity = () => {
   const [view, setView] = useState(false);
   const [flag, setFlag] = useState(false);
   const [gradeList, setGradeList] = useState([]);
-  // const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (newValue) => {
@@ -44,7 +51,7 @@ const PrincipalDashboardTableActivity = () => {
   const [boardId, setBoardId] = useState();
   const { Option } = Select;
   const [gradeId, setGradeId] = useState();
-  const [gradeName, setGradeName] = useState("");
+  const [gradeName, setGradeName] = useState('');
   const [gradeData, setGradeData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
   const selectedAcademicYear = useSelector(
@@ -82,7 +89,6 @@ const PrincipalDashboardTableActivity = () => {
       });
     }
   }, []);
-
 
   useEffect(() => {
     if (moduleId && selectedBranchGlobal) {
@@ -141,8 +147,8 @@ const PrincipalDashboardTableActivity = () => {
   const handleGrade = (item) => {
     setSubjectData([]);
     setSubjectId(null);
-    setSubjectName([])
-    setGradeName("")
+    setSubjectName([]);
+    setGradeName('');
     formRef.current.setFieldsValue({
       section: [],
       // board: null,
