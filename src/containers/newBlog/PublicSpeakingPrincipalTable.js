@@ -7,6 +7,7 @@ import {
   Select,
   Avatar,
   Comment,
+  Spin,
   Tag,
 } from 'antd';
 import { EyeOutlined, TeamOutlined, UserOutlined, RedoOutlined } from '@ant-design/icons';
@@ -18,6 +19,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 
 const PublicSpeakingPrincipalTable = (props) => {
+  console.log(props,'pp')
   let userERP = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const { Option } = Select;
@@ -92,7 +94,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       key: 'student_name',
       align: 'center',
       render: (text, row, index) => {
-        return <span>{index + 1}</span>;
+        return <span>{index + 1 + (currentPageAssigned - 1) * 10}</span>;
       },
     },
     {
@@ -184,6 +186,13 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const columnsBigTable = [
     {
+      title: <span className='th-white th-fw-700 '>SL.No</span>,
+      dataIndex: 'height',
+      key: 'height',
+      align: 'center',
+      render: (text, row, index) => <a>{index+1}</a>,
+    },
+    {
       title: <span className='th-white th-fw-700 '>Student Name</span>,
       dataIndex: 'height',
       key: 'height',
@@ -238,6 +247,7 @@ const PublicSpeakingPrincipalTable = (props) => {
   };
 
   const erpAPI = () => {
+    setLoading(true)
     axios
       .get(
         `${endpoints.newBlog.getIndividualActivity}?branch=${
@@ -250,6 +260,7 @@ const PublicSpeakingPrincipalTable = (props) => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
           },
         }
       )
@@ -265,15 +276,16 @@ const PublicSpeakingPrincipalTable = (props) => {
           setLoading(false);
         } else {
           message.error(response?.data?.message);
+          setLoading(false)
         }
       });
-  };
+  };  
 
   useEffect(() => {
-    if (props.selectedBranch === undefined || props.selectedGrade === undefined) {
+    if (props.selectedBranch === undefined || props.selectedGrade === undefined || props.selectedGrade == "" || props.selectedSubject?.length === 0 || props.selectedSubject === undefined) {
       setTotalSubmitted([]);
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag,props.selectedSubject]);
 
   useEffect(() => {
     if (props.flag) {
@@ -287,15 +299,12 @@ const PublicSpeakingPrincipalTable = (props) => {
       setSelectedStudentsDetails(data);
       setLoading(true);
       axios
-        .get(
-          `${endpoints.newBlog.getStudentPublicView}?activity_id=${data?.id}`,
-          {
-            headers: {
-              Authorization: `${token}`,
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
-        )
+        .get(`${endpoints.newBlog.getStudentPublicView}?activity_id=${data?.id}`, {
+          headers: {
+            Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
         .then((response) => {
           if (response?.data?.status_code == 200) {
             setStudentListData(response?.data?.result);
@@ -317,6 +326,10 @@ const PublicSpeakingPrincipalTable = (props) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    erpAPI();
+  }, [currentPageAssigned]);
 
   const handleShowStudent = (data) => {
     if (data) {
@@ -395,6 +408,11 @@ const PublicSpeakingPrincipalTable = (props) => {
           </p>
         </div>
         <div className='col-12'>
+          {loading ? (
+            <div className='d-flex justify-content-center py-5'>
+              <Spin size='large' tip='Loading...' />{' '}
+            </div>
+          ) : null}
           {totalSubmitted?.length !== 0 ? (
             <Table
               style={{ maxHeight: '60vh', OverflowY: 'auto' }}
@@ -411,7 +429,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                   handlePaginationAssign(e);
                 },
               }}
-              loading={props?.loading}
+              loading={loading}
               columns={columns}
               dataSource={totalSubmitted}
             />
