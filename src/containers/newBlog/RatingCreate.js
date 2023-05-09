@@ -983,39 +983,40 @@ const RatingCreate = () => {
                     {mainActivityOption}
                   </Select>
                 </div>
-
-                {/* <div className='d-flex align-item-center justify-content-end col-md-9 mb-sm-0 p-0'> */}
-                <div className='col-md-2 mb-sm-0 text-center px-0 px-sm-2 pt-1 pt-sm-0'>
-                  <Tag
-                    icon={<SnippetsOutlined className='th-14' />}
-                    color='geekblue'
-                    className='th-br-5 th-pointer py-1'
-                    onClick={() => history.push('/create-public-speaking-rating')}
-                  >
-                    <span className='th-fw-500 th-14'> Public Speaking Ratings</span>
-                  </Tag>
+                <div className='col-md-6'>
+                  <div className='d-flex align-item-center justify-content-between'>
+                    <div className='text-center'>
+                      <Tag
+                        icon={<SnippetsOutlined className='th-14' />}
+                        color='geekblue'
+                        className='th-br-5 th-pointer py-1'
+                        onClick={() => history.push('/create-public-speaking-rating')}
+                      >
+                        <span className='th-fw-500 th-14'> Public Speaking Ratings</span>
+                      </Tag>
+                    </div>
+                    <div className='text-center'>
+                      <Tag
+                        icon={<SnippetsOutlined className='th-14' />}
+                        color='geekblue'
+                        className='th-br-5 th-pointer py-1'
+                        onClick={handleCreateTemplate}
+                      >
+                        <span className='th-fw-500 th-14'>Add Templates</span>
+                      </Tag>
+                    </div>
+                    <div className='text-center'>
+                      <Tag
+                        icon={<AuditOutlined className='th-14' />}
+                        color='purple'
+                        className='th-br-5 th-pointer py-1 th-14 th-fw-500'
+                        onClick={viewDisplay}
+                      >
+                        Add Criteria
+                      </Tag>
+                    </div>
+                  </div>
                 </div>
-                <div className='col-md-2 mb-sm-0 text-center px-0 px-sm-2 pt-1 pt-sm-0'>
-                  <Tag
-                    icon={<SnippetsOutlined className='th-14' />}
-                    color='geekblue'
-                    className='th-br-5 th-pointer py-1'
-                    onClick={handleCreateTemplate}
-                  >
-                    <span className='th-fw-500 th-14'>Add Templates</span>
-                  </Tag>
-                </div>
-                <div className='col-md-2 mb-sm-0 px-0 px-sm-2 pt-1 pt-sm-0'>
-                  <Tag
-                    icon={<AuditOutlined className='th-14' />}
-                    color='purple'
-                    className='th-br-5 th-pointer py-1 th-14 th-fw-500'
-                    onClick={viewDisplay}
-                  >
-                    Add Criteria
-                  </Tag>
-                </div>
-                {/* </div> */}
               </div>
               <div className='row mt-5'>
                 <div className='col-md-12'>
