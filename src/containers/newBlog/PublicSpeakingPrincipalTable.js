@@ -89,10 +89,11 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const columns = [
     {
-      title: <span className='th-white th-fw-700 '> Sl.No</span>,
+      title: <span className='th-white th-fw-700 '> SL.No</span>,
       dataIndex: 'student_name',
       key: 'student_name',
       align: 'center',
+      width: '10%',
       render: (text, row, index) => {
         return <span>{index + 1 + (currentPageAssigned - 1) * 10}</span>;
       },
@@ -134,6 +135,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       dataIndex: 'weight',
       key: 'weight',
       align: 'center',
+      width: '10%',
       render: (text, row) => <Tag color='volcano'>{row?.student_submitted_count}</Tag>,
     },
     {
@@ -355,7 +357,7 @@ const PublicSpeakingPrincipalTable = (props) => {
         .then((response) => {
           if (response?.data?.status_code == 200) {
             getWhatsAppDetails({
-              erp_id: studentListData[0]?.user_erp_id,
+              erp_id: response?.data?.result?.user?.username,
               created_at__date__gte: response?.data?.result?.created_at__date__gte,
               created_at__date__lte: response?.data?.result?.created_at__date__lte,
               activity_id: response?.data?.result?.activity,
@@ -440,7 +442,10 @@ const PublicSpeakingPrincipalTable = (props) => {
               scroll={{ y: '50vh' }}
             />
           ) : (
-            <div className='row justify-content-center mt-5'>
+            <div
+              className='row justify-content-center mt-5'
+              style={{ minHeight: '50vh' }}
+            >
               <img src={NoDataIcon} />
             </div>
           )}
@@ -509,7 +514,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                         className='th-br-5'
                         alt={'image'}
                         style={{
-                          height: '500px',
+                          maxHeight: '650px',
                           width: '100%',
                           objectFit: 'fill',
                         }}
@@ -560,7 +565,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                                 className='th-pointer'
                                 onClick={() =>
                                   getWhatsAppDetails({
-                                    erp_id: studentListData[0]?.user_erp_id,
+                                    erp_id: mediaFiles?.user?.username,
                                     created_at__date__gte:
                                       mediaFiles?.created_at__date__gte,
                                     created_at__date__lte:
@@ -578,7 +583,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                               style={{
                                 display: 'block',
                                 overflow: 'auto',
-                                maxHeight: '50vh',
+                                maxHeight: permissionState === 'graded' ? '25vh' : '65vh',
                               }}
                             >
                               {chatDetails.length > 0 ? (
