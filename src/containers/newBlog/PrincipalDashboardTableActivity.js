@@ -44,7 +44,7 @@ const PrincipalDashboardTableActivity = () => {
   const [boardId, setBoardId] = useState();
   const { Option } = Select;
   const [gradeId, setGradeId] = useState();
-  const [gradeName, setGradeName] = useState();
+  const [gradeName, setGradeName] = useState("");
   const [gradeData, setGradeData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
   const selectedAcademicYear = useSelector(
@@ -54,8 +54,8 @@ const PrincipalDashboardTableActivity = () => {
   const selectedBranchGlobal = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const [subjectId, setSubjectId] = useState();
-  const [subjectName, setSubjectName] = useState();
+  const [subjectId, setSubjectId] = useState(null);
+  const [subjectName, setSubjectName] = useState([]);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const { RangePicker } = DatePicker;
@@ -140,8 +140,11 @@ const PrincipalDashboardTableActivity = () => {
 
   const handleGrade = (item) => {
     setSubjectData([]);
+    setSubjectId(null);
+    setSubjectName([])
+    setGradeName("")
     formRef.current.setFieldsValue({
-      subject: null,
+      section: [],
       // board: null,
     });
     setFlag(false);
@@ -286,7 +289,7 @@ const PrincipalDashboardTableActivity = () => {
                       <Form.Item name='grade'>
                         <Select
                           allowClear
-                          placeholder='Select Name'
+                          placeholder='Select Grade'
                           showSearch
                           // disabled={user_level == 13}
                           optionFilterProp='children'
