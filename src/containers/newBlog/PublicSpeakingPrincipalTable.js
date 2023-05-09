@@ -270,11 +270,11 @@ const PublicSpeakingPrincipalTable = (props) => {
         if (response?.data?.status_code == 200) {
           setTotalCountAssigned(response?.data?.result?.count);
           setTotalPagesAssigned(response?.data?.result?.page_size);
-          setCurrentPageAssigned(response?.data?.result?.page);
+          // setCurrentPageAssigned(response?.data?.result?.page);
           setTotalSubmitted(response?.data?.result?.activities);
           setTotalSubmittedCount(response?.data?.result?.overall_submitted_count);
           props.setFlag(false);
-          message.success(response?.data?.message);
+          // message.success(response?.data?.message);
           setLoadingBig(false);
         } else {
           message.error(response?.data?.message);
@@ -299,7 +299,7 @@ const PublicSpeakingPrincipalTable = (props) => {
     if (props.flag) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag]);
 
   const StudentCheckFun = (data) => {
     setSelectedStudentsDetails([]);
@@ -329,9 +329,8 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const getTotalSubmitted = () => {
     if (props) {
-      setLoading(true);
+      handlePaginationAssign(1);
       erpAPI();
-      setLoading(false);
     }
   };
 
@@ -416,11 +415,11 @@ const PublicSpeakingPrincipalTable = (props) => {
           </p>
         </div>
         <div className='col-12'>
-          {loadingBig ? (
+          {/* {loadingBig ? (
             <div className='d-flex justify-content-center py-5'>
               <Spin size='medium' tip='Loading...' />{' '}
             </div>
-          ) : null}
+          ) : null} */}
           {totalSubmitted?.length !== 0 ? (
             <Table
               className='th-table'
@@ -436,7 +435,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                   handlePaginationAssign(e);
                 },
               }}
-              loading={loading}
+              loading={loadingBig}
               columns={columns}
               dataSource={totalSubmitted}
               scroll={{ y: '50vh' }}
