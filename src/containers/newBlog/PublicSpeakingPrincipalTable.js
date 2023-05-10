@@ -53,6 +53,11 @@ const PublicSpeakingPrincipalTable = (props) => {
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [totalSubmittedCount, setTotalSubmittedCount] = useState(0);
+  const [pageDetails, setPageDetails] = useState({
+    total: null,
+    current: 1,
+  });
+
   const columns = [
     {
       title: <span className='th-white th-fw-700 '> SL.No</span>,
@@ -78,14 +83,14 @@ const PublicSpeakingPrincipalTable = (props) => {
       dataIndex: 'weight',
       key: 'weight',
       align: 'center',
-      render: (text, row) => <a>{row?.description}</a>,
+      render: (text, row) => <span>{row?.description}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Teacher</span>,
       dataIndex: 'weight',
       key: 'weight',
       align: 'center',
-      render: (text, row) => <a>{row?.teacher_name}</a>,
+      render: (text, row) => <span>{row?.teacher_name}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Submission Date</span>,
@@ -93,7 +98,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       key: 'gender',
       align: 'center',
       render: (text, row) => {
-        return <p>{moment(row?.scheduled_time).format('MMMM Do YYYY')}</p>;
+        return <span>{moment(row?.scheduled_time).format('MMMM Do YYYY')}</span>;
       },
     },
     {
@@ -137,6 +142,10 @@ const PublicSpeakingPrincipalTable = (props) => {
     }
   };
 
+  useEffect(() => {
+    StudentCheckFun(rowData);
+  }, [pageDetails?.current]);
+
   const columnMarks = [
     {
       title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
@@ -158,21 +167,21 @@ const PublicSpeakingPrincipalTable = (props) => {
       dataIndex: 'height',
       key: 'height',
       align: 'center',
-      render: (text, row, index) => <a>{index + 1}</a>,
+      render: (text, row, index) => <span>{index + 1}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Student Name</span>,
       dataIndex: 'height',
       key: 'height',
       align: 'center',
-      render: (text, row) => <a>{row?.user_name}</a>,
+      render: (text, row) => <span>{row?.user_name}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>ERP ID</span>,
       dataIndex: 'weight',
       key: 'weight',
       align: 'center',
-      render: (text, row) => <a>{row?.user_erp_id}</a>,
+      render: (text, row) => <span>{row?.user_erp_id}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Action</span>,
@@ -181,21 +190,19 @@ const PublicSpeakingPrincipalTable = (props) => {
       align: 'center',
       render: (text, row) => (
         <>
-          <span style={{ margin: '0.5rem 1rem' }}>
-            <ButtonAnt
-              type='primary'
-              icon={<EyeOutlined />}
-              size={'medium'}
-              onClick={() => handleShowStudent(row)}
-            >
-              View Activity
-            </ButtonAnt>
-          </span>
+          <Tag
+            icon={<EyeOutlined />}
+            color='processing'
+            onClick={() => handleShowStudent(row)}
+          >
+            View Activity
+          </Tag>
         </>
       ),
     },
   ];
 
+  console.log({ props, totalSubmitted });
   const erpAPI = () => {
     setLoadingBig(true);
     axios
@@ -247,7 +254,13 @@ const PublicSpeakingPrincipalTable = (props) => {
     if (props.flag) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag]);
+  }, [
+    props.selectedBranch,
+    props.selectedGrade,
+    props.flag,
+    props.startDate,
+    props.endDate,
+  ]);
 
   const StudentCheckFun = (data) => {
     setSelectedStudentsDetails([]);
@@ -255,15 +268,19 @@ const PublicSpeakingPrincipalTable = (props) => {
       setSelectedStudentsDetails(data);
       setLoading(true);
       axios
-        .get(`${endpoints.newBlog.getStudentPublicView}?activity_id=${data?.id}`, {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
+        .get(
+          `${endpoints.newBlog.getStudentPublicView}?activity_id=${data?.id}&page=${pageDetails?.current}`,
+          {
+            headers: {
+              Authorization: `${token}`,
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          }
+        )
         .then((response) => {
           if (response?.data?.status_code == 200) {
             setStudentListData(response?.data?.result);
+            setPageDetails({ ...pageDetails, total: response.data?.count });
             setOpenBigModal(true);
             setLoading(false);
           } else {
@@ -353,7 +370,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       <div className='row'>
         <div className='col-12'>
           <p style={{ fontSize: '15px', fontWeight: 'bold' }}>
-            {totalSubmitted?.length ? (
+            {totalSubmitted?.length > 0 ? (
               <Tag color='blue'>
                 Total Videos Uploaded : {totalSubmittedCount} (
                 {moment(props.startDate).format('MMMM Do')} -{' '}
@@ -368,7 +385,7 @@ const PublicSpeakingPrincipalTable = (props) => {
               <Spin size='medium' tip='Loading...' />{' '}
             </div>
           ) : null} */}
-          {totalSubmitted?.length !== 0 ? (
+          {totalSubmitted?.length > 0 ? (
             <Table
               className='th-table'
               rowClassName={(record, index) =>
@@ -415,8 +432,9 @@ const PublicSpeakingPrincipalTable = (props) => {
             className='col-12 px-3'
             style={{ display: 'flex', borderRadius: '10px', padding: '0.5rem 1rem' }}
           >
-            <div className='col-3'>
-              Total Students Count : {selectedStudentDetails?.student_submitted_count}
+            <div className='col-4'>
+              Total Students Submitted Count :{' '}
+              {selectedStudentDetails?.student_submitted_count}
             </div>
           </div>
           <div className='row d-flex px-3 justify-content-end'>
@@ -582,17 +600,26 @@ const PublicSpeakingPrincipalTable = (props) => {
               </Modal>
             </div>
           </div>
-          <div className='col-12' style={{ padding: '1rem 1rem' }}>
+          <div className='col-12'>
             <Table
               className='th-table'
               rowClassName={(record, index) =>
                 `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
               }
-              pagination={false}
+              pagination={{
+                total: pageDetails.total,
+                current: pageDetails.current,
+                pageSize: 10,
+                showSizeChanger: false,
+                onChange: (page) => {
+                  setPageDetails({ ...pageDetails, current: page });
+                },
+                limit: 20,
+              }}
               loading={loading}
               columns={columnsBigTable}
               dataSource={studentListData}
-              //   scroll={{ y: 300 }}
+              scroll={{ y: 300 }}
             />
           </div>
         </div>
