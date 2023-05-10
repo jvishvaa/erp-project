@@ -314,7 +314,11 @@ const PublicSpeakingRatings = () => {
 
   const handleDeleteScheme = (id) => {
     axios
-      .delete(`${endpoints.newBlog.deletePublicSpeakingRatingSchemas}${id}/`)
+      .delete(`${endpoints.newBlog.deletePublicSpeakingRatingSchemas}${id}/`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((res) => {
         if (res?.data?.status_code === 200) {
           fetchPublicSpeakingRatingsList();
