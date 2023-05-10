@@ -93,7 +93,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       key: 'gender',
       align: 'center',
       render: (text, row) => {
-        return <p>{moment(row?.scheduled_tim).format('MMMM Do YYYY')}</p>;
+        return <p>{moment(row?.scheduled_time).format('MMMM Do YYYY')}</p>;
       },
     },
     {
