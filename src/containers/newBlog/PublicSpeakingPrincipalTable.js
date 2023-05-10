@@ -53,40 +53,6 @@ const PublicSpeakingPrincipalTable = (props) => {
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [totalSubmittedCount, setTotalSubmittedCount] = useState(0);
-
-  const dummyData = {
-    status_code: 200,
-    message: 'Success',
-    result: {
-      name: 'Hello all\nThis is a test message ',
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
-      subject: '127',
-      section: '129',
-      grade: '103',
-      branch: '191',
-      subject_mapping_id: '5201',
-      submission_type: 'individual',
-      submission_filetype: 'video',
-      scheduled_time: '2022-07-26T12:00:17+00:00',
-      requires_username: true,
-      options: '',
-      id: 149,
-      user_id: 29,
-      scheme_id: 2,
-      state: 'ongoing',
-      groups: [
-        {
-          user_id: 31,
-          group_id: 121,
-          state: 'yet_to_submit',
-          name: 'Mahi_Student S',
-          username: '2209850002_OLV',
-        },
-      ],
-    },
-  };
-
   const columns = [
     {
       title: <span className='th-white th-fw-700 '> SL.No</span>,
@@ -229,24 +195,6 @@ const PublicSpeakingPrincipalTable = (props) => {
       ),
     },
   ];
-
-  const fetchMedia = (params = {}) => {
-    axios
-      .get(`${endpoints.newBlog.studentPSContentApi}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        if (response.data?.status_code === 200) {
-          setMediaFiles(response?.data?.result);
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
-  };
 
   const erpAPI = () => {
     setLoadingBig(true);
