@@ -32,6 +32,7 @@ import endpoints from 'v2/config/endpoints';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
+import axiosInstance from 'axios';
 
 const { Option } = Select;
 
@@ -45,8 +46,9 @@ const PublicSpeakingRatings = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [moduleId, setModuleId] = useState();
+  const [activityUserId, setActivityUserId] = useState();
   const [gradeData, setGradeData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
   const [publicSpeakingRatingList, setPublicSpeakingRatingsList] = useState([]);
@@ -71,9 +73,6 @@ const PublicSpeakingRatings = () => {
       },
     ],
   });
-  //   const fetchPublicSpeakingRatingList =() => {
-  //     axios
-  //   }
 
   const handleShowCreateRatingModal = () => {
     setShowCreateratingModal(true);
@@ -248,13 +247,9 @@ const PublicSpeakingRatings = () => {
       message.error('Name and marks can not be empty in Ratings');
       return;
     }
-    // if (!currentRating?.overall?.trim().length) {
-    //   message.error('Please fill the Overall Remarks');
-    //   return;
-    // }
 
     let payload = {
-      user_id: user_level,
+      user_id: activityUserId,
       scheme_criteria: [
         {
           name: currentRating?.title,
@@ -269,7 +264,7 @@ const PublicSpeakingRatings = () => {
       payload['scheme_id'] = editID;
     } else {
       payload['subject_id'] = selectedSubject?.value;
-      payload['grade_ids'] = selectedGrade;
+      payload['grade_ids'] = selectedGrade.toString();
       payload['subject_name'] = selectedSubject?.children;
     }
     setRequestSent(true);
@@ -409,7 +404,28 @@ const PublicSpeakingRatings = () => {
         setLoading(false);
       });
   };
-
+  const getActivitySession = () => {
+    axiosInstance
+      .post(
+        `${endpoints.newBlog.activitySessionLogin}`,
+        {},
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+            Authorization: `${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setActivityUserId(response?.data?.status_code?.user_id);
+        }
+        localStorage.setItem(
+          'ActivityManagementSession',
+          JSON.stringify(response?.data?.result)
+        );
+      });
+  };
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -427,6 +443,7 @@ const PublicSpeakingRatings = () => {
       });
     }
     fetchPublicSpeakingRatingsList();
+    getActivitySession();
   }, []);
   useEffect(() => {
     fetchGradeList();
