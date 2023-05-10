@@ -95,7 +95,7 @@ export default {
   },
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
-    historicQuestion : '/assessment/v1/hst-quest-bank/',
+    historicQuestion: '/assessment/v1/hst-quest-bank/',
   },
   teacherAttendance: {
     gradewiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections/`,
@@ -216,7 +216,7 @@ export default {
     activityTypeSubmit: `${newBlogURL}/api/activity_type_create/`,
     activityTypeSubmitEdit: `${newBlogURL}/api/activity_type_edit/`,
     erpSectionmapppingV3: '/erp_user/V3/sectionmapping/',
-    erpGradeMappingV3:'/erp_user/V3/grademapping/',
+    erpGradeMappingV3: '/erp_user/V3/grademapping/',
 
     studentReviews: `${newBlogURL}/api/student_review/`,
     studentReviewss: `${newBlogURL}/api/student_reviews/`,
@@ -238,12 +238,17 @@ export default {
     whatsAppChatGetApi: `${baseFinanceURL}/apiV1/whatsup-log/`,
     gradesERP: `/erp_user/grademapping/`,
     showVisualMedia: `${newBlogURL}/api/uploaded_content/`,
-    criteriaTitleList:`${newBlogURL}/api/activity_types_criteria`,
+    criteriaTitleList: `${newBlogURL}/api/activity_types_criteria`,
     getActivityTypesApi: `${newBlogURL}/api/get_activity_types/`,
     getIndividualActivity: `${newBlogURL}/api/get_ps_activities/`,
     getPublicSpeakingStudents: `${newBlogURL}/api/ps_activity_data/`,
     getPublicSpeakingVideos: `${newBlogURL}/api/participation/`,
-    getStudentPublicView :`${newBlogURL}/api/ps_submissions_data/`,
+    getStudentPublicView: `${newBlogURL}/api/ps_submissions_data/`,
+    publicSpeakingRatingSchemas: `${newBlogURL}/api/get_all_schema/`,
+    createPublicSpeakingRatingSchemas: `${newBlogURL}/api/scheme_create/`,
+    deletePublicSpeakingRatingSchemas: `${newBlogURL}/api/delete_scheme/`,
+    updatePublicSpeakingRatingSchemas: `${newBlogURL}/api/activity_scheme_update/`,
+    // gradeWiseSubjects: `/academic/v4/lesson-plan-subjects/`,
   },
   fileDrive: {
     fileList: `/schools/school_file_list/`,

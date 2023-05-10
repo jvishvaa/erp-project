@@ -13,11 +13,11 @@ import {
   message,
   Popconfirm,
   Form,
+  Space,
 } from 'antd';
 import {
-  DeleteFilled,
+  DeleteOutlined,
   PlusOutlined,
-  SnippetsOutlined,
   AuditOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -31,6 +31,8 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { useSelector } from 'react-redux';
+import _ from 'lodash';
+
 const { Option } = Select;
 
 const PublicSpeakingRatings = () => {
@@ -47,14 +49,15 @@ const PublicSpeakingRatings = () => {
   const [moduleId, setModuleId] = useState();
   const [gradeData, setGradeData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
-  const [publicSpeakingRatingList, setPublivSpeakingRatingsList] = useState([]);
+  const [publicSpeakingRatingList, setPublicSpeakingRatingsList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedGrades, setSelectedGrades] = useState();
+  const [requestSent, setRequestSent] = useState(false);
+  const [editID, setEditID] = useState();
+  const [selectedGrade, setSelectedGrade] = useState();
   const [selectedSubject, setSelectedSubject] = useState();
   const [showCreateratingModal, setShowCreateratingModal] = useState(false);
   const [currentRating, setCurrentRating] = useState({
     title: '',
-    subject: '',
     questions: [
       {
         title: '',
@@ -78,15 +81,14 @@ const PublicSpeakingRatings = () => {
   const handleCloseCreateRatingModal = () => {
     setShowCreateratingModal(false);
     formRef.current.setFieldsValue({
-      grade: [],
+      grade: null,
       subject: null,
     });
     setSelectedSubject(null);
-    setSelectedGrades(null);
+    setSelectedGrade(null);
     setSubjectData([]);
     setCurrentRating({
       title: '',
-      subject: '',
       questions: [
         {
           title: '',
@@ -135,13 +137,13 @@ const PublicSpeakingRatings = () => {
       subject: null,
     });
     setSubjectData([]);
-    if (e.length > 0) {
-      setSelectedGrades(e.join(','));
+    if (e) {
+      setSelectedGrade(e);
       fetchSubjectList({
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
-        grade: e.join(','),
+        grade: e,
       });
     }
   };
@@ -168,120 +170,61 @@ const PublicSpeakingRatings = () => {
   });
   const columns = [
     {
-      title: <span className='th-white th-fw-700 '>Activity Type Name </span>,
-      dataIndex: 'name',
+      title: <span className='th-white th-fw-700 '>Sl No. </span>,
+      dataIndex: 'grade_name',
+      key: 'name',
+      render: (text, row, index) => <span>{index + 1}.</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Grade </span>,
+      dataIndex: 'grade_name',
       key: 'name',
       align: 'center',
     },
     {
-      title: <span className='th-white th-fw-700 '>Sub Activity Name </span>,
+      title: <span className='th-white th-fw-700 '>Subject </span>,
+      dataIndex: 'subject_name',
+      key: 'name',
+      align: 'center',
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Rating Title </span>,
       dataIndex: 'erp_id',
       key: 'erp_id',
       align: 'center',
-      render: (text, row) => <p>{row?.sub_type ? row?.sub_type : <b>NA</b>}</p>,
+      render: (text, row) => <span>{JSON.parse(row?.scheme_criteria)?.name}</span>,
     },
+
     {
-      title: <span className='th-white th-fw-700 '>Criteria Title</span>,
-      dataIndex: 'criteria_title',
-      key: 'erp_id',
+      title: <span className='th-white th-fw-700 '>Actions</span>,
+      key: 'actions',
       align: 'center',
-      render: (text, row) => (
-        <p>{row?.criteria_title ? row?.criteria_title : <b>NA</b>}</p>
+      render: (record) => (
+        <Space size=''>
+          <Tag
+            icon={<EditFilled />}
+            color='processing'
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              setEditID(record.id);
+              handleEditScheme(record);
+            }}
+          >
+            Edit
+          </Tag>
+          <Popconfirm
+            placement='bottomRight'
+            title={'Are you sure you want to delete this item?'}
+            onConfirm={() => handleDeleteScheme(record.id)}
+            okText='Yes'
+            cancelText='No'
+          >
+            <Tag icon={<DeleteOutlined />} color='volcano' style={{ cursor: 'pointer' }}>
+              Delete
+            </Tag>
+          </Popconfirm>
+        </Space>
       ),
-    },
-    {
-      title: <span className='th-white th-fw-700 '>Criteria Name</span>,
-      dataIndex: 'gender',
-      key: 'gender',
-      align: 'center',
-      render: (text, row) => {
-        return (
-          <p>
-            {row.grading_scheme.map((item) => (
-              <p>{item.name ? item?.name : <b>NA</b>}</p>
-            ))}
-          </p>
-        );
-      },
-    },
-    {
-      title: <span className='th-white th-fw-700 '>Rating</span>,
-      dataIndex: 'gender',
-      key: 'gender',
-      align: 'center',
-      render: (text, row) => {
-        return (
-          <>
-            <p>
-              {row.va_rating[0]
-                ? row.va_rating[0].map((item) => <p>{item?.name}</p>)
-                : row.grading_scheme.map((item) => <p>{item?.rating}</p>)}
-            </p>
-          </>
-        );
-      },
-    },
-    {
-      title: <span className='th-white th-fw-700 '>Score</span>,
-      dataIndex: 'gender',
-      key: 'gender',
-      align: 'center',
-      render: (text, row) => {
-        return (
-          <p>
-            {row.grading_scheme.map((item) => (
-              <p>{item?.score ? item?.score : <b>NA</b>}</p>
-            ))}
-          </p>
-        );
-      },
-    },
-    {
-      title: <span className='th-white th-fw-700 '>Action</span>,
-      dataIndex: 'gender',
-      key: 'gender',
-      align: 'center',
-      render: (text, row) => {
-        return (
-          <div style={{ display: 'flex' }}>
-            {row?.is_editable ? (
-              <>
-                <Tag
-                  icon={<EditFilled className='th-14' />}
-                  color={'geekblue'}
-                  className='th-br-5 th-pointer py-1 px-1'
-                  //   onClick={(e) => handleEdit(e, row)}
-                >
-                  Edit
-                </Tag>
-                <Popconfirm
-                  title='Delete the Remarks ?'
-                  description='Are you sure to delete this remarks?'
-                  //   onConfirm={() => handleDelete(row)}
-                  onOpenChange={() => console.log('open change')}
-                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                >
-                  <Tag
-                    icon={<DeleteFilled className='="th-14' />}
-                    color={'red'}
-                    className='th-br-5 th-pointer py-1'
-                  >
-                    Delete
-                  </Tag>
-                </Popconfirm>
-              </>
-            ) : (
-              <Tag
-                color={'magenta'}
-                icon={<StopOutlined className='="th-14' />}
-                className='th-br-5 py-1'
-              >
-                Permission Denied
-              </Tag>
-            )}
-          </div>
-        );
-      },
     },
   ];
 
@@ -297,19 +240,21 @@ const PublicSpeakingRatings = () => {
       message.error('Please fill the Ratings title');
       return;
     }
-    // if (isQuestionsNull?.length > 0) {
-    //   message.error('Questions can not be empty');
+    if (isQuestionsNull?.length > 0) {
+      message.error('Questions can not be empty');
+      return;
+    }
+    if (isRatingsNull?.length > 0) {
+      message.error('Name and marks can not be empty in Ratings');
+      return;
+    }
+    // if (!currentRating?.overall?.trim().length) {
+    //   message.error('Please fill the Overall Remarks');
     //   return;
     // }
-    // if (isRatingsNull?.length > 0) {
-    //   message.error('Name and marks can not be empty in Ratings');
-    //   return;
-    // }
+
     let payload = {
-      subject_id: selectedSubject?.value,
       user_id: user_level,
-      grade_ids: selectedGrades,
-      subject_name: selectedSubject?.children,
       scheme_criteria: [
         {
           name: currentRating?.title,
@@ -320,7 +265,96 @@ const PublicSpeakingRatings = () => {
         },
       ],
     };
-    console.log('Payload', payload, currentRating);
+    if (editID) {
+      payload['scheme_id'] = editID;
+    } else {
+      payload['subject_id'] = selectedSubject?.value;
+      payload['grade_ids'] = selectedGrade;
+      payload['subject_name'] = selectedSubject?.children;
+    }
+    setRequestSent(true);
+    if (editID) {
+      axios
+        .post(`${endpoints.newBlog.updatePublicSpeakingRatingSchemas}`, payload, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            message.success('Rating updated successfully !');
+            handleCloseCreateRatingModal();
+            fetchPublicSpeakingRatingsList();
+            setEditID();
+          } else {
+            message.error('Update failed. Please try again !');
+          }
+        })
+        .catch((err) => message.error(err?.message))
+        .finally(() => {
+          setRequestSent(false);
+        });
+    } else {
+      axios
+        .post(`${endpoints.newBlog.createPublicSpeakingRatingSchemas}`, payload, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            message.success('Rating created successfully !');
+            handleCloseCreateRatingModal();
+            fetchPublicSpeakingRatingsList();
+          } else if (res?.data?.status_code == 400) {
+            message.error(res?.data?.message);
+          }
+        })
+        .catch((err) => message.error(err?.message))
+        .finally(() => {
+          setRequestSent(false);
+        });
+    }
+  };
+
+  const handleDeleteScheme = (id) => {
+    axios
+      .delete(`${endpoints.newBlog.deletePublicSpeakingRatingSchemas}${id}/`)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          fetchPublicSpeakingRatingsList();
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  const handleEditScheme = (record) => {
+    setSelectedGrade(record?.grade_id);
+    setSelectedSubject({
+      value: record?.subject_id,
+      children: record?.subject_name,
+    });
+    let schemeData = JSON.parse(record?.scheme_criteria);
+    var currentData = _.cloneDeep(schemeData);
+    console.log({ currentData });
+    setCurrentRating({
+      title: currentData?.name,
+      questions: currentData?.content
+        ?.filter((item) => item.criterion !== 'Overall')
+        ?.map((item) => ({
+          title: item?.criterion,
+        })),
+
+      levels: currentData?.content[0]?.levels,
+    });
+    handleShowCreateRatingModal();
+    setTimeout(() => {
+      formRef.current.setFieldsValue({
+        grade: record?.grade_name,
+        subject: record?.subject_name,
+      });
+    }, 500);
   };
 
   const fetchGradeList = () => {
@@ -356,6 +390,26 @@ const PublicSpeakingRatings = () => {
       });
   };
 
+  const fetchPublicSpeakingRatingsList = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.newBlog.publicSpeakingRatingSchemas}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setPublicSpeakingRatingsList(res?.data?.result);
+        }
+      })
+      .catch((err) => message.error(err?.message))
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -372,6 +426,7 @@ const PublicSpeakingRatings = () => {
         }
       });
     }
+    fetchPublicSpeakingRatingsList();
   }, []);
   useEffect(() => {
     fetchGradeList();
@@ -416,33 +471,17 @@ const PublicSpeakingRatings = () => {
               </Button>
             </div>
             <div className='col-12'>
-              {loading ? (
-                <div
-                  className='d-flex align-items-center justify-content-center w-100 text-center'
-                  style={{ height: '30vh' }}
-                >
-                  <Spin tip='Loading' />
-                </div>
-              ) : publicSpeakingRatingList?.length > 0 ? (
-                <Table
-                  className='th-table'
-                  rowClassName={(record, index) =>
-                    `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                  }
-                  pagination={false}
-                  scroll={{ y: '50vh' }}
-                  //   loading={loading}
-                  columns={columns}
-                  dataSource={publicSpeakingRatingList}
-                />
-              ) : (
-                <div
-                  className='row justify-content-center align-item-center py-5'
-                  style={{ height: '47 vh' }}
-                >
-                  <img src={NoDataIcon} />
-                </div>
-              )}
+              <Table
+                className='th-table'
+                rowClassName={(record, index) =>
+                  `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                }
+                pagination={false}
+                scroll={{ y: '50vh' }}
+                loading={loading}
+                columns={columns}
+                dataSource={publicSpeakingRatingList}
+              />
             </div>
           </div>
         </div>
@@ -466,9 +505,8 @@ const PublicSpeakingRatings = () => {
                   <Form.Item name='grade'>
                     <Select
                       allowClear
-                      mode='multiple'
-                      maxTagCount={2}
-                      placeholder={'Select Grades *'}
+                      placeholder={'Select Grade *'}
+                      disabled={editID}
                       showSearch
                       optionFilterProp='children'
                       filterOption={(input, options) => {
@@ -491,6 +529,7 @@ const PublicSpeakingRatings = () => {
                     <Select
                       placeholder='Select Subject *'
                       showSearch
+                      disabled={editID}
                       optionFilterProp='children'
                       filterOption={(input, options) => {
                         return (
@@ -582,7 +621,7 @@ const PublicSpeakingRatings = () => {
               </div>
             </div>
           </div>
-          <div className='col-12 mt-3'>
+          <div className='col-12 mt-3 mb-2'>
             <div className='th-fw-600 th-black-1'>Add Ratings</div>
             {currentRating?.levels?.map((item, index) => {
               return (
@@ -655,14 +694,31 @@ const PublicSpeakingRatings = () => {
               </div>
             </div>
           </div>
-          <div className='row mt-2'>
+          {/* <div className='col-sm-1 pr-0 th-fw-600 th-black-1'>Overall</div>
+          <div className='col-sm-11 pl-sm-0'>
+            <Input
+              placeholder='Please enter Overall remarks*'
+              showCount
+              maxLength='100'
+              value={currentRating?.overall}
+              onChange={(e) => {
+                e.preventDefault();
+                setCurrentRating({ ...currentRating, overall: e.target.value });
+              }}
+            />
+          </div> */}
+          <div className='row mt-3'>
             <div className='col-12'>
-              <Button type='primary' className='th-br-8' onClick={handleCreateRating}>
-                Create Rating
+              <Button
+                type='primary'
+                disabled={requestSent}
+                className='th-br-8'
+                onClick={handleCreateRating}
+              >
+                {editID ? 'Update' : 'Create'} Rating
               </Button>
             </div>
           </div>
-          {/* </div> */}
         </div>
       </Modal>
     </Layout>
