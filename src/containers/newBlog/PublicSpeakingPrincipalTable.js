@@ -60,7 +60,7 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const columns = [
     {
-      title: <span className='th-white th-fw-700 '> SL.No</span>,
+      title: <span className='th-white th-fw-700 '> Sl No.</span>,
       dataIndex: 'student_name',
       key: 'student_name',
       align: 'center',
@@ -163,7 +163,7 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const columnsBigTable = [
     {
-      title: <span className='th-white th-fw-700 '>SL.No</span>,
+      title: <span className='th-white th-fw-700 '>Sl No.</span>,
       dataIndex: 'height',
       key: 'height',
       align: 'center',
@@ -229,7 +229,6 @@ const PublicSpeakingPrincipalTable = (props) => {
           setTotalSubmitted(response?.data?.result?.activities);
           setTotalSubmittedCount(response?.data?.result?.overall_submitted_count);
           props.setFlag(false);
-          // message.success(response?.data?.message);
           setLoadingBig(false);
         } else {
           message.error(response?.data?.message);
