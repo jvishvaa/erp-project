@@ -53,40 +53,6 @@ const PublicSpeakingPrincipalTable = (props) => {
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [totalSubmittedCount, setTotalSubmittedCount] = useState(0);
-
-  const dummyData = {
-    status_code: 200,
-    message: 'Success',
-    result: {
-      name: 'Hello all\nThis is a test message ',
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
-      subject: '127',
-      section: '129',
-      grade: '103',
-      branch: '191',
-      subject_mapping_id: '5201',
-      submission_type: 'individual',
-      submission_filetype: 'video',
-      scheduled_time: '2022-07-26T12:00:17+00:00',
-      requires_username: true,
-      options: '',
-      id: 149,
-      user_id: 29,
-      scheme_id: 2,
-      state: 'ongoing',
-      groups: [
-        {
-          user_id: 31,
-          group_id: 121,
-          state: 'yet_to_submit',
-          name: 'Mahi_Student S',
-          username: '2209850002_OLV',
-        },
-      ],
-    },
-  };
-
   const columns = [
     {
       title: <span className='th-white th-fw-700 '> SL.No</span>,
@@ -230,24 +196,6 @@ const PublicSpeakingPrincipalTable = (props) => {
     },
   ];
 
-  const fetchMedia = (params = {}) => {
-    axios
-      .get(`${endpoints.newBlog.studentPSContentApi}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        if (response.data?.status_code === 200) {
-          setMediaFiles(response?.data?.result);
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
-  };
-
   const erpAPI = () => {
     setLoadingBig(true);
     axios
@@ -270,11 +218,11 @@ const PublicSpeakingPrincipalTable = (props) => {
         if (response?.data?.status_code == 200) {
           setTotalCountAssigned(response?.data?.result?.count);
           setTotalPagesAssigned(response?.data?.result?.page_size);
-          setCurrentPageAssigned(response?.data?.result?.page);
+          // setCurrentPageAssigned(response?.data?.result?.page);
           setTotalSubmitted(response?.data?.result?.activities);
           setTotalSubmittedCount(response?.data?.result?.overall_submitted_count);
           props.setFlag(false);
-          message.success(response?.data?.message);
+          // message.success(response?.data?.message);
           setLoadingBig(false);
         } else {
           message.error(response?.data?.message);
@@ -299,7 +247,7 @@ const PublicSpeakingPrincipalTable = (props) => {
     if (props.flag) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag]);
 
   const StudentCheckFun = (data) => {
     setSelectedStudentsDetails([]);
@@ -329,9 +277,8 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const getTotalSubmitted = () => {
     if (props) {
-      setLoading(true);
+      handlePaginationAssign(1);
       erpAPI();
-      setLoading(false);
     }
   };
 
@@ -416,11 +363,11 @@ const PublicSpeakingPrincipalTable = (props) => {
           </p>
         </div>
         <div className='col-12'>
-          {loadingBig ? (
+          {/* {loadingBig ? (
             <div className='d-flex justify-content-center py-5'>
               <Spin size='medium' tip='Loading...' />{' '}
             </div>
-          ) : null}
+          ) : null} */}
           {totalSubmitted?.length !== 0 ? (
             <Table
               className='th-table'
@@ -436,7 +383,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                   handlePaginationAssign(e);
                 },
               }}
-              loading={loading}
+              loading={loadingBig}
               columns={columns}
               dataSource={totalSubmitted}
               scroll={{ y: '50vh' }}
