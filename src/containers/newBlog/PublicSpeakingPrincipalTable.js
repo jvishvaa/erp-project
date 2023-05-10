@@ -167,7 +167,9 @@ const PublicSpeakingPrincipalTable = (props) => {
       dataIndex: 'height',
       key: 'height',
       align: 'center',
-      render: (text, row, index) => <span>{index + 1}</span>,
+      render: (text, row, index) => (
+        <span>{(pageDetails.current - 1) * 10 + index + 1}.</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700 '>Student Name</span>,
@@ -192,6 +194,7 @@ const PublicSpeakingPrincipalTable = (props) => {
         <>
           <Tag
             icon={<EyeOutlined />}
+            style={{ cursor: 'pointer' }}
             color='processing'
             onClick={() => handleShowStudent(row)}
           >
@@ -420,8 +423,14 @@ const PublicSpeakingPrincipalTable = (props) => {
         className='th-upload-modal'
         centered
         open={openBigModal}
-        onOk={() => setOpenBigModal(false)}
-        onCancel={() => setOpenBigModal(false)}
+        onOk={() => {
+          setOpenBigModal(false);
+          setPageDetails({ ...pageDetails, current: 1 });
+        }}
+        onCancel={() => {
+          setOpenBigModal(false);
+          setPageDetails({ ...pageDetails, current: 1 });
+        }}
         width={1000}
         zIndex={1000}
         footer={null}
