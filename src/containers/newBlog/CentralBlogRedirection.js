@@ -289,7 +289,7 @@ const CentralBlogRedirection = () => {
     <Layout>
       {''}
       <div className='row px-2'>
-        <div className='col-md-8' style={{ zIndex: 2 }}>
+        <div className='col-md-10' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
             <Breadcrumb.Item href='/dashboard' className='th-grey th-18'>
               Dashboard
@@ -299,7 +299,7 @@ const CentralBlogRedirection = () => {
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <div className='col-md-4 d-flex justify-content-end align-items-center'>
+        <div className='col-md-2 text-center'>
           <Button
             className='th-button-active th-br-6 text-truncate th-pointer '
             onClick={() => handleRedirect()}
