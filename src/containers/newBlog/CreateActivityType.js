@@ -16,7 +16,6 @@ import {
 } from '@ant-design/icons';
 
 const CreateActivityType = () => {
-  // const classes = useStyles();
   const themeContext = useTheme();
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -348,17 +347,22 @@ const CreateActivityType = () => {
                 onChange={(e) => setActivityType(e.target.value)}
               />
             </div>
-            <div className='col-md-4 col-6 p-2' style={{display: ActivityType === "Physical Activity" ? '' : 'none'}}>
+            <div
+              className='col-md-4 col-6 p-2'
+              style={{
+                display: ActivityType.includes('Physical Activity') ? '' : 'none',
+              }}
+            >
               {/* {ActivityType === 'Physical Activity' ? ( */}
-                <>
-                  <div className='mb-2 text-left'>Sub Activity Type</div>
-                  <Input
-                    placeholder='Enter Sub Activity Type.'
-                    type='text'
-                    value={SubActivityType}
-                    onChange={(e) => setSubActivityType(e.target.value)}
-                  />
-                </>
+              <>
+                <div className='mb-2 text-left'>Sub Activity Type</div>
+                <Input
+                  placeholder='Enter Sub Activity Type.'
+                  type='text'
+                  value={SubActivityType}
+                  onChange={(e) => setSubActivityType(e.target.value)}
+                />
+              </>
               {/* ) : null} */}
             </div>
             <div className='col-md-4 col-6 pt-4'>

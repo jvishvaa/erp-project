@@ -1,6 +1,14 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Breadcrumb, Button as ButtonAnt, Form, Select, message, Tabs, DatePicker } from 'antd';
+import {
+  Breadcrumb,
+  Button as ButtonAnt,
+  Form,
+  Select,
+  message,
+  Tabs,
+  DatePicker,
+} from 'antd';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { DownOutlined } from '@ant-design/icons';
 import Layout from 'containers/Layout';
@@ -32,7 +40,6 @@ const PrincipalDashboardTableActivity = () => {
   const [view, setView] = useState(false);
   const [flag, setFlag] = useState(false);
   const [gradeList, setGradeList] = useState([]);
-  // const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (newValue) => {
@@ -44,7 +51,7 @@ const PrincipalDashboardTableActivity = () => {
   const [boardId, setBoardId] = useState();
   const { Option } = Select;
   const [gradeId, setGradeId] = useState();
-  const [gradeName, setGradeName] = useState();
+  const [gradeName, setGradeName] = useState('');
   const [gradeData, setGradeData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
   const selectedAcademicYear = useSelector(
@@ -54,8 +61,8 @@ const PrincipalDashboardTableActivity = () => {
   const selectedBranchGlobal = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const [subjectId, setSubjectId] = useState();
-  const [subjectName, setSubjectName] = useState();
+  const [subjectId, setSubjectId] = useState(null);
+  const [subjectName, setSubjectName] = useState([]);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const { RangePicker } = DatePicker;
@@ -82,7 +89,6 @@ const PrincipalDashboardTableActivity = () => {
       });
     }
   }, []);
-
 
   useEffect(() => {
     if (moduleId && selectedBranchGlobal) {
@@ -140,8 +146,11 @@ const PrincipalDashboardTableActivity = () => {
 
   const handleGrade = (item) => {
     setSubjectData([]);
+    setSubjectId(null);
+    setSubjectName([]);
+    setGradeName('');
     formRef.current.setFieldsValue({
-      subject: null,
+      section: [],
       // board: null,
     });
     setFlag(false);
@@ -286,7 +295,7 @@ const PrincipalDashboardTableActivity = () => {
                       <Form.Item name='grade'>
                         <Select
                           allowClear
-                          placeholder='Select Name'
+                          placeholder='Select Grade'
                           showSearch
                           // disabled={user_level == 13}
                           optionFilterProp='children'

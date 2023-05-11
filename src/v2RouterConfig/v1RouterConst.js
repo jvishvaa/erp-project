@@ -272,7 +272,7 @@ import ActivateInactivateStudentAdm from 'containers/Finance/src/components/Fina
 import QuestionBankList from 'containers/question-bank/question-bank-list';
 import CreateQuestion from 'containers/question-bank/create-question';
 import CreateQuestionPaper from 'containers/assessment-central/create-question-paper/index';
-import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper'
+import CreatequestionPaperNew from 'containers/assessment-central/create-question-paper-new/createquestionpaper';
 // import Assesmentquestion from 'containers/assesment/assesment';
 import Assesment from 'containers/assessment-central';
 import AssessmentView from 'containers/assessment-central/assesment-view';
@@ -425,7 +425,7 @@ import AllChaptersContent from 'containers/sure-learning/Initiate_Class/Chapter_
 import AcademicReport from 'containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
-import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject'
+import CurriculumChapterWiseSubject from 'containers/dashboard/ownerDashboard/academic/chapterwiseSubject';
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
 import CategoryTable from 'containers/question-bank/category/category-table';
@@ -460,9 +460,9 @@ import BlogActivityView from 'containers/newBlog/BlogActivityView';
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 import NewEbookView from 'containers/ebooks/NewEbook';
 import Filters from 'containers/assessment-central/create-question-paper-new/filters';
-import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig'
+import QuestionPaperConfig from 'containers/assessment-central/create-question-paper-new/questionPaperConfig';
 import StudentMarkNew from 'containers/assessment-central/studentMarksUploadNew';
-import AddHomeworkCordNew from 'containers/homework/coordinator-homework/newAddHomework'
+import AddHomeworkCordNew from 'containers/homework/coordinator-homework/newAddHomework';
 import StudentHomeworkNew from 'containers/homework/student-homework/studentSide';
 import Studentanalytics from 'containers/homework/student-homework/studentanalytics';
 import CalendarV2 from 'containers/attendance/CalendarEventHoliday';
@@ -476,6 +476,7 @@ import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
 import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
 import PrincipalDashboardTableActivity from 'containers/newBlog/PrincipalDashboardTableActivity';
+import PublicSpeakingRatings from 'containers/newBlog/CreateRating/PublicSpeakingRatings';
 // import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
@@ -809,15 +810,18 @@ const V1Router = [
   <Route exact path='/homework/admin'>
     {({ match }) => <HomeworkAdmin match={match} />}
   </Route>,
-   <Route exact path='/homework/coordinator'>
-   {({ match }) => <CheckCoordinatorHW match={match} />}
- </Route>,
+  <Route exact path='/homework/coordinator'>
+    {({ match }) => <CheckCoordinatorHW match={match} />}
+  </Route>,
   // <Route exact path='/homework/coordinator'>
   //   {({ match }) => <CoordinatorTeacherHomeworkv2 match={match} />}
   // </Route>,
-  <Route exact path='/homework/addhomework/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'>
-  {({ match }) => <AddHomeworkCordNew match={match} />}
-</Route>,
+  <Route
+    exact
+    path='/homework/addhomework/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'
+  >
+    {({ match }) => <AddHomeworkCordNew match={match} />}
+  </Route>,
   <Route
     exact
     path='/homework/cadd/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'
@@ -1506,16 +1510,16 @@ const V1Router = [
   <Route exact path='/physical/activity/review'>
     {({ match }) => <PhysicalActivityReview match={match} />}
   </Route>,
-    <Route exact path='/visual/activity'>
+  <Route exact path='/visual/activity'>
     {({ match }) => <VisualActivity match={match} />}
   </Route>,
   <Route exact path='/visual/activity/create'>
-      {({ match }) => <VisualActivityCreate match={match} />}
+    {({ match }) => <VisualActivityCreate match={match} />}
   </Route>,
   <Route exact path='/visual/activity/review'>
-      {({ match }) => <VisualActivityReview match={match} />}
+    {({ match }) => <VisualActivityReview match={match} />}
   </Route>,
-    <Route exact path='/principal-dashboard-activity'>
+  <Route exact path='/principal-dashboard-activity'>
     {({ match }) => <PrincipalDashboardTableActivity match={match} />}
   </Route>,
   <Route exact path='/blog/publicspeaking'>
@@ -1647,11 +1651,9 @@ const V1Router = [
   <Route path='/holidaymarking'>{({ match }) => <HolidayMark match={match} />}</Route>,
   <Route path='/eventmarking'>{({ match }) => <EventsMark match={match} />}</Route>,
   <Route path='/holidaymarkingOld'>
-  {({ match }) => <HolidayMarkOld match={match} />}
-</Route>,
-<Route path='/eventmarkingOld'>
-  {({ match }) => <EventsMarkOld match={match} />}
-</Route>,
+    {({ match }) => <HolidayMarkOld match={match} />}
+  </Route>,
+  <Route path='/eventmarkingOld'>{({ match }) => <EventsMarkOld match={match} />}</Route>,
   <Route path='/student_count_report'>
     {({ match }) => <StudentCountReport match={match} />}
   </Route>,
@@ -1827,14 +1829,17 @@ const V1Router = [
   </Route>,
   <Route path='/online-books/'>{({ match }) => <NewEbookView match={match} />}</Route>,
   <Route path='/student-view-new'>
-  {({ match }) => <StudentHomeworkNew match={match} />}
-</Route>,
+    {({ match }) => <StudentHomeworkNew match={match} />}
+  </Route>,
   <Route path='/student-analytics'>
-  {({ match }) => <Studentanalytics match={match} />}
-</Route>,
-<Route path='/user-management/create-no-academic-staff'>
-  {({ match }) => <CreateNoAcademicStaff match={match} />}
-</Route>,
+    {({ match }) => <Studentanalytics match={match} />}
+  </Route>,
+  <Route path='/user-management/create-no-academic-staff'>
+    {({ match }) => <CreateNoAcademicStaff match={match} />}
+  </Route>,
+  <Route path='/create-public-speaking-rating'>
+    {({ match }) => <PublicSpeakingRatings match={match} />}
+  </Route>,
   //   <Route path='/pptview'>
   //   {({ match }) => <PPTView match={match} />}
   // </Route>,

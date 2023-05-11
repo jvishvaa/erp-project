@@ -7,6 +7,7 @@ import {
   Select,
   Avatar,
   Comment,
+  Spin,
   Tag,
 } from 'antd';
 import { EyeOutlined, TeamOutlined, UserOutlined, RedoOutlined } from '@ant-design/icons';
@@ -25,6 +26,7 @@ const PublicSpeakingPrincipalTable = (props) => {
   const [openBigModal, setOpenBigModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingBig, setLoadingBig] = useState(false);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   let dataes = JSON?.parse(localStorage?.getItem('userDetails')) || {};
@@ -51,48 +53,20 @@ const PublicSpeakingPrincipalTable = (props) => {
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [totalSubmittedCount, setTotalSubmittedCount] = useState(0);
-
-  const dummyData = {
-    status_code: 200,
-    message: 'Success',
-    result: {
-      name: 'Hello all\nThis is a test message ',
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
-      subject: '127',
-      section: '129',
-      grade: '103',
-      branch: '191',
-      subject_mapping_id: '5201',
-      submission_type: 'individual',
-      submission_filetype: 'video',
-      scheduled_time: '2022-07-26T12:00:17+00:00',
-      requires_username: true,
-      options: '',
-      id: 149,
-      user_id: 29,
-      scheme_id: 2,
-      state: 'ongoing',
-      groups: [
-        {
-          user_id: 31,
-          group_id: 121,
-          state: 'yet_to_submit',
-          name: 'Mahi_Student S',
-          username: '2209850002_OLV',
-        },
-      ],
-    },
-  };
+  const [pageDetails, setPageDetails] = useState({
+    total: null,
+    current: 1,
+  });
 
   const columns = [
     {
-      title: <span className='th-white th-fw-700 '> Sl.No</span>,
+      title: <span className='th-white th-fw-700 '> Sl No.</span>,
       dataIndex: 'student_name',
       key: 'student_name',
       align: 'center',
+      width: '10%',
       render: (text, row, index) => {
-        return <span>{index + 1}</span>;
+        return <span>{index + 1 + (currentPageAssigned - 1) * 10}</span>;
       },
     },
     {
@@ -109,14 +83,14 @@ const PublicSpeakingPrincipalTable = (props) => {
       dataIndex: 'weight',
       key: 'weight',
       align: 'center',
-      render: (text, row) => <a>{row?.description}</a>,
+      render: (text, row) => <span>{row?.description}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Teacher</span>,
       dataIndex: 'weight',
       key: 'weight',
       align: 'center',
-      render: (text, row) => <a>{row?.teacher_name}</a>,
+      render: (text, row) => <span>{row?.teacher_name}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Submission Date</span>,
@@ -124,7 +98,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       key: 'gender',
       align: 'center',
       render: (text, row) => {
-        return <p>{moment(row?.scheduled_tim).format('MMMM Do YYYY')}</p>;
+        return <span>{moment(row?.scheduled_time).format('MMMM Do YYYY')}</span>;
       },
     },
     {
@@ -132,6 +106,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       dataIndex: 'weight',
       key: 'weight',
       align: 'center',
+      width: '10%',
       render: (text, row) => <Tag color='volcano'>{row?.student_submitted_count}</Tag>,
     },
     {
@@ -167,6 +142,10 @@ const PublicSpeakingPrincipalTable = (props) => {
     }
   };
 
+  useEffect(() => {
+    StudentCheckFun(rowData);
+  }, [pageDetails?.current]);
+
   const columnMarks = [
     {
       title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
@@ -184,18 +163,27 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const columnsBigTable = [
     {
+      title: <span className='th-white th-fw-700 '>Sl No.</span>,
+      dataIndex: 'height',
+      key: 'height',
+      align: 'center',
+      render: (text, row, index) => (
+        <span>{(pageDetails.current - 1) * 10 + index + 1}.</span>
+      ),
+    },
+    {
       title: <span className='th-white th-fw-700 '>Student Name</span>,
       dataIndex: 'height',
       key: 'height',
       align: 'center',
-      render: (text, row) => <a>{row?.user_name}</a>,
+      render: (text, row) => <span>{row?.user_name}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>ERP ID</span>,
       dataIndex: 'weight',
       key: 'weight',
       align: 'center',
-      render: (text, row) => <a>{row?.user_erp_id}</a>,
+      render: (text, row) => <span>{row?.user_erp_id}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Action</span>,
@@ -204,40 +192,22 @@ const PublicSpeakingPrincipalTable = (props) => {
       align: 'center',
       render: (text, row) => (
         <>
-          <span style={{ margin: '0.5rem 1rem' }}>
-            <ButtonAnt
-              type='primary'
-              icon={<EyeOutlined />}
-              size={'medium'}
-              onClick={() => handleShowStudent(row)}
-            >
-              View Activity
-            </ButtonAnt>
-          </span>
+          <Tag
+            icon={<EyeOutlined />}
+            style={{ cursor: 'pointer' }}
+            color='processing'
+            onClick={() => handleShowStudent(row)}
+          >
+            View Activity
+          </Tag>
         </>
       ),
     },
   ];
 
-  const fetchMedia = (params = {}) => {
-    axios
-      .get(`${endpoints.newBlog.studentPSContentApi}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        if (response.data?.status_code === 200) {
-          setMediaFiles(response?.data?.result);
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
-  };
-
+  console.log({ props, totalSubmitted });
   const erpAPI = () => {
+    setLoadingBig(true);
     axios
       .get(
         `${endpoints.newBlog.getIndividualActivity}?branch=${
@@ -250,6 +220,7 @@ const PublicSpeakingPrincipalTable = (props) => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
           },
         }
       )
@@ -257,29 +228,41 @@ const PublicSpeakingPrincipalTable = (props) => {
         if (response?.data?.status_code == 200) {
           setTotalCountAssigned(response?.data?.result?.count);
           setTotalPagesAssigned(response?.data?.result?.page_size);
-          setCurrentPageAssigned(response?.data?.result?.page);
+          // setCurrentPageAssigned(response?.data?.result?.page);
           setTotalSubmitted(response?.data?.result?.activities);
           setTotalSubmittedCount(response?.data?.result?.overall_submitted_count);
           props.setFlag(false);
-          message.success(response?.data?.message);
-          setLoading(false);
+          setLoadingBig(false);
         } else {
           message.error(response?.data?.message);
+          setLoadingBig(false);
         }
       });
   };
 
   useEffect(() => {
-    if (props.selectedBranch === undefined || props.selectedGrade === undefined) {
+    if (
+      props.selectedBranch === undefined ||
+      props.selectedGrade === undefined ||
+      props.selectedGrade == '' ||
+      props.selectedSubject?.length === 0 ||
+      props.selectedSubject === undefined
+    ) {
       setTotalSubmitted([]);
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag, props.selectedSubject]);
 
   useEffect(() => {
     if (props.flag) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
+  }, [
+    props.selectedBranch,
+    props.selectedGrade,
+    props.flag,
+    props.startDate,
+    props.endDate,
+  ]);
 
   const StudentCheckFun = (data) => {
     setSelectedStudentsDetails([]);
@@ -288,7 +271,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       setLoading(true);
       axios
         .get(
-          `${endpoints.newBlog.getStudentPublicView}?activity_id=${data?.id}`,
+          `${endpoints.newBlog.getStudentPublicView}?activity_id=${data?.id}&page=${pageDetails?.current}`,
           {
             headers: {
               Authorization: `${token}`,
@@ -299,6 +282,7 @@ const PublicSpeakingPrincipalTable = (props) => {
         .then((response) => {
           if (response?.data?.status_code == 200) {
             setStudentListData(response?.data?.result);
+            setPageDetails({ ...pageDetails, total: response.data?.count });
             setOpenBigModal(true);
             setLoading(false);
           } else {
@@ -312,11 +296,14 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const getTotalSubmitted = () => {
     if (props) {
-      setLoading(true);
+      handlePaginationAssign(1);
       erpAPI();
-      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    erpAPI();
+  }, [currentPageAssigned]);
 
   const handleShowStudent = (data) => {
     if (data) {
@@ -336,13 +323,13 @@ const PublicSpeakingPrincipalTable = (props) => {
         .then((response) => {
           if (response?.data?.status_code == 200) {
             getWhatsAppDetails({
-              erp_id: studentListData[0]?.user_erp_id,
+              erp_id: response?.data?.result?.user?.username,
               created_at__date__gte: response?.data?.result?.created_at__date__gte,
               created_at__date__lte: response?.data?.result?.created_at__date__lte,
               activity_id: response?.data?.result?.activity,
             });
             setLoading(false);
-            message.success(response?.data?.message);
+            // message.success(response?.data?.message);
             setMediaFiles(response?.data?.result);
             setVisibleVideo(true);
             return;
@@ -385,7 +372,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       <div className='row'>
         <div className='col-12'>
           <p style={{ fontSize: '15px', fontWeight: 'bold' }}>
-            {totalSubmitted?.length ? (
+            {totalSubmitted?.length > 0 ? (
               <Tag color='blue'>
                 Total Videos Uploaded : {totalSubmittedCount} (
                 {moment(props.startDate).format('MMMM Do')} -{' '}
@@ -395,9 +382,13 @@ const PublicSpeakingPrincipalTable = (props) => {
           </p>
         </div>
         <div className='col-12'>
-          {totalSubmitted?.length !== 0 ? (
+          {/* {loadingBig ? (
+            <div className='d-flex justify-content-center py-5'>
+              <Spin size='medium' tip='Loading...' />{' '}
+            </div>
+          ) : null} */}
+          {totalSubmitted?.length > 0 ? (
             <Table
-              style={{ maxHeight: '60vh', OverflowY: 'auto' }}
               className='th-table'
               rowClassName={(record, index) =>
                 `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
@@ -411,25 +402,35 @@ const PublicSpeakingPrincipalTable = (props) => {
                   handlePaginationAssign(e);
                 },
               }}
-              loading={props?.loading}
+              loading={loadingBig}
               columns={columns}
               dataSource={totalSubmitted}
+              scroll={{ y: '50vh' }}
             />
           ) : (
-            <div className='row justify-content-center mt-5'>
+            <div
+              className='row justify-content-center mt-5'
+              style={{ minHeight: '50vh' }}
+            >
               <img src={NoDataIcon} />
             </div>
           )}
         </div>
       </div>
       <Modal
-        title={`Students Details (${selectedStudentDetails?.student_submitted_count})`}
+        title={`Students Details`}
         visible={openBigModal}
         className='th-upload-modal'
         centered
         open={openBigModal}
-        onOk={() => setOpenBigModal(false)}
-        onCancel={() => setOpenBigModal(false)}
+        onOk={() => {
+          setOpenBigModal(false);
+          setPageDetails({ ...pageDetails, current: 1 });
+        }}
+        onCancel={() => {
+          setOpenBigModal(false);
+          setPageDetails({ ...pageDetails, current: 1 });
+        }}
         width={1000}
         zIndex={1000}
         footer={null}
@@ -439,8 +440,9 @@ const PublicSpeakingPrincipalTable = (props) => {
             className='col-12 px-3'
             style={{ display: 'flex', borderRadius: '10px', padding: '0.5rem 1rem' }}
           >
-            <div className='col-3'>
-              Total Students Count : {selectedStudentDetails?.student_submitted_count}
+            <div className='col-4'>
+              Total Students Submitted Count :{' '}
+              {selectedStudentDetails?.student_submitted_count}
             </div>
           </div>
           <div className='row d-flex px-3 justify-content-end'>
@@ -455,19 +457,20 @@ const PublicSpeakingPrincipalTable = (props) => {
                 destroyOnClose={true}
                 footer={false}
                 onCancel={() => setVisibleVideo(false)}
-                width={
-                  window.innerWidth < 600
-                    ? '95vw'
-                    : mediaFiles?.signed_URL
-                    ? permissionState === 'graded'
-                      ? '70vw'
-                      : '40vw'
-                    : '35vw'
-                }
+                // width={
+                //   window.innerWidth < 600
+                //     ? '95vw'
+                //     : mediaFiles?.signed_URL
+                //     ? permissionState === 'graded'
+                //       ? '70vw'
+                //       : '40vw'
+                //     : '60vw'
+                // }
+                width={'80vw'}
               >
                 <div>
-                  <div className='row'>
-                    <div
+                  <div className='row p-3'>
+                    {/* <div
                       className={
                         mediaFiles?.signed_URL
                           ? permissionState === 'graded'
@@ -475,29 +478,28 @@ const PublicSpeakingPrincipalTable = (props) => {
                             : 'col-md-12'
                           : 'd-none'
                       }
-                    >
+                    > */}
+                    <div className='col-md-7'>
                       <video
                         src={mediaFiles?.signed_URL}
                         controls
                         preload='auto'
                         className='th-br-5'
                         alt={'image'}
-                        // width='100%'
-                        // height='95%'
                         style={{
-                          height: '500px',
+                          maxHeight: '650px',
                           width: '100%',
                           objectFit: 'fill',
                         }}
                       />
                     </div>
-                    {permissionState === 'graded' ? (
-                      <div
-                        className={`${
-                          mediaFiles?.signed_URL ? 'col-md-5' : 'col-12'
-                        } px-0 th-bg-white`}
-                      >
-                        <div className='row'>
+                    <div
+                      className={`${
+                        mediaFiles?.signed_URL ? 'col-md-5' : 'col-12'
+                      } px-0 th-bg-white`}
+                    >
+                      <div className='row'>
+                        {permissionState === 'graded' ? (
                           <div className='col-12 px-1'>
                             <div className='mt-3'>
                               <div className='th-fw-500 th-16 mb-2'>Remarks</div>
@@ -519,95 +521,113 @@ const PublicSpeakingPrincipalTable = (props) => {
                               </div>
                             </div>
                           </div>
-                          <div className='col-12 px-1'>
-                            <div className='row mt-2 align-item-center'>
-                              <div className='col-6 px-0'>
-                                <span className='th-18 th-fw-600'>
-                                  Comments
-                                  {chatDetails?.length > 0
-                                    ? `(${chatDetails?.length})`
-                                    : null}
-                                </span>
-                              </div>
-                              <div className='col-6 text-right'>
-                                <span
-                                  className='th-pointer'
-                                  onClick={() =>
-                                    getWhatsAppDetails({
-                                      erp_id: studentListData[0]?.user_erp_id,
-                                      created_at__date__gte:
-                                        mediaFiles?.created_at__date__gte,
-                                      created_at__date__lte:
-                                        mediaFiles?.created_at__date__lte,
-                                      activity_id: mediaFiles?.activity,
-                                    })
-                                  }
-                                >
-                                  <RedoOutlined />
-                                </span>
-                              </div>
+                        ) : null}
 
-                              <div className='row'>
-                                {chatDetails.length > 0 ? (
-                                  <>
-                                    {chatDetails.map((item, index) => {
-                                      if (item?.is_reply == true) {
-                                        return (
-                                          <Comment
-                                            author={
-                                              <div className='th-fw-500 th-16'>
-                                                {item?.name}
+                        <div className='col-12 px-1'>
+                          <div className='row mt-2 align-item-center'>
+                            <div className='col-6 px-0'>
+                              <span className='th-18 th-fw-600'>
+                                Comments
+                                {chatDetails?.length > 0
+                                  ? `(${chatDetails?.length})`
+                                  : null}
+                              </span>
+                            </div>
+                            <div className='col-6 text-right'>
+                              <span
+                                className='th-pointer'
+                                onClick={() =>
+                                  getWhatsAppDetails({
+                                    erp_id: mediaFiles?.user?.username,
+                                    created_at__date__gte:
+                                      mediaFiles?.created_at__date__gte,
+                                    created_at__date__lte:
+                                      mediaFiles?.created_at__date__lte,
+                                    activity_id: mediaFiles?.activity,
+                                  })
+                                }
+                              >
+                                <RedoOutlined />
+                              </span>
+                            </div>
+
+                            <div
+                              className='row'
+                              style={{
+                                display: 'block',
+                                overflow: 'auto',
+                                maxHeight: permissionState === 'graded' ? '25vh' : '65vh',
+                              }}
+                            >
+                              {chatDetails.length > 0 ? (
+                                <>
+                                  {chatDetails.map((item, index) => {
+                                    if (item?.is_reply == true) {
+                                      return (
+                                        <Comment
+                                          author={
+                                            <div className='th-fw-500 th-16'>
+                                              {item?.name}
+                                            </div>
+                                          }
+                                          avatar={
+                                            <Avatar size={40} icon={<UserOutlined />} />
+                                          }
+                                          content={<p>{item?.message}</p>}
+                                          datetime={
+                                            <>
+                                              <div
+                                                title={moment(item?.sent_at).format(
+                                                  'MMM Do,YYYY'
+                                                )}
+                                              >
+                                                {moment(item?.sent_at).format(
+                                                  'MMM Do,YYYY'
+                                                )}
                                               </div>
-                                            }
-                                            avatar={
-                                              <Avatar size={40} icon={<UserOutlined />} />
-                                            }
-                                            content={<p>{item?.message}</p>}
-                                            datetime={
-                                              <>
-                                                <div
-                                                  title={moment(item?.sent_at).format(
-                                                    'MMM Do,YYYY'
-                                                  )}
-                                                >
-                                                  {moment(item?.sent_at).format(
-                                                    'MMM Do,YYYY'
-                                                  )}
-                                                </div>
-                                              </>
-                                            }
-                                          />
-                                        );
-                                      }
-                                    })}
-                                  </>
-                                ) : (
-                                  <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
-                                    No Comments Submitted
-                                  </div>
-                                )}
-                              </div>
+                                            </>
+                                          }
+                                        />
+                                      );
+                                    }
+                                  })}
+                                </>
+                              ) : (
+                                <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
+                                  No Comments Submitted
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
                       </div>
-                    ) : null}
+                    </div>
+                    {/* ) : null} */}
                   </div>
                 </div>
               </Modal>
             </div>
           </div>
-          <div className='col-12' style={{ padding: '1rem 1rem' }}>
+          <div className='col-12'>
             <Table
               className='th-table'
               rowClassName={(record, index) =>
                 `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
               }
-              pagination={false}
+              pagination={{
+                total: pageDetails.total,
+                current: pageDetails.current,
+                pageSize: 10,
+                showSizeChanger: false,
+                onChange: (page) => {
+                  setPageDetails({ ...pageDetails, current: page });
+                },
+                limit: 20,
+              }}
               loading={loading}
               columns={columnsBigTable}
               dataSource={studentListData}
-              //   scroll={{ y: 300 }}
+              scroll={{ y: 300 }}
             />
           </div>
         </div>

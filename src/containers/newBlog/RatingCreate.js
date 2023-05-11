@@ -958,9 +958,10 @@ const RatingCreate = () => {
               <Spin tip='Loading' />
             </div>
           ) : (
-            <div className='row p-3'>
-              <div className='col-12 d-flex' style={{ height: '6%' }}>
-                <div className='col-md-3 mb-sm-0 p-0'>
+            <div className='col-12'>
+              <div className='row p-3 align-items-end'>
+                {/* <div className='col-12 d-flex' style={{ height: '6%' }}> */}
+                <div className='col-md-6 mb-sm-0 p-0'>
                   <div className='py-1'>Select Activity Type</div>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -976,33 +977,44 @@ const RatingCreate = () => {
                     onChange={(e) => {
                       handleActivity(e);
                     }}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                    className='w-50 text-left th-black-1 th-bg-grey th-br-4'
                     bordered={true}
                   >
                     {mainActivityOption}
                   </Select>
                 </div>
-
-                <div className='d-flex align-item-center justify-content-end col-md-9 mb-sm-0 p-0'>
-                  <div className='col-mb-3 mb-sm-0 text-sm-right px-0 px-sm-2 pt-1 pt-sm-0'>
-                    <Tag
-                      icon={<SnippetsOutlined className='th-14' />}
-                      color='geekblue'
-                      className='th-br-5 th-pointer py-1'
-                      onClick={handleCreateTemplate}
-                    >
-                      <span className='th-fw-500 th-14'>Add Templates</span>
-                    </Tag>
-                  </div>
-                  <div className='col-mb-3 mb-sm-0 text-sm-right px-0 px-sm-2 pt-1 pt-sm-0'>
-                    <Tag
-                      icon={<AuditOutlined className='th-14' />}
-                      color='purple'
-                      className='th-br-5 th-pointer py-1 th-14 th-fw-500'
-                      onClick={viewDisplay}
-                    >
-                      Add Criteria
-                    </Tag>
+                <div className='col-md-6'>
+                  <div className='d-flex align-item-center justify-content-between'>
+                    <div className='text-center'>
+                      <Tag
+                        icon={<SnippetsOutlined className='th-14' />}
+                        color='geekblue'
+                        className='th-br-5 th-pointer py-1'
+                        onClick={() => history.push('/create-public-speaking-rating')}
+                      >
+                        <span className='th-fw-500 th-14'> Public Speaking Ratings</span>
+                      </Tag>
+                    </div>
+                    <div className='text-center'>
+                      <Tag
+                        icon={<SnippetsOutlined className='th-14' />}
+                        color='geekblue'
+                        className='th-br-5 th-pointer py-1'
+                        onClick={handleCreateTemplate}
+                      >
+                        <span className='th-fw-500 th-14'>Add Templates</span>
+                      </Tag>
+                    </div>
+                    <div className='text-center'>
+                      <Tag
+                        icon={<AuditOutlined className='th-14' />}
+                        color='purple'
+                        className='th-br-5 th-pointer py-1 th-14 th-fw-500'
+                        onClick={viewDisplay}
+                      >
+                        Add Criteria
+                      </Tag>
+                    </div>
                   </div>
                 </div>
               </div>
