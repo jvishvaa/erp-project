@@ -303,6 +303,8 @@ const PublicSpeakingRatings = () => {
             fetchPublicSpeakingRatingsList();
           } else if (res?.data?.status_code == 400) {
             message.error(res?.data?.message);
+          } else {
+            message.error('Rating creation failed !');
           }
         })
         .catch((err) => message.error(err?.message))
@@ -422,12 +424,8 @@ const PublicSpeakingRatings = () => {
       )
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          setActivityUserId(response?.data?.status_code?.user_id);
+          setActivityUserId(response?.data?.result?.user_id);
         }
-        localStorage.setItem(
-          'ActivityManagementSession',
-          JSON.stringify(response?.data?.result)
-        );
       });
   };
   useEffect(() => {
@@ -517,205 +515,213 @@ const PublicSpeakingRatings = () => {
         onCancel={handleCloseCreateRatingModal}
         width={window.innerWidth < 600 ? '90vw' : '75vw'}
       >
-        <div className='row py-3 px-sm-3'>
-          <div className='col-12 px-0 px-sm-3 py-2'>
-            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-              <div className='row align-items-center'>
-                <div className='col-sm-3 px-sm-0'>
-                  <div className='mb-2 text-left th-fw-500'>Grade</div>
-                  <Form.Item name='grade'>
-                    <Select
-                      allowClear
-                      placeholder={'Select Grade *'}
-                      disabled={editID}
-                      showSearch
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e) => {
-                        handleGrade(e);
-                      }}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    >
-                      {gradeOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-sm-3'>
-                  <div className='mb-2 text-left th-fw-500'>Subject</div>
-                  <Form.Item name='subject'>
-                    <Select
-                      placeholder='Select Subject *'
-                      showSearch
-                      disabled={editID}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e, value) => {
-                        handleSubject(value);
-                      }}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    >
-                      {subjectOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-              </div>
-            </Form>
-          </div>
-          <div className='col-sm-1 pr-0 th-fw-600 th-black-1'>Title</div>
-          <div className='col-sm-11 pl-sm-0'>
-            <Input
-              placeholder='Please enter Ratings Title *'
-              showCount
-              maxLength='100'
-              value={currentRating?.title}
-              onChange={(e) => {
-                e.preventDefault();
-                setCurrentRating({ ...currentRating, title: e.target.value });
-              }}
-            />
-          </div>
-          <div className='col-12 mt-3'>
-            <div className='th-fw-600 th-black-1'>Add Questions</div>
-
-            {currentRating?.questions?.map((item, index) => {
-              return (
-                <div className='row py-2 align-items-center'>
-                  <div
-                    className={`${
-                      currentRating?.questions.length > 1 ? 'col-11' : 'col-12'
-                    } px-0`}
-                  >
-                    <Input
-                      onChange={(e) => {
-                        e.preventDefault();
-                        if (e.target.value.toString().length > 500) {
-                          message.error('Title must be less than 500 character');
-                        } else {
-                          handleChangeQuestions(e.target.value, index);
-                        }
-                      }}
-                      showCount
-                      maxLength='500'
-                      className='w-100 th-br-5'
-                      value={item?.title}
-                      placeholder='Enter Question Title*'
-                    />
+        <div>
+          <div
+            className='row pt-3 px-sm-3'
+            style={{ maxHeight: '450px', overflowY: 'auto' }}
+          >
+            <div className='col-12 px-0 px-sm-3 py-2'>
+              <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+                <div className='row align-items-center'>
+                  <div className='col-sm-3 px-sm-0'>
+                    <div className='mb-2 text-left th-fw-500'>Grade</div>
+                    <Form.Item name='grade'>
+                      <Select
+                        allowClear
+                        placeholder={'Select Grade *'}
+                        disabled={editID}
+                        showSearch
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e) => {
+                          handleGrade(e);
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      >
+                        {gradeOptions}
+                      </Select>
+                    </Form.Item>
                   </div>
+                  <div className='col-sm-3'>
+                    <div className='mb-2 text-left th-fw-500'>Subject</div>
+                    <Form.Item name='subject'>
+                      <Select
+                        placeholder='Select Subject *'
+                        showSearch
+                        disabled={editID}
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e, value) => {
+                          handleSubject(value);
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      >
+                        {subjectOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </div>
+              </Form>
+            </div>
+            <div className='col-sm-1 pr-0 th-fw-600 th-black-1'>Title</div>
+            <div className='col-sm-11 pl-sm-0'>
+              <Input
+                placeholder='Please enter Ratings Title *'
+                showCount
+                maxLength='100'
+                value={currentRating?.title}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setCurrentRating({ ...currentRating, title: e.target.value });
+                }}
+              />
+            </div>
+            <div className='col-12 mt-3'>
+              <div className='th-fw-600 th-black-1'>Add Questions</div>
 
-                  {currentRating?.questions?.length > 1 && (
-                    // <div className='col-1 text-center'>
+              {currentRating?.questions?.map((item, index) => {
+                return (
+                  <div className='row py-2 align-items-center'>
                     <div
                       className={`${
-                        currentRating?.questions.length > 1
-                          ? 'col-1 text-center px-0'
-                          : 'd-none'
-                      }`}
+                        currentRating?.questions.length > 1 ? 'col-11' : 'col-12'
+                      } px-0`}
                     >
-                      <CloseCircleOutlined
-                        className='th-pointer'
-                        onClick={() => handleDeleteQuestions(index)}
+                      <Input
+                        onChange={(e) => {
+                          e.preventDefault();
+                          if (e.target.value.toString().length > 500) {
+                            message.error('Title must be less than 500 character');
+                          } else {
+                            handleChangeQuestions(e.target.value, index);
+                          }
+                        }}
+                        showCount
+                        maxLength='500'
+                        className='w-100 th-br-5'
+                        value={item?.title}
+                        placeholder='Enter Question Title*'
                       />
                     </div>
-                  )}
-                </div>
-              );
-            })}
 
-            <div className='row'>
-              <div className='col-12 text-right'>
-                <Button
-                  icon={<PlusOutlined />}
-                  type='primary'
-                  className='th-br-8'
-                  onClick={handleAddQuestions}
-                >
-                  Add
-                </Button>
+                    {currentRating?.questions?.length > 1 && (
+                      // <div className='col-1 text-center'>
+                      <div
+                        className={`${
+                          currentRating?.questions.length > 1
+                            ? 'col-1 text-center px-0'
+                            : 'd-none'
+                        }`}
+                      >
+                        <CloseCircleOutlined
+                          className='th-pointer'
+                          onClick={() => handleDeleteQuestions(index)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              <div className='row'>
+                <div className='col-12 text-right'>
+                  <Button
+                    icon={<PlusOutlined />}
+                    type='primary'
+                    className='th-br-8'
+                    onClick={handleAddQuestions}
+                  >
+                    Add
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-          <div className='col-12 mt-3 mb-2'>
-            <div className='th-fw-600 th-black-1'>Add Ratings</div>
-            {currentRating?.levels?.map((item, index) => {
-              return (
-                <div className='row py-2 align-items-center'>
-                  <div
-                    className={`${
-                      currentRating?.levels?.length > 1 ? 'col-sm-9' : 'col-sm-10'
-                    } px-0 pr-sm-2`}
-                  >
-                    <Input
-                      onChange={(e) => {
-                        e.preventDefault();
-                        if (e.target.value.toString().length > 100) {
-                          message.error('Name must be less than 100 character');
-                        } else {
-                          handleChangeLevels(e.target.value, index, 'name');
-                        }
-                      }}
-                      className='w-100 th-br-5'
-                      value={item?.name}
-                      showCount
-                      maxLength='100'
-                      required
-                      placeholder='Enter Name*'
-                    />
-                  </div>
-                  {/* <div className='col-2 pr-0'> */}
-                  <div className='col-sm-2 col-6 px-0 pr-sm-0 pt-2 pt-sm-0'>
-                    <InputNumber
-                      onChange={(e) => {
-                        if (e > 99) {
-                          message.error('Score must be of 2 digit only');
-                        } else {
-                          handleChangeLevels(e, index, 'marks');
-                        }
-                      }}
-                      className='w-100 th-br-5'
-                      value={item?.marks}
-                      placeholder='Enter Marks*'
-                      type='number'
-                      maxLength={3}
-                    />
-                  </div>
-                  {currentRating?.levels?.length > 1 && (
+            <div className='col-12 mt-3'>
+              <div className='th-fw-600 th-black-1'>Add Ratings</div>
+              {currentRating?.levels?.map((item, index) => {
+                return (
+                  <div className='row py-2 align-items-center'>
                     <div
                       className={`${
-                        currentRating?.levels?.length > 1 ? 'col-1 text-center' : 'd-none'
-                      }`}
+                        currentRating?.levels?.length > 1 ? 'col-sm-9' : 'col-sm-10'
+                      } px-0 pr-sm-2`}
                     >
-                      <CloseCircleOutlined
-                        className='th-pointer'
-                        onClick={() => handleDeleteRatings(index)}
+                      <Input
+                        onChange={(e) => {
+                          e.preventDefault();
+                          if (e.target.value.toString().length > 100) {
+                            message.error('Name must be less than 100 character');
+                          } else {
+                            handleChangeLevels(e.target.value, index, 'name');
+                          }
+                        }}
+                        className='w-100 th-br-5'
+                        value={item?.name}
+                        showCount
+                        maxLength='100'
+                        required
+                        placeholder='Enter Name*'
                       />
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                    {/* <div className='col-2 pr-0'> */}
+                    <div className='col-sm-2 col-6 px-0 pr-sm-0 pt-2 pt-sm-0'>
+                      <InputNumber
+                        onChange={(e) => {
+                          if (e > 99) {
+                            message.error('Score must be of 2 digit only');
+                          } else {
+                            handleChangeLevels(e, index, 'marks');
+                          }
+                        }}
+                        className='w-100 th-br-5'
+                        value={item?.marks}
+                        placeholder='Enter Marks*'
+                        type='number'
+                        maxLength={3}
+                      />
+                    </div>
+                    {currentRating?.levels?.length > 1 && (
+                      <div
+                        className={`${
+                          currentRating?.levels?.length > 1
+                            ? 'col-1 text-center'
+                            : 'd-none'
+                        }`}
+                      >
+                        <CloseCircleOutlined
+                          className='th-pointer'
+                          onClick={() => handleDeleteRatings(index)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
 
-            <div className='row'>
-              <div className='col-12 text-right'>
-                <Button
-                  icon={<PlusOutlined />}
-                  type='primary'
-                  className='th-br-8 w-sm-20'
-                  onClick={handleAddRatings}
-                >
-                  Add
-                </Button>
+              <div className='row'>
+                <div className='col-12 text-right'>
+                  <Button
+                    icon={<PlusOutlined />}
+                    type='primary'
+                    className='th-br-8 w-sm-20'
+                    onClick={handleAddRatings}
+                  >
+                    Add
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-          {/* <div className='col-sm-1 pr-0 th-fw-600 th-black-1'>Overall</div>
+            {/* <div className='col-sm-1 pr-0 th-fw-600 th-black-1'>Overall</div>
           <div className='col-sm-11 pl-sm-0'>
             <Input
               placeholder='Please enter Overall remarks*'
@@ -728,8 +734,9 @@ const PublicSpeakingRatings = () => {
               }}
             />
           </div> */}
-          <div className='row mt-3'>
-            <div className='col-12'>
+          </div>
+          <div className='row py-3'>
+            <div className='col-12 px-sm-4'>
               <Button
                 type='primary'
                 disabled={requestSent}
