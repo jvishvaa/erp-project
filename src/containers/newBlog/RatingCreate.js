@@ -990,9 +990,9 @@ const RatingCreate = () => {
                         icon={<SnippetsOutlined className='th-14' />}
                         color='geekblue'
                         className='th-br-5 th-pointer py-1'
-                        onClick={() => history.push('/create-public-speaking-rating')}
+                        onClick={() => history.push('/create-subject-wise-rating')}
                       >
-                        <span className='th-fw-500 th-14'> Public Speaking Ratings</span>
+                        <span className='th-fw-500 th-14'> Subject Wise Ratings</span>
                       </Tag>
                     </div>
                     <div className='text-center'>

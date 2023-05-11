@@ -1837,7 +1837,7 @@ const V1Router = [
   <Route path='/user-management/create-no-academic-staff'>
     {({ match }) => <CreateNoAcademicStaff match={match} />}
   </Route>,
-  <Route path='/create-public-speaking-rating'>
+  <Route path='/create-subject-wise-rating'>
     {({ match }) => <PublicSpeakingRatings match={match} />}
   </Route>,
   //   <Route path='/pptview'>
