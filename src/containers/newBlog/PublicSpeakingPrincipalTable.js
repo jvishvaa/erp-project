@@ -137,6 +137,7 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const showBigModal = (data) => {
     if (data) {
+      setOpenBigModal(true);
       StudentCheckFun(data);
       setRowData(data);
     }
@@ -283,7 +284,7 @@ const PublicSpeakingPrincipalTable = (props) => {
           if (response?.data?.status_code == 200) {
             setStudentListData(response?.data?.result);
             setPageDetails({ ...pageDetails, total: response.data?.count });
-            setOpenBigModal(true);
+            // setOpenBigModal(true);
             setLoading(false);
           } else {
             setLoading(false);
@@ -426,10 +427,12 @@ const PublicSpeakingPrincipalTable = (props) => {
         onOk={() => {
           setOpenBigModal(false);
           setPageDetails({ ...pageDetails, current: 1 });
+          setStudentListData([]);
         }}
         onCancel={() => {
           setOpenBigModal(false);
           setPageDetails({ ...pageDetails, current: 1 });
+          setStudentListData([]);
         }}
         width={1000}
         zIndex={1000}
@@ -608,7 +611,7 @@ const PublicSpeakingPrincipalTable = (props) => {
               </Modal>
             </div>
           </div>
-          <div className='col-12'>
+          <div className='col-12 pb-2'>
             <Table
               className='th-table'
               rowClassName={(record, index) =>

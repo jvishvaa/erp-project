@@ -36,7 +36,7 @@ import axiosInstance from 'axios';
 
 const { Option } = Select;
 
-const PublicSpeakingRatings = () => {
+const SubjectWiseRatings = () => {
   const history = useHistory();
   const formRef = useRef();
   const selectedAcademicYear = useSelector(
@@ -51,7 +51,7 @@ const PublicSpeakingRatings = () => {
   const [activityUserId, setActivityUserId] = useState();
   const [gradeData, setGradeData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
-  const [publicSpeakingRatingList, setPublicSpeakingRatingsList] = useState([]);
+  const [subjectWiseRatingList, setSubjectWiseRatingsList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const [editID, setEditID] = useState();
@@ -103,8 +103,12 @@ const PublicSpeakingRatings = () => {
     });
   };
   const handleAddQuestions = () => {
-    let newRating = currentRating?.questions?.concat({ title: '' });
-    setCurrentRating({ ...currentRating, questions: newRating });
+    if (currentRating?.questions?.length < 7) {
+      let newRating = currentRating?.questions?.concat({ title: '' });
+      setCurrentRating({ ...currentRating, questions: newRating });
+    } else {
+      message.error('Please add 7 questions only!!');
+    }
   };
   const handleDeleteQuestions = (index) => {
     let newRating = currentRating?.questions?.slice();
@@ -117,8 +121,16 @@ const PublicSpeakingRatings = () => {
     setCurrentRating({ ...newRating });
   };
   const handleAddRatings = () => {
-    let newRating = currentRating?.levels?.concat({ name: '', status: false, marks: '' });
-    setCurrentRating({ ...currentRating, levels: newRating });
+    if (currentRating?.levels?.length < 10) {
+      let newRating = currentRating?.levels?.concat({
+        name: '',
+        status: false,
+        marks: '',
+      });
+      setCurrentRating({ ...currentRating, levels: newRating });
+    } else {
+      message.error('Please add 10 ratings only!!');
+    }
   };
   const handleDeleteRatings = (index) => {
     let newRating = currentRating?.levels?.slice();
@@ -169,25 +181,28 @@ const PublicSpeakingRatings = () => {
   });
   const columns = [
     {
-      title: <span className='th-white th-fw-700 '>Sl No. </span>,
-      dataIndex: 'grade_name',
+      title: <span className='th-white th-fw-700 '>Sl No.</span>,
+      width: '15%',
+      align: 'center',
       key: 'name',
       render: (text, row, index) => <span>{index + 1}.</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Grade </span>,
       dataIndex: 'grade_name',
+      width: '20%',
       key: 'name',
       align: 'center',
     },
     {
-      title: <span className='th-white th-fw-700 '>Subject </span>,
+      title: <span className='th-white th-fw-700 '>Subject</span>,
       dataIndex: 'subject_name',
       key: 'name',
       align: 'center',
+      width: '20%',
     },
     {
-      title: <span className='th-white th-fw-700 '>Rating Title </span>,
+      title: <span className='th-white th-fw-700 '>Rating Title</span>,
       dataIndex: 'erp_id',
       key: 'erp_id',
       align: 'center',
@@ -270,7 +285,7 @@ const PublicSpeakingRatings = () => {
     setRequestSent(true);
     if (editID) {
       axios
-        .post(`${endpoints.newBlog.updatePublicSpeakingRatingSchemas}`, payload, {
+        .post(`${endpoints.newBlog.updateSubjectWiseRatingSchemas}`, payload, {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
@@ -279,7 +294,7 @@ const PublicSpeakingRatings = () => {
           if (res?.data?.status_code == 200) {
             message.success('Rating updated successfully !');
             handleCloseCreateRatingModal();
-            fetchPublicSpeakingRatingsList();
+            fetchSubjectWiseRatingsList();
             setEditID();
           } else {
             message.error('Update failed. Please try again !');
@@ -291,7 +306,7 @@ const PublicSpeakingRatings = () => {
         });
     } else {
       axios
-        .post(`${endpoints.newBlog.createPublicSpeakingRatingSchemas}`, payload, {
+        .post(`${endpoints.newBlog.createSubjectWiseRatingSchemas}`, payload, {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
@@ -300,7 +315,7 @@ const PublicSpeakingRatings = () => {
           if (res?.data?.status_code == 200) {
             message.success('Rating created successfully !');
             handleCloseCreateRatingModal();
-            fetchPublicSpeakingRatingsList();
+            fetchSubjectWiseRatingsList();
           } else if (res?.data?.status_code == 400) {
             message.error(res?.data?.message);
           } else {
@@ -316,14 +331,14 @@ const PublicSpeakingRatings = () => {
 
   const handleDeleteScheme = (id) => {
     axios
-      .delete(`${endpoints.newBlog.deletePublicSpeakingRatingSchemas}${id}/`, {
+      .delete(`${endpoints.newBlog.deleteSubjectWiseRatingSchemas}${id}/`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          fetchPublicSpeakingRatingsList();
+          fetchSubjectWiseRatingsList();
         }
       })
       .catch((error) => {
@@ -391,10 +406,10 @@ const PublicSpeakingRatings = () => {
       });
   };
 
-  const fetchPublicSpeakingRatingsList = (params = {}) => {
+  const fetchSubjectWiseRatingsList = (params = {}) => {
     setLoading(true);
     axios
-      .get(`${endpoints.newBlog.publicSpeakingRatingSchemas}`, {
+      .get(`${endpoints.newBlog.subjectWiseRatingSchemas}`, {
         params: { ...params },
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
@@ -402,7 +417,7 @@ const PublicSpeakingRatings = () => {
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          setPublicSpeakingRatingsList(res?.data?.result);
+          setSubjectWiseRatingsList(res?.data?.result);
         }
       })
       .catch((err) => message.error(err?.message))
@@ -444,7 +459,7 @@ const PublicSpeakingRatings = () => {
         }
       });
     }
-    fetchPublicSpeakingRatingsList();
+    fetchSubjectWiseRatingsList();
     getActivitySession();
   }, []);
   useEffect(() => {
@@ -471,7 +486,7 @@ const PublicSpeakingRatings = () => {
               Create rating
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black th-16'>
-              Public Speaking Ratings
+              Subject Wise Ratings
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -499,14 +514,14 @@ const PublicSpeakingRatings = () => {
                 scroll={{ y: '50vh' }}
                 loading={loading}
                 columns={columns}
-                dataSource={publicSpeakingRatingList}
+                dataSource={subjectWiseRatingList}
               />
             </div>
           </div>
         </div>
       </div>
       <Modal
-        title='Create Public Speaking Rating'
+        title={`${editID ? 'Update' : 'Create'} Subject Wise Rating`}
         centered
         visible={showCreateratingModal}
         footer={null}
@@ -547,7 +562,7 @@ const PublicSpeakingRatings = () => {
                       </Select>
                     </Form.Item>
                   </div>
-                  <div className='col-sm-3'>
+                  <div className='col-sm-3 pr-sm-0'>
                     <div className='mb-2 text-left th-fw-500'>Subject</div>
                     <Form.Item name='subject'>
                       <Select
@@ -578,7 +593,7 @@ const PublicSpeakingRatings = () => {
               <Input
                 placeholder='Please enter Ratings Title *'
                 showCount
-                maxLength='100'
+                maxLength='75'
                 value={currentRating?.title}
                 onChange={(e) => {
                   e.preventDefault();
@@ -600,14 +615,16 @@ const PublicSpeakingRatings = () => {
                       <Input
                         onChange={(e) => {
                           e.preventDefault();
-                          if (e.target.value.toString().length > 500) {
-                            message.error('Title must be less than 500 character');
+                          if (e.target.value.toString().length > 75) {
+                            message.error(
+                              'Question Title must be less than 75 character'
+                            );
                           } else {
                             handleChangeQuestions(e.target.value, index);
                           }
                         }}
                         showCount
-                        maxLength='500'
+                        maxLength='75'
                         className='w-100 th-br-5'
                         value={item?.title}
                         placeholder='Enter Question Title*'
@@ -634,7 +651,7 @@ const PublicSpeakingRatings = () => {
               })}
 
               <div className='row'>
-                <div className='col-12 text-right'>
+                <div className='col-12 text-right pr-sm-0'>
                   <Button
                     icon={<PlusOutlined />}
                     type='primary'
@@ -668,7 +685,7 @@ const PublicSpeakingRatings = () => {
                         className='w-100 th-br-5'
                         value={item?.name}
                         showCount
-                        maxLength='100'
+                        maxLength='75'
                         required
                         placeholder='Enter Name*'
                       />
@@ -677,7 +694,7 @@ const PublicSpeakingRatings = () => {
                     <div className='col-sm-2 col-6 px-0 pr-sm-0 pt-2 pt-sm-0'>
                       <InputNumber
                         onChange={(e) => {
-                          if (e > 99) {
+                          if (e > 99 || e.toString().length > 2) {
                             message.error('Score must be of 2 digit only');
                           } else {
                             handleChangeLevels(e, index, 'marks');
@@ -709,7 +726,7 @@ const PublicSpeakingRatings = () => {
               })}
 
               <div className='row'>
-                <div className='col-12 text-right'>
+                <div className='col-12 text-right pr-sm-0'>
                   <Button
                     icon={<PlusOutlined />}
                     type='primary'
@@ -753,4 +770,4 @@ const PublicSpeakingRatings = () => {
   );
 };
 
-export default PublicSpeakingRatings;
+export default SubjectWiseRatings;
