@@ -18,18 +18,13 @@ import {
 import {
   DeleteOutlined,
   PlusOutlined,
-  AuditOutlined,
-  CheckCircleOutlined,
   CloseCircleOutlined,
   EditFilled,
-  StopOutlined,
-  QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import axiosInstance from 'axios';
@@ -664,7 +659,7 @@ const SubjectWiseRatings = () => {
               </div>
             </div>
             <div className='col-12 mt-3'>
-              <div className='th-fw-600 th-black-1'>Add Ratings</div>
+              <div className='th-fw-600 th-black-1'>Add Options & Marks</div>
               {currentRating?.levels?.map((item, index) => {
                 return (
                   <div className='row py-2 align-items-center'>
@@ -676,8 +671,8 @@ const SubjectWiseRatings = () => {
                       <Input
                         onChange={(e) => {
                           e.preventDefault();
-                          if (e.target.value.toString().length > 100) {
-                            message.error('Name must be less than 100 character');
+                          if (e.target.value.toString().length > 40) {
+                            message.error('Option name must be less than 40 character');
                           } else {
                             handleChangeLevels(e.target.value, index, 'name');
                           }
@@ -687,7 +682,7 @@ const SubjectWiseRatings = () => {
                         showCount
                         maxLength='40'
                         required
-                        placeholder='Enter Name*'
+                        placeholder='Enter Option Name*'
                       />
                     </div>
                     {/* <div className='col-2 pr-0'> */}

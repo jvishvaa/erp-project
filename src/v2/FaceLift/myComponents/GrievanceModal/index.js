@@ -11,6 +11,7 @@ const GrievanceModal = (props) => {
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [description, setDescription] = useState('');
   const [attachment, setAttachment] = useState();
+  const [resquestSent, setResquestSent] = useState(false);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const formRef = createRef();
   const selectedBranch = useSelector(
@@ -59,6 +60,7 @@ const GrievanceModal = (props) => {
       if (attachment) {
         payload.append('file', attachment);
       }
+      setResquestSent(true);
       axios
         .post(`${endpoints.grievances.grievanceTicket}`, payload)
         .then((res) => {
@@ -76,6 +78,9 @@ const GrievanceModal = (props) => {
         })
         .catch((error) => {
           message.error(error.message);
+        })
+        .finally(() => {
+          setResquestSent(false);
         });
     } else {
       message.error('Please enter description!');
@@ -102,6 +107,7 @@ const GrievanceModal = (props) => {
               htmlType='submit'
               className='text-center th-br-10 th-bg-primary th-white'
               onClick={handleSubmit}
+              disabled={resquestSent}
             >
               <strong>Submit</strong>
             </Button>
