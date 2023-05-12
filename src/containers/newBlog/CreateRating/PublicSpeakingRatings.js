@@ -593,7 +593,7 @@ const SubjectWiseRatings = () => {
               <Input
                 placeholder='Please enter Ratings Title *'
                 showCount
-                maxLength='75'
+                maxLength='40'
                 value={currentRating?.title}
                 onChange={(e) => {
                   e.preventDefault();
@@ -615,16 +615,16 @@ const SubjectWiseRatings = () => {
                       <Input
                         onChange={(e) => {
                           e.preventDefault();
-                          if (e.target.value.toString().length > 75) {
+                          if (e.target.value.toString().length > 40) {
                             message.error(
-                              'Question Title must be less than 75 character'
+                              'Question Title must be less than 40 character'
                             );
                           } else {
                             handleChangeQuestions(e.target.value, index);
                           }
                         }}
                         showCount
-                        maxLength='75'
+                        maxLength='40'
                         className='w-100 th-br-5'
                         value={item?.title}
                         placeholder='Enter Question Title*'
@@ -685,7 +685,7 @@ const SubjectWiseRatings = () => {
                         className='w-100 th-br-5'
                         value={item?.name}
                         showCount
-                        maxLength='75'
+                        maxLength='40'
                         required
                         placeholder='Enter Name*'
                       />

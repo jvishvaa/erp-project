@@ -151,6 +151,7 @@ const PublicSpeakingPrincipalTable = (props) => {
     {
       title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
       align: 'left',
+      width: '50%',
       render: (text, row) => {
         return row.criterion;
       },
@@ -158,6 +159,7 @@ const PublicSpeakingPrincipalTable = (props) => {
     {
       title: <span className='th-white th-fw-600'>Remarks</span>,
       align: 'center',
+      width: '50%',
       render: (text, row) => row?.levels?.filter((item) => item.status == true)[0].name,
     },
   ];
@@ -519,7 +521,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                                   rowClassName={(record, index) =>
                                     index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                                   }
-                                  scroll={{ x: 'max-content' }}
+                                  scroll={{ y: 400 }}
                                 />
                               </div>
                             </div>
