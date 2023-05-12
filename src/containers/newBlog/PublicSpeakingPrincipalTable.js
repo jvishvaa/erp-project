@@ -219,7 +219,9 @@ const PublicSpeakingPrincipalTable = (props) => {
           props?.selectedSubject
         }&offset=${0}&finished=${'True'}&start_date=${props?.startDate}&end_date=${
           props?.endDate
-        }&page=${currentPageAssigned}&page_size=${limitAssigned}`,
+        }&page=${currentPageAssigned}&page_size=${limitAssigned}&user_id=${
+          props?.activityUserId
+        }`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
