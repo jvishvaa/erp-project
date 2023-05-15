@@ -20,6 +20,7 @@ import {
   PlusOutlined,
   CloseCircleOutlined,
   EditFilled,
+  SearchOutlined,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
@@ -53,6 +54,11 @@ const SubjectWiseRatings = () => {
   const [selectedGrade, setSelectedGrade] = useState();
   const [selectedSubject, setSelectedSubject] = useState();
   const [showCreateratingModal, setShowCreateratingModal] = useState(false);
+  const [filteredGrade, setFilteredGrade] = useState(false);
+  const [pageDetails, setPageDetails] = useState({
+    total: null,
+    current: 1,
+  });
   const [currentRating, setCurrentRating] = useState({
     title: '',
     questions: [
@@ -138,6 +144,15 @@ const SubjectWiseRatings = () => {
     setCurrentRating({ ...newRating });
   };
 
+  const handleFilterGrade = (e) => {
+    if (e) {
+      setFilteredGrade(e);
+    } else {
+      setFilteredGrade();
+      setPageDetails({ ...pageDetails, current: 1 });
+      fetchSubjectWiseRatingsList({ page: 1 });
+    }
+  };
   const handleGrade = (e) => {
     formRef.current.setFieldsValue({
       subject: null,
@@ -180,7 +195,9 @@ const SubjectWiseRatings = () => {
       width: '15%',
       align: 'center',
       key: 'name',
-      render: (text, row, index) => <span>{index + 1}.</span>,
+      render: (text, row, index) => (
+        <span>{(pageDetails.current - 1) * 10 + index + 1}.</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700 '>Grade </span>,
@@ -289,7 +306,7 @@ const SubjectWiseRatings = () => {
           if (res?.data?.status_code == 200) {
             message.success('Rating updated successfully !');
             handleCloseCreateRatingModal();
-            fetchSubjectWiseRatingsList();
+            fetchSubjectWiseRatingsList({ page: pageDetails?.current });
             setEditID();
           } else {
             message.error('Update failed. Please try again !');
@@ -310,7 +327,7 @@ const SubjectWiseRatings = () => {
           if (res?.data?.status_code == 200) {
             message.success('Rating created successfully !');
             handleCloseCreateRatingModal();
-            fetchSubjectWiseRatingsList();
+            fetchSubjectWiseRatingsList({ page: 1 });
           } else if (res?.data?.status_code == 400) {
             message.error(res?.data?.message);
           } else {
@@ -333,7 +350,7 @@ const SubjectWiseRatings = () => {
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          fetchSubjectWiseRatingsList();
+          fetchSubjectWiseRatingsList({ page: pageDetails?.current });
         }
       })
       .catch((error) => {
@@ -405,7 +422,11 @@ const SubjectWiseRatings = () => {
     setLoading(true);
     axios
       .get(`${endpoints.newBlog.subjectWiseRatingSchemas}`, {
-        params: { ...params },
+        params: {
+          ...params,
+          // page: pageDetails?.current,
+          // ...(filteredGrade ? { grade_id: filteredGrade } : {}),
+        },
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -413,6 +434,7 @@ const SubjectWiseRatings = () => {
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setSubjectWiseRatingsList(res?.data?.result);
+          setPageDetails({ ...pageDetails, total: res.data?.count });
         }
       })
       .catch((err) => message.error(err?.message))
@@ -454,9 +476,22 @@ const SubjectWiseRatings = () => {
         }
       });
     }
-    fetchSubjectWiseRatingsList();
     getActivitySession();
   }, []);
+  console.log('pageDetails', pageDetails?.current);
+  useEffect(() => {
+    if (filteredGrade) {
+      fetchSubjectWiseRatingsList({
+        page: pageDetails?.current,
+        grade_id: filteredGrade,
+      });
+    } else {
+      fetchSubjectWiseRatingsList({
+        page: pageDetails?.current,
+      });
+    }
+  }, [pageDetails?.current]);
+
   useEffect(() => {
     fetchGradeList();
   }, [moduleId]);
@@ -485,9 +520,39 @@ const SubjectWiseRatings = () => {
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <div className='col-12 mt-3'>
-          <div className='row th-bg-white th-br-5 '>
-            <div className='col-12 p-3 text-right'>
+        <div className='col-12 mt-3 th-bg-white'>
+          <div className='row th-br-5 align-items-center pt-3'>
+            <div className='col-3'>
+              <Select
+                allowClear
+                placeholder={'Select Grade'}
+                showSearch
+                optionFilterProp='children'
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                onChange={(e) => {
+                  handleFilterGrade(e);
+                }}
+                className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+              >
+                {gradeOptions}
+              </Select>
+            </div>
+            <div className='col-4 text-left'>
+              <Button
+                type='primary'
+                icon={<SearchOutlined />}
+                className='th-br-8'
+                onClick={() => {
+                  // handleShowCreateRatingModal();
+                  setPageDetails({ ...pageDetails, current: 1 });
+                }}
+              >
+                Search
+              </Button>
+            </div>
+            <div className='col-5 px-3 text-right'>
               <Button
                 type='primary'
                 icon={<PlusOutlined />}
@@ -496,16 +561,28 @@ const SubjectWiseRatings = () => {
                   handleShowCreateRatingModal();
                 }}
               >
-                Creating New Rating
+                Create New Rating
               </Button>
             </div>
+          </div>
+          <div className='row mt-3'>
             <div className='col-12'>
               <Table
                 className='th-table'
                 rowClassName={(record, index) =>
                   `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                 }
-                pagination={false}
+                pagination={{
+                  total: pageDetails.total,
+                  current: pageDetails.current,
+                  pageSize: 10,
+                  showSizeChanger: false,
+                  onChange: (page) => {
+                    console.log({ page });
+                    setPageDetails({ ...pageDetails, current: page });
+                  },
+                  limit: 20,
+                }}
                 scroll={{ y: '50vh' }}
                 loading={loading}
                 columns={columns}
