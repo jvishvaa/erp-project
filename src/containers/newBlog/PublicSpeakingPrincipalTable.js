@@ -476,7 +476,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                 width={'80vw'}
               >
                 <div>
-                  <div className='row p-3'>
+                  <div className='row p-3' style={{ height: '80vh', overflowY: 'auto' }}>
                     {/* <div
                       className={
                         mediaFiles?.signed_URL
