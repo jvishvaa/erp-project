@@ -27,7 +27,7 @@ import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
+import _, { isNumber } from 'lodash';
 import axiosInstance from 'axios';
 
 const { Option } = Select;
@@ -257,8 +257,12 @@ const SubjectWiseRatings = () => {
     const isQuestionsNull = currentRating?.questions?.filter(function (el) {
       return el?.title?.trim() == '';
     });
-    const isRatingsNull = currentRating?.levels?.filter(function (el) {
-      return el?.marks == null || el?.name?.trim() == '';
+
+    const isRatingsNameNull = currentRating?.levels?.filter(function (el) {
+      return el?.name?.trim() == '';
+    });
+    const isMarksNotNumber = currentRating?.levels?.filter(function (el) {
+      return isNaN(el?.marks) || el?.marks == null;
     });
 
     if (!currentRating?.title?.trim().length) {
@@ -269,8 +273,12 @@ const SubjectWiseRatings = () => {
       message.error('Questions can not be empty');
       return;
     }
-    if (isRatingsNull?.length > 0) {
-      message.error('Name and marks can not be empty in Ratings');
+    if (isMarksNotNumber?.length > 0) {
+      message.error('Marks in Ratings must be a number');
+      return;
+    }
+    if (isRatingsNameNull?.length > 0) {
+      message.error('Name can not be empty in Ratings');
       return;
     }
 
@@ -587,7 +595,6 @@ const SubjectWiseRatings = () => {
                   pageSize: 10,
                   showSizeChanger: false,
                   onChange: (page) => {
-                    console.log({ page });
                     setPageDetails({ ...pageDetails, current: page });
                   },
                   limit: 20,
