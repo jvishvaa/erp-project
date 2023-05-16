@@ -387,11 +387,6 @@ const PublicSpeakingPrincipalTable = (props) => {
           </p>
         </div>
         <div className='col-12'>
-          {/* {loadingBig ? (
-            <div className='d-flex justify-content-center py-5'>
-              <Spin size='medium' tip='Loading...' />{' '}
-            </div>
-          ) : null} */}
           {totalSubmitted?.length > 0 ? (
             <Table
               className='th-table'
@@ -464,28 +459,10 @@ const PublicSpeakingPrincipalTable = (props) => {
                 destroyOnClose={true}
                 footer={false}
                 onCancel={() => setVisibleVideo(false)}
-                // width={
-                //   window.innerWidth < 600
-                //     ? '95vw'
-                //     : mediaFiles?.signed_URL
-                //     ? permissionState === 'graded'
-                //       ? '70vw'
-                //       : '40vw'
-                //     : '60vw'
-                // }
                 width={'80vw'}
               >
                 <div>
                   <div className='row p-3' style={{ height: '80vh', overflowY: 'auto' }}>
-                    {/* <div
-                      className={
-                        mediaFiles?.signed_URL
-                          ? permissionState === 'graded'
-                            ? 'col-md-7'
-                            : 'col-md-12'
-                          : 'd-none'
-                      }
-                    > */}
                     <div className='col-md-7'>
                       <video
                         src={mediaFiles?.signed_URL}

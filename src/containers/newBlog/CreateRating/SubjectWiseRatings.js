@@ -54,7 +54,7 @@ const SubjectWiseRatings = () => {
   const [selectedGrade, setSelectedGrade] = useState();
   const [selectedSubject, setSelectedSubject] = useState();
   const [showCreateratingModal, setShowCreateratingModal] = useState(false);
-  const [filteredGrade, setFilteredGrade] = useState(false);
+  const [filteredGrade, setFilteredGrade] = useState();
   const [pageDetails, setPageDetails] = useState({
     total: null,
     current: 1,
@@ -148,11 +148,10 @@ const SubjectWiseRatings = () => {
     if (e) {
       setFilteredGrade(e);
     } else {
-      setFilteredGrade();
-      setPageDetails({ ...pageDetails, current: 1 });
-      fetchSubjectWiseRatingsList({ page: 1 });
+      setFilteredGrade(null);
     }
   };
+
   const handleGrade = (e) => {
     formRef.current.setFieldsValue({
       subject: null,
@@ -418,14 +417,13 @@ const SubjectWiseRatings = () => {
       });
   };
 
-  const fetchSubjectWiseRatingsList = (params = {}) => {
+  const fetchSubjectWiseRatingsList = async (params = {}) => {
     setLoading(true);
-    axios
+    await axios
       .get(`${endpoints.newBlog.subjectWiseRatingSchemas}`, {
         params: {
           ...params,
-          // page: pageDetails?.current,
-          // ...(filteredGrade ? { grade_id: filteredGrade } : {}),
+          ...(filteredGrade !== null ? { grade_id: filteredGrade } : {}),
         },
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
@@ -478,19 +476,24 @@ const SubjectWiseRatings = () => {
     }
     getActivitySession();
   }, []);
-  console.log('pageDetails', pageDetails?.current);
+
   useEffect(() => {
-    if (filteredGrade) {
-      fetchSubjectWiseRatingsList({
-        page: pageDetails?.current,
-        grade_id: filteredGrade,
-      });
-    } else {
-      fetchSubjectWiseRatingsList({
-        page: pageDetails?.current,
-      });
-    }
+    fetchSubjectWiseRatingsList({
+      page: pageDetails?.current,
+    });
   }, [pageDetails?.current]);
+
+  useEffect(() => {
+    if (filteredGrade == null) {
+      setTimeout(() => {
+        if (pageDetails.current == 1) {
+          fetchSubjectWiseRatingsList({ page: 1 });
+        } else {
+          setPageDetails({ ...pageDetails, current: 1 });
+        }
+      }, 100);
+    }
+  }, [filteredGrade]);
 
   useEffect(() => {
     fetchGradeList();
@@ -543,10 +546,16 @@ const SubjectWiseRatings = () => {
               <Button
                 type='primary'
                 icon={<SearchOutlined />}
+                disabled={!filteredGrade}
                 className='th-br-8'
                 onClick={() => {
-                  // handleShowCreateRatingModal();
-                  setPageDetails({ ...pageDetails, current: 1 });
+                  if (pageDetails.current == 1) {
+                    if (filteredGrade) {
+                      fetchSubjectWiseRatingsList({ page: 1 });
+                    }
+                  } else {
+                    setPageDetails({ ...pageDetails, current: 1 });
+                  }
                 }}
               >
                 Search
@@ -768,6 +777,8 @@ const SubjectWiseRatings = () => {
                         onChange={(e) => {
                           if (e > 99 || e.toString().length > 2) {
                             message.error('Score must be of 2 digit only');
+                          } else if (e < 0) {
+                            message.error('Score can not be negative');
                           } else {
                             handleChangeLevels(e, index, 'marks');
                           }
@@ -777,6 +788,7 @@ const SubjectWiseRatings = () => {
                         placeholder='Enter Marks*'
                         type='number'
                         maxLength={3}
+                        min={0}
                       />
                     </div>
                     {currentRating?.levels?.length > 1 && (
