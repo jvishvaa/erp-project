@@ -166,9 +166,7 @@ const PeriodListView = () => {
   const closeQpDrawer = () => {
     setLoadingDrawer(true);
     setIsPeriodView(true);
-    setTimeout(() => {
-      setLoadingDrawer(false);
-    }, 1000);
+    setLoadingDrawer(false);
   };
 
   const showModal = () => {
@@ -1583,7 +1581,7 @@ const PeriodListView = () => {
                                             // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
                                             onClick={() =>
                                               downloadMaterial(
-                                                `${endpoints.lessonPlan.bucket}/${files?.media_file}`,
+                                                `${endpoints.homework.resourcesFiles}/${each}`,
                                                 `${files.document_type}_${file}`
                                               )
                                             }
