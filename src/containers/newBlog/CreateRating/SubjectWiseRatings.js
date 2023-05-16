@@ -102,6 +102,7 @@ const SubjectWiseRatings = () => {
         },
       ],
     });
+    setEditID();
   };
   const handleAddQuestions = () => {
     if (currentRating?.questions?.length < 7) {
