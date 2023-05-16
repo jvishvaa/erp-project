@@ -1008,6 +1008,10 @@ export default {
     criteriaTitleList:`${newBlogURL}/api/activity_types_criteria/`,
     criteriaDelete: `${newBlogURL}/api/activity_type_scheme_delete/`,
     getActivityTypesApi: `${newBlogURL}/api/get_activity_types/`,
+    getIndividualActivity: `${newBlogURL}/api/get_ps_activities/`,
+    getPublicSpeakingStudents: `${newBlogURL}/api/ps_activity_data/`,
+    getPublicSpeakingVideos: `${newBlogURL}/api/participation/`,
+    getStudentPublicView :`${newBlogURL}/api/ps_submissions_data/`,
 },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

@@ -131,6 +131,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [upcomingAssessment, setUpcomingAssessment] = useState([]);
   const [activityData, setActivityData] = useState([]);
   const [requestSent, setRequestSent] = useState(false);
+
   const questionModify = (questions) => {
     let arr = [];
     questions.map((question) => {
