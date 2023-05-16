@@ -258,7 +258,7 @@ const SubjectWiseRatings = () => {
       return el?.title?.trim() == '';
     });
     const isRatingsNull = currentRating?.levels?.filter(function (el) {
-      return el?.marks == '' || el?.name?.trim() == '';
+      return el?.marks == null || el?.name?.trim() == '';
     });
 
     if (!currentRating?.title?.trim().length) {
@@ -775,7 +775,7 @@ const SubjectWiseRatings = () => {
                     <div className='col-sm-2 col-6 px-0 pr-sm-0 pt-2 pt-sm-0'>
                       <InputNumber
                         onChange={(e) => {
-                          if (e > 99 || e.toString().length > 2) {
+                          if (e > 99 || e?.toString().length > 2) {
                             message.error('Score must be of 2 digit only');
                           } else if (e < 0) {
                             message.error('Score can not be negative');
