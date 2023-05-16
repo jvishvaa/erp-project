@@ -80,6 +80,7 @@ deploy_qa:
     only:
       - qa
 
+
 code_analysis:
   stage: deploy
   script:
