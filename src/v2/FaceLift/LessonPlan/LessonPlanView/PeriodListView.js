@@ -60,6 +60,7 @@ import { saveAs } from 'file-saver';
 import QuestionPaperView from './QuestionPaperView';
 import { addQuestionPaperToTest } from 'redux/actions';
 import { connect } from 'react-redux';
+import ASSIGNTEST from './../../../Assets/images/assigntest.png';
 const { Option } = Select;
 
 const PeriodListView = ({ initAddQuestionPaperToTest }) => {
@@ -173,7 +174,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   };
 
   const handleAssign = (files) => {
-    console.log(files,[resourcesData?.central_grade_subject_map_id], 'period');
+    // console.log(files,[resourcesData?.central_grade_subject_map_id], 'period');
     const obj = {
       is_central: true,
       id: files?.question_paper_id,
@@ -181,10 +182,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       grade: files?.grade_id,
       total_marks: files?.total_marks,
       grade_subject_mapping: [resourcesData?.central_grade_subject_map_id],
-      subjects: [resourcesData?.central_grade_subject_map_id]
+      subjects: [resourcesData?.central_grade_subject_map_id],
     };
     initAddQuestionPaperToTest(obj);
-    console.log(obj , 'obj');
+    // console.log(obj, 'obj');
     history.push('/create-assesment');
   };
 
@@ -1663,7 +1664,31 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                     {files.question_paper_name}
                                   </p>
                                 </div>
-                                <div className='col-3'>
+                                <div className='col-1'>
+                                  <a
+                                    onClick={() => openQpDrawer(files.question_paper_id)}
+                                    rel='noopener noreferrer'
+                                    target='_blank'
+                                    title='View Quiz'
+                                  >
+                                    <EyeFilled />
+                                  </a>
+                                </div>
+                                <div className='col-1'>
+                                  <a
+                                    onClick={() => handleAssign(files)}
+                                    rel='noopener noreferrer'
+                                    target='_blank'
+                                    title='Assign Test'
+                                  >
+                                    <img
+                                      title='Assign Test'
+                                      src={ASSIGNTEST}
+                                      alt='Assign Test'
+                                    />
+                                  </a>
+                                </div>
+                                {/* <div className='col-3'>
                                   <Button
                                     type='primary'
                                     className='th-br-4'
@@ -1671,21 +1696,24 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                   >
                                     View
                                   </Button>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           </div>
-                          <div className='row justify-content-end mt-3'>
-                            <div className='col-md-5 text-right' style={{marginRight: '-15px'}}>
+                          {/* <div className='row justify-content-end mt-3'>
+                            <div
+                              className='col-md-5 text-right'
+                              style={{ marginRight: '-15px' }}
+                            >
                               <Button
                                 type='primary'
                                 className='th-br-4 btn-sm'
                                 onClick={() => handleAssign(files)}
                               >
-                               <PlusCircleOutlined /> Assign Test
+                                <PlusCircleOutlined /> Assign Test
                               </Button>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       ) : null}
                     </>
