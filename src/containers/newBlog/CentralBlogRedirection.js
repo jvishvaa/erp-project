@@ -9,7 +9,7 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { Breadcrumb, Tabs, Spin, Button } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import {RightCircleOutlined} from '@ant-design/icons';
+import { RightCircleOutlined, ReconciliationOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import moment from 'moment';
 import { getActivityIcon } from 'v2/generalActivityFunction';
@@ -276,11 +276,20 @@ const CentralBlogRedirection = () => {
     getActivitySession();
     ActvityLocalStorage();
   }, []);
+
+  const handleRedirect = () => {
+    history.push({
+      pathname: '/principal-dashboard-activity',
+      // state: {
+      //   src: src
+      // }
+    });
+  };
   return (
     <Layout>
       {''}
       <div className='row px-2'>
-        <div className='col-md-8' style={{ zIndex: 2 }}>
+        <div className='col-md-10' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
             <Breadcrumb.Item href='/dashboard' className='th-grey th-18'>
               Dashboard
@@ -289,6 +298,15 @@ const CentralBlogRedirection = () => {
               Activities Management
             </Breadcrumb.Item>
           </Breadcrumb>
+        </div>
+        <div className='col-md-2 text-center'>
+          <Button
+            className='th-button-active th-br-6 text-truncate th-pointer '
+            onClick={() => handleRedirect()}
+            icon={<ReconciliationOutlined />}
+          >
+            Report
+          </Button>
         </div>
         <div className='row th-bg-white th-br-5 m-3'>
           {loading ? (
