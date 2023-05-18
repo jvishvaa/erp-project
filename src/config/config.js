@@ -70,7 +70,7 @@ const qa = {
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
-    baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
+    baseURLCentral: 'https://mgmt.qa.letseduvate.com/qbox',
     baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.qa.letseduvate.com',
