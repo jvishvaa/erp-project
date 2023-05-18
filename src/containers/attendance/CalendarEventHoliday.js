@@ -296,12 +296,12 @@ const CalendarV2 = () => {
       setSelectedBranch([]);
       setSelectedSession([]);
     } else {
-      if (!selectedBranch.includes(value)) {
+      if (!selectedBranch?.includes(value)) {
         setSelectedBranch([...selectedBranch, Number(value)]);
         getGrades([...selectedBranch, Number(value)]);
       }
-      if (selectedBranch.includes(value)) {
-        let arrayy = selectedBranch.filter((item) => item !== value);
+      if (selectedBranch?.includes(value)) {
+        let arrayy = selectedBranch?.filter((item) => item !== value);
         setSelectedBranch(arrayy);
         getGrades(arrayy);
       }
@@ -325,8 +325,8 @@ const CalendarV2 = () => {
     });
     setHolidays([]);
     setEvents([]);
-    const index = selectedBranch.indexOf(each?.value);
-    const newBranchList = selectedBranch.slice();
+    const index = selectedBranch?.indexOf(each?.value);
+    const newBranchList = selectedBranch?.slice();
     newBranchList.splice(index, 1);
     setSelectedBranch(newBranchList);
     if (newBranchList?.length > 0) {
@@ -385,7 +385,9 @@ const CalendarV2 = () => {
   };
 
   const filterData = () => {
-    let branches = branchList.filter((item) => selectedBranch.includes(item?.branch?.id));
+    let branches = branchList.filter((item) =>
+      selectedBranch?.includes(item?.branch?.id)
+    );
     let acad_session = branches?.map((item) => item?.id);
     if (segment == 1) {
       if (
@@ -401,7 +403,7 @@ const CalendarV2 = () => {
           grade: selectedGrade,
           start_date: startDate,
           end_date: endDate,
-          branch_id: selectedBranch.toString(),
+          branch_id: selectedBranch?.toString(),
         });
       }
     } else {
@@ -421,7 +423,7 @@ const CalendarV2 = () => {
           end_date: endDate,
           level: user_level,
           event_category: selectedCategory,
-          branch_id: selectedBranch.toString(),
+          branch_id: selectedBranch?.toString(),
         });
       }
     }
