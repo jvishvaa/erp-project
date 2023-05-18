@@ -681,6 +681,7 @@ const TableView = ({showTab, initAddQuestionPaperToTest}) => {
       total_marks: files?.total_marks,
       grade_subject_mapping: [subject_mapping],
       subjects: [subject_mapping],
+      is_question_wise: files?.is_question_wise,
     };
     initAddQuestionPaperToTest(obj);
     // console.log(obj, 'obj');
