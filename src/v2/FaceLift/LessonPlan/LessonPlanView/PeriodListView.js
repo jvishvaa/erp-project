@@ -174,7 +174,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   };
 
   const handleAssign = (files) => {
-    // console.log(files,[resourcesData?.central_grade_subject_map_id], 'period');
+    // console.log(files, 'period');
     const obj = {
       is_central: true,
       id: files?.question_paper_id,
@@ -183,6 +183,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       total_marks: files?.total_marks,
       grade_subject_mapping: [resourcesData?.central_grade_subject_map_id],
       subjects: [resourcesData?.central_grade_subject_map_id],
+      is_question_wise: files?.is_question_wise,
     };
     initAddQuestionPaperToTest(obj);
     // console.log(obj, 'obj');
