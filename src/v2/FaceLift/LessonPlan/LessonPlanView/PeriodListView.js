@@ -27,6 +27,7 @@ import {
   FilePptOutlined,
   DownloadOutlined,
   FileUnknownOutlined,
+  PlusCircleOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import axios2 from 'axios';
@@ -57,9 +58,12 @@ import EbookList from './viewEbooks';
 import IbookList from './viewIbooks';
 import { saveAs } from 'file-saver';
 import QuestionPaperView from './QuestionPaperView';
+import { addQuestionPaperToTest } from 'redux/actions';
+import { connect } from 'react-redux';
+import ASSIGNTEST from './../../../Assets/images/assigntest.png';
 const { Option } = Select;
 
-const PeriodListView = () => {
+const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const formRef = createRef();
   const myRef = useRef();
@@ -166,9 +170,24 @@ const PeriodListView = () => {
   const closeQpDrawer = () => {
     setLoadingDrawer(true);
     setIsPeriodView(true);
-    setTimeout(() => {
-      setLoadingDrawer(false);
-    }, 1000);
+    setLoadingDrawer(false);
+  };
+
+  const handleAssign = (files) => {
+    // console.log(files, 'period');
+    const obj = {
+      is_central: true,
+      id: files?.question_paper_id,
+      section: files?.section,
+      grade: files?.grade_id,
+      total_marks: files?.total_marks,
+      grade_subject_mapping: [resourcesData?.central_grade_subject_map_id],
+      subjects: [resourcesData?.central_grade_subject_map_id],
+      is_question_wise: files?.is_question_wise,
+    };
+    initAddQuestionPaperToTest(obj);
+    // console.log(obj, 'obj');
+    history.push('/create-assesment');
   };
 
   const showModal = () => {
@@ -1583,7 +1602,7 @@ const PeriodListView = () => {
                                             // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
                                             onClick={() =>
                                               downloadMaterial(
-                                                `${endpoints.lessonPlan.bucket}/${files?.media_file}`,
+                                                `${endpoints.homework.resourcesFiles}/${each}`,
                                                 `${files.document_type}_${file}`
                                               )
                                             }
@@ -1646,7 +1665,31 @@ const PeriodListView = () => {
                                     {files.question_paper_name}
                                   </p>
                                 </div>
-                                <div className='col-3'>
+                                <div className='col-1'>
+                                  <a
+                                    onClick={() => openQpDrawer(files.question_paper_id)}
+                                    rel='noopener noreferrer'
+                                    target='_blank'
+                                    title='View Quiz'
+                                  >
+                                    <EyeFilled />
+                                  </a>
+                                </div>
+                                <div className='col-1'>
+                                  <a
+                                    onClick={() => handleAssign(files)}
+                                    rel='noopener noreferrer'
+                                    target='_blank'
+                                    title='Assign Test'
+                                  >
+                                    <img
+                                      title='Assign Test'
+                                      src={ASSIGNTEST}
+                                      alt='Assign Test'
+                                    />
+                                  </a>
+                                </div>
+                                {/* <div className='col-3'>
                                   <Button
                                     type='primary'
                                     className='th-br-4'
@@ -1654,10 +1697,24 @@ const PeriodListView = () => {
                                   >
                                     View
                                   </Button>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           </div>
+                          {/* <div className='row justify-content-end mt-3'>
+                            <div
+                              className='col-md-5 text-right'
+                              style={{ marginRight: '-15px' }}
+                            >
+                              <Button
+                                type='primary'
+                                className='th-br-4 btn-sm'
+                                onClick={() => handleAssign(files)}
+                              >
+                                <PlusCircleOutlined /> Assign Test
+                              </Button>
+                            </div>
+                          </div> */}
                         </div>
                       ) : null}
                     </>
@@ -1944,4 +2001,10 @@ const PeriodListView = () => {
   );
 };
 
-export default PeriodListView;
+const mapDispatchToProps = (dispatch) => ({
+  initAddQuestionPaperToTest: (data) => dispatch(addQuestionPaperToTest(data)),
+});
+
+export default connect(null, mapDispatchToProps)(PeriodListView);
+
+// export default PeriodListView;
