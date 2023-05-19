@@ -88,11 +88,14 @@ const QuestionCard = ({
   grade,
   branch,
   subject,
+  isCentralHomework,
+  periodData,
 }) => {
   const classes = useStyles();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  console.log({ isCentralHomework });
   let sessionYear;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -155,6 +158,13 @@ const QuestionCard = ({
       setpentool(question.penTool);
       setmaxAttachment(question.max_attachment);
       setEnableAttachments(question.is_attachment_enable);
+      if (isCentralHomework) {
+        console.log({ periodData });
+        fetchResources({
+          chapter: periodData[index]?.chapterID,
+          topic_id: periodData[index]?.keyConceptID,
+        });
+      }
     }
   }, [question.question, question.attachments]);
 
@@ -362,14 +372,13 @@ const QuestionCard = ({
   const handleResourcesDrawerClose = () => {
     setShowDrawer(false);
   };
-  const fetchResources = () => {
-    if (!selectedChapter && !selectedTopic) {
+  const fetchResources = (params = {}) => {
+    if (!selectedChapter && !selectedTopic & !isCentralHomework) {
       setAlert('error', 'Please Select All Filters');
     } else {
       axiosInstance
-        .get(
-          `academic/get-period-resources/?chapter=${selectedChapterID}&topic_id=${selectedTopicID}`
-        )
+        // ?chapter=${selectedChapterID}&topic_id=${selectedTopicID}`
+        .get(`academic/get-period-resources/`, { params: { ...params } })
         .then((result) => {
           if (result?.data?.status === 200) {
             setResourcesData(result?.data?.data);
@@ -573,7 +582,7 @@ const QuestionCard = ({
         <DialogTitle color='primary'>Attachments</DialogTitle>
         <DialogContent style={{ maxHeight: '60vh', overflow: 'auto' }}>
           <Grid container>
-            {attachmentPreviews.map((preview, index) => (
+            {attachmentPreviews?.map((preview, index) => (
               <Grid item md='4' spacing={2}>
                 <IconButton onClick={() => removeAttachment(index)}>
                   <CancelIcon style={{ width: '25px' }} className='disabled-icon' />
@@ -605,7 +614,12 @@ const QuestionCard = ({
                       id='question'
                       name='question'
                       onChange={(e) => {
-                        if (!window.location.pathname.includes('/diary/')) {
+                        if (
+                          window.location.pathname.includes('/diary/') ||
+                          isCentralHomework
+                        ) {
+                          return;
+                        } else {
                           setquestionData(e.target.value);
                         }
                       }}
@@ -650,7 +664,7 @@ const QuestionCard = ({
                             title='Attach files'
                           >
                             <Badge
-                              badgeContent={attachmentPreviews.length}
+                              badgeContent={attachmentPreviews?.length}
                               color='primary'
                             >
                               <AttachFileIcon color='primary' />
@@ -667,7 +681,7 @@ const QuestionCard = ({
                   </Grid>
                 )}
               </Grid>
-              {attachmentPreviews.length > 0 && (
+              {attachmentPreviews?.length > 0 && (
                 <Grid item xs={12} className='attachments-grid'>
                   <div className='attachments-list-outer-container'>
                     <div className='prev-btn'>
@@ -685,7 +699,7 @@ const QuestionCard = ({
                           e.preventDefault();
                         }}
                       >
-                        {attachmentPreviews.map((url, pdfindex) => {
+                        {attachmentPreviews?.map((url, pdfindex) => {
                           let cindex = 0;
                           attachmentPreviews.forEach((item, index) => {
                             if (index < pdfindex) {
@@ -989,145 +1003,156 @@ const QuestionCard = ({
         style={{ overflowY: 'scroll', height: '80vh' }}
         className='th-resourcesDrawer'
       >
-        <Grid container spacing={5} className='resourcesDrawer' style={{ width: '100%' }}>
-          <Grid item xs={12} sm={4}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(e, value) => handleVolume(value)}
-              id='volume'
-              className='dropdownIcon'
-              value={selectedVolume}
-              options={volumeListData || []}
-              getOptionLabel={(option) => option?.volume_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Volume'
-                  placeholder='Volume'
-                  required
-                />
-              )}
-            />
-          </Grid>
-          {boardFilterArr.includes(window.location.host) && (
+        {!isCentralHomework && (
+          <Grid
+            container
+            spacing={5}
+            className='resourcesDrawer'
+            style={{ width: '100%' }}
+          >
             <Grid item xs={12} sm={4}>
               <Autocomplete
-                multiple
                 style={{ width: '100%' }}
                 size='small'
-                onChange={(e, value) => handleBoard(value)}
-                id='board'
+                onChange={(e, value) => handleVolume(value)}
+                id='volume'
                 className='dropdownIcon'
-                value={selectedBoards || []}
-                options={boardListData || []}
-                getOptionLabel={(option) => option?.board_name || ''}
-                // filterSelectedOptions
-                getOptionSelected={(option, value) => option?.id == value?.id}
+                value={selectedVolume}
+                options={volumeListData || []}
+                getOptionLabel={(option) => option?.volume_name || ''}
+                filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     variant='outlined'
-                    label='Board'
-                    placeholder='Board'
+                    label='Volume'
+                    placeholder='Volume'
                     required
                   />
                 )}
               />
             </Grid>
-          )}
-          <Grid item xs={12} sm={4}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(e, value) => handleModule(value)}
-              id='module'
-              className='dropdownIcon'
-              value={selectedModule || []}
-              options={moduleListData || []}
-              getOptionLabel={(option) => option?.lt_module_name || ''}
-              filterSelectedOptions
-              // getOptionSelected={(option, value) =>
-              //     option?.id == value?.id
-              //   }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Module'
-                  placeholder='Module'
-                  required
+            {boardFilterArr.includes(window.location.host) && (
+              <Grid item xs={12} sm={4}>
+                <Autocomplete
+                  multiple
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={(e, value) => handleBoard(value)}
+                  id='board'
+                  className='dropdownIcon'
+                  value={selectedBoards || []}
+                  options={boardListData || []}
+                  getOptionLabel={(option) => option?.board_name || ''}
+                  // filterSelectedOptions
+                  getOptionSelected={(option, value) => option?.id == value?.id}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Board'
+                      placeholder='Board'
+                      required
+                    />
+                  )}
                 />
-              )}
-            />
+              </Grid>
+            )}
+            <Grid item xs={12} sm={4}>
+              <Autocomplete
+                // multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(e, value) => handleModule(value)}
+                id='module'
+                className='dropdownIcon'
+                value={selectedModule || []}
+                options={moduleListData || []}
+                getOptionLabel={(option) => option?.lt_module_name || ''}
+                filterSelectedOptions
+                // getOptionSelected={(option, value) =>
+                //     option?.id == value?.id
+                //   }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Module'
+                    placeholder='Module'
+                    required
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(e, value) => handleChapter(value)}
+                id='chapter'
+                className='dropdownIcon'
+                value={selectedChapter || ''}
+                options={chapterListData || []}
+                getOptionLabel={(option) => option?.chapter_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Chapter'
+                    placeholder='Chapter'
+                    required
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(e, value) => handleKeyConcept(value)}
+                id='keyConcept'
+                className='dropdownIcon'
+                value={selectedTopic || ''}
+                options={topicListData || []}
+                getOptionLabel={(option) => option?.topic_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='KeyConcept'
+                    placeholder='KeyConcept'
+                    required
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Button
+                variant='contained'
+                color='primary'
+                startIcon={<SearchIcon />}
+                onClick={() => {
+                  fetchResources({
+                    chapter: selectedChapterID,
+                    topic_id: selectedTopicID,
+                  });
+                }}
+                title='Filter'
+              >
+                Filter
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(e, value) => handleChapter(value)}
-              id='chapter'
-              className='dropdownIcon'
-              value={selectedChapter || ''}
-              options={chapterListData || []}
-              getOptionLabel={(option) => option?.chapter_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Chapter'
-                  placeholder='Chapter'
-                  required
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(e, value) => handleKeyConcept(value)}
-              id='keyConcept'
-              className='dropdownIcon'
-              value={selectedTopic || ''}
-              options={topicListData || []}
-              getOptionLabel={(option) => option?.topic_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='KeyConcept'
-                  placeholder='KeyConcept'
-                  required
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Button
-              variant='contained'
-              color='primary'
-              startIcon={<SearchIcon />}
-              onClick={() => {
-                fetchResources();
-              }}
-              title='Filter'
-            >
-              Filter
-            </Button>
-          </Grid>
-        </Grid>
+        )}
         <Grid
           container
           style={{
             overflowY: 'scroll',
             overflowX: 'hidden',
-            maxHeight: window.innerWidth < 768 ? '30vh' : '50vh',
+            height:
+              window.innerWidth < 768 ? '50vh' : isCentralHomework ? '70vh' : '50vh',
             marginTop: 20,
           }}
         >

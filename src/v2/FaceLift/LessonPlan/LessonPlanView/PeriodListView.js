@@ -27,6 +27,7 @@ import {
   FilePptOutlined,
   DownloadOutlined,
   FileUnknownOutlined,
+  PlusCircleFilled,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import axios2 from 'axios';
@@ -117,6 +118,8 @@ const PeriodListView = () => {
 
   const [isPeriodView, setIsPeriodView] = useState(true);
   const [questionData, setQuestionData] = useState([]);
+
+  const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState([]);
 
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
@@ -586,8 +589,10 @@ const PeriodListView = () => {
           .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
-              if (!sectionsCompletedSuccess.includes(section?.section__section_name)) {
-                sectionsCompletedSuccess.push(section?.section__section_name);
+              if (
+                !sectionsCompletedSuccess?.map((item) => item?.id).includes(section?.id)
+              ) {
+                sectionsCompletedSuccess.push(section);
               }
               setSectionsCompleted(sectionsCompletedSuccess);
               if (index == completeSections?.length - 1) {
@@ -613,7 +618,7 @@ const PeriodListView = () => {
             }
           })
           .catch((error) => {
-            message.error(error.response.data.message);
+            message.error(error?.response?.data?.message);
           })
           .finally(() => {
             setLoadingDrawer(false);
@@ -717,6 +722,29 @@ const PeriodListView = () => {
   useEffect(() => {
     fetchVolumeListData();
   }, [window.location.pathname]);
+
+  const fetchAllowAutoDiaryStatus = () => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=hw_auto_asgn`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setAllowAutoAssignDiary(true);
+          } else {
+            setAllowAutoAssignDiary(false);
+          }
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        message.error('error', error?.message);
+      });
+  };
+  useEffect(() => {
+    fetchAllowAutoDiaryStatus();
+  }, [selectedBranch]);
 
   useEffect(() => {
     if (myRef.current) executeScroll();
@@ -1579,11 +1607,10 @@ const PeriodListView = () => {
                                         <div className='col-1'>
                                           <a
                                             rel='noopener noreferrer'
-                                            target='_blank'
-                                            // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
+                                            target='_self'
                                             onClick={() =>
                                               downloadMaterial(
-                                                `${endpoints.lessonPlan.bucket}/${files?.media_file}`,
+                                                `${endpoints.homework.resourcesFiles}/${each}`,
                                                 `${files.document_type}_${file}`
                                               )
                                             }
@@ -1711,84 +1738,136 @@ const PeriodListView = () => {
                         </div>
                       </div>
                     )}
-                    {showSection && (
-                      <div className='row' style={{ border: '1px solid #d9d9d9' }}>
-                        {resourcesData?.section_wise_completion?.map((each, i) => (
-                          <div className='col-2 p-2'>
-                            {each.is_completed ? (
-                              <Button disabled>
-                                {each?.section__section_name.slice(-1).toUpperCase()}
-                              </Button>
-                            ) : (
-                              <Button
-                                type={
-                                  completeSections.includes(each) ? 'primary' : 'default'
-                                }
-                                onClick={() => {
-                                  if (completeSections.includes(each)) {
-                                    const index = completeSections.indexOf(each);
-                                    const newFileList = completeSections.slice();
-                                    newFileList.splice(index, 1);
-                                    setCompleteSections(newFileList);
-                                  } else {
-                                    setCompleteSections([...completeSections, each]);
+                    {showSection && allowAutoAssignDiary && (
+                      <>
+                        <div className='row' style={{ border: '1px solid #d9d9d9' }}>
+                          {resourcesData?.section_wise_completion?.map((each, i) => (
+                            <div className='col-2 p-2'>
+                              {each.is_completed ? (
+                                <Button disabled>
+                                  {each?.section__section_name.slice(-1).toUpperCase()}
+                                </Button>
+                              ) : (
+                                <Button
+                                  type={
+                                    completeSections.includes(each)
+                                      ? 'primary'
+                                      : 'default'
                                   }
-                                }}
-                              >
-                                {each?.section__section_name.slice(-1).toUpperCase()}
-                              </Button>
-                            )}
-                          </div>
-                        ))}
+                                  onClick={() => {
+                                    if (completeSections.includes(each)) {
+                                      const index = completeSections.indexOf(each);
+                                      const newFileList = completeSections.slice();
+                                      newFileList.splice(index, 1);
+                                      setCompleteSections(newFileList);
+                                    } else {
+                                      setCompleteSections([...completeSections, each]);
+                                    }
+                                  }}
+                                >
+                                  {each?.section__section_name.slice(-1).toUpperCase()}
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                          <div
+                            className='row justify-content-end py-2 mt-2 text-center'
+                            style={{ borderTop: '1px solid #d9d9d9' }}
+                          >
+                            <div className='d-flex'>
+                              {completeSections?.length > 0 && (
+                                <div
+                                  className='th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                  onClick={() => setCompleteSections([])}
+                                >
+                                  Clear
+                                </div>
+                              )}
 
+                              {resourcesData?.section_wise_completion?.filter(
+                                (item) => item.is_completed
+                              )?.length ===
+                              resourcesData?.section_wise_completion?.length ? (
+                                <div
+                                  className='th-white p-2 mx-2 th-br-6'
+                                  style={{
+                                    background: '#8dadff',
+                                    cursor: 'not-allowed',
+                                  }}
+                                >
+                                  Update
+                                </div>
+                              ) : (
+                                <div
+                                  className='th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
+                                  onClick={() => {
+                                    markPeriodComplete(resourcesData);
+                                  }}
+                                >
+                                  Update
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {showError && completeSections?.length < 1 && (
+                            <div className='th-red'>
+                              Please select at least one section first!
+                            </div>
+                          )}
+                          <div className='row th-black-2 mt-2 '>
+                            <div className='col-12 th-grey pl-2 th-12'>
+                              Last Updated {getTimeInterval(resourcesData?.updated_at)}
+                            </div>
+                          </div>
+                        </div>
                         <div
-                          className='row justify-content-end py-2 mt-2 text-center'
-                          style={{ borderTop: '1px solid #d9d9d9' }}
+                          className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'
+                          onClick={() => {
+                            if (completeSections?.length > 0) {
+                              message.error(
+                                'Please update the status of selected sections first!!'
+                              );
+                            } else {
+                              if (
+                                resourcesData?.section_wise_completion?.filter(
+                                  (item) => item?.is_completed == true
+                                )?.length > 0
+                              ) {
+                                history.push({
+                                  pathname: '/create/diary',
+                                  state: {
+                                    periodData: {
+                                      subjectID: subjectId,
+                                      subjectName: subjectName,
+                                      gradeID: gradeId,
+                                      gradeName,
+                                      volumeID: volumeId,
+                                      periodID: resourcesData?.id,
+                                      sections:
+                                        resourcesData?.section_wise_completion?.filter(
+                                          (item) => item?.is_completed == true
+                                        ),
+                                      chapterID: chapterId,
+                                      chapterName: resourcesData?.chapter_name,
+                                      keyConceptID: drawerData?.key_concept_id,
+                                      keyConceptName: resourcesData?.topic_name,
+                                      board: boardId,
+                                    },
+                                    isDiaryAutoAssign: true,
+                                  },
+                                });
+                              } else {
+                                message.error(
+                                  'Please update the desired sections first!!'
+                                );
+                              }
+                            }
+                          }}
                         >
-                          {completeSections?.length > 0 && (
-                            <div
-                              className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
-                              style={{ border: '1px solid #d9d9d9' }}
-                              onClick={() => setCompleteSections([])}
-                            >
-                              Clear
-                            </div>
-                          )}
-
-                          {resourcesData?.section_wise_completion?.filter(
-                            (item) => item.is_completed
-                          )?.length === resourcesData?.section_wise_completion?.length ? (
-                            <div
-                              className='col-3 th-white p-2 mx-2 th-br-6'
-                              style={{
-                                background: '#8dadff',
-                                cursor: 'not-allowed',
-                              }}
-                            >
-                              Update
-                            </div>
-                          ) : (
-                            <div
-                              className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
-                              onClick={() => {
-                                markPeriodComplete(resourcesData);
-                              }}
-                            >
-                              Update
-                            </div>
-                          )}
+                          <PlusCircleFilled className='mr-2' /> Add HW & Diary
                         </div>
-                        {showError && completeSections?.length < 1 && (
-                          <div className='th-red'>
-                            Please select at least one section first!
-                          </div>
-                        )}
-                        <div className='row th-black-2 mt-2 '>
-                          <div className='col-12 th-grey pl-2 th-12'>
-                            Last Updated {getTimeInterval(resourcesData?.updated_at)}
-                          </div>
-                        </div>
-                      </div>
+                      </>
                     )}
                   </div>
                 </div>
@@ -1888,7 +1967,9 @@ const PeriodListView = () => {
                   {sectionsCompleted?.length > 1 ? 'Sections' : 'Section'}&nbsp;
                   <span className='th-black-1 th-fw-600 '>
                     {sectionsCompleted
-                      ?.map((item) => item.slice(-1).toUpperCase())
+                      ?.map((item) =>
+                        item?.section__section_name?.slice(-1).toUpperCase()
+                      )
                       .join(', ')}
                   </span>
                 </div>
@@ -1937,15 +2018,37 @@ const PeriodListView = () => {
                 </div>
               </div>
             ) : null}
-            <div className='col-12 text-center'>
-              <Button
-                type='default'
-                // onClick={handleNextPeriodResource}
-                className='my-1 th-primary th-bg-grey th-br-8'
-              >
-                Assign Diary & Homework
-              </Button>
-            </div>
+            {allowAutoAssignDiary && (
+              <div className='col-12 text-center'>
+                <div
+                  className='th-bg-primary th-white p-2 mt-2 text-center th-br-6 th-pointer th-br-8'
+                  onClick={() => {
+                    history.push({
+                      pathname: '/create/diary',
+                      state: {
+                        periodData: {
+                          subjectID: subjectId,
+                          subjectName: subjectName,
+                          gradeID: gradeId,
+                          gradeName,
+                          volumeID: volumeId,
+                          periodID: resourcesData?.id,
+                          sections: sectionsCompleted,
+                          chapterID: chapterId,
+                          chapterName: resourcesData?.chapter_name,
+                          keyConceptID: drawerData?.key_concept_id,
+                          keyConceptName: resourcesData?.topic_name,
+                          board: boardId,
+                        },
+                        isDiaryAutoAssign: true,
+                      },
+                    });
+                  }}
+                >
+                  <PlusCircleFilled className='mr-2' /> Add HW & Diary
+                </div>
+              </div>
+            )}
           </div>
         </Modal>
       </div>
