@@ -327,7 +327,7 @@ export const AssessmentHandlerContextProvider = ({
     const { question_paper_id: quesPaperId, assessment_id: testId } = params || {};
     if (!quesPaperId) {
       // eslint-disable-next-line no-alert
-      window.alert('param not fed');
+      // window.alert('param not fed');
       return null;
     }
     const APIEndpointURL =

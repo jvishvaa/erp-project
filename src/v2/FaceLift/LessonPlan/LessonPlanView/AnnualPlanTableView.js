@@ -1373,7 +1373,7 @@ const TableView = ({showTab, initAddQuestionPaperToTest}) => {
                                             // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
                                             onClick={() =>
                                               downloadMaterial(
-                                                `${endpoints.lessonPlan.bucket}/${files?.media_file}`,
+                                                `${endpoints.lessonPlan.bucket}/${each}`,
                                                 `${files.document_type}_${file}`
                                               )
                                             }

@@ -133,7 +133,7 @@ export const AssessmentAnalysisContextProvider = ({ children, ...restProps }) =>
     const { user, assessment_id: assessmentId } = params || {};
     if (!user || !assessmentId) {
       // eslint-disable-next-line no-alert
-      window.alert('param not fed');
+      // window.alert('param not fed');
       return null;
     }
     const dataProp = {
