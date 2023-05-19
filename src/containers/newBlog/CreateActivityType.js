@@ -9,7 +9,11 @@ import { useTheme } from '@material-ui/core/styles';
 import './styles.scss';
 import endpoints from '../../config/endpoints';
 import { Input, Button, Breadcrumb, Table, Tag, message, Popconfirm } from 'antd';
-import { CheckCircleOutlined, DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  DeleteOutlined,
+  QuestionCircleOutlined,
+} from '@ant-design/icons';
 
 const CreateActivityType = () => {
   const themeContext = useTheme();
@@ -299,15 +303,15 @@ const CreateActivityType = () => {
           },
         })
         .then((response) => {
-          if(response?.data?.status_code === 200){
+          if (response?.data?.status_code === 200) {
             message.success(response?.data?.message);
             getActivityCategory();
             setLoading(false);
             return;
-          }else{
+          } else {
             message.error(response?.data?.message);
             getActivityCategory();
-            setLoading(false)
+            setLoading(false);
           }
         })
         .catch((err) => {
