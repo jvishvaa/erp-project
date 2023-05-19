@@ -9,7 +9,7 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { Breadcrumb, Tabs, Spin, Button } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import {RightCircleOutlined} from '@ant-design/icons';
+import { RightCircleOutlined, ReconciliationOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import moment from 'moment';
 import { getActivityIcon } from 'v2/generalActivityFunction';
@@ -276,6 +276,15 @@ const CentralBlogRedirection = () => {
     getActivitySession();
     ActvityLocalStorage();
   }, []);
+
+  const handleRedirect = () => {
+    history.push({
+      pathname: '/principal-dashboard-activity',
+      // state: {
+      //   src: src
+      // }
+    });
+  };
   return (
     <Layout>
       {''}
