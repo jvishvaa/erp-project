@@ -249,7 +249,6 @@ const CreateActivityType = () => {
             return;
           } else {
             setActivityType('');
-            setSubActivityType('');
             setAccordianBulkFilter(false);
             getActivityCategory();
             message.success('Activity Created Successfully');
@@ -343,7 +342,6 @@ const CreateActivityType = () => {
               <Input
                 placeholder='Enter Activity Type'
                 type='text'
-                value={ActivityType}
                 onChange={(e) => setActivityType(e.target.value)}
               />
             </div>
