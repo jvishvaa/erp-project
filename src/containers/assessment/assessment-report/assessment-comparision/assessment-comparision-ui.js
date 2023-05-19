@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useContext } from 'react';
+import React, {useState , useEffect , useContext } from 'react';
 import { makeStyles, Button, Grid, Box, Paper, Divider } from '@material-ui/core';
 import Loading from 'components/loader/loader';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
@@ -34,8 +34,27 @@ const useStyles = makeStyles(() => ({
 
 const TestComparisionUI = () => {
   const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Take Test') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
   // const user = 20;
-  const moduleId = 112;
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const {
@@ -98,7 +117,7 @@ const TestComparisionUI = () => {
   React.useEffect(() => {
     fetchUserSubjects({ module_id: moduleId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [moduleId]);
 
   React.useEffect(() => {
     const { subject_id: selectedSubjectId } = subjectSelected || {};
