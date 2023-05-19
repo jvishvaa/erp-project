@@ -56,7 +56,8 @@ const { RangePicker } = DatePicker;
 const columns = [
   {
     title: <span className='th-white pl-sm-0 th-fw-600'>Criteria</span>,
-    align: 'center',
+    align: 'left',
+    width: '50%',
     render: (text, row) => {
       return row?.criterion;
     },
@@ -64,6 +65,7 @@ const columns = [
   {
     title: <span className='th-white th-fw-600'>Remarks</span>,
     align: 'center',
+    width: '50%',
     render: (text, row) => row?.levels?.filter((item) => item?.status == true)[0]?.name,
   },
 ];
@@ -356,41 +358,41 @@ const BlogWall = () => {
     if (showTab == 1) {
       fetchPostWall({
         user_id: userId,
-        session_year:selectedAcademicYear?.session_year,
+        session_year: selectedAcademicYear?.session_year,
       });
     } else if (showTab == 2) {
       fetchPostWall({
         publish_level: 'Intra Orchids Level',
         user_id: userId,
-        session_year:selectedAcademicYear?.session_year,
+        session_year: selectedAcademicYear?.session_year,
       });
     } else if (showTab == 3) {
       fetchPostWall({
         publish_level: 'Branch Level',
         user_id: userId,
         branch_ids: selectedBranch?.branch?.id,
-        session_year:selectedAcademicYear?.session_year,
+        session_year: selectedAcademicYear?.session_year,
       });
     } else if (showTab == 4) {
       fetchPostWall({
         publish_level: 'Grade Level',
         branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
-        session_year:selectedAcademicYear?.session_year,
+        session_year: selectedAcademicYear?.session_year,
       });
     } else if (showTab == 5) {
       fetchPostWall({
         is_best_blog: 'true',
         user_id: userId,
         branch_ids: selectedBranch?.branch?.id,
-        session_year:selectedAcademicYear?.session_year,
+        session_year: selectedAcademicYear?.session_year,
       });
     } else if (showTab == 6) {
       fetchPostWall({
         publish_level: 'Section Level',
         branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
-        session_year:selectedAcademicYear?.session_year,
+        session_year: selectedAcademicYear?.session_year,
       });
     }
   };
@@ -1458,7 +1460,7 @@ const BlogWall = () => {
                             rowClassName={(record, index) =>
                               index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                             }
-                            scroll={{ x: 'max-content' }}
+                            scroll={{ y: '400px' }}
                           />
                         ) : (
                           ''

@@ -476,7 +476,7 @@ import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
 import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
 import PrincipalDashboardTableActivity from 'containers/newBlog/PrincipalDashboardTableActivity';
-import PublicSpeakingRatings from 'containers/newBlog/CreateRating/PublicSpeakingRatings';
+import SubjectWiseRatings from 'containers/newBlog/CreateRating/SubjectWiseRatings';
 // import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
@@ -1837,8 +1837,8 @@ const V1Router = [
   <Route path='/user-management/create-no-academic-staff'>
     {({ match }) => <CreateNoAcademicStaff match={match} />}
   </Route>,
-  <Route path='/create-public-speaking-rating'>
-    {({ match }) => <PublicSpeakingRatings match={match} />}
+  <Route path='/create-subject-wise-rating'>
+    {({ match }) => <SubjectWiseRatings match={match} />}
   </Route>,
   //   <Route path='/pptview'>
   //   {({ match }) => <PPTView match={match} />}

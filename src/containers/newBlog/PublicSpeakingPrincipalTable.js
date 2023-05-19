@@ -137,6 +137,7 @@ const PublicSpeakingPrincipalTable = (props) => {
 
   const showBigModal = (data) => {
     if (data) {
+      setOpenBigModal(true);
       StudentCheckFun(data);
       setRowData(data);
     }
@@ -150,6 +151,7 @@ const PublicSpeakingPrincipalTable = (props) => {
     {
       title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
       align: 'left',
+      width: '50%',
       render: (text, row) => {
         return row.criterion;
       },
@@ -157,6 +159,7 @@ const PublicSpeakingPrincipalTable = (props) => {
     {
       title: <span className='th-white th-fw-600'>Remarks</span>,
       align: 'center',
+      width: '50%',
       render: (text, row) => row?.levels?.filter((item) => item.status == true)[0].name,
     },
   ];
@@ -216,7 +219,9 @@ const PublicSpeakingPrincipalTable = (props) => {
           props?.selectedSubject
         }&offset=${0}&finished=${'True'}&start_date=${props?.startDate}&end_date=${
           props?.endDate
-        }&page=${currentPageAssigned}&page_size=${limitAssigned}`,
+        }&page=${currentPageAssigned}&page_size=${limitAssigned}&user_id=${
+          props?.activityUserId
+        }`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -283,7 +288,7 @@ const PublicSpeakingPrincipalTable = (props) => {
           if (response?.data?.status_code == 200) {
             setStudentListData(response?.data?.result);
             setPageDetails({ ...pageDetails, total: response.data?.count });
-            setOpenBigModal(true);
+            // setOpenBigModal(true);
             setLoading(false);
           } else {
             setLoading(false);
@@ -382,11 +387,6 @@ const PublicSpeakingPrincipalTable = (props) => {
           </p>
         </div>
         <div className='col-12'>
-          {/* {loadingBig ? (
-            <div className='d-flex justify-content-center py-5'>
-              <Spin size='medium' tip='Loading...' />{' '}
-            </div>
-          ) : null} */}
           {totalSubmitted?.length > 0 ? (
             <Table
               className='th-table'
@@ -426,10 +426,12 @@ const PublicSpeakingPrincipalTable = (props) => {
         onOk={() => {
           setOpenBigModal(false);
           setPageDetails({ ...pageDetails, current: 1 });
+          setStudentListData([]);
         }}
         onCancel={() => {
           setOpenBigModal(false);
           setPageDetails({ ...pageDetails, current: 1 });
+          setStudentListData([]);
         }}
         width={1000}
         zIndex={1000}
@@ -457,28 +459,10 @@ const PublicSpeakingPrincipalTable = (props) => {
                 destroyOnClose={true}
                 footer={false}
                 onCancel={() => setVisibleVideo(false)}
-                // width={
-                //   window.innerWidth < 600
-                //     ? '95vw'
-                //     : mediaFiles?.signed_URL
-                //     ? permissionState === 'graded'
-                //       ? '70vw'
-                //       : '40vw'
-                //     : '60vw'
-                // }
                 width={'80vw'}
               >
                 <div>
-                  <div className='row p-3'>
-                    {/* <div
-                      className={
-                        mediaFiles?.signed_URL
-                          ? permissionState === 'graded'
-                            ? 'col-md-7'
-                            : 'col-md-12'
-                          : 'd-none'
-                      }
-                    > */}
+                  <div className='row p-3' style={{ height: '80vh', overflowY: 'auto' }}>
                     <div className='col-md-7'>
                       <video
                         src={mediaFiles?.signed_URL}
@@ -516,7 +500,7 @@ const PublicSpeakingPrincipalTable = (props) => {
                                   rowClassName={(record, index) =>
                                     index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                                   }
-                                  scroll={{ x: 'max-content' }}
+                                  scroll={{ y: 400 }}
                                 />
                               </div>
                             </div>
@@ -608,7 +592,7 @@ const PublicSpeakingPrincipalTable = (props) => {
               </Modal>
             </div>
           </div>
-          <div className='col-12'>
+          <div className='col-12 pb-2'>
             <Table
               className='th-table'
               rowClassName={(record, index) =>

@@ -131,14 +131,20 @@ const StudentSidePublicSpeaking = () => {
     {
       title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>Criteria</span>,
       align: 'left',
+      width: '50%',
       render: (text, row) => {
-        return row.criterion;
+        return <div className='word-wrap'>{row.criterion}</div>;
       },
     },
     {
       title: <span className='th-white th-fw-600'>Remarks</span>,
       align: 'center',
-      render: (text, row) => row?.levels?.filter((item) => item.status == true)[0].name,
+      width: '50%',
+      render: (text, row) => (
+        <div className='word-wrap'>
+          {row?.levels?.filter((item) => item.status == true)[0].name}
+        </div>
+      ),
     },
   ];
 
@@ -203,7 +209,13 @@ const StudentSidePublicSpeaking = () => {
             destroyOnClose={true}
             visible={showDrawer}
             width={
-              window.innerWidth < 600 ? '95vw' : mediaFiles?.signed_URL ?  permissionState === 'graded' ? '70vw' : '40vw' : '35vw'
+              window.innerWidth < 600
+                ? '95vw'
+                : mediaFiles?.signed_URL
+                ? permissionState === 'graded'
+                  ? '70vw'
+                  : '40vw'
+                : '35vw'
             }
             closable={false}
             className='th-activity-drawer'
@@ -215,7 +227,15 @@ const StudentSidePublicSpeaking = () => {
           >
             <div>
               <div className='row'>
-                <div className={mediaFiles?.signed_URL ? permissionState === 'graded' ? 'col-md-7' : 'col-md-12' : 'd-none'}>
+                <div
+                  className={
+                    mediaFiles?.signed_URL
+                      ? permissionState === 'graded'
+                        ? 'col-md-7'
+                        : 'col-md-12'
+                      : 'd-none'
+                  }
+                >
                   <video
                     src={mediaFiles?.signed_URL}
                     controls
@@ -247,16 +267,14 @@ const StudentSidePublicSpeaking = () => {
                               rowClassName={(record, index) =>
                                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                               }
-                              scroll={{ x: 'max-content' }}
+                              scroll={{ y: '400px' }}
                             />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                ) : (
-                  null
-                )}
+                ) : null}
               </div>
             </div>
           </Drawer>

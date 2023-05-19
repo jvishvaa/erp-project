@@ -14,6 +14,7 @@ import { DownOutlined } from '@ant-design/icons';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
+import axiosInstance from 'axios';
 import { useHistory } from 'react-router-dom';
 import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -24,6 +25,7 @@ const PrincipalDashboardTableActivity = () => {
   const formRef = createRef();
   const [value, setValue] = React.useState(0);
   const localActivityData = JSON.parse(localStorage.getItem('ActivityData')) || {};
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const subLocalActivityData = localStorage.getItem('VisualActivityId')
     ? JSON.parse(localStorage.getItem('VisualActivityId'))
     : '';
@@ -65,6 +67,7 @@ const PrincipalDashboardTableActivity = () => {
   const [subjectName, setSubjectName] = useState([]);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+  const [activityUserId, setActivityUserId] = useState();
   const { RangePicker } = DatePicker;
   const dateFormat = 'YYYY/MM/DD';
 
@@ -190,8 +193,28 @@ const PrincipalDashboardTableActivity = () => {
     setGradeId('');
   };
 
+  const getActivitySession = () => {
+    axiosInstance
+      .post(
+        `${endpoints.newBlog.activitySessionLogin}`,
+        {},
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+            Authorization: `${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setActivityUserId(response?.data?.result?.user_id);
+        }
+      });
+  };
+
   useEffect(() => {
     fetchGrades();
+    getActivitySession();
   }, []);
 
   const fetchGrades = () => {
@@ -378,23 +401,26 @@ const PrincipalDashboardTableActivity = () => {
             </div>
             <div className='row'>
               <div className='col-12 px-0'>
-                <PublicSpeakingPrincipalTable
-                  style={{ border: '1px solid red' }}
-                  selectedBranch={selectedBranchGlobal?.branch?.id}
-                  selectedBoardName={selectedBranchGlobal?.branch?.branch_name}
-                  setValue={setValue}
-                  value={value}
-                  handleChange={handleChange}
-                  selectedGrade={gradeId}
-                  selectedGradeName={gradeName}
-                  selectedSubject={subjectId}
-                  setSubjectName={subjectName}
-                  flag={flag}
-                  setFlag={setFlag}
-                  loading={loading}
-                  startDate={startDate}
-                  endDate={endDate}
-                />
+                {activityUserId && (
+                  <PublicSpeakingPrincipalTable
+                    style={{ border: '1px solid red' }}
+                    selectedBranch={selectedBranchGlobal?.branch?.id}
+                    selectedBoardName={selectedBranchGlobal?.branch?.branch_name}
+                    setValue={setValue}
+                    value={value}
+                    handleChange={handleChange}
+                    selectedGrade={gradeId}
+                    selectedGradeName={gradeName}
+                    selectedSubject={subjectId}
+                    setSubjectName={subjectName}
+                    flag={flag}
+                    setFlag={setFlag}
+                    loading={loading}
+                    startDate={startDate}
+                    endDate={endDate}
+                    activityUserId={activityUserId}
+                  />
+                )}
               </div>
             </div>
           </div>

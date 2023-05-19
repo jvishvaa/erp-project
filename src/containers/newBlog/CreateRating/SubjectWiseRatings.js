@@ -18,25 +18,21 @@ import {
 import {
   DeleteOutlined,
   PlusOutlined,
-  AuditOutlined,
-  CheckCircleOutlined,
   CloseCircleOutlined,
   EditFilled,
-  StopOutlined,
-  QuestionCircleOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
-import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
+import _, { isNumber } from 'lodash';
 import axiosInstance from 'axios';
 
 const { Option } = Select;
 
-const PublicSpeakingRatings = () => {
+const SubjectWiseRatings = () => {
   const history = useHistory();
   const formRef = useRef();
   const selectedAcademicYear = useSelector(
@@ -51,13 +47,18 @@ const PublicSpeakingRatings = () => {
   const [activityUserId, setActivityUserId] = useState();
   const [gradeData, setGradeData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
-  const [publicSpeakingRatingList, setPublicSpeakingRatingsList] = useState([]);
+  const [subjectWiseRatingList, setSubjectWiseRatingsList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const [editID, setEditID] = useState();
   const [selectedGrade, setSelectedGrade] = useState();
   const [selectedSubject, setSelectedSubject] = useState();
   const [showCreateratingModal, setShowCreateratingModal] = useState(false);
+  const [filteredGrade, setFilteredGrade] = useState();
+  const [pageDetails, setPageDetails] = useState({
+    total: null,
+    current: 1,
+  });
   const [currentRating, setCurrentRating] = useState({
     title: '',
     questions: [
@@ -101,10 +102,15 @@ const PublicSpeakingRatings = () => {
         },
       ],
     });
+    setEditID();
   };
   const handleAddQuestions = () => {
-    let newRating = currentRating?.questions?.concat({ title: '' });
-    setCurrentRating({ ...currentRating, questions: newRating });
+    if (currentRating?.questions?.length < 7) {
+      let newRating = currentRating?.questions?.concat({ title: '' });
+      setCurrentRating({ ...currentRating, questions: newRating });
+    } else {
+      message.error('Please add 7 questions only!!');
+    }
   };
   const handleDeleteQuestions = (index) => {
     let newRating = currentRating?.questions?.slice();
@@ -117,8 +123,16 @@ const PublicSpeakingRatings = () => {
     setCurrentRating({ ...newRating });
   };
   const handleAddRatings = () => {
-    let newRating = currentRating?.levels?.concat({ name: '', status: false, marks: '' });
-    setCurrentRating({ ...currentRating, levels: newRating });
+    if (currentRating?.levels?.length < 10) {
+      let newRating = currentRating?.levels?.concat({
+        name: '',
+        status: false,
+        marks: '',
+      });
+      setCurrentRating({ ...currentRating, levels: newRating });
+    } else {
+      message.error('Please add 10 ratings only!!');
+    }
   };
   const handleDeleteRatings = (index) => {
     let newRating = currentRating?.levels?.slice();
@@ -129,6 +143,14 @@ const PublicSpeakingRatings = () => {
     let newRating = Object.assign({}, currentRating);
     newRating.levels[index][type] = value;
     setCurrentRating({ ...newRating });
+  };
+
+  const handleFilterGrade = (e) => {
+    if (e) {
+      setFilteredGrade(e);
+    } else {
+      setFilteredGrade(null);
+    }
   };
 
   const handleGrade = (e) => {
@@ -169,25 +191,30 @@ const PublicSpeakingRatings = () => {
   });
   const columns = [
     {
-      title: <span className='th-white th-fw-700 '>Sl No. </span>,
-      dataIndex: 'grade_name',
+      title: <span className='th-white th-fw-700 '>Sl No.</span>,
+      width: '15%',
+      align: 'center',
       key: 'name',
-      render: (text, row, index) => <span>{index + 1}.</span>,
+      render: (text, row, index) => (
+        <span>{(pageDetails.current - 1) * 10 + index + 1}.</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700 '>Grade </span>,
       dataIndex: 'grade_name',
+      width: '20%',
       key: 'name',
       align: 'center',
     },
     {
-      title: <span className='th-white th-fw-700 '>Subject </span>,
+      title: <span className='th-white th-fw-700 '>Subject</span>,
       dataIndex: 'subject_name',
       key: 'name',
       align: 'center',
+      width: '20%',
     },
     {
-      title: <span className='th-white th-fw-700 '>Rating Title </span>,
+      title: <span className='th-white th-fw-700 '>Rating Title</span>,
       dataIndex: 'erp_id',
       key: 'erp_id',
       align: 'center',
@@ -231,8 +258,12 @@ const PublicSpeakingRatings = () => {
     const isQuestionsNull = currentRating?.questions?.filter(function (el) {
       return el?.title?.trim() == '';
     });
-    const isRatingsNull = currentRating?.levels?.filter(function (el) {
-      return el?.marks == '' || el?.name?.trim() == '';
+
+    const isRatingsNameNull = currentRating?.levels?.filter(function (el) {
+      return el?.name?.trim() == '';
+    });
+    const isMarksNotNumber = currentRating?.levels?.filter(function (el) {
+      return isNaN(el?.marks) || el?.marks == null;
     });
 
     if (!currentRating?.title?.trim().length) {
@@ -243,8 +274,12 @@ const PublicSpeakingRatings = () => {
       message.error('Questions can not be empty');
       return;
     }
-    if (isRatingsNull?.length > 0) {
-      message.error('Name and marks can not be empty in Ratings');
+    if (isMarksNotNumber?.length > 0) {
+      message.error('Marks in Ratings must be a number');
+      return;
+    }
+    if (isRatingsNameNull?.length > 0) {
+      message.error('Name can not be empty in Ratings');
       return;
     }
 
@@ -270,7 +305,7 @@ const PublicSpeakingRatings = () => {
     setRequestSent(true);
     if (editID) {
       axios
-        .post(`${endpoints.newBlog.updatePublicSpeakingRatingSchemas}`, payload, {
+        .post(`${endpoints.newBlog.updateSubjectWiseRatingSchemas}`, payload, {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
@@ -279,7 +314,7 @@ const PublicSpeakingRatings = () => {
           if (res?.data?.status_code == 200) {
             message.success('Rating updated successfully !');
             handleCloseCreateRatingModal();
-            fetchPublicSpeakingRatingsList();
+            fetchSubjectWiseRatingsList({ page: pageDetails?.current });
             setEditID();
           } else {
             message.error('Update failed. Please try again !');
@@ -291,7 +326,7 @@ const PublicSpeakingRatings = () => {
         });
     } else {
       axios
-        .post(`${endpoints.newBlog.createPublicSpeakingRatingSchemas}`, payload, {
+        .post(`${endpoints.newBlog.createSubjectWiseRatingSchemas}`, payload, {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
           },
@@ -300,7 +335,7 @@ const PublicSpeakingRatings = () => {
           if (res?.data?.status_code == 200) {
             message.success('Rating created successfully !');
             handleCloseCreateRatingModal();
-            fetchPublicSpeakingRatingsList();
+            fetchSubjectWiseRatingsList({ page: 1 });
           } else if (res?.data?.status_code == 400) {
             message.error(res?.data?.message);
           } else {
@@ -316,14 +351,14 @@ const PublicSpeakingRatings = () => {
 
   const handleDeleteScheme = (id) => {
     axios
-      .delete(`${endpoints.newBlog.deletePublicSpeakingRatingSchemas}${id}/`, {
+      .delete(`${endpoints.newBlog.deleteSubjectWiseRatingSchemas}${id}/`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          fetchPublicSpeakingRatingsList();
+          fetchSubjectWiseRatingsList({ page: pageDetails?.current });
         }
       })
       .catch((error) => {
@@ -391,18 +426,22 @@ const PublicSpeakingRatings = () => {
       });
   };
 
-  const fetchPublicSpeakingRatingsList = (params = {}) => {
+  const fetchSubjectWiseRatingsList = async (params = {}) => {
     setLoading(true);
-    axios
-      .get(`${endpoints.newBlog.publicSpeakingRatingSchemas}`, {
-        params: { ...params },
+    await axios
+      .get(`${endpoints.newBlog.subjectWiseRatingSchemas}`, {
+        params: {
+          ...params,
+          ...(filteredGrade !== null ? { grade_id: filteredGrade } : {}),
+        },
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          setPublicSpeakingRatingsList(res?.data?.result);
+          setSubjectWiseRatingsList(res?.data?.result);
+          setPageDetails({ ...pageDetails, total: res.data?.count });
         }
       })
       .catch((err) => message.error(err?.message))
@@ -444,9 +483,27 @@ const PublicSpeakingRatings = () => {
         }
       });
     }
-    fetchPublicSpeakingRatingsList();
     getActivitySession();
   }, []);
+
+  useEffect(() => {
+    fetchSubjectWiseRatingsList({
+      page: pageDetails?.current,
+    });
+  }, [pageDetails?.current]);
+
+  useEffect(() => {
+    if (filteredGrade == null) {
+      setTimeout(() => {
+        if (pageDetails.current == 1) {
+          fetchSubjectWiseRatingsList({ page: 1 });
+        } else {
+          setPageDetails({ ...pageDetails, current: 1 });
+        }
+      }, 100);
+    }
+  }, [filteredGrade]);
+
   useEffect(() => {
     fetchGradeList();
   }, [moduleId]);
@@ -471,13 +528,49 @@ const PublicSpeakingRatings = () => {
               Create rating
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black th-16'>
-              Public Speaking Ratings
+              Subject Wise Ratings
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <div className='col-12 mt-3'>
-          <div className='row th-bg-white th-br-5 '>
-            <div className='col-12 p-3 text-right'>
+        <div className='col-12 mt-3 th-bg-white'>
+          <div className='row th-br-5 align-items-center pt-3'>
+            <div className='col-3'>
+              <Select
+                allowClear
+                placeholder={'Select Grade'}
+                showSearch
+                optionFilterProp='children'
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                onChange={(e) => {
+                  handleFilterGrade(e);
+                }}
+                className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+              >
+                {gradeOptions}
+              </Select>
+            </div>
+            <div className='col-4 text-left'>
+              <Button
+                type='primary'
+                icon={<SearchOutlined />}
+                disabled={!filteredGrade}
+                className='th-br-8'
+                onClick={() => {
+                  if (pageDetails.current == 1) {
+                    if (filteredGrade) {
+                      fetchSubjectWiseRatingsList({ page: 1 });
+                    }
+                  } else {
+                    setPageDetails({ ...pageDetails, current: 1 });
+                  }
+                }}
+              >
+                Search
+              </Button>
+            </div>
+            <div className='col-5 px-3 text-right'>
               <Button
                 type='primary'
                 icon={<PlusOutlined />}
@@ -486,27 +579,38 @@ const PublicSpeakingRatings = () => {
                   handleShowCreateRatingModal();
                 }}
               >
-                Creating New Rating
+                Create New Rating
               </Button>
             </div>
+          </div>
+          <div className='row mt-3'>
             <div className='col-12'>
               <Table
                 className='th-table'
                 rowClassName={(record, index) =>
                   `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                 }
-                pagination={false}
+                pagination={{
+                  total: pageDetails.total,
+                  current: pageDetails.current,
+                  pageSize: 10,
+                  showSizeChanger: false,
+                  onChange: (page) => {
+                    setPageDetails({ ...pageDetails, current: page });
+                  },
+                  limit: 20,
+                }}
                 scroll={{ y: '50vh' }}
                 loading={loading}
                 columns={columns}
-                dataSource={publicSpeakingRatingList}
+                dataSource={subjectWiseRatingList}
               />
             </div>
           </div>
         </div>
       </div>
       <Modal
-        title='Create Public Speaking Rating'
+        title={`${editID ? 'Update' : 'Create'} Subject Wise Rating`}
         centered
         visible={showCreateratingModal}
         footer={null}
@@ -547,7 +651,7 @@ const PublicSpeakingRatings = () => {
                       </Select>
                     </Form.Item>
                   </div>
-                  <div className='col-sm-3'>
+                  <div className='col-sm-3 pr-sm-0'>
                     <div className='mb-2 text-left th-fw-500'>Subject</div>
                     <Form.Item name='subject'>
                       <Select
@@ -578,7 +682,7 @@ const PublicSpeakingRatings = () => {
               <Input
                 placeholder='Please enter Ratings Title *'
                 showCount
-                maxLength='100'
+                maxLength='40'
                 value={currentRating?.title}
                 onChange={(e) => {
                   e.preventDefault();
@@ -600,14 +704,16 @@ const PublicSpeakingRatings = () => {
                       <Input
                         onChange={(e) => {
                           e.preventDefault();
-                          if (e.target.value.toString().length > 500) {
-                            message.error('Title must be less than 500 character');
+                          if (e.target.value.toString().length > 40) {
+                            message.error(
+                              'Question Title must be less than 40 character'
+                            );
                           } else {
                             handleChangeQuestions(e.target.value, index);
                           }
                         }}
                         showCount
-                        maxLength='500'
+                        maxLength='40'
                         className='w-100 th-br-5'
                         value={item?.title}
                         placeholder='Enter Question Title*'
@@ -634,7 +740,7 @@ const PublicSpeakingRatings = () => {
               })}
 
               <div className='row'>
-                <div className='col-12 text-right'>
+                <div className='col-12 text-right pr-sm-0'>
                   <Button
                     icon={<PlusOutlined />}
                     type='primary'
@@ -647,7 +753,7 @@ const PublicSpeakingRatings = () => {
               </div>
             </div>
             <div className='col-12 mt-3'>
-              <div className='th-fw-600 th-black-1'>Add Ratings</div>
+              <div className='th-fw-600 th-black-1'>Add Options & Marks</div>
               {currentRating?.levels?.map((item, index) => {
                 return (
                   <div className='row py-2 align-items-center'>
@@ -659,8 +765,8 @@ const PublicSpeakingRatings = () => {
                       <Input
                         onChange={(e) => {
                           e.preventDefault();
-                          if (e.target.value.toString().length > 100) {
-                            message.error('Name must be less than 100 character');
+                          if (e.target.value.toString().length > 40) {
+                            message.error('Option name must be less than 40 character');
                           } else {
                             handleChangeLevels(e.target.value, index, 'name');
                           }
@@ -668,17 +774,19 @@ const PublicSpeakingRatings = () => {
                         className='w-100 th-br-5'
                         value={item?.name}
                         showCount
-                        maxLength='100'
+                        maxLength='40'
                         required
-                        placeholder='Enter Name*'
+                        placeholder='Enter Option Name*'
                       />
                     </div>
                     {/* <div className='col-2 pr-0'> */}
                     <div className='col-sm-2 col-6 px-0 pr-sm-0 pt-2 pt-sm-0'>
                       <InputNumber
                         onChange={(e) => {
-                          if (e > 99) {
+                          if (e > 99 || e?.toString().length > 2) {
                             message.error('Score must be of 2 digit only');
+                          } else if (e < 0) {
+                            message.error('Score can not be negative');
                           } else {
                             handleChangeLevels(e, index, 'marks');
                           }
@@ -688,6 +796,7 @@ const PublicSpeakingRatings = () => {
                         placeholder='Enter Marks*'
                         type='number'
                         maxLength={3}
+                        min={0}
                       />
                     </div>
                     {currentRating?.levels?.length > 1 && (
@@ -709,7 +818,7 @@ const PublicSpeakingRatings = () => {
               })}
 
               <div className='row'>
-                <div className='col-12 text-right'>
+                <div className='col-12 text-right pr-sm-0'>
                   <Button
                     icon={<PlusOutlined />}
                     type='primary'
@@ -753,4 +862,4 @@ const PublicSpeakingRatings = () => {
   );
 };
 
-export default PublicSpeakingRatings;
+export default SubjectWiseRatings;
