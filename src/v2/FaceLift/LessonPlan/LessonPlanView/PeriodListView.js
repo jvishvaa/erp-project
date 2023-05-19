@@ -11,7 +11,9 @@ import {
   Button,
   Divider,
   Badge,
+  Popconfirm,
   Pagination,
+  Collapse,
 } from 'antd';
 import {
   CloseOutlined,
@@ -28,7 +30,9 @@ import {
   DownloadOutlined,
   FileUnknownOutlined,
   PlusCircleFilled,
-  PlusCircleOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  ReadOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import axios2 from 'axios';
@@ -63,6 +67,7 @@ import { addQuestionPaperToTest } from 'redux/actions';
 import { connect } from 'react-redux';
 import ASSIGNTEST from './../../../Assets/images/assigntest.png';
 const { Option } = Select;
+const { Panel } = Collapse;
 
 const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -1926,6 +1931,128 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                         </div>
                       </>
                     )}
+                  </div>
+                  <div className='row'>
+                    <Collapse
+                      expandIconPosition='right'
+                      bordered={true}
+                      className='th-br-6 my-2 th-bg-white th-width-100'
+                      style={{ border: '1px solid #d9d9d9' }}
+                      expandIcon={({ isActive }) => (
+                        <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                      )}
+                      // onChange={() => setCurrentPeriodPanel(i)}
+                    >
+                      <Panel
+                        collapsible={true}
+                        header={
+                          <div className='row'>
+                            <div className='th-black-1 px-0 col-12 pl-0'>
+                              <div className='row justify-content-between align-items-center'>
+                                <div className='col-2'>
+                                  <ReadOutlined
+                                    style={{
+                                      fontSize: 30,
+                                      color: '#1b4ccb',
+                                    }}
+                                  />
+                                </div>
+                                <div className='col-10'>
+                                  <div className='th-fw-500 th-16'>Diary</div>
+                                  <div className='th-green th-14'>
+                                    Successfully Assigned
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                        // key={i}
+                      >
+                        <div className='row'>
+                          <div className='col-12'>
+                            <div className='d-flex justify-content-between'>
+                              <div className='th-fw-500'>Section A</div>
+                              <div>
+                                <FormOutlined
+                                  className='mr-3 th-pointer th-primary th-20'
+                                  title='Edit'
+                                />
+                                <Popconfirm
+                                  placement='bottomRight'
+                                  title={'Are you sure you want to delete this diary?'}
+                                  // onConfirm={() => handleDeleteScheme(record.id)}
+                                  okText='Yes'
+                                  cancelText='No'
+                                >
+                                  <DeleteOutlined
+                                    className='th-pointer th-red th-20'
+                                    title='Delete'
+                                  />
+                                </Popconfirm>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='col-12'>
+                            <div className='d-flex justify-content-between'>
+                              <div className='th-fw-500'>Section A</div>
+                              <div>
+                                <FormOutlined
+                                  className='mr-3 th-pointer th-primary'
+                                  title='Edit'
+                                />
+                                <Popconfirm
+                                  placement='bottomRight'
+                                  title={'Are you sure you want to delete this diary?'}
+                                  // onConfirm={() => handleDeleteScheme(record.id)}
+                                  okText='Yes'
+                                  cancelText='No'
+                                >
+                                  <DeleteOutlined
+                                    className='th-pointer th-red'
+                                    title='Delete'
+                                  />
+                                </Popconfirm>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Panel>
+                    </Collapse>
+                  </div>
+                  <div className='row'>
+                    <Collapse
+                      expandIconPosition='right'
+                      bordered={true}
+                      className='th-br-6 my-2 th-bg-white th-width-100'
+                      style={{ border: '1px solid #d9d9d9' }}
+                      expandIcon={({ isActive }) => (
+                        <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                      )}
+                      // onChange={() => setCurrentPeriodPanel(i)}
+                    >
+                      <Panel
+                        collapsible={true}
+                        header={
+                          <div className='row'>
+                            <div className='th-black-1 px-0 col-12 pl-0'>
+                              <div className='row justify-content-between'>
+                                <span className='th-fw-500 th-16'>
+                                  Assigned Homework{' '}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                        // key={i}
+                      >
+                        <div className='row'>
+                          <div className='col-12'>Section A</div>
+                          <div className='col-12'>Section B</div>
+                          <div className='col-12'>Section C</div>
+                        </div>
+                      </Panel>
+                    </Collapse>
                   </div>
                 </div>
               ) : null}
