@@ -123,6 +123,7 @@ const BlogWall = () => {
     { id: 6, value: 'Public Speaking', visible: isStudent },
     { id: 7, value: 'Theatre', visible: isStudent },
     { id: 8, value: 'Visual Art', visible: isStudent },
+    { id: 9, value: 'Physical Activity', visible: isStudent },
   ].filter((item) => item?.visible !== false);
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
