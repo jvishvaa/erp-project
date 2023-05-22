@@ -106,7 +106,7 @@ const PhysicalPendingReview = (props) => {
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [view, setView] = useState(false);
-  const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession'));
+  const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const [sourceData, setSourceData] = useState([]);
   const [targetData, setTargetData] = useState([]);
   const [reviewData, setReviewData] = useState([]);
@@ -118,6 +118,7 @@ const PhysicalPendingReview = (props) => {
   const [data, setData] = useState();
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [dataId, setDataId] = useState();
+  const [isRoundAvailable, setIsRoundAvailable] = useState(false);
 
   const handleCloseViewMore = () => {
     setView(false);
@@ -266,7 +267,7 @@ const PhysicalPendingReview = (props) => {
         .get(
           `${endpoints.newBlog.studentReviewss}?booking_detail_id=${
             data?.booking_detail_id
-          }&response_is_change=${true}`,
+          }&response_is_change=${true}&is_round_available=${isRoundAvailable}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -317,8 +318,21 @@ const PhysicalPendingReview = (props) => {
       });
   };
 
+  const fetchisRoundAvailable = () => {
+    axios 
+      .get(`${endpoints.newBlog.getRoundShowHide}?activity_detail_id=${ActivityId?.id}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((result) => {
+        setIsRoundAvailable(result?.data?.is_round_available);
+      });
+  };
+
   const assignPage = (data) => {
     addBookingApi(data);
+    fetchisRoundAvailable();
     setData(data);
     setDataId(data?.erp_id);
   };
@@ -437,7 +451,7 @@ const PhysicalPendingReview = (props) => {
       }, []);
 
     let overValueAllData = arr
-      .filter((item) => item?.name.toLowerCase() === 'overall')
+      .filter((item) => item?.name?.toLowerCase() === 'overall')
       .map((item) => item);
     setOverAllData(overValueAllData);
     setTableHeader(headersData);

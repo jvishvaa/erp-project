@@ -139,10 +139,14 @@ const PhysicalActivityReview = () => {
       id: obj.id,
       branch_name: obj.name,
     }));
+    try{
     transformedData.unshift({
       branch_name: 'Select All',
       id: 'all',
     });
+    } catch{
+      return false
+    }
   };
   useEffect(() => {
     fetchBranches();
