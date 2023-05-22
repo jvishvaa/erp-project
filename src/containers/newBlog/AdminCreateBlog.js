@@ -178,6 +178,8 @@ const AdminCreateBlog = () => {
     section: '',
   });
 
+  const [isVisibleRound, setVisibleRound] = useState(false);
+
   const [sudActId, setSubActId] = useState(physicalId);
   const [selectedSubActivityId, setSelectedSubActivityId] = useState('');
 
@@ -344,6 +346,17 @@ const AdminCreateBlog = () => {
         });
     }
   };
+  const fetchRoundShowHide = (criteriaTitleId) => {
+    axiosInstance
+      .get(`${endpoints.newBlog.getRoundShowHide}?type_id=${criteriaTitleId}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((result) => {
+        setVisibleRound(result?.data?.is_round_available);
+      });
+  };
 
   useEffect(() => {
     fetchBranches();
@@ -457,6 +470,7 @@ const AdminCreateBlog = () => {
       formRef.current.setFieldsValue({
         criteria: value,
       });
+      fetchRoundShowHide(value?.id);
     }
   };
 
@@ -573,7 +587,7 @@ const AdminCreateBlog = () => {
       message.error('Please Select Section');
       return;
     }
-    if (selectedRound?.length === 0 && physicalId !== '') {
+    if (isVisibleRound && (selectedRound?.length === 0 && physicalId !== '')) {
       setLoading(false);
       message.error('Please Select Round');
       return;
@@ -619,7 +633,9 @@ const AdminCreateBlog = () => {
       formData.append('is_draft', physicalId ? false : true);
       formData.append('template_type', 'template');
       formData.append('template_id', checked);
-      formData.append('round_count', selectedRoundID);
+      if(isVisibleRound){
+        formData.append('round_count', selectedRoundID);
+      }
       axios
         .post(`${endpoints.newBlog.activityCreate}`, formData, {
           headers: {
@@ -1101,37 +1117,7 @@ const AdminCreateBlog = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      {physicalId ? (
-                        <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                          <div className='mb-2 text-left'>Round</div>
-                          <Form.Item name='round'>
-                            <Select
-                              allowClear
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              placeholder={'Select Round'}
-                              value={selectedRound || []}
-                              showSearch
-                              optionFilterProp='children'
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              onChange={(event, value) => {
-                                handleRound(event, value);
-                              }}
-                              className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                              bordered={true}
-                            >
-                              {roundOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                      ) : (
-                        ''
-                      )}
+                      
                       {physicalId ? (
                         <div className='col-md-2 col-6'>
                           <div className='mb-2 text-left'>Criteria Title</div>
@@ -1161,6 +1147,44 @@ const AdminCreateBlog = () => {
                             </Select>
                           </Form.Item>
                         </div>
+                      ) : (
+                        ''
+                      )}
+
+                      {physicalId ? (
+                        <>
+                        {isVisibleRound ? (
+                          <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                          <div className='mb-2 text-left'>Round</div>
+                          <Form.Item name='round'>
+                            <Select
+                              allowClear
+                              suffixIcon={<DownOutlined className='th-grey' />}
+                              placeholder={'Select Round'}
+                              value={selectedRound || []}
+                              showSearch
+                              optionFilterProp='children'
+                              filterOption={(input, options) => {
+                                return (
+                                  options.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                              onChange={(event, value) => {
+                                handleRound(event, value);
+                              }}
+                              className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                              bordered={true}
+                            >
+                              {roundOptions}
+                            </Select>
+                          </Form.Item>
+                        </div>
+                        ) : (
+                          ''
+                        )}
+                        </>
                       ) : (
                         ''
                       )}
