@@ -249,8 +249,8 @@ const RatingCreate = () => {
             <p>
               {row.va_rating[0]
                 ? row.va_rating[0].map((item) => <p>{item?.name}</p>)
-                : row.grading_scheme.map((item) => <p>{
-                  isJSON(item.rating) ? (JSON.parse(item?.rating))[0]?.name : item.rating}</p>)}
+                : row.grading_scheme.map((item, index) => <p>{
+                  isJSON(item.rating) ? (JSON.parse(item?.rating))[index]?.name : item.rating}</p>)}
             </p>
           </>
         );
