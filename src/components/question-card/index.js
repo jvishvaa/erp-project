@@ -334,12 +334,14 @@ const QuestionCard = ({
 
   useEffect(() => {
     let count = 0;
-    attachmentPreviews.forEach((e) => {
-      if (typeof e == 'string') count = count + 1;
-      else {
-        count = Object.keys(e).length + count;
-      }
-    });
+    if (attachmentPreviews) {
+      attachmentPreviews.forEach((e) => {
+        if (typeof e == 'string') count = count + 1;
+        else {
+          count = Object.keys(e).length + count;
+        }
+      });
+    }
     setshowPrev(count > 2);
   }, [attachmentPreviews]);
 

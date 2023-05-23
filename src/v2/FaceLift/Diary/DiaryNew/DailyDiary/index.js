@@ -135,6 +135,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [isAutoAssignDiary, setIsAutoAssignDiary] = useState(false);
   const [centralHomework, setCentralHomework] = useState([]);
   const [currentPeriodData, setCurrentPeriodData] = useState([]);
+  const [hwDiaryPeriodMappingId, setHwDiaryPeriodMappingId] = useState();
   const questionModify = (questions) => {
     let arr = [];
     questions.map((question) => {
@@ -322,6 +323,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     };
     if (editAddedPeriods.length > 0) {
       payload['added_period_ids'] = editAddedPeriods.map((item) => item.id).toString();
+      payload['lesson_plan_id'] = editAddedPeriods.map((item) => item.id);
     }
     if (editRemovedPeriods.length > 0) {
       payload['remove_period_ids'] = editRemovedPeriods.map((item) => item.id).toString();
@@ -404,6 +406,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
     if (addedPeriods.length > 0 && !clearTodaysTopic) {
       payload['period_added_ids'] = addedPeriods.map((item) => item.id).toString();
+    }
+    if (hwDiaryPeriodMappingId) {
+      payload['hw_diary_period_mapping_id'] = hwDiaryPeriodMappingId;
+    } else {
+      payload['lesson_plan_id'] = addedPeriods.map((item) => item.id);
     }
     if (!_.isEmpty(upcomingPeriod)) {
       payload['upcoming_period_id'] = upcomingPeriod?.id;
@@ -639,7 +646,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
   const handleSection = (each) => {
     if (isAutoAssignDiary) {
-      console.log(each, 'each');
       setSectionID(each?.map((item) => item?.value));
       setSectionMappingID(each?.map((item) => item?.mappingId));
     } else {
@@ -804,7 +810,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const fetchUpcomigPeriod = (periodID) => {
     const params = {
       current_period_ids: periodID,
-      section_mapping: sectionMappingID.join(','),
+      section_mapping: isAutoAssignDiary ? sectionMappingID.join(',') : sectionMappingID,
       subject_id: subjectID,
     };
     axios
@@ -864,12 +870,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       } else {
         fetchUpcomigPeriod(lastPeriod.id);
       }
-      console.log('AddedPeriod', lastPeriod);
-      fetchCentralHomework({
-        chapter: lastPeriod?.chapterID,
-        period: lastPeriod?.id,
-        topic_id: lastPeriod?.key_concept_id,
-      });
       setCurrentPanel(addedPeriods.length - 1);
     } else {
       setUpcomingPeriod({});
@@ -922,7 +922,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       message.error('Please fill Homework Title');
       return;
     }
-    if (!homeworkInstructions.trim().length) {
+    if (!homeworkInstructions.trim().length && !isAutoAssignDiary) {
       message.error('Please fill Homework Instructions');
       return;
     }
@@ -931,7 +931,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
     setQuestionEdit(true);
-    const reqObj = {
+    let reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
       section_mapping: isAutoAssignDiary ? sectionMappingID : [sectionMappingID],
@@ -944,15 +944,21 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         delete qObj.id;
         return qObj;
       }),
+      lesson_plan_id: addedPeriods.map((item) => item.id),
     };
+    if (diaryID) {
+      reqObj['diary_id'] = diaryID;
+    }
     try {
       const response = await dispatch(
         addHomeWork(
           reqObj,
           homeworkMapped,
-          assignedHomework ? assignedHomework[0]?.id : null
+          assignedHomework ? assignedHomework[0]?.id : null,
+          isAutoAssignDiary
         )
       );
+      setHwDiaryPeriodMappingId(response.data?.data?.hw_dairy_period_mapping_ids);
       message.success('Homework added');
       // setShowHomeworkForm(false);
       checkAssignedHomework({
@@ -1148,7 +1154,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSectionMappingID(editData?.section_mapping_id);
       setSubjectID(editSubject?.subject_id);
       setSubjectName(editSubject?.subject_name);
-      if (editData?.periods_data.length > 0) {
+      if (editData?.periods_data?.length > 0) {
         setClearTodaysTopic(false);
         setAddedPeriods(editData?.periods_data);
         setCurrentPanel(0);
@@ -1212,11 +1218,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           grade_id: periodData?.gradeID,
         });
         checkActivityData(periodData?.subjectName);
-        // checkAssignedHomework({
-        //   section_mapping: periodData?.sections[0]?.id,
-        //   subject: periodData?.subjectID,
-        //   date: moment().format('YYYY-MM-DD'),
-        // });
+        checkAssignedHomework({
+          section_mapping: periodData?.sections.map((item) => item?.id).join(','),
+          subject: periodData?.subjectID,
+          date: moment().format('YYYY-MM-DD'),
+        });
         fetchTodaysTopic({
           section_mapping: periodData?.sections.map((item) => item?.id).join(','),
           subject_id: periodData?.subjectID,
@@ -1237,7 +1243,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         // });
         fetchCentralHomework({
           chapter: periodData?.chapterID,
-          period: periodData?.periodID,
+          period: periodData?.periodName,
           topic_id: periodData?.keyConceptID,
         });
       }
@@ -1305,21 +1311,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          let homeworkData = {
-            period_id: 5302,
-            id: 51633,
-            document_type: 'Homework',
-            media_file: [
-              'dev/homework_file/35/38/218/970/5302homework/1684213243_frame_48.jpg',
-              'dev/homework_file/35/38/218/970/5302homework/1684213620_image_18_(1)_(1).png',
-            ],
-            mapping_id: 218,
-            quesion_paper_ids: [],
-            is_quiz: false,
-            homework_text: 'period 5',
-          };
-          // response.data?.result?.filter((item) => item.document_type == 'Homework')[0];
-          // setCentralHomework(homeworkData);
+          let data = history?.location?.state?.periodData;
+          let homeworkData = response?.data?.result.filter(
+            (item) => item.document_type == 'Homework'
+          )[0];
           let centralHomework = {
             id: cuid(),
             question: homeworkData?.homework_text,
@@ -1344,25 +1339,25 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           // });
 
           setShowHomeworkForm(true);
-          setQuestionList(questionModify([centralHomework]));
+          if (questionList.length == 1 && questionList[0]?.is_central !== true) {
+            setQuestionList(questionModify([centralHomework]));
+          } else {
+            setQuestionList(questionModify([...questionList, centralHomework]));
+          }
           // setQuestionList((prevState) => [centralHomework]);
-          setHomeworkTitle(
-            `Homework for ${periodData?.chapterName} - ${periodData?.keyConceptName}`
-          );
+          setHomeworkTitle(`${data?.chapterName}-${data?.keyConceptName}`);
           setSubmissionDate(
             moment(homeworkDetails?.last_submission_dt)
               .add(1, 'days')
               .format('YYYY-MM-DD')
           );
-          setHomeworkMapped(true);
+          // setHomeworkMapped(true);
         }
       })
       .catch((error) => {
         message.error(error.message);
       });
   };
-  // console.log({ questionList, showHomeworkForm });
-  console.log('periodData', currentPeriodData);
 
   useEffect(() => {
     if (homeworkDetails) {
@@ -1610,6 +1605,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           const newList = addedPeriods.slice();
                                           newList.splice(index, 1);
                                           setAddedPeriods(newList);
+                                          removeQuestion(index);
                                           if (isDiaryEdit) {
                                             if (
                                               !editData?.periods_data
@@ -1909,16 +1905,18 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           maxLength={30}
                         />
                       </div>
-                      <div className='row py-2'>
-                        <div className='th-black-1 th-fw-600 pb-1'>Instructions</div>
-                        <Input
-                          className='th-width-100 th-br-6'
-                          value={homeworkInstructions}
-                          onChange={(e) => setHomeworkInstructions(e.target.value)}
-                          placeholder='Enter Instructions'
-                          maxLength={250}
-                        />
-                      </div>
+                      {!isAutoAssignDiary && (
+                        <div className='row py-2'>
+                          <div className='th-black-1 th-fw-600 pb-1'>Instructions</div>
+                          <Input
+                            className='th-width-100 th-br-6'
+                            value={homeworkInstructions}
+                            onChange={(e) => setHomeworkInstructions(e.target.value)}
+                            placeholder='Enter Instructions'
+                            maxLength={250}
+                          />
+                        </div>
+                      )}
                       <div className='row align-items-center'>
                         <span className='th-black-1 th-fw-600'>Due Date</span>
                         <span className='th-br-4 p-1 th-bg-grey ml-2'>
@@ -2328,7 +2326,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 </span>
                               )}
                             </div>
-                            {/* {item?.completion_status?.filter(
+                          </div>
+                          {/* {item?.completion_status?.filter(
                               (item) => item?.section_id === sectionMappingID
                             )[0]?.is_complete === true ? (
                               <div className='row th-black-2 '>
@@ -2342,13 +2341,29 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 </div>
                               </div>
                             ) : null} */}
-                          </div>
+
                           <div className='col-12 col-sm-6 pl-0'>
-                            {item?.completion_status?.filter(
-                              (item) =>
-                                sectionMappingID.includes(item?.section_id) &&
-                                item?.is_complete == false
-                            ) && (
+                            {isAutoAssignDiary ? (
+                              sectionMappingID?.every((val) =>
+                                item?.completion_status
+                                  ?.filter((item) => item?.is_complete === true)
+                                  ?.map((item) => item?.section_id)
+                                  .includes(val)
+                              ) ? null : (
+                                <div className='th-bg-green-2 px-2 py-1 th-br-6'>
+                                  <Checkbox
+                                    onChange={() => {
+                                      markPeriodComplete(item);
+                                    }}
+                                    className='th-green th-fw-500'
+                                  >
+                                    Mark Complete
+                                  </Checkbox>
+                                </div>
+                              )
+                            ) : item?.completion_status?.filter(
+                                (item) => item?.section_id === sectionMappingID
+                              )[0]?.is_complete === true ? null : (
                               <div className='th-bg-green-2 px-2 py-1 th-br-6'>
                                 <Checkbox
                                   onChange={() => markPeriodComplete(item)}
@@ -2435,6 +2450,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                         const newList = addedPeriods.slice();
                                         newList.splice(index, 1);
                                         setAddedPeriods(newList);
+                                        removeQuestion(index);
                                       }}
                                     >
                                       Remove
@@ -2455,6 +2471,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           setCompletedPeriod(item);
                                           openPeriodInfoModal();
                                           setAddedPeriods([...addedPeriods, item]);
+                                          fetchCentralHomework({
+                                            chapter: chapterID,
+                                            period: item?.period_name,
+                                            topic_id: item?.key_concept_id,
+                                          });
                                         } else {
                                           message.warning(
                                             "Period is already added to Today's Topic"
