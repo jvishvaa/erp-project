@@ -249,7 +249,6 @@ const CreateActivityType = () => {
             return;
           } else {
             setActivityType('');
-            setSubActivityType('');
             setAccordianBulkFilter(false);
             getActivityCategory();
             message.success('Activity Created Successfully');
