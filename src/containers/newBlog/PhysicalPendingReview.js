@@ -18,6 +18,8 @@ import {
   Spin,
   Upload,
   Button,
+  Drawer,
+  Space,
 } from 'antd';
 import {
   MonitorOutlined,
@@ -28,6 +30,7 @@ import {
   DownOutlined,
   CheckOutlined,
   UploadOutlined,
+  CloseOutlined,
 } from '@ant-design/icons';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
@@ -112,6 +115,7 @@ const PhysicalPendingReview = (props) => {
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [view, setView] = useState(false);
+  const [viewLevelDrawer, setviewLevelDrawer] = useState(false);
   const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const [sourceData, setSourceData] = useState([]);
   const [targetData, setTargetData] = useState([]);
@@ -135,6 +139,10 @@ const PhysicalPendingReview = (props) => {
 
   const handleCloseViewMore = () => {
     setView(false);
+  };
+
+  const handleCloseViewLevelMore = () => {
+    setviewLevelDrawer(false);
   };
 
   const [values, setValues] = useState();
@@ -194,7 +202,7 @@ const PhysicalPendingReview = (props) => {
         if (file) {
           uploadFile();
         }
-        setView(false);
+        setviewLevelDrawer(false);
         setLoading(false);
         setRatinglevelReview([]);
         fileRef.current.value = '';
@@ -426,7 +434,7 @@ const PhysicalPendingReview = (props) => {
           });
           setRatinglevelReview(array);
           setLoading(false);
-          setView(true);
+          setviewLevelDrawer(true);
         })
         .catch((err) => {
           setLoading(false);
@@ -718,18 +726,18 @@ const PhysicalPendingReview = (props) => {
         )}
       </div>
 
-      {/* <Drawer
+      <Drawer
         title={<span className='th-fw-500'>Submit Review</span>}
         placement='right'
-        onClose={handleCloseViewMore}
+        onClose={handleCloseViewLevelMore}
         zIndex={1300}
-        visible={view}
+        visible={viewLevelDrawer}
         width={'35vw'}
         closable={false}
         className='th-resources-drawer'
         extra={
           <Space>
-            <CloseOutlined onClick={handleCloseViewMore} />
+            <CloseOutlined onClick={handleCloseViewLevelMore} />
           </Space>
         }
       >
@@ -743,6 +751,7 @@ const PhysicalPendingReview = (props) => {
                       src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                       alt='image'
                       style={{
+                        // width: '100%',
                         height: 100,
                         objectFit: 'fill',
                       }}
@@ -771,79 +780,77 @@ const PhysicalPendingReview = (props) => {
                       className='px-1 py-2 th-br-5'
                       style={{ outline: '1px solid #D9D9D9' }}
                     >
-                      {ratingReview?.map((obj, index) => {
+                      {ratingLevelReview?.map((obj, index) => {
                         return (
-                          <div
-                            key={index}
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            {obj?.name === 'Overall' ? (
-                              ''
-                            ) : (
-                              <div
-                                key={index}
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  marginBottom: '10px',
+                          <div className='row py-1 align-items-center'>
+                            <div className='col-6 text-left' key={index}>
+                              {obj?.name}
+                            </div>
+                            <div className='col-6'>
+                              <Select
+                                className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                                bordered={true}
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                placement='bottomRight'
+                                placeholder='Select Option'
+                                suffixIcon={<DownOutlined className='th-black-1' />}
+                                dropdownMatchSelectWidth={false}
+                                onChange={(e, val) => handleRemark(val, obj?.id)}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
                                 }}
+                                menuItemSelectedIcon={
+                                  <CheckOutlined className='th-primary' />
+                                }
                               >
-                                {' '}
-                                {obj?.name}
-                                <b style={{ color: '#53bedd', fontSize: '12px' }}>
-                                  {filterRound(obj?.level)}
-                                </b>
-                              </div>
-                            )}
-                            {obj?.name == 'Overall' ? (
-                              ''
-                            ) : (
-                              <div>
-                                <Input
-                                  style={{ background: 'white' }}
-                                  placeholder={obj?.name}
-                                  onChange={(event) =>
-                                    handleInputCreativity(event, index)
-                                  }
-                                  value={obj?.remarks}
-                                />
-                              </div>
-                            )}
+                                {obj?.remarks?.map((each) => {
+                                  return (
+                                    <Option value={each?.name} key={each?.score}>
+                                      {each?.name}
+                                    </Option>
+                                  );
+                                })}
+                              </Select>
+                            </div>
                           </div>
                         );
                       })}
-                      {ratingReview?.map((obj, index) => {
-                        return (
-                          <div
-                            key={index}
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            {obj?.name == 'Overall' ? (
-                              <div>
-                                {obj?.name}*
-                                <Input
-                                  placeholder={obj?.name}
-                                  onChange={(event) =>
-                                    handleInputCreativity(event, index)
-                                  }
-                                  value={obj?.remarks}
-                                />
-                              </div>
-                            ) : (
-                              ''
-                            )}
-                          </div>
-                        );
-                      })}
+                      <div className='row align-items-center'>
+                        <div className='col-md-4 py-2 th-16'>
+                          <Upload {...uploadProps} className='w-75'>
+                            <Button icon={<UploadOutlined />}>
+                              {file ? 'Change' : 'Upload'} File
+                            </Button>
+                          </Upload>
+                        </div>
+                        <div className='col-md-8 py-2 th-10'>
+                          {!file ? (
+                            'Upload .jpeg,.png,.mp4 file only'
+                          ) : (
+                            <div className='th-14'>
+                              <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                                <div
+                                  className='th-12 th-black-1 text-truncate th-width-90'
+                                  title={file?.name}
+                                >
+                                  {file?.name}
+                                </div>
 
+                                <div className='th-pointer ml-2'>
+                                  <img
+                                    src={smallCloseIcon}
+                                    onClick={() => setFile(null)}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                       <div
                         style={{
                           display: 'flex',
@@ -857,7 +864,7 @@ const PhysicalPendingReview = (props) => {
                         {' '}
                         <ButtonAnt
                           className='th-button-active th-br-6 text-truncate th-pointer'
-                          onClick={() => submitReview()}
+                          onClick={() => submitLevelReview()}
                         >
                           Submit Review
                         </ButtonAnt>
@@ -869,7 +876,7 @@ const PhysicalPendingReview = (props) => {
             </div>
           </div>
         </div>
-      </Drawer> */}
+      </Drawer>
       <Modal
         centered
         visible={view}
@@ -1033,8 +1040,10 @@ const PhysicalPendingReview = (props) => {
                           </div>
                         );
                       })}
-                      <div className='row align-items-center'>
-                        <div className='col-md-4 py-2 th-16'>
+                    </div>
+                    <div className='col-12 px-0 d-flex justify-content-right align-items-center'>
+                    <div className='row align-items-center'>
+                        <div className='col-md-4 py-12 th-16'>
                           <Upload {...uploadProps} className='w-75'>
                             <Button icon={<UploadOutlined />}>
                               {file ? 'Change' : 'Upload'} File
@@ -1065,25 +1074,18 @@ const PhysicalPendingReview = (props) => {
                           )}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          marginRight: '10px',
-                          marginLeft: '6px',
-                          marginBottom: '15px',
-                          marginTop: '32px',
-                        }}
-                      >
-                        {' '}
-                        <ButtonAnt
-                          className='th-button-active th-br-6 text-truncate th-pointer'
-                          onClick={() => submitLevelReview()}
-                        >
-                          Submit Review
-                        </ButtonAnt>
                       </div>
-                    </div>
+                    <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
+          <div className='p-2'>
+            <ButtonAnt
+              type='primary'
+              icon={<ScheduleOutlined />}
+              onClick={() => submitLevelReview()}
+            >
+              Submit Review
+            </ButtonAnt>
+          </div>
+        </div>
 
           
           </>  }

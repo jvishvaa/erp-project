@@ -250,6 +250,7 @@ export default {
     updateSubjectWiseRatingSchemas: `${newBlogURL}/api/activity_scheme_update/`,
     // gradeWiseSubjects: `/academic/v4/lesson-plan-subjects/`,
     getRoundShowHide:`${newBlogURL}/api/check_ps_rounds/`,
+    getCategoryOptions:`${newBlogURL}/api/school_wall_activity_types/`,
   },
   fileDrive: {
     fileList: `/schools/school_file_list/`,

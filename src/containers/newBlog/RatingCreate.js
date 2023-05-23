@@ -1328,7 +1328,7 @@ const RatingCreate = () => {
                         )}
                       </div>
                       <div className='col-md-12 col-6 d-flex  px-0'>
-                    <Typography className='d-flex align-items-center'>Physical Activity Switch</Typography>
+                    <Typography className='d-flex align-items-center'>Question and Answer(Enable or Disable)</Typography>
                     <div className='d-flex align-items-center'>
                       <Switch onChange={handlePhysicalActivityToggle} checked={physicalActivityToggle} />
                     </div>
