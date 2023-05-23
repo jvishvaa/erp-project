@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import endpoints from '../../config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import Rating from '@material-ui/lab/Rating';
+import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 
 import {
   Button as ButtonAnt,
@@ -15,6 +16,8 @@ import {
   message,
   Modal,
   Spin,
+  Upload,
+  Button,
 } from 'antd';
 import {
   MonitorOutlined,
@@ -22,6 +25,9 @@ import {
   UserOutlined,
   ArrowRightOutlined,
   CaretRightOutlined,
+  DownOutlined,
+  CheckOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
@@ -113,12 +119,19 @@ const PhysicalPendingReview = (props) => {
   const [tableHeader, setTableHeader] = useState([]);
   const [overallData, setOverAllData] = useState([]);
   const [ratingReview, setRatingReview] = useState([]);
+  const [ratingLevelReview, setRatinglevelReview] = useState([]);
   const [customRatingReview, setCustomRatingReview] = useState([]);
   const [overallRemarks, setOverAllRemarks] = useState('');
   const [data, setData] = useState();
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [dataId, setDataId] = useState();
   const [isRoundAvailable, setIsRoundAvailable] = useState(false);
+  const [file, setFile] = useState(null);
+  const allowedFiles = ['.jpeg', '.jpg', '.png', '.mp4'];
+  const fileRef = useRef();
+  const [bookingID, setBookingID] = useState(null);
+
+  const [firstLoad, setFirstLoad]= useState(false);
 
   const handleCloseViewMore = () => {
     setView(false);
@@ -130,6 +143,99 @@ const PhysicalPendingReview = (props) => {
   const createPublish = () => {
     setPublish(true);
   };
+
+  const uploadProps = {
+    showUploadList: false,
+    disabled: false,
+    accept: allowedFiles.join(),
+    multiple: false,
+    onRemove: () => {
+      setFile(null);
+    },
+    beforeUpload: (...file) => {
+      setFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      if (file[0]?.size > 31457280) {
+        message.error('Selected file size should be less than 30MB');
+        return false;
+      }
+      if (allowedFiles.includes(type)) {
+        setFile(...file[1]);
+      } else {
+        message.error(' Please select the correct file type');
+      }
+      return false;
+    },
+    file,
+  };
+
+  const submitLevelReview = () => {
+    let body = [];
+    let checkSelected = ratingLevelReview.every((item) => item.checked);
+    if (!checkSelected) {
+      message.error('Please Select All Option');
+      return;
+    } else {
+      ratingLevelReview.forEach((item) => {
+        let record = { ...item };
+        delete record.checked;
+        body.push(record);
+      });
+    }
+
+    setLoading(true);
+    axios
+      .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        if (file) {
+          uploadFile();
+        }
+        setView(false);
+        setLoading(false);
+        setRatinglevelReview([]);
+        fileRef.current.value = '';
+        setFile(null);
+        erpAPI();
+        message.success('Review Submitted Successfully');
+        return;
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const uploadFile = () => {
+    if (file !== null) {
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('booking_id', bookingID);
+
+      axios
+        .post(`${endpoints.newBlog.uploadVisualFile}`, formData, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            message.success(res.data.message);
+            setFile(null);
+          }
+        })
+        .catch((err) => {
+          setFile(null);
+        });
+    } else {
+      message.error('Please Upload File');
+      setLoading(false);
+      return;
+    }
+  };
+
   const [submit, setSubmit] = useState(false);
   const submitReview = () => {
     setLoading(true);
@@ -165,6 +271,7 @@ const PhysicalPendingReview = (props) => {
         setLoading(false);
       });
   };
+
 
   const handleInputCreativity = (event, index) => {
     let arr = [...ratingReview];
@@ -261,7 +368,9 @@ const PhysicalPendingReview = (props) => {
 
   let array = [];
   const showReview = (data) => {
+    setBookingID(data?.booking_detail_id);
     if (data) {
+      if(isRoundAvailable){
       setLoading(true);
       axios
         .get(
@@ -275,23 +384,54 @@ const PhysicalPendingReview = (props) => {
           }
         )
         .then((response) => {
-          // response.data.map((obj, index) => {
+          // response.data.map((obj) => {
           //   let temp = {};
           //   temp['id'] = obj?.id;
           //   temp['name'] = obj?.level.name;
           //   temp['remarks'] = obj?.remarks;
           //   temp['given_rating'] = obj?.given_rating;
-          //   temp['level'] = obj?.level?.rating;
+          //   temp['remarks'] = JSON.parse(obj?.level?.rating);
           //   temp['reviewer_id'] = user_id;
           //   array.push(temp);
           // });
           setRatingReview(response?.data);
+          //setRatinglevelReview(array);
           setLoading(false);
           setView(true);
         })
         .catch((err) => {
           setLoading(false);
         });
+      } else {
+        setLoading(true);
+      axios
+      .get(
+        `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data?.booking_detail_id}`,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+        .then((response) => {
+          response.data.map((obj) => {
+            let temp = {};
+            temp['id'] = obj?.id;
+            temp['name'] = obj?.level.name;
+            temp['remarks'] = obj?.remarks;
+            temp['given_rating'] = obj?.given_rating;
+            temp['remarks'] = JSON.parse(obj?.level?.rating);
+            temp['reviewer_id'] = user_id;
+            array.push(temp);
+          });
+          setRatinglevelReview(array);
+          setLoading(false);
+          setView(true);
+        })
+        .catch((err) => {
+          setLoading(false);
+        });
+      }
     }
   };
 
@@ -327,14 +467,44 @@ const PhysicalPendingReview = (props) => {
       })
       .then((result) => {
         setIsRoundAvailable(result?.data?.is_round_available);
+        setFirstLoad(true);
       });
   };
 
   const assignPage = (data) => {
     addBookingApi(data);
-    fetchisRoundAvailable();
     setData(data);
     setDataId(data?.erp_id);
+  };
+
+  const handleRemark = (value, id) => {
+    const arr1 = ratingLevelReview?.map((obj) => {
+      let newObj = obj?.remarks;
+      if (obj.id === id) {
+        newObj = obj.remarks.map((item) => {
+          if (item.name === value.children) {
+            return { ...item, status: true };
+          } else {
+            return { ...item, status: false };
+          }
+          return item;
+        });
+        return { ...obj, remarks: newObj, checked: true };
+      }
+      return obj;
+    });
+    setRatinglevelReview(arr1);
+    // setRemarkedData()
+    let newArr = [];
+    arr1.map((obj) => {
+      let newTemp = {};
+      newTemp['given_rating'] = obj?.given_rating;
+      newTemp['id'] = obj?.id;
+      newTemp['name'] = obj?.name;
+      newTemp['remarks'] = JSON.stringify(obj?.remarks);
+      newTemp['reviewer_id'] = obj?.reviewer_id;
+      newArr.push(newTemp);
+    });
   };
 
   useEffect(() => {
@@ -348,6 +518,12 @@ const PhysicalPendingReview = (props) => {
       getTotalSubmitted();
     }
   }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
+
+  useEffect(() => {
+    if(!firstLoad){
+      fetchisRoundAvailable();
+    }
+  });
 
   const classes = useStyles();
   const ReviewPage = () => {
@@ -735,6 +911,9 @@ const PhysicalPendingReview = (props) => {
           </div>
         </div>
 
+        {isRoundAvailable
+        ?
+        <>
         <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
           <table className='w-100' style={{ background: '#eee' }}>
             <thead>
@@ -809,6 +988,105 @@ const PhysicalPendingReview = (props) => {
             </ButtonAnt>
           </div>
         </div>
+        </>
+          : <>
+          <div
+                      className='px-1 py-2 th-br-5'
+                      style={{ outline: '1px solid #D9D9D9' }}
+                    >
+                      {ratingLevelReview?.map((obj, index) => {
+                        return (
+                          <div className='row py-1 align-items-center'>
+                            <div className='col-6 text-left' key={index}>
+                              {obj?.name}
+                            </div>
+                            <div className='col-6'>
+                              <Select
+                                className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                                bordered={true}
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                placement='bottomRight'
+                                placeholder='Select Option'
+                                suffixIcon={<DownOutlined className='th-black-1' />}
+                                dropdownMatchSelectWidth={false}
+                                onChange={(e, val) => handleRemark(val, obj?.id)}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                menuItemSelectedIcon={
+                                  <CheckOutlined className='th-primary' />
+                                }
+                              >
+                                {obj?.remarks?.map((each) => {
+                                  return (
+                                    <Option value={each?.name} key={each?.score}>
+                                      {each?.name}
+                                    </Option>
+                                  );
+                                })}
+                              </Select>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      <div className='row align-items-center'>
+                        <div className='col-md-4 py-2 th-16'>
+                          <Upload {...uploadProps} className='w-75'>
+                            <Button icon={<UploadOutlined />}>
+                              {file ? 'Change' : 'Upload'} File
+                            </Button>
+                          </Upload>
+                        </div>
+                        <div className='col-md-8 py-2 th-10'>
+                          {!file ? (
+                            'Upload .jpeg,.png,.mp4 file only'
+                          ) : (
+                            <div className='th-14'>
+                              <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                                <div
+                                  className='th-12 th-black-1 text-truncate th-width-90'
+                                  title={file?.name}
+                                >
+                                  {file?.name}
+                                </div>
+
+                                <div className='th-pointer ml-2'>
+                                  <img
+                                    src={smallCloseIcon}
+                                    onClick={() => setFile(null)}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          marginRight: '10px',
+                          marginLeft: '6px',
+                          marginBottom: '15px',
+                          marginTop: '32px',
+                        }}
+                      >
+                        {' '}
+                        <ButtonAnt
+                          className='th-button-active th-br-6 text-truncate th-pointer'
+                          onClick={() => submitLevelReview()}
+                        >
+                          Submit Review
+                        </ButtonAnt>
+                      </div>
+                    </div>
+
+          
+          </>  }
       </Modal>
     </>
   );
