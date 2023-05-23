@@ -274,7 +274,12 @@ const StudentSidePublicSpeaking = () => {
                       </div>
                     </div>
                   </div>
-                ) : null}
+                ) : (
+                  <div className='col-md-5 d-flex justify-content-center align-items-center h4'>
+                    {' '}
+                    No Remarks Found
+                  </div>
+                )}
               </div>
             </div>
           </Drawer>
