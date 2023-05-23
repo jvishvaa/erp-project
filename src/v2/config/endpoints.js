@@ -168,6 +168,7 @@ export default {
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
     upcomingPeriodData: `${baseURLCentral}/lesson_plan/v2/upcoming-period-data/`,
+    centralHomeworkData: `${baseURLCentral}/lesson_plan/lesson/`,
   },
 
   diaryReport: {

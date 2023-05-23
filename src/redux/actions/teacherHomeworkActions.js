@@ -62,51 +62,51 @@ export const setSelectedFilters = (data) => {
   return {
     type: SET_SELECTED_FILTERS,
     data: data,
-  }
-}
+  };
+};
 
 export const resetSelectedFilters = () => {
   return {
     type: RESET_SELECTED_FILTERS,
-  }
-}
+  };
+};
 
 export const setSelectedCoFilters = (data) => {
   return {
     type: SET_SELECTED_COFILTERS,
     data: data,
-  }
-}
+  };
+};
 
 export const resetSelectedCoFilters = () => {
   return {
     type: RESET_SELECTED_COFILTERS,
-  }
-}
+  };
+};
 
-export const addHomeWork = (data,isEdit,id) => async (dispatch) => {
+export const addHomeWork = (data, isEdit, id, isAutoAssignDiary) => async (dispatch) => {
   dispatch({ type: ADD_HOMEWORK_REQUEST });
-  if(isEdit){
-      try {
-        const response = await axios.put(`/academic/${id}/update-hw/`, data);
-        dispatch({ type: ADD_HOMEWORK_SUCCESS });
-    
-        return 'success';
-      } catch (e) {
-        dispatch({ type: ADD_HOMEWORK_FAILURE });
-        throw new Error(e);
-      }
-  }else{
-  try {
-    const response = await axios.post('/academic/upload-homework/', data);
-    dispatch({ type: ADD_HOMEWORK_SUCCESS });
+  if (isEdit) {
+    try {
+      const response = await axios.put(`/academic/${id}/update-hw/`, data);
+      dispatch({ type: ADD_HOMEWORK_SUCCESS });
 
-    return 'success';
-  } catch (e) {
-    dispatch({ type: ADD_HOMEWORK_FAILURE });
-    throw new Error(e);
+      return 'success';
+    } catch (e) {
+      dispatch({ type: ADD_HOMEWORK_FAILURE });
+      throw new Error(e);
+    }
+  } else {
+    try {
+      const response = await axios.post('/academic/upload-homework/', data);
+      dispatch({ type: ADD_HOMEWORK_SUCCESS });
+
+      return isAutoAssignDiary ? response : 'success';
+    } catch (e) {
+      dispatch({ type: ADD_HOMEWORK_FAILURE });
+      throw new Error(e);
+    }
   }
-}
 };
 
 export const fetchTeacherHomeworkDetailsById = (id) => async (dispatch) => {
@@ -152,73 +152,88 @@ export const fetchSubmittedHomeworkDetails = (id) => async (dispatch) => {
   }
 };
 
-export const fetchTeacherHomeworkDetails = (moduleId, acadYear, branch, garde, sectionId, section, startDate, endDate) => async (
-  dispatch
-) => {
-  dispatch({ type: FETCH_TEACHER_HOMEWORK_REQUEST });
-  //const sectionIds = sectionId.split(',').map( n => parseInt(n, 10))
-  try {
-    const response = await axios.get(
-      `/academic/student-homework/?module_id=${moduleId}&session_year=${acadYear}&branch=${branch}&grade=${garde}&section_mapping=${sectionId}&section=${section}&start_date=${startDate}&end_date=${endDate}`
-    );
-    const { header, rows } = response.data.data;
-    // const {
-    //   mandatory_subjects: mandatorySubjects,
-    //   optional_subjects: optionSubjects,
-    //   others_subjects: otherSubjects,
-    // } = header;
-    const homeworkColumns = [...header];
-    const homeworkRows = rows.map((row) => {
-      const obj = { date: row.class_date, canUpload: row.can_upload, sessionYear: row.session_year, branch: row.branch, grade: row.grade };
-      homeworkColumns.forEach((col) => {
-        const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.subject_id);
-        obj[col.subject_name] = homeworkStatus
-          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status , last_submission_date : homeworkStatus.last_submission_dt}
-          : {};
+export const fetchTeacherHomeworkDetails =
+  (moduleId, acadYear, branch, garde, sectionId, section, startDate, endDate) =>
+  async (dispatch) => {
+    dispatch({ type: FETCH_TEACHER_HOMEWORK_REQUEST });
+    //const sectionIds = sectionId.split(',').map( n => parseInt(n, 10))
+    try {
+      const response = await axios.get(
+        `/academic/student-homework/?module_id=${moduleId}&session_year=${acadYear}&branch=${branch}&grade=${garde}&section_mapping=${sectionId}&section=${section}&start_date=${startDate}&end_date=${endDate}`
+      );
+      const { header, rows } = response.data.data;
+      // const {
+      //   mandatory_subjects: mandatorySubjects,
+      //   optional_subjects: optionSubjects,
+      //   others_subjects: otherSubjects,
+      // } = header;
+      const homeworkColumns = [...header];
+      const homeworkRows = rows.map((row) => {
+        const obj = {
+          date: row.class_date,
+          canUpload: row.can_upload,
+          sessionYear: row.session_year,
+          branch: row.branch,
+          grade: row.grade,
+        };
+        homeworkColumns.forEach((col) => {
+          const homeworkStatus = row.hw_details.find(
+            (detail) => detail.subject === col.subject_id
+          );
+          obj[col.subject_name] = homeworkStatus
+            ? {
+                hw_id: homeworkStatus.id,
+                ...homeworkStatus.status,
+                last_submission_date: homeworkStatus.last_submission_dt,
+              }
+            : {};
+        });
+        return obj;
       });
-      return obj;
-    });
-    homeworkColumns.unshift('Date');
-    dispatch({
-      type: FETCH_TEACHER_HOMEWORK_SUCCESS,
-      data: { homeworkColumns, homeworkRows },
-    });
-  } catch (e) {
-    console.log('error ', e);
-    dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
-  }
-};
+      homeworkColumns.unshift('Date');
+      dispatch({
+        type: FETCH_TEACHER_HOMEWORK_SUCCESS,
+        data: { homeworkColumns, homeworkRows },
+      });
+    } catch (e) {
+      console.log('error ', e);
+      dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
+    }
+  };
 
 export const setSelectedHomework = (data) => ({
   type: SET_SELECTED_HOME_WORK,
   data,
 });
 
-export const fetchStudentsListForTeacherHomework = (id, subjectId, sectionId, selectedTeacherUser_id , date) => async (dispatch) => {
-  dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_REQUEST });
-  try {
-    const response = await axios.get(selectedTeacherUser_id ?
-      `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}&section_mapping=${sectionId}&date=${date}`
-      : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}&section_mapping=${sectionId}&date=${date}`);
-    const {
-      evaluated_list: evaluatedStudents,
-      submitted_list: submittedStudents,
-      un_submitted_list: unSubmittedStudents,
-      unevaluated_list: unevaluatedStudents,
-      absent_list : absentList,
-    } = response.data;
-    dispatch({
-      type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_SUCCESS,
-      evaluatedStudents,
-      submittedStudents,
-      unSubmittedStudents,
-      unevaluatedStudents,
-      absentList
-    });
-  } catch (error) {
-    dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_FAILURE });
-  }
-};
+export const fetchStudentsListForTeacherHomework =
+  (id, subjectId, sectionId, selectedTeacherUser_id, date) => async (dispatch) => {
+    dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_REQUEST });
+    try {
+      const response = await axios.get(
+        selectedTeacherUser_id
+          ? `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}&section_mapping=${sectionId}&date=${date}`
+          : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}&section_mapping=${sectionId}&date=${date}`
+      );
+      const {
+        evaluated_list: evaluatedStudents,
+        submitted_list: submittedStudents,
+        un_submitted_list: unSubmittedStudents,
+        unevaluated_list: unevaluatedStudents,
+        absent_list: absentList,
+      } = response.data;
+      dispatch({
+        type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_SUCCESS,
+        evaluatedStudents,
+        submittedStudents,
+        unSubmittedStudents,
+        unevaluatedStudents,
+        absentList,
+      });
+    } catch (error) {
+      dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_FAILURE });
+    }
+  };
 
 export const evaluateHomework = async (id, data) => {
   try {
@@ -270,54 +285,58 @@ export const addHomeWorkCoord = (data) => async (dispatch) => {
 };
 
 //Added By Vijay============
-export const fetchCoordinateTeacherHomeworkDetails = (
-  moduleId,
-  acadYear,
-  branch,
-  garde,
-  sectionId,
-  section,
-  startDate,
-  endDate,
-  user_id
-) => async (dispatch) => {
-  dispatch({ type: FETCH_TEACHER_HOMEWORK_REQUEST });
-  try {
-    const response = await axios.get(
-      `/academic/student-homework/?module_id=${moduleId}&session_year=${acadYear}&branch=${branch}&grade=${garde}&section_mapping=${sectionId}&section=${section}&start_date=${startDate}&end_date=${endDate}&teacher_id=${user_id}`
-    );
-    const { header, rows } = response.data.data;
-    // const {
-    //   mandatory_subjects: mandatorySubjects,
-    //   optional_subjects: optionSubjects,
-    //   others_subjects: otherSubjects,
-    // } = header;
-    //   const abb = {
-    //     "id": 1555,
-    //     "subject_name": "Grade2_SecA_Drawing_mmmy"
-    // };
-    // header[0].subject_name="Grade2_SecA_hindi1--CCCCCCC";
-    const homeworkColumns = [...header];
-    const homeworkRows = rows.map((row) => {
-      const obj = { date: row.class_date, canUpload: row.can_upload, sessionYear:row.session_year, branch: row.branch, grade: row.grade };
-      homeworkColumns.forEach((col) => {
-        const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.subject_id);
+export const fetchCoordinateTeacherHomeworkDetails =
+  (moduleId, acadYear, branch, garde, sectionId, section, startDate, endDate, user_id) =>
+  async (dispatch) => {
+    dispatch({ type: FETCH_TEACHER_HOMEWORK_REQUEST });
+    try {
+      const response = await axios.get(
+        `/academic/student-homework/?module_id=${moduleId}&session_year=${acadYear}&branch=${branch}&grade=${garde}&section_mapping=${sectionId}&section=${section}&start_date=${startDate}&end_date=${endDate}&teacher_id=${user_id}`
+      );
+      const { header, rows } = response.data.data;
+      // const {
+      //   mandatory_subjects: mandatorySubjects,
+      //   optional_subjects: optionSubjects,
+      //   others_subjects: otherSubjects,
+      // } = header;
+      //   const abb = {
+      //     "id": 1555,
+      //     "subject_name": "Grade2_SecA_Drawing_mmmy"
+      // };
+      // header[0].subject_name="Grade2_SecA_hindi1--CCCCCCC";
+      const homeworkColumns = [...header];
+      const homeworkRows = rows.map((row) => {
+        const obj = {
+          date: row.class_date,
+          canUpload: row.can_upload,
+          sessionYear: row.session_year,
+          branch: row.branch,
+          grade: row.grade,
+        };
+        homeworkColumns.forEach((col) => {
+          const homeworkStatus = row.hw_details.find(
+            (detail) => detail.subject === col.subject_id
+          );
 
-        obj[col.subject_name] = homeworkStatus
-          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status , last_submission_date : homeworkStatus.last_submission_dt }
-          : {};
+          obj[col.subject_name] = homeworkStatus
+            ? {
+                hw_id: homeworkStatus.id,
+                ...homeworkStatus.status,
+                last_submission_date: homeworkStatus.last_submission_dt,
+              }
+            : {};
+        });
+        return obj;
       });
-      return obj;
-    });
-    homeworkColumns.unshift('Date');
-    dispatch({
-      type: FETCH_TEACHER_HOMEWORK_SUCCESS,
-      data: { homeworkColumns, homeworkRows },
-    });
-  } catch (e) {
-    dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
-  }
-};
+      homeworkColumns.unshift('Date');
+      dispatch({
+        type: FETCH_TEACHER_HOMEWORK_SUCCESS,
+        data: { homeworkColumns, homeworkRows },
+      });
+    } catch (e) {
+      dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
+    }
+  };
 
 export const setTeacherUserIDCoord = (data) => async (dispatch) => {
   dispatch({ type: SET_TEACHER_HOMEWORK_ID_FROM_CORD });
