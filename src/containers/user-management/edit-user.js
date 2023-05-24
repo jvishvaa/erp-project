@@ -112,7 +112,6 @@ class EditUser extends Component {
   };
 
   handleCollectData = (details, index) => {
-    console.log(details , 'details');
     const {
       academic_year = [],
       branch = [],
@@ -120,10 +119,12 @@ class EditUser extends Component {
       section = [],
       subjects = [],
     } = { ...details };
-    this.setState({
-      userLevel: details.userLevel,
-      designation: details.designation
-    })
+    if(index == 0){
+      this.setState({
+        userLevel: details.userLevel,
+        designation: details.designation
+      })
+    }
     const {
       academic_year: academicYear = [],
       branch: collectedBranch = [],
