@@ -1153,7 +1153,7 @@ const QuestionCard = ({
           style={{
             overflowY: 'scroll',
             overflowX: 'hidden',
-            height:
+            maxHeight:
               window.innerWidth < 768 ? '50vh' : isCentralHomework ? '70vh' : '50vh',
             marginTop: 20,
           }}

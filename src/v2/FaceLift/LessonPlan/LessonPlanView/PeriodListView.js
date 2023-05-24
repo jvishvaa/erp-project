@@ -693,13 +693,15 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
         if (result?.data?.status === 200) {
           setResourcesData(result?.data?.data[0]);
           setLoadingDrawer(false);
-          fetchDiaryCompletionStatus({
-            period_id: data?.id,
-            section_mapping: result?.data?.data[0]?.section_wise_completion
-              ?.map((item) => item?.id)
-              .join(','),
-            subject: subjectId,
-          });
+          if (user_level !== 13) {
+            fetchDiaryCompletionStatus({
+              period_id: data?.id,
+              section_mapping: result?.data?.data[0]?.section_wise_completion
+                ?.map((item) => item?.id)
+                .join(','),
+              subject: subjectId,
+            });
+          }
         } else {
           setLoadingDrawer(false);
         }
@@ -794,13 +796,18 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       });
   };
   const deleteDiary = (id) => {
-    alert('oo');
     axios
       .delete(`${endpoints?.dailyDiary?.updateDelete}${id}/update-delete-dairy/`)
       .then((response) => {
         if (response?.data?.status_code === 200) {
           message.success('Diary Deleted Successfully');
-          fetchDiaryCompletionStatus();
+          fetchDiaryCompletionStatus({
+            period_id: drawerData?.id,
+            section_mapping: drawerData?.section_wise_completion
+              ?.map((item) => item?.id)
+              .join(','),
+            subject: subjectId,
+          });
         }
       })
       .catch((error) => {
@@ -836,19 +843,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       setChapterId(Number(history?.location?.state?.chapterID));
       setBoardId(history?.location?.state?.boardID);
       setCentralGSID(history?.location?.state?.centralGSID);
-
-      // if (boardFilterArr.includes(window.location.host)) {
-      //   fetchModuleListData({
-      //     subject_id: history?.location?.state?.subjectID,
-      //     volume: history?.location?.state?.volumeID,
-      //     academic_year: history?.location?.state?.centralAcademicYearID,
-      //     grade_id: history?.location?.state?.gradeID,
-      //     branch_id: selectedBranch?.branch?.id,
-      //     board: history?.location?.state?.boardID,
-      //   });
-      // } else {
-
-      // }
     }
   }, [window.location.pathname]);
   useEffect(() => {
@@ -1144,16 +1138,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           });
                         }}
                       >
-                        {/* <div className='row th-fw-600 th-pointer th-primary'>
-                            <div className=''>Portion Document</div>
-                            <div className='ml-3'>
-                              <EyeFilled
-                                className='th-primary'
-                                fontSize={20}
-                                style={{ verticalAlign: 'inherit' }}
-                              />
-                            </div>
-                          </div> */}
                         <div className=' pl-0 col-12e4l th-primary '>
                           <Badge count='1'>
                             <Button icon={<FilePptOutlined />} />
@@ -1188,16 +1172,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           });
                         }}
                       >
-                        {/* <div className='row th-fw-600 th-pointer th-primary'>
-                            <div className=''>Yearly Curriculum Plan</div>
-                            <div className='ml-3'>
-                              <EyeFilled
-                                className='th-primary'
-                                fontSize={20}
-                                style={{ verticalAlign: 'inherit' }}
-                              />
-                            </div>
-                          </div> */}
                         <div className=' pl-0 col-12e4l th-primary '>
                           <Badge count='1'>
                             <Button icon={<SnippetsOutlined />} />
@@ -1594,6 +1568,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                             if (
                               (user_level == 13 &&
                                 files?.document_type == 'Lesson_Plan') ||
+                              (user_level == 13 && files?.document_type == 'Homework') ||
                               (user_level == 13 &&
                                 files?.document_type == 'Teacher_Reading_Material')
                             ) {
@@ -1762,32 +1737,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                     />
                                   </a>
                                 </div>
-                                {/* <div className='col-3'>
-                                  <Button
-                                    type='primary'
-                                    className='th-br-4'
-                                    onClick={() => openQpDrawer(files.question_paper_id)}
-                                  >
-                                    View
-                                  </Button>
-                                </div> */}
                               </div>
                             </div>
                           </div>
-                          {/* <div className='row justify-content-end mt-3'>
-                            <div
-                              className='col-md-5 text-right'
-                              style={{ marginRight: '-15px' }}
-                            >
-                              <Button
-                                type='primary'
-                                className='th-br-4 btn-sm'
-                                onClick={() => handleAssign(files)}
-                              >
-                                <PlusCircleOutlined /> Assign Test
-                              </Button>
-                            </div>
-                          </div> */}
                         </div>
                       ) : null}
                     </>
@@ -1963,7 +1915,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                 });
                               } else {
                                 message.error(
-                                  'Please update the desired sections first!!'
+                                  'Please update the status of desired sections first!!'
                                 );
                               }
                             }
@@ -2012,7 +1964,12 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                             {item}
                                           </div>
                                           <div className='th-green th-14'>
-                                            Successfully Assigned
+                                            Successfully Assigned for Sections &nbsp;
+                                            {diaryHWList[item][0]?.section
+                                              ?.map((item) =>
+                                                item?.slice(-1)?.toUpperCase()
+                                              )
+                                              .join(', ')}
                                           </div>
                                         </div>
                                       </div>
@@ -2026,64 +1983,65 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                     <div className='col-12'>
                                       <div className='d-flex justify-content-between'>
                                         <div className='th-fw-500'>{each}</div>
-                                        {/* {user_id == diaryHWList['diary'][0].created_by ? ( */}
-                                        <Space>
-                                          <Tag
-                                            icon={<FormOutlined />}
-                                            title='Edit'
-                                            color='processing'
-                                            className='th-pointer th-br-6'
-                                            onClick={() => {
-                                              history.push({
-                                                pathname: '/create/diary',
-                                                state: {
-                                                  data: {
-                                                    ...diaryHWList[item][0],
-                                                    section_name: each,
-                                                    section_mapping_id:
-                                                      diaryHWList[item][0]
-                                                        .section_mapping[index],
-                                                    section_id:
-                                                      diaryHWList[item][0].section_id[
-                                                        index
-                                                      ],
-                                                  },
-                                                  subject: {
-                                                    subject_name: subjectName,
-                                                    subject_id: subjectId,
-                                                  },
-                                                  isDiaryEdit: true,
-                                                },
-                                              });
-                                            }}
-                                          >
-                                            Edit
-                                          </Tag>
-                                          <Popconfirm
-                                            placement='bottomRight'
-                                            title={
-                                              'Are you sure you want to delete this diary?'
-                                            }
-                                            onConfirm={() =>
-                                              deleteDiary(
-                                                diaryHWList['diary'][0].dairy_id
-                                              )
-                                            }
-                                            okText='Yes'
-                                            cancelText='No'
-                                            zIndex={2100}
-                                          >
+                                        {user_id ==
+                                        diaryHWList['diary'][0]?.created_by ? (
+                                          <Space>
                                             <Tag
-                                              icon={<DeleteOutlined />}
-                                              title='Delete'
-                                              color='volcano'
+                                              icon={<FormOutlined />}
+                                              title='Edit'
+                                              color='processing'
                                               className='th-pointer th-br-6'
+                                              onClick={() => {
+                                                history.push({
+                                                  pathname: '/create/diary',
+                                                  state: {
+                                                    data: {
+                                                      ...diaryHWList[item][0],
+                                                      section_name: each,
+                                                      section_mapping_id:
+                                                        diaryHWList[item][0]
+                                                          .section_mapping[index],
+                                                      section_id:
+                                                        diaryHWList[item][0].section_id[
+                                                          index
+                                                        ],
+                                                    },
+                                                    subject: {
+                                                      subject_name: subjectName,
+                                                      subject_id: subjectId,
+                                                    },
+                                                    isDiaryEdit: true,
+                                                  },
+                                                });
+                                              }}
                                             >
-                                              Delete
+                                              Edit
                                             </Tag>
-                                          </Popconfirm>
-                                        </Space>
-                                        {/* ) : (
+                                            <Popconfirm
+                                              placement='bottomRight'
+                                              title={
+                                                'Are you sure you want to delete this diary?'
+                                              }
+                                              onConfirm={() =>
+                                                deleteDiary(
+                                                  diaryHWList['diary'][0].dairy_id
+                                                )
+                                              }
+                                              okText='Yes'
+                                              cancelText='No'
+                                              zIndex={2100}
+                                            >
+                                              <Tag
+                                                icon={<DeleteOutlined />}
+                                                title='Delete'
+                                                color='volcano'
+                                                className='th-pointer th-br-6'
+                                              >
+                                                Delete
+                                              </Tag>
+                                            </Popconfirm>
+                                          </Space>
+                                        ) : (
                                           <Space>
                                             <div
                                               className='th-pointer th-button-active th-br-8 px-2 py-1 th-12'
@@ -2098,7 +2056,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                               View Diary
                                             </div>
                                           </Space>
-                                        )} */}
+                                        )}
                                       </div>
                                     </div>
                                   ))}
@@ -2108,40 +2066,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           </div>
                         ) : null;
                       })}
-                      {/* <div className='row'>
-                        <Collapse
-                          expandIconPosition='right'
-                          bordered={true}
-                          className='th-br-6 my-2 th-bg-white th-width-100'
-                          style={{ border: '1px solid #d9d9d9' }}
-                          expandIcon={({ isActive }) => (
-                            <CaretRightOutlined rotate={isActive ? 90 : 0} />
-                          )}
-                          // onChange={() => setCurrentPeriodPanel(i)}
-                        >
-                          <Panel
-                            collapsible={true}
-                            header={
-                              <div className='row'>
-                                <div className='th-black-1 px-0 col-12 pl-0'>
-                                  <div className='row justify-content-between'>
-                                    <span className='th-fw-500 th-16'>
-                                      Assigned Homework{' '}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            }
-                            // key={i}
-                          >
-                            <div className='row'>
-                              <div className='col-12'>Section A</div>
-                              <div className='col-12'>Section B</div>
-                              <div className='col-12'>Section C</div>
-                            </div>
-                          </Panel>
-                        </Collapse>
-                      </div> */}
                     </>
                   )}
                 </div>
