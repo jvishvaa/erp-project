@@ -41,7 +41,8 @@ import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIco
 import AssessmentIcon from 'v2/Assets/dashboardIcons/diaryIcons/AssessmentIcon.svg';
 import _ from 'lodash';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { getActivityColor } from 'v2/generalActivityFunction';
+import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
+
 let boardFilterArr = [
   'orchids.letseduvate.com',
   'localhost:3000',
@@ -136,22 +137,28 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [centralHomework, setCentralHomework] = useState([]);
   const [currentPeriodData, setCurrentPeriodData] = useState([]);
   const [hwDiaryPeriodMappingId, setHwDiaryPeriodMappingId] = useState();
+  const [selectedChapterTopic, setSelectedChapterTopic] = useState([]);
   const questionModify = (questions) => {
     let arr = [];
     questions.map((question) => {
       arr.push({
         id: question.homework_id,
         question: question.question,
-        attachments: question.question_files,
+        attachments: question.question_files
+          ? question.question_files
+          : question.attachments,
         is_attachment_enable: question.is_attachment_enable,
         max_attachment: question.max_attachment,
-        penTool: question.is_pen_editor_enable,
-        is_central: question.is_central,
+        penTool: question.is_pen_editor_enable
+          ? question.is_pen_editor_enable
+          : question?.penTool
+          ? question?.penTool
+          : false,
+        is_central: question.is_central ? question.is_central : false,
       });
     });
     return arr;
   };
-
   const formRef = createRef();
   const history = useHistory();
 
@@ -221,53 +228,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
 
   const checkActivityData = (activityName) => {
-    if (activityName.includes('Physical Activity')) {
+    if (
+      ActivityTypes.includes(activityName.split('_')[activityName.split('_').length - 1])
+    ) {
       fetchActivityData({
         branch_id: selectedBranch?.branch?.id,
         grade_id: gradeID,
-        section_id: sectionID,
+        section_id: sectionID.toString(),
         start_date: moment().format('YYYY-MM-DD'),
-        type: 'pa',
-      });
-    } else if (activityName.includes('Public Speaking')) {
-      fetchActivityData({
-        branch_id: selectedBranch?.branch?.id,
-        grade_id: gradeID,
-        section_id: sectionID,
-        start_date: moment().format('YYYY-MM-DD'),
-        type: 'ps',
-      });
-    } else if (activityName.includes('Visual Arts')) {
-      fetchActivityData({
-        branch_id: selectedBranch?.branch?.id,
-        grade_id: gradeID,
-        section_id: sectionID,
-        start_date: moment().format('YYYY-MM-DD'),
-        type: 'va',
-      });
-    } else if (activityName.includes('Theatre')) {
-      fetchActivityData({
-        branch_id: selectedBranch?.branch?.id,
-        grade_id: gradeID,
-        section_id: sectionID,
-        start_date: moment().format('YYYY-MM-DD'),
-        type: 'th',
-      });
-    } else if (activityName.includes('Dance')) {
-      fetchActivityData({
-        branch_id: selectedBranch?.branch?.id,
-        grade_id: gradeID,
-        section_id: sectionID,
-        start_date: moment().format('YYYY-MM-DD'),
-        type: 'da',
-      });
-    } else if (activityName.includes('Music')) {
-      fetchActivityData({
-        branch_id: selectedBranch?.branch?.id,
-        grade_id: gradeID,
-        section_id: sectionID,
-        start_date: moment().format('YYYY-MM-DD'),
-        type: 'mu',
+        type: activityName.split('_')[activityName.split('_').length - 1],
       });
     }
   };
@@ -861,6 +830,22 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       mapAssignedHomework();
     }
   }, [assignedHomework]);
+  useEffect(() => {
+    if (isAutoAssignDiary & (selectedChapterTopic.length > 0)) {
+      let title = selectedChapterTopic?.reduce((initialValue, data) => {
+        let key = data['chapter'];
+        if (!initialValue[key]) {
+          initialValue[key] = [];
+        }
+        initialValue[key].push(data?.keyConcept);
+        return initialValue;
+      }, {});
+      let combinedTitle = Object.keys(title)
+        ?.map((item) => item + ' - ' + title[item]?.map((each) => each).join(','))
+        .join(',');
+      setHomeworkTitle(`HW : ${combinedTitle}`);
+    }
+  }, [selectedChapterTopic]);
 
   useEffect(() => {
     if (addedPeriods.length > 0) {
@@ -965,13 +950,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         section_mapping: sectionMappingID.join(','),
         subject: subjectID,
         date: moment().format('YYYY-MM-DD'),
-        // user_id: user_id,
       });
-      // setHomeworkTitle('');
-      // setHomeworkInstructions('');
       setHomeworkCreated(true);
 
-      setQuestionList(reqObj?.questions);
+      // setQuestionList(reqObj?.questions);
 
       // history.goBack();
     } catch (error) {
@@ -1163,10 +1145,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         setClearUpcomingPeriod(false);
         setUpcomingPeriod(editData?.up_coming_period);
       }
-      // setRecap(editData?.teacher_report?.previous_class);
-      // setClasswork(editData?.teacher_report?.class_work);
       setSummary(editData?.teacher_report?.summary);
-      // setTools(editData?.teacher_report?.tools_used);
       setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
       if (editData?.teacher_report?.homework) {
@@ -1235,12 +1214,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
             keyConceptID: periodData?.keyConceptID,
           },
         ]);
-        // fetchSectionData({
-        //   session_year: selectedAcademicYear?.id,
-        //   branch_id: selectedBranch?.branch?.id,
-        //   grade_id: periodData?.gradeID,
-        //   module_id: moduleId,
-        // });
+        setSelectedChapterTopic([
+          {
+            chapter: periodData?.chapterName,
+            keyConcept: periodData?.keyConceptName,
+          },
+        ]);
         fetchCentralHomework({
           chapter: periodData?.chapterID,
           period: periodData?.periodName,
@@ -1313,54 +1292,40 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         if (response?.data?.status_code == 200) {
           let data = history?.location?.state?.periodData;
           let homeworkData = response?.data?.result.filter(
-            (item) => item.document_type == 'Homework'
-          )[0];
-          let centralHomework = {
-            id: cuid(),
-            question: homeworkData?.homework_text,
-            question_files: homeworkData?.media_file,
-            is_attachment_enable: false,
-            max_attachment: 2,
-            is_pen_editor_enable: false,
-            is_central: true,
-          };
-          // setCentralHomework({
-          //   period_id: 5302,
-          //   id: 51633,
-          //   document_type: 'Homework',
-          //   media_file: [
-          //     'dev/homework_file/35/38/218/970/5302homework/1684213243_frame_48.jpg',
-          //     'dev/homework_file/35/38/218/970/5302homework/1684213620_image_18_(1)_(1).png',
-          //   ],
-          //   mapping_id: 218,
-          //   quesion_paper_ids: [],
-          //   is_quiz: false,
-          //   homework_text: 'period 5',
-          // });
-
-          setShowHomeworkForm(true);
-          if (questionList.length == 1 && questionList[0]?.is_central !== true) {
-            setQuestionList(questionModify([centralHomework]));
-          } else {
-            setQuestionList(questionModify([...questionList, centralHomework]));
-          }
-          // setQuestionList((prevState) => [centralHomework]);
-          setHomeworkTitle(`${data?.chapterName}-${data?.keyConceptName}`);
-          setSubmissionDate(
-            moment(homeworkDetails?.last_submission_dt)
-              .add(1, 'days')
-              .format('YYYY-MM-DD')
+            (item) => item.document_type == 'Homework' && item?.homework_text !== ''
           );
-          // setHomeworkMapped(true);
+          if (homeworkData.length > 0) {
+            let centralHomework = {
+              id: cuid(),
+              question: homeworkData[0]?.homework_text,
+              question_files: homeworkData[0]?.media_file,
+              is_attachment_enable: false,
+              max_attachment: 2,
+              is_pen_editor_enable: false,
+              is_central: true,
+            };
+            setShowHomeworkForm(true);
+            if (questionList.length == 1 && questionList[0]?.is_central !== true) {
+              setQuestionList(questionModify([centralHomework]));
+            } else {
+              setQuestionList(questionModify([...questionList, centralHomework]));
+            }
+            setSubmissionDate(
+              moment(homeworkDetails?.last_submission_dt)
+                .add(1, 'days')
+                .format('YYYY-MM-DD')
+            );
+            // setHomeworkMapped(true);
+          }
         }
       })
       .catch((error) => {
         message.error(error.message);
       });
   };
-
   useEffect(() => {
-    if (homeworkDetails) {
+    if (homeworkDetails && !isAutoAssignDiary) {
+      alert('lllll');
       setQuestionList(questionModify(homeworkDetails?.hw_questions));
       setSubmissionDate(moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD'));
       setHomeworkTitle(homeworkDetails?.homework_name);
@@ -1435,7 +1400,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <div className='text-capitalize th-fw-700 th-black-1'>Section</div>
                 <Form.Item name='section'>
                   <Select
-                    disabled={isDiaryEdit}
+                    disabled={
+                      isDiaryEdit ? true : sectionMappingID.length == 1 ? true : false
+                    }
                     mode={isAutoAssignDiary ? 'multiple' : 'single'}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleSection(value)}
@@ -1958,15 +1925,17 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                       {showHomeworkForm && (
                         <div className='row'>
                           <div className='col-6'>
-                            <Button
-                              className='th-width-100 th-br-6 th-pointer'
-                              onClick={() => {
-                                setQueIndexCounter(queIndexCounter + 1);
-                                addNewQuestion(queIndexCounter + 1);
-                              }}
-                            >
-                              Add Another Question
-                            </Button>
+                            {questionList.length < 5 ? (
+                              <Button
+                                className='th-width-100 th-br-6 th-pointer'
+                                onClick={() => {
+                                  setQueIndexCounter(queIndexCounter + 1);
+                                  addNewQuestion(queIndexCounter + 1);
+                                }}
+                              >
+                                Add Another Question
+                              </Button>
+                            ) : null}
                           </div>
                           <div className='col-6'>
                             <Button
@@ -2471,6 +2440,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           setCompletedPeriod(item);
                                           openPeriodInfoModal();
                                           setAddedPeriods([...addedPeriods, item]);
+                                          setSelectedChapterTopic([
+                                            ...selectedChapterTopic,
+                                            {
+                                              chapter: item?.chapter__chapter_name,
+                                              keyConcept: item?.key_concept__topic_name,
+                                            },
+                                          ]);
+
                                           fetchCentralHomework({
                                             chapter: chapterID,
                                             period: item?.period_name,

@@ -49,3 +49,13 @@ export const getActivityColor = (value) => {
       return '';
   }
 };
+
+export const ActivityTypes = [
+  'Physical Activity',
+  'Music',
+  'Dance',
+  'Theatre',
+  'Visual Art',
+  'Blog Activity',
+  'Posts',
+];
