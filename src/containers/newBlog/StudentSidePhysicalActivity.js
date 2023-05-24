@@ -54,6 +54,7 @@ const StudentSidePhysicalActivity = () => {
   const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
+  const [isRoundAvailable, setIsRoundAvailable] = useState(false);
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
@@ -98,7 +99,8 @@ const StudentSidePhysicalActivity = () => {
     });
   }, [currentPageAssigned]);
   const handleShowReview = (data) => {
-    getRatingView(data?.id);
+    //getRatingView(data?.id);
+    newFetchTeacherListFn(data?.id, data.activity_detail_id);
     fetchMedia(data?.id);
     setShowDrawer(true);
     setSelectedActivity(data);
@@ -107,13 +109,53 @@ const StudentSidePhysicalActivity = () => {
     fetchBMIData(data?.id);
   };
 
+  const newFetchTeacherListFn = async (id, activityId) => {
+    try {
+      var isvalue = false;
+      const { data } = await axios.get(`${endpoints.newBlog.getRoundShowHide}?activity_detail_id=${activityId}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((responseNew) => {
+        setIsRoundAvailable(responseNew?.data?.is_round_available);
+        isvalue = responseNew?.data?.is_round_available;
+        console.log(responseNew?.data?.is_round_available);
+      })
+      .then(isRoundAvail => axios.get(`${
+        endpoints.newBlog.studentReviewss
+      }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${isvalue}`,
+      {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then(response => {
+        response.data.map((obj) => {
+          let temp = {};
+          temp['id'] = obj.id;
+          temp['name'] = obj.level.name;
+          temp['remarks'] = obj.remarks;
+          temp['given_rating'] = obj.given_rating;
+          temp['level'] = obj?.level?.rating;
+          array.push(temp);
+        });
+        setRatingReview(response.data);
+        setLoading(false);
+      }));
+      
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   let array = [];
-  const getRatingView = (id) => {
+  const getRatingView = (id, activityId) => {
     axios
       .get(
         `${
           endpoints.newBlog.studentReviewss
-        }?booking_detail_id=${id}&response_is_change=${true}`,
+        }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${activityId}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -206,14 +248,14 @@ const StudentSidePhysicalActivity = () => {
         </span>
       ),
     },
-    {
-      title: <span className='th-white th-fw-700'>Overall Score</span>,
-      dataIndex: 'creator',
-      align: 'center',
-      render: (text, row) => (
-        <span className='th-black-1'> {row?.user_reviews?.remarks}</span>
-      ),
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>Overall Score</span>,
+    //   dataIndex: 'creator',
+    //   align: 'center',
+    //   render: (text, row) => (
+    //     <span className='th-black-1'> {row?.user_reviews?.remarks}</span>
+    //   ),
+    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -295,7 +337,7 @@ const StudentSidePhysicalActivity = () => {
       }, []);
 
     let overValueAllData = arr
-      .filter((item) => item?.name.toLowerCase() === 'overall')
+      .filter((item) => item?.name?.toLowerCase() === 'overall')
       .map((item) => item);
     setOverAllData(overValueAllData);
     setTableHeader(headersData);
