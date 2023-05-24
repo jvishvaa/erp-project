@@ -89,7 +89,7 @@ const getFileIcon = (type) => {
   }
 };
 
-const TableView = ({showTab, initAddQuestionPaperToTest}) => {
+const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const formRef = createRef();
@@ -1263,6 +1263,7 @@ const TableView = ({showTab, initAddQuestionPaperToTest}) => {
                             if (
                               (user_level == 13 &&
                                 files?.document_type == 'Lesson_Plan') ||
+                              (user_level == 13 && files?.document_type == 'Homework') ||
                               (user_level == 13 &&
                                 files?.document_type == 'Teacher_Reading_Material')
                             ) {
@@ -1470,7 +1471,12 @@ const TableView = ({showTab, initAddQuestionPaperToTest}) => {
                                     </div>
                                     <div className='col-1'>
                                       <a
-                                        onClick={() => handleAssign(files, item?.central_grade_subject_map_id)}
+                                        onClick={() =>
+                                          handleAssign(
+                                            files,
+                                            item?.central_grade_subject_map_id
+                                          )
+                                        }
                                         rel='noopener noreferrer'
                                         target='_blank'
                                         title='Assign Test'
