@@ -131,7 +131,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
 
   const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
   const [loadingDiaryHW, setLoadingDiaryHW] = useState(false);
-  const [diaryHWList, setDiaryHWList] = useState({});
+  const [assignedHWList, setAssignedHWList] = useState([]);
+  const [assignedDiaryList, setAssignedDiaryList] = useState([]);
 
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
@@ -784,7 +785,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       .get(`academic/diary/fetch-diary-homework/`, { params: { ...params } })
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          setDiaryHWList(response?.data?.result);
+          setAssignedHWList(response?.data?.result['homework']);
+          setAssignedDiaryList(response?.data?.result['diary']);
         }
       })
       .catch((error) => {
@@ -794,13 +796,35 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
         setLoadingDiaryHW(false);
       });
   };
+  const deleteHomework = (id) => {
+    axios
+      .delete(`/academic/${id}/hw-questions/`)
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          message.success('Homework deleted successfully!');
+          setAssignedDiaryList([]);
+          setAssignedHWList([]);
+          fetchDiaryCompletionStatus({
+            period_id: resourcesData?.id,
+            section_mapping: resourcesData?.section_wise_completion
+              ?.map((item) => item?.id)
+              .join(','),
+            subject: subjectId,
+          });
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
   const deleteDiary = (id) => {
     axios
       .delete(`${endpoints?.dailyDiary?.updateDelete}${id}/update-delete-dairy/`)
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          message.success('Diary Deleted Successfully');
-          setDiaryHWList({ diary: [], homework: [] });
+          message.success('Diary deleted successfully!');
+          setAssignedDiaryList([]);
+          setAssignedHWList([]);
           fetchDiaryCompletionStatus({
             period_id: resourcesData?.id,
             section_mapping: resourcesData?.section_wise_completion
@@ -1876,7 +1900,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                             </div>
                           </div>
                         </div>
-                        {diaryHWList['diary'][0]?.section?.length !==
+                        {assignedDiaryList.map((item) => item?.section).flat().length !==
                           resourcesData?.section_wise_completion?.length && (
                           <div
                             className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'
@@ -1913,6 +1937,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                         board: boardId,
                                       },
                                       isDiaryAutoAssign: true,
+                                      isDiaryEdit: true,
                                     },
                                   });
                                 } else {
@@ -1935,10 +1960,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                     </div>
                   ) : (
                     <>
-                      {Object.keys(diaryHWList)?.map((item) => {
-                        return diaryHWList[item]?.length > 0 ? (
-                          <div className='row'>
-                            {user_level == 13 ? (
+                      <div className='row'>
+                        {user_level == 13 ? (
+                          <>
+                            {assignedDiaryList?.map((item) => (
                               <div
                                 className='col-12 py-3 mt-3'
                                 style={{ border: '1px solid #d9d9d9' }}
@@ -1946,10 +1971,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                 <div className='d-flex justify-content-between align-items-center'>
                                   <div className='d-flex justify-content-between align-items-center th-fw-600'>
                                     <ReadOutlined className='th-primary th-24 mr-3' />
-                                    <span className='text-capitalize'>
-                                      {item}&nbsp;
-                                    </span>{' '}
-                                    successfully assigned
+                                    Diary assigned
                                   </div>
                                   <div
                                     className='th-pointer th-button-active th-br-8 px-2 py-1 th-12 text-capitalize'
@@ -1957,156 +1979,325 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                       history.push({
                                         pathname: '/diary/student',
                                         state: {
-                                          diary_created_at:
-                                            diaryHWList['diary'][0]?.diary_created_at,
+                                          diary_created_at: item?.diary_created_at,
                                         },
                                       });
                                     }}
                                   >
-                                    View {item}
+                                    View Diary
                                   </div>
                                 </div>
                               </div>
-                            ) : (
-                              <Collapse
-                                expandIconPosition='right'
-                                bordered={true}
-                                className='th-br-6 my-2 th-bg-white th-width-100'
+                            ))}
+                            {assignedHWList?.map((item) => (
+                              <div
+                                className='col-12 py-3 mt-3'
                                 style={{ border: '1px solid #d9d9d9' }}
-                                expandIcon={({ isActive }) => (
-                                  <CaretRightOutlined rotate={isActive ? 90 : 0} />
-                                )}
-                                // onChange={() => setCurrentPeriodPanel(i)}
                               >
-                                <Panel
-                                  collapsible={true}
-                                  header={
-                                    <div className='row'>
-                                      <div className='th-black-1 px-0 col-12 pl-0'>
-                                        <div className='row justify-content-between align-items-center'>
-                                          <div className='col-2'>
-                                            <ReadOutlined
-                                              style={{
-                                                fontSize: 30,
-                                                color: '#1b4ccb',
-                                              }}
-                                            />
-                                          </div>
-                                          <div className='col-10'>
-                                            <div className='th-fw-500 th-16 text-capitalize'>
-                                              {item}
-                                            </div>
-                                            <div className='th-green th-14'>
-                                              Successfully Assigned for Sections &nbsp;
-                                              {diaryHWList[item][0]?.section
-                                                ?.map((item) =>
-                                                  item?.slice(-1)?.toUpperCase()
-                                                )
-                                                .join(', ')}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  }
-                                  // key={i}
-                                >
-                                  <div className='row'>
-                                    {diaryHWList[item][0]?.section?.map((each, index) => (
-                                      <div className='col-12'>
-                                        <div className='d-flex justify-content-between align-items-center py-2'>
-                                          <div className='th-fw-500 text-capitalize'>
-                                            {each}
-                                          </div>
-                                          {user_id ==
-                                          diaryHWList['diary'][0]?.created_by ? (
-                                            <Space>
-                                              <Tag
-                                                icon={<FormOutlined />}
-                                                title='Edit'
-                                                color='processing'
-                                                className='th-pointer th-br-6'
-                                                onClick={() => {
-                                                  history.push({
-                                                    pathname: '/create/diary',
-                                                    state: {
-                                                      data: {
-                                                        ...diaryHWList[item][0],
-                                                        diary_id:
-                                                          diaryHWList[item][0].dairy_id,
-                                                        section_name: each,
-                                                        section_mapping_id:
-                                                          diaryHWList[item][0]
-                                                            .section_mapping[index],
-                                                        section_id:
-                                                          diaryHWList[item][0].section_id[
-                                                            index
-                                                          ],
-                                                      },
-                                                      subject: {
-                                                        subject_name: subjectName,
-                                                        subject_id: subjectId,
-                                                      },
-                                                      isDiaryEdit: true,
-                                                    },
-                                                  });
-                                                }}
-                                              >
-                                                Edit
-                                              </Tag>
-                                              <Popconfirm
-                                                placement='bottomRight'
-                                                title={
-                                                  'Are you sure you want to delete this diary?'
-                                                }
-                                                onConfirm={() =>
-                                                  deleteDiary(
-                                                    diaryHWList['diary'][0].dairy_id
-                                                  )
-                                                }
-                                                okText='Yes'
-                                                cancelText='No'
-                                                zIndex={2100}
-                                              >
-                                                <Tag
-                                                  icon={<DeleteOutlined />}
-                                                  title='Delete'
-                                                  color='volcano'
-                                                  className='th-pointer th-br-6'
-                                                >
-                                                  Delete
-                                                </Tag>
-                                              </Popconfirm>
-                                            </Space>
-                                          ) : (
-                                            <Space>
-                                              <div
-                                                className='th-pointer th-button-active th-br-8 px-2 py-1 th-12'
-                                                onClick={() => {
-                                                  history.push({
-                                                    pathname: '/diary/teacher',
-                                                    state: {
-                                                      diary_created_at:
-                                                        diaryHWList['diary'][0]
-                                                          ?.diary_created_at,
-                                                    },
-                                                  });
-                                                }}
-                                              >
-                                                View Diary
-                                              </div>
-                                            </Space>
-                                          )}
-                                        </div>
-                                      </div>
-                                    ))}
+                                <div className='d-flex justify-content-between align-items-center'>
+                                  <div className='d-flex justify-content-between align-items-center th-fw-600'>
+                                    <ReadOutlined className='th-primary th-24 mr-3' />
+                                    Homework assigned
                                   </div>
-                                </Panel>
-                              </Collapse>
+                                  <div
+                                    className='th-pointer th-button-active th-br-8 px-2 py-1 th-12 text-capitalize'
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: '/homework/student',
+                                      });
+                                    }}
+                                  >
+                                    View Homework
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          <>
+                            {assignedDiaryList.length > 0 && (
+                              <div className='col-12 px-0'>
+                                <Collapse
+                                  expandIconPosition='right'
+                                  bordered={true}
+                                  className='th-br-6 my-2 th-bg-white th-width-100'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                  expandIcon={({ isActive }) => (
+                                    <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                                  )}
+                                >
+                                  <Panel
+                                    collapsible={true}
+                                    header={
+                                      <div className='row'>
+                                        <div className='col-2'>
+                                          <ReadOutlined
+                                            style={{
+                                              fontSize: 30,
+                                              color: '#1b4ccb',
+                                            }}
+                                          />
+                                        </div>
+                                        <div className='col-10'>
+                                          <div className='th-fw-500 th-16 text-capitalize'>
+                                            Diary
+                                          </div>
+                                          <div className='th-green th-14'>
+                                            Successfully Assigned for Sections &nbsp;
+                                            {assignedDiaryList
+                                              .map((item) => item?.section.toString())
+                                              ?.map((item) =>
+                                                item?.slice(-1)?.toUpperCase()
+                                              )
+                                              .join(', ')}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    }
+                                  >
+                                    <div className='row'>
+                                      {assignedDiaryList?.map((el, index) => {
+                                        return el?.section?.map((each, sectionIndex) => (
+                                          <div className='col-12'>
+                                            <div className='d-flex justify-content-between align-items-center py-2'>
+                                              <div className='th-fw-500 text-capitalize'>
+                                                {each}
+                                              </div>
+                                              {user_id ==
+                                              assignedDiaryList[index]?.created_by ? (
+                                                <Space>
+                                                  <Tag
+                                                    icon={<FormOutlined />}
+                                                    title='Edit'
+                                                    color='processing'
+                                                    className='th-pointer th-br-6'
+                                                    onClick={() => {
+                                                      history.push({
+                                                        pathname: '/create/diary',
+                                                        state: {
+                                                          data: {
+                                                            ...assignedDiaryList[index],
+                                                            diary_id:
+                                                              assignedDiaryList[index]
+                                                                .dairy_id,
+                                                            section_name: each,
+                                                            section_mapping_id:
+                                                              assignedDiaryList[index]
+                                                                .section_mapping[
+                                                                sectionIndex
+                                                              ],
+                                                            section_id:
+                                                              assignedDiaryList[index]
+                                                                ?.section_id[
+                                                                sectionIndex
+                                                              ],
+                                                          },
+                                                          subject: {
+                                                            subject_name: subjectName,
+                                                            subject_id: subjectId,
+                                                          },
+                                                          isDiaryEdit: true,
+                                                        },
+                                                      });
+                                                    }}
+                                                  >
+                                                    Edit
+                                                  </Tag>
+                                                  <Popconfirm
+                                                    placement='bottomRight'
+                                                    title={
+                                                      'Are you sure you want to delete this diary?'
+                                                    }
+                                                    onConfirm={() =>
+                                                      deleteDiary(
+                                                        assignedDiaryList[index].dairy_id
+                                                      )
+                                                    }
+                                                    okText='Yes'
+                                                    cancelText='No'
+                                                    zIndex={2100}
+                                                  >
+                                                    <Tag
+                                                      icon={<DeleteOutlined />}
+                                                      title='Delete'
+                                                      color='volcano'
+                                                      className='th-pointer th-br-6'
+                                                    >
+                                                      Delete
+                                                    </Tag>
+                                                  </Popconfirm>
+                                                </Space>
+                                              ) : (
+                                                <Space>
+                                                  <div
+                                                    className='th-pointer th-button-active th-br-8 px-2 py-1 th-12'
+                                                    onClick={() => {
+                                                      history.push({
+                                                        pathname: '/diary/teacher',
+                                                        state: {
+                                                          diary_created_at:
+                                                            assignedDiaryList[index]
+                                                              ?.diary_created_at,
+                                                        },
+                                                      });
+                                                    }}
+                                                  >
+                                                    View Diary
+                                                  </div>
+                                                </Space>
+                                              )}
+                                            </div>
+                                          </div>
+                                        ));
+                                      })}
+                                    </div>
+                                  </Panel>
+                                </Collapse>
+                              </div>
                             )}
-                          </div>
-                        ) : null;
-                      })}
+                            {assignedDiaryList.length > 0 && (
+                              <div className='col-12 px-0'>
+                                <Collapse
+                                  expandIconPosition='right'
+                                  bordered={true}
+                                  className='th-br-6 my-2 th-bg-white th-width-100'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                  expandIcon={({ isActive }) => (
+                                    <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                                  )}
+                                >
+                                  <Panel
+                                    collapsible={true}
+                                    header={
+                                      <div className='row'>
+                                        <div className='col-2'>
+                                          <ReadOutlined
+                                            style={{
+                                              fontSize: 30,
+                                              color: '#1b4ccb',
+                                            }}
+                                          />
+                                        </div>
+                                        <div className='col-10'>
+                                          <div className='th-fw-500 th-16 text-capitalize'>
+                                            Diary
+                                          </div>
+                                          <div className='th-green th-14'>
+                                            Successfully Assigned for Sections &nbsp;
+                                            {assignedDiaryList
+                                              .map((item) => item?.section.toString())
+                                              ?.map((item) =>
+                                                item?.slice(-1)?.toUpperCase()
+                                              )
+                                              .join(', ')}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    }
+                                  >
+                                    <div className='row'>
+                                      {assignedHWList?.map((el, index) => {
+                                        return el?.section?.map((each, sectionIndex) => (
+                                          <div className='col-12'>
+                                            <div className='d-flex justify-content-between align-items-center py-2'>
+                                              <div className='th-fw-500 text-capitalize'>
+                                                {each}
+                                              </div>
+                                              {user_id ==
+                                              assignedHWList[index]?.created_by_staff ? (
+                                                <Space>
+                                                  <Tag
+                                                    icon={<FormOutlined />}
+                                                    title='Edit'
+                                                    color='processing'
+                                                    className='th-pointer th-br-6'
+                                                    onClick={() => {
+                                                      // history.push({
+                                                      //   pathname: '/create/diary',
+                                                      //   state: {
+                                                      //     data: {
+                                                      //       ...assignedDiaryList[index],
+                                                      //       diary_id:
+                                                      //         assignedDiaryList[index]
+                                                      //           .dairy_id,
+                                                      //       section_name: each,
+                                                      //       section_mapping_id:
+                                                      //         assignedDiaryList[index]
+                                                      //           .section_mapping[
+                                                      //           sectionIndex
+                                                      //         ],
+                                                      //       section_id:
+                                                      //         assignedDiaryList[index]
+                                                      //           ?.section_id[
+                                                      //           sectionIndex
+                                                      //         ],
+                                                      //     },
+                                                      //     subject: {
+                                                      //       subject_name: subjectName,
+                                                      //       subject_id: subjectId,
+                                                      //     },
+                                                      //     isDiaryEdit: true,
+                                                      //   },
+                                                      // });
+                                                    }}
+                                                  >
+                                                    Edit
+                                                  </Tag>
+                                                  <Popconfirm
+                                                    placement='bottomRight'
+                                                    title={
+                                                      'Are you sure you want to delete this homework?'
+                                                    }
+                                                    onConfirm={() =>
+                                                      deleteHomework(
+                                                        assignedHWList[index].homework_id
+                                                      )
+                                                    }
+                                                    okText='Yes'
+                                                    cancelText='No'
+                                                    zIndex={2100}
+                                                  >
+                                                    <Tag
+                                                      icon={<DeleteOutlined />}
+                                                      title='Delete'
+                                                      color='volcano'
+                                                      className='th-pointer th-br-6'
+                                                    >
+                                                      Delete
+                                                    </Tag>
+                                                  </Popconfirm>
+                                                </Space>
+                                              ) : (
+                                                <Space>
+                                                  <div
+                                                    className='th-pointer th-button-active th-br-8 px-2 py-1 th-12'
+                                                    onClick={() => {
+                                                      history.push({
+                                                        pathname: '/diary/teacher',
+                                                        state: {
+                                                          diary_created_at:
+                                                            assignedDiaryList[index]
+                                                              ?.diary_created_at,
+                                                        },
+                                                      });
+                                                    }}
+                                                  >
+                                                    View Diary
+                                                  </div>
+                                                </Space>
+                                              )}
+                                            </div>
+                                          </div>
+                                        ));
+                                      })}
+                                    </div>
+                                  </Panel>
+                                </Collapse>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </>
                   )}
                 </div>
