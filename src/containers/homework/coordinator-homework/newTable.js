@@ -1,8 +1,15 @@
 import React, { useContext, useState, useEffect, useRef, createRef } from 'react';
-import { Avatar, Badge, Drawer , Input , Tooltip} from 'antd';
+import { Avatar, Badge, Drawer, Input, Tooltip } from 'antd';
 import moment from 'moment';
 import { groupBy } from 'lodash';
-import { PlusOutlined, CheckSquareOutlined, CheckOutlined, EditOutlined, CalendarOutlined, MoreOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  CheckSquareOutlined,
+  CheckOutlined,
+  EditOutlined,
+  CalendarOutlined,
+  MoreOutlined,
+} from '@ant-design/icons';
 import HomeworkAssigned from 'v2/Assets/images/hwassign.png';
 import HomeworkSubmit from 'v2/Assets/images/hwsubmit.png';
 import HomeworkEvaluate from 'v2/Assets/images/task.png';
@@ -22,186 +29,298 @@ import SubmissionData from './newHomework';
 
 const { Search } = Input;
 
-const WeeklyTable = withRouter(({
-  getCoordinateTeacherHomeworkDetails,
-  getTeacherHomeworkDetails,
-  onSetSelectedFilters,
-  onResetSelectedFilters,
-  selectedFilters,
-  homeworkCols,
-  homeworkRows,
-  fetchingTeacherHomework,
-  onSetSelectedHomework,
-  evaluatedStudents,
-  unevaluatedStudents,
-  submittedStudents,
-  unSubmittedStudents,
-  fetchingStudentLists,
-  fetchStudentLists,
-  history,
-  selectedTeacherByCoordinatorToCreateHw,
-  setFirstTeacherUserIdOnloadCordinatorHomewok,
-  absentList,
-  onSearch,
-  ...props }) => {
-  const [eachSub, setEachSub] = useState([])
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [submitData, setSubmitData] = useState()
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-);
-const selectedBranch = useSelector(
-    (state) => state.commonFilterReducer?.selectedBranch
-);
-  let subData = []
-  let temp = []
-  let subjectWise = homeworkCols?.map((subject) => {
-    let subjectDate = homeworkRows?.map((date) => {
-      if (Object.keys(date).includes(subject?.subject_name)) {
-        const sub_name = subject?.subject_name.replace(/['"]+/g, '')
-        temp = {
-          data: date[subject?.subject_name],
-          branch: date?.branch,
-          canUpload: date?.canUpload,
-          date: date?.date,
-          grade: date?.grade,
-          subject_name: subject?.subject_name,
-          subject_id: subject?.subject_id
+const WeeklyTable = withRouter(
+  ({
+    getCoordinateTeacherHomeworkDetails,
+    getTeacherHomeworkDetails,
+    onSetSelectedFilters,
+    onResetSelectedFilters,
+    selectedFilters,
+    homeworkCols,
+    homeworkRows,
+    fetchingTeacherHomework,
+    onSetSelectedHomework,
+    evaluatedStudents,
+    unevaluatedStudents,
+    submittedStudents,
+    unSubmittedStudents,
+    fetchingStudentLists,
+    fetchStudentLists,
+    history,
+    selectedTeacherByCoordinatorToCreateHw,
+    setFirstTeacherUserIdOnloadCordinatorHomewok,
+    absentList,
+    onSearch,
+    isHWAutoAssign,
+    ...props
+  }) => {
+    const [eachSub, setEachSub] = useState([]);
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [submitData, setSubmitData] = useState();
+    const selectedAcademicYear = useSelector(
+      (state) => state.commonFilterReducer?.selectedYear
+    );
+    const selectedBranch = useSelector(
+      (state) => state.commonFilterReducer?.selectedBranch
+    );
+    let subData = [];
+    let temp = [];
+    let subjectWise = homeworkCols?.map((subject) => {
+      let subjectDate = homeworkRows?.map((date) => {
+        if (Object.keys(date).includes(subject?.subject_name)) {
+          const sub_name = subject?.subject_name.replace(/['"]+/g, '');
+          temp = {
+            data: date[subject?.subject_name],
+            branch: date?.branch,
+            canUpload: date?.canUpload,
+            date: date?.date,
+            grade: date?.grade,
+            subject_name: subject?.subject_name,
+            subject_id: subject?.subject_id,
+          };
         }
+        subData.push(temp);
+      });
+    });
+
+    const segregated = groupBy(subData, 'subject_name');
+
+    //drawer functions
+
+    const showDrawer = (each, tab) => {
+      setSubmitData({
+        hw_data: each,
+        tab: tab,
+        props: props,
+      });
+      setOpenDrawer(true);
+      fetchStudentLists(
+        each?.data?.hw_id,
+        each?.subject_id,
+        props?.sectionMapping,
+        props?.teacherid,
+        each?.date
+      );
+    };
+    const onCloseDrawer = () => {
+      setOpenDrawer(false);
+      setSubmitData();
+      if (history?.location?.state?.isTeacher == false) {
+        getCoordinateTeacherHomeworkDetails(
+          props?.moduleId,
+          selectedAcademicYear?.id,
+          selectedBranch?.branch?.id,
+          props?.grade,
+          props?.sectionMapping,
+          props?.sectionId,
+          props?.startDate,
+          props?.endDate,
+          props?.teacherid
+        );
+      } else {
+        getTeacherHomeworkDetails(
+          props?.moduleId,
+          selectedAcademicYear?.id,
+          selectedBranch?.branch?.id,
+          props?.grade,
+          props?.sectionMapping,
+          props?.sectionId,
+          props?.startDate,
+          props?.endDate
+        );
       }
-      subData.push(temp)
-    })
-  })
+    };
 
-  const segregated = groupBy(subData, 'subject_name')
+    const handleAdd = (each) => {
+      history.push({
+        pathname: `/homework/addhomework/${each?.date}/${selectedAcademicYear?.id}/${props?.branch}/${props?.grade}/${each?.subject_name}/${each?.subject_id}/${props?.teacherid}`,
+        state: {
+          branch: props?.branch,
+          endDate: props?.endDate,
+          isTeacher: props?.isTeacher,
+          moduleId: props?.moduleId,
+          sectionId: props?.sectionId,
+          sectionMapping: props?.sectionMapping,
+          startDate: props?.startDate,
+          teacherid: props?.teacherid,
+          grade: props?.grade,
+        },
+      });
+    };
 
-  //drawer functions
-
-  const showDrawer = (each, tab) => {
-    console.log(each, tab, props, 'tab');
-    setSubmitData({
-      hw_data: each,
-      tab: tab,
-      props: props
-    })
-    setOpenDrawer(true);
-    fetchStudentLists(each?.data?.hw_id, each?.subject_id, props?.sectionMapping, props?.teacherid, each?.date);
-  };
-  const onCloseDrawer = () => {
-    setOpenDrawer(false);
-    setSubmitData()
-    console.log(history , 'onclose');
-    if(history?.location?.state?.isTeacher == false){
-      getCoordinateTeacherHomeworkDetails(props?.moduleId, selectedAcademicYear?.id,
-        selectedBranch?.branch?.id, props?.grade, props?.sectionMapping,
-        props?.sectionId, props?.startDate, props?.endDate, props?.teacherid)
-    } else {
-      getTeacherHomeworkDetails(
-        props?.moduleId, selectedAcademicYear?.id,
-        selectedBranch?.branch?.id, props?.grade, props?.sectionMapping,
-        props?.sectionId, props?.startDate, props?.endDate,
-      )
-    }
-
-  };
-
-  const handleAdd = (each) => {
-    console.log(each, props);
-    history.push({
-      pathname: `/homework/addhomework/${each?.date}/${selectedAcademicYear?.id}/${props?.branch}/${props?.grade}/${each?.subject_name}/${each?.subject_id}/${props?.teacherid}`,
-      state: {
-        branch: props?.branch,
-        endDate: props?.endDate,
-        isTeacher: props?.isTeacher,
-        moduleId: props?.moduleId,
-        sectionId: props?.sectionId,
-        sectionMapping: props?.sectionMapping,
-        startDate: props?.startDate,
-        teacherid: props?.teacherid,
-        grade: props?.grade
-      }
-    }
+    return (
+      <>
+        <div className='tablewrap'>
+          <table style={{ minHeight: '50vh' }} className='tableCon'>
+            <thead>
+              <tr className='tableR headerarea '>
+                <th className='fixedcol tableH' style={{ verticalAlign: 'middle' }}>
+                  <div className='th-14 th-fw-600'>Subject</div>
+                </th>
+                {homeworkRows?.length > 0 &&
+                  homeworkRows?.map((item) => (
+                    <th className='tableH'>
+                      <div
+                        style={{
+                          background: '#91A7CC',
+                          margin: '2px',
+                          borderRadius: '5px',
+                          color: 'white',
+                        }}
+                      >
+                        <div className='d-flex justify-content-center'>
+                          {moment(item?.date).format('ddd')}
+                        </div>
+                        <div className='d-flex justify-content-center'>
+                          {moment(item?.date).format('DD/MM/YYYY')}
+                        </div>
+                      </div>
+                    </th>
+                  ))}
+              </tr>
+            </thead>
+            <tbody>
+              {homeworkCols?.map((item) => (
+                <tr className='tableR'>
+                  {item?.subject_name ? (
+                    <>
+                      <td
+                        className='fixedcol tableD'
+                        style={{ textAlign: 'center', verticalAlign: 'middle' }}
+                      >
+                        {item?.subject_name}
+                      </td>
+                      {segregated[item?.subject_name]?.map((each) => (
+                        <td className='tableD'>
+                          <div
+                            className='card w-100 d-flex justify-content-center p-2'
+                            style={{ height: '100px' }}
+                          >
+                            {each?.data?.hw_evaluated == undefined &&
+                            each?.canUpload == true &&
+                            isHWAutoAssign !== true ? (
+                              <div>
+                                <PlusOutlined
+                                  style={{
+                                    fontSize: '25px',
+                                    color: '#959595',
+                                    background: '#e1e1e1',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer',
+                                  }}
+                                  onClick={() => handleAdd(each)}
+                                />
+                              </div>
+                            ) : each?.data?.hw_evaluated != undefined ? (
+                              <div className='d-flex justify-content-between flex-wrap'>
+                                <Tooltip
+                                  title={`Submitted (${each?.data?.student_submitted})`}
+                                >
+                                  <div className='w-25' style={{ cursor: 'pointer' }}>
+                                    <Badge
+                                      count={each?.data?.student_submitted}
+                                      showZero
+                                      color='#9DDEBA'
+                                      style={{ cursor: 'pointer' }}
+                                      size='small'
+                                    >
+                                      <img
+                                        src={HomeworkAssigned}
+                                        alt='hwAssign'
+                                        style={{
+                                          width: '30px',
+                                          height: '30px',
+                                          background: '#E5FAF1',
+                                          padding: '5px',
+                                        }}
+                                        onClick={() => showDrawer(each, 'submitted')}
+                                      />
+                                    </Badge>
+                                  </div>
+                                </Tooltip>
+                                <Tooltip
+                                  title={`Not-Submitted (${each?.data?.pending_count})`}
+                                >
+                                  <div className='w-25' style={{ cursor: 'pointer' }}>
+                                    <Badge
+                                      count={each?.data?.pending_count}
+                                      showZero
+                                      color='#F1DA89'
+                                      size='small'
+                                    >
+                                      <img
+                                        src={HomeworkSubmit}
+                                        alt='hwsubmit'
+                                        style={{
+                                          width: '30px',
+                                          height: '30px',
+                                          background: '#FFF0C9',
+                                          padding: '5px',
+                                        }}
+                                        onClick={() => showDrawer(each, 'not-submitted')}
+                                      />
+                                    </Badge>
+                                  </div>
+                                </Tooltip>
+                                <Tooltip
+                                  title={`Evaluated (${each?.data?.hw_evaluated})`}
+                                >
+                                  <div className='w-25' style={{ cursor: 'pointer' }}>
+                                    <Badge
+                                      count={each?.data?.hw_evaluated}
+                                      showZero
+                                      color='#9DD6FF'
+                                      size='small'
+                                    >
+                                      <img
+                                        src={HomeworkEvaluate}
+                                        alt='hwev'
+                                        style={{
+                                          width: '30px',
+                                          height: '30px',
+                                          background: '#E8F2FD',
+                                          padding: '5px',
+                                        }}
+                                        onClick={() => showDrawer(each, 'evaluated')}
+                                      />
+                                    </Badge>
+                                  </div>
+                                </Tooltip>
+                              </div>
+                            ) : (
+                              ''
+                            )}
+                          </div>
+                        </td>
+                      ))}
+                    </>
+                  ) : (
+                    ''
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Drawer
+          placement='right'
+          onClose={onCloseDrawer}
+          closable={false}
+          visible={openDrawer}
+          width={700}
+          className='tabledrawsub'
+        >
+          <SubmissionData
+            submitData={submitData}
+            filterData={props}
+            onCloseDrawer={onCloseDrawer}
+            setViewHomework={props?.setViewHomework}
+            setActiveView={props?.setActiveView}
+          />
+        </Drawer>
+      </>
     );
   }
-
-
-  return (
-    <>
-      <div className='tablewrap' >
-        <table style={{ minHeight: '50vh' }} className="tableCon" >
-          <thead  >
-            <tr className='tableR headerarea '>
-              <th className='fixedcol tableH' style={{verticalAlign: 'middle'}} >
-                  <div className='th-14 th-fw-600'>Subject</div>
-              </th>
-              {homeworkRows?.length > 0 && homeworkRows?.map((item) => (
-                <th className='tableH'>
-                  <div style={{ background: '#91A7CC', margin: '2px', borderRadius: '5px', color: 'white' }}>
-                    <div className='d-flex justify-content-center' >
-                      {moment(item?.date).format('ddd')}
-                    </div>
-                    <div className='d-flex justify-content-center'>
-                      {moment(item?.date).format('DD/MM/YYYY')}
-                    </div>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {homeworkCols?.map((item) => (
-              <tr className='tableR'>
-                {item?.subject_name ?
-                  <>
-                    <td className='fixedcol tableD' style={{textAlign: 'center' , verticalAlign: 'middle'}} >{item?.subject_name}</td>
-                    {segregated[item?.subject_name]?.map((each) => (
-                      <td className='tableD'>
-                        <div className='card w-100 d-flex justify-content-center p-2' style={{ height: '100px' }}  >
-                          {each?.data?.hw_evaluated == undefined && each?.canUpload == true ?
-                            <div  >
-                              <PlusOutlined style={{ fontSize: '25px', color: '#959595', background: '#e1e1e1', borderRadius: '5px', cursor: 'pointer' }} onClick={() => handleAdd(each)} />
-                            </div> : each?.data?.hw_evaluated != undefined ? <div className='d-flex justify-content-between flex-wrap'>
-                              <Tooltip title={`Submitted (${each?.data?.student_submitted})`} >
-                              <div className='w-25' style={{ cursor: 'pointer' }} >
-                                <Badge count={each?.data?.student_submitted} showZero color='#9DDEBA' style={{ cursor: 'pointer' }} size='small' >
-                                  <img src={HomeworkAssigned} alt='hwAssign' style={{ width: '30px', height: '30px', background: '#E5FAF1', padding: '5px' }} onClick={() => showDrawer(each, 'submitted')} />
-                                </Badge>
-                              </div>
-                              </Tooltip>
-                              <Tooltip title={`Not-Submitted (${each?.data?.pending_count})`} >
-                              <div className='w-25' style={{ cursor: 'pointer' }}>
-                                <Badge count={each?.data?.pending_count} showZero color='#F1DA89' size='small'>
-                                  <img src={HomeworkSubmit} alt='hwsubmit' style={{ width: '30px', height: '30px', background: '#FFF0C9', padding: '5px' }} onClick={() => showDrawer(each, 'not-submitted')} />
-                                </Badge>
-                              </div>
-                              </Tooltip>
-                              <Tooltip title={`Evaluated (${each?.data?.hw_evaluated})`} >
-                              <div className='w-25' style={{ cursor: 'pointer' }}>
-                                <Badge count={each?.data?.hw_evaluated} showZero color='#9DD6FF' size='small' >
-                                  <img src={HomeworkEvaluate} alt='hwev' style={{ width: '30px', height: '30px', background: '#E8F2FD', padding: '5px' }} onClick={() => showDrawer(each, 'evaluated')} />
-                                </Badge>
-                              </div>
-                              </Tooltip>
-                            </div>
-                              : ''}
-                        </div>
-                      </td>
-                    ))}
-                  </> : ''}
-              </tr>
-            ))}
-
-          </tbody>
-
-
-        </table>
-      </div >
-      <Drawer placement="right" onClose={onCloseDrawer} closable={false} visible={openDrawer} width={700} className='tabledrawsub' >
-        <SubmissionData submitData={submitData} filterData={props} onCloseDrawer={onCloseDrawer} setViewHomework={props?.setViewHomework} setActiveView={props?.setActiveView} />
-      </Drawer>
-    </>
-  )
-}
 );
 
 const mapStateToProps = (state) => ({
@@ -217,7 +336,6 @@ const mapStateToProps = (state) => ({
   selectedTeacherByCoordinatorToCreateHw:
     state.teacherHomework.selectedTeacherByCoordinatorToCreateHw,
   absentList: state.teacherHomework.absentList,
-
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -273,12 +391,24 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setSelectedHomework(data));
   },
   fetchStudentLists: (id, subjectId, sectionId, selectedTeacherUser_id, date) => {
-    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId, selectedTeacherUser_id, date));
+    dispatch(
+      fetchStudentsListForTeacherHomework(
+        id,
+        subjectId,
+        sectionId,
+        selectedTeacherUser_id,
+        date
+      )
+    );
   },
   setFirstTeacherUserIdOnloadCordinatorHomewok: (selectedTeacherUser_id) => {
     return dispatch(setTeacherUserIDCoord(selectedTeacherUser_id));
   },
-  onSetSelectedFilters: (data) => { dispatch(setSelectedCoFilters(data)) },
-  onResetSelectedFilters: () => { dispatch(resetSelectedCoFilters()) },
+  onSetSelectedFilters: (data) => {
+    dispatch(setSelectedCoFilters(data));
+  },
+  onResetSelectedFilters: () => {
+    dispatch(resetSelectedCoFilters());
+  },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(WeeklyTable);

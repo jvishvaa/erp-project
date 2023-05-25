@@ -179,6 +179,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
     setFirstTeacherUserIdOnloadCordinatorHomewok,
     absentList,
     onResetSelectedData,
+    isHWAutoAssign,
     ...props
   }) => {
     //const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
@@ -253,10 +254,8 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('md'));
     const [isTeacher, setIsTeacher] = useState(false);
-
     useEffect(() => {
       //   onResetSelectedData();
-      console.log('currentHomework', history?.location?.state);
       if (history?.location?.state?.currentHomework && teacherModuleId) {
         const { currentHomework } = history?.location?.state;
         getTeacherListApiFilter(currentHomework?.section_mapping);
@@ -559,7 +558,6 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
     };
 
     const handleSection = (e, value) => {
-      console.log(e, value);
       if (value) {
         setSectionDisplay(e);
         setSectionMap(value?.key);
@@ -568,7 +566,6 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
     };
 
     const handleTeacher = (e, value) => {
-      console.log(e, value);
       if (value) {
         setselectedCoTeacherOptValue(e);
       }
@@ -616,7 +613,6 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
       });
 
     const handleDate = (value) => {
-      console.log(value);
       if (value[0] != null) {
         setStartDate(moment(value[0]).format('YYYY-MM-DD'));
         setEndDate(moment(value[1]).format('YYYY-MM-DD'));
@@ -625,7 +621,6 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
 
     useEffect(() => {
       if (gradeDisplay && sectionMap && endDate != null) {
-        console.log(startDate, endDate, 'hitt');
         if (isTeacher == true) {
           getTeacherHomeworkDetails(
             teacherModuleId,
@@ -656,7 +651,6 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
     }, [selectedCoTeacherOptValue, endDate, sectionMap, sectionDisplay]);
 
     useEffect(() => {
-      console.log(dates);
       if (dates != null) {
         handleDate(dates);
       }
@@ -930,6 +924,7 @@ const CoordinatorTeacherHomeworkv2 = withRouter(
                               setViewHomework={setViewHomework}
                               setActiveView={setActiveView}
                               onSearch={onSearch}
+                              isHWAutoAssign={isHWAutoAssign}
                             />
                           ) : homeworkCols?.length == 0 ? (
                             <div
