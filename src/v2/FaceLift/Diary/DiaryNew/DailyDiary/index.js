@@ -399,7 +399,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           if (res?.data?.status_code == 200) {
             if (res?.data?.message === 'Daily Dairy created successfully') {
               message.success('Daily Diary Created Successfully');
-              history.push('/diary/teacher');
+              if (isAutoAssignDiary) {
+                history.goBack();
+              } else {
+                history.push('/diary/teacher');
+              }
             } else if (res?.data?.message.includes('locked')) {
               message.error(res?.data?.message);
             } else {
@@ -947,7 +951,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       message.success('Homework added');
       // setShowHomeworkForm(false);
       checkAssignedHomework({
-        section_mapping: sectionMappingID.join(','),
+        section_mapping: sectionMappingID.toString(),
         subject: subjectID,
         date: moment().format('YYYY-MM-DD'),
       });
@@ -1005,7 +1009,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         message.error(error?.message);
       });
   };
-
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
     if (isAutoAssignDiary) {
@@ -1036,7 +1039,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     subject: subjectID,
                     central_gs_id: Number(gsMappingID),
                     for_diary: 1,
-                    key_concepts: Number(keyConceptID),
+                    key_concepts: Number(item?.key_concept_id),
                   });
                 }
               }
@@ -1325,7 +1328,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
   useEffect(() => {
     if (homeworkDetails && !isAutoAssignDiary) {
-      alert('lllll');
       setQuestionList(questionModify(homeworkDetails?.hw_questions));
       setSubmissionDate(moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD'));
       setHomeworkTitle(homeworkDetails?.homework_name);
@@ -1401,7 +1403,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <Form.Item name='section'>
                   <Select
                     disabled={
-                      isDiaryEdit ? true : sectionMappingID.length == 1 ? true : false
+                      isDiaryEdit ? true : sectionMappingID?.length == 1 ? true : false
                     }
                     mode={isAutoAssignDiary ? 'multiple' : 'single'}
                     className='th-width-100 th-br-6'
@@ -1567,6 +1569,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           openPeriodInfoModal();
                                           if (addedPeriods.length == 1) {
                                             setClearTodaysTopic(true);
+                                            setShowHomeworkForm(false);
                                           }
                                           const index = addedPeriods.indexOf(item);
                                           const newList = addedPeriods.slice();
@@ -1869,7 +1872,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           value={homeworkTitle}
                           onChange={(e) => setHomeworkTitle(e.target.value)}
                           placeholder='Enter Title'
-                          maxLength={30}
+                          maxLength={100}
                         />
                       </div>
                       {!isAutoAssignDiary && (
@@ -2428,41 +2431,90 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                     <div
                                       className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
                                       onClick={() => {
-                                        // if(item?.)
-                                        if (
-                                          !addedPeriods
-                                            ?.map((item) => item.id)
-                                            .includes(item.id) ||
-                                          upcomingPeriod.id !== item.id
-                                        ) {
-                                          setIsPeriodAdded(true);
-                                          setClearTodaysTopic(false);
-                                          setCompletedPeriod(item);
-                                          openPeriodInfoModal();
-                                          setAddedPeriods([...addedPeriods, item]);
-                                          setSelectedChapterTopic([
-                                            ...selectedChapterTopic,
-                                            {
-                                              chapter: item?.chapter__chapter_name,
-                                              keyConcept: item?.key_concept__topic_name,
-                                            },
-                                          ]);
+                                        // if(item?.)isAutoAssignDiary && item?.completion_status.every((item) => item?.is_complete == true) &&
+                                        if (isAutoAssignDiary) {
+                                          if (
+                                            item?.completion_status.every(
+                                              (item) => item?.is_complete == true
+                                            )
+                                          ) {
+                                            if (
+                                              !addedPeriods
+                                                ?.map((item) => item.id)
+                                                .includes(item.id) ||
+                                              upcomingPeriod.id !== item.id
+                                            ) {
+                                              setIsPeriodAdded(true);
+                                              setClearTodaysTopic(false);
+                                              setCompletedPeriod(item);
+                                              openPeriodInfoModal();
+                                              setAddedPeriods([...addedPeriods, item]);
+                                              setSelectedChapterTopic([
+                                                ...selectedChapterTopic,
+                                                {
+                                                  chapter: item?.chapter__chapter_name,
+                                                  keyConcept:
+                                                    item?.key_concept__topic_name,
+                                                },
+                                              ]);
 
-                                          fetchCentralHomework({
-                                            chapter: chapterID,
-                                            period: item?.period_name,
-                                            topic_id: item?.key_concept_id,
-                                          });
+                                              fetchCentralHomework({
+                                                chapter: chapterID,
+                                                period: item?.period_name,
+                                                topic_id: item?.key_concept_id,
+                                              });
+                                            } else {
+                                              message.warning(
+                                                "Period is already added to Today's Topic"
+                                              );
+                                            }
+                                            if (isDiaryEdit && !addingUpcomingPeriod) {
+                                              setEditAddedPeriods([
+                                                ...editAddedPeriods,
+                                                item,
+                                              ]);
+                                            }
+                                          } else {
+                                            message.error(
+                                              'Please complete the period before adding'
+                                            );
+                                          }
                                         } else {
-                                          message.warning(
-                                            "Period is already added to Today's Topic"
-                                          );
-                                        }
-                                        if (isDiaryEdit && !addingUpcomingPeriod) {
-                                          setEditAddedPeriods([
-                                            ...editAddedPeriods,
-                                            item,
-                                          ]);
+                                          if (
+                                            !addedPeriods
+                                              ?.map((item) => item.id)
+                                              .includes(item.id) ||
+                                            upcomingPeriod.id !== item.id
+                                          ) {
+                                            setIsPeriodAdded(true);
+                                            setClearTodaysTopic(false);
+                                            setCompletedPeriod(item);
+                                            openPeriodInfoModal();
+                                            setAddedPeriods([...addedPeriods, item]);
+                                            setSelectedChapterTopic([
+                                              ...selectedChapterTopic,
+                                              {
+                                                chapter: item?.chapter__chapter_name,
+                                                keyConcept: item?.key_concept__topic_name,
+                                              },
+                                            ]);
+
+                                            fetchCentralHomework({
+                                              chapter: chapterID,
+                                              period: item?.period_name,
+                                              topic_id: item?.key_concept_id,
+                                            });
+                                          } else {
+                                            message.warning(
+                                              "Period is already added to Today's Topic"
+                                            );
+                                          }
+                                          if (isDiaryEdit && !addingUpcomingPeriod) {
+                                            setEditAddedPeriods([
+                                              ...editAddedPeriods,
+                                              item,
+                                            ]);
+                                          }
                                         }
                                       }}
                                     >

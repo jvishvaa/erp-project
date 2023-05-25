@@ -140,8 +140,7 @@ const CreateNoAcademicStaff = () => {
         }
       })
       .catch((error) => {
-        message.error(error.message);
-        // console.log('error');
+        message.error(error?.response?.data?.description);
       })
       .finally(() => {
         setRequestSent(false);
