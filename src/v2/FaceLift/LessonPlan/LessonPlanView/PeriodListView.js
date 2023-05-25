@@ -67,7 +67,6 @@ import QuestionPaperView from './QuestionPaperView';
 import { addQuestionPaperToTest } from 'redux/actions';
 import { connect } from 'react-redux';
 import ASSIGNTEST from './../../../Assets/images/assigntest.png';
-import { elementClosest } from '@fullcalendar/react';
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -1914,16 +1913,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                 if (
                                   resourcesData?.section_wise_completion?.filter(
                                     (item) => item?.is_completed == true
-                                  )?.length > 0 &&
-                                  !assignedDiaryList
-                                    ?.map((item) => item.section_mapping)
-                                    .flat()
-                                    .every((elem) =>
-                                      resourcesData?.section_wise_completion
-                                        ?.filter((item) => item?.is_completed == true)
-                                        .map((item) => item?.id)
-                                        .includes(elem)
-                                    )
+                                  )?.length > 0
                                 ) {
                                   history.push({
                                     pathname: '/create/diary',
@@ -1947,7 +1937,17 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                         board: boardId,
                                       },
                                       isDiaryAutoAssign: true,
-                                      isDiaryEdit: true,
+                                      isDiaryEdit: assignedDiaryList
+                                        ?.map((item) => item.section_mapping)
+                                        .flat()
+                                        .every((elem) =>
+                                          resourcesData?.section_wise_completion
+                                            ?.filter((item) => item?.is_completed == true)
+                                            .map((item) => item?.id)
+                                            .includes(elem)
+                                        )
+                                        ? true
+                                        : false,
                                     },
                                   });
                                 } else {
@@ -2055,11 +2055,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                           <div className='th-green th-14'>
                                             Successfully Assigned for Sections &nbsp;
                                             {assignedDiaryList
-                                              .map((item) => item?.section.toString())
-                                              ?.map((item) =>
-                                                item?.slice(-1)?.toUpperCase()
-                                              )
-                                              .join(', ')}
+                                              .map((item) => item?.section)
+                                              .flat()
+                                              .map((el) => el?.slice(-1))
+                                              .toString()}
                                           </div>
                                         </div>
                                       </div>
@@ -2165,7 +2164,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                 </Collapse>
                               </div>
                             )}
-                            {assignedDiaryList.length > 0 && (
+                            {assignedHWList.length > 0 && (
                               <div className='col-12 px-0'>
                                 <Collapse
                                   expandIconPosition='right'
@@ -2190,16 +2189,15 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                         </div>
                                         <div className='col-10'>
                                           <div className='th-fw-500 th-16 text-capitalize'>
-                                            Diary
+                                            Homework
                                           </div>
                                           <div className='th-green th-14'>
                                             Successfully Assigned for Sections &nbsp;
-                                            {assignedDiaryList
-                                              .map((item) => item?.section.toString())
-                                              ?.map((item) =>
-                                                item?.slice(-1)?.toUpperCase()
-                                              )
-                                              .join(', ')}
+                                            {assignedHWList
+                                              .map((item) => item?.section)
+                                              .flat()
+                                              .map((el) => el?.slice(-1))
+                                              .toString()}
                                           </div>
                                         </div>
                                       </div>
@@ -2222,33 +2220,33 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                     color='processing'
                                                     className='th-pointer th-br-6'
                                                     onClick={() => {
-                                                      // history.push({
-                                                      //   pathname: '/create/diary',
-                                                      //   state: {
-                                                      //     data: {
-                                                      //       ...assignedDiaryList[index],
-                                                      //       diary_id:
-                                                      //         assignedDiaryList[index]
-                                                      //           .dairy_id,
-                                                      //       section_name: each,
-                                                      //       section_mapping_id:
-                                                      //         assignedDiaryList[index]
-                                                      //           .section_mapping[
-                                                      //           sectionIndex
-                                                      //         ],
-                                                      //       section_id:
-                                                      //         assignedDiaryList[index]
-                                                      //           ?.section_id[
-                                                      //           sectionIndex
-                                                      //         ],
-                                                      //     },
-                                                      //     subject: {
-                                                      //       subject_name: subjectName,
-                                                      //       subject_id: subjectId,
-                                                      //     },
-                                                      //     isDiaryEdit: true,
-                                                      //   },
-                                                      // });
+                                                      history.push({
+                                                        pathname: '/create/diary',
+                                                        state: {
+                                                          data: {
+                                                            ...assignedDiaryList[index],
+                                                            diary_id:
+                                                              assignedDiaryList[index]
+                                                                .dairy_id,
+                                                            section_name: each,
+                                                            section_mapping_id:
+                                                              assignedDiaryList[index]
+                                                                .section_mapping[
+                                                                sectionIndex
+                                                              ],
+                                                            section_id:
+                                                              assignedDiaryList[index]
+                                                                ?.section_id[
+                                                                sectionIndex
+                                                              ],
+                                                          },
+                                                          subject: {
+                                                            subject_name: subjectName,
+                                                            subject_id: subjectId,
+                                                          },
+                                                          isDiaryEdit: true,
+                                                        },
+                                                      });
                                                     }}
                                                   >
                                                     Edit
@@ -2439,12 +2437,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                         </div>
                       </div>
                     </div>
-                    {/* {nextPeriodDetails?.period_name} {'> '}
-                    {nextPeriodDetails?.key_concept__topic_name} {'> '}
-                    {nextPeriodDetails?.chapter__chapter_name} {'> '}
-                    {boardFilterArr.includes(window.location.host)
-                      ? nextPeriodDetails?.chapter__lt_module__lt_module_name + ' > '
-                      : null} */}
                   </div>
                 </div>
                 <div className='text-center'>
