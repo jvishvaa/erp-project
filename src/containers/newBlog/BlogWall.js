@@ -114,16 +114,17 @@ const BlogWall = () => {
     'Section',
     'Blog of the Month',
   ];
-  const options = [
-    { id: 1, value: 'All' },
-    { id: 2, value: 'Blogs' },
-    { id: 3, value: 'Dance', visible: isStudent },
-    { id: 4, value: 'Music', visible: isStudent },
-    { id: 5, value: 'Posts' },
-    { id: 6, value: 'Public Speaking', visible: isStudent },
-    { id: 7, value: 'Theatre', visible: isStudent },
-    { id: 8, value: 'Visual Art', visible: isStudent },
-  ].filter((item) => item?.visible !== false);
+  // const options = [
+  //   { id: 1, value: 'All' },
+  //   { id: 2, value: 'Blogs' },
+  //   { id: 3, value: 'Dance', visible: isStudent },
+  //   { id: 4, value: 'Music', visible: isStudent },
+  //   { id: 5, value: 'Posts' },
+  //   { id: 6, value: 'Public Speaking', visible: isStudent },
+  //   { id: 7, value: 'Theatre', visible: isStudent },
+  //   { id: 8, value: 'Visual Art', visible: isStudent },
+  //   { id: 9, value: 'Physical Activity', visible: isStudent },
+  // ].filter((item) => item?.visible !== false);
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(null);
@@ -141,11 +142,42 @@ const BlogWall = () => {
       </Option>
     );
   });
+  const [firstLoad, setFirstLoad]= useState(false);
+  const [categoriesList, setCategoriesList] = useState([]);
 
-  const categoryOptions = options?.map((each) => {
+  const fetchCategoryOptions = () => {
+    setLoading(true);
+    axios
+    .get(
+      `${endpoints.newBlog.getCategoryOptions}?user_id=${userId}`,
+      {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.status === 200) {
+          setCategoriesList(response?.data?.activity_types);
+          setLoading(false);
+          setFirstLoad(true);
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() =>{
+    if(!firstLoad){
+      fetchCategoryOptions();
+    }
+  });
+
+  const categoryOptions = categoriesList?.map((each) => {
     return (
-      <Option value={each?.value} key={each?.value}>
-        {each?.value}
+      <Option value={each?.name} key={each?.name}>
+        {each?.name}
       </Option>
     );
   });

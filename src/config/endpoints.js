@@ -1011,8 +1011,10 @@ export default {
     getIndividualActivity: `${newBlogURL}/api/get_ps_activities/`,
     getPublicSpeakingStudents: `${newBlogURL}/api/ps_activity_data/`,
     getPublicSpeakingVideos: `${newBlogURL}/api/participation/`,
-    getStudentPublicView: `${newBlogURL}/api/ps_submissions_data/`,
-  },
+    getStudentPublicView :`${newBlogURL}/api/ps_submissions_data/`,
+    getRoundShowHide:`${newBlogURL}/api/check_ps_rounds/`,
+    getCategoryOptions:`${newBlogURL}/api/school_wall_activity_types/`,
+},
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

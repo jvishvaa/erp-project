@@ -91,7 +91,7 @@ const VisualPendingReview = (props) => {
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [view, setView] = useState(false);
-  const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession'));
+  const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const [sourceData, setSourceData] = useState([]);
   const [targetData, setTargetData] = useState([]);
   const [ratingReview, setRatingReview] = useState([]);
