@@ -181,7 +181,7 @@ const EditNonAcademicStaff = () => {
         }
       })
       .catch((error) => {
-        message.error(error.message);
+        message.error(error?.response?.data?.description);
       })
       .finally(() => {
         setRequestSent(false);
