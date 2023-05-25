@@ -67,6 +67,7 @@ import QuestionPaperView from './QuestionPaperView';
 import { addQuestionPaperToTest } from 'redux/actions';
 import { connect } from 'react-redux';
 import ASSIGNTEST from './../../../Assets/images/assigntest.png';
+import { elementClosest } from '@fullcalendar/react';
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -1913,7 +1914,16 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                 if (
                                   resourcesData?.section_wise_completion?.filter(
                                     (item) => item?.is_completed == true
-                                  )?.length > 0
+                                  )?.length > 0 &&
+                                  !assignedDiaryList
+                                    ?.map((item) => item.section_mapping)
+                                    .flat()
+                                    .every((elem) =>
+                                      resourcesData?.section_wise_completion
+                                        ?.filter((item) => item?.is_completed == true)
+                                        .map((item) => item?.id)
+                                        .includes(elem)
+                                    )
                                 ) {
                                   history.push({
                                     pathname: '/create/diary',
