@@ -1379,17 +1379,19 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     {homeworkDetails?.homework_name}
                   </div>
                 </div>
-                <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>
-                    Instructions
+                {homeworkDetails?.description && (
+                  <div className='row py-2'>
+                    <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>
+                      Instructions
+                    </div>
+                    <div
+                      className='th-black-1 col-12 px-1 th-br-6'
+                      style={{ border: '1px solid #d9d9d9' }}
+                    >
+                      {homeworkDetails?.description}
+                    </div>
                   </div>
-                  <div
-                    className='th-black-1 col-12 px-1 th-br-6'
-                    style={{ border: '1px solid #d9d9d9' }}
-                  >
-                    {homeworkDetails?.description}
-                  </div>
-                </div>
+                )}
                 <div className='row py-2'>
                   <div className='col-3 px-0 th-black-1 th-fw-600 pb-1'>Due Date</div>
                   <div className='col-9 th-black-1 pl-0 th-fw-700 pb-1'>

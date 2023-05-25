@@ -2434,8 +2434,16 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                         // if(item?.)isAutoAssignDiary && item?.completion_status.every((item) => item?.is_complete == true) &&
                                         if (isAutoAssignDiary) {
                                           if (
-                                            item?.completion_status.every(
-                                              (item) => item?.is_complete == true
+                                            // item?.completion_status.filter(
+                                            //   (item) => item?.is_complete == false
+                                            // ).length == 0
+                                            sectionMappingID?.every((val) =>
+                                              item?.completion_status
+                                                ?.filter(
+                                                  (item) => item?.is_complete === true
+                                                )
+                                                ?.map((item) => item?.section_id)
+                                                .includes(val)
                                             )
                                           ) {
                                             if (
