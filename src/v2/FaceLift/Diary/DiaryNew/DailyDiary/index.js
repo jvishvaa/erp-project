@@ -228,17 +228,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
 
   const checkActivityData = (activityName) => {
-    if (
-      ActivityTypes.includes(activityName.split('_')[activityName.split('_').length - 1])
-    ) {
-      fetchActivityData({
-        branch_id: selectedBranch?.branch?.id,
-        grade_id: gradeID,
-        section_id: sectionID.toString(),
-        start_date: moment().format('YYYY-MM-DD'),
-        type: activityName.split('_')[activityName.split('_').length - 1],
-      });
-    }
+    let subjectName = activityName.split('_')[activityName.split('_').length - 1];
+
+    fetchActivityData({
+      branch_id: selectedBranch?.branch?.id,
+      grade_id: gradeID,
+      section_id: sectionID?.toString(),
+      start_date: moment().format('YYYY-MM-DD'),
+      type: subjectName,
+    });
   };
 
   const showDrawer = (params = {}) => {

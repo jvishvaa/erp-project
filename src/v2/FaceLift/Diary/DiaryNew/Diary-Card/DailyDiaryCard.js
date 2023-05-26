@@ -560,21 +560,14 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         subject_id: subject?.subject_id,
         date: moment(diary?.created_at).format('YYYY-MM-DD'),
       });
-      if (
-        ActivityTypes.includes(
-          subject.subject_name.split('_')[subject.subject_name.split('_').length - 1]
-        )
-      ) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: diary?.grade_id,
-          section_id: diary?.section_id,
-          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
-          type: subject.subject_name.split('_')[
-            subject.subject_name.split('_').length - 1
-          ],
-        });
-      }
+
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: diary?.grade_id,
+        section_id: diary?.section_id,
+        start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
+        type: subject.subject_name.split('_')[subject.subject_name.split('_').length - 1],
+      });
     }
   }, [drawerVisible]);
 

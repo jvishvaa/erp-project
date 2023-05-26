@@ -1817,7 +1817,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                         </div>
                       </div>
                     )}
-                    {showSection && allowAutoAssignDiary && (
+                    {showSection && (
                       <>
                         <div className='row' style={{ border: '1px solid #d9d9d9' }}>
                           {resourcesData?.section_wise_completion?.map((each, i) => (
@@ -1900,80 +1900,87 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                             </div>
                           </div>
                         </div>
-                        {assignedDiaryList.map((item) => item?.section).flat().length !==
-                          resourcesData?.section_wise_completion?.length && (
-                          <div
-                            className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'
-                            onClick={() => {
-                              if (completeSections?.length > 0) {
-                                message.error(
-                                  'Please update the status of selected sections first!!'
-                                );
-                              } else {
-                                if (
-                                  resourcesData?.section_wise_completion?.filter(
-                                    (item) => item?.is_completed == true
-                                  )?.length > 0
-                                ) {
-                                  history.push({
-                                    pathname: '/create/diary',
-                                    state: {
-                                      periodData: {
-                                        subjectID: subjectId,
-                                        subjectName: subjectName,
-                                        gradeID: gradeId,
-                                        gradeName,
-                                        volumeID: volumeId,
-                                        periodID: resourcesData?.id,
-                                        periodName: resourcesData?.period_name,
-                                        sections:
-                                          assignedDiaryList.length > 0
-                                            ? resourcesData?.section_wise_completion
-                                                .filter(
+                        {allowAutoAssignDiary
+                          ? assignedDiaryList.map((item) => item?.section).flat()
+                              .length !==
+                              resourcesData?.section_wise_completion?.length && (
+                              <div
+                                className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'
+                                onClick={() => {
+                                  if (completeSections?.length > 0) {
+                                    message.error(
+                                      'Please update the status of selected sections first!!'
+                                    );
+                                  } else {
+                                    if (
+                                      resourcesData?.section_wise_completion?.filter(
+                                        (item) => item?.is_completed == true
+                                      )?.length > 0
+                                    ) {
+                                      history.push({
+                                        pathname: '/create/diary',
+                                        state: {
+                                          periodData: {
+                                            subjectID: subjectId,
+                                            subjectName: subjectName,
+                                            gradeID: gradeId,
+                                            gradeName,
+                                            volumeID: volumeId,
+                                            periodID: resourcesData?.id,
+                                            periodName: resourcesData?.period_name,
+                                            sections:
+                                              assignedDiaryList.length > 0
+                                                ? resourcesData?.section_wise_completion
+                                                    .filter(
+                                                      (item) => item?.is_completed == true
+                                                    )
+                                                    // .map((item) => item?.id)
+                                                    .filter(
+                                                      (el) =>
+                                                        !assignedDiaryList
+                                                          .map(
+                                                            (item) => item.section_mapping
+                                                          )
+                                                          .flat()
+                                                          .includes(el?.id)
+                                                    )
+                                                : resourcesData?.section_wise_completion?.filter(
+                                                    (item) => item?.is_completed == true
+                                                  ),
+                                            chapterID: chapterId,
+                                            chapterName: resourcesData?.chapter_name,
+                                            keyConceptID: drawerData?.key_concept_id,
+                                            keyConceptName: resourcesData?.topic_name,
+                                            board: boardId,
+                                          },
+                                          isDiaryAutoAssign: true,
+                                          isDiaryEdit: assignedDiaryList
+                                            ?.map((item) => item.section_mapping)
+                                            .flat()
+                                            .every((elem) =>
+                                              resourcesData?.section_wise_completion
+                                                ?.filter(
                                                   (item) => item?.is_completed == true
                                                 )
-                                                // .map((item) => item?.id)
-                                                .filter(
-                                                  (el) =>
-                                                    !assignedDiaryList
-                                                      .map((item) => item.section_mapping)
-                                                      .flat()
-                                                      .includes(el?.id)
-                                                )
-                                            : resourcesData?.section_wise_completion?.filter(
-                                                (item) => item?.is_completed == true
-                                              ),
-                                        chapterID: chapterId,
-                                        chapterName: resourcesData?.chapter_name,
-                                        keyConceptID: drawerData?.key_concept_id,
-                                        keyConceptName: resourcesData?.topic_name,
-                                        board: boardId,
-                                      },
-                                      isDiaryAutoAssign: true,
-                                      isDiaryEdit: assignedDiaryList
-                                        ?.map((item) => item.section_mapping)
-                                        .flat()
-                                        .every((elem) =>
-                                          resourcesData?.section_wise_completion
-                                            ?.filter((item) => item?.is_completed == true)
-                                            .map((item) => item?.id)
-                                            .includes(elem)
-                                        )
-                                        ? true
-                                        : false,
-                                    },
-                                  });
-                                } else {
-                                  message.error(
-                                    'Please update the status of desired sections first!!'
-                                  );
-                                }
-                              }
-                            }}
-                          >
-                            <PlusCircleFilled className='mr-2' /> Add HW & Diary
-                          </div>
-                        )}
+                                                .map((item) => item?.id)
+                                                .includes(elem)
+                                            )
+                                            ? true
+                                            : false,
+                                        },
+                                      });
+                                    } else {
+                                      message.error(
+                                        'Please update the status of desired sections first!!'
+                                      );
+                                    }
+                                  }
+                                }}
+                              >
+                                <PlusCircleFilled className='mr-2' /> Add HW & Diary
+                              </div>
+                            )
+                          : null}
                       </>
                     )}
                   </div>
