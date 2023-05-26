@@ -1921,7 +1921,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                 <PlusCircleFilled className='mr-2' /> Add HW & Diary
                               </div>
 
-                              {resourcesData?.section_wise_completion?.filter(
+                              {/* {resourcesData?.section_wise_completion?.filter(
                                 (item) => item?.is_completed == true
                               )?.length > 0 ? (
                                 <div className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'>
@@ -1936,7 +1936,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                         .includes(el?.id)
                                     )}
                                 </div>
-                              ) : null}
+                              ) : null} */}
                             </>
                           ) : null
                         ) : null}
