@@ -888,10 +888,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 if (!isDiaryEdit) {
                   setHomeworkCreated(true);
                 }
-                if (
-                  result?.data?.data?.hw_questions.some((e) => e.is_central === true) &&
-                  isDiaryEdit
-                ) {
+                if (result?.data?.data?.hw_questions.some((e) => e.is_central === true)) {
                   setIsAutoAssignDiary(true);
                 }
               }
@@ -1099,7 +1096,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         });
     }
   };
-
+  console.log({ periodData });
   useEffect(() => {
     // handleClearAll();
     if (moduleId && selectedBranch) {
@@ -1153,6 +1150,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         setClearTodaysTopic(false);
         setAddedPeriods(editData?.periods_data);
         setCurrentPanel(0);
+
+        return editData?.periods_data.map((item, i) => {
+          fetchCentralHomework({
+            chapter: item?.chapter_id,
+            period: item?.periodName,
+            topic_id: item?.key_concept_id,
+          });
+        });
       }
       if (!_.isEmpty(editData?.up_coming_period)) {
         setClearUpcomingPeriod(false);
@@ -1198,6 +1203,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       periodData = history.location.state?.periodData;
       setAcadID(selectedBranch?.id);
       setBranchID(selectedBranch?.branch?.id);
+      setIsDiaryEdit(periodData?.isDiaryEdit);
       setSectionDropdown(periodData?.sections);
       setGradeID(periodData?.gradeID);
       setGradeName(periodData?.gradeName);

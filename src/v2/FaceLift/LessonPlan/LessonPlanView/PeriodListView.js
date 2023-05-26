@@ -694,15 +694,15 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
         if (result?.data?.status === 200) {
           setResourcesData(result?.data?.data[0]);
           setLoadingDrawer(false);
-          // if (user_level !== 13) {
-          fetchDiaryCompletionStatus({
-            period_id: data?.id,
-            section_mapping: result?.data?.data[0]?.section_wise_completion
-              ?.map((item) => item?.id)
-              .join(','),
-            subject: subjectId,
-          });
-          // }
+          if (allowAutoAssignDiary) {
+            fetchDiaryCompletionStatus({
+              period_id: data?.id,
+              section_mapping: result?.data?.data[0]?.section_wise_completion
+                ?.map((item) => item?.id)
+                .join(','),
+              subject: subjectId,
+            });
+          }
         } else {
           setLoadingDrawer(false);
         }
@@ -1900,10 +1900,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                             </div>
                           </div>
                         </div>
-                        {allowAutoAssignDiary
-                          ? assignedDiaryList.map((item) => item?.section).flat()
-                              .length !==
-                              resourcesData?.section_wise_completion?.length && (
+                        {allowAutoAssignDiary ? (
+                          assignedDiaryList.map((item) => item?.section).flat().length !==
+                          resourcesData?.section_wise_completion?.length ? (
+                            <>
                               <div
                                 className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'
                                 onClick={() => {
@@ -1912,75 +1912,34 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                       'Please update the status of selected sections first!!'
                                     );
                                   } else {
-                                    if (
-                                      resourcesData?.section_wise_completion?.filter(
-                                        (item) => item?.is_completed == true
-                                      )?.length > 0
-                                    ) {
-                                      history.push({
-                                        pathname: '/create/diary',
-                                        state: {
-                                          periodData: {
-                                            subjectID: subjectId,
-                                            subjectName: subjectName,
-                                            gradeID: gradeId,
-                                            gradeName,
-                                            volumeID: volumeId,
-                                            periodID: resourcesData?.id,
-                                            periodName: resourcesData?.period_name,
-                                            sections:
-                                              assignedDiaryList.length > 0
-                                                ? resourcesData?.section_wise_completion
-                                                    .filter(
-                                                      (item) => item?.is_completed == true
-                                                    )
-                                                    // .map((item) => item?.id)
-                                                    .filter(
-                                                      (el) =>
-                                                        !assignedDiaryList
-                                                          .map(
-                                                            (item) => item.section_mapping
-                                                          )
-                                                          .flat()
-                                                          .includes(el?.id)
-                                                    )
-                                                : resourcesData?.section_wise_completion?.filter(
-                                                    (item) => item?.is_completed == true
-                                                  ),
-                                            chapterID: chapterId,
-                                            chapterName: resourcesData?.chapter_name,
-                                            keyConceptID: drawerData?.key_concept_id,
-                                            keyConceptName: resourcesData?.topic_name,
-                                            board: boardId,
-                                          },
-                                          isDiaryAutoAssign: true,
-                                          isDiaryEdit: assignedDiaryList
-                                            ?.map((item) => item.section_mapping)
-                                            .flat()
-                                            .every((elem) =>
-                                              resourcesData?.section_wise_completion
-                                                ?.filter(
-                                                  (item) => item?.is_completed == true
-                                                )
-                                                .map((item) => item?.id)
-                                                .includes(elem)
-                                            )
-                                            ? true
-                                            : false,
-                                        },
-                                      });
-                                    } else {
-                                      message.error(
-                                        'Please update the status of desired sections first!!'
-                                      );
-                                    }
+                                    message.error(
+                                      'Please update the status of desired sections first!!'
+                                    );
                                   }
                                 }}
                               >
                                 <PlusCircleFilled className='mr-2' /> Add HW & Diary
                               </div>
-                            )
-                          : null}
+
+                              {resourcesData?.section_wise_completion?.filter(
+                                (item) => item?.is_completed == true
+                              )?.length > 0 ? (
+                                <div className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'>
+                                  Create Diary for Sections Rohan{' '}
+                                  {resourcesData?.section_wise_completion
+                                    .filter((item) => item?.is_completed == true)
+                                    .map((item) => item)
+                                    .filter((el) =>
+                                      assignedDiaryList
+                                        .map((item) => item.section_mapping)
+                                        .flat()
+                                        .includes(el?.id)
+                                    )}
+                                </div>
+                              ) : null}
+                            </>
+                          ) : null
+                        ) : null}
                       </>
                     )}
                   </div>
