@@ -95,7 +95,6 @@ const QuestionCard = ({
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  console.log({ isCentralHomework });
   let sessionYear;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -159,7 +158,6 @@ const QuestionCard = ({
       setmaxAttachment(question.max_attachment);
       setEnableAttachments(question.is_attachment_enable);
       if (isCentralHomework) {
-        console.log({ periodData });
         fetchResources({
           chapter: periodData[index]?.chapterID,
           topic_id: periodData[index]?.keyConceptID,
@@ -1177,7 +1175,6 @@ const QuestionCard = ({
                             !['Lesson_Plan', 'Teacher_Reading_Material'].includes(el[0])
                         )
                         .map((each) => {
-                          console.log('types', each);
                           return (
                             <Grid container style={{ width: '100%' }}>
                               <Grid md={6}>
