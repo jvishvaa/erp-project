@@ -399,11 +399,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           if (res?.data?.status_code == 200) {
             if (res?.data?.message === 'Daily Dairy created successfully') {
               message.success('Daily Diary Created Successfully');
-              if (isAutoAssignDiary) {
-                history.goBack();
-              } else {
-                history.push('/diary/teacher');
-              }
+              // if (isAutoAssignDiary) {
+              //   history.goBack();
+              // } else {
+              history.push('/diary/teacher');
+              // }
             } else if (res?.data?.message.includes('locked')) {
               message.error(res?.data?.message);
             } else {
@@ -890,6 +890,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 if (!isDiaryEdit) {
                   setHomeworkCreated(true);
                 }
+                if (
+                  result?.data?.data?.hw_questions.some((e) => e.is_central === true) &&
+                  isDiaryEdit
+                ) {
+                  setIsAutoAssignDiary(true);
+                }
               }
             })
             .catch((error) => message.error('error', error?.message));
@@ -978,6 +984,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 if (result?.data?.status_code == 200) {
                   setHomeworkDetails(result?.data?.data);
                   setShowHomeworkForm(true);
+                  if (
+                    result?.data?.data?.hw_questions.some((e) => e.is_central === true) &&
+                    isDiaryEdit
+                  ) {
+                    setIsAutoAssignDiary(true);
+                  }
                 }
               })
               .catch((error) => message.error('error', error?.message));
@@ -1175,6 +1187,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         date: moment(editData?.created_at).format('YYYY-MM-DD'),
       });
       checkActivityData(editSubject?.subject_name);
+      setCurrentPeriodData([
+        ...currentPeriodData,
+        {
+          chapterID: editData?.chapterID,
+          periodID: editData?.periodID,
+          keyConceptID: editData?.keyConceptID,
+        },
+      ]);
     } else if (history.location?.state?.isDiaryAutoAssign) {
       setIsAutoAssignDiary(true);
       periodData = history.location.state?.periodData;

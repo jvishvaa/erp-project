@@ -1171,74 +1171,80 @@ const QuestionCard = ({
                   </AccordionSummary>
                   <AccordionDetails>
                     <Grid container>
-                      {Object.entries(item[1])?.map((each) => {
-                        return (
-                          <Grid container style={{ width: '100%' }}>
-                            <Grid md={6}>
-                              <div className='th-fw-600'>{each[0]}</div>
+                      {Object.entries(item[1])
+                        ?.filter(
+                          (el) =>
+                            !['Lesson_Plan', 'Teacher_Reading_Material'].includes(el[0])
+                        )
+                        .map((each) => {
+                          console.log('types', each);
+                          return (
+                            <Grid container style={{ width: '100%' }}>
+                              <Grid md={6}>
+                                <div className='th-fw-600'>{each[0]}</div>
+                              </Grid>
+                              {each[1]?.map((resource) => {
+                                let resourceName = resource.split(
+                                  `${each[0].toLowerCase()}/`
+                                );
+                                return (
+                                  <>
+                                    <Grid container style={{ width: '100%' }}>
+                                      <Grid md={8} className='text-left'>
+                                        <Typography className='text-truncate th-width-90'>
+                                          {resourceName[1]}
+                                        </Typography>
+                                      </Grid>
+                                      <Grid md={2} className='text-right'>
+                                        <FormControlLabel
+                                          control={
+                                            <Checkbox
+                                              // checked={state.checkedB}
+                                              onChange={() =>
+                                                setSelectedResources((prevState) => [
+                                                  ...prevState,
+                                                  resource,
+                                                ])
+                                              }
+                                              name='checkedB'
+                                              color='primary'
+                                            />
+                                          }
+                                          label='Assign'
+                                          style={{ minWidth: '50px' }}
+                                        />
+                                      </Grid>
+                                      <Grid md={1} className='text-center pt-2'>
+                                        <a
+                                          onClick={() => {
+                                            openPreview({
+                                              currentAttachmentIndex: 0,
+                                              attachmentsArray: [
+                                                {
+                                                  src: `${endpoints.homework.resourcesFiles}/${resource}`,
+                                                  name: resource,
+                                                  extension:
+                                                    '.' +
+                                                    resource.split('.')[
+                                                      resource.split('.').length - 1
+                                                    ],
+                                                },
+                                              ],
+                                            });
+                                          }}
+                                          rel='noopener noreferrer'
+                                          target='_blank'
+                                        >
+                                          <SvgIcon component={() => <VisibilityIcon />} />
+                                        </a>
+                                      </Grid>
+                                    </Grid>
+                                  </>
+                                );
+                              })}
                             </Grid>
-                            {each[1]?.map((resource) => {
-                              let resourceName = resource.split(
-                                `${each[0].toLowerCase()}/`
-                              );
-                              return (
-                                <>
-                                  <Grid container style={{ width: '100%' }}>
-                                    <Grid md={8} className='text-left'>
-                                      <Typography className='text-truncate th-width-90'>
-                                        {resourceName[1]}
-                                      </Typography>
-                                    </Grid>
-                                    <Grid md={2} className='text-right'>
-                                      <FormControlLabel
-                                        control={
-                                          <Checkbox
-                                            // checked={state.checkedB}
-                                            onChange={() =>
-                                              setSelectedResources((prevState) => [
-                                                ...prevState,
-                                                resource,
-                                              ])
-                                            }
-                                            name='checkedB'
-                                            color='primary'
-                                          />
-                                        }
-                                        label='Assign'
-                                        style={{ minWidth: '50px' }}
-                                      />
-                                    </Grid>
-                                    <Grid md={1} className='text-center pt-2'>
-                                      <a
-                                        onClick={() => {
-                                          openPreview({
-                                            currentAttachmentIndex: 0,
-                                            attachmentsArray: [
-                                              {
-                                                src: `${endpoints.homework.resourcesFiles}/${resource}`,
-                                                name: resource,
-                                                extension:
-                                                  '.' +
-                                                  resource.split('.')[
-                                                    resource.split('.').length - 1
-                                                  ],
-                                              },
-                                            ],
-                                          });
-                                        }}
-                                        rel='noopener noreferrer'
-                                        target='_blank'
-                                      >
-                                        <SvgIcon component={() => <VisibilityIcon />} />
-                                      </a>
-                                    </Grid>
-                                  </Grid>
-                                </>
-                              );
-                            })}
-                          </Grid>
-                        );
-                      })}
+                          );
+                        })}
                     </Grid>
                   </AccordionDetails>
                 </Accordion>

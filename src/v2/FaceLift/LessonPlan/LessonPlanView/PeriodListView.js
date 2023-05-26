@@ -1927,9 +1927,22 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                         periodID: resourcesData?.id,
                                         periodName: resourcesData?.period_name,
                                         sections:
-                                          resourcesData?.section_wise_completion?.filter(
-                                            (item) => item?.is_completed == true
-                                          ),
+                                          assignedDiaryList.length > 0
+                                            ? resourcesData?.section_wise_completion
+                                                .filter(
+                                                  (item) => item?.is_completed == true
+                                                )
+                                                // .map((item) => item?.id)
+                                                .filter(
+                                                  (el) =>
+                                                    !assignedDiaryList
+                                                      .map((item) => item.section_mapping)
+                                                      .flat()
+                                                      .includes(el?.id)
+                                                )
+                                            : resourcesData?.section_wise_completion?.filter(
+                                                (item) => item?.is_completed == true
+                                              ),
                                         chapterID: chapterId,
                                         chapterName: resourcesData?.chapter_name,
                                         keyConceptID: drawerData?.key_concept_id,
@@ -2100,6 +2113,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                                 ?.section_id[
                                                                 sectionIndex
                                                               ],
+                                                            chapterID: chapterId,
+                                                            periodID: resourcesData?.id,
+                                                            keyConceptID:
+                                                              drawerData?.key_concept_id,
                                                           },
                                                           subject: {
                                                             subject_name: subjectName,
@@ -2239,6 +2256,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                                 ?.section_id[
                                                                 sectionIndex
                                                               ],
+                                                            chapterID: chapterId,
+                                                            periodID: resourcesData?.id,
+                                                            keyConceptID:
+                                                              drawerData?.key_concept_id,
                                                           },
                                                           subject: {
                                                             subject_name: subjectName,
