@@ -138,6 +138,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [currentPeriodData, setCurrentPeriodData] = useState([]);
   const [hwDiaryPeriodMappingId, setHwDiaryPeriodMappingId] = useState();
   const [selectedChapterTopic, setSelectedChapterTopic] = useState([]);
+  const [selectedPeriod, setSelectedPeriod] = useState();
+  const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
   const questionModify = (questions) => {
     let arr = [];
     questions.map((question) => {
@@ -272,6 +274,25 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setSubmissionDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
   };
 
+  const fetchAllowAutoDiaryStatus = () => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=hw_auto_asgn`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setAllowAutoAssignDiary(true);
+          } else {
+            setAllowAutoAssignDiary(false);
+          }
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        message.error('error', error?.message);
+      });
+  };
   const handleEdit = () => {
     let payload = {
       academic_year: acadID,
@@ -760,6 +781,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         if (result?.data?.status == 200) {
           if (result?.data?.data.length > 0) {
             setAssignedHomework(result?.data?.data);
+          } else {
+            if (Object.keys(selectedPeriod).length > 0) {
+              fetchCentralHomework({
+                chapter: selectedPeriod?.chapterID,
+                period: selectedPeriod?.periodName,
+                topic_id: selectedPeriod?.keyConceptID,
+              });
+            }
           }
         }
       })
@@ -826,6 +855,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         }
       });
     }
+    fetchAllowAutoDiaryStatus();
   }, []);
   useEffect(() => {
     if (assignedHomework) {
@@ -857,6 +887,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       } else {
         fetchUpcomigPeriod(lastPeriod.id);
       }
+      fetchCentralHomework({
+        chapter: lastPeriod?.chapter_id,
+        period: lastPeriod?.period_name,
+        topic_id: lastPeriod?.key_concept_id,
+      });
       setCurrentPanel(addedPeriods.length - 1);
     } else {
       setUpcomingPeriod({});
@@ -1096,7 +1131,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         });
     }
   };
-  console.log({ periodData });
   useEffect(() => {
     // handleClearAll();
     if (moduleId && selectedBranch) {
@@ -1151,13 +1185,13 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         setAddedPeriods(editData?.periods_data);
         setCurrentPanel(0);
 
-        return editData?.periods_data.map((item, i) => {
-          fetchCentralHomework({
-            chapter: item?.chapter_id,
-            period: item?.periodName,
-            topic_id: item?.key_concept_id,
-          });
-        });
+        // return editData?.periods_data.map((item, i) => {
+        //   fetchCentralHomework({
+        //     chapter: item?.chapter_id,
+        //     period: item?.periodName,
+        //     topic_id: item?.key_concept_id,
+        //   });
+        // });
       }
       if (!_.isEmpty(editData?.up_coming_period)) {
         setClearUpcomingPeriod(false);
@@ -1201,6 +1235,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     } else if (history.location?.state?.isDiaryAutoAssign) {
       setIsAutoAssignDiary(true);
       periodData = history.location.state?.periodData;
+      setSelectedPeriod(periodData);
       setAcadID(selectedBranch?.id);
       setBranchID(selectedBranch?.branch?.id);
       setIsDiaryEdit(periodData?.isDiaryEdit);
@@ -1247,11 +1282,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
             keyConcept: periodData?.keyConceptName,
           },
         ]);
-        fetchCentralHomework({
-          chapter: periodData?.chapterID,
-          period: periodData?.periodName,
-          topic_id: periodData?.keyConceptID,
-        });
+        // fetchCentralHomework({
+        //   chapter: periodData?.chapterID,
+        //   period: periodData?.periodName,
+        //   topic_id: periodData?.keyConceptID,
+        // });
       }
     }
   }, []);
@@ -1310,7 +1345,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const fetchCentralHomework = (params = {}) => {
     axiosInstance
       .get(`${endpoints?.dailyDiary?.centralHomeworkData}`, {
-        params: { ...params },
+        params: { ...params, ...(allowAutoAssignDiary ? { config: true } : {}) },
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -1351,14 +1386,18 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       });
   };
   useEffect(() => {
-    if (homeworkDetails && !isAutoAssignDiary) {
+    if (homeworkDetails) {
       setQuestionList(questionModify(homeworkDetails?.hw_questions));
       setSubmissionDate(moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD'));
       setHomeworkTitle(homeworkDetails?.homework_name);
       setHomeworkInstructions(homeworkDetails?.description);
+      fetchCentralHomework({
+        chapter: selectedPeriod?.chapter_id,
+        period: selectedPeriod?.periodName,
+        topic_id: selectedPeriod?.key_concept_id,
+      });
     }
     //  else if (!isAutoAssignDiary) {
-    //   alert('oooo');
     //   setQuestionList([
     //     {
     //       id: cuid(),
@@ -1946,6 +1985,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             subject={subjectID}
                             isCentralHomework={question?.is_central}
                             periodData={currentPeriodData}
+                            allowAutoAssignDiary={allowAutoAssignDiary}
                           />
                         ))}
                       </div>

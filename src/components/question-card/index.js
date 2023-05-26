@@ -90,6 +90,7 @@ const QuestionCard = ({
   subject,
   isCentralHomework,
   periodData,
+  allowAutoAssignDiary,
 }) => {
   const classes = useStyles();
   const selectedAcademicYear = useSelector(
@@ -378,7 +379,9 @@ const QuestionCard = ({
     } else {
       axiosInstance
         // ?chapter=${selectedChapterID}&topic_id=${selectedTopicID}`
-        .get(`academic/get-period-resources/`, { params: { ...params } })
+        .get(`academic/get-period-resources/`, {
+          params: { ...params, ...(allowAutoAssignDiary ? { config: true } : {}) },
+        })
         .then((result) => {
           if (result?.data?.status === 200) {
             setResourcesData(result?.data?.data);
