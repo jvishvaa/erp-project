@@ -157,12 +157,6 @@ const QuestionCard = ({
       setpentool(question.penTool);
       setmaxAttachment(question.max_attachment);
       setEnableAttachments(question.is_attachment_enable);
-      if (isCentralHomework) {
-        fetchResources({
-          chapter: periodData[index]?.chapterID,
-          topic_id: periodData[index]?.keyConceptID,
-        });
-      }
     }
   }, [question.question, question.attachments]);
 
@@ -348,6 +342,12 @@ const QuestionCard = ({
       fetchVolumeListData();
       fetchBoardListData();
       fetchResourceYear();
+      if (isCentralHomework && periodData.length > 0) {
+        fetchResources({
+          chapter: periodData[index]?.chapterID,
+          topic_id: periodData[index]?.keyConceptID,
+        });
+      }
     }
   }, [showDrawer]);
 
@@ -1003,7 +1003,7 @@ const QuestionCard = ({
         style={{ overflowY: 'scroll', height: '80vh' }}
         className='th-resourcesDrawer'
       >
-        {!isCentralHomework && (
+        {!periodData[index]?.keyConceptID && (
           <Grid
             container
             spacing={5}
