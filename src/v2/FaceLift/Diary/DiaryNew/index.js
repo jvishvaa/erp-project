@@ -19,6 +19,7 @@ const isOrchids =
     ? true
     : false;
 const Diary = () => {
+  const history = useHistory();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -31,14 +32,16 @@ const Diary = () => {
   const [generalDiaryList, setGeneralDiaryList] = useState([]);
   const [dailyDiaryData, setDailyDiaryData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [date, setDate] = useState(moment().format(dateFormat));
+  const [date, setDate] = useState(
+    moment(history?.location?.state?.diary_created_at).format(dateFormat) ||
+      moment().format(dateFormat)
+  );
   const [showTab, setShowTab] = useState('1');
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [showSubjectsCount, setShowSubjectsCount] = useState(10);
 
-  const history = useHistory();
   const { TabPane } = Tabs;
 
   const onTabChange = (key) => {
@@ -135,7 +138,7 @@ const Diary = () => {
                   disabledDate={(current) => current.isAfter(moment())}
                   allowClear={false}
                   // placement='bottomRight'
-                  defaultValue={moment()}
+                  value={moment(date)}
                   showToday={false}
                   onChange={handleDateChange}
                   format={'DD/MM/YYYY'}

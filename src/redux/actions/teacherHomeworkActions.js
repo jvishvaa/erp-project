@@ -91,7 +91,7 @@ export const addHomeWork = (data, isEdit, id, isAutoAssignDiary) => async (dispa
       const response = await axios.put(`/academic/${id}/update-hw/`, data);
       dispatch({ type: ADD_HOMEWORK_SUCCESS });
 
-      return 'success';
+      return isAutoAssignDiary ? response : 'success';
     } catch (e) {
       dispatch({ type: ADD_HOMEWORK_FAILURE });
       throw new Error(e);

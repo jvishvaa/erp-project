@@ -230,7 +230,7 @@ const QuestionBankCard = ({
           ? { margin: '0rem auto' }
           : {
               margin: '0rem auto -1.1rem auto',
-              height: 250,
+              height: 300,
               // background: period?.question_status === '2' ? '#FCEEEE ' : '',
               // border: period?.question_status === '2' ? '1px solid red ' : '',
             }
@@ -405,11 +405,14 @@ const QuestionBankCard = ({
             </Typography>
           </Box>
         </Grid>
-        <Grid item  sm = {periodColor ? 3 : 4} xs={6} className={classes.textRight}>
+        
+      </Grid>
+      <Grid container spacing={2} style={{marginTop: 10}}>
+        <Grid item  sm = {periodColor ? 4 : 5} xs={12} >
           {!periodColor ? (
             <Button
               variant='contained'
-              style={{ color: 'white',marginTop:'5%' ,width: '100%' , borderRadius:'5px',height:'30px'}}
+              style={{ color: 'white' ,width: '100%' , borderRadius:'5px',height:'30px'}}
               color='primary'
               size='small'
               onClick={handleViewMore}
@@ -419,7 +422,7 @@ const QuestionBankCard = ({
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%',borderRadius:'5px',height:'30px' }}
+              style={{ color: 'white', width: '72%', visibility: 'hidden',borderRadius:'5px',height:'30px' }}
               color='primary'
               size='small'
               onClick={handleViewMore}
@@ -427,19 +430,22 @@ const QuestionBankCard = ({
               VIEW MORE
             </Button>
           )}
+          
+        </Grid>
+        <Grid item  sm = {periodColor ? 8 : 7} xs={12} >
           {showAddToQuestionPaper && period?.question_status === '2' ? (
-            <Button
-              variant='contained'
-              style={{ margin: '15px 0', color: 'white', width: '100%' }}
-              color='primary'
-              size='small'
-              onClick={() => onClick(period)}
-            >
-              ADD TO QUESTION PAPER
-            </Button>
-          ) : (
-            ''
-          )}
+              <Button
+                variant='contained'
+                style={{  color: 'white', width: '100%', fontSize: 14 }}
+                color='primary'
+                size='small'
+                onClick={() => onClick(period)}
+              >
+                ADD TO QUESTION PAPER
+              </Button>
+            ) : (
+              ''
+            )}
         </Grid>
       </Grid>
     </Paper>
