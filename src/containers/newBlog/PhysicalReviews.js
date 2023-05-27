@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Avatar, Select, Tag, Table as TableAnt, message, Modal, Input } from 'antd';
-import { UserOutlined, FileSearchOutlined,ArrowRightOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { Avatar, Select, Tag, Table as TableAnt, message, Tooltip, Button, Drawer, Space, Modal, Input } from 'antd';
+import { UserOutlined, FileSearchOutlined,ArrowRightOutlined, CloseOutlined, CaretRightOutlined, PlayCircleOutlined,} from '@ant-design/icons';
 import endpoints from '../../config/endpoints';
+import ReactPlayer from 'react-player';
 
 import axios from 'axios';
 import './images.css';
@@ -16,7 +17,7 @@ const PhysicalReviewed = (props) => {
   const { Option } = Select;
   const [value, setValue] = React.useState();
   const [totalSubmitted, setTotalSubmitted] = useState([]);
-  const PhysicalActivityId = JSON.parse(localStorage.getItem('PhysicalActivityId')) || {};
+  
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const [dataId, setDataId] = useState();
   let datas = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -39,6 +40,8 @@ const PhysicalReviewed = (props) => {
   const [overallData, setOverAllData] = useState([]);
   const [customRatingReview, setCustomRatingReview] = useState([]);
   const [overallRemarks, setOverAllRemarks] = useState('');
+  const [isRoundAvailable, setIsRoundAvailable] = useState(false);
+  const [firstLoad, setFirstLoad]= useState(false);
 
   let array = [];
   const getRatingView = (data) => {
@@ -47,7 +50,7 @@ const PhysicalReviewed = (props) => {
       .get(
         `${
           endpoints.newBlog.studentReviewss
-        }?booking_detail_id=${data}&response_is_change=${true}`,
+        }?booking_detail_id=${data}&response_is_change=${true}&is_round_available=${isRoundAvailable}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -66,6 +69,47 @@ const PhysicalReviewed = (props) => {
         // });
         setRatingReview(response.data);
         setLoading(false);
+      });
+  };
+
+  const getDrawerRatingView = (data) => {
+    setLoading(true);
+    showMedia(data);
+    axios
+      .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        console.log("api response",response);
+        response.data.map((obj, index) => {
+          console.log("data ", obj);
+          
+          let temp = {};
+          temp['id'] = obj.id;
+          temp['name'] = obj.level.name;
+          temp['remarks'] = JSON.parse(obj.remarks);
+          temp['given_rating'] = obj.given_rating;
+          temp['level'] = obj?.level?.rating;
+          array.push(temp);
+          
+        });
+        setDrawerRatingReview(array);
+        console.log("setDrawerRatingReview ", array);
+        setLoading(false);
+      });
+  };
+
+  const showMedia = (item) => {
+    axios
+      .get(`${endpoints.newBlog.showVisualMedia}${item}/`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        setFile(response.data.result);
       });
   };
 
@@ -122,13 +166,40 @@ const PhysicalReviewed = (props) => {
     }
   };
 
+  useEffect(() => {
+    if(!firstLoad){
+      fetchisRoundAvailable();
+    }
+  });
+
+  const fetchisRoundAvailable = () => {
+    axios 
+      .get(`${endpoints.newBlog.getRoundShowHide}?activity_detail_id=${ActivityId?.id}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((result) => {
+        setIsRoundAvailable(result?.data?.is_round_available);
+        setFirstLoad(true);
+      });
+  };
+
   const assignPage = (data) => {
     if (data?.length !== 0) {
+      if(isRoundAvailable){
       setView(true);
       setData(data);
       setDataId(data?.id);
 
       getRatingView(data?.id);
+      } else {
+        setDrawerView(true);
+      setDrawerData(data);
+      setDrawerDataId(data?.id);
+
+      getDrawerRatingView(data?.id);
+      }
     }
   };
 
@@ -144,8 +215,14 @@ const PhysicalReviewed = (props) => {
   }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
   const [view, setView] = useState(false);
   const [data, setData] = useState();
+  const [drawerview, setDrawerView] = useState(false);
+  const [drawerdata, setDrawerData] = useState();
+  const [drawerdataId, setDrawerDataId] = useState();
+  const [drawerratingReview, setDrawerRatingReview] = useState([]);
+  const [file, setFile] = useState([]);
   const handleCloseViewMore = () => {
     setView(false);
+    setDrawerView(false);
   };
 
   const handlePagination = (event, page) => {
@@ -188,13 +265,13 @@ const PhysicalReviewed = (props) => {
     //   render: (text, row) => <span className='th-black-1'>{row?.reviewer}</span>,
     // },
 
-    {
-      title: <span className='th-white th-fw-700'>Overall Remarks</span>,
-      align: 'center',
-      render: (text, row) => (
-        <span className='th-black-1'>{row?.user_reviews?.remarks}</span>
-      ),
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>Overall Remarks</span>,
+    //   align: 'center',
+    //   render: (text, row) => (
+    //     <span className='th-black-1'>{row?.user_reviews?.remarks}</span>
+    //   ),
+    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -236,7 +313,7 @@ const PhysicalReviewed = (props) => {
       }, []);
 
     let overValueAllData = arr
-      .filter((item) => item?.name.toLowerCase() === 'overall')
+      .filter((item) => item?.name?.toLowerCase() === 'overall')
       .map((item) => item);
     setOverAllData(overValueAllData);
     setTableHeader(headersData);
@@ -269,13 +346,13 @@ const PhysicalReviewed = (props) => {
           pagination={false}
         />
       </div>
-      {/* <Drawer
-        title={<span className='th-fw-500'>Submit Review</span>}
+      <Drawer
+        title={<span className='th-fw-500'>Check Review</span>}
         placement='right'
         onClose={handleCloseViewMore}
         zIndex={1300}
-        visible={view}
-        width={'35vw'}
+        visible={drawerview}
+        width={file?.s3_path ? '70vw' : '35vw'}
         closable={false}
         className='th-resources-drawer'
         extra={
@@ -286,7 +363,46 @@ const PhysicalReviewed = (props) => {
       >
         <div>
           <div className='row'>
-            <div className='col-12 px-0 th-bg-white '>
+            <div className={file?.s3_path ? 'col-md-8' : 'd-none'}>
+              {file?.file_type === 'image/jpeg' || file?.file_type === 'image/png' ? (
+                <img
+                  src={file?.s3_path}
+                  thumb={file?.s3_path}
+                  alt={'image'}
+                  width='100%'
+                  height='95%'
+                />
+              ) : (
+                <ReactPlayer
+                  url={file?.s3_path}
+                  thumb={file?.s3_path}
+                  // key={index}
+                  width='100%'
+                  height='100%'
+                  playIcon={
+                    <Tooltip title='play'>
+                      <Button
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          height: '30vh',
+                          width: '30vw',
+                        }}
+                        shape='circle'
+                        icon={
+                          <PlayCircleOutlined
+                            style={{ color: 'white', fontSize: '70px' }}
+                          />
+                        }
+                      />
+                    </Tooltip>
+                  }
+                  alt={'video'}
+                  controls={true}
+                />
+              )}
+            </div>
+            <div className={`${file?.s3_path ? 'col-md-4' : 'col-12'} px-0 th-bg-white`}>
               <div className='row'>
                 <div className='col-12 px-1'>
                   <div>
@@ -294,7 +410,8 @@ const PhysicalReviewed = (props) => {
                       src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                       alt='image'
                       style={{
-                        height: 100,
+                        // width: '100%',
+                        height: 130,
                         objectFit: 'fill',
                       }}
                     />
@@ -305,81 +422,56 @@ const PhysicalReviewed = (props) => {
                       aria-label='recipe'
                       icon={
                         <UserOutlined
-                          color='#F3F3F3'
-                          style={{ color: '#F3F3F3' }}
+                          color='#f3f3f3'
+                          style={{ color: '#f3f3f3' }}
                           twoToneColor='white'
                         />
                       }
                     />
                     <div className='text-left ml-3'>
-                      <div className=' th-fw-600 th-16'>{data?.booked_user?.name}</div>
-                      <div className=' th-fw-500 th-14'>
-                        {data?.booked_user?.username}
-                      </div>
+                      <div className=' th-fw-600 th-16'>{drawerdata?.booked_user?.name}</div>
+                      <div className=' th-fw-500 th-14'>{drawerdata?.branch?.name}</div>
+                      <div className=' th-fw-500 th-12'>{drawerdata?.grade?.name}</div>
+                    </div>
+                  </div>
+                  <div
+                    className='p-2 mt-3 th-br-5 th-bg-grey'
+                    style={{ outline: '1px solid #d9d9d9' }}
+                  >
+                    <div>
+                      Title :{' '}
+                      <span className='th-fw-600'>{drawerdata?.activity_detail?.title}</span>
+                    </div>
+                    <div>
+                      Instructions :{' '}
+                      <span className='th-fw-400'>
+                        {drawerdata?.activity_detail?.description}
+                      </span>
                     </div>
                   </div>
                   <div className='mt-3'>
-                    <div className='th-fw-500 th-16 mb-2'>Review</div>
+                    <div className='th-fw-500 th-16 mb-2'>Remarks</div>
                     <div
                       className='px-1 py-2 th-br-5'
-                      style={{ outline: '1px solid #D9D9D9' }}
+                      style={{ outline: '1px solid #d9d9d9' }}
                     >
-                      {ratingReview?.map((obj, index) => {
+                      {drawerratingReview?.map((obj, index) => {
                         return (
-                          <div
-                            key={index}
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            {obj?.name === 'Overall' ? (
-                              ''
-                            ) : (
-                              <div
-                                key={index}
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  marginBottom: '10px',
-                                }}
-                              >
-                                {' '}
-                                {obj?.name}
-                                <b style={{ color: '#53bedd', fontSize: '12px' }}>
-                                  {filterRound(obj?.level)}
-                                </b>
-                              </div>
-                            )}
-                            {obj?.name == 'Overall' ? (
-                              ''
-                            ) : (
-                              <div>
-                                <Input placeholder={obj?.name} value={obj?.remarks} />
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                      {ratingReview?.map((obj, index) => {
-                        return (
-                          <div
-                            key={index}
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            {obj?.name == 'Overall' ? (
-                              <div>
-                                {obj?.name}*
-                                <Input placeholder={obj?.name} value={obj?.remarks} />
-                              </div>
-                            ) : (
-                              ''
-                            )}
+                          <div className='row py-1 align-items-center'>
+                            <div className='col-6 pl-1' key={index}>
+                              {obj?.name}
+                            </div>  
+                            <div className='col-6 pr-1'>
+                              <Input
+                                disabled
+                                title={obj?.remarks.filter((item) => item.status == true)[0]
+                                  .name}
+                                value={
+                                  obj?.remarks.filter((item) => item.status == true)[0]
+                                    .name
+                                }
+                              />
+                            </div>
                           </div>
                         );
                       })}
@@ -390,7 +482,7 @@ const PhysicalReviewed = (props) => {
             </div>
           </div>
         </div>
-      </Drawer> */}
+      </Drawer>
       <Modal
         centered
         visible={view}

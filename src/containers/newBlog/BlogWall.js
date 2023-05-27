@@ -247,6 +247,7 @@ const BlogWall = () => {
           JSON.stringify(response?.data?.result)
         );
         setUserId(response?.data?.result?.user_id);
+        fetchCategoryOptions();
         setLoading(false);
         setShowTab('1');
       });

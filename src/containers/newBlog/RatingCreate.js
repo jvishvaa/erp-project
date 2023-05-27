@@ -383,7 +383,7 @@ const RatingCreate = () => {
       message.error('Please Select Sub-Activity Type');
       return;
     }
-    if(physicalActivityToggle){
+    if (physicalActivityToggle) {
       const arr1 = visualInputlList?.map((obj) => {
         return { ...obj, rating: optionList };
         return obj;
@@ -395,20 +395,20 @@ const RatingCreate = () => {
         grading_scheme: arr1,
         "is_dropdown": "True"
       };
-  }else {
-    const uniqueValues = new Set(inputList.map((e) => e.name));
-    if (uniqueValues.size < inputList.length) {
-      message.error('Duplicate Name Found');
-      return;
+    } else {
+      const uniqueValues = new Set(inputList.map((e) => e.name));
+      if (uniqueValues.size < inputList.length) {
+        message.error('Duplicate Name Found');
+        return;
+      }
+      body = {
+        sub_type: subActivityType?.name,
+        activity_type: ActivityType?.name,
+        grading_scheme: inputList,
+        criteria_title:
+          ActivityType?.name.toLowerCase() === 'public speaking' ? '' : remarksType,
+      };
     }
-    body = {
-      sub_type: subActivityType?.name,
-      activity_type: ActivityType?.name,
-      grading_scheme: inputList,
-      criteria_title:
-        ActivityType?.name.toLowerCase() === 'public speaking' ? '' : remarksType,
-    };
-  }
     setLoading(true);
     axios
       .post(`${endpoints.newBlog.activityTypeSubmit}`, body, {
@@ -470,12 +470,13 @@ const RatingCreate = () => {
               zIndex: '2000',
             },
           });
-          setSearch('');
+
           setLoading(false);
           setActivityType(null);
           setFilterData([]);
           getActivityCategory();
           handleModalCloseEdit();
+          handleActivity(search);
           return;
         }
       })
@@ -581,6 +582,21 @@ const RatingCreate = () => {
     setIsEditData({ ...isEditData, grading_scheme: newFileList });
   };
 
+  let vaRating = (obj) => {
+    let rating = obj?.grading_scheme.map((item) => {
+      if (obj.is_round_available == false && item?.va_rating == null) {
+        if (item?.va_rating == null && item?.rating.includes('[{') == true) {
+          return JSON.parse(item.rating)
+          // return item?.rating
+        }
+      } else {
+        return JSON.parse(item?.va_rating)
+      }
+    }
+    );
+    return rating;
+  }
+
   const handleActivity = (e) => {
     let array = [];
     if (e) {
@@ -602,13 +618,14 @@ const RatingCreate = () => {
             temp['criteria_title'] = obj?.criteria_title;
             temp['grading_scheme'] = obj?.grading_scheme;
             temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
-            temp['va_rating'] = obj?.grading_scheme.map((item) =>
-              JSON.parse(item?.va_rating)
-            );
+            temp['va_rating'] = vaRating(obj)
+            temp['is_round_available'] = obj?.is_round_available;
+            // temp['va_rating'] = obj?.grading_scheme.map((item) => JSON.parse(item?.va_rating));
             temp['is_editable'] = obj?.is_editable;
             array.push(temp);
           });
           setFilterData(array);
+          console.log({ array });
           setLoading(false);
         })
         .catch(() => {
@@ -634,13 +651,17 @@ const RatingCreate = () => {
   }, [isEditData]);
 
   const handleVisualInputApp = () => {
-    setVisualInputList([
-      ...visualInputlList,
-      {
-        name: '',
-        score: null,
-      },
-    ]);
+    if (visualInputlList?.length < 7) {
+      setVisualInputList([
+        ...visualInputlList,
+        {
+          name: '',
+          score: null,
+        },
+      ]);
+    } else {
+      message.error('Please add 7 questions only!!');
+    }
   };
 
   const handleVisualInputAppEdit = () => {
@@ -677,14 +698,18 @@ const RatingCreate = () => {
   });
 
   const handleOptionInputAdd = () => {
-    setOptionList([
-      ...optionList,
-      {
-        name: '',
-        score: null,
-        status: false,
-      },
-    ]);
+    if (optionList?.length < 10) {
+      setOptionList([
+        ...optionList,
+        {
+          name: '',
+          score: null,
+          status: false,
+        },
+      ]);
+    } else {
+      message.error('Please add 10 options only!!');
+    }
   };
 
   const handleOptionInputAddEdit = () => {
@@ -694,7 +719,8 @@ const RatingCreate = () => {
       score: null,
       status: false,
     });
-    setEditOption([...editOption, newData]);
+    setEditOption(newData);
+    console.log("editOption handleOptionInputAddEdit data", editOption);
   };
 
   const handleOptionInput = (event, index) => {
@@ -707,12 +733,20 @@ const RatingCreate = () => {
   };
 
   const handleOptionInputEdit = (event, index) => {
+    console.log('handleOptionInputEdit editOption data', editOption);
+    console.log('handleOptionInputEdit event data', event);
+    console.log('handleOptionInputEdit index data', index);
     if (event) {
       const { value } = event.target;
+      console.log('handleOptionInputEdit value data', value);
       const newInputList = [...editOption];
+      console.log('handleOptionInputEdit newInputList data', newInputList);
       let newData = newInputList;
+      console.log('handleOptionInputEdit newData data', newData);
       newData[index].name = value;
+      console.log('handleOptionInputEdit newData[index].name data', newData[index].name);
       let modifiedData = [...newData];
+      console.log('handleOptionInputEdit modifiedData data', modifiedData);
       setEditOption(modifiedData);
     }
   };
@@ -798,6 +832,7 @@ const RatingCreate = () => {
       id: isEditData?.id,
       criteria_title: isEditData?.criteria_title,
       grading_scheme: arr1,
+      is_round_available: isEditData?.is_round_available,
     };
 
     setLoading(true);
@@ -815,9 +850,9 @@ const RatingCreate = () => {
               zIndex: '2000',
             },
           });
-          setSearch('');
           setLoading(false);
           handleModalCloseEdit();
+          handleActivity(search);
           return;
         } else {
           setLoading(false);
@@ -831,6 +866,7 @@ const RatingCreate = () => {
           handleModalCloseEdit();
           setFilterData([]);
           getActivityCategory();
+          handleActivity(search);
           return;
         }
       })
@@ -887,6 +923,7 @@ const RatingCreate = () => {
   };
 
   const handleActivityChange = (event, value) => {
+    setPhysicalActivityToggle(false);
     setActivityType(value);
   };
 
@@ -935,9 +972,8 @@ const RatingCreate = () => {
             setActivityType(null);
             setFilterData([]);
             getActivityCategory();
-            setSearch('');
             setLoading(false);
-
+            handleActivity(search);
             return;
           } else {
             message.warning(response?.data?.message);
@@ -952,11 +988,23 @@ const RatingCreate = () => {
     }
   };
   const handleEdit = (e, data) => {
+    console.log(data, 'handleEdit');
     setIsEdit(false);
     if (e) {
       setIsEdit(true);
       setIsEditData(data);
-      let optionData = data?.va_rating[0];
+      // let optionData = data?.va_rating[0];
+      let varatingArr = data?.va_rating[0]
+      console.log(varatingArr);
+      let optionData
+      if (varatingArr == undefined) {
+        optionData = []
+      } else {
+        optionData = data?.va_rating[0]
+      }
+      // let optionData = varatingArr == undefined ? [] : (varatingArr.every(el => e == undefined) ? null : data?.va_rating[0])
+      // let optionData = varatingArr.every(el => e == undefined) ? null : data?.va_rating[0];
+      console.log({ optionData });
       setEditOption(optionData);
     }
   };
@@ -967,6 +1015,10 @@ const RatingCreate = () => {
 
   useEffect(() => {
     setRemarksType(null);
+    setSubActivityType(null);
+    setInputList([{ name: '', rating: '', score: null }]);
+    setVisualInputList([{ name: '', score: null }]);
+    setOptionList([{ name: '', score: null, status: false }]);
   }, [ActivityType]);
   return (
     <Layout>
@@ -1148,9 +1200,9 @@ const RatingCreate = () => {
               {ActivityType ? (
                 <>
                   {(ActivityType && ActivityType?.name.toLowerCase() === 'visual art') ||
-                  ActivityType?.name.toLowerCase() === 'music' ||
-                  ActivityType?.name.toLowerCase() === 'dance' ||
-                  ActivityType?.name.toLowerCase() === 'theatre' ? (
+                    ActivityType?.name.toLowerCase() === 'music' ||
+                    ActivityType?.name.toLowerCase() === 'dance' ||
+                    ActivityType?.name.toLowerCase() === 'theatre' ? (
                     <div className='row mt-2'>
                       <AntDivider
                         orientation='left'
@@ -1180,35 +1232,35 @@ const RatingCreate = () => {
                       </AntDivider>
                       {visualInputlList
                         ? visualInputlList.map((input, index) => (
-                            <>
-                              <div className='col-10 question-visual'>
-                                <Input
-                                  placeholder='Question'
-                                  width={100}
-                                  maxLength='500'
-                                  showCount
-                                  value={input?.name}
-                                  onChange={(event) => handleQuestion(event, index)}
+                          <>
+                            <div className='col-10 question-visual'>
+                              <Input
+                                placeholder='Question'
+                                width={100}
+                                maxLength='500'
+                                showCount
+                                value={input?.name}
+                                onChange={(event) => handleQuestion(event, index)}
+                              />
+                            </div>
+                            <div className='col-2 delete-visual-icon'>
+                              {visualInputlList && visualInputlList.length > 1 ? (
+                                <DeleteFilled
+                                  onClick={() =>
+                                    handleRemoveVisualQuestion(input, index)
+                                  }
+                                  style={{
+                                    cursor: 'pointer',
+                                    fontSize: '18px',
+                                    color: 'darkblue',
+                                  }}
                                 />
-                              </div>
-                              <div className='col-2 delete-visual-icon'>
-                                {visualInputlList && visualInputlList.length > 1 ? (
-                                  <DeleteFilled
-                                    onClick={() =>
-                                      handleRemoveVisualQuestion(input, index)
-                                    }
-                                    style={{
-                                      cursor: 'pointer',
-                                      fontSize: '18px',
-                                      color: 'darkblue',
-                                    }}
-                                  />
-                                ) : (
-                                  ''
-                                )}
-                              </div>
-                            </>
-                          ))
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                          </>
+                        ))
                         : 'No Item In The List'}
 
                       <div className='col-12 padding-style'>
@@ -1230,43 +1282,43 @@ const RatingCreate = () => {
                       </AntDivider>
                       {optionList
                         ? optionList.map((input, index) => (
-                            <div className='row'>
-                              <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
-                                <Input
-                                  value={input?.name}
-                                  placeholder='Option'
-                                  maxLength='100'
-                                  showCount
-                                  width={100}
-                                  onChange={(event) => handleOptionInput(event, index)}
-                                />
-                              </div>
-                              <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
-                                <Input
-                                  placeholder='Marks'
-                                  value={input?.score}
-                                  width={100}
-                                  maxLength='3'
-                                  showCount
-                                  onChange={(event) => handleMarksInput(event, index)}
-                                />
-                              </div>
-                              <div className='col-3 delete-visual-icon'>
-                                {optionList && optionList.length > 1 ? (
-                                  <DeleteFilled
-                                    style={{
-                                      cursor: 'pointer',
-                                      fontSize: '18px',
-                                      color: 'darkblue',
-                                    }}
-                                    onClick={() => handleOptionDelete(input, index)}
-                                  />
-                                ) : (
-                                  ''
-                                )}
-                              </div>
+                          <div className='row'>
+                            <div className='col-7' style={{ padding: '0.5rem 0rem' }}>
+                              <Input
+                                value={input?.name}
+                                placeholder='Option'
+                                maxLength='100'
+                                showCount
+                                width={100}
+                                onChange={(event) => handleOptionInput(event, index)}
+                              />
                             </div>
-                          ))
+                            <div className='col-3' style={{ padding: '0.5rem 0rem 0.5rem 0.5rem' }}>
+                              <Input
+                                placeholder='Marks'
+                                value={input?.score}
+                                width={100}
+                                maxLength='3'
+                                showCount
+                                onChange={(event) => handleMarksInput(event, index)}
+                              />
+                            </div>
+                            <div className='col-2 delete-visual-icon'>
+                              {optionList && optionList.length > 1 ? (
+                                <DeleteFilled
+                                  style={{
+                                    cursor: 'pointer',
+                                    fontSize: '18px',
+                                    color: 'darkblue',
+                                  }}
+                                  onClick={() => handleOptionDelete(input, index)}
+                                />
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                          </div>
+                        ))
                         : 'No Option In The List'}
                       <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
                         <Button
@@ -1295,7 +1347,7 @@ const RatingCreate = () => {
                     <>
                       <div className='row mt-2'>
                         {ActivityType &&
-                        ActivityType.name.toLowerCase() === 'public speaking' ? (
+                          ActivityType.name.toLowerCase() === 'public speaking' ? (
                           ''
                         ) : (
                           <>
@@ -1327,216 +1379,219 @@ const RatingCreate = () => {
                           </>
                         )}
                       </div>
-                      <div className='col-md-12 col-6 d-flex  px-0'>
-                    <Typography className='d-flex align-items-center'>Question and Answer(Enable or Disable)</Typography>
-                    <div className='d-flex align-items-center'>
-                      <Switch onChange={handlePhysicalActivityToggle} checked={physicalActivityToggle} />
-                    </div>
-                  </div>
+                      {showPhy ?
+                        <div className='col-md-12 col-6 d-flex  px-0'>
+                          <Typography className='d-flex align-items-center'>Question and Answer(Enable or Disable)</Typography>
+                          <div className='d-flex align-items-center'>
+                            <Switch onChange={handlePhysicalActivityToggle} checked={physicalActivityToggle} />
+                          </div>
+                        </div> : ''
+                      }
 
-                  {physicalActivityToggle ? (
-                    <>
-                    <AntDivider
-                        orientation='left'
-                        orientationMargin='0'
-                        plain
-                        style={{ alignItems: 'flex-start' }}
-                      >
-                        Add Questions
-                      </AntDivider>
-                      {visualInputlList
-                        ? visualInputlList.map((input, index) => (
-                            <>
-                              <div className='col-10 question-visual'>
-                                <Input
-                                  placeholder='Question'
-                                  width={100}
-                                  maxLength='500'
-                                  showCount
-                                  value={input?.name}
-                                  onChange={(event) => handleQuestion(event, index)}
-                                />
-                              </div>
-                              <div className='col-2 delete-visual-icon'>
-                                {visualInputlList && visualInputlList.length > 1 ? (
-                                  <DeleteFilled
-                                    onClick={() =>
-                                      handleRemoveVisualQuestion(input, index)
-                                    }
-                                    style={{
-                                      cursor: 'pointer',
-                                      fontSize: '18px',
-                                      color: 'darkblue',
-                                    }}
-                                  />
-                                ) : (
-                                  ''
-                                )}
-                              </div>
-                            </>
-                          ))
-                        : 'No Item In The List'}
-
-                      <div className='col-12 padding-style'>
-                        <Button
-                          type='primary'
-                          icon={<PlusOutlined />}
-                          onClick={handleVisualInputApp}
-                        >
-                          Add Question
-                        </Button>
-                      </div>
-                      <AntDivider
-                        orientation='left'
-                        orientationMargin='0'
-                        plain
-                        style={{ alignItems: 'flex-start' }}
-                      >
-                        Add Options & Marks
-                      </AntDivider>
-                      {optionList
-                        ? optionList.map((input, index) => (
-                            <div className='row'>
-                              <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
-                                <Input
-                                  value={input?.name}
-                                  placeholder='Option'
-                                  maxLength='100'
-                                  showCount
-                                  width={100}
-                                  onChange={(event) => handleOptionInput(event, index)}
-                                />
-                              </div>
-                              <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
-                                <Input
-                                  placeholder='Marks'
-                                  value={input?.score}
-                                  width={100}
-                                  maxLength='3'
-                                  showCount
-                                  onChange={(event) => handleMarksInput(event, index)}
-                                />
-                              </div>
-                              <div className='col-3 delete-visual-icon'>
-                                {optionList && optionList.length > 1 ? (
-                                  <DeleteFilled
-                                    style={{
-                                      cursor: 'pointer',
-                                      fontSize: '18px',
-                                      color: 'darkblue',
-                                    }}
-                                    onClick={() => handleOptionDelete(input, index)}
-                                  />
-                                ) : (
-                                  ''
-                                )}
-                              </div>
-                            </div>
-                          ))
-                        : 'No Option In The List'}
-                      <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
-                        <Button
-                          icon={<PlusOutlined />}
-                          onClick={handleOptionInputAdd}
-                          type='primary'
-                        >
-                          Add Option
-                        </Button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                    <div className='row mt-2'>
-                    <AntDivider
-                      orientation='left'
-                      orientationMargin='0'
-                      plain
-                      style={{ alignItems: 'flex-start' }}
-                    >
-                      Add Criteria Name
-                    </AntDivider>
-                  </div>
-                  {inputList
-                    ? inputList.map((input, index) => (
+                      {physicalActivityToggle ? (
                         <>
-                          <div className='row mt-2'>
-                            <div className='col-10 px-0'>
-                              <Input
-                                placeholder='Criteria Name'
-                                width={100}
-                                showCount
-                                maxLength='500'
-                                value={input?.name}
-                                onChange={(event) =>
-                                  handleInputCreativity(event, index)
-                                }
-                              />
-                            </div>
-                            {showPhy ? (
-                              ''
-                            ) : (
-                              <>
-                                <div className='col-10'>
+                          <AntDivider
+                            orientation='left'
+                            orientationMargin='0'
+                            plain
+                            style={{ alignItems: 'flex-start' }}
+                          >
+                            Add Questions
+                          </AntDivider>
+                          {visualInputlList
+                            ? visualInputlList.map((input, index) => (
+                              <><div className='row'>
+                                <div className='col-10 question-visual'>
                                   <Input
-                                    placeholder='Rating'
+                                    placeholder='Question'
                                     width={100}
+                                    maxLength='500'
                                     showCount
-                                    maxLength='1'
-                                    value={input?.rating}
-                                    onChange={(event) =>
-                                      handleInputRating(event, index)
-                                    }
+                                    value={input?.name}
+                                    onChange={(event) => handleQuestion(event, index)}
                                   />
                                 </div>
-                                <div className='col-10'>
-                                  <Input
-                                    placeholder='Score'
-                                    width={100}
-                                    showCount
-                                    maxLength='3'
-                                    value={input?.score}
-                                    onChange={(event) =>
-                                      handleInputChange1(event, index)
-                                    }
-                                  />
+                                <div className='col-2 delete-visual-icon'>
+                                  {visualInputlList && visualInputlList.length > 1 ? (
+                                    <DeleteFilled
+                                      onClick={() =>
+                                        handleRemoveVisualQuestion(input, index)
+                                      }
+                                      style={{
+                                        cursor: 'pointer',
+                                        fontSize: '18px',
+                                        color: 'darkblue',
+                                      }}
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
                                 </div>
+                              </div>
                               </>
-                            )}
-                            <div className='col-2 d-flex align-items-center'>
-                              {inputList && inputList.length > 1 ? (
-                                <DeleteFilled
-                                  onClick={() => handleRemoveItem(index)}
-                                  style={{
-                                    cursor: 'pointer',
-                                    fontSize: '18px',
-                                    color: 'darkblue',
-                                  }}
-                                />
-                              ) : (
-                                ''
-                              )}
-                            </div>
+                            ))
+                            : 'No Item In The List'}
+
+                          <div className='col-12 padding-style'>
+                            <Button
+                              type='primary'
+                              icon={<PlusOutlined />}
+                              onClick={handleVisualInputApp}
+                            >
+                              Add Question
+                            </Button>
+                          </div>
+                          <AntDivider
+                            orientation='left'
+                            orientationMargin='0'
+                            plain
+                            style={{ alignItems: 'flex-start' }}
+                          >
+                            Add Options & Marks
+                          </AntDivider>
+                          {optionList
+                            ? optionList.map((input, index) => (
+                              <div className='row'>
+                                <div className='col-7' style={{ padding: '0.5rem 0rem' }}>
+                                  <Input
+                                    value={input?.name}
+                                    placeholder='Option'
+                                    maxLength='100'
+                                    showCount
+                                    width={100}
+                                    onChange={(event) => handleOptionInput(event, index)}
+                                  />
+                                </div>
+                                <div className='col-3' style={{ padding: '0.5rem 0rem 0.5rem 0.5rem' }}>
+                                  <Input
+                                    placeholder='Marks'
+                                    value={input?.score}
+                                    width={100}
+                                    maxLength='3'
+                                    showCount
+                                    onChange={(event) => handleMarksInput(event, index)}
+                                  />
+                                </div>
+                                <div className='col-2 delete-visual-icon'>
+                                  {optionList && optionList.length > 1 ? (
+                                    <DeleteFilled
+                                      style={{
+                                        cursor: 'pointer',
+                                        fontSize: '18px',
+                                        color: 'darkblue',
+                                      }}
+                                      onClick={() => handleOptionDelete(input, index)}
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
+                                </div>
+                              </div>
+                            ))
+                            : 'No Option In The List'}
+                          <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
+                            <Button
+                              icon={<PlusOutlined />}
+                              onClick={handleOptionInputAdd}
+                              type='primary'
+                            >
+                              Add Option
+                            </Button>
                           </div>
                         </>
-                      ))
-                    : 'No item in the list '}
-                  <div className='row mt-2'>
-                    <div className='col-12 mb-2 th-black-1  text-truncate px-0'>
-                      <Button
-                        icon={<PlusOutlined />}
-                        type='primary'
-                        className='th-br-5 th-pointer py-1 th-14 th-fw-500'
-                        onClick={handleListAdd}
-                      >
-                        Add Criteria
-                      </Button>
-                    </div>
-                  </div>
-                    
-                  </>
-                    
-                  )}
-  
+                      ) : (
+                        <>
+                          <div className='row mt-2'>
+                            <AntDivider
+                              orientation='left'
+                              orientationMargin='0'
+                              plain
+                              style={{ alignItems: 'flex-start' }}
+                            >
+                              Add Criteria Name
+                            </AntDivider>
+                          </div>
+                          {inputList
+                            ? inputList.map((input, index) => (
+                              <>
+                                <div className='row mt-2'>
+                                  <div className='col-10 px-0'>
+                                    <Input
+                                      placeholder='Criteria Name'
+                                      width={100}
+                                      showCount
+                                      maxLength='500'
+                                      value={input?.name}
+                                      onChange={(event) =>
+                                        handleInputCreativity(event, index)
+                                      }
+                                    />
+                                  </div>
+                                  {showPhy ? (
+                                    ''
+                                  ) : (
+                                    <>
+                                      <div className='col-10'>
+                                        <Input
+                                          placeholder='Rating'
+                                          width={100}
+                                          showCount
+                                          maxLength='1'
+                                          value={input?.rating}
+                                          onChange={(event) =>
+                                            handleInputRating(event, index)
+                                          }
+                                        />
+                                      </div>
+                                      <div className='col-10'>
+                                        <Input
+                                          placeholder='Score'
+                                          width={100}
+                                          showCount
+                                          maxLength='3'
+                                          value={input?.score}
+                                          onChange={(event) =>
+                                            handleInputChange1(event, index)
+                                          }
+                                        />
+                                      </div>
+                                    </>
+                                  )}
+                                  <div className='col-2 d-flex align-items-center'>
+                                    {inputList && inputList.length > 1 ? (
+                                      <DeleteFilled
+                                        onClick={() => handleRemoveItem(index)}
+                                        style={{
+                                          cursor: 'pointer',
+                                          fontSize: '18px',
+                                          color: 'darkblue',
+                                        }}
+                                      />
+                                    ) : (
+                                      ''
+                                    )}
+                                  </div>
+                                </div>
+                              </>
+                            ))
+                            : 'No item in the list '}
+                          <div className='row mt-2'>
+                            <div className='col-12 mb-2 th-black-1  text-truncate px-0'>
+                              <Button
+                                icon={<PlusOutlined />}
+                                type='primary'
+                                className='th-br-5 th-pointer py-1 th-14 th-fw-500'
+                                onClick={handleListAdd}
+                              >
+                                Add Criteria
+                              </Button>
+                            </div>
+                          </div>
+
+                        </>
+
+                      )}
+
                       <AntDivider />
                       <div className='row mb-3 ml-1'>
                         <div className='col-12 th-black-1 px-0'>
@@ -1619,9 +1674,9 @@ const RatingCreate = () => {
               {Object.keys(isEditData).length > 0 ? (
                 <>
                   {isEditData?.name.toLowerCase() === 'visual art' ||
-                  isEditData?.name.toLowerCase() === 'music' ||
-                  isEditData?.name.toLowerCase() === 'dance' ||
-                  isEditData?.name.toLowerCase() === 'theatre' ? (
+                    isEditData?.name.toLowerCase() === 'music' ||
+                    isEditData?.name.toLowerCase() === 'dance' ||
+                    isEditData?.name.toLowerCase() === 'theatre' ? (
                     <div className='row m-2'>
                       <AntDivider
                         orientation='left'
@@ -1656,33 +1711,32 @@ const RatingCreate = () => {
                       </AntDivider>
                       {Object.keys(isEditData)
                         ? isEditData?.grading_scheme.map((input, index) => (
-                            <>
-                              <div className='col-10 question-visual'>
-                                <Input
-                                  placeholder='Question'
-                                  width={100}
-                                  maxLength='100'
-                                  showCount
-                                  value={input?.name}
-                                  onChange={(event) => handleQuestionEdit(event, index)}
-                                />
-                              </div>
-                              <div className='col-2 delete-visual-icon'>
-                                <DeleteFilled
-                                  onClick={() =>
-                                    handleRemoveVisualQuestionEdit(input, index)
-                                  }
-                                  style={{
-                                    cursor: 'pointer',
-                                    fontSize: '18px',
-                                    color: 'darkblue',
-                                  }}
-                                />
-                              </div>
-                            </>
-                          ))
+                          <>
+                            <div className='col-10 question-visual'>
+                              <Input
+                                placeholder='Question'
+                                width={100}
+                                maxLength='100'
+                                showCount
+                                value={input?.name}
+                                onChange={(event) => handleQuestionEdit(event, index)}
+                              />
+                            </div>
+                            <div className='col-2 delete-visual-icon'>
+                              <DeleteFilled
+                                onClick={() =>
+                                  handleRemoveVisualQuestionEdit(input, index)
+                                }
+                                style={{
+                                  cursor: 'pointer',
+                                  fontSize: '18px',
+                                  color: 'darkblue',
+                                }}
+                              />
+                            </div>
+                          </>
+                        ))
                         : 'No Item In The List'}
-
                       <div className='col-12 padding-style'>
                         <Button
                           type='primary'
@@ -1692,61 +1746,66 @@ const RatingCreate = () => {
                           Add Question
                         </Button>
                       </div>
-                      <AntDivider
-                        orientation='left'
-                        orientationMargin='0'
-                        plain
-                        style={{ alignItems: 'flex-start' }}
-                      >
-                        Add Options & Marks
-                      </AntDivider>
-                      {Object.keys(editOption)
-                        ? editOption?.map((input, index) => (
-                            <div className='row'>
-                              <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
-                                <Input
-                                  value={input?.name}
-                                  placeholder='Option'
-                                  width={100}
-                                  maxLength='100'
-                                  showCount
-                                  onChange={(event) =>
-                                    handleOptionInputEdit(event, index)
-                                  }
-                                />
+
+                      {editOption.length > 0 && (
+                        <>
+                          <AntDivider
+                            orientation='left'
+                            orientationMargin='0'
+                            plain
+                            style={{ alignItems: 'flex-start' }}
+                          >
+                            Add Options & Marks
+                          </AntDivider>
+                          {Object.keys(editOption)
+                            ? editOption?.map((input, index) => (
+                              <div className='row'>
+                                <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
+                                  <Input
+                                    value={input?.name}
+                                    placeholder='Option'
+                                    width={100}
+                                    maxLength='100'
+                                    showCount
+                                    onChange={(event) =>
+                                      handleOptionInputEdit(event, index)
+                                    }
+                                  />
+                                </div>
+                                <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
+                                  <Input
+                                    placeholder='Marks'
+                                    value={input?.score}
+                                    width={100}
+                                    maxLength='2'
+                                    showCount
+                                    onChange={(event) => handleMarksInputEdit(event, index)}
+                                  />
+                                </div>
+                                <div className='col-3 delete-visual-icon'>
+                                  <DeleteFilled
+                                    style={{
+                                      cursor: 'pointer',
+                                      fontSize: '18px',
+                                      color: 'darkblue',
+                                    }}
+                                    onClick={() => handleOptionDeleteEdit(input, index)}
+                                  />
+                                </div>
                               </div>
-                              <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
-                                <Input
-                                  placeholder='Marks'
-                                  value={input?.score}
-                                  width={100}
-                                  maxLength='2'
-                                  showCount
-                                  onChange={(event) => handleMarksInputEdit(event, index)}
-                                />
-                              </div>
-                              <div className='col-3 delete-visual-icon'>
-                                <DeleteFilled
-                                  style={{
-                                    cursor: 'pointer',
-                                    fontSize: '18px',
-                                    color: 'darkblue',
-                                  }}
-                                  onClick={() => handleOptionDeleteEdit(input, index)}
-                                />
-                              </div>
-                            </div>
-                          ))
-                        : 'No Option In The List'}
-                      <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
-                        <Button
-                          icon={<PlusOutlined />}
-                          onClick={handleOptionInputAddEdit}
-                          type='primary'
-                        >
-                          Add Option
-                        </Button>
-                      </div>
+                            ))
+                            : 'No Option In The List'}
+                          <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
+                            <Button
+                              icon={<PlusOutlined />}
+                              onClick={handleOptionInputAddEdit}
+                              type='primary'
+                            >
+                              Add Option
+                            </Button>
+                          </div>
+                        </>
+                      )}
                       <div className='col-12 padding-style'>
                         <Button type='primary' onClick={handleOptionSubmitEdit}>
                           Submit
@@ -1762,48 +1821,49 @@ const RatingCreate = () => {
                       </div>
                     </div>
                   ) : (
-                    <>
-                      <div className='row m-2'>
-                        {isEditData.name.toLowerCase() === 'public speaking' ? (
-                          ''
-                        ) : (
-                          <>
-                            <AntDivider
-                              orientation='left'
-                              orientationMargin='0'
-                              plain
-                              style={{ alignItems: 'flex-start' }}
-                            >
-                              Add Criteria Title
-                            </AntDivider>
-                            <div className='col-3'>
-                              <Input
-                                placeholder='Criteria Title'
-                                defaultValue={isEditData?.criteria_title}
-                                width={100}
-                                value={
-                                  Object.keys(isEditData)
-                                    ? isEditData?.criteria_title
-                                    : remarksType
-                                }
-                                onChange={(event) => handleInputRemarksEdit(event)}
-                              />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <div className='row m-2'>
-                        <AntDivider
-                          orientation='left'
-                          orientationMargin='0'
-                          plain
-                          style={{ alignItems: 'flex-start' }}
-                        >
-                          Add Criteria Name
-                        </AntDivider>
-                      </div>
-                      {Object.keys(isEditData)
-                        ? isEditData?.grading_scheme?.map((input, index) => (
+                    <>{isEditData?.is_round_available === true ?
+                      (<>
+                        <div className='row m-2'>
+                          {isEditData.name.toLowerCase() === 'public speaking' ? (
+                            ''
+                          ) : (
+                            <>
+                              <AntDivider
+                                orientation='left'
+                                orientationMargin='0'
+                                plain
+                                style={{ alignItems: 'flex-start' }}
+                              >
+                                Add Criteria Title
+                              </AntDivider>
+                              <div className='col-3'>
+                                <Input
+                                  placeholder='Criteria Title'
+                                  defaultValue={isEditData?.criteria_title}
+                                  width={100}
+                                  value={
+                                    Object.keys(isEditData)
+                                      ? isEditData?.criteria_title
+                                      : remarksType
+                                  }
+                                  onChange={(event) => handleInputRemarksEdit(event)}
+                                />
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <div className='row m-2'>
+                          <AntDivider
+                            orientation='left'
+                            orientationMargin='0'
+                            plain
+                            style={{ alignItems: 'flex-start' }}
+                          >
+                            Add Criteria Name
+                          </AntDivider>
+                        </div>
+                        {Object.keys(isEditData)
+                          ? isEditData?.grading_scheme?.map((input, index) => (
                             <>
                               <div className='row m-2'>
                                 <div
@@ -1884,42 +1944,195 @@ const RatingCreate = () => {
                               </div>
                             </>
                           ))
-                        : 'No item in the list '}
-                      <div className='row m-2'>
-                        <div className='col-12 mb-2 th-black-1  text-truncate'>
-                          <Button
-                            icon={<PlusOutlined />}
-                            type='primary'
-                            className='th-br-5 th-pointer py-1 th-14 th-fw-500'
-                            onClick={handleListAddEdit}
-                          >
-                            Add Remarks
-                          </Button>
+                          : 'No item in the list '}
+                        <div className='row m-2'>
+                          <div className='col-12 mb-2 th-black-1  text-truncate'>
+                            <Button
+                              icon={<PlusOutlined />}
+                              type='primary'
+                              className='th-br-5 th-pointer py-1 th-14 th-fw-500'
+                              onClick={handleListAddEdit}
+                            >
+                              Add Remarks
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                      <AntDivider />
-                      <div className='row mb-3 ml-1'>
-                        <div className='col-12 th-black-1'>
-                          <Button
-                            icon={<CheckCircleOutlined />}
-                            color='green'
-                            type='primary'
-                            className='th-br-5 th-pointer py-1 th-14 th-fw-500 mr-2'
-                            onClick={handleActivityTypeSubmitEdit}
-                          >
-                            Submit
-                          </Button>
-                          <Button
-                            icon={<CloseCircleOutlined />}
-                            color='red'
-                            type='primary'
-                            className='th-br-5 th-pointer py-1 th-14 th-fw-500'
-                            onClick={handleModalCloseEdit}
-                          >
-                            Cancel
-                          </Button>
+                        <AntDivider />
+                        <div className='row mb-3 ml-1'>
+                          <div className='col-12 th-black-1'>
+                            <Button
+                              icon={<CheckCircleOutlined />}
+                              color='green'
+                              type='primary'
+                              className='th-br-5 th-pointer py-1 th-14 th-fw-500 mr-2'
+                              onClick={handleActivityTypeSubmitEdit}
+                            >
+                              Submit
+                            </Button>
+                            <Button
+                              icon={<CloseCircleOutlined />}
+                              color='red'
+                              type='primary'
+                              className='th-br-5 th-pointer py-1 th-14 th-fw-500'
+                              onClick={handleModalCloseEdit}
+                            >
+                              Cancel
+                            </Button>
+                          </div>
                         </div>
-                      </div>
+                      </>
+
+                      ) : (
+                        <>
+                          <div className='row m-2'>
+                            <AntDivider
+                              orientation='left'
+                              orientationMargin='0'
+                              plain
+                              style={{ alignItems: 'flex-start' }}
+                            >
+                              Add Criteria Title
+                            </AntDivider>
+                            <div className='col-10 question-visual'>
+                              <Input
+                                placeholder='Criteria Title'
+                                width={100}
+                                maxLength='100'
+                                showCount
+                                defaultValue={isEditData?.criteria_title}
+                                value={
+                                  Object.keys(isEditData)
+                                    ? isEditData?.criteria_title
+                                    : remarksType
+                                }
+                                onChange={(e) => handleInputRemarksEdit(e)}
+                              />
+                            </div>
+                            <AntDivider
+                              orientation='left'
+                              orientationMargin='0'
+                              plain
+                              style={{ alignItems: 'flex-start' }}
+                            >
+                              Add Questions
+                            </AntDivider>
+                            {Object.keys(isEditData)
+                              ? isEditData?.grading_scheme.map((input, index) => (
+                                <>
+                                  <div className='col-10 question-visual'>
+                                    <Input
+                                      placeholder='Question'
+                                      width={100}
+                                      maxLength='100'
+                                      showCount
+                                      value={input?.name}
+                                      onChange={(event) => handleQuestionEdit(event, index)}
+                                    />
+                                  </div>
+                                  <div className='col-2 delete-visual-icon'>
+                                    <DeleteFilled
+                                      onClick={() =>
+                                        handleRemoveVisualQuestionEdit(input, index)
+                                      }
+                                      style={{
+                                        cursor: 'pointer',
+                                        fontSize: '18px',
+                                        color: 'darkblue',
+                                      }}
+                                    />
+                                  </div>
+                                </>
+                              ))
+                              : 'No Item In The List'}
+                            <div className='col-12 padding-style'>
+                              <Button
+                                type='primary'
+                                icon={<PlusOutlined />}
+                                onClick={handleVisualInputAppEdit}
+                              >
+                                Add Question
+                              </Button>
+                            </div>
+
+                            {editOption.length > 0 && (
+                              <>
+                                <AntDivider
+                                  orientation='left'
+                                  orientationMargin='0'
+                                  plain
+                                  style={{ alignItems: 'flex-start' }}
+                                >
+                                  Add Options & Marks
+                                </AntDivider>
+                                {Object.keys(editOption)
+                                  ? editOption?.map((input, index) => (
+                                    <div className='row'>
+                                      <div className='col-6' style={{ padding: '0.5rem 0rem' }}>
+                                        <Input
+                                          value={input?.name}
+                                          placeholder='Option'
+                                          width={100}
+                                          maxLength='100'
+                                          showCount
+                                          onChange={(event) =>
+                                            handleOptionInputEdit(event, index)
+                                          }
+                                        />
+                                      </div>
+                                      <div className='col-3' style={{ padding: '0.5rem 0.5rem' }}>
+                                        <Input
+                                          placeholder='Marks'
+                                          value={input?.score}
+                                          width={100}
+                                          maxLength='2'
+                                          showCount
+                                          onChange={(event) => handleMarksInputEdit(event, index)}
+                                        />
+                                      </div>
+                                      <div className='col-3 delete-visual-icon'>
+                                        <DeleteFilled
+                                          style={{
+                                            cursor: 'pointer',
+                                            fontSize: '18px',
+                                            color: 'darkblue',
+                                          }}
+                                          onClick={() => handleOptionDeleteEdit(input, index)}
+                                        />
+                                      </div>
+                                    </div>
+                                  ))
+                                  : 'No Option In The List'}
+                                <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
+                                  <Button
+                                    icon={<PlusOutlined />}
+                                    onClick={handleOptionInputAddEdit}
+                                    type='primary'
+                                  >
+                                    Add Option
+                                  </Button>
+                                </div>
+                              </>
+                            )}
+                            <div className='col-12 padding-style'>
+                              <Button type='primary' onClick={handleOptionSubmitEdit}>
+                                Submit
+                              </Button>
+
+                              <Button
+                                type='primary'
+                                onClick={handleModalCloseEdit}
+                                style={{ marginLeft: '0.5rem' }}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        </>
+                      )
+
+
+                    }
+
                     </>
                   )}
                 </>

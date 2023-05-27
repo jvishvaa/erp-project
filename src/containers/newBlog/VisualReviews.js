@@ -56,7 +56,9 @@ const VisualReviews = (props) => {
         },
       })
       .then((response) => {
+        console.log("api response",response);
         response.data.map((obj) => {
+          console.log("data ", obj);
           let temp = {};
           temp['id'] = obj.id;
           temp['name'] = obj.level.name;
@@ -66,6 +68,7 @@ const VisualReviews = (props) => {
           array.push(temp);
         });
         setRatingReview(array);
+        console.log("setRatingReview ", array);
         setLoading(false);
       });
   };

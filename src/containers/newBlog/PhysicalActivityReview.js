@@ -90,6 +90,7 @@ const PhysicalActivityReview = () => {
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (event, newValue) => {
+    console.log('handleChange', newValue);
     setValue(newValue);
   };
   const goBack = () => {
@@ -447,7 +448,7 @@ const PhysicalActivityReview = () => {
                         selectedBranch={selectedBranch?.branch?.id}
                         setValue={setValue}
                         value={value}
-                        handleChange={handleChange}
+                        //handleChange={handleChange}
                         selectedGrade={gradeId}
                         selectedSubject={subjectId}
                         setSubjectName={subjectName}
