@@ -688,7 +688,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
     };
     axios
       .get(`academic/annual-plan/chapter-topic-wise-lp-data/`, {
-        params: { ...params },
+        params: { ...params, ...(allowAutoAssignDiary ? { config: 'True' } : {}) },
       })
       .then((result) => {
         if (result?.data?.status === 200) {
@@ -1901,7 +1901,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           </div>
                         </div>
                         {allowAutoAssignDiary ? (
-                          assignedDiaryList.map((item) => item?.section).flat().length !==
+                          assignedDiaryList.map((item) => item?.section).flat().length <
                           resourcesData?.section_wise_completion?.length ? (
                             <>
                               <div
