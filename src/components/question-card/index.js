@@ -1006,7 +1006,7 @@ const QuestionCard = ({
         style={{ overflowY: 'scroll', height: '80vh' }}
         className='th-resourcesDrawer'
       >
-        {!periodData[index]?.keyConceptID && (
+        {!isCentralHomework && (
           <Grid
             container
             spacing={5}
@@ -1185,7 +1185,7 @@ const QuestionCard = ({
                               </Grid>
                               {each[1]?.map((resource) => {
                                 let resourceName = resource.split(
-                                  `${each[0].toLowerCase()}/`
+                                  `${each[0]?.toLowerCase()}/`
                                 );
                                 return (
                                   <>
