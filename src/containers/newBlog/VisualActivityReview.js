@@ -85,7 +85,7 @@ const VisualActivityReview = () => {
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (newValue) => {
-    console.log('handleChange', newValue);
+    //console.log('handleChange', newValue);
     setValue(newValue);
   };
   const goBack = () => {

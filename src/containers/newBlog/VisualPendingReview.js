@@ -331,8 +331,8 @@ const VisualPendingReview = (props) => {
 
   useEffect(() => {
     if (props.flag) {
-      console.log("props.setSubjectName  ",props.setSubjectName);
-      console.log("props?.value ",props?.value);
+      //console.log("props.setSubjectName  ",props.setSubjectName);
+      //console.log("props?.value ",props?.value);
       getTotalSubmitted();
     }
   }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage, props?.value]);
