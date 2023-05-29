@@ -90,7 +90,6 @@ const PhysicalActivityReview = () => {
   const [academicYear, setAcademicYear] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const handleChange = (event, newValue) => {
-    //console.log('handleChange', newValue);
     setValue(newValue);
   };
   const goBack = () => {
@@ -166,7 +165,6 @@ const PhysicalActivityReview = () => {
           }
         )
         .then((response) => {
-          //console.log(response?.data?.result);
           setGradeList(response?.data?.result);
           setLoading(false);
         });
@@ -322,7 +320,6 @@ const PhysicalActivityReview = () => {
         },
       })
       .then((res) => {
-        //console.log(res, 'PP');
       });
   };
 

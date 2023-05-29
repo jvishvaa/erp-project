@@ -295,7 +295,6 @@ const BlogWall = () => {
         setLoading(false);
       })
       .catch((error) => {
-        //console.log('error', error);
         setLoading(false);
       });
   };
@@ -336,7 +335,6 @@ const BlogWall = () => {
   };
 
   const handleGradeChange = (e) => {
-    //console.log('grade', e);
     if (e) {
       setSelectedGradeIds(e?.value);
     } else {
@@ -375,7 +373,6 @@ const BlogWall = () => {
       })
       .catch((err) => {
         setLoading(false);
-        //console.log(err);
       });
   };
 
@@ -441,7 +438,6 @@ const BlogWall = () => {
         setCommentsList(response?.data);
       })
       .catch((error) => {
-        //console.log('error', error);
       });
   };
   const fetchPostDetails = (data) => {
@@ -459,7 +455,6 @@ const BlogWall = () => {
         //  setOpenModal(true);
       })
       .catch((error) => {
-        //console.log('error', error);
       });
   };
   const getWhatsAppDetails = (params = {}) => {
@@ -475,13 +470,11 @@ const BlogWall = () => {
         setChatDetails(response?.data);
       })
       .catch((err) => {
-        //console.log(err);
       });
   };
 
   let array = [];
   const getRatingView = ({ data, otherActvity }) => {
-    //console.log('params', data, otherActvity);
     setDetailsLoading(true);
     axios
       .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
@@ -582,7 +575,6 @@ const BlogWall = () => {
     // fetchPostDetails(data);
   };
   const fetchStudentPublicSpeakingDetails = (params = {}) => {
-    //console.log('params', params);
     axios
       .get(`${endpoints.newBlog.studentPSContentApi}`, {
         params: { ...params },
@@ -602,7 +594,6 @@ const BlogWall = () => {
         }
       })
       .catch((error) => {
-        //console.log('error', error);
       });
   };
   const PostContent = () => {

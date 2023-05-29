@@ -527,8 +527,6 @@ const PhysicalPendingReview = (props) => {
 
   useEffect(() => {
     if (props.flag) {
-      //console.log("props.setSubjectName  ",props.setSubjectName);
-      //console.log("props?.value ",props?.value);
       getTotalSubmitted();
     }
   }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage, props?.value]);
@@ -671,10 +669,8 @@ const PhysicalPendingReview = (props) => {
   //   .filter((item) => item.toLowerCase() !== 'overall')
   //   .map((item) => Object.keys(arr[0][item]))[0];
 
-  // console.log(columnsData, 'help1');
   // let overKey = Object.keys(arr[0]).filter((item) => item.toLowerCase() === 'overall');
 
-  // console.log(overKey, 'help3');
 
   // let overValueAllData = Object.keys(arr[0])
   //   .filter((item) => item.toLowerCase() === 'overall')

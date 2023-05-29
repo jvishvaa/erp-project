@@ -82,9 +82,7 @@ const PhysicalReviewed = (props) => {
         },
       })
       .then((response) => {
-        //console.log("api response",response);
         response.data.map((obj, index) => {
-          //console.log("data ", obj);
           
           let temp = {};
           temp['id'] = obj.id;
@@ -96,7 +94,6 @@ const PhysicalReviewed = (props) => {
           
         });
         setDrawerRatingReview(array);
-        //console.log("setDrawerRatingReview ", array);
         setLoading(false);
       });
   };

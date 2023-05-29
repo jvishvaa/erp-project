@@ -293,7 +293,7 @@ const RatingCreate = () => {
                   title='Delete the Remarks ?'
                   description='Are you sure to delete this remarks?'
                   onConfirm={() => handleDelete(row)}
-                  onOpenChange={() => console.log('open change')}
+                  onOpenChange={() => ''}
                   icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                 >
                   <Tag
@@ -625,7 +625,6 @@ const RatingCreate = () => {
             array.push(temp);
           });
           setFilterData(array);
-          //console.log({ array });
           setLoading(false);
         })
         .catch(() => {
@@ -720,7 +719,6 @@ const RatingCreate = () => {
       status: false,
     });
     setEditOption(newData);
-    //console.log("editOption handleOptionInputAddEdit data", editOption);
   };
 
   const handleOptionInput = (event, index) => {
@@ -733,20 +731,12 @@ const RatingCreate = () => {
   };
 
   const handleOptionInputEdit = (event, index) => {
-    //console.log('handleOptionInputEdit editOption data', editOption);
-    //console.log('handleOptionInputEdit event data', event);
-    //console.log('handleOptionInputEdit index data', index);
     if (event) {
       const { value } = event.target;
-      //console.log('handleOptionInputEdit value data', value);
       const newInputList = [...editOption];
-      //console.log('handleOptionInputEdit newInputList data', newInputList);
       let newData = newInputList;
-      //console.log('handleOptionInputEdit newData data', newData);
       newData[index].name = value;
-      //console.log('handleOptionInputEdit newData[index].name data', newData[index].name);
       let modifiedData = [...newData];
-      //console.log('handleOptionInputEdit modifiedData data', modifiedData);
       setEditOption(modifiedData);
     }
   };
@@ -988,14 +978,12 @@ const RatingCreate = () => {
     }
   };
   const handleEdit = (e, data) => {
-    //console.log(data, 'handleEdit');
     setIsEdit(false);
     if (e) {
       setIsEdit(true);
       setIsEditData(data);
       // let optionData = data?.va_rating[0];
       let varatingArr = data?.va_rating[0]
-      //console.log(varatingArr);
       let optionData
       if (varatingArr == undefined) {
         optionData = []
@@ -1004,7 +992,6 @@ const RatingCreate = () => {
       }
       // let optionData = varatingArr == undefined ? [] : (varatingArr.every(el => e == undefined) ? null : data?.va_rating[0])
       // let optionData = varatingArr.every(el => e == undefined) ? null : data?.va_rating[0];
-      //console.log({ optionData });
       setEditOption(optionData);
     }
   };
