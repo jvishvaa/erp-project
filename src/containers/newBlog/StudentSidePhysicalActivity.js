@@ -26,6 +26,7 @@ import {
   Space,
   Button,
   message,
+  Input,
 } from 'antd';
 import moment from 'moment';
 import ReactPlayer from 'react-player';
@@ -42,6 +43,7 @@ const StudentSidePhysicalActivity = () => {
 
   const [activityListData, setActivityListData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
+  const [showSideDrawer, setShowSideDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
   const [mediaFiles, setMediaFiles] = useState(false);
   const [showBMIModal, setShowBMIModal] = useState(false);
@@ -60,6 +62,12 @@ const StudentSidePhysicalActivity = () => {
     setShowDrawer(false);
     setSelectedActivity(null);
   };
+
+  const handleCloseSideViewMore = () => {
+    setShowSideDrawer(false);
+    setSelectedActivity(null);
+  };
+
   const fetchStudentActivityList = (params = {}) => {
     setLoading(true);
     axios
@@ -87,6 +95,28 @@ const StudentSidePhysicalActivity = () => {
       });
   };
 
+  const isJSON = (str) => {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  let funRemarks = (obj) => {
+    
+    try{
+      if(isJSON(obj?.remarks)){
+        return JSON.parse(obj?.remarks).filter((item) => item?.status == true)[0].name;
+      } else {
+        return obj?.remarks.toString();
+      }
+    } catch(e){
+      return '';
+    }
+  }
+
   useEffect(() => {
     fetchStudentActivityList({
       user_id: userIdLocal?.id,
@@ -94,68 +124,85 @@ const StudentSidePhysicalActivity = () => {
       activity_detail_id: 'null',
       is_reviewed: 'True',
       is_submitted: 'True',
-      page :currentPageAssigned,
-      page_size :limitAssigned
+      page: currentPageAssigned,
+      page_size: limitAssigned
     });
   }, [currentPageAssigned]);
-  const handleShowReview = (data) => {
-    //getRatingView(data?.id);
-    newFetchTeacherListFn(data?.id, data.activity_detail_id);
+
+  const handleShowReview = async (data) => {
+    setIsRoundAvailable(data?.is_round_available);
+    getRatingView(data?.id, data?.is_round_available);
+    //await newFetchTeacherListFn(data?.id, data.activity_detail_id);
     fetchMedia(data?.id);
-    setShowDrawer(true);
-    setSelectedActivity(data);
+    console.log("isvalue ", isvalue);
+    // if(isvalue){
+    //   setShowDrawer(true);
+    //   setShowSideDrawer(false);
+    // }else {
+    //   setShowDrawer(false);
+    //   setShowSideDrawer(true);
+    // }
+    //setSelectedActivity(data);
   };
   const handleViewBMIModal = (data) => {
     fetchBMIData(data?.id);
   };
 
+  var isvalue = false;
   const newFetchTeacherListFn = async (id, activityId) => {
     try {
-      var isvalue = false;
       const { data } = await axios.get(`${endpoints.newBlog.getRoundShowHide}?activity_detail_id=${activityId}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
-      .then((responseNew) => {
-        setIsRoundAvailable(responseNew?.data?.is_round_available);
-        isvalue = responseNew?.data?.is_round_available;
-        console.log(responseNew?.data?.is_round_available);
-      })
-      .then(isRoundAvail => axios.get(`${
-        endpoints.newBlog.studentReviewss
-      }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${isvalue}`,
-      {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then(response => {
-        response.data.map((obj) => {
-          let temp = {};
-          temp['id'] = obj.id;
-          temp['name'] = obj.level.name;
-          temp['remarks'] = obj.remarks;
-          temp['given_rating'] = obj.given_rating;
-          temp['level'] = obj?.level?.rating;
-          array.push(temp);
-        });
-        setRatingReview(response.data);
-        setLoading(false);
-      }));
-      
+        .then((responseNew) => {
+          console.log("responseNew ", responseNew);
+          setIsRoundAvailable(responseNew?.data?.is_round_available);
+          isvalue = responseNew?.data?.is_round_available;
+          console.log("isvalue 140 ", isvalue);
+          console.log(responseNew?.data?.is_round_available);
+        })
+        .then(isRoundAvail => axios.get(`${endpoints.newBlog.studentReviewss
+          }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${isvalue}`,
+          {
+            headers: {
+              'X-DTS-HOST': X_DTS_HOST,
+            },
+          })
+          .then(response => {
+            response.data.map((obj) => {
+              let temp = {};
+              temp['id'] = obj.id;
+              temp['name'] = obj.level.name;
+              temp['remarks'] = obj?.remarks;
+              temp['given_rating'] = obj.given_rating;
+              temp['level'] = obj?.level?.rating;
+              array.push(temp);
+            });
+            setRatingReview(response.data);
+            fetchMedia(data?.id);
+            if (isvalue) {
+              setShowDrawer(true);
+              setShowSideDrawer(false);
+            } else {
+              setShowDrawer(false);
+              setShowSideDrawer(true);
+            }
+            setLoading(false);
+          }));
+
     } catch (error) {
       console.error(error);
     }
   };
 
   let array = [];
-  const getRatingView = (id, activityId) => {
+  const getRatingView = (id, is_round_available) => {
     axios
       .get(
-        `${
-          endpoints.newBlog.studentReviewss
-        }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${activityId}`,
+        `${endpoints.newBlog.studentReviewss
+        }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${is_round_available}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -167,12 +214,23 @@ const StudentSidePhysicalActivity = () => {
           let temp = {};
           temp['id'] = obj.id;
           temp['name'] = obj.level.name;
-          temp['remarks'] = obj.remarks;
+          if (is_round_available) {
+            temp['remarks'] = obj.remarks;
+          } else {
+            temp['remarks'] = JSON.parse(obj.remarks);
+          }
           temp['given_rating'] = obj.given_rating;
           temp['level'] = obj?.level?.rating;
           array.push(temp);
         });
         setRatingReview(response.data);
+        fetchMedia(response.data?.id);
+        if (is_round_available) {
+          setShowDrawer(true);
+        } else {
+          setShowSideDrawer(true);
+        }
+        setSelectedActivity(response.data);
         setLoading(false);
       });
   };
@@ -229,7 +287,7 @@ const StudentSidePhysicalActivity = () => {
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned-1) *10}</span>,
+      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -354,7 +412,7 @@ const StudentSidePhysicalActivity = () => {
       }, {});
     setCustomRatingReview(rounds);
   }
-  const handlePaginationAssign =(page) =>{
+  const handlePaginationAssign = (page) => {
     setCurrentPageAssigned(page);
   }
 
@@ -475,12 +533,12 @@ const StudentSidePhysicalActivity = () => {
               </div>
             </div>
           </Modal>
-          {/* <Drawer
-            title={<span className='th-fw-500'>Check Review</span>}
+          <Drawer
+            title={<span className='th-fw-500'>Your Review</span>}
             placement='right'
-            onClose={handleCloseViewMore}
+            onClose={handleCloseSideViewMore}
             zIndex={1300}
-            visible={showDrawer}
+            visible={showSideDrawer}
             width={
               window.innerWidth < 600 ? '95vw' : mediaFiles?.s3_path ? '70vw' : '35vw'
             }
@@ -488,7 +546,7 @@ const StudentSidePhysicalActivity = () => {
             className='th-resources-drawer'
             extra={
               <Space>
-                <CloseOutlined onClick={handleCloseViewMore} />
+                <CloseOutlined onClick={handleCloseSideViewMore} />
               </Space>
             }
           >
@@ -496,13 +554,13 @@ const StudentSidePhysicalActivity = () => {
               <div className='row'>
                 <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
                   {mediaFiles?.file_type === 'image/jpeg' ||
-                  mediaFiles?.file_type === 'image/png' ? (
+                    mediaFiles?.file_type === 'image/png' ? (
                     <img
                       src={mediaFiles?.s3_path}
                       thumb={mediaFiles?.s3_path}
                       alt={'image'}
                       width='100%'
-                      height='95%'
+                      loading='lazy'
                     />
                   ) : (
                     <ReactPlayer
@@ -535,9 +593,8 @@ const StudentSidePhysicalActivity = () => {
                   )}
                 </div>
                 <div
-                  className={`${
-                    mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
-                  } px-0 th-bg-white`}
+                  className={`${mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
+                    } px-0 th-bg-white`}
                 >
                   <div className='row'>
                     <div className='col-12 px-1'>
@@ -599,41 +656,25 @@ const StudentSidePhysicalActivity = () => {
                           className='px-1 py-2 th-br-5'
                           style={{ outline: '1px solid #d9d9d9' }}
                         >
-                          {ratingReview.map(
-                            (item, index) =>
-                              item?.name !== 'Overall' && (
-                                <>
-                                  <div className='col-12 pl-1 th-fw-600'>
-                                    {filterRound(item?.level)}
-                                  </div>
-                                  <div className='row py-2 my-2 th-bg-white align-items-center justify-content-around th-br-6'>
-                                    <div className='col-12 '>
-                                      <div className=' d-flex justify-content-between th-bg-grey p-2 th-br-6'>
-                                        <div className='th-fw-500 mr-3'>{item?.name}</div>{' '}
-                                        <div>{item?.remarks}</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </>
-                              )
-                          )}
-                          {ratingReview
-                            .filter((item) => item?.name == 'Overall')
-                            .map((item) => (
-                              <div className='row th-bg-white th-br-6'>
-                                <div className='col-12 py-2 px-0'>
-                                  <div
-                                    className=' th-fw-600'
-                                    style={{ borderBottom: '2px solid #d9d9d9' }}
-                                  >
-                                    Overall
-                                  </div>
+                          {ratingReview?.map((obj, index) => {
+                            return (
+                              <div className='row py-1 align-items-center'>
+                                <div className='col-6 pl-1' key={index}>
+                                  {obj?.level?.name}
                                 </div>
-                                <div className='col-12 py-1 th-fw-600'>
-                                  {item?.remarks}
+                                <div className='col-6 pr-1'>
+                                {console.log("obj 653",obj)}
+                                  {!isRoundAvailable ?
+                                    <Input
+                                      disabled
+                                      title= {funRemarks(obj)}
+                                      value={funRemarks(obj)}
+                                    /> : <div></div>
+                                  }
                                 </div>
                               </div>
-                            ))}
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -641,7 +682,7 @@ const StudentSidePhysicalActivity = () => {
                 </div>
               </div>
             </div>
-          </Drawer> */}
+          </Drawer>
           <Modal
             centered
             visible={showDrawer}

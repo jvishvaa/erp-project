@@ -373,67 +373,161 @@ const RatingCreate = () => {
     getAssinged();
   }, []);
 
+  const validateActivityTypeSubmit = () => {
+    let isFormValid = true;
+    
+    if ((ActivityType?.name.toLowerCase() !== 'visual art') ||
+      ActivityType?.name.toLowerCase() !== 'music' ||
+      ActivityType?.name.toLowerCase() !== 'dance' ||
+      ActivityType?.name.toLowerCase() !== 'theatre'){
+        if(showPhy){
+          if (physicalActivityToggle) {
+            if (!ActivityType?.name) {
+              message.error('Please Select Activity Type');
+              isFormValid = false;
+            } else if (!subActivityType?.name) {
+              message.error('Please Select Sub-Activity Type');
+              isFormValid = false;
+            } else if (!remarksType) {
+              message.error('Please Select Criteria Title');
+              isFormValid = false;
+            }
+            console.log("visualInputlList ", visualInputlList);
+            visualInputlList.forEach((q, index) => {
+              const error = validateActivityTypeSubmitQuestions(q);
+              if (error && isFormValid) {
+                message.error('Please Enter Questions');
+                isFormValid = false;
+              }
+            });
+            console.log("optionList ", optionList);
+            optionList.forEach((q, index) => {
+              const error = validateActivityTypeSubmitOptions(q);
+              if (error && isFormValid) {
+                message.error('Please Enter Options & Marks');
+                isFormValid = false;
+              }
+            });
+          } else {
+            if (!ActivityType?.name) {
+              message.error('Please Select Activity Type');
+              isFormValid = false;
+            } else if (!subActivityType?.name) {
+              message.error('Please Select Sub-Activity Type');
+              isFormValid = false;
+            } else if (!remarksType) {
+              message.error('Please Enter Criteria Title');
+              isFormValid = false;
+            }
+            console.log("inputList ", inputList);
+            inputList.forEach((q, index) => {
+              const error = validateActivityTypeSubmitQuestions(q);
+              if (error && isFormValid) {
+                message.error('Please Enter Criteria Name');
+                isFormValid = false;
+              }
+            });
+            const uniqueValues = new Set(inputList.map((e) => e.name));
+            if (uniqueValues.size < inputList.length) {
+              message.error('Duplicate Name Found');
+              isFormValid = false;
+            }
+          }
+        }else {
+          inputList.forEach((item, index) => {
+            if (!item?.name && isFormValid) {
+              message.error('Please Enter Criteria Name');
+              isFormValid = false;
+            } 
+            else if (!item?.rating && isFormValid) {
+              message.error('Please Enter Rating');
+              isFormValid = false;
+            } 
+            else if (!String(item?.score) && isFormValid) {
+              message.error('Please Enter Score');
+              isFormValid = false;
+            }
+          });
+        }
+      }
+
+      return isFormValid;
+  };
+
+  const validateActivityTypeSubmitQuestions = (obj) => {
+    let error = false;
+    if (!obj.name) {
+      error = true;
+    }
+    return error;
+  };
+
+  const validateActivityTypeSubmitOptions = (obj) => {
+    let error = false;
+    if (!obj.name) {
+      error = true;
+    }
+    if (!obj.score) {
+      error = true;
+    }
+    return error;
+  };
+
   const handleActivityTypeSubmit = () => {
     var body;
-    if (!ActivityType?.name || isEdit?.name) {
-      message.error('Please Enter Activity Type');
-      return;
-    }
-    if (!subActivityType?.name) {
-      message.error('Please Select Sub-Activity Type');
-      return;
-    }
-    if (physicalActivityToggle) {
-      const arr1 = visualInputlList?.map((obj) => {
-        return { ...obj, rating: optionList };
-        return obj;
-      });
-      body = {
-        sub_type: subActivityType?.name,
-        activity_type: ActivityType?.name,
-        criteria_title: remarksType,
-        grading_scheme: arr1,
-        "is_dropdown": "True"
-      };
-    } else {
-      const uniqueValues = new Set(inputList.map((e) => e.name));
-      if (uniqueValues.size < inputList.length) {
-        message.error('Duplicate Name Found');
-        return;
-      }
-      body = {
-        sub_type: subActivityType?.name,
-        activity_type: ActivityType?.name,
-        grading_scheme: inputList,
-        criteria_title:
-          ActivityType?.name.toLowerCase() === 'public speaking' ? '' : remarksType,
-      };
-    }
-    setLoading(true);
-    axios
-      .post(`${endpoints.newBlog.activityTypeSubmit}`, body, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        if (response?.data?.status_code == 400) {
-          setLoading(false);
-          message.error(response?.data?.message);
-          return;
-        } else {
-          message.success(response?.data?.message);
-          setLoading(false);
-          setActivityType(null);
-          setRemarksType(null);
-          handleClose();
-          getActivityCategory();
+    if (validateActivityTypeSubmit()) {
+      if (physicalActivityToggle) {
+        const arr1 = visualInputlList?.map((obj) => {
+          return { ...obj, rating: optionList };
+          return obj;
+        });
+        body = {
+          sub_type: subActivityType?.name,
+          activity_type: ActivityType?.name,
+          criteria_title: remarksType,
+          grading_scheme: arr1,
+          "is_dropdown": "True"
+        };
+      } else {
+        const uniqueValues = new Set(inputList.map((e) => e.name));
+        if (uniqueValues.size < inputList.length) {
+          message.error('Duplicate Name Found');
           return;
         }
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+        body = {
+          sub_type: subActivityType?.name,
+          activity_type: ActivityType?.name,
+          grading_scheme: inputList,
+          criteria_title:
+            ActivityType?.name.toLowerCase() === 'public speaking' ? '' : remarksType,
+        };
+      }
+      setLoading(true);
+      axios
+        .post(`${endpoints.newBlog.activityTypeSubmit}`, body, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if (response?.data?.status_code == 400) {
+            setLoading(false);
+            message.error(response?.data?.message);
+            return;
+          } else {
+            message.success(response?.data?.message);
+            setLoading(false);
+            setActivityType(null);
+            setRemarksType(null);
+            handleClose();
+            getActivityCategory();
+            return;
+          }
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
   };
   const handleActivityTypeSubmitEdit = () => {
     if (!isEditData?.name) {
@@ -664,12 +758,16 @@ const RatingCreate = () => {
   };
 
   const handleVisualInputAppEdit = () => {
-    const newData = isEditData.grading_scheme.concat({
-      id: '',
-      name: '',
-      score: null,
-    });
-    setIsEditData({ ...isEditData, grading_scheme: newData });
+    if (isEditData.grading_scheme.length < 7) {
+      const newData = isEditData.grading_scheme.concat({
+        id: '',
+        name: '',
+        score: null,
+      });
+      setIsEditData({ ...isEditData, grading_scheme: newData });
+    } else {
+      message.error('Please add 7 questions only!!');
+    }
   };
 
   const mainActivityOption = activityCategory?.result?.map((each) => {
@@ -712,13 +810,17 @@ const RatingCreate = () => {
   };
 
   const handleOptionInputAddEdit = () => {
-    const newData = editOption.concat({
-      id: '',
-      name: '',
-      score: null,
-      status: false,
-    });
-    setEditOption(newData);
+    if (editOption?.length < 10) {
+      const newData = editOption.concat({
+        id: '',
+        name: '',
+        score: null,
+        status: false,
+      });
+      setEditOption(newData);
+    } else {
+      message.error('Please add 10 options only!!');
+    }
   };
 
   const handleOptionInput = (event, index) => {
@@ -755,14 +857,55 @@ const RatingCreate = () => {
     setEditOption(newInputList);
   };
 
-  const handleOptionSubmit = () => {
+  const validateOptionSubmit = () => {
+    let isFormValid = true;
     if (!ActivityType?.name) {
       message.error('Please Select Activity Type');
-      return;
+      isFormValid = false;
     } else if (!remarksType) {
       message.error('Please Select Criteria Title');
-      return;
-    } else {
+      isFormValid = false;
+    } else if (visualInputlList.length > 0 || optionList.length > 0) {
+      visualInputlList.forEach((q, index) => {
+        const error = validateQuestions(q);
+        if (error && isFormValid) {
+          message.error('Please Enter Questions');
+          isFormValid = false;
+        }
+      });
+      optionList.forEach((q, index) => {
+        const error = validateOptions(q);
+        if (error && isFormValid) {
+          message.error('Please Enter Options & Marks');
+          isFormValid = false;
+        }
+      });
+    }
+
+    return isFormValid;
+  };
+
+  const validateQuestions = (obj) => {
+    let error = false;
+    if (!obj.name) {
+      error = true;
+    }
+    return error;
+  };
+
+  const validateOptions = (obj) => {
+    let error = false;
+    if (!obj.name) {
+      error = true;
+    }
+    if (!obj.score) {
+      error = true;
+    }
+    return error;
+  };
+
+  const handleOptionSubmit = () => {
+    if (validateOptionSubmit()) {
       const arr1 = visualInputlList?.map((obj) => {
         return { ...obj, rating: optionList };
         return obj;
