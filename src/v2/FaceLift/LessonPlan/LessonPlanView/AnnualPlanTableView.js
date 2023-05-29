@@ -144,6 +144,8 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const [isPeriodView, setIsPeriodView] = useState(true);
   const [questionData, setQuestionData] = useState([]);
 
+  const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
+
   const env = window.location.host;
   const domain = window.location.host.split('.');
   let domain_name =
@@ -423,6 +425,25 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
         setLoadingInner(false);
       });
   };
+  const fetchAllowAutoDiaryStatus = () => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=hw_auto_asgn`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setAllowAutoAssignDiary(true);
+          } else {
+            setAllowAutoAssignDiary(false);
+          }
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        message.error('error', error?.message);
+      });
+  };
   const fetchLessonResourcesData = (data) => {
     showDrawer();
     setLoadingDrawer(true);
@@ -434,7 +455,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
     };
     axios
       .get(`academic/annual-plan/chapter-topic-wise-lp-data/`, {
-        params: { ...params },
+        params: { ...params, ...(allowAutoAssignDiary ? { config: 'True' } : {}) },
       })
       .then((result) => {
         if (result?.data?.status === 200) {
@@ -616,6 +637,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
         }
       });
     }
+    fetchAllowAutoDiaryStatus();
   }, []);
 
   useEffect(() => {
