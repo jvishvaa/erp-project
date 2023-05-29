@@ -139,10 +139,14 @@ const PhysicalPendingReview = (props) => {
 
   const handleCloseViewMore = () => {
     setView(false);
+    setRatingReview([]);
+    setFile(null);
   };
 
   const handleCloseViewLevelMore = () => {
     setviewLevelDrawer(false);
+    setRatinglevelReview([]);
+    setFile(null);
   };
 
   const [values, setValues] = useState();
@@ -199,6 +203,7 @@ const PhysicalPendingReview = (props) => {
         },
       })
       .then((res) => {
+        message.success('Review Submitted Successfully');
         if (file) {
           uploadFile();
         }
@@ -208,7 +213,6 @@ const PhysicalPendingReview = (props) => {
         fileRef.current.value = '';
         setFile(null);
         erpAPI();
-        message.success('Review Submitted Successfully');
         return;
       })
       .catch(() => {
@@ -519,13 +523,13 @@ const PhysicalPendingReview = (props) => {
     if (props.selectedBranch === undefined || props.selectedGrade === undefined) {
       setTotalSubmitted([]);
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag, props?.value]);
 
   useEffect(() => {
     if (props.flag) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage, props?.value]);
 
   useEffect(() => {
     if(!firstLoad){
@@ -665,10 +669,8 @@ const PhysicalPendingReview = (props) => {
   //   .filter((item) => item.toLowerCase() !== 'overall')
   //   .map((item) => Object.keys(arr[0][item]))[0];
 
-  // console.log(columnsData, 'help1');
   // let overKey = Object.keys(arr[0]).filter((item) => item.toLowerCase() === 'overall');
 
-  // console.log(overKey, 'help3');
 
   // let overValueAllData = Object.keys(arr[0])
   //   .filter((item) => item.toLowerCase() === 'overall')
