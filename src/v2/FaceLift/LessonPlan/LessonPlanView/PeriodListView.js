@@ -1912,9 +1912,72 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                       'Please update the status of selected sections first!!'
                                     );
                                   } else {
-                                    message.error(
-                                      'Please update the status of desired sections first!!'
-                                    );
+                                    if (
+                                      resourcesData?.section_wise_completion
+                                        .filter((item) => item?.is_completed == true)
+                                        .map((item) => item?.id)
+                                        .filter(
+                                          (el) =>
+                                            assignedDiaryList
+                                              .map((item) => item.section_mapping)
+                                              .flat()
+                                              .indexOf(el) < 0
+                                        ).length > 0
+                                    ) {
+                                      let excludedSections =
+                                        resourcesData?.section_wise_completion
+                                          .filter((item) => item?.is_completed == true)
+                                          .map((item) => item?.id)
+                                          .filter(
+                                            (el) =>
+                                              assignedHWList
+                                                .map((item) => item.section_mapping)
+                                                .flat()
+                                                .indexOf(el) < 0
+                                          );
+                                      history.push({
+                                        pathname: '/create/diary',
+                                        state: {
+                                          periodData: {
+                                            subjectID: subjectId,
+                                            subjectName: subjectName,
+                                            gradeID: gradeId,
+                                            gradeName,
+                                            volumeID: volumeId,
+                                            periodID: resourcesData?.id,
+                                            periodName: resourcesData?.period_name,
+                                            sections:
+                                              resourcesData?.section_wise_completion.filter(
+                                                (item) =>
+                                                  excludedSections.includes(item?.id)
+                                              ),
+                                            chapterID: chapterId,
+                                            chapterName: resourcesData?.chapter_name,
+                                            keyConceptID: drawerData?.key_concept_id,
+                                            keyConceptName: resourcesData?.topic_name,
+                                            board: boardId,
+                                          },
+                                          isDiaryAutoAssign: true,
+                                          isDiaryEdit: assignedDiaryList
+                                            ?.map((item) => item.section_mapping)
+                                            .flat()
+                                            .every((elem) =>
+                                              resourcesData?.section_wise_completion
+                                                ?.filter(
+                                                  (item) => item?.is_completed == true
+                                                )
+                                                .map((item) => item?.id)
+                                                .includes(elem)
+                                            )
+                                            ? true
+                                            : false,
+                                        },
+                                      });
+                                    } else {
+                                      message.error(
+                                        'Please update the status of desired sections first!!'
+                                      );
+                                    }
                                   }
                                 }}
                               >
