@@ -103,15 +103,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [loading, setLoading] = useState(false);
   const [homeworkMapped, setHomeworkMapped] = useState(false);
   const [questionList, setQuestionList] = useState([
-    {
-      id: cuid(),
-      question: '',
-      attachments: [],
-      is_attachment_enable: false,
-      max_attachment: 2,
-      penTool: false,
-      is_central: false,
-    },
+    // {
+    //   id: cuid(),
+    //   question: '',
+    //   attachments: [],
+    //   is_attachment_enable: false,
+    //   max_attachment: 2,
+    //   penTool: false,
+    //   is_central: false,
+    // },
   ]);
   const [centralAcademicYearID, setCentralAcademicYearID] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -362,8 +362,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       branch: branchID,
       module_id: moduleId,
       grade: [gradeID],
-      section: isAutoAssignDiary ? sectionID : [sectionID],
-      section_mapping: isAutoAssignDiary ? sectionMappingID : [sectionMappingID],
+      section: Array.isArray(sectionMappingID) ? sectionID : [sectionID],
+      section_mapping: Array.isArray(sectionMappingID)
+        ? sectionMappingID
+        : [sectionMappingID],
       subject: subjectID,
       chapter: chapterID,
       documents: uploadedFiles,
@@ -587,7 +589,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setAssignedHomework();
     setHomework('');
     setHomeworkCreated(false);
-    // setShowHomeworkForm(false);
+    setShowHomeworkForm(false);
     setHomeworkDetails({});
     setHomeworkMapped(false);
     setActivityData([]);
@@ -614,7 +616,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       fetchActivityData({
         branch_id: selectedBranch?.branch?.id,
         grade_id: gradeID,
-        section_id: sectionID?.toString(),
+        section_id: sectionID,
         start_date: moment().format('YYYY-MM-DD'),
         type: e.children.split('_')[e.children.split('_').length - 1],
       });
@@ -777,7 +779,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
             setAssignedHomework(result?.data?.data);
           } else {
             if (Object.keys(selectedPeriod).length > 0) {
-              console.log('debug1', selectedPeriod);
               fetchCentralHomework({
                 chapter: selectedPeriod?.chapterID,
                 period: selectedPeriod?.periodName,
@@ -1301,11 +1302,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         ]);
         fetchActivityData({
           branch_id: selectedBranch?.branch?.id,
-          grade_id: Array.isArray(periodData?.grade_id)
-            ? periodData?.grade_id[0]
-            : periodData?.grade_id,
-          section_id: Array.isArray(periodData?.section_id)
-            ? periodData?.section_id.toString()
+          grade_id: Array.isArray(periodData?.gradeID)
+            ? periodData?.gradeID[0]
+            : periodData?.gradeID,
+          section_id: Array.isArray(periodData?.sections)
+            ? periodData?.sections.map((item) => item?.id).join(',')
             : periodData?.section_id,
           start_date: moment().format('YYYY-MM-DD'),
           type: periodData?.subjectName.split('_')[
@@ -1934,6 +1935,17 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           if (hwMappingID) {
                             setHomeworkMapped(true);
                           }
+                          setQuestionList([
+                            {
+                              id: cuid(),
+                              question: '',
+                              attachments: [],
+                              is_attachment_enable: false,
+                              max_attachment: 2,
+                              penTool: false,
+                              is_central: false,
+                            },
+                          ]);
                         }}
                       >
                         <PlusOutlined className='mr-2' />
@@ -2364,6 +2376,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           <div className='col-12 col-sm-6 th-black-2 pl-0'>
                             <div className='row'>
                               Status :{' '}
+                              {console.log('ddddd', sectionMappingID, isAutoAssignDiary)}
                               {isAutoAssignDiary ? (
                                 Array.isArray(sectionMappingID) ? (
                                   sectionMappingID.every((val) =>
