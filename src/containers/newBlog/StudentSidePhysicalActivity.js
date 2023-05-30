@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
@@ -41,7 +41,7 @@ const StudentSidePhysicalActivity = () => {
   const activityDetails = history?.location?.state?.activity;
   const [loading, setLoading] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
-
+  const playerRef = useRef(null);
   const [activityListData, setActivityListData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [showSideDrawer, setShowSideDrawer] = useState(false);
@@ -59,16 +59,22 @@ const StudentSidePhysicalActivity = () => {
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [isRoundAvailable, setIsRoundAvailable] = useState(false);
   const [loadingMedia, setLoadingMedia] = useState(false);
+  const [playVideo, setPlayVideo] = useState(true);
 
   const handleCloseViewMore = () => {
+    // playerRef.current.seekTo(0);
     setShowDrawer(false);
+    // setPlayVideo(false);
     setSelectedActivity(null);
-    setMediaFiles({});
   };
 
   const handleCloseSideViewMore = () => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(0);
+    }
     setShowSideDrawer(false);
     setSelectedActivity(null);
+    setMediaFiles({});
   };
 
   const fetchStudentActivityList = (params = {}) => {
@@ -524,7 +530,8 @@ const StudentSidePhysicalActivity = () => {
                       <ReactPlayer
                         url={mediaFiles?.s3_path}
                         thumb={mediaFiles?.s3_path}
-                        // key={index}
+                        // playing={playVideo}
+                        ref={playerRef}
                         width='100%'
                         height='100%'
                         playIcon={
