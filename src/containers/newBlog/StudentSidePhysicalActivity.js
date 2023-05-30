@@ -27,6 +27,7 @@ import {
   Button,
   message,
   Input,
+  Spin,
 } from 'antd';
 import moment from 'moment';
 import ReactPlayer from 'react-player';
@@ -45,7 +46,7 @@ const StudentSidePhysicalActivity = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showSideDrawer, setShowSideDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState({});
   const [showBMIModal, setShowBMIModal] = useState(false);
   const [studentBMIData, setStudentBMIData] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -57,10 +58,12 @@ const StudentSidePhysicalActivity = () => {
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [isRoundAvailable, setIsRoundAvailable] = useState(false);
+  const [loadingMedia, setLoadingMedia] = useState(false);
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
     setSelectedActivity(null);
+    setMediaFiles({});
   };
 
   const handleCloseSideViewMore = () => {
@@ -100,20 +103,19 @@ const StudentSidePhysicalActivity = () => {
     } catch (e) {
       return false;
     }
-  }
+  };
 
   let funRemarks = (obj) => {
-    
-    try{
-      if(isJSON(obj?.remarks)){
+    try {
+      if (isJSON(obj?.remarks)) {
         return JSON.parse(obj?.remarks).filter((item) => item?.status == true)[0].name;
       } else {
         return obj?.remarks.toString();
       }
-    } catch(e){
+    } catch (e) {
       return '';
     }
-  }
+  };
 
   useEffect(() => {
     fetchStudentActivityList({
@@ -123,7 +125,7 @@ const StudentSidePhysicalActivity = () => {
       is_reviewed: 'True',
       is_submitted: 'True',
       page: currentPageAssigned,
-      page_size: limitAssigned
+      page_size: limitAssigned,
     });
   }, [currentPageAssigned]);
 
@@ -144,13 +146,12 @@ const StudentSidePhysicalActivity = () => {
     fetchBMIData(data?.id);
   };
 
-  
-
   let array = [];
   const getRatingView = (id, is_round_available) => {
     axios
       .get(
-        `${endpoints.newBlog.studentReviewss
+        `${
+          endpoints.newBlog.studentReviewss
         }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${is_round_available}`,
         {
           headers: {
@@ -181,9 +182,10 @@ const StudentSidePhysicalActivity = () => {
         }
         setSelectedActivity(response.data);
         setLoading(false);
-      }).catch((error) => {
+      })
+      .catch((error) => {
         setLoading(false);
-      });;
+      });
   };
 
   const fetchBMIData = () => {
@@ -205,10 +207,10 @@ const StudentSidePhysicalActivity = () => {
           message.error('No BMI record found for the student');
         }
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const fetchMedia = (id) => {
+    setLoadingMedia(true);
     axios
       .get(`${endpoints.newBlog.showVisualMedia}${id}/`, {
         headers: {
@@ -220,7 +222,8 @@ const StudentSidePhysicalActivity = () => {
           setMediaFiles(response?.data?.result);
         }
       })
-      .catch((error) => {
+      .finally(() => {
+        setLoadingMedia(false);
       });
   };
   let roundsArray = [];
@@ -236,7 +239,9 @@ const StudentSidePhysicalActivity = () => {
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>,
+      render: (text, row, index) => (
+        <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -363,7 +368,7 @@ const StudentSidePhysicalActivity = () => {
   }
   const handlePaginationAssign = (page) => {
     setCurrentPageAssigned(page);
-  }
+  };
 
   return (
     <div>
@@ -500,49 +505,56 @@ const StudentSidePhysicalActivity = () => {
           >
             <div>
               <div className='row'>
-                <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
-                  {mediaFiles?.file_type === 'image/jpeg' ||
+                {loadingMedia ? (
+                  <div className='col-8 text-center mt-5'>
+                    <Spin tip='Loading...' size='large' />
+                  </div>
+                ) : (
+                  <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
+                    {mediaFiles?.file_type === 'image/jpeg' ||
                     mediaFiles?.file_type === 'image/png' ? (
-                    <img
-                      src={mediaFiles?.s3_path}
-                      thumb={mediaFiles?.s3_path}
-                      alt={'image'}
-                      width='100%'
-                      loading='lazy'
-                    />
-                  ) : (
-                    <ReactPlayer
-                      url={mediaFiles?.s3_path}
-                      thumb={mediaFiles?.s3_path}
-                      // key={index}
-                      width='100%'
-                      height='100%'
-                      playIcon={
-                        <Tooltip title='play'>
-                          <Button
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              height: '30vh',
-                              width: '30vw',
-                            }}
-                            shape='circle'
-                            icon={
-                              <PlayCircleOutlined
-                                style={{ color: 'white', fontSize: '70px' }}
-                              />
-                            }
-                          />
-                        </Tooltip>
-                      }
-                      alt={'video'}
-                      controls={true}
-                    />
-                  )}
-                </div>
+                      <img
+                        src={mediaFiles?.s3_path}
+                        thumb={mediaFiles?.s3_path}
+                        alt={'image'}
+                        width='100%'
+                        loading='lazy'
+                      />
+                    ) : (
+                      <ReactPlayer
+                        url={mediaFiles?.s3_path}
+                        thumb={mediaFiles?.s3_path}
+                        // key={index}
+                        width='100%'
+                        height='100%'
+                        playIcon={
+                          <Tooltip title='play'>
+                            <Button
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                height: '30vh',
+                                width: '30vw',
+                              }}
+                              shape='circle'
+                              icon={
+                                <PlayCircleOutlined
+                                  style={{ color: 'white', fontSize: '70px' }}
+                                />
+                              }
+                            />
+                          </Tooltip>
+                        }
+                        alt={'video'}
+                        controls={true}
+                      />
+                    )}
+                  </div>
+                )}
                 <div
-                  className={`${mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
-                    } px-0 th-bg-white`}
+                  className={`${
+                    mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
+                  } px-0 th-bg-white`}
                 >
                   <div className='row'>
                     <div className='col-12 px-1'>
@@ -611,13 +623,15 @@ const StudentSidePhysicalActivity = () => {
                                   {obj?.level?.name}
                                 </div>
                                 <div className='col-6 pr-1'>
-                                  {!isRoundAvailable ?
+                                  {!isRoundAvailable ? (
                                     <Input
                                       disabled
-                                      title= {funRemarks(obj)}
+                                      title={funRemarks(obj)}
                                       value={funRemarks(obj)}
-                                    /> : <div></div>
-                                  }
+                                    />
+                                  ) : (
+                                    <div></div>
+                                  )}
                                 </div>
                               </div>
                             );
