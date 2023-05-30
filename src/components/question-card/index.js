@@ -99,9 +99,11 @@ const QuestionCard = ({
   let sessionYear;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
-  const [attachments, setAttachments] = useState([]);
-  const [attachmentPreviews, setAttachmentPreviews] = useState([]);
-  const [enableAttachments, setEnableAttachments] = useState(false);
+  const [attachments, setAttachments] = useState(question.attachments);
+  const [attachmentPreviews, setAttachmentPreviews] = useState(question.attachments);
+  const [enableAttachments, setEnableAttachments] = useState(
+    question.is_attachment_enable
+  );
   const [openAttachmentModal, setOpenAttachmentModal] = useState(false);
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
   const firstUpdate = useRef(true);
@@ -110,11 +112,11 @@ const QuestionCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [sizeValied, setSizeValied] = useState({});
   const [showPrev, setshowPrev] = useState(0);
-  const [pentool, setpentool] = useState(false);
-  const [maxattachment, setmaxAttachment] = useState(2);
+  const [pentool, setpentool] = useState(question.penTool);
+  const [maxattachment, setmaxAttachment] = useState(question.max_attachment);
   // const [isAttachmentenable,setisAttachmentenable] = useState(false)
   const [showDrawer, setShowDrawer] = useState(false);
-  const [questionData, setquestionData] = useState();
+  const [questionData, setquestionData] = useState(question?.question);
   const [edit, setisEdit] = useState(isEdit);
   const [volumeListData, setVolumeListData] = useState([]);
   const [selectedVolume, setSelectedVolume] = useState('');
@@ -152,13 +154,13 @@ const QuestionCard = ({
   useEffect(() => {
     if (edit) {
       setisEdit(false);
-      setquestionData(question.question);
-      setAttachmentPreviews(question.attachments);
-      setAttachments(question.attachments);
-      setpentool(question.penTool);
-      setmaxAttachment(question.max_attachment);
-      setEnableAttachments(question.is_attachment_enable);
     }
+    // setquestionData(question.question);
+    // setAttachmentPreviews(question.attachments);
+    // setAttachments(question.attachments);
+    // setpentool(question.penTool);
+    // setmaxAttachment(question.max_attachment);
+    // setEnableAttachments(question.is_attachment_enable);
   }, [question.question, question.attachments]);
 
   const openAttchmentsModal = () => {

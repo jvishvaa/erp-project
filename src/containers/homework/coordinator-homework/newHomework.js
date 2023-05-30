@@ -668,9 +668,7 @@ const SubmissionData = withRouter(
               <Panel
                 header={
                   collapse == 1 ? (
-                    selectedHomeworkDetails.hw_questions.some(
-                      (el) => el.is_central == true
-                    ) ? (
+                    selectedHomeworkDetails?.description == '' ? (
                       <div style={{ width: '300px' }}>
                         <p
                           className='th-12 th-fw-400 text-truncate m-0'
