@@ -879,19 +879,20 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         topic_id: lastPeriod?.key_concept_id,
       });
       setCurrentPanel(addedPeriods.length - 1);
-
-      let title = addedPeriods?.reduce((initialValue, data) => {
-        let key = data['chapter__chapter_name'];
-        if (!initialValue[key]) {
-          initialValue[key] = [];
-        }
-        initialValue[key].push(data?.key_concept__topic_name);
-        return initialValue;
-      }, {});
-      let combinedTitle = Object.keys(title)
-        ?.map((item) => item + ' - ' + title[item]?.map((each) => each).join(','))
-        .join(',');
-      setHomeworkTitle(`HW : ${combinedTitle}`);
+      if (isAutoAssignDiary) {
+        let title = addedPeriods?.reduce((initialValue, data) => {
+          let key = data['chapter__chapter_name'];
+          if (!initialValue[key]) {
+            initialValue[key] = [];
+          }
+          initialValue[key].push(data?.key_concept__topic_name);
+          return initialValue;
+        }, {});
+        let combinedTitle = Object.keys(title)
+          ?.map((item) => item + ' - ' + title[item]?.map((each) => each).join(','))
+          .join(',');
+        setHomeworkTitle(`HW : ${combinedTitle}`);
+      }
     } else {
       setUpcomingPeriod({});
       setClearUpcomingPeriod(true);
@@ -1675,7 +1676,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           const newList = addedPeriods.slice();
                                           newList.splice(index, 1);
                                           setAddedPeriods(newList);
-                                          removeQuestion(index);
+                                          if (!isDiaryEdit) {
+                                            removeQuestion(index);
+                                          }
                                           if (isDiaryEdit) {
                                             if (
                                               !editData?.periods_data

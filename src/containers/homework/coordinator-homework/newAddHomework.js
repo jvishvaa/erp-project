@@ -209,8 +209,10 @@ const AddHomeworkCordNew = ({
     if (dateValue == undefined || dateValue == '') {
       return message.error('Please Add Due Date');
     }
-    if (description == undefined || description == '') {
-      return message.error('Please Add Description');
+    if (!isAutoAssignDiary) {
+      if (description == undefined || description == '') {
+        return message.error('Please Add Description');
+      }
     }
     if (sectionDisplay?.length == 0) {
       return message.error('Please Select Section');

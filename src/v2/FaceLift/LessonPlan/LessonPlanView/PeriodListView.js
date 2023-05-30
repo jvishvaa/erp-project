@@ -801,7 +801,11 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       .delete(`/academic/${id}/hw-questions/`)
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          message.success('Homework deleted successfully!');
+          if (response?.data?.message.includes('cannot')) {
+            message.warning(response?.data?.message);
+          } else {
+            message.success('Homework deleted successfully!');
+          }
           setAssignedDiaryList([]);
           setAssignedHWList([]);
           fetchDiaryCompletionStatus({

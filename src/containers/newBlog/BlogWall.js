@@ -148,14 +148,11 @@ const BlogWall = () => {
   const fetchCategoryOptions = () => {
     setLoading(true);
     axios
-      .get(
-        `${endpoints.newBlog.getCategoryOptions}?user_id=${userId}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
+      .get(`${endpoints.newBlog.getCategoryOptions}?user_id=${userId}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((response) => {
         if (response.status === 200) {
           setCategoriesList(response?.data?.activity_types);
@@ -189,17 +186,16 @@ const BlogWall = () => {
       } else if (item?.type === 'blog') {
         if (item?.publish_level === 'Intra Orchids Level') {
           return item?.branch?.name;
-        }
-        else {
+        } else {
           return selectedBranch?.branch?.branch_name;
         }
       } else {
-        return item?.branch?.name
+        return item?.branch?.name;
       }
     } catch (e) {
       return '';
     }
-  }
+  };
 
   const categoryOptions = categoriesList?.map((each) => {
     return (
@@ -464,8 +460,7 @@ const BlogWall = () => {
       .then((response) => {
         setCommentsList(response?.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const fetchPostDetails = (data) => {
     //  setLoading(true);
@@ -481,8 +476,7 @@ const BlogWall = () => {
         //  setLoading(false);
         //  setOpenModal(true);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const getWhatsAppDetails = (params = {}) => {
     axios
@@ -496,8 +490,7 @@ const BlogWall = () => {
       .then((response) => {
         setChatDetails(response?.data);
       })
-      .catch((err) => {
-      });
+      .catch((err) => {});
   };
 
   let array = [];
@@ -620,8 +613,7 @@ const BlogWall = () => {
           });
         }
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const PostContent = () => {
     return (
@@ -747,6 +739,9 @@ const BlogWall = () => {
                                 <div style={{ height: '200px' }}>
                                   {item?.content?.file_type === 'video/mp4' ? (
                                     <>
+                                      <div className='videoOverlay'>
+                                        <img src={playIcon} />
+                                      </div>
                                       <video
                                         preload='auto'
                                         src={item?.content?.s3_url}
@@ -754,7 +749,7 @@ const BlogWall = () => {
                                         height='200px'
                                         objectFit={'cover'}
                                         className='th-br-5'
-                                      // poster={item?.content?.thumbnail_url}
+                                        // poster={item?.content?.thumbnail_url}
                                       />
                                     </>
                                   ) : (
@@ -795,10 +790,7 @@ const BlogWall = () => {
                               </div>
                               <div className='col-12 py-1 text-truncate'>
                                 <span className='th-16 th-fw-500 th-black-1'>
-                                  {
-                                    funBranchName(item)
-
-                                  }
+                                  {funBranchName(item)}
                                 </span>
                               </div>
                               <div className='col-12 py-1'>
@@ -999,20 +991,29 @@ const BlogWall = () => {
                                         }}
                                       />
                                     </>
+                                  ) : item?.content?.file_type === 'video/mp4' ? (
+                                    <>
+                                      <div className='videoOverlay'>
+                                        <img src={playIcon} />
+                                      </div>
+                                      <video
+                                        preload='auto'
+                                        src={item?.content?.s3_path}
+                                        width='100%'
+                                        height='200px'
+                                        objectFit={'cover'}
+                                        className='th-br-5'
+                                        // poster={item?.content?.thumbnail_url}
+                                      />
+                                    </>
                                   ) : (
                                     <img
-                                      src={
-                                        item?.content?.s3_path
-                                          ? item?.content?.s3_path
-                                          : getActivityIcon(item?.type)
-                                      }
-                                      alt='content_image'
-                                      className='th-br-5 th-pointer'
-                                      style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'fill',
-                                      }}
+                                      src={item?.content?.s3_path}
+                                      width='100%'
+                                      height='200px'
+                                      objectFit={'cover'}
+                                      alt='content_image2'
+                                      className='th-br-5'
                                       loading='lazy'
                                     />
                                   )}
@@ -1231,7 +1232,7 @@ const BlogWall = () => {
                     return (
                       <div className='image'>
                         {item.file_type === 'image/png' ||
-                          item.file_type === 'image/jpeg' ? (
+                        item.file_type === 'image/jpeg' ? (
                           <img
                             src={item?.s3_url}
                             alt={'image'}
@@ -1682,8 +1683,9 @@ const BlogWall = () => {
                         <div className='mx-1'>
                           <Button
                             onClick={() => onChangeTab(index + 1)}
-                            className={`${showTab == index + 1 ? 'th-button-active' : 'th-button'
-                              } th-br-5 mb-2 mb-sm-0`}
+                            className={`${
+                              showTab == index + 1 ? 'th-button-active' : 'th-button'
+                            } th-br-5 mb-2 mb-sm-0`}
                           >
                             {item}
                           </Button>
