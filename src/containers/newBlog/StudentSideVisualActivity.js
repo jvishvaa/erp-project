@@ -38,7 +38,7 @@ const StudentSideVisualActivity = () => {
   const [activityListData, setActivityListData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState();
   const [totalCountAssigned, setTotalCountAssigned] = useState(0);
   const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
   const [limitAssigned, setLimitAssigned] = useState(10);
@@ -81,8 +81,8 @@ const StudentSideVisualActivity = () => {
       is_reviewed: 'True',
       is_submitted: 'True',
       update: 'True',
-      page :currentPageAssigned,
-      page_size :limitAssigned
+      page: currentPageAssigned,
+      page_size: limitAssigned,
     });
   }, [currentPageAssigned]);
   const handleShowReview = (data) => {
@@ -127,14 +127,16 @@ const StudentSideVisualActivity = () => {
       });
   };
 
-  const handlePaginationAssign =(page) => {
-    setCurrentPageAssigned(page)
-  }
+  const handlePaginationAssign = (page) => {
+    setCurrentPageAssigned(page);
+  };
   const columns = [
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned -1) *10}</span>,
+      render: (text, row, index) => (
+        <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -209,12 +211,12 @@ const StudentSideVisualActivity = () => {
                   }
                   loading={loading}
                   pagination={{
-                    total:totalCountAssigned,
+                    total: totalCountAssigned,
                     current: Number(currentPageAssigned),
-                    pageSize:limitAssigned,
-                    showSizeChanger:false,
+                    pageSize: limitAssigned,
+                    showSizeChanger: false,
                     onChange: (e) => {
-                      console.log('Paggination',e);
+                      console.log('Paggination', e);
                       handlePaginationAssign(e);
                     },
                   }}
@@ -359,9 +361,11 @@ const StudentSideVisualActivity = () => {
                                 <div className='col-6 pr-1'>
                                   <Input
                                     disabled
-                                    title={obj?.remarks.filter(
-                                      (item) => item.status == true
-                                    )[0].name}
+                                    title={
+                                      obj?.remarks.filter(
+                                        (item) => item.status == true
+                                      )[0].name
+                                    }
                                     value={
                                       obj?.remarks.filter(
                                         (item) => item.status == true
