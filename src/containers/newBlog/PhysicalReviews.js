@@ -1,7 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Avatar, Select, Tag, Table as TableAnt, message, Tooltip, Button, Drawer, Space, Modal, Input } from 'antd';
-import { UserOutlined, FileSearchOutlined,ArrowRightOutlined, CloseOutlined, CaretRightOutlined, PlayCircleOutlined,} from '@ant-design/icons';
+import {
+  Avatar,
+  Select,
+  Tag,
+  Table as TableAnt,
+  message,
+  Tooltip,
+  Button,
+  Drawer,
+  Space,
+  Modal,
+  Input,
+} from 'antd';
+import {
+  UserOutlined,
+  FileSearchOutlined,
+  ArrowRightOutlined,
+  CloseOutlined,
+  CaretRightOutlined,
+  PlayCircleOutlined,
+} from '@ant-design/icons';
 import endpoints from '../../config/endpoints';
 import ReactPlayer from 'react-player';
 
@@ -17,7 +36,8 @@ const PhysicalReviewed = (props) => {
   const { Option } = Select;
   const [value, setValue] = React.useState();
   const [totalSubmitted, setTotalSubmitted] = useState([]);
-  
+  const playerRef = useRef(null);
+
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
   const [dataId, setDataId] = useState();
   let datas = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -41,7 +61,7 @@ const PhysicalReviewed = (props) => {
   const [customRatingReview, setCustomRatingReview] = useState([]);
   const [overallRemarks, setOverAllRemarks] = useState('');
   const [isRoundAvailable, setIsRoundAvailable] = useState(false);
-  const [firstLoad, setFirstLoad]= useState(false);
+  const [firstLoad, setFirstLoad] = useState(false);
 
   let array = [];
   const getRatingView = (data) => {
@@ -83,7 +103,6 @@ const PhysicalReviewed = (props) => {
       })
       .then((response) => {
         response.data.map((obj, index) => {
-          
           let temp = {};
           temp['id'] = obj.id;
           temp['name'] = obj.level.name;
@@ -91,7 +110,6 @@ const PhysicalReviewed = (props) => {
           temp['given_rating'] = obj.given_rating;
           temp['level'] = obj?.level?.rating;
           array.push(temp);
-          
         });
         setDrawerRatingReview(array);
         setLoading(false);
@@ -164,13 +182,13 @@ const PhysicalReviewed = (props) => {
   };
 
   useEffect(() => {
-    if(!firstLoad){
+    if (!firstLoad) {
       fetchisRoundAvailable();
     }
   });
 
   const fetchisRoundAvailable = () => {
-    axios 
+    axios
       .get(`${endpoints.newBlog.getRoundShowHide}?activity_detail_id=${ActivityId?.id}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
@@ -184,18 +202,18 @@ const PhysicalReviewed = (props) => {
 
   const assignPage = (data) => {
     if (data?.length !== 0) {
-      if(isRoundAvailable){
-      setView(true);
-      setData(data);
-      setDataId(data?.id);
+      if (isRoundAvailable) {
+        setView(true);
+        setData(data);
+        setDataId(data?.id);
 
-      getRatingView(data?.id);
+        getRatingView(data?.id);
       } else {
         setDrawerView(true);
-      setDrawerData(data);
-      setDrawerDataId(data?.id);
+        setDrawerData(data);
+        setDrawerDataId(data?.id);
 
-      getDrawerRatingView(data?.id);
+        getDrawerRatingView(data?.id);
       }
     }
   };
@@ -218,8 +236,12 @@ const PhysicalReviewed = (props) => {
   const [drawerratingReview, setDrawerRatingReview] = useState([]);
   const [file, setFile] = useState([]);
   const handleCloseViewMore = () => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(0);
+    }
     setView(false);
     setDrawerView(false);
+    setFile([]);
   };
 
   const handlePagination = (event, page) => {
@@ -372,6 +394,7 @@ const PhysicalReviewed = (props) => {
               ) : (
                 <ReactPlayer
                   url={file?.s3_path}
+                  ref={playerRef}
                   thumb={file?.s3_path}
                   // key={index}
                   width='100%'
@@ -426,7 +449,9 @@ const PhysicalReviewed = (props) => {
                       }
                     />
                     <div className='text-left ml-3'>
-                      <div className=' th-fw-600 th-16'>{drawerdata?.booked_user?.name}</div>
+                      <div className=' th-fw-600 th-16'>
+                        {drawerdata?.booked_user?.name}
+                      </div>
                       <div className=' th-fw-500 th-14'>{drawerdata?.branch?.name}</div>
                       <div className=' th-fw-500 th-12'>{drawerdata?.grade?.name}</div>
                     </div>
@@ -437,7 +462,9 @@ const PhysicalReviewed = (props) => {
                   >
                     <div>
                       Title :{' '}
-                      <span className='th-fw-600'>{drawerdata?.activity_detail?.title}</span>
+                      <span className='th-fw-600'>
+                        {drawerdata?.activity_detail?.title}
+                      </span>
                     </div>
                     <div>
                       Instructions :{' '}
@@ -457,12 +484,14 @@ const PhysicalReviewed = (props) => {
                           <div className='row py-1 align-items-center'>
                             <div className='col-6 pl-1' key={index}>
                               {obj?.name}
-                            </div>  
+                            </div>
                             <div className='col-6 pr-1'>
                               <Input
                                 disabled
-                                title={obj?.remarks.filter((item) => item.status == true)[0]
-                                  .name}
+                                title={
+                                  obj?.remarks.filter((item) => item.status == true)[0]
+                                    .name
+                                }
                                 value={
                                   obj?.remarks.filter((item) => item.status == true)[0]
                                     .name
@@ -559,8 +588,15 @@ const PhysicalReviewed = (props) => {
               overallData.map((item, index) => {
                 return (
                   <div className='col-6 pl-4 p-2 d-flex align-items-center justify-content-start'>
-                    <span style={{ fontWeight: 500, marginRight: '5px', fontSize:'15px' }}>Overall {<CaretRightOutlined />}</span>
-                    <div className='text-center'style={{fontSize:'15px', fontWeight:600, color:'blue'}}>
+                    <span
+                      style={{ fontWeight: 500, marginRight: '5px', fontSize: '15px' }}
+                    >
+                      Overall {<CaretRightOutlined />}
+                    </span>
+                    <div
+                      className='text-center'
+                      style={{ fontSize: '15px', fontWeight: 600, color: 'blue' }}
+                    >
                       {/* <Tag color='green'> */}
                       {item?.remarks}
                       {/* </Tag> */}

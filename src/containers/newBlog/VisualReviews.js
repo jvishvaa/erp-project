@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import {
   FileProtectOutlined,
@@ -26,6 +26,7 @@ import axios from 'axios';
 const VisualReviews = (props) => {
   const [value, setValue] = React.useState();
   const { Option } = Select;
+  const playerRef = useRef(null);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   //   const PhysicalsubActivityData = JSON.parse(localStorage.getItem('PhysicalsubActivityData')) || {};
   const subActivityData = JSON.parse(localStorage.getItem('VisualActivityId')) || {};
@@ -84,11 +85,11 @@ const VisualReviews = (props) => {
           }
         )
         .then((response) => {
-          if(response?.data?.status_code === 400){
-            message.error(response?.data?.message)
-            setLoading(false)
-            return
-          }else if(response?.data?.status_code === 200){
+          if (response?.data?.status_code === 400) {
+            message.error(response?.data?.message);
+            setLoading(false);
+            return;
+          } else if (response?.data?.status_code === 200) {
             setTotalCount(response?.data?.count);
             setTotalPages(response?.data?.page_size);
             setCurrentPage(response?.data?.page);
@@ -129,7 +130,11 @@ const VisualReviews = (props) => {
   const [view, setView] = useState(false);
   const [data, setData] = useState();
   const handleCloseViewMore = () => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(0);
+    }
     setView(false);
+    setFile();
   };
 
   let dummyArr = [];
@@ -249,6 +254,7 @@ const VisualReviews = (props) => {
                   url={file?.s3_path}
                   thumb={file?.s3_path}
                   // key={index}
+                  ref={playerRef}
                   width='100%'
                   height='100%'
                   playIcon={
@@ -332,12 +338,14 @@ const VisualReviews = (props) => {
                           <div className='row py-1 align-items-center'>
                             <div className='col-6 pl-1' key={index}>
                               {obj?.name}
-                            </div>  
+                            </div>
                             <div className='col-6 pr-1'>
                               <Input
                                 disabled
-                                title={obj?.remarks.filter((item) => item.status == true)[0]
-                                  .name}
+                                title={
+                                  obj?.remarks.filter((item) => item.status == true)[0]
+                                    .name
+                                }
                                 value={
                                   obj?.remarks.filter((item) => item.status == true)[0]
                                     .name
