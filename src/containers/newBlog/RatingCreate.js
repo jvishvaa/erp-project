@@ -392,7 +392,6 @@ const RatingCreate = () => {
               message.error('Please Select Criteria Title');
               isFormValid = false;
             }
-            console.log("visualInputlList ", visualInputlList);
             visualInputlList.forEach((q, index) => {
               const error = validateActivityTypeSubmitQuestions(q);
               if (error && isFormValid) {
@@ -400,7 +399,6 @@ const RatingCreate = () => {
                 isFormValid = false;
               }
             });
-            console.log("optionList ", optionList);
             optionList.forEach((q, index) => {
               const error = validateActivityTypeSubmitOptions(q);
               if (error && isFormValid) {
@@ -419,7 +417,6 @@ const RatingCreate = () => {
               message.error('Please Enter Criteria Title');
               isFormValid = false;
             }
-            console.log("inputList ", inputList);
             inputList.forEach((q, index) => {
               const error = validateActivityTypeSubmitQuestions(q);
               if (error && isFormValid) {

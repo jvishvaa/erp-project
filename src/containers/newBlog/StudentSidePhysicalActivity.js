@@ -78,7 +78,6 @@ const StudentSidePhysicalActivity = () => {
         },
       })
       .then((response) => {
-        console.log('response', response);
         if (response?.data?.status_code === 200) {
           setActivityListData(response?.data?.result);
 
@@ -90,7 +89,6 @@ const StudentSidePhysicalActivity = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
       });
   };
@@ -132,9 +130,7 @@ const StudentSidePhysicalActivity = () => {
   const handleShowReview = async (data) => {
     setIsRoundAvailable(data?.is_round_available);
     getRatingView(data?.id, data?.is_round_available);
-    //await newFetchTeacherListFn(data?.id, data.activity_detail_id);
     fetchMedia(data?.id);
-    console.log("isvalue ", isvalue);
     // if(isvalue){
     //   setShowDrawer(true);
     //   setShowSideDrawer(false);
@@ -148,54 +144,7 @@ const StudentSidePhysicalActivity = () => {
     fetchBMIData(data?.id);
   };
 
-  var isvalue = false;
-  const newFetchTeacherListFn = async (id, activityId) => {
-    try {
-      const { data } = await axios.get(`${endpoints.newBlog.getRoundShowHide}?activity_detail_id=${activityId}`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-        .then((responseNew) => {
-          console.log("responseNew ", responseNew);
-          setIsRoundAvailable(responseNew?.data?.is_round_available);
-          isvalue = responseNew?.data?.is_round_available;
-          console.log("isvalue 140 ", isvalue);
-          console.log(responseNew?.data?.is_round_available);
-        })
-        .then(isRoundAvail => axios.get(`${endpoints.newBlog.studentReviewss
-          }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${isvalue}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          })
-          .then(response => {
-            response.data.map((obj) => {
-              let temp = {};
-              temp['id'] = obj.id;
-              temp['name'] = obj.level.name;
-              temp['remarks'] = obj?.remarks;
-              temp['given_rating'] = obj.given_rating;
-              temp['level'] = obj?.level?.rating;
-              array.push(temp);
-            });
-            setRatingReview(response.data);
-            fetchMedia(data?.id);
-            if (isvalue) {
-              setShowDrawer(true);
-              setShowSideDrawer(false);
-            } else {
-              setShowDrawer(false);
-              setShowSideDrawer(true);
-            }
-            setLoading(false);
-          }));
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  
 
   let array = [];
   const getRatingView = (id, is_round_available) => {
@@ -232,7 +181,9 @@ const StudentSidePhysicalActivity = () => {
         }
         setSelectedActivity(response.data);
         setLoading(false);
-      });
+      }).catch((error) => {
+        setLoading(false);
+      });;
   };
 
   const fetchBMIData = () => {
@@ -255,7 +206,6 @@ const StudentSidePhysicalActivity = () => {
         }
       })
       .catch((error) => {
-        console.log('error', error);
       });
   };
   const fetchMedia = (id) => {
@@ -271,7 +221,6 @@ const StudentSidePhysicalActivity = () => {
         }
       })
       .catch((error) => {
-        console.log('error', error);
       });
   };
   let roundsArray = [];
@@ -461,7 +410,6 @@ const StudentSidePhysicalActivity = () => {
                     pageSize: limitAssigned,
                     showSizeChanger: false,
                     onChange: (e) => {
-                      console.log('Pagination', e);
                       handlePaginationAssign(e);
                     },
                   }}
@@ -663,7 +611,6 @@ const StudentSidePhysicalActivity = () => {
                                   {obj?.level?.name}
                                 </div>
                                 <div className='col-6 pr-1'>
-                                {console.log("obj 653",obj)}
                                   {!isRoundAvailable ?
                                     <Input
                                       disabled

@@ -264,7 +264,6 @@ const PhysicalPendingReview = (props) => {
       });
     }
     let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
-      console.log("mandatory", mandatory);
       if (!mandatory[0].remarks && isFormValid) {
         message.error('Overall Remarks Is Compulsory');
         isFormValid = false;
@@ -700,10 +699,6 @@ const PhysicalPendingReview = (props) => {
   // setReviewData(columnsData);
   // }
   const handleInputEvent = (event, round, value) => {
-    console.log("handleInputEvent");
-    console.log("event", event);
-    console.log("round", round);
-    console.log("value", value);
     const newReview = ratingReview.map((item) => {
       if (item.name == value?.name && item.level == round) {
         return { ...item, remarks: event.target.value };
@@ -715,10 +710,6 @@ const PhysicalPendingReview = (props) => {
   };
 
   const handleOverAll = (event, round, index) => {
-    console.log("handleOverAll");
-    console.log("event", event);
-    console.log("round", round);
-    console.log("value", value);
     setOverAllRemarks(event.target.value);
     const newReview = ratingReview.map((item) => {
       if (item.name == round.name) {
