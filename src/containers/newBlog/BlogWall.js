@@ -142,20 +142,20 @@ const BlogWall = () => {
       </Option>
     );
   });
-  const [firstLoad, setFirstLoad]= useState(false);
+  const [firstLoad, setFirstLoad] = useState(false);
   const [categoriesList, setCategoriesList] = useState([]);
 
   const fetchCategoryOptions = () => {
     setLoading(true);
     axios
-    .get(
-      `${endpoints.newBlog.getCategoryOptions}?user_id=${userId}`,
-      {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      }
-    )
+      .get(
+        `${endpoints.newBlog.getCategoryOptions}?user_id=${userId}`,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
           setCategoriesList(response?.data?.activity_types);
@@ -168,11 +168,38 @@ const BlogWall = () => {
       });
   };
 
-  useEffect(() =>{
-    if(!firstLoad){
+  useEffect(() => {
+    if (!firstLoad) {
       fetchCategoryOptions();
     }
   });
+
+  let funBranchName = (item) => {
+    //item?.branch?.name
+    //item?.type === 'post'
+    //item?.type === 'blog'
+    //selectedBranch?.branch?.id
+    try {
+      if (item?.type === 'post') {
+        if (item?.view_level === 'Intra Orchids Level') {
+          return item?.branch?.name;
+        } else {
+          return selectedBranch?.branch?.branch_name;
+        }
+      } else if (item?.type === 'blog') {
+        if (item?.publish_level === 'Intra Orchids Level') {
+          return item?.branch?.name;
+        }
+        else {
+          return selectedBranch?.branch?.branch_name;
+        }
+      } else {
+        return item?.branch?.name
+      }
+    } catch (e) {
+      return '';
+    }
+  }
 
   const categoryOptions = categoriesList?.map((each) => {
     return (
@@ -727,7 +754,7 @@ const BlogWall = () => {
                                         height='200px'
                                         objectFit={'cover'}
                                         className='th-br-5'
-                                        // poster={item?.content?.thumbnail_url}
+                                      // poster={item?.content?.thumbnail_url}
                                       />
                                     </>
                                   ) : (
@@ -768,7 +795,10 @@ const BlogWall = () => {
                               </div>
                               <div className='col-12 py-1 text-truncate'>
                                 <span className='th-16 th-fw-500 th-black-1'>
-                                  {item?.branch?.name}
+                                  {
+                                    funBranchName(item)
+
+                                  }
                                 </span>
                               </div>
                               <div className='col-12 py-1'>
@@ -1201,7 +1231,7 @@ const BlogWall = () => {
                     return (
                       <div className='image'>
                         {item.file_type === 'image/png' ||
-                        item.file_type === 'image/jpeg' ? (
+                          item.file_type === 'image/jpeg' ? (
                           <img
                             src={item?.s3_url}
                             alt={'image'}
@@ -1652,9 +1682,8 @@ const BlogWall = () => {
                         <div className='mx-1'>
                           <Button
                             onClick={() => onChangeTab(index + 1)}
-                            className={`${
-                              showTab == index + 1 ? 'th-button-active' : 'th-button'
-                            } th-br-5 mb-2 mb-sm-0`}
+                            className={`${showTab == index + 1 ? 'th-button-active' : 'th-button'
+                              } th-br-5 mb-2 mb-sm-0`}
                           >
                             {item}
                           </Button>

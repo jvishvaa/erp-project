@@ -375,80 +375,81 @@ const RatingCreate = () => {
 
   const validateActivityTypeSubmit = () => {
     let isFormValid = true;
-    
+
     if ((ActivityType?.name.toLowerCase() !== 'visual art') ||
       ActivityType?.name.toLowerCase() !== 'music' ||
       ActivityType?.name.toLowerCase() !== 'dance' ||
-      ActivityType?.name.toLowerCase() !== 'theatre'){
-        if(showPhy){
-          if (physicalActivityToggle) {
-            if (!ActivityType?.name) {
-              message.error('Please Select Activity Type');
-              isFormValid = false;
-            } else if (!subActivityType?.name) {
-              message.error('Please Select Sub-Activity Type');
-              isFormValid = false;
-            } else if (!remarksType) {
-              message.error('Please Select Criteria Title');
-              isFormValid = false;
-            }
-            visualInputlList.forEach((q, index) => {
-              const error = validateActivityTypeSubmitQuestions(q);
-              if (error && isFormValid) {
-                message.error('Please Enter Questions');
-                isFormValid = false;
-              }
-            });
-            optionList.forEach((q, index) => {
-              const error = validateActivityTypeSubmitOptions(q);
-              if (error && isFormValid) {
-                message.error('Please Enter Options & Marks');
-                isFormValid = false;
-              }
-            });
-          } else {
-            if (!ActivityType?.name) {
-              message.error('Please Select Activity Type');
-              isFormValid = false;
-            } else if (!subActivityType?.name) {
-              message.error('Please Select Sub-Activity Type');
-              isFormValid = false;
-            } else if (!remarksType) {
-              message.error('Please Enter Criteria Title');
-              isFormValid = false;
-            }
-            inputList.forEach((q, index) => {
-              const error = validateActivityTypeSubmitQuestions(q);
-              if (error && isFormValid) {
-                message.error('Please Enter Criteria Name');
-                isFormValid = false;
-              }
-            });
-            const uniqueValues = new Set(inputList.map((e) => e.name));
-            if (uniqueValues.size < inputList.length) {
-              message.error('Duplicate Name Found');
-              isFormValid = false;
-            }
+      ActivityType?.name.toLowerCase() !== 'theatre') {
+      if (showPhy) {
+        if (physicalActivityToggle) {
+          if (!ActivityType?.name) {
+            message.error('Please Select Activity Type');
+            isFormValid = false;
+          } else if (!subActivityType?.name) {
+            message.error('Please Select Sub-Activity Type');
+            isFormValid = false;
+          } else if (!remarksType) {
+            message.error('Please Select Criteria Title');
+            isFormValid = false;
           }
-        }else {
-          inputList.forEach((item, index) => {
-            if (!item?.name && isFormValid) {
-              message.error('Please Enter Criteria Name');
-              isFormValid = false;
-            } 
-            else if (!item?.rating && isFormValid) {
-              message.error('Please Enter Rating');
-              isFormValid = false;
-            } 
-            else if (!String(item?.score) && isFormValid) {
-              message.error('Please Enter Score');
+          visualInputlList.forEach((q, index) => {
+            const error = validateActivityTypeSubmitQuestions(q);
+            if (error && isFormValid) {
+              message.error('Please Enter Questions');
               isFormValid = false;
             }
           });
+          optionList.forEach((q, index) => {
+            const error = validateActivityTypeSubmitOptions(q);
+            if (error && isFormValid) {
+              message.error('Please Enter Options & Marks');
+              isFormValid = false;
+            }
+          });
+        } else {
+          if (!ActivityType?.name) {
+            message.error('Please Select Activity Type');
+            isFormValid = false;
+          } else if (!subActivityType?.name) {
+            message.error('Please Select Sub-Activity Type');
+            isFormValid = false;
+          } else if (!remarksType) {
+            message.error('Please Enter Criteria Title');
+            isFormValid = false;
+          }
+          inputList.forEach((q, index) => {
+            const error = validateActivityTypeSubmitQuestions(q);
+            if (error && isFormValid) {
+              message.error('Please Enter Criteria Name');
+              isFormValid = false;
+            }
+          });
+          const uniqueValues = new Set(inputList.map((e) => e.name));
+          if (uniqueValues.size < inputList.length) {
+            message.error('Duplicate Name Found');
+            isFormValid = false;
+          }
         }
+      } else {
+        inputList.forEach((item, index) => {
+          debugger;
+          if (!item?.name && isFormValid) {
+            message.error('Please Enter Criteria Name');
+            isFormValid = false;
+          }
+          else if (!item?.rating && isFormValid) {
+            message.error('Please Enter Rating');
+            isFormValid = false;
+          }
+          else if (item.score == null && isFormValid) {
+            message.error('Please Enter Score');
+            isFormValid = false;
+          }
+        });
       }
+    }
 
-      return isFormValid;
+    return isFormValid;
   };
 
   const validateActivityTypeSubmitQuestions = (obj) => {
@@ -768,11 +769,13 @@ const RatingCreate = () => {
   };
 
   const mainActivityOption = activityCategory?.result?.map((each) => {
-    return (
-      <Option value={each?.name} name={each?.name}>
-        {each?.name}
-      </Option>
-    );
+    if (each.name !== 'Public Speaking') {
+      return (
+        <Option value={each?.name} name={each?.name}>
+          {each?.name}
+        </Option>
+      );
+    }
   });
 
   const activityOption = activityCategoryRemarks?.map((each) => {
