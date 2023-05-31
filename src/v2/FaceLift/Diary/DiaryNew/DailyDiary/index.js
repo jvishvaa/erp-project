@@ -960,6 +960,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
     setQuestionEdit(true);
+    setLoading(true)
     let reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
@@ -990,6 +991,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         )
       );
       setHwDiaryPeriodMappingId(response.data?.data?.hw_dairy_period_mapping_ids);
+      setLoading(false)
       message.success('Homework added');
       setQuestionList([]);
       setShowHomeworkForm(true);
@@ -1004,6 +1006,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
       // history.goBack();
     } catch (error) {
+      setLoading(false)
       message.error('Failed to add homework');
     }
     // }
