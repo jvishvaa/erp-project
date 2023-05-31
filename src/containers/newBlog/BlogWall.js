@@ -114,16 +114,17 @@ const BlogWall = () => {
     'Section',
     'Blog of the Month',
   ];
-  const options = [
-    { id: 1, value: 'All' },
-    { id: 2, value: 'Blogs' },
-    { id: 3, value: 'Dance', visible: isStudent },
-    { id: 4, value: 'Music', visible: isStudent },
-    { id: 5, value: 'Posts' },
-    { id: 6, value: 'Public Speaking', visible: isStudent },
-    { id: 7, value: 'Theatre', visible: isStudent },
-    { id: 8, value: 'Visual Art', visible: isStudent },
-  ].filter((item) => item?.visible !== false);
+  // const options = [
+  //   { id: 1, value: 'All' },
+  //   { id: 2, value: 'Blogs' },
+  //   { id: 3, value: 'Dance', visible: isStudent },
+  //   { id: 4, value: 'Music', visible: isStudent },
+  //   { id: 5, value: 'Posts' },
+  //   { id: 6, value: 'Public Speaking', visible: isStudent },
+  //   { id: 7, value: 'Theatre', visible: isStudent },
+  //   { id: 8, value: 'Visual Art', visible: isStudent },
+  //   { id: 9, value: 'Physical Activity', visible: isStudent },
+  // ].filter((item) => item?.visible !== false);
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(null);
@@ -141,11 +142,65 @@ const BlogWall = () => {
       </Option>
     );
   });
+  const [firstLoad, setFirstLoad] = useState(false);
+  const [categoriesList, setCategoriesList] = useState([]);
 
-  const categoryOptions = options?.map((each) => {
+  const fetchCategoryOptions = () => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.newBlog.getCategoryOptions}?user_id=${userId}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setCategoriesList(response?.data?.activity_types);
+          setLoading(false);
+          setFirstLoad(true);
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (!firstLoad) {
+      fetchCategoryOptions();
+    }
+  });
+
+  let funBranchName = (item) => {
+    //item?.branch?.name
+    //item?.type === 'post'
+    //item?.type === 'blog'
+    //selectedBranch?.branch?.id
+    try {
+      if (item?.type === 'post') {
+        if (item?.view_level === 'Intra Orchids Level') {
+          return item?.branch?.name;
+        } else {
+          return selectedBranch?.branch?.branch_name;
+        }
+      } else if (item?.type === 'blog') {
+        if (item?.publish_level === 'Intra Orchids Level') {
+          return item?.branch?.name;
+        } else {
+          return selectedBranch?.branch?.branch_name;
+        }
+      } else {
+        return item?.branch?.name;
+      }
+    } catch (e) {
+      return '';
+    }
+  };
+
+  const categoryOptions = categoriesList?.map((each) => {
     return (
-      <Option value={each?.value} key={each?.value}>
-        {each?.value}
+      <Option value={each?.name} key={each?.name}>
+        {each?.name}
       </Option>
     );
   });
@@ -215,6 +270,7 @@ const BlogWall = () => {
           JSON.stringify(response?.data?.result)
         );
         setUserId(response?.data?.result?.user_id);
+        fetchCategoryOptions();
         setLoading(false);
         setShowTab('1');
       });
@@ -262,7 +318,6 @@ const BlogWall = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log('error', error);
         setLoading(false);
       });
   };
@@ -303,7 +358,6 @@ const BlogWall = () => {
   };
 
   const handleGradeChange = (e) => {
-    console.log('grade', e);
     if (e) {
       setSelectedGradeIds(e?.value);
     } else {
@@ -342,7 +396,6 @@ const BlogWall = () => {
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err);
       });
   };
 
@@ -407,9 +460,7 @@ const BlogWall = () => {
       .then((response) => {
         setCommentsList(response?.data);
       })
-      .catch((error) => {
-        console.log('error', error);
-      });
+      .catch((error) => {});
   };
   const fetchPostDetails = (data) => {
     //  setLoading(true);
@@ -425,9 +476,7 @@ const BlogWall = () => {
         //  setLoading(false);
         //  setOpenModal(true);
       })
-      .catch((error) => {
-        console.log('error', error);
-      });
+      .catch((error) => {});
   };
   const getWhatsAppDetails = (params = {}) => {
     axios
@@ -441,14 +490,11 @@ const BlogWall = () => {
       .then((response) => {
         setChatDetails(response?.data);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   let array = [];
   const getRatingView = ({ data, otherActvity }) => {
-    console.log('params', data, otherActvity);
     setDetailsLoading(true);
     axios
       .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
@@ -549,7 +595,6 @@ const BlogWall = () => {
     // fetchPostDetails(data);
   };
   const fetchStudentPublicSpeakingDetails = (params = {}) => {
-    console.log('params', params);
     axios
       .get(`${endpoints.newBlog.studentPSContentApi}`, {
         params: { ...params },
@@ -568,9 +613,7 @@ const BlogWall = () => {
           });
         }
       })
-      .catch((error) => {
-        console.log('error', error);
-      });
+      .catch((error) => {});
   };
   const PostContent = () => {
     return (
@@ -696,6 +739,9 @@ const BlogWall = () => {
                                 <div style={{ height: '200px' }}>
                                   {item?.content?.file_type === 'video/mp4' ? (
                                     <>
+                                      <div className='videoOverlay'>
+                                        <img src={playIcon} />
+                                      </div>
                                       <video
                                         preload='auto'
                                         src={item?.content?.s3_url}
@@ -744,7 +790,7 @@ const BlogWall = () => {
                               </div>
                               <div className='col-12 py-1 text-truncate'>
                                 <span className='th-16 th-fw-500 th-black-1'>
-                                  {item?.branch?.name}
+                                  {funBranchName(item)}
                                 </span>
                               </div>
                               <div className='col-12 py-1'>
@@ -945,20 +991,29 @@ const BlogWall = () => {
                                         }}
                                       />
                                     </>
+                                  ) : item?.content?.file_type === 'video/mp4' ? (
+                                    <>
+                                      <div className='videoOverlay'>
+                                        <img src={playIcon} />
+                                      </div>
+                                      <video
+                                        preload='auto'
+                                        src={item?.content?.s3_path}
+                                        width='100%'
+                                        height='200px'
+                                        objectFit={'cover'}
+                                        className='th-br-5'
+                                        // poster={item?.content?.thumbnail_url}
+                                      />
+                                    </>
                                   ) : (
                                     <img
-                                      src={
-                                        item?.content?.s3_path
-                                          ? item?.content?.s3_path
-                                          : getActivityIcon(item?.type)
-                                      }
-                                      alt='content_image'
-                                      className='th-br-5 th-pointer'
-                                      style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'fill',
-                                      }}
+                                      src={item?.content?.s3_path}
+                                      width='100%'
+                                      height='200px'
+                                      objectFit={'cover'}
+                                      alt='content_image2'
+                                      className='th-br-5'
                                       loading='lazy'
                                     />
                                   )}
