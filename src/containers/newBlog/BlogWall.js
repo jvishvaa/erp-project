@@ -23,6 +23,7 @@ import {
   Input,
   Space,
   message,
+  Pagination,
 } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import commentIcon from 'v2/Assets/dashboardIcons/blogIcons/commentIcon.svg';
@@ -49,6 +50,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import ReactPlayer from 'react-player';
 import { getActivityIcon } from 'v2/generalActivityFunction';
+import { CategoryFilter } from 'containers/discussionForum/discussion/CategoryFilter';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -99,7 +101,7 @@ const BlogWall = () => {
   const [imageData, setImageData] = useState('');
   const [ratingReview, setRatingReview] = useState([]);
   const [postWallList, setPostWallList] = useState([]);
-  const [categoriesFilter, setCategoriesFilter] = useState('All');
+  const [categoriesFilter, setCategoriesFilter] = useState(null);
   const [openAttachment, setOpenAttachment] = useState(false);
   const [attachmentDetails, setAttachmentDetails] = useState([]);
   const [studentPubliSpeakingData, setStudentPubliSpeakingData] = useState(null);
@@ -107,7 +109,7 @@ const BlogWall = () => {
   const [reloadData, setReloadData] = useState([]);
   const [publicSpeakingrating, setPublicSpeakingrating] = useState([]);
   const levels = [
-    'All',
+    // 'All',
     'Intra Orchids',
     'Branch',
     'Grade',
@@ -135,6 +137,9 @@ const BlogWall = () => {
   const [selectedPostData, setSelectedPostData] = useState();
   const [currentComment, setCurrentComment] = useState(null);
   const [commentsList, setCommentsList] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [listCount, setListCount] = useState('');
+
   const branchOptions = branchList?.map((each) => {
     return (
       <Option value={each?.id} key={each?.id}>
@@ -156,20 +161,23 @@ const BlogWall = () => {
       .then((response) => {
         if (response.status === 200) {
           setCategoriesList(response?.data?.activity_types);
-          setLoading(false);
+          setCategoriesFilter(response?.data?.activity_types[0]?.name);
           setFirstLoad(true);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        message.error(err.message);
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
 
   useEffect(() => {
-    if (!firstLoad) {
-      fetchCategoryOptions();
-    }
-  });
+    // if (!firstLoad) {
+    fetchCategoryOptions();
+    // }
+  }, []);
 
   let funBranchName = (item) => {
     //item?.branch?.name
@@ -270,7 +278,7 @@ const BlogWall = () => {
           JSON.stringify(response?.data?.result)
         );
         setUserId(response?.data?.result?.user_id);
-        fetchCategoryOptions();
+        // fetchCategoryOptions();
         setLoading(false);
         setShowTab('1');
       });
@@ -379,6 +387,8 @@ const BlogWall = () => {
       .get(`${endpoints.newBlog.getSchoolWallApi}`, {
         params: {
           ...params,
+          ...(pageNumber ? { page: pageNumber } : {}),
+          // ...(pageNumber ? { page_size: 2 } : {}),
           ...(startDate ? { start_date: startDate } : {}),
           ...(endDate ? { end_date: endDate } : {}),
           ...(selectedBlogListId ? { activity_detail_id: selectedBlogListId } : {}),
@@ -393,6 +403,7 @@ const BlogWall = () => {
       .then((response) => {
         setPostWallList(response?.data?.result);
         setLoading(false);
+        setListCount(response?.data?.total);
       })
       .catch((err) => {
         setLoading(false);
@@ -404,45 +415,41 @@ const BlogWall = () => {
   }, [branchIds, selectedGradeId]);
 
   useEffect(() => {
-    if (userId) handleSearch();
-  }, [showTab, categoriesFilter, userId]);
-
+    if (userId && categoriesFilter) {
+      handleSearch();
+    }
+  }, [showTab, categoriesFilter, userId, pageNumber]);
   const handleSearch = () => {
     if (showTab == 1) {
-      fetchPostWall({
-        user_id: userId,
-        session_year: selectedAcademicYear?.session_year,
-      });
-    } else if (showTab == 2) {
       fetchPostWall({
         publish_level: 'Intra Orchids Level',
         user_id: userId,
         session_year: selectedAcademicYear?.session_year,
       });
-    } else if (showTab == 3) {
+    } else if (showTab == 2) {
       fetchPostWall({
         publish_level: 'Branch Level',
         user_id: userId,
         branch_ids: selectedBranch?.branch?.id,
         session_year: selectedAcademicYear?.session_year,
       });
-    } else if (showTab == 4) {
+    } else if (showTab == 3) {
       fetchPostWall({
         publish_level: 'Grade Level',
         branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
         session_year: selectedAcademicYear?.session_year,
       });
-    } else if (showTab == 5) {
+    } else if (showTab == 4) {
       fetchPostWall({
-        is_best_blog: 'true',
+        publish_level: 'Section Level',
         user_id: userId,
         branch_ids: selectedBranch?.branch?.id,
         session_year: selectedAcademicYear?.session_year,
       });
-    } else if (showTab == 6) {
+    } else if (showTab == 5) {
       fetchPostWall({
-        publish_level: 'Section Level',
+        is_best_blog: 'true',
         branch_ids: selectedBranch?.branch?.id,
         user_id: userId,
         session_year: selectedAcademicYear?.session_year,
@@ -697,366 +704,392 @@ const BlogWall = () => {
                   <Spin size='large' tip='Loading...' />{' '}
                 </div>
               ) : postWallList?.length > 0 ? (
-                <div className='row'>
-                  {postWallList?.map((item, index) =>
-                    item?.type === 'post' ? (
-                      <div
-                        className='col-12 col-sm-6 col-lg-4 my-2'
-                        style={{ height: 360 }}
-                      >
-                        <Badge.Ribbon
-                          text={<span className='th-white'>{item?.type}</span>}
-                          className='text-capitalize th-white'
+                <>
+                  <div className='row'>
+                    {postWallList?.map((item, index) =>
+                      item?.type === 'post' ? (
+                        <div
+                          className='col-12 col-sm-6 col-lg-4 my-2'
+                          style={{ height: 360 }}
                         >
-                          <div
-                            className='shadow-sm th-bg-white th-br-8 py-2 th-pointer wall_card'
-                            style={{ outline: '1px solid #d9d9d9' }}
-                            onClick={() => handleShowPostDetailsModal(item)}
+                          <Badge.Ribbon
+                            text={<span className='th-white'>{item?.type}</span>}
+                            className='text-capitalize th-white'
                           >
-                            <div className='row justify-content-between'>
-                              <div className='col-12'>
-                                <div className='d-flex align-items-center'>
-                                  <Avatar size={40} icon={<UserOutlined />} />
-                                  <div className='d-flex flex-column ml-2 th-width-80'>
-                                    <div
-                                      className='text-truncate th-black-1 th-fw-500 th-width-75'
-                                      title={item?.name}
-                                    >
-                                      {item?.name}
-                                    </div>
-                                    <div>
-                                      <span className='px-2 th-br-8 th-bg-grey'>
-                                        <span className='th-12 th-fw-500 th-primary'>
-                                          {item?.user_role}
+                            <div
+                              className='shadow-sm th-bg-white th-br-8 py-2 th-pointer wall_card'
+                              style={{ outline: '1px solid #d9d9d9' }}
+                              onClick={() => handleShowPostDetailsModal(item)}
+                            >
+                              <div className='row justify-content-between'>
+                                <div className='col-12'>
+                                  <div className='d-flex align-items-center'>
+                                    <Avatar size={40} icon={<UserOutlined />} />
+                                    <div className='d-flex flex-column ml-2 th-width-80'>
+                                      <div
+                                        className='text-truncate th-black-1 th-fw-500 th-width-75'
+                                        title={item?.name}
+                                      >
+                                        {item?.name}
+                                      </div>
+                                      <div>
+                                        <span className='px-2 th-br-8 th-bg-grey'>
+                                          <span className='th-12 th-fw-500 th-primary'>
+                                            {item?.user_role}
+                                          </span>
                                         </span>
-                                      </span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              <div className='col-12 py-2'>
-                                <div style={{ height: '200px' }}>
-                                  {item?.content?.file_type === 'video/mp4' ? (
-                                    <>
-                                      <div className='videoOverlay'>
-                                        <img src={playIcon} />
-                                      </div>
-                                      <video
-                                        preload='auto'
+                                <div className='col-12 py-2'>
+                                  <div style={{ height: '200px' }}>
+                                    {item?.content?.file_type === 'video/mp4' ? (
+                                      <>
+                                        <div className='videoOverlay'>
+                                          <img src={playIcon} />
+                                        </div>
+                                        <video
+                                          preload='auto'
+                                          src={item?.content?.s3_url}
+                                          width='100%'
+                                          height='200px'
+                                          objectFit={'cover'}
+                                          className='th-br-5'
+                                          // poster={item?.content?.thumbnail_url}
+                                        />
+                                      </>
+                                    ) : (
+                                      <img
                                         src={item?.content?.s3_url}
                                         width='100%'
                                         height='200px'
                                         objectFit={'cover'}
+                                        alt='content_image'
                                         className='th-br-5'
-                                        // poster={item?.content?.thumbnail_url}
+                                        loading='lazy'
                                       />
-                                    </>
-                                  ) : (
-                                    <img
-                                      src={item?.content?.s3_url}
-                                      width='100%'
-                                      height='200px'
-                                      objectFit={'cover'}
-                                      alt='content_image'
-                                      className='th-br-5'
-                                      loading='lazy'
-                                    />
-                                  )}
-                                </div>
-                                <div
-                                  className=''
-                                  style={{ position: 'absolute', top: '5%', right: '5%' }}
-                                >
-                                  <span className='th-bg-primary th-white th-br-4 px-1 py-1 th-12'>
-                                    {item?.view_level}
-                                  </span>
-                                </div>
-                                {item?.content_count > 1 && (
+                                    )}
+                                  </div>
                                   <div
                                     className=''
                                     style={{
                                       position: 'absolute',
-                                      bottom: '10%',
+                                      top: '5%',
                                       right: '5%',
                                     }}
                                   >
-                                    <span className='th-bg-grey th-primary th-br-2 px-1 py-1 th-12'>
-                                      <FileDoneOutlined />
-                                      {item?.content_count - 1} more
+                                    <span className='th-bg-primary th-white th-br-4 px-1 py-1 th-12'>
+                                      {item?.view_level}
                                     </span>
                                   </div>
-                                )}
-                              </div>
-                              <div className='col-12 py-1 text-truncate'>
-                                <span className='th-16 th-fw-500 th-black-1'>
-                                  {funBranchName(item)}
-                                </span>
-                              </div>
-                              <div className='col-12 py-1'>
-                                <div
-                                  className='d-flex justify-content-between pt-3 align-items-center'
-                                  style={{ borderTop: '1px solid #d9d9d9' }}
-                                >
-                                  <div className='th-fw-500 th-14 th-grey'>
-                                    {moment(item?.created_at).format('MMM Do,YYYY')}
-                                  </div>
-                                  <div className=''>
-                                    <span
-                                      className='px-3 py-2 th-br-20 mr-2'
-                                      style={{ border: '1px solid #d9d9d9' }}
-                                    >
-                                      <span className='mr-2 th-14 th-fw-700 th-grey'>
-                                        {item?.comment_count}
-                                      </span>
-                                      <span>
-                                        <img src={commentIcon} height={20} />
-                                      </span>
-                                    </span>
-                                    <span
-                                      className='px-3 py-2 th-br-20'
-                                      style={{ border: '1px solid #d9d9d9' }}
-                                    >
-                                      <span className='mr-2 th-14 th-fw-700 th-grey'>
-                                        {item?.like_count}
-                                      </span>
-                                      <span>
-                                        <img src={clapIcon} height={20} />
-                                      </span>
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </Badge.Ribbon>
-                      </div>
-                    ) : item?.type === 'blog' ? (
-                      <div
-                        className='col-12 col-sm-6 col-lg-4 my-2'
-                        style={{ height: 360 }}
-                      >
-                        <Badge.Ribbon
-                          text={<span className='th-white'>{item?.type}</span>}
-                          color='#7E55D4'
-                          className='text-capitalize th-white'
-                        >
-                          <div
-                            className='shadow-sm th-bg-white th-br-8 py-2 th-pointer wall_card'
-                            style={{ outline: '1px solid #d9d9d9' }}
-                            onClick={() => handleShowBlogDetailsDrawer(item)}
-                          >
-                            <div className='row justify-content-between'>
-                              <div className='col-12'>
-                                <div className='d-flex align-items-center'>
-                                  <Avatar size={40} icon={<UserOutlined />} />
-                                  <div className='d-flex flex-column ml-2 th-width-80'>
+                                  {item?.content_count > 1 && (
                                     <div
-                                      className='text-truncate th-black-1 th-fw-500 th-width-75'
-                                      title={item?.name}
+                                      className=''
+                                      style={{
+                                        position: 'absolute',
+                                        bottom: '10%',
+                                        right: '5%',
+                                      }}
                                     >
-                                      {item?.name}
-                                    </div>
-                                    <div>
-                                      <span className='px-2 th-br-8 th-bg-grey'>
-                                        <span className='th-12 th-fw-500 th-primary'>
-                                          {item?.user_role}
-                                        </span>
+                                      <span className='th-bg-grey th-primary th-br-2 px-1 py-1 th-12'>
+                                        <FileDoneOutlined />
+                                        {item?.content_count - 1} more
                                       </span>
                                     </div>
-                                  </div>
+                                  )}
                                 </div>
-                              </div>
-
-                              <div className='col-12 py-2'>
-                                <div style={{ height: '200px', position: 'relative' }}>
-                                  <img
-                                    src={item?.template?.template_path}
-                                    alt='content_image'
-                                    className='th-br-5 th-pointer'
-                                    style={{
-                                      width: '100%',
-                                      height: '100%',
-                                      objectFit: 'fill',
-                                    }}
-                                    loading='lazy'
-                                  />
-                                </div>
-                                <div
-                                  className=''
-                                  style={{ position: 'absolute', top: '5%', right: '5%' }}
-                                >
-                                  <span className='th-bg-primary th-white th-br-4 px-1 py-1 th-12'>
-                                    {item?.publish_level}
+                                <div className='col-12 py-1 text-truncate'>
+                                  <span className='th-16 th-fw-500 th-black-1'>
+                                    {funBranchName(item)}
                                   </span>
                                 </div>
-                                <div
-                                  className=''
-                                  style={{
-                                    width: '80%',
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: `translate(-50%, -50%)`,
-                                  }}
-                                >
+                                <div className='col-12 py-1'>
                                   <div
-                                    className='text-center th-white th-br-4 px-1 py-1 th-truncate-4'
-                                    style={{ background: `rgba(0,0,0,0.45)` }}
+                                    className='d-flex justify-content-between pt-3 align-items-center'
+                                    style={{ borderTop: '1px solid #d9d9d9' }}
                                   >
-                                    <span className='p-2 th-12'>{item?.content}</span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className='col-12 py-1 text-truncate'>
-                                <span className='th-16 th-fw-500 th-black-1'>
-                                  {item?.branch?.name}
-                                </span>
-                              </div>
-                              <div className='col-12 py-1'>
-                                <div
-                                  className='d-flex justify-content-between pt-3 align-items-center'
-                                  style={{ borderTop: '1px solid #d9d9d9' }}
-                                >
-                                  <div className='th-fw-500 th-14 th-grey'>
-                                    {moment(item?.activity_detail?.created_at).format(
-                                      'MMM Do,YYYY'
-                                    )}
-                                  </div>
-                                  <div className=''>
-                                    <Rate disabled defaultValue={2} />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </Badge.Ribbon>
-                      </div>
-                    ) : (
-                      <div
-                        className='col-12 col-sm-6 col-lg-4 my-2'
-                        style={{ height: 360 }}
-                      >
-                        <Badge.Ribbon
-                          text={<span className='th-white'>{item?.type}</span>}
-                          color={item?.type == 'Public Speaking' ? '#29894A' : '#7E55D4'}
-                          className='text-capitalize'
-                        >
-                          <div
-                            className='shadow-sm th-bg-white th-br-8 py-2 th-pointer wall_card'
-                            style={{ outline: '1px solid #d9d9d9' }}
-                            onClick={() => handleShowOtherActivityModal(item)}
-                          >
-                            <div className='row justify-content-between'>
-                              <div className='col-12'>
-                                <div className='d-flex align-items-center'>
-                                  <Avatar size={40} icon={<UserOutlined />} />
-                                  <div className='d-flex flex-column ml-2 th-width-80'>
-                                    <div
-                                      className='text-truncate th-black-1 th-fw-500 th-width-75'
-                                      title={item?.name}
-                                    >
-                                      {item?.type == 'Public Speaking'
-                                        ? ` ${data?.first_name} ${data?.last_name}`
-                                        : item?.name}
+                                    <div className='th-fw-500 th-14 th-grey'>
+                                      {moment(item?.created_at).format('MMM Do,YYYY')}
                                     </div>
-                                    <div>
-                                      <span className='px-2 th-br-8 th-bg-grey'>
-                                        <span className='th-12 th-fw-500 th-primary'>
-                                          {item?.type == 'Public Speaking'
-                                            ? item?.grade
-                                            : item?.section?.name}
+                                    <div className=''>
+                                      <span
+                                        className='px-3 py-2 th-br-20 mr-2'
+                                        style={{ border: '1px solid #d9d9d9' }}
+                                      >
+                                        <span className='mr-2 th-14 th-fw-700 th-grey'>
+                                          {item?.comment_count}
+                                        </span>
+                                        <span>
+                                          <img src={commentIcon} height={20} />
+                                        </span>
+                                      </span>
+                                      <span
+                                        className='px-3 py-2 th-br-20'
+                                        style={{ border: '1px solid #d9d9d9' }}
+                                      >
+                                        <span className='mr-2 th-14 th-fw-700 th-grey'>
+                                          {item?.like_count}
+                                        </span>
+                                        <span>
+                                          <img src={clapIcon} height={20} />
                                         </span>
                                       </span>
                                     </div>
                                   </div>
                                 </div>
                               </div>
+                            </div>
+                          </Badge.Ribbon>
+                        </div>
+                      ) : item?.type === 'blog' ? (
+                        <div
+                          className='col-12 col-sm-6 col-lg-4 my-2'
+                          style={{ height: 360 }}
+                        >
+                          <Badge.Ribbon
+                            text={<span className='th-white'>{item?.type}</span>}
+                            color='#7E55D4'
+                            className='text-capitalize th-white'
+                          >
+                            <div
+                              className='shadow-sm th-bg-white th-br-8 py-2 th-pointer wall_card'
+                              style={{ outline: '1px solid #d9d9d9' }}
+                              onClick={() => handleShowBlogDetailsDrawer(item)}
+                            >
+                              <div className='row justify-content-between'>
+                                <div className='col-12'>
+                                  <div className='d-flex align-items-center'>
+                                    <Avatar size={40} icon={<UserOutlined />} />
+                                    <div className='d-flex flex-column ml-2 th-width-80'>
+                                      <div
+                                        className='text-truncate th-black-1 th-fw-500 th-width-75'
+                                        title={item?.name}
+                                      >
+                                        {item?.name}
+                                      </div>
+                                      <div>
+                                        <span className='px-2 th-br-8 th-bg-grey'>
+                                          <span className='th-12 th-fw-500 th-primary'>
+                                            {item?.user_role}
+                                          </span>
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
 
-                              <div className='col-12 py-2'>
-                                <div style={{ height: '200px', position: 'relative' }}>
-                                  {item?.type == 'Public Speaking' ? (
-                                    <>
-                                      <div className='videoOverlay'>
-                                        <img src={playIcon} />
+                                <div className='col-12 py-2'>
+                                  <div style={{ height: '200px', position: 'relative' }}>
+                                    <img
+                                      src={item?.template?.template_path}
+                                      alt='content_image'
+                                      className='th-br-5 th-pointer'
+                                      style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'fill',
+                                      }}
+                                      loading='lazy'
+                                    />
+                                  </div>
+                                  <div
+                                    className=''
+                                    style={{
+                                      position: 'absolute',
+                                      top: '5%',
+                                      right: '5%',
+                                    }}
+                                  >
+                                    <span className='th-bg-primary th-white th-br-4 px-1 py-1 th-12'>
+                                      {item?.publish_level}
+                                    </span>
+                                  </div>
+                                  <div
+                                    className=''
+                                    style={{
+                                      width: '80%',
+                                      position: 'absolute',
+                                      top: '50%',
+                                      left: '50%',
+                                      transform: `translate(-50%, -50%)`,
+                                    }}
+                                  >
+                                    <div
+                                      className='text-center th-white th-br-4 px-1 py-1 th-truncate-4'
+                                      style={{ background: `rgba(0,0,0,0.45)` }}
+                                    >
+                                      <span className='p-2 th-12'>{item?.content}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-12 py-1 text-truncate'>
+                                  <span className='th-16 th-fw-500 th-black-1'>
+                                    {item?.branch?.name}
+                                  </span>
+                                </div>
+                                <div className='col-12 py-1'>
+                                  <div
+                                    className='d-flex justify-content-between pt-3 align-items-center'
+                                    style={{ borderTop: '1px solid #d9d9d9' }}
+                                  >
+                                    <div className='th-fw-500 th-14 th-grey'>
+                                      {moment(item?.activity_detail?.created_at).format(
+                                        'MMM Do,YYYY'
+                                      )}
+                                    </div>
+                                    <div className=''>
+                                      <Rate disabled defaultValue={2} />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </Badge.Ribbon>
+                        </div>
+                      ) : (
+                        <div
+                          className='col-12 col-sm-6 col-lg-4 my-2'
+                          style={{ height: 360 }}
+                        >
+                          <Badge.Ribbon
+                            text={<span className='th-white'>{item?.type}</span>}
+                            color={
+                              item?.type == 'Public Speaking' ? '#29894A' : '#7E55D4'
+                            }
+                            className='text-capitalize'
+                          >
+                            <div
+                              className='shadow-sm th-bg-white th-br-8 py-2 th-pointer wall_card'
+                              style={{ outline: '1px solid #d9d9d9' }}
+                              onClick={() => handleShowOtherActivityModal(item)}
+                            >
+                              <div className='row justify-content-between'>
+                                <div className='col-12'>
+                                  <div className='d-flex align-items-center'>
+                                    <Avatar size={40} icon={<UserOutlined />} />
+                                    <div className='d-flex flex-column ml-2 th-width-80'>
+                                      <div
+                                        className='text-truncate th-black-1 th-fw-500 th-width-75'
+                                        title={item?.name}
+                                      >
+                                        {item?.type == 'Public Speaking'
+                                          ? ` ${data?.first_name} ${data?.last_name}`
+                                          : item?.name}
                                       </div>
-                                      <video
-                                        preload='auto'
-                                        src={item?.asset?.signed_URL}
-                                        className='th-br-5'
-                                        style={{
-                                          height: '200px',
-                                          width: '100%',
-                                          objectFit: 'fill',
-                                        }}
-                                      />
-                                    </>
-                                  ) : item?.content?.file_type === 'video/mp4' ? (
-                                    <>
-                                      <div className='videoOverlay'>
-                                        <img src={playIcon} />
+                                      <div>
+                                        <span className='px-2 th-br-8 th-bg-grey'>
+                                          <span className='th-12 th-fw-500 th-primary'>
+                                            {item?.type == 'Public Speaking'
+                                              ? item?.grade
+                                              : item?.section?.name}
+                                          </span>
+                                        </span>
                                       </div>
-                                      <video
-                                        preload='auto'
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className='col-12 py-2'>
+                                  <div style={{ height: '200px', position: 'relative' }}>
+                                    {item?.type == 'Public Speaking' ? (
+                                      <>
+                                        <div className='videoOverlay'>
+                                          <img src={playIcon} />
+                                        </div>
+                                        <video
+                                          preload='auto'
+                                          src={item?.asset?.signed_URL}
+                                          className='th-br-5'
+                                          style={{
+                                            height: '200px',
+                                            width: '100%',
+                                            objectFit: 'fill',
+                                          }}
+                                        />
+                                      </>
+                                    ) : item?.content?.file_type === 'video/mp4' ? (
+                                      <>
+                                        <div className='videoOverlay'>
+                                          <img src={playIcon} />
+                                        </div>
+                                        <video
+                                          preload='auto'
+                                          src={item?.content?.s3_path}
+                                          width='100%'
+                                          height='200px'
+                                          objectFit={'cover'}
+                                          className='th-br-5'
+                                          // poster={item?.content?.thumbnail_url}
+                                        />
+                                      </>
+                                    ) : (
+                                      <img
                                         src={item?.content?.s3_path}
                                         width='100%'
                                         height='200px'
                                         objectFit={'cover'}
+                                        alt='content_image2'
                                         className='th-br-5'
-                                        // poster={item?.content?.thumbnail_url}
+                                        loading='lazy'
                                       />
-                                    </>
-                                  ) : (
-                                    <img
-                                      src={item?.content?.s3_path}
-                                      width='100%'
-                                      height='200px'
-                                      objectFit={'cover'}
-                                      alt='content_image2'
-                                      className='th-br-5'
-                                      loading='lazy'
-                                    />
-                                  )}
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                              <div
-                                className='col-12 py-1 text-truncate'
-                                title={
-                                  item?.type == 'Public Speaking'
-                                    ? item?.group?.activity?.name
-                                    : item?.activity_detail?.title
-                                }
-                              >
-                                <span className='th-16 th-fw-500 th-black-1 '>
-                                  {item?.type == 'Public Speaking'
-                                    ? item?.group?.activity?.name
-                                    : item?.activity_detail?.title}
-                                </span>
-                              </div>
-                              <div className='col-12 py-1'>
                                 <div
-                                  className='d-flex justify-content-between pt-3 align-items-center'
-                                  style={{ borderTop: '1px solid #d9d9d9' }}
+                                  className='col-12 py-1 text-truncate'
+                                  title={
+                                    item?.type == 'Public Speaking'
+                                      ? item?.group?.activity?.name
+                                      : item?.activity_detail?.title
+                                  }
                                 >
-                                  <div className='th-fw-500 th-14 th-grey'>
-                                    {moment(
-                                      item?.type == 'Public Speaking'
-                                        ? item?.scheduled_time
-                                        : item?.activity_detail?.created_at
-                                    ).format('MMM Do,YYYY')}
+                                  <span className='th-16 th-fw-500 th-black-1 '>
+                                    {item?.type == 'Public Speaking'
+                                      ? item?.group?.activity?.name
+                                      : item?.activity_detail?.title}
+                                  </span>
+                                </div>
+                                <div className='col-12 py-1'>
+                                  <div
+                                    className='d-flex justify-content-between pt-3 align-items-center'
+                                    style={{ borderTop: '1px solid #d9d9d9' }}
+                                  >
+                                    <div className='th-fw-500 th-14 th-grey'>
+                                      {moment(
+                                        item?.type == 'Public Speaking'
+                                          ? item?.scheduled_time
+                                          : item?.activity_detail?.created_at
+                                      ).format('MMM Do,YYYY')}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </Badge.Ribbon>
-                      </div>
-                    )
-                  )}
-                </div>
+                          </Badge.Ribbon>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </>
               ) : (
                 <div className='d-flex justify-content-center mt-5'>
                   <img src={NoDataIcon} />
+                </div>
+              )}
+              {!loading && (
+                <div className='row justify-content-center mt-3 mb-2'>
+                  <Pagination
+                    current={pageNumber}
+                    // hideOnSinglePage={true}
+                    pageSize={15}
+                    showSizeChanger={false}
+                    onChange={(page) => {
+                      setPageNumber(page);
+                    }}
+                    total={listCount}
+                  />
                 </div>
               )}
             </div>
@@ -1696,10 +1729,10 @@ const BlogWall = () => {
                 </div>
                 <div className='d-flex my-2 my-md-2'>
                   <div className='d-flex align-items-center justify-content-between'>
-                    <div className=' th-black-2 th-fw-500 mr-2'>Categories</div>
+                    <div className=' th-black-2 th-fw-500 mr-2'>Select Category</div>
                     <div>
                       <Select
-                        defaultValue='All'
+                        value={categoriesFilter}
                         getPopupContainer={(trigger) => trigger.parentNode}
                         dropdownMatchSelectWidth={false}
                         onChange={handleChange}
