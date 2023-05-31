@@ -41,16 +41,13 @@ import {
   PlayCircleOutlined,
   FileDoneOutlined,
   UserOutlined,
-  CommentOutlined,
   RedoOutlined,
-  FileImageOutlined,
 } from '@ant-design/icons';
 import BlogWallImage from '../../assets/images/ssss.jpg';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import ReactPlayer from 'react-player';
 import { getActivityIcon } from 'v2/generalActivityFunction';
-import { CategoryFilter } from 'containers/discussionForum/discussion/CategoryFilter';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -90,9 +87,7 @@ const BlogWall = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [branchIds, setBranchIds] = useState('');
-  const [userId, setUserId] = useState(
-    JSON.parse(localStorage.getItem('ActivityManagementSession'))?.user_id
-  );
+  const [userId, setUserId] = useState();
 
   const [branchList, setBranchList] = useState([]);
   const [selectedGradeId, setSelectedGradeIds] = useState('');
@@ -150,10 +145,10 @@ const BlogWall = () => {
   const [firstLoad, setFirstLoad] = useState(false);
   const [categoriesList, setCategoriesList] = useState([]);
 
-  const fetchCategoryOptions = () => {
+  const fetchCategoryOptions = (id) => {
     setLoading(true);
     axios
-      .get(`${endpoints.newBlog.getCategoryOptions}?user_id=${userId}`, {
+      .get(`${endpoints.newBlog.getCategoryOptions}?user_id=${id}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
@@ -174,9 +169,7 @@ const BlogWall = () => {
   };
 
   useEffect(() => {
-    // if (!firstLoad) {
-    fetchCategoryOptions();
-    // }
+    getActivitySession();
   }, []);
 
   let funBranchName = (item) => {
@@ -278,40 +271,40 @@ const BlogWall = () => {
           JSON.stringify(response?.data?.result)
         );
         setUserId(response?.data?.result?.user_id);
-        // fetchCategoryOptions();
-        setLoading(false);
+        fetchCategoryOptions(response?.data?.result?.user_id);
+        // setLoading(false);
         setShowTab('1');
       });
   };
 
-  useEffect(() => {
-    if (localStorage.getItem('ActivityManagementSession') == null) ActvityLocalStorage();
-  }, [window.location.pathname]);
-  const ActvityLocalStorage = () => {
-    setLoading(true);
-    axios
-      .post(
-        `${endpoints.newBlog.activityWebLogin}`,
-        {},
-        {
-          headers: {
-            Authorization: `${token}`,
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
-      .then((response) => {
-        localStorage.setItem(
-          'ActivityManagement',
-          JSON.stringify(response?.data?.result)
-        );
-        getActivitySession();
-        setLoading(false);
-      });
-  };
+  // useEffect(() => {
+  //   if (localStorage.getItem('ActivityManagementSession') == null) ActvityLocalStorage();
+  // }, [window.location.pathname]);
+  // const ActvityLocalStorage = () => {
+  //   setLoading(true);
+  //   axios
+  //     .post(
+  //       `${endpoints.newBlog.activityWebLogin}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `${token}`,
+  //           'X-DTS-HOST': X_DTS_HOST,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       localStorage.setItem(
+  //         'ActivityManagement',
+  //         JSON.stringify(response?.data?.result)
+  //       );
+  //       getActivitySession();
+  //       setLoading(false);
+  //     });
+  // };
 
   const fetchGradeData = () => {
-    setLoading(true);
+    // setLoading(true);
     axios
       .get(
         `${endpoints.newBlog.activityGrade}?branch_ids=${selectedBranch?.branch?.id}`,
@@ -323,7 +316,7 @@ const BlogWall = () => {
       )
       .then((response) => {
         setGradeList(response?.data?.result);
-        setLoading(false);
+        // setLoading(false);
       })
       .catch((error) => {
         setLoading(false);
@@ -357,11 +350,11 @@ const BlogWall = () => {
       .then((response) => {
         if (response.status === 200) {
           setBlogList(response?.data?.result);
-          setLoading(false);
+          // setLoading(false);
         }
       })
       .catch(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   };
 
@@ -402,8 +395,8 @@ const BlogWall = () => {
       })
       .then((response) => {
         setPostWallList(response?.data?.result);
-        setLoading(false);
         setListCount(response?.data?.total);
+        setLoading(false);
       })
       .catch((err) => {
         setLoading(false);
@@ -530,6 +523,7 @@ const BlogWall = () => {
   const onChangeTab = (key) => {
     setPostWallList([]);
     setShowTab(key.toString());
+    setPageNumber(1);
   };
 
   const handleDateChange = (value) => {
@@ -568,6 +562,7 @@ const BlogWall = () => {
 
   const handleChange = (value) => {
     setCategoriesFilter(value);
+    setPageNumber(1);
   };
 
   const viewMoreAttachment = (item) => {
