@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import endpoints from '../../config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import Rating from '@material-ui/lab/Rating';
+import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 
 import {
   Button as ButtonAnt,
@@ -15,6 +16,10 @@ import {
   message,
   Modal,
   Spin,
+  Upload,
+  Button,
+  Drawer,
+  Space,
 } from 'antd';
 import {
   MonitorOutlined,
@@ -22,6 +27,10 @@ import {
   UserOutlined,
   ArrowRightOutlined,
   CaretRightOutlined,
+  DownOutlined,
+  CheckOutlined,
+  UploadOutlined,
+  CloseOutlined,
 } from '@ant-design/icons';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
@@ -106,21 +115,38 @@ const PhysicalPendingReview = (props) => {
   const [isClicked, setIsClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [view, setView] = useState(false);
-  const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession'));
+  const [viewLevelDrawer, setviewLevelDrawer] = useState(false);
+  const { user_id } = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
   const [sourceData, setSourceData] = useState([]);
   const [targetData, setTargetData] = useState([]);
   const [reviewData, setReviewData] = useState([]);
   const [tableHeader, setTableHeader] = useState([]);
   const [overallData, setOverAllData] = useState([]);
   const [ratingReview, setRatingReview] = useState([]);
+  const [ratingLevelReview, setRatinglevelReview] = useState([]);
   const [customRatingReview, setCustomRatingReview] = useState([]);
   const [overallRemarks, setOverAllRemarks] = useState('');
   const [data, setData] = useState();
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [dataId, setDataId] = useState();
+  const [isRoundAvailable, setIsRoundAvailable] = useState(false);
+  const [file, setFile] = useState(null);
+  const allowedFiles = ['.jpeg', '.jpg', '.png', '.mp4'];
+  const fileRef = useRef();
+  const [bookingID, setBookingID] = useState(null);
+
+  const [firstLoad, setFirstLoad] = useState(false);
 
   const handleCloseViewMore = () => {
     setView(false);
+    setRatingReview([]);
+    setFile(null);
+  };
+
+  const handleCloseViewLevelMore = () => {
+    setviewLevelDrawer(false);
+    setRatinglevelReview([]);
+    setFile(null);
   };
 
   const [values, setValues] = useState();
@@ -129,41 +155,157 @@ const PhysicalPendingReview = (props) => {
   const createPublish = () => {
     setPublish(true);
   };
-  const [submit, setSubmit] = useState(false);
-  const submitReview = () => {
-    setLoading(true);
-    setView(false);
-    let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
-    if (!mandatory[0].remarks) {
-      message.error('Overall Remarks Is Compulsory');
-      setLoading(false)
+
+  const uploadProps = {
+    showUploadList: false,
+    disabled: false,
+    accept: allowedFiles.join(),
+    multiple: false,
+    onRemove: () => {
+      setFile(null);
+    },
+    beforeUpload: (...file) => {
+      setFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      if (file[0]?.size > 31457280) {
+        message.error('Selected file size should be less than 30MB');
+        return false;
+      }
+      if (allowedFiles.includes(type)) {
+        setFile(...file[1]);
+      } else {
+        message.error(' Please select the correct file type');
+      }
+      return false;
+    },
+    file,
+  };
+
+  const submitLevelReview = () => {
+    let body = [];
+    let checkSelected = ratingLevelReview.every((item) => item.checked);
+    if (!checkSelected) {
+      message.error('Please Select All Option');
       return;
+    } else {
+      ratingLevelReview.forEach((item) => {
+        let record = { ...item };
+        delete record.checked;
+        body.push(record);
+      });
     }
-    let body = ratingReview;
-    let overAllIndex = body.findIndex((each) => each?.name === 'Overall');
-    body[overAllIndex].given_rating = calculateOverallRating();
+
+    setLoading(true);
     axios
       .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
-      .then((response) => {
-        // props.setValue(1)
-        setView(false);
-        erpAPI();
-        message.success(' Review Submitted Successfully');
-        setOverAllRemarks([]);
+      .then((res) => {
+        message.success('Review Submitted Successfully');
+        if (file) {
+          uploadFile();
+        }
+        setviewLevelDrawer(false);
         setLoading(false);
-        setCustomRatingReview({});
-        setRatingReview([]);
-        setTableHeader([]);
+        setRatinglevelReview([]);
+        fileRef.current.value = '';
+        setFile(null);
+        erpAPI();
+        return;
       })
-      .catch((err) => {
-        message.error(err);
+      .catch(() => {
         setLoading(false);
       });
   };
+
+  const uploadFile = () => {
+    if (file !== null) {
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('booking_id', bookingID);
+
+      axios
+        .post(`${endpoints.newBlog.uploadVisualFile}`, formData, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            message.success(res.data.message);
+            setFile(null);
+          }
+        })
+        .catch((err) => {
+          setFile(null);
+        });
+    } else {
+      message.error('Please Upload File');
+      setLoading(false);
+      return;
+    }
+  };
+
+  const validateOptionSubmit = () => {
+    let isFormValid = true;
+    if (ratingReview.length > 0) {
+      ratingReview.forEach((item, index) => {
+
+        if (item.name !== "Overall") {
+          if (!item?.remarks) {
+            if (isFormValid) {
+              message.error('Please Enter All details');
+              isFormValid = false;
+            }
+          }
+        }
+      });
+    }
+    let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
+      if (!mandatory[0].remarks && isFormValid) {
+        message.error('Overall Remarks Is Compulsory');
+        isFormValid = false;
+      }
+
+    return isFormValid;
+  };
+
+  const [submit, setSubmit] = useState(false);
+  const submitReview = () => {
+    if (validateOptionSubmit()) {
+      setLoading(true);
+      setView(false);
+      
+
+      let body = ratingReview;
+      let overAllIndex = body.findIndex((each) => each?.name === 'Overall');
+      body[overAllIndex].given_rating = calculateOverallRating();
+      axios
+        .post(`${endpoints.newBlog.physicalStudentReviewAPI}`, body, {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          // props.setValue(1)
+          setView(false);
+          erpAPI();
+          message.success(' Review Submitted Successfully');
+          setOverAllRemarks([]);
+          setLoading(false);
+          setCustomRatingReview({});
+          setRatingReview([]);
+          setTableHeader([]);
+        })
+        .catch((err) => {
+          message.error(err);
+          setLoading(false);
+        });
+    }
+  };
+
 
   const handleInputCreativity = (event, index) => {
     let arr = [...ratingReview];
@@ -260,37 +402,69 @@ const PhysicalPendingReview = (props) => {
 
   let array = [];
   const showReview = (data) => {
+    setBookingID(data?.booking_detail_id);
     if (data) {
-      setLoading(true);
-      axios
-        .get(
-          `${endpoints.newBlog.studentReviewss}?booking_detail_id=${
-            data?.booking_detail_id
-          }&response_is_change=${true}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          }
-        )
-        .then((response) => {
-          // response.data.map((obj, index) => {
-          //   let temp = {};
-          //   temp['id'] = obj?.id;
-          //   temp['name'] = obj?.level.name;
-          //   temp['remarks'] = obj?.remarks;
-          //   temp['given_rating'] = obj?.given_rating;
-          //   temp['level'] = obj?.level?.rating;
-          //   temp['reviewer_id'] = user_id;
-          //   array.push(temp);
-          // });
-          setRatingReview(response?.data);
-          setLoading(false);
-          setView(true);
-        })
-        .catch((err) => {
-          setLoading(false);
-        });
+      if (isRoundAvailable) {
+        setLoading(true);
+        axios
+          .get(
+            `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data?.booking_detail_id
+            }&response_is_change=${true}&is_round_available=${isRoundAvailable}`,
+            {
+              headers: {
+                'X-DTS-HOST': X_DTS_HOST,
+              },
+            }
+          )
+          .then((response) => {
+            // response.data.map((obj) => {
+            //   let temp = {};
+            //   temp['id'] = obj?.id;
+            //   temp['name'] = obj?.level.name;
+            //   temp['remarks'] = obj?.remarks;
+            //   temp['given_rating'] = obj?.given_rating;
+            //   temp['remarks'] = JSON.parse(obj?.level?.rating);
+            //   temp['reviewer_id'] = user_id;
+            //   array.push(temp);
+            // });
+            setRatingReview(response?.data);
+            //setRatinglevelReview(array);
+            setLoading(false);
+            setView(true);
+          })
+          .catch((err) => {
+            setLoading(false);
+          });
+      } else {
+        setLoading(true);
+        axios
+          .get(
+            `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data?.booking_detail_id}`,
+            {
+              headers: {
+                'X-DTS-HOST': X_DTS_HOST,
+              },
+            }
+          )
+          .then((response) => {
+            response.data.map((obj) => {
+              let temp = {};
+              temp['id'] = obj?.id;
+              temp['name'] = obj?.level.name;
+              temp['remarks'] = obj?.remarks;
+              temp['given_rating'] = obj?.given_rating;
+              temp['remarks'] = JSON.parse(obj?.level?.rating);
+              temp['reviewer_id'] = user_id;
+              array.push(temp);
+            });
+            setRatinglevelReview(array);
+            setLoading(false);
+            setviewLevelDrawer(true);
+          })
+          .catch((err) => {
+            setLoading(false);
+          });
+      }
     }
   };
 
@@ -298,8 +472,7 @@ const PhysicalPendingReview = (props) => {
     setLoading(true);
     axios
       .get(
-        `${endpoints.newBlog.bookingDetailsApi}?erp_id=${
-          data?.erp_id
+        `${endpoints.newBlog.bookingDetailsApi}?erp_id=${data?.erp_id
         }&activity_detail_id=${ActivityId?.id}&user_level=${13}`,
         {
           headers: {
@@ -317,23 +490,72 @@ const PhysicalPendingReview = (props) => {
       });
   };
 
+  const fetchisRoundAvailable = () => {
+    axios
+      .get(`${endpoints.newBlog.getRoundShowHide}?activity_detail_id=${ActivityId?.id}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((result) => {
+        setIsRoundAvailable(result?.data?.is_round_available);
+        setFirstLoad(true);
+      });
+  };
+
   const assignPage = (data) => {
     addBookingApi(data);
     setData(data);
     setDataId(data?.erp_id);
   };
 
+  const handleRemark = (value, id) => {
+    const arr1 = ratingLevelReview?.map((obj) => {
+      let newObj = obj?.remarks;
+      if (obj.id === id) {
+        newObj = obj.remarks.map((item) => {
+          if (item.name === value.children) {
+            return { ...item, status: true };
+          } else {
+            return { ...item, status: false };
+          }
+          return item;
+        });
+        return { ...obj, remarks: newObj, checked: true };
+      }
+      return obj;
+    });
+    setRatinglevelReview(arr1);
+    // setRemarkedData()
+    let newArr = [];
+    arr1.map((obj) => {
+      let newTemp = {};
+      newTemp['given_rating'] = obj?.given_rating;
+      newTemp['id'] = obj?.id;
+      newTemp['name'] = obj?.name;
+      newTemp['remarks'] = JSON.stringify(obj?.remarks);
+      newTemp['reviewer_id'] = obj?.reviewer_id;
+      newArr.push(newTemp);
+    });
+  };
+
   useEffect(() => {
     if (props.selectedBranch === undefined || props.selectedGrade === undefined) {
       setTotalSubmitted([]);
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag, props?.value]);
 
   useEffect(() => {
     if (props.flag) {
       getTotalSubmitted();
     }
-  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage]);
+  }, [props.selectedBranch, props.selectedGrade, props.flag, currentPage, props?.value]);
+
+  useEffect(() => {
+    if (!firstLoad) {
+      fetchisRoundAvailable();
+    }
+  });
 
   const classes = useStyles();
   const ReviewPage = () => {
@@ -437,7 +659,7 @@ const PhysicalPendingReview = (props) => {
       }, []);
 
     let overValueAllData = arr
-      .filter((item) => item?.name.toLowerCase() === 'overall')
+      .filter((item) => item?.name?.toLowerCase() === 'overall')
       .map((item) => item);
     setOverAllData(overValueAllData);
     setTableHeader(headersData);
@@ -467,10 +689,8 @@ const PhysicalPendingReview = (props) => {
   //   .filter((item) => item.toLowerCase() !== 'overall')
   //   .map((item) => Object.keys(arr[0][item]))[0];
 
-  // console.log(columnsData, 'help1');
   // let overKey = Object.keys(arr[0]).filter((item) => item.toLowerCase() === 'overall');
 
-  // console.log(overKey, 'help3');
 
   // let overValueAllData = Object.keys(arr[0])
   //   .filter((item) => item.toLowerCase() === 'overall')
@@ -528,18 +748,18 @@ const PhysicalPendingReview = (props) => {
         )}
       </div>
 
-      {/* <Drawer
+      <Drawer
         title={<span className='th-fw-500'>Submit Review</span>}
         placement='right'
-        onClose={handleCloseViewMore}
+        onClose={handleCloseViewLevelMore}
         zIndex={1300}
-        visible={view}
+        visible={viewLevelDrawer}
         width={'35vw'}
         closable={false}
         className='th-resources-drawer'
         extra={
           <Space>
-            <CloseOutlined onClick={handleCloseViewMore} />
+            <CloseOutlined onClick={handleCloseViewLevelMore} />
           </Space>
         }
       >
@@ -553,6 +773,7 @@ const PhysicalPendingReview = (props) => {
                       src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                       alt='image'
                       style={{
+                        // width: '100%',
                         height: 100,
                         objectFit: 'fill',
                       }}
@@ -581,79 +802,77 @@ const PhysicalPendingReview = (props) => {
                       className='px-1 py-2 th-br-5'
                       style={{ outline: '1px solid #D9D9D9' }}
                     >
-                      {ratingReview?.map((obj, index) => {
+                      {ratingLevelReview?.map((obj, index) => {
                         return (
-                          <div
-                            key={index}
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            {obj?.name === 'Overall' ? (
-                              ''
-                            ) : (
-                              <div
-                                key={index}
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  marginBottom: '10px',
+                          <div className='row py-1 align-items-center'>
+                            <div className='col-6 text-left' key={index}>
+                              {obj?.name}
+                            </div>
+                            <div className='col-6'>
+                              <Select
+                                className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                                bordered={true}
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                placement='bottomRight'
+                                placeholder='Select Option'
+                                suffixIcon={<DownOutlined className='th-black-1' />}
+                                dropdownMatchSelectWidth={false}
+                                onChange={(e, val) => handleRemark(val, obj?.id)}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
                                 }}
+                                menuItemSelectedIcon={
+                                  <CheckOutlined className='th-primary' />
+                                }
                               >
-                                {' '}
-                                {obj?.name}
-                                <b style={{ color: '#53bedd', fontSize: '12px' }}>
-                                  {filterRound(obj?.level)}
-                                </b>
-                              </div>
-                            )}
-                            {obj?.name == 'Overall' ? (
-                              ''
-                            ) : (
-                              <div>
-                                <Input
-                                  style={{ background: 'white' }}
-                                  placeholder={obj?.name}
-                                  onChange={(event) =>
-                                    handleInputCreativity(event, index)
-                                  }
-                                  value={obj?.remarks}
-                                />
-                              </div>
-                            )}
+                                {obj?.remarks?.map((each) => {
+                                  return (
+                                    <Option value={each?.name} key={each?.score}>
+                                      {each?.name}
+                                    </Option>
+                                  );
+                                })}
+                              </Select>
+                            </div>
                           </div>
                         );
                       })}
-                      {ratingReview?.map((obj, index) => {
-                        return (
-                          <div
-                            key={index}
-                            style={{
-                              paddingLeft: '15px',
-                              paddingRight: '15px',
-                              paddingTop: '5px',
-                            }}
-                          >
-                            {obj?.name == 'Overall' ? (
-                              <div>
-                                {obj?.name}*
-                                <Input
-                                  placeholder={obj?.name}
-                                  onChange={(event) =>
-                                    handleInputCreativity(event, index)
-                                  }
-                                  value={obj?.remarks}
-                                />
-                              </div>
-                            ) : (
-                              ''
-                            )}
-                          </div>
-                        );
-                      })}
+                      <div className='row align-items-center'>
+                        <div className='col-md-4 py-2 th-16'>
+                          <Upload {...uploadProps} className='w-75'>
+                            <Button icon={<UploadOutlined />}>
+                              {file ? 'Change' : 'Upload'} File
+                            </Button>
+                          </Upload>
+                        </div>
+                        <div className='col-md-8 py-2 th-10'>
+                          {!file ? (
+                            'Upload .jpeg,.png,.mp4 file only'
+                          ) : (
+                            <div className='th-14'>
+                              <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                                <div
+                                  className='th-12 th-black-1 text-truncate th-width-90'
+                                  title={file?.name}
+                                >
+                                  {file?.name}
+                                </div>
 
+                                <div className='th-pointer ml-2'>
+                                  <img
+                                    src={smallCloseIcon}
+                                    onClick={() => setFile(null)}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                       <div
                         style={{
                           display: 'flex',
@@ -667,7 +886,7 @@ const PhysicalPendingReview = (props) => {
                         {' '}
                         <ButtonAnt
                           className='th-button-active th-br-6 text-truncate th-pointer'
-                          onClick={() => submitReview()}
+                          onClick={() => submitLevelReview()}
                         >
                           Submit Review
                         </ButtonAnt>
@@ -679,7 +898,7 @@ const PhysicalPendingReview = (props) => {
             </div>
           </div>
         </div>
-      </Drawer> */}
+      </Drawer>
       <Modal
         centered
         visible={view}
@@ -721,80 +940,177 @@ const PhysicalPendingReview = (props) => {
           </div>
         </div>
 
-        <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
-          <table className='w-100' style={{ background: '#eee' }}>
-            <thead>
-              <tr style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}>
-                <th> </th>
-                {tableHeader?.map((item, i) => (
-                  <th>{item?.name}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(customRatingReview)?.length > 0 &&
-                Object.keys(customRatingReview).map((item, index) => (
-                  <tr className='th-html-table'>
-                    <td style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}>
-                      {item}
-                    </td>
-                    {tableHeader?.map((each, i) => (
-                      <td style={{ padding: '5px' }}>
-                        <Input
-                          value={
-                            ratingReview.filter(
-                              (el) => el?.name == each?.name && el.level == item
-                            )[0]?.remarks
-                          }
-                          className='text-center'
-                          placeholder={`Enter ${each?.name} for ${item}`}
-                          onChange={(event) => handleInputEvent(event, item, each)}
-                        />
-                      </td>
+        {isRoundAvailable
+          ?
+          <>
+            <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
+              <table className='w-100' style={{ background: '#eee' }}>
+                <thead>
+                  <tr style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}>
+                    <th> </th>
+                    {tableHeader?.map((item, i) => (
+                      <th>{item?.name}</th>
                     ))}
                   </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        <div className='col-12 px-0'>
-          <div className='p-2 d-flex justify-content-start'>
-            {overallData.length > 0 &&
-              overallData.map((item, index) => {
+                </thead>
+                <tbody>
+                  {Object.keys(customRatingReview)?.length > 0 &&
+                    Object.keys(customRatingReview).map((item, index) => (
+                      <tr className='th-html-table'>
+                        <td style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}>
+                          {item}
+                        </td>
+                        {tableHeader?.map((each, i) => (
+                          <td style={{ padding: '5px' }}>
+                            <Input
+                              value={
+                                ratingReview.filter(
+                                  (el) => el?.name == each?.name && el.level == item
+                                )[0]?.remarks
+                              }
+                              className='text-center'
+                              placeholder={`Enter ${each?.name} for ${item}`}
+                              onChange={(event) => handleInputEvent(event, item, each)}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+            <div className='col-12 px-0'>
+              <div className='p-2 d-flex justify-content-start'>
+                {overallData.length > 0 &&
+                  overallData.map((item, index) => {
+                    return (
+                      <div className='col-6 px-0 d-flex align-items-center justify-content-start'>
+                        <span
+                          style={{
+                            fontWeight: 500,
+                            marginRight: '5px',
+                            fontSize: '15px',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          Overall {<CaretRightOutlined />}
+                        </span>
+                        <Input
+                          value={overallRemarks}
+                          placeholder={`Enter for OverAll`}
+                          onChange={(event) => handleOverAll(event, item, index)}
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+            <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
+              <div className='p-2'>
+                <ButtonAnt
+                  type='primary'
+                  icon={<ScheduleOutlined />}
+                  onClick={() => submitReview()}
+                >
+                  Submit Review
+                </ButtonAnt>
+              </div>
+            </div>
+          </>
+          : <>
+            <div
+              className='px-1 py-2 th-br-5'
+              style={{ outline: '1px solid #D9D9D9' }}
+            >
+              {ratingLevelReview?.map((obj, index) => {
                 return (
-                  <div className='col-6 px-0 d-flex align-items-center justify-content-start'>
-                    <span
-                      style={{
-                        fontWeight: 500,
-                        marginRight: '5px',
-                        fontSize: '15px',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      Overall {<CaretRightOutlined />}
-                    </span>
-                    <Input
-                      value={overallRemarks}
-                      placeholder={`Enter for OverAll`}
-                      onChange={(event) => handleOverAll(event, item, index)}
-                    />
+                  <div className='row py-1 align-items-center'>
+                    <div className='col-6 text-left' key={index}>
+                      {obj?.name}
+                    </div>
+                    <div className='col-6'>
+                      <Select
+                        className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                        bordered={true}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        placement='bottomRight'
+                        placeholder='Select Option'
+                        suffixIcon={<DownOutlined className='th-black-1' />}
+                        dropdownMatchSelectWidth={false}
+                        onChange={(e, val) => handleRemark(val, obj?.id)}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
+                        menuItemSelectedIcon={
+                          <CheckOutlined className='th-primary' />
+                        }
+                      >
+                        {obj?.remarks?.map((each) => {
+                          return (
+                            <Option value={each?.name} key={each?.score}>
+                              {each?.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </div>
                   </div>
                 );
               })}
-          </div>
-        </div>
-        <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
-          <div className='p-2'>
-            <ButtonAnt
-              type='primary'
-              icon={<ScheduleOutlined />}
-              onClick={() => submitReview()}
-            >
-              Submit Review
-            </ButtonAnt>
-          </div>
-        </div>
+            </div>
+            <div className='col-12 px-0 d-flex justify-content-right align-items-center'>
+              <div className='row align-items-center'>
+                <div className='col-md-4 py-12 th-16'>
+                  <Upload {...uploadProps} className='w-75'>
+                    <Button icon={<UploadOutlined />}>
+                      {file ? 'Change' : 'Upload'} File
+                    </Button>
+                  </Upload>
+                </div>
+                <div className='col-md-8 py-2 th-10'>
+                  {!file ? (
+                    'Upload .jpeg,.png,.mp4 file only'
+                  ) : (
+                    <div className='th-14'>
+                      <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                        <div
+                          className='th-12 th-black-1 text-truncate th-width-90'
+                          title={file?.name}
+                        >
+                          {file?.name}
+                        </div>
+
+                        <div className='th-pointer ml-2'>
+                          <img
+                            src={smallCloseIcon}
+                            onClick={() => setFile(null)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
+              <div className='p-2'>
+                <ButtonAnt
+                  type='primary'
+                  icon={<ScheduleOutlined />}
+                  onClick={() => submitLevelReview()}
+                >
+                  Submit Review
+                </ButtonAnt>
+              </div>
+            </div>
+
+
+          </>}
       </Modal>
     </>
   );

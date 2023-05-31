@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
@@ -26,6 +26,8 @@ import {
   Space,
   Button,
   message,
+  Input,
+  Spin,
 } from 'antd';
 import moment from 'moment';
 import ReactPlayer from 'react-player';
@@ -39,11 +41,12 @@ const StudentSidePhysicalActivity = () => {
   const activityDetails = history?.location?.state?.activity;
   const [loading, setLoading] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
-
+  const playerRef = useRef(null);
   const [activityListData, setActivityListData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
+  const [showSideDrawer, setShowSideDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState({});
   const [showBMIModal, setShowBMIModal] = useState(false);
   const [studentBMIData, setStudentBMIData] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -54,11 +57,26 @@ const StudentSidePhysicalActivity = () => {
   const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
+  const [isRoundAvailable, setIsRoundAvailable] = useState(false);
+  const [loadingMedia, setLoadingMedia] = useState(false);
+  const [playVideo, setPlayVideo] = useState(true);
 
   const handleCloseViewMore = () => {
+    // playerRef.current.seekTo(0);
     setShowDrawer(false);
+    // setPlayVideo(false);
     setSelectedActivity(null);
   };
+
+  const handleCloseSideViewMore = () => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(0);
+    }
+    setShowSideDrawer(false);
+    setSelectedActivity(null);
+    setMediaFiles({});
+  };
+
   const fetchStudentActivityList = (params = {}) => {
     setLoading(true);
     axios
@@ -69,7 +87,6 @@ const StudentSidePhysicalActivity = () => {
         },
       })
       .then((response) => {
-        console.log('response', response);
         if (response?.data?.status_code === 200) {
           setActivityListData(response?.data?.result);
 
@@ -81,9 +98,29 @@ const StudentSidePhysicalActivity = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
       });
+  };
+
+  const isJSON = (str) => {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  let funRemarks = (obj) => {
+    try {
+      if (isJSON(obj?.remarks)) {
+        return JSON.parse(obj?.remarks).filter((item) => item?.status == true)[0].name;
+      } else {
+        return obj?.remarks.toString();
+      }
+    } catch (e) {
+      return '';
+    }
   };
 
   useEffect(() => {
@@ -93,27 +130,35 @@ const StudentSidePhysicalActivity = () => {
       activity_detail_id: 'null',
       is_reviewed: 'True',
       is_submitted: 'True',
-      page :currentPageAssigned,
-      page_size :limitAssigned
+      page: currentPageAssigned,
+      page_size: limitAssigned,
     });
   }, [currentPageAssigned]);
-  const handleShowReview = (data) => {
-    getRatingView(data?.id);
+
+  const handleShowReview = async (data) => {
+    setIsRoundAvailable(data?.is_round_available);
+    getRatingView(data?.id, data?.is_round_available);
     fetchMedia(data?.id);
-    setShowDrawer(true);
-    setSelectedActivity(data);
+    // if(isvalue){
+    //   setShowDrawer(true);
+    //   setShowSideDrawer(false);
+    // }else {
+    //   setShowDrawer(false);
+    //   setShowSideDrawer(true);
+    // }
+    //setSelectedActivity(data);
   };
   const handleViewBMIModal = (data) => {
     fetchBMIData(data?.id);
   };
 
   let array = [];
-  const getRatingView = (id) => {
+  const getRatingView = (id, is_round_available) => {
     axios
       .get(
         `${
           endpoints.newBlog.studentReviewss
-        }?booking_detail_id=${id}&response_is_change=${true}`,
+        }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${is_round_available}`,
         {
           headers: {
             'X-DTS-HOST': X_DTS_HOST,
@@ -125,12 +170,26 @@ const StudentSidePhysicalActivity = () => {
           let temp = {};
           temp['id'] = obj.id;
           temp['name'] = obj.level.name;
-          temp['remarks'] = obj.remarks;
+          if (is_round_available) {
+            temp['remarks'] = obj.remarks;
+          } else {
+            temp['remarks'] = JSON.parse(obj.remarks);
+          }
           temp['given_rating'] = obj.given_rating;
           temp['level'] = obj?.level?.rating;
           array.push(temp);
         });
         setRatingReview(response.data);
+        fetchMedia(response.data?.id);
+        if (is_round_available) {
+          setShowDrawer(true);
+        } else {
+          setShowSideDrawer(true);
+        }
+        setSelectedActivity(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
         setLoading(false);
       });
   };
@@ -154,11 +213,10 @@ const StudentSidePhysicalActivity = () => {
           message.error('No BMI record found for the student');
         }
       })
-      .catch((error) => {
-        console.log('error', error);
-      });
+      .catch((error) => {});
   };
   const fetchMedia = (id) => {
+    setLoadingMedia(true);
     axios
       .get(`${endpoints.newBlog.showVisualMedia}${id}/`, {
         headers: {
@@ -170,8 +228,8 @@ const StudentSidePhysicalActivity = () => {
           setMediaFiles(response?.data?.result);
         }
       })
-      .catch((error) => {
-        console.log('error', error);
+      .finally(() => {
+        setLoadingMedia(false);
       });
   };
   let roundsArray = [];
@@ -187,7 +245,9 @@ const StudentSidePhysicalActivity = () => {
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned-1) *10}</span>,
+      render: (text, row, index) => (
+        <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -206,14 +266,14 @@ const StudentSidePhysicalActivity = () => {
         </span>
       ),
     },
-    {
-      title: <span className='th-white th-fw-700'>Overall Score</span>,
-      dataIndex: 'creator',
-      align: 'center',
-      render: (text, row) => (
-        <span className='th-black-1'> {row?.user_reviews?.remarks}</span>
-      ),
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>Overall Score</span>,
+    //   dataIndex: 'creator',
+    //   align: 'center',
+    //   render: (text, row) => (
+    //     <span className='th-black-1'> {row?.user_reviews?.remarks}</span>
+    //   ),
+    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -295,7 +355,7 @@ const StudentSidePhysicalActivity = () => {
       }, []);
 
     let overValueAllData = arr
-      .filter((item) => item?.name.toLowerCase() === 'overall')
+      .filter((item) => item?.name?.toLowerCase() === 'overall')
       .map((item) => item);
     setOverAllData(overValueAllData);
     setTableHeader(headersData);
@@ -312,9 +372,9 @@ const StudentSidePhysicalActivity = () => {
       }, {});
     setCustomRatingReview(rounds);
   }
-  const handlePaginationAssign =(page) =>{
+  const handlePaginationAssign = (page) => {
     setCurrentPageAssigned(page);
-  }
+  };
 
   return (
     <div>
@@ -361,7 +421,6 @@ const StudentSidePhysicalActivity = () => {
                     pageSize: limitAssigned,
                     showSizeChanger: false,
                     onChange: (e) => {
-                      console.log('Pagination', e);
                       handlePaginationAssign(e);
                     },
                   }}
@@ -433,12 +492,12 @@ const StudentSidePhysicalActivity = () => {
               </div>
             </div>
           </Modal>
-          {/* <Drawer
-            title={<span className='th-fw-500'>Check Review</span>}
+          <Drawer
+            title={<span className='th-fw-500'>Your Review</span>}
             placement='right'
-            onClose={handleCloseViewMore}
+            onClose={handleCloseSideViewMore}
             zIndex={1300}
-            visible={showDrawer}
+            visible={showSideDrawer}
             width={
               window.innerWidth < 600 ? '95vw' : mediaFiles?.s3_path ? '70vw' : '35vw'
             }
@@ -446,52 +505,59 @@ const StudentSidePhysicalActivity = () => {
             className='th-resources-drawer'
             extra={
               <Space>
-                <CloseOutlined onClick={handleCloseViewMore} />
+                <CloseOutlined onClick={handleCloseSideViewMore} />
               </Space>
             }
           >
             <div>
               <div className='row'>
-                <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
-                  {mediaFiles?.file_type === 'image/jpeg' ||
-                  mediaFiles?.file_type === 'image/png' ? (
-                    <img
-                      src={mediaFiles?.s3_path}
-                      thumb={mediaFiles?.s3_path}
-                      alt={'image'}
-                      width='100%'
-                      height='95%'
-                    />
-                  ) : (
-                    <ReactPlayer
-                      url={mediaFiles?.s3_path}
-                      thumb={mediaFiles?.s3_path}
-                      // key={index}
-                      width='100%'
-                      height='100%'
-                      playIcon={
-                        <Tooltip title='play'>
-                          <Button
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              height: '30vh',
-                              width: '30vw',
-                            }}
-                            shape='circle'
-                            icon={
-                              <PlayCircleOutlined
-                                style={{ color: 'white', fontSize: '70px' }}
-                              />
-                            }
-                          />
-                        </Tooltip>
-                      }
-                      alt={'video'}
-                      controls={true}
-                    />
-                  )}
-                </div>
+                {loadingMedia ? (
+                  <div className='col-8 text-center mt-5'>
+                    <Spin tip='Loading...' size='large' />
+                  </div>
+                ) : (
+                  <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
+                    {mediaFiles?.file_type === 'image/jpeg' ||
+                    mediaFiles?.file_type === 'image/png' ? (
+                      <img
+                        src={mediaFiles?.s3_path}
+                        thumb={mediaFiles?.s3_path}
+                        alt={'image'}
+                        width='100%'
+                        loading='lazy'
+                      />
+                    ) : (
+                      <ReactPlayer
+                        url={mediaFiles?.s3_path}
+                        thumb={mediaFiles?.s3_path}
+                        // playing={playVideo}
+                        ref={playerRef}
+                        width='100%'
+                        height='100%'
+                        playIcon={
+                          <Tooltip title='play'>
+                            <Button
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                height: '30vh',
+                                width: '30vw',
+                              }}
+                              shape='circle'
+                              icon={
+                                <PlayCircleOutlined
+                                  style={{ color: 'white', fontSize: '70px' }}
+                                />
+                              }
+                            />
+                          </Tooltip>
+                        }
+                        alt={'video'}
+                        controls={true}
+                      />
+                    )}
+                  </div>
+                )}
                 <div
                   className={`${
                     mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
@@ -557,41 +623,26 @@ const StudentSidePhysicalActivity = () => {
                           className='px-1 py-2 th-br-5'
                           style={{ outline: '1px solid #d9d9d9' }}
                         >
-                          {ratingReview.map(
-                            (item, index) =>
-                              item?.name !== 'Overall' && (
-                                <>
-                                  <div className='col-12 pl-1 th-fw-600'>
-                                    {filterRound(item?.level)}
-                                  </div>
-                                  <div className='row py-2 my-2 th-bg-white align-items-center justify-content-around th-br-6'>
-                                    <div className='col-12 '>
-                                      <div className=' d-flex justify-content-between th-bg-grey p-2 th-br-6'>
-                                        <div className='th-fw-500 mr-3'>{item?.name}</div>{' '}
-                                        <div>{item?.remarks}</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </>
-                              )
-                          )}
-                          {ratingReview
-                            .filter((item) => item?.name == 'Overall')
-                            .map((item) => (
-                              <div className='row th-bg-white th-br-6'>
-                                <div className='col-12 py-2 px-0'>
-                                  <div
-                                    className=' th-fw-600'
-                                    style={{ borderBottom: '2px solid #d9d9d9' }}
-                                  >
-                                    Overall
-                                  </div>
+                          {ratingReview?.map((obj, index) => {
+                            return (
+                              <div className='row py-1 align-items-center'>
+                                <div className='col-6 pl-1' key={index}>
+                                  {obj?.level?.name}
                                 </div>
-                                <div className='col-12 py-1 th-fw-600'>
-                                  {item?.remarks}
+                                <div className='col-6 pr-1'>
+                                  {!isRoundAvailable ? (
+                                    <Input
+                                      disabled
+                                      title={funRemarks(obj)}
+                                      value={funRemarks(obj)}
+                                    />
+                                  ) : (
+                                    <div></div>
+                                  )}
                                 </div>
                               </div>
-                            ))}
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -599,7 +650,7 @@ const StudentSidePhysicalActivity = () => {
                 </div>
               </div>
             </div>
-          </Drawer> */}
+          </Drawer>
           <Modal
             centered
             visible={showDrawer}

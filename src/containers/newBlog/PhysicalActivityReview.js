@@ -139,10 +139,14 @@ const PhysicalActivityReview = () => {
       id: obj.id,
       branch_name: obj.name,
     }));
+    try{
     transformedData.unshift({
       branch_name: 'Select All',
       id: 'all',
     });
+    } catch{
+      return false
+    }
   };
   useEffect(() => {
     fetchBranches();
@@ -161,7 +165,6 @@ const PhysicalActivityReview = () => {
           }
         )
         .then((response) => {
-          console.log(response?.data?.result);
           setGradeList(response?.data?.result);
           setLoading(false);
         });
@@ -317,7 +320,6 @@ const PhysicalActivityReview = () => {
         },
       })
       .then((res) => {
-        console.log(res, 'PP');
       });
   };
 
@@ -443,7 +445,7 @@ const PhysicalActivityReview = () => {
                         selectedBranch={selectedBranch?.branch?.id}
                         setValue={setValue}
                         value={value}
-                        handleChange={handleChange}
+                        //handleChange={handleChange}
                         selectedGrade={gradeId}
                         selectedSubject={subjectId}
                         setSubjectName={subjectName}

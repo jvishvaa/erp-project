@@ -342,8 +342,8 @@ const CreateActivityType = () => {
               <Input
                 placeholder='Enter Activity Type'
                 type='text'
-                onChange={(e) => setActivityType(e.target.value)}
-              />
+                value={ActivityType}
+                onChange={(e) => setActivityType(e.target.value)}/>
             </div>
             <div
               className='col-md-4 col-6 p-2'
