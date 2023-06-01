@@ -1731,7 +1731,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                           Last Updated {getTimeInterval(item.updated_at)}
                         </div>
                       </div>
-                      {allowAutoAssignDiary ? (
+                      {allowAutoAssignDiary && user_level !== 13 ? (
                         assignedDiaryList.map((el) => el?.section).flat().length <
                         item?.section_wise_completion?.length ? (
                           <>
@@ -2302,6 +2302,38 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                 </Button>
               </div>
             ) : null}
+            {allowAutoAssignDiary && (
+              <div className='col-12 text-center'>
+                <div
+                  className='th-bg-primary th-white p-2 mt-2 text-center th-br-6 th-pointer th-br-8'
+                  onClick={() => {
+                    history.push({
+                      pathname: '/create/diary',
+                      state: {
+                        periodData: {
+                          subjectID: subjectId,
+                          subjectName: history?.location?.state?.subjectName,
+                          gradeID: gradeId,
+                          gradeName: history?.location?.state?.gradeName,
+                          volumeID: volumeId,
+                          periodID: resourcesData?.id,
+                          periodName: resourcesData?.period_name,
+                          sections: completeSections,
+                          chapterID: selectedKeyConcept.chapter_id,
+                          chapterName: selectedChapter?.chapter_name,
+                          keyConceptID: selectedKeyConcept?.key_concept_id,
+                          keyConceptName: selectedKeyConcept?.topic_name,
+                          board: boardId,
+                        },
+                        isDiaryAutoAssign: true,
+                      },
+                    });
+                  }}
+                >
+                  <PlusCircleFilled className='mr-2' /> Add HW & Diary
+                </div>
+              </div>
+            )}
           </div>
         </Modal>
       </div>
