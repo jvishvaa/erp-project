@@ -102,7 +102,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [questionEdit, setQuestionEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [homeworkMapped, setHomeworkMapped] = useState(false);
-  const [questionList, setQuestionList] = useState();
+  const [questionList, setQuestionList] = useState([]);
   // {
   //   id: cuid(),
   //   question: '',
@@ -190,10 +190,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
 
   const removeQuestion = (index) => {
-    setQuestionList((prevState) => [
-      ...prevState.slice(0, index),
-      ...prevState.slice(index + 1),
-    ]);
+    if (questionList.length > 0) {
+      setQuestionList((prevState) => [
+        ...prevState.slice(0, index),
+        ...prevState.slice(index + 1),
+      ]);
+    }
   };
 
   const addNewQuestion = (index) => {
@@ -960,7 +962,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
     setQuestionEdit(true);
-    setLoading(true)
+    setLoading(true);
     let reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
@@ -991,7 +993,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         )
       );
       setHwDiaryPeriodMappingId(response.data?.data?.hw_dairy_period_mapping_ids);
-      setLoading(false)
+      setLoading(false);
       message.success('Homework added');
       setQuestionList([]);
       setShowHomeworkForm(true);
@@ -1006,7 +1008,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
       // history.goBack();
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       message.error('Failed to add homework');
     }
     // }
