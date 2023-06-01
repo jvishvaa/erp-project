@@ -871,7 +871,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
     setQuestionEdit(true);
     setLoading(true);
-    let reqObj = {
+    const reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
       section_mapping: [sectionMappingID],
