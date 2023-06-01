@@ -870,6 +870,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
     setQuestionEdit(true);
+    setLoading(true);
     const reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
@@ -892,6 +893,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           assignedHomework ? assignedHomework[0]?.id : null
         )
       );
+      setLoading(false);
       message.success('Homework added');
       // setShowHomeworkForm(false);
       checkAssignedHomework({
@@ -908,6 +910,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
       // history.goBack();
     } catch (error) {
+      setLoading(false);
       message.error('Failed to add homework');
     }
     // }
