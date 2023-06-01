@@ -893,7 +893,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           assignedHomework ? assignedHomework[0]?.id : null
         )
       );
-      setHwDiaryPeriodMappingId(response.data?.data?.hw_dairy_period_mapping_ids);
       setLoading(false);
       message.success('Homework added');
       // setShowHomeworkForm(false);
