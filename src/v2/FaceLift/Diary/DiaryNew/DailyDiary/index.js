@@ -870,7 +870,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
     setQuestionEdit(true);
-    const reqObj = {
+    setLoading(true);
+    let reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
       section_mapping: [sectionMappingID],
@@ -892,6 +893,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           assignedHomework ? assignedHomework[0]?.id : null
         )
       );
+      setHwDiaryPeriodMappingId(response.data?.data?.hw_dairy_period_mapping_ids);
+      setLoading(false);
       message.success('Homework added');
       // setShowHomeworkForm(false);
       checkAssignedHomework({
@@ -908,6 +911,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
       // history.goBack();
     } catch (error) {
+      setLoading(false);
       message.error('Failed to add homework');
     }
     // }
