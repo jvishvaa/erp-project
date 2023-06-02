@@ -33,18 +33,9 @@ import {
   FormOutlined,
   DeleteOutlined,
   PlusCircleFilled,
-  ReadOutlined,
 } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
-import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
-import pdfFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pdfFileIcon.svg';
-import videoFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/videoFileIcon.svg';
-import audioFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/audiofile.svg';
-import textFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/textfile.svg';
-import excelFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/excelfile.svg';
-import imageFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/imagefile.svg';
 import tickIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/greenTick.svg';
-import defaultFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/defaultfile.svg';
 import axiosInstance from 'axios';
 import axios from 'v2/config/axios';
 import axios2 from 'axios';
@@ -62,38 +53,13 @@ import { saveAs } from 'file-saver';
 import QuestionPaperView from './QuestionPaperView';
 import { addQuestionPaperToTest } from 'redux/actions';
 import ASSIGNTEST from './../../../Assets/images/assigntest.png';
+import diaryIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/diaryIcon.png';
+import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
+import moment from 'moment';
+import { getFileIcon } from 'v2/getFileIcon';
 
 const { Option } = Select;
 const { Panel } = Collapse;
-
-const getFileIcon = (type) => {
-  switch (type) {
-    case 'ppt':
-      return pptFileIcon;
-    case 'pptx':
-      return pptFileIcon;
-    case 'jpeg':
-      return imageFileIcon;
-    case 'jpg':
-      return imageFileIcon;
-    case 'png':
-      return imageFileIcon;
-    case 'xlsx':
-      return excelFileIcon;
-    case 'xls':
-      return excelFileIcon;
-    case 'pdf':
-      return pdfFileIcon;
-    case 'mp4':
-      return videoFileIcon;
-    case 'mp3':
-      return audioFileIcon;
-    case 'txt':
-      return textFileIcon;
-    default:
-      return defaultFileIcon;
-  }
-};
 
 const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -1826,7 +1792,12 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                   >
                                     <div className='d-flex justify-content-between align-items-center'>
                                       <div className='d-flex justify-content-between align-items-center th-fw-600'>
-                                        <ReadOutlined className='th-primary th-24 mr-3' />
+                                        <img
+                                          src={diaryIcon}
+                                          alt='image'
+                                          height={28}
+                                          className='mr-3'
+                                        />
                                         Diary assigned
                                       </div>
                                       <div
@@ -1852,7 +1823,12 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                   >
                                     <div className='d-flex justify-content-between align-items-center'>
                                       <div className='d-flex justify-content-between align-items-center th-fw-600'>
-                                        <ReadOutlined className='th-primary th-24 mr-3' />
+                                        <img
+                                          src={hwIcon}
+                                          alt='image'
+                                          height={28}
+                                          className='mr-3'
+                                        />
                                         Homework assigned
                                       </div>
                                       <div
@@ -1887,19 +1863,22 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                         header={
                                           <div className='row align-items-center'>
                                             <div className='col-2 pr-0'>
-                                              <ReadOutlined
-                                                style={{
-                                                  fontSize: 30,
-                                                  color: '#1b4ccb',
-                                                }}
+                                              <img
+                                                src={diaryIcon}
+                                                alt='image'
+                                                height={28}
                                               />
                                             </div>
                                             <div className='col-10 pl-1'>
                                               <div className='th-fw-500 th-16 text-capitalize'>
                                                 Diary
                                               </div>
-                                              <div className='th-green th-14 pr-3'>
-                                                Successfully Assigned for Sections &nbsp;
+                                              <div className=' th-14 pr-3'>
+                                                Status :{' '}
+                                                <span className='th-green'>
+                                                  Assigned&nbsp;
+                                                </span>
+                                                for Sections &nbsp;
                                                 {assignedDiaryList
                                                   .map((item) => item?.section)
                                                   .flat()
@@ -1920,8 +1899,12 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                       {each}
                                                     </div>
                                                     {user_id ==
-                                                    assignedDiaryList[index]
-                                                      ?.created_by ? (
+                                                      assignedDiaryList[index]
+                                                        ?.created_by &&
+                                                    assignedDiaryList[index]?.hw_status !=
+                                                      3 &&
+                                                    assignedDiaryList[index]?.hw_status !=
+                                                      4 ? (
                                                       <Space>
                                                         <Tag
                                                           icon={<FormOutlined />}
@@ -2043,19 +2026,23 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                         header={
                                           <div className='row align-items-center'>
                                             <div className='col-2 pr-0'>
-                                              <ReadOutlined
-                                                style={{
-                                                  fontSize: 30,
-                                                  color: '#1b4ccb',
-                                                }}
+                                              <img
+                                                src={hwIcon}
+                                                alt='image'
+                                                height={28}
+                                                className='mr-3'
                                               />
                                             </div>
                                             <div className='col-10 pl-1'>
                                               <div className='th-fw-500 th-16 text-capitalize'>
                                                 Homework
                                               </div>
-                                              <div className='th-green th-14 pr-3'>
-                                                Successfully Assigned for Sections &nbsp;
+                                              <div className='th-14 pr-3'>
+                                                Status :{' '}
+                                                <span className='th-green'>
+                                                  Assigned&nbsp;
+                                                </span>
+                                                for Sections &nbsp;
                                                 {assignedHWList
                                                   .map((item) => item?.section)
                                                   .flat()
@@ -2076,8 +2063,12 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                       {each}
                                                     </div>
                                                     {user_id ==
-                                                    assignedHWList[index]
-                                                      ?.created_by_staff ? (
+                                                      assignedHWList[index]
+                                                        ?.created_by_staff &&
+                                                    assignedHWList[index]?.hw_status !=
+                                                      3 &&
+                                                    assignedHWList[index]?.hw_status !=
+                                                      4 ? (
                                                       <Space>
                                                         <Tag
                                                           icon={<FormOutlined />}
@@ -2086,43 +2077,41 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                           className='th-pointer th-br-6'
                                                           onClick={() => {
                                                             history.push({
-                                                              pathname: '/create/diary',
+                                                              pathname: `/homework/addHomework/${moment(
+                                                                assignedHWList[index]
+                                                                  ?.last_submission_dt
+                                                              ).format('YYYY-MM-DD')}/${
+                                                                selectedAcademicYear?.id
+                                                              }/${
+                                                                selectedBranch?.branch?.id
+                                                              }/${gradeId}/${
+                                                                history?.location?.state
+                                                                  ?.subjectName
+                                                              }/${subjectId}/${
+                                                                assignedHWList[index]
+                                                                  ?.uploaded_by
+                                                              }`,
                                                               state: {
-                                                                data: {
-                                                                  ...assignedDiaryList[
-                                                                    index
-                                                                  ],
-                                                                  diary_id:
-                                                                    assignedDiaryList[
-                                                                      index
-                                                                    ].dairy_id,
-                                                                  section_name: each,
-                                                                  section_mapping_id:
-                                                                    assignedDiaryList[
-                                                                      index
-                                                                    ].section_mapping[
-                                                                      sectionIndex
-                                                                    ],
-                                                                  section_id:
-                                                                    assignedDiaryList[
-                                                                      index
-                                                                    ]?.section_id[
-                                                                      sectionIndex
-                                                                    ],
-                                                                  chapterID:
-                                                                    selectedKeyConcept.chapter_id,
-                                                                  periodID: item?.id,
-                                                                  keyConceptID:
-                                                                    selectedKeyConcept?.key_concept_id,
+                                                                isEdit: true,
+                                                                isFromLessonPlan: true,
+                                                                viewHomework: {
+                                                                  hw_data: {
+                                                                    data: {
+                                                                      hw_id:
+                                                                        assignedHWList[
+                                                                          index
+                                                                        ]?.hw_id,
+                                                                    },
+                                                                  },
+                                                                  filterData: {
+                                                                    section_id:
+                                                                      assignedHWList[
+                                                                        index
+                                                                      ]?.section_id[
+                                                                        sectionIndex
+                                                                      ],
+                                                                  },
                                                                 },
-                                                                subject: {
-                                                                  subject_name:
-                                                                    history?.location
-                                                                      ?.state
-                                                                      ?.subjectName,
-                                                                  subject_id: subjectId,
-                                                                },
-                                                                isDiaryEdit: true,
                                                               },
                                                             });
                                                           }}
@@ -2279,15 +2268,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                     </div>
                   </div>
                 </div>
-                {/* <span>
-                  : {nextPeriodDetails?.period_name} {'> '}
-                  {nextPeriodDetails?.key_concept__topic_name} {'> '}
-                  {nextPeriodDetails?.chapter__chapter_name} {'> '}
-                  {boardFilterArr.includes(window.location.host)
-                    ? nextPeriodDetails?.chapter__lt_module__lt_module_name + ' > '
-                    : null}
-                  {nextPeriodDetails?.volume_name}
-                </span> */}
                 <Button
                   type='default'
                   onClick={handleNextPeriodResource}

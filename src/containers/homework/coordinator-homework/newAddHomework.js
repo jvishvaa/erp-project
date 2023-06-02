@@ -21,6 +21,7 @@ import {
   addHomeWorkCoord,
   setSelectedHomework,
   addHomeWork,
+  fetchTeacherHomeworkDetailsById,
 } from '../../../redux/actions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -99,6 +100,7 @@ const AddHomeworkCordNew = ({
   onAddHomeworkedit,
   onSetSelectedHomework,
   selectedHomeworkDetails,
+  getHomeworkDetailsById,
 }) => {
   const location = useLocation();
   const classes = useStyles();
@@ -154,10 +156,7 @@ const AddHomeworkCordNew = ({
       setName(selectedHomeworkDetails?.homework_name);
       setDateValue(selectedHomeworkDetails?.last_submission_dt);
       setDescription(selectedHomeworkDetails?.description);
-      if (
-        selectedHomeworkDetails?.hw_questions.some((e) => e.is_central === true) &&
-        propData.isEdit
-      ) {
+      if (selectedHomeworkDetails?.description == '' && propData.isEdit) {
         setIsAutoAssignDiary(true);
       }
 
@@ -173,7 +172,11 @@ const AddHomeworkCordNew = ({
     }
     console.log(formRef.current, 'form');
   }, [selectedHomeworkDetails, propData]);
-
+  useEffect(() => {
+    if (propData?.viewHomework?.hw_data?.data?.hw_id && propData?.isFromLessonPlan) {
+      getHomeworkDetailsById(propData?.viewHomework?.hw_data?.data?.hw_id);
+    }
+  }, [propData?.viewHomework?.hw_data?.data?.hw_id]);
   const validateHomework = () => {
     let isFormValid = true;
     if (!name.trim()) {
@@ -581,6 +584,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
+  },
+  getHomeworkDetailsById: (id) => {
+    dispatch(fetchTeacherHomeworkDetailsById(id));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(AddHomeworkCordNew);
