@@ -1934,7 +1934,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                           .map((item) => item?.id)
                                           .filter(
                                             (el) =>
-                                              assignedHWList
+                                              assignedDiaryList
                                                 .map((item) => item.section_mapping)
                                                 .flat()
                                                 .indexOf(el) < 0
@@ -2085,8 +2085,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                   <Panel
                                     collapsible={true}
                                     header={
-                                      <div className='row'>
-                                        <div className='col-2'>
+                                      <div className='row align-items-center'>
+                                        <div className='col-2 pr-0'>
                                           <ReadOutlined
                                             style={{
                                               fontSize: 30,
@@ -2094,7 +2094,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                             }}
                                           />
                                         </div>
-                                        <div className='col-10'>
+                                        <div className='col-10 pl-1'>
                                           <div className='th-fw-500 th-16 text-capitalize'>
                                             Diary
                                           </div>
@@ -2104,7 +2104,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                               .map((item) => item?.section)
                                               .flat()
                                               .map((el) => el?.slice(-1))
-                                              .toString()}
+                                              .join(', ')}
                                           </div>
                                         </div>
                                       </div>
@@ -2156,6 +2156,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                             subject_id: subjectId,
                                                           },
                                                           isDiaryEdit: true,
+                                                          isDiaryAutoAssign: true,
                                                         },
                                                       });
                                                     }}
@@ -2228,8 +2229,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                   <Panel
                                     collapsible={true}
                                     header={
-                                      <div className='row'>
-                                        <div className='col-2'>
+                                      <div className='row align-items-center'>
+                                        <div className='col-2 pr-0'>
                                           <ReadOutlined
                                             style={{
                                               fontSize: 30,
@@ -2237,17 +2238,17 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                             }}
                                           />
                                         </div>
-                                        <div className='col-10'>
+                                        <div className='col-10 pl-1'>
                                           <div className='th-fw-500 th-16 text-capitalize'>
                                             Homework
                                           </div>
-                                          <div className='th-green th-14'>
+                                          <div className='th-green th-14 pr-3'>
                                             Successfully Assigned for Sections &nbsp;
                                             {assignedHWList
                                               .map((item) => item?.section)
                                               .flat()
                                               .map((el) => el?.slice(-1))
-                                              .toString()}
+                                              .join(', ')}
                                           </div>
                                         </div>
                                       </div>
@@ -2299,6 +2300,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                             subject_id: subjectId,
                                                           },
                                                           isDiaryEdit: true,
+                                                          isDiaryAutoAssign: true,
                                                         },
                                                       });
                                                     }}
@@ -2344,7 +2346,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                       });
                                                     }}
                                                   >
-                                                    View Diary
+                                                    View Homework
                                                   </div>
                                                 </Space>
                                               )}

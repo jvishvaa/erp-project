@@ -344,6 +344,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         data: data,
         subject,
         isDiaryEdit: true,
+        isDiaryAutoAssign: data?.hw_description ? false : true,
       },
     });
   };
