@@ -146,7 +146,7 @@ const StudentSidePhysicalActivity = () => {
     //   setShowDrawer(false);
     //   setShowSideDrawer(true);
     // }
-    //setSelectedActivity(data);
+    setSelectedActivity(data);
   };
   const handleViewBMIModal = (data) => {
     fetchBMIData(data?.id);
@@ -180,13 +180,13 @@ const StudentSidePhysicalActivity = () => {
           array.push(temp);
         });
         setRatingReview(response.data);
-        fetchMedia(response.data?.id);
+        // fetchMedia(response.data?.id);
         if (is_round_available) {
           setShowDrawer(true);
         } else {
           setShowSideDrawer(true);
         }
-        setSelectedActivity(response.data);
+        // setSelectedActivity(response.data);
         setLoading(false);
       })
       .catch((error) => {
