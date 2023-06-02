@@ -252,6 +252,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       });
       setKeyConceptName(params.value.key_concept__topic_name);
       setChapterName(params.value.chapter__chapter_name);
+      setGSMappingID(params.value.chapter__grade_subject_mapping_id);
     }
   };
   const closeDrawer = () => {
@@ -875,26 +876,26 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         fetchUpcomigPeriod(lastPeriod.id);
       }
       // alert('add period use effect');
-      fetchCentralHomework({
-        chapter: lastPeriod?.chapter_id,
-        period: lastPeriod?.period_name,
-        topic_id: lastPeriod?.key_concept_id,
-      });
       setCurrentPanel(addedPeriods.length - 1);
-      // if (isAutoAssignDiary) {
-      let title = addedPeriods?.reduce((initialValue, data) => {
-        let key = data['chapter__chapter_name'];
-        if (!initialValue[key]) {
-          initialValue[key] = [];
-        }
-        initialValue[key].push(data?.key_concept__topic_name);
-        return initialValue;
-      }, {});
-      let combinedTitle = Object.keys(title)
-        ?.map((item) => item + ' - ' + title[item]?.map((each) => each).join(','))
-        .join(',');
-      setHomeworkTitle(`HW : ${combinedTitle}`);
-      // }
+      if (isAutoAssignDiary) {
+        fetchCentralHomework({
+          chapter: lastPeriod?.chapter_id,
+          period: lastPeriod?.period_name,
+          topic_id: lastPeriod?.key_concept_id,
+        });
+        let title = addedPeriods?.reduce((initialValue, data) => {
+          let key = data['chapter__chapter_name'];
+          if (!initialValue[key]) {
+            initialValue[key] = [];
+          }
+          initialValue[key].push(data?.key_concept__topic_name);
+          return initialValue;
+        }, {});
+        let combinedTitle = Object.keys(title)
+          ?.map((item) => item + ' - ' + title[item]?.map((each) => each).join(','))
+          .join(',');
+        setHomeworkTitle(`HW : ${combinedTitle}`);
+      }
     } else {
       setUpcomingPeriod({});
       setClearUpcomingPeriod(true);
@@ -1175,6 +1176,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       let editData = history.location.state.data;
       let editSubject = history.location.state.subject;
       setIsDiaryEdit(history?.location?.state?.isDiaryEdit);
+      setIsAutoAssignDiary(history?.location?.state?.isDiaryAutoAssign);
       setDiaryID(history.location.state.data?.diary_id);
       formRef.current.setFieldsValue({
         grade: editData?.grade_name,
@@ -1994,9 +1996,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           maxLength={100}
                         />
                       </div>
-                      {/* {questionList.hw_questions?.some(
-                        (e) => e.is_central === true
-                      ) ? null : (
+                      {isAutoAssignDiary ? null : (
                         <div className='row py-2'>
                           <div className='th-black-1 th-fw-600 pb-1'>Instructions</div>
                           <Input
@@ -2007,7 +2007,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             maxLength={250}
                           />
                         </div>
-                      )} */}
+                      )}
                       <div className='row align-items-center'>
                         <span className='th-black-1 th-fw-600'>Due Date</span>
                         <span className='th-br-4 p-1 th-bg-grey ml-2'>

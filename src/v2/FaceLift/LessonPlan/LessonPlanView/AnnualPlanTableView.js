@@ -156,7 +156,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const [assignedDiaryList, setAssignedDiaryList] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState();
 
-  console.log('rohan', selectedPeriod, selectedChapter, selectedKeyConcept);
   const env = window.location.host;
   const domain = window.location.host.split('.');
   let domain_name =
@@ -293,7 +292,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
         params: { ...params },
       })
       .then((res) => {
-        // console.log(res);
         setEbookCount(res?.data?.result?.ebook_count);
         setIbookCount(res?.data?.result?.ibook_count);
       })
@@ -364,7 +362,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
           setIbookData(res.data.result.result);
           // setTotal(res.data.result.total_ebooks)
           setTotalIbook(res.data.result.count);
-          // console.log(res.data.result);
           // message.success('Ibooks Fetched Successfully');
           setLoading(false);
         } else {
@@ -783,7 +780,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   };
 
   const handleAssign = (files, subject_mapping) => {
-    // console.log(files,[resourcesData?.central_grade_subject_map_id], 'period');
     const obj = {
       is_central: true,
       id: files?.question_paper_id,
@@ -795,7 +791,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       is_question_wise: files?.is_question_wise,
     };
     initAddQuestionPaperToTest(obj);
-    // console.log(obj, 'obj');
     history.push('/create-assesment');
   };
 
@@ -1760,7 +1755,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                       .map((item) => item?.id)
                                       .filter(
                                         (el) =>
-                                          assignedHWList
+                                          assignedDiaryList
                                             .map((item) => item.section_mapping)
                                             .flat()
                                             .indexOf(el) < 0
@@ -1890,8 +1885,8 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                       <Panel
                                         collapsible={true}
                                         header={
-                                          <div className='row'>
-                                            <div className='col-2'>
+                                          <div className='row align-items-center'>
+                                            <div className='col-2 pr-0'>
                                               <ReadOutlined
                                                 style={{
                                                   fontSize: 30,
@@ -1899,17 +1894,17 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                 }}
                                               />
                                             </div>
-                                            <div className='col-10'>
+                                            <div className='col-10 pl-1'>
                                               <div className='th-fw-500 th-16 text-capitalize'>
                                                 Diary
                                               </div>
-                                              <div className='th-green th-14'>
+                                              <div className='th-green th-14 pr-3'>
                                                 Successfully Assigned for Sections &nbsp;
                                                 {assignedDiaryList
                                                   .map((item) => item?.section)
                                                   .flat()
                                                   .map((el) => el?.slice(-1))
-                                                  .toString()}
+                                                  .join(', ')}
                                               </div>
                                             </div>
                                           </div>
@@ -2046,8 +2041,8 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                       <Panel
                                         collapsible={true}
                                         header={
-                                          <div className='row'>
-                                            <div className='col-2'>
+                                          <div className='row align-items-center'>
+                                            <div className='col-2 pr-0'>
                                               <ReadOutlined
                                                 style={{
                                                   fontSize: 30,
@@ -2055,17 +2050,17 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                 }}
                                               />
                                             </div>
-                                            <div className='col-10'>
+                                            <div className='col-10 pl-1'>
                                               <div className='th-fw-500 th-16 text-capitalize'>
                                                 Homework
                                               </div>
-                                              <div className='th-green th-14'>
+                                              <div className='th-green th-14 pr-3'>
                                                 Successfully Assigned for Sections &nbsp;
                                                 {assignedHWList
                                                   .map((item) => item?.section)
                                                   .flat()
                                                   .map((el) => el?.slice(-1))
-                                                  .toString()}
+                                                  .join(', ')}
                                               </div>
                                             </div>
                                           </div>
@@ -2174,7 +2169,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                             });
                                                           }}
                                                         >
-                                                          View Diary
+                                                          View Homework
                                                         </div>
                                                       </Space>
                                                     )}
