@@ -877,7 +877,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       }
       // alert('add period use effect');
       setCurrentPanel(addedPeriods.length - 1);
-      if (isAutoAssignDiary) {
+      if (isAutoAssignDiary && boardFilterArr.includes(window.location.host)) {
         fetchCentralHomework({
           chapter: lastPeriod?.chapter_id,
           period: lastPeriod?.period_name,
@@ -1987,24 +1987,25 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 topic_id: el?.key_concept_id,
                               });
                             });
-
-                            let title = addedPeriods?.reduce((initialValue, data) => {
-                              let key = data['chapter__chapter_name'];
-                              if (!initialValue[key]) {
-                                initialValue[key] = [];
-                              }
-                              initialValue[key].push(data?.key_concept__topic_name);
-                              return initialValue;
-                            }, {});
-                            let combinedTitle = Object.keys(title)
-                              ?.map(
-                                (item) =>
-                                  item +
-                                  ' - ' +
-                                  title[item]?.map((each) => each).join(',')
-                              )
-                              .join(',');
-                            setHomeworkTitle(`HW : ${combinedTitle}`);
+                            if (boardFilterArr.includes(window.location.host)) {
+                              let title = addedPeriods?.reduce((initialValue, data) => {
+                                let key = data['chapter__chapter_name'];
+                                if (!initialValue[key]) {
+                                  initialValue[key] = [];
+                                }
+                                initialValue[key].push(data?.key_concept__topic_name);
+                                return initialValue;
+                              }, {});
+                              let combinedTitle = Object.keys(title)
+                                ?.map(
+                                  (item) =>
+                                    item +
+                                    ' - ' +
+                                    title[item]?.map((each) => each).join(',')
+                                )
+                                .join(',');
+                              setHomeworkTitle(`HW : ${combinedTitle}`);
+                            }
                           } else {
                             setQuestionList([
                               {

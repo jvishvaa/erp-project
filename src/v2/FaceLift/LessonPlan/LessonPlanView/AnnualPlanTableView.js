@@ -1671,14 +1671,28 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                             >
                               Clear
                             </div>
-                            <div
-                              className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
-                              onClick={() => {
-                                markPeriodComplete(item);
-                              }}
-                            >
-                              Update
-                            </div>
+                            {item?.section_wise_completion?.filter(
+                              (item) => item.is_completed
+                            )?.length === item?.section_wise_completion?.length ? (
+                              <div
+                                className='th-white p-2 mx-2 th-br-6'
+                                style={{
+                                  background: '#8dadff',
+                                  cursor: 'not-allowed',
+                                }}
+                              >
+                                Update
+                              </div>
+                            ) : (
+                              <div
+                                className='th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
+                                onClick={() => {
+                                  markPeriodComplete(item);
+                                }}
+                              >
+                                Update
+                              </div>
+                            )}
                           </div>
                           {showError && completeSections?.length < 1 && (
                             <div className='th-red'>
