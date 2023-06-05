@@ -619,6 +619,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       });
     } else {
       setShowError(true);
+      setLoadingDrawer(false);
     }
   };
   const getSortedPeriodData = (data) => {
