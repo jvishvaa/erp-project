@@ -906,7 +906,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setHomeworkTitle();
     }
   }, [addedPeriods]);
-
+  console.log('rohan', allowAutoAssignDiary);
   const mapAssignedHomework = () => {
     setQuestionEdit(true);
     axios
@@ -1223,7 +1223,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: editSubject?.subject_id,
-        grade_id: editData?.grade_id,
+        grade_id: Array.isArray(editData?.grade_id)
+          ? editData?.grade_id[0]
+          : editData?.grade_id,
       });
       fetchAssessmentData({
         section_mapping: editData?.section_mapping_id,
@@ -1949,17 +1951,28 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           if (hwMappingID) {
                             setHomeworkMapped(true);
                           }
-                          setQuestionList([
-                            {
-                              id: cuid(),
-                              question: '',
-                              attachments: [],
-                              is_attachment_enable: false,
-                              max_attachment: 2,
-                              penTool: false,
-                              is_central: false,
-                            },
-                          ]);
+                          if (addedPeriods.length > 0) {
+                            // let lastPeriod = addedPeriods[addedPeriods.length - 1];
+                            addedPeriods.map((el) => {
+                              return fetchCentralHomework({
+                                chapter: el?.chapter_id,
+                                period: el?.period_name,
+                                topic_id: el?.key_concept_id,
+                              });
+                            });
+                          } else {
+                            setQuestionList([
+                              {
+                                id: cuid(),
+                                question: '',
+                                attachments: [],
+                                is_attachment_enable: false,
+                                max_attachment: 2,
+                                penTool: false,
+                                is_central: false,
+                              },
+                            ]);
+                          }
                         }}
                       >
                         <PlusOutlined className='mr-2' />

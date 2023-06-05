@@ -1902,6 +1902,8 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                       assignedDiaryList[index]
                                                         ?.created_by &&
                                                     assignedDiaryList[index]?.hw_status !=
+                                                      2 &&
+                                                    assignedDiaryList[index]?.hw_status !=
                                                       3 &&
                                                     assignedDiaryList[index]?.hw_status !=
                                                       4 ? (
@@ -1919,6 +1921,9 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                                   ...assignedDiaryList[
                                                                     index
                                                                   ],
+                                                                  grade_name:
+                                                                    history?.location
+                                                                      ?.state?.gradeName,
                                                                   diary_id:
                                                                     assignedDiaryList[
                                                                       index
@@ -2062,9 +2067,8 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                     <div className='th-fw-500 text-capitalize'>
                                                       {each}
                                                     </div>
-                                                    {user_id ==
-                                                      assignedHWList[index]
-                                                        ?.created_by_staff &&
+                                                    {assignedHWList[index]?.hw_status !=
+                                                      2 &&
                                                     assignedHWList[index]?.hw_status !=
                                                       3 &&
                                                     assignedHWList[index]?.hw_status !=
@@ -2104,7 +2108,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                                     },
                                                                   },
                                                                   filterData: {
-                                                                    section_id:
+                                                                    sectionId:
                                                                       assignedHWList[
                                                                         index
                                                                       ]?.section_id[
