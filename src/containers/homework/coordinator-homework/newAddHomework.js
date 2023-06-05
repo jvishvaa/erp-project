@@ -185,12 +185,15 @@ const AddHomeworkCordNew = ({
     } else {
       setErrors((prevState) => ({ ...prevState, name: '' }));
     }
-    if (!description.trim()) {
-      isFormValid = false;
-      setErrors((prevState) => ({ ...prevState, description: 'Required' }));
-    } else {
-      setErrors((prevState) => ({ ...prevState, description: '' }));
+    if (!isAutoAssignDiary) {
+      if (!description.trim()) {
+        isFormValid = false;
+        setErrors((prevState) => ({ ...prevState, description: 'Required' }));
+      } else {
+        setErrors((prevState) => ({ ...prevState, description: '' }));
+      }
     }
+
     const questionsWithValidations = [...questions];
     questions.forEach((q, index) => {
       const { error, errorObj } = validateQuestions(q);
