@@ -906,7 +906,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setHomeworkTitle();
     }
   }, [addedPeriods]);
-  console.log('rohan', allowAutoAssignDiary);
   const mapAssignedHomework = () => {
     setQuestionEdit(true);
     axios
@@ -1960,6 +1959,24 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 topic_id: el?.key_concept_id,
                               });
                             });
+
+                            let title = addedPeriods?.reduce((initialValue, data) => {
+                              let key = data['chapter__chapter_name'];
+                              if (!initialValue[key]) {
+                                initialValue[key] = [];
+                              }
+                              initialValue[key].push(data?.key_concept__topic_name);
+                              return initialValue;
+                            }, {});
+                            let combinedTitle = Object.keys(title)
+                              ?.map(
+                                (item) =>
+                                  item +
+                                  ' - ' +
+                                  title[item]?.map((each) => each).join(',')
+                              )
+                              .join(',');
+                            setHomeworkTitle(`HW : ${combinedTitle}`);
                           } else {
                             setQuestionList([
                               {
@@ -1985,6 +2002,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           onClick={() => {
                             setShowHomeworkForm(false);
                             setHomeworkMapped(false);
+                            setQuestionList([]);
                           }}
                         >
                           Remove Homework <CloseCircleOutlined className='ml-2' />
@@ -2403,7 +2421,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               {isAutoAssignDiary ? (
                                 (
                                   Array.isArray(sectionMappingID)
-                                    ? sectionMappingID.every((val) =>
+                                    ? sectionMappingID?.every((val) =>
                                         item?.completion_status
                                           ?.filter((item) => item?.is_complete === true)
                                           ?.map((item) => item?.section_id)
@@ -2454,19 +2472,20 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 </div>
                               </div>
                             ) : null} */}
-
                           <div className='col-12 col-sm-6 pl-0'>
                             {isAutoAssignDiary ? (
-                              Array.isArray(sectionMappingID) ? (
-                                sectionMappingID?.every((val) =>
-                                  item?.completion_status
-                                    ?.filter((item) => item?.is_complete === true)
-                                    ?.map((item) => item?.section_id)
-                                    .includes(val)
-                                )
-                              ) : item?.completion_status?.filter(
-                                  (item) => item?.section_id === sectionMappingID
-                                )[0]?.is_complete === true ? null : (
+                              (
+                                Array.isArray(sectionMappingID)
+                                  ? sectionMappingID?.every((val) =>
+                                      item?.completion_status
+                                        ?.filter((item) => item?.is_complete === true)
+                                        ?.map((item) => item?.section_id)
+                                        .includes(val)
+                                    )
+                                  : item?.completion_status?.filter(
+                                      (item) => item?.section_id === sectionMappingID
+                                    )[0]?.is_complete == true
+                              ) ? null : (
                                 <div className='th-bg-green-2 px-2 py-1 th-br-6'>
                                   <Checkbox
                                     onChange={() => {
@@ -2483,7 +2502,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               )[0]?.is_complete === true ? null : (
                               <div className='th-bg-green-2 px-2 py-1 th-br-6'>
                                 <Checkbox
-                                  onChange={() => markPeriodComplete(item)}
+                                  onChange={() => {
+                                    markPeriodComplete(item);
+                                  }}
                                   className='th-green th-fw-500'
                                 >
                                   Mark Complete
@@ -2583,7 +2604,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                             //   (item) => item?.is_complete == false
                                             // ).length == 0
                                             Array.isArray(sectionMappingID)
-                                              ? sectionMappingID.every((val) =>
+                                              ? sectionMappingID?.every((val) =>
                                                   item?.completion_status
                                                     ?.filter(
                                                       (item) => item?.is_complete === true

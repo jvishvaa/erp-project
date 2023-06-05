@@ -2096,6 +2096,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                               </div>
                                               {user_id ==
                                                 assignedDiaryList[index]?.created_by &&
+                                              assignedDiaryList[index]?.hw_status != 2 &&
                                               assignedDiaryList[index]?.hw_status != 3 &&
                                               assignedDiaryList[index]?.hw_status != 4 ? (
                                                 <Space>
@@ -2240,7 +2241,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                               <div className='th-fw-500 text-capitalize'>
                                                 {each}
                                               </div>
-                                              {assignedHWList[index]?.hw_status != 3 &&
+                                              {assignedHWList[index]?.hw_status != 2 &&
+                                              assignedHWList[index]?.hw_status != 3 &&
                                               assignedHWList[index]?.hw_status != 4 ? (
                                                 <Space>
                                                   <Tag
@@ -2317,9 +2319,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                     onClick={() => {
                                                       history.push({
                                                         pathname: '/homework/teacher',
-                                                        diary_created_at:
-                                                          assignedDiaryList[index]
-                                                            ?.diary_created_at,
                                                         state: {
                                                           currentHomework: {
                                                             assigned_date:
