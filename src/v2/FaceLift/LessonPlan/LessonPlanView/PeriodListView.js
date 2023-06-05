@@ -2110,6 +2110,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                         state: {
                                                           data: {
                                                             ...assignedDiaryList[index],
+                                                            grade_name: gradeName,
                                                             diary_id:
                                                               assignedDiaryList[index]
                                                                 .dairy_id,
@@ -2239,9 +2240,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                               <div className='th-fw-500 text-capitalize'>
                                                 {each}
                                               </div>
-                                              {user_id ==
-                                                assignedHWList[index]?.created_by_staff &&
-                                              assignedHWList[index]?.hw_status != 3 &&
+                                              {assignedHWList[index]?.hw_status != 3 &&
                                               assignedHWList[index]?.hw_status != 4 ? (
                                                 <Space>
                                                   <Tag
@@ -2274,7 +2273,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                               },
                                                             },
                                                             filterData: {
-                                                              section_id:
+                                                              sectionId:
                                                                 assignedHWList[index]
                                                                   ?.section_id[
                                                                   sectionIndex

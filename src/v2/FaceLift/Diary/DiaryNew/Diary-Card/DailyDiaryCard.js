@@ -605,6 +605,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             </Tag>
           </div>
           {user_id == diary?.teacher_id &&
+            diary?.hw_status != 2 &&
             diary?.hw_status != 3 &&
             diary?.hw_status != 4 && (
               <div className='col-1 text-right pl-0'>
@@ -669,7 +670,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             </div>
           ) : (
             <div className='col-12 p-1'>
-              {diary?.hw_description ? (
+              {diary?.teacher_report?.homework ? (
                 <div className='row th-bg-grey pl-1' style={{ height: 85 }}>
                   <div className='col-12 pl-0 th-10'>
                     <div className='th-fw-600 th-black-1'>Title</div>
