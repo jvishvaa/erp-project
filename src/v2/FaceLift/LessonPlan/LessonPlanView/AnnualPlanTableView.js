@@ -2153,11 +2153,36 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                           className='th-pointer th-button-active th-br-8 px-2 py-1 th-12'
                                                           onClick={() => {
                                                             history.push({
-                                                              pathname: '/diary/teacher',
+                                                              pathname:
+                                                                '/homework/teacher',
                                                               state: {
-                                                                diary_created_at:
-                                                                  assignedDiaryList[index]
-                                                                    ?.diary_created_at,
+                                                                currentHomework: {
+                                                                  assigned_date:
+                                                                    assignedHWList[index]
+                                                                      ?.created_at,
+                                                                  grade_id: gradeId,
+                                                                  grade_name:
+                                                                    history?.location
+                                                                      ?.state?.gradeName,
+                                                                  section_name: each,
+                                                                  section_mapping:
+                                                                    assignedHWList[index]
+                                                                      .section_mapping[
+                                                                      sectionIndex
+                                                                    ],
+                                                                  section_id:
+                                                                    assignedHWList[index]
+                                                                      ?.section_id[
+                                                                      sectionIndex
+                                                                    ],
+                                                                  subject_name:
+                                                                    history?.location
+                                                                      ?.state
+                                                                      ?.subjectName,
+                                                                  submission_date:
+                                                                    assignedHWList[index]
+                                                                      ?.last_submission_dt,
+                                                                },
                                                               },
                                                             });
                                                           }}

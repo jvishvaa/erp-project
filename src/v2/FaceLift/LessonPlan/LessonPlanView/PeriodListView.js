@@ -2319,9 +2319,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                     onClick={() => {
                                                       history.push({
                                                         pathname: '/homework/teacher',
-                                                        diary_created_at:
-                                                          assignedDiaryList[index]
-                                                            ?.diary_created_at,
                                                         state: {
                                                           currentHomework: {
                                                             assigned_date:
