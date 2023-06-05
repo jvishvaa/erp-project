@@ -1413,6 +1413,34 @@ const DailyDiary = ({ isSubstituteDiary }) => {
             );
             setShowHomeworkForm(true);
             // setHomeworkMapped(true);
+          } else {
+            if (allowAutoAssignDiary) {
+              if (questionList.length == 0) {
+                setQuestionList([
+                  {
+                    id: cuid(),
+                    question: '',
+                    attachments: [],
+                    is_attachment_enable: false,
+                    max_attachment: 2,
+                    penTool: false,
+                    is_central: false,
+                  },
+                ]);
+              }
+            } else {
+              setQuestionList([
+                {
+                  id: cuid(),
+                  question: '',
+                  attachments: [],
+                  is_attachment_enable: false,
+                  max_attachment: 2,
+                  penTool: false,
+                  is_central: false,
+                },
+              ]);
+            }
           }
         }
       })
