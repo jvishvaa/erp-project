@@ -593,6 +593,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setHomeworkDetails({});
     setHomeworkMapped(false);
     setHomeworkInstructions();
+    setHomeworkTitle();
     setActivityData([]);
     setQuestionList([]);
     if (e) {
@@ -870,7 +871,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       // alert('add period use effect');
       setCurrentPanel(addedPeriods.length - 1);
       if (
-        // isAutoAssignDiary &&
+        isAutoAssignDiary &&
         boardFilterArr.includes(window.location.host) &&
         allowAutoAssignDiary
       ) {
@@ -1955,7 +1956,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                         className='th-bg-grey th-black-1 px-2 py-1 th-pointer th-br-6'
                         style={{ border: '1px solid #d9d9d9' }}
                         onClick={() => {
-                          setShowHomeworkForm(true);
                           if (hwMappingID) {
                             setHomeworkMapped(true);
                           }
@@ -1993,6 +1993,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 .join(',');
                               setHomeworkTitle(`HW : ${combinedTitle}`);
                             }
+                            setShowHomeworkForm(true);
                           } else {
                             setQuestionList([
                               {
@@ -2005,6 +2006,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 is_central: false,
                               },
                             ]);
+                            setShowHomeworkForm(true);
                           }
                         }}
                       >

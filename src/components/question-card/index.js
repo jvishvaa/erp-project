@@ -618,7 +618,6 @@ const QuestionCard = ({
                     <TextField
                       id='question'
                       name='question'
-                      className='text-justify'
                       onChange={(e) => {
                         if (
                           window.location.pathname.includes('/diary/') ||

@@ -32,6 +32,7 @@ const Attachment = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openVideoModal, setOpenVideoModal] = useState(false);
   const [openAudioModal, setOpenAudioModal] = useState(false);
+  const isDairy = window.location.pathname.includes('/diary/') ? true : false;
 
   let isAudioVideo = false;
   let isAudioFile = false;
@@ -94,7 +95,7 @@ const Attachment = (props) => {
                     </IconButton>
                   )}
 
-                  {actions?.includes('delete') && (
+                  {actions?.includes('delete') && !isDairy && (
                     <IconButton
                       size='small'
                       onClick={(e) => {
@@ -139,7 +140,7 @@ const Attachment = (props) => {
     );
   } else {
     if (isVideoFile) {
-      console.log(isVideoFile , 'isvideo');
+      console.log(isVideoFile, 'isvideo');
       markup = (
         <>
           <div className='file-card-container'>
@@ -170,7 +171,7 @@ const Attachment = (props) => {
                       <CreateIcon style={{ color: '#ffffff' }} />
                     </IconButton>
                   )} */}
-                  {actions?.includes('delete') && (
+                  {actions?.includes('delete') && !isDairy && (
                     <IconButton
                       size='small'
                       onClick={(e) => {
@@ -180,14 +181,14 @@ const Attachment = (props) => {
                       <DeleteIcon style={{ color: '#ffffff' }} />
                     </IconButton>
                   )}
-                   <IconButton
-                      size='small'
-                      onClick={(e) => {
-                        setOpenVideoModal(true);
-                      }}
-                    >
-                      <PlayArrowIcon style={{ color: '#ffffff' }} />
-                    </IconButton>
+                  <IconButton
+                    size='small'
+                    onClick={(e) => {
+                      setOpenVideoModal(true);
+                    }}
+                  >
+                    <PlayArrowIcon style={{ color: '#ffffff' }} />
+                  </IconButton>
                 </div>
               </div>
             </div>
@@ -204,11 +205,16 @@ const Attachment = (props) => {
               openModal={openModal}
               setOpenModal={setOpenModal}
               ispdf={ispdf}
-            isfile={'file'}
+              isfile={'file'}
             />
           )}
-          {openVideoModal && <VideoModal openVideoModal={openVideoModal} src={`${urlPrefix}/${fileUrl}`}  setOpenVideoModal={setOpenVideoModal} />}
-
+          {openVideoModal && (
+            <VideoModal
+              openVideoModal={openVideoModal}
+              src={`${urlPrefix}/${fileUrl}`}
+              setOpenVideoModal={setOpenVideoModal}
+            />
+          )}
         </>
       );
     }
@@ -247,7 +253,7 @@ const Attachment = (props) => {
                       <CreateIcon style={{ color: '#ffffff' }} />
                     </IconButton>
                   )} */}
-                  {actions?.includes('delete') && (
+                  {actions?.includes('delete') && !isDairy && (
                     <IconButton
                       size='small'
                       onClick={(e) => {
@@ -257,14 +263,14 @@ const Attachment = (props) => {
                       <DeleteIcon style={{ color: '#ffffff' }} />
                     </IconButton>
                   )}
-                    <IconButton
-                      size='small'
-                      onClick={(e) => {
-                        setOpenAudioModal(true);
-                      }}
-                    >
-                      <PlayArrowIcon style={{ color: '#ffffff' }} />
-                    </IconButton>
+                  <IconButton
+                    size='small'
+                    onClick={(e) => {
+                      setOpenAudioModal(true);
+                    }}
+                  >
+                    <PlayArrowIcon style={{ color: '#ffffff' }} />
+                  </IconButton>
                 </div>
               </div>
             </div>
@@ -281,11 +287,16 @@ const Attachment = (props) => {
               openModal={openModal}
               setOpenModal={setOpenModal}
               ispdf={ispdf}
-            isfile={'file'}
+              isfile={'file'}
             />
           )}
-          {openAudioModal && <AudioModal openAudioModal={openAudioModal} src={`${urlPrefix}/${fileUrl}`}  setOpenAudioModal={setOpenAudioModal} />}
-
+          {openAudioModal && (
+            <AudioModal
+              openAudioModal={openAudioModal}
+              src={`${urlPrefix}/${fileUrl}`}
+              setOpenAudioModal={setOpenAudioModal}
+            />
+          )}
         </>
       );
     }
