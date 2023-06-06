@@ -968,11 +968,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
     setQuestionEdit(true);
     setLoading(true);
-<<<<<<< HEAD
     let reqObj = {
-=======
-    const reqObj = {
->>>>>>> stage
       name: homeworkTitle,
       description: homeworkInstructions,
       section_mapping: Array.isArray(sectionMappingID)
