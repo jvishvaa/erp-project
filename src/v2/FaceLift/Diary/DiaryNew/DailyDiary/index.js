@@ -869,7 +869,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       }
       // alert('add period use effect');
       setCurrentPanel(addedPeriods.length - 1);
-      if (isAutoAssignDiary && boardFilterArr.includes(window.location.host)) {
+      if (
+        // isAutoAssignDiary &&
+        boardFilterArr.includes(window.location.host) &&
+        allowAutoAssignDiary
+      ) {
         fetchCentralHomework({
           chapter: lastPeriod?.chapter_id,
           period: lastPeriod?.period_name,
@@ -895,7 +899,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setChapterName();
       setKeyConceptID();
       setKeyConceptName();
-      setHomeworkTitle();
+      if (allowAutoAssignDiary) {
+        setHomeworkInstructions('');
+        setHomeworkTitle();
+      }
     }
   }, [addedPeriods]);
   const mapAssignedHomework = () => {
@@ -1363,8 +1370,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     ));
   };
 
-  const fetchCentralHomework = (params = {}) => {
-    axiosInstance
+  const fetchCentralHomework = async (params = {}) => {
+    await axiosInstance
       .get(`${endpoints?.dailyDiary?.centralHomeworkData}`, {
         params: { ...params, ...(allowAutoAssignDiary ? { config: 'True' } : {}) },
         headers: {
@@ -1378,6 +1385,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
             (item) => item.document_type == 'Homework' && item?.homework_text !== ''
           );
           if (homeworkData.length > 0) {
+            setIsAutoAssignDiary(true);
             let centralHomework = {
               id: cuid(),
               question: homeworkData[0]?.homework_text,
@@ -1679,15 +1687,16 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           openPeriodInfoModal();
                                           if (addedPeriods.length == 1) {
                                             setClearTodaysTopic(true);
-                                            setShowHomeworkForm(false);
+                                            if (allowAutoAssignDiary) {
+                                              setShowHomeworkForm(false);
+                                            }
                                           }
                                           const index = addedPeriods.indexOf(item);
                                           const newList = addedPeriods.slice();
                                           newList.splice(index, 1);
                                           setAddedPeriods(newList);
-                                          if (!isDiaryEdit) {
-                                            removeQuestion(index);
-                                          }
+
+                                          removeQuestion(index);
                                           if (isDiaryEdit) {
                                             if (
                                               !editData?.periods_data
@@ -1954,16 +1963,17 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             setHomeworkTitle();
                             // let lastPeriod = addedPeriods[addedPeriods.length - 1];
                             addedPeriods.map((el) => {
-                              return fetchCentralHomework({
-                                chapter: el?.chapter_id,
-                                period: el?.period_name,
-                                topic_id: el?.key_concept_id,
-                              });
+                              return setTimeout(() => {
+                                fetchCentralHomework({
+                                  chapter: el?.chapter_id,
+                                  period: el?.period_name,
+                                  topic_id: el?.key_concept_id,
+                                });
+                              }, 500);
                             });
                             if (
                               boardFilterArr.includes(window.location.host) &&
-                              allowAutoAssignDiary &&
-                              isAutoAssignDiary
+                              allowAutoAssignDiary
                             ) {
                               let title = addedPeriods?.reduce((initialValue, data) => {
                                 let key = data['chapter__chapter_name'];
@@ -2091,8 +2101,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               <Button
                                 className='th-width-100 th-br-6 th-pointer'
                                 onClick={() => {
-                                  setQueIndexCounter(queIndexCounter + 1);
-                                  addNewQuestion(queIndexCounter + 1);
+                                  setQueIndexCounter(questionList.length);
+                                  addNewQuestion(questionList.length);
                                 }}
                               >
                                 Add Another Question
