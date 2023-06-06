@@ -780,15 +780,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         if (result?.data?.status == 200) {
           if (result?.data?.data.length > 0) {
             setAssignedHomework(result?.data?.data);
-          } else {
-            //   if (Object.keys(selectedPeriod).length > 0) {
-            //     fetchCentralHomework({
-            //       chapter: selectedPeriod?.chapterID,
-            //       period: selectedPeriod?.periodName,
-            //       topic_id: selectedPeriod?.keyConceptID,
-            //     });
-            //   }
-            // }
           }
         }
       })
@@ -1396,16 +1387,19 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               is_central: true,
             };
 
-            // if (questionList.length == 1) {
-            //   setQuestionList(questionModify([centralHomework]));
-            // } else {
-            if (Array.isArray(questionList)) {
-              setQuestionList(questionModify([...questionList, centralHomework]));
+            let newQuestionList = questionList.filter((el) => el.question !== '');
+            if (Array.isArray(newQuestionList)) {
+              if (
+                !newQuestionList
+                  .map((item) => item?.question)
+                  .includes(centralHomework?.question)
+              ) {
+                setQuestionList(questionModify([...newQuestionList, centralHomework]));
+              }
             } else {
               setQuestionList(questionModify([centralHomework]));
             }
-            // setQuestionList(questionModify([...questionList, centralHomework]));
-            // }
+
             setSubmissionDate(
               moment(homeworkDetails?.last_submission_dt)
                 .add(1, 'days')
@@ -1450,9 +1444,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
   useEffect(() => {
     if (Object.keys(homeworkDetails).length > 0) {
-      if (Array.isArray(questionList)) {
+      let newQuestionList = questionList.filter((el) => el.question !== '');
+      if (Array.isArray(newQuestionList)) {
         setQuestionList(
-          questionModify([...questionList, homeworkDetails?.hw_questions].flat())
+          questionModify([...newQuestionList, homeworkDetails?.hw_questions].flat())
         );
       } else {
         setQuestionList(questionModify(homeworkDetails?.hw_questions));
@@ -1460,32 +1455,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSubmissionDate(moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD'));
       setHomeworkTitle(homeworkDetails?.homework_name);
       setHomeworkInstructions(homeworkDetails?.description);
-      // alert('add homework use effect');
-      //   if(Object.keys(selectedPeriod).length > 0) {
-      //   setTimeout(() => {
-      //     fetchCentralHomework({
-      //       chapter: selectedPeriod?.chapterID,
-      //       period: selectedPeriod?.periodName,
-      //       topic_id: selectedPeriod?.keyConceptID,
-      //     });
-      //   }, 500);
-      // }
     }
-    //  else if (!isAutoAssignDiary) {
-    //   setQuestionList([
-    //     {
-    //       id: cuid(),
-    //       question: '',
-    //       attachments: [],
-    //       is_attachment_enable: false,
-    //       max_attachment: 2,
-    //       penTool: false,
-    //     },
-    //   ]);
-    //   // setSubmissionDate();
-    //   setHomeworkTitle();
-    //   setHomeworkInstructions();
-    // }
   }, [homeworkDetails]);
 
   useEffect(() => {
@@ -1966,7 +1936,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     </div>
                   </div>
                 </div>
-
                 {subjectID && (
                   <div className='row px-3 py-2'>
                     {!showHomeworkForm ? (
@@ -1979,6 +1948,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             setHomeworkMapped(true);
                           }
                           if (addedPeriods.length > 0) {
+                            setHomeworkTitle();
                             // let lastPeriod = addedPeriods[addedPeriods.length - 1];
                             addedPeriods.map((el) => {
                               return fetchCentralHomework({
@@ -1987,7 +1957,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 topic_id: el?.key_concept_id,
                               });
                             });
-                            if (boardFilterArr.includes(window.location.host)) {
+                            if (
+                              boardFilterArr.includes(window.location.host) &&
+                              allowAutoAssignDiary &&
+                              isAutoAssignDiary
+                            ) {
                               let title = addedPeriods?.reduce((initialValue, data) => {
                                 let key = data['chapter__chapter_name'];
                                 if (!initialValue[key]) {
@@ -2135,7 +2109,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     </div>
                   </div>
                 )}
-
                 {(todaysAssessment.length > 0 || upcomingAssessment.length > 0) &&
                   subjectID && (
                     <div
@@ -2258,7 +2231,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     />
                   </div>
                 </div>
-
                 <div className='row pt-3'>
                   <div className='col-md-2 col-6'>
                     <Button
