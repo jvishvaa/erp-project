@@ -136,6 +136,8 @@ const QuestionCard = ({
   const [resourcesData, setResourcesData] = useState();
 
   const [selectedResources, setSelectedResources] = useState([]);
+  const isDiaryView = window.location.pathname.includes('/diary/');
+
   let boardFilterArr = [
     'orchids.letseduvate.com',
     'localhost:3000',
@@ -337,7 +339,7 @@ const QuestionCard = ({
         }
       });
     }
-    setshowPrev(count > 2);
+    setshowPrev(isDiaryView ? count > 1 : count > 2);
   }, [attachmentPreviews]);
 
   useEffect(() => {
@@ -619,10 +621,7 @@ const QuestionCard = ({
                       id='question'
                       name='question'
                       onChange={(e) => {
-                        if (
-                          window.location.pathname.includes('/diary/') ||
-                          isCentralHomework
-                        ) {
+                        if (isDiaryView || isCentralHomework) {
                           return;
                         } else {
                           setquestionData(e.target.value);

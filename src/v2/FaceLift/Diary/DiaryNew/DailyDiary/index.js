@@ -868,7 +868,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       } else {
         fetchUpcomigPeriod(lastPeriod.id);
       }
-      // alert('add period use effect');
+
       setCurrentPanel(addedPeriods.length - 1);
       if (
         isAutoAssignDiary &&
@@ -885,11 +885,16 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           if (!initialValue[key]) {
             initialValue[key] = [];
           }
-          initialValue[key].push(data?.key_concept__topic_name);
+          if (!initialValue[key][data?.key_concept__topic_name]) {
+            initialValue[key].push(data?.key_concept__topic_name);
+          }
           return initialValue;
         }, {});
         let combinedTitle = Object.keys(title)
-          ?.map((item) => item + ' - ' + title[item]?.map((each) => each).join(','))
+          ?.map(
+            (item) =>
+              item + ' - ' + [...new Set(title[item])]?.map((each) => each).join(',')
+          )
           .join(',');
         setHomeworkTitle(`HW : ${combinedTitle}`);
       }
@@ -1371,8 +1376,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     ));
   };
 
-  const fetchCentralHomework = async (params = {}) => {
-    await axiosInstance
+  const fetchCentralHomework = (params = {}) => {
+    axiosInstance
       .get(`${endpoints?.dailyDiary?.centralHomeworkData}`, {
         params: { ...params, ...(allowAutoAssignDiary ? { config: 'True' } : {}) },
         headers: {
@@ -1963,13 +1968,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             setHomeworkTitle();
                             // let lastPeriod = addedPeriods[addedPeriods.length - 1];
                             addedPeriods.map((el) => {
-                              return setTimeout(() => {
-                                fetchCentralHomework({
-                                  chapter: el?.chapter_id,
-                                  period: el?.period_name,
-                                  topic_id: el?.key_concept_id,
-                                });
-                              }, 500);
+                              return fetchCentralHomework({
+                                chapter: el?.chapter_id,
+                                period: el?.period_name,
+                                topic_id: el?.key_concept_id,
+                              });
                             });
                             if (
                               boardFilterArr.includes(window.location.host) &&
@@ -1980,7 +1983,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 if (!initialValue[key]) {
                                   initialValue[key] = [];
                                 }
-                                initialValue[key].push(data?.key_concept__topic_name);
+                                // initialValue[key].push(data?.key_concept__topic_name);
+                                if (!initialValue[key][data?.key_concept__topic_name]) {
+                                  initialValue[key].push(data?.key_concept__topic_name);
+                                }
                                 return initialValue;
                               }, {});
                               let combinedTitle = Object.keys(title)
@@ -1988,7 +1994,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                   (item) =>
                                     item +
                                     ' - ' +
-                                    title[item]?.map((each) => each).join(',')
+                                    [...new Set(title[item])]
+                                      ?.map((each) => each)
+                                      .join(',')
                                 )
                                 .join(',');
                               setHomeworkTitle(`HW : ${combinedTitle}`);
