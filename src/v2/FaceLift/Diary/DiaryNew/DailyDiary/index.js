@@ -592,6 +592,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setShowHomeworkForm(false);
     setHomeworkDetails({});
     setHomeworkMapped(false);
+    setHomeworkInstructions();
     setActivityData([]);
     setQuestionList([]);
     if (e) {
@@ -1455,6 +1456,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSubmissionDate(moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD'));
       setHomeworkTitle(homeworkDetails?.homework_name);
       setHomeworkInstructions(homeworkDetails?.description);
+    } else {
+      setHomeworkInstructions('');
     }
   }, [homeworkDetails]);
 
