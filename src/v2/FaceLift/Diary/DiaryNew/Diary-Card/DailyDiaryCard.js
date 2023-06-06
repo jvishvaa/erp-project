@@ -670,7 +670,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             </div>
           ) : (
             <div className='col-12 p-1'>
-              {diary?.teacher_report?.homework ? (
+              {diary.hw_due_date !== '' ? (
                 <div className='row th-bg-grey pl-1' style={{ height: 85 }}>
                   <div className='col-12 pl-0 th-10'>
                     <div className='th-fw-600 th-black-1'>Title</div>
@@ -713,13 +713,13 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 <div className={`row justify-content-end align-items-end h-100`}>
                   <div
                     className={`d-flex align-items-end th-bg-grey th-12 p-0  ${
-                      diary?.hw_description ? 'mr-2' : 'mr-1'
+                      diary?.hw_due_date ? 'mr-2' : 'mr-1'
                     }`}
                   >
                     <span>
                       <img src={hwIcon} height={30} />
                     </span>
-                    {!diary?.teacher_report?.homework && (
+                    {diary.hw_due_date == '' && (
                       <span className='th-red px-2 th-lh-10 py-1 th-fw-500'>
                         Homework <br />
                         not assigned
