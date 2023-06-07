@@ -49,6 +49,7 @@ let boardFilterArr = [
   'dev.olvorchidnaigaon.letseduvate.com',
   'ui-revamp1.letseduvate.com',
   'qa.olvorchidnaigaon.letseduvate.com',
+  'test.orchids.letseduvate.com',
 ];
 const { Panel } = Collapse;
 const DailyDiary = ({ isSubstituteDiary }) => {

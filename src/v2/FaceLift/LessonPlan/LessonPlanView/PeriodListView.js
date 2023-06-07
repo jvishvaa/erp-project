@@ -137,6 +137,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
     'dev.olvorchidnaigaon.letseduvate.com',
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
+    'test.orchids.letseduvate.com',
   ];
   const env = window.location.host;
   const domain = window.location.host.split('.');
