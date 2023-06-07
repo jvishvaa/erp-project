@@ -877,11 +877,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       }
 
       setCurrentPanel(addedPeriods.length - 1);
-      if (
-        isAutoAssignDiary &&
-        boardFilterArr.includes(window.location.host) &&
-        allowAutoAssignDiary
-      ) {
+      if (isAutoAssignDiary && allowAutoAssignDiary) {
         addedPeriods.map((el, index) => {
           setTimeout(() => {
             fetchCentralHomework({
@@ -1995,10 +1991,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 });
                               }, index * 200);
                             });
-                            if (
-                              boardFilterArr.includes(window.location.host) &&
-                              allowAutoAssignDiary
-                            ) {
+                            if (allowAutoAssignDiary) {
                               let title = addedPeriods?.reduce((initialValue, data) => {
                                 let key = data['chapter__chapter_name'];
                                 if (!initialValue[key]) {
