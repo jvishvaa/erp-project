@@ -17,7 +17,12 @@ import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 import Layout from '../../Layout';
 import QuestionCard from '../../../components/question-card';
-import { addHomeWorkCoord, setSelectedHomework ,addHomeWork} from '../../../redux/actions';
+import {
+  addHomeWorkCoord,
+  setSelectedHomework,
+  addHomeWork,
+  fetchTeacherHomeworkDetailsById,
+} from '../../../redux/actions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -26,9 +31,27 @@ import axiosInstance from '../../../config/axios';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
-import { message, Tabs, Input, Select, Drawer, Form, DatePicker, Button, Breadcrumb } from 'antd';
-import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DownOutlined, CalendarOutlined, MoreOutlined } from '@ant-design/icons';
-import QuestionCardNew from './questioncardnew'
+import {
+  message,
+  Tabs,
+  Input,
+  Select,
+  Drawer,
+  Form,
+  DatePicker,
+  Button,
+  Breadcrumb,
+} from 'antd';
+import {
+  CloseCircleOutlined,
+  LeftOutlined,
+  RightOutlined,
+  EditOutlined,
+  DownOutlined,
+  CalendarOutlined,
+  MoreOutlined,
+} from '@ant-design/icons';
+import QuestionCardNew from './questioncardnew';
 import Loader from 'components/loader/loader';
 
 const validateQuestions = (obj) => {
@@ -72,8 +95,13 @@ const StyledOutlinedButton = withStyles((theme) => ({
 
 const { Option } = Select;
 
-
-const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHomework, selectedHomeworkDetails }) => {
+const AddHomeworkCordNew = ({
+  onAddHomework,
+  onAddHomeworkedit,
+  onSetSelectedHomework,
+  selectedHomeworkDetails,
+  getHomeworkDetailsById,
+}) => {
   const location = useLocation();
   const classes = useStyles();
   const [name, setName] = useState('');
@@ -103,9 +131,10 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
   const branch = params.branch;
   const grade = params.grade;
   const [date, setDate] = useState(new Date());
+  const [isAutoAssignDiary, setIsAutoAssignDiary] = useState(false);
   const [dateValue, setDateValue] = useState(moment(params.date).format('YYYY-MM-DD'));
   const [hwId, sethwId] = useState(propData?.viewHomework?.hw_data?.data?.hw_id);
-  const [ loading , setLoading ] = useState(false)
+  const [loading, setLoading] = useState(false);
   const handleDateChange = (event, value) => {
     setDateValue(value);
   };
@@ -120,13 +149,16 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
       formRef.current.setFieldsValue({
         title: selectedHomeworkDetails?.homework_name,
         instruction: selectedHomeworkDetails?.description,
-        date: moment(selectedHomeworkDetails?.last_submission_dt)
-      })
+        date: moment(selectedHomeworkDetails?.last_submission_dt),
+      });
 
-      setQueIndexCounter(selectedHomeworkDetails?.hw_questions?.length - 1)
+      setQueIndexCounter(selectedHomeworkDetails?.hw_questions?.length - 1);
       setName(selectedHomeworkDetails?.homework_name);
-      setDateValue(selectedHomeworkDetails?.last_submission_dt)
+      setDateValue(selectedHomeworkDetails?.last_submission_dt);
       setDescription(selectedHomeworkDetails?.description);
+      if (selectedHomeworkDetails?.description == '' && propData.isEdit) {
+        setIsAutoAssignDiary(true);
+      }
 
       const que = selectedHomeworkDetails?.hw_questions?.map((data) => ({
         id: cuid(),
@@ -139,9 +171,12 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
       setQuestions(que);
     }
     console.log(formRef.current, 'form');
-  }, [selectedHomeworkDetails, propData ]);
-
-
+  }, [selectedHomeworkDetails, propData]);
+  useEffect(() => {
+    if (propData?.viewHomework?.hw_data?.data?.hw_id && propData?.isFromLessonPlan) {
+      getHomeworkDetailsById(propData?.viewHomework?.hw_data?.data?.hw_id);
+    }
+  }, [propData?.viewHomework?.hw_data?.data?.hw_id]);
   const validateHomework = () => {
     let isFormValid = true;
     if (!name.trim()) {
@@ -150,12 +185,15 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
     } else {
       setErrors((prevState) => ({ ...prevState, name: '' }));
     }
-    if (!description.trim()) {
-      isFormValid = false;
-      setErrors((prevState) => ({ ...prevState, description: 'Required' }));
-    } else {
-      setErrors((prevState) => ({ ...prevState, description: '' }));
+    if (!isAutoAssignDiary) {
+      if (!description.trim()) {
+        isFormValid = false;
+        setErrors((prevState) => ({ ...prevState, description: 'Required' }));
+      } else {
+        setErrors((prevState) => ({ ...prevState, description: '' }));
+      }
     }
+
     const questionsWithValidations = [...questions];
     questions.forEach((q, index) => {
       const { error, errorObj } = validateQuestions(q);
@@ -172,23 +210,25 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
   const handleAddHomeWork = async () => {
     console.log(name, description, sectionDisplay, dateValue, questions, 'filter');
     if (name == undefined || name == '') {
-      return message.error('Please Add Title')
+      return message.error('Please Add Title');
     }
     if (dateValue == undefined || dateValue == '') {
-      return message.error('Please Add Due Date')
+      return message.error('Please Add Due Date');
     }
-    if (description == undefined || description == '') {
-      return message.error('Please Add Description')
+    if (!isAutoAssignDiary) {
+      if (description == undefined || description == '') {
+        return message.error('Please Add Description');
+      }
     }
     if (sectionDisplay?.length == 0) {
-      return message.error('Please Select Section')
+      return message.error('Please Select Section');
     }
-    if(questions.filter((item) => item?.question == '')?.length > 0){
-      return message.error('Please Add Questions')
+    if (questions.filter((item) => item?.question == '')?.length > 0) {
+      return message.error('Please Add Questions');
     }
     const isFormValid = validateHomework();
     if (isFormValid) {
-      setLoading(true)
+      setLoading(true);
       const reqObj = {
         name,
         description,
@@ -205,30 +245,30 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
         user_id: params.coord_selected_teacher_id,
       };
       try {
-        if(propData?.isEdit == true){
-          const response = await onAddHomeworkedit(reqObj , propData?.isEdit , hwId);
-        setAlert('success', 'Homework Updated');  
-        setLoading(false)
-        }else {
-          const response = await onAddHomework(reqObj );
-        setAlert('success', 'Homework Added');  
-        setLoading(false)
+        if (propData?.isEdit == true) {
+          const response = await onAddHomeworkedit(reqObj, propData?.isEdit, hwId);
+          setAlert('success', 'Homework Updated');
+          setLoading(false);
+        } else {
+          const response = await onAddHomework(reqObj);
+          setAlert('success', 'Homework Added');
+          setLoading(false);
         }
         // setAlert('success', 'Homework added');
         if (propData?.isTeacher == true) {
           history.push({
             pathname: '/homework/teacher/',
-            state: propData
+            state: propData,
           });
         } else {
           history.push({
             pathname: '/homework/coordinator/',
-            state: propData
+            state: propData,
           });
         }
       } catch (error) {
         setAlert('error', 'Failed to add homework');
-        setLoading(false)
+        setLoading(false);
       }
     }
   };
@@ -327,15 +367,15 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
     if (propData?.isTeacher == true) {
       history.push({
         pathname: '/homework/teacher/',
-        state: propData
+        state: propData,
       });
     } else {
       history.push({
         pathname: '/homework/coordinator/',
-        state: propData
+        state: propData,
       });
     }
-  }
+  };
 
   const sectionOptions = sections?.map((each) => {
     return (
@@ -345,62 +385,123 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
     );
   });
 
-  let sectionsEdit = sectionOptions.filter((item) => item?.props?.value == propData?.viewHomework?.filterData?.sectionId)
-  console.log(sectionsEdit, sectionOptions , 'sec');
+  let sectionsEdit = sectionOptions.filter(
+    (item) => item?.props?.value == propData?.viewHomework?.filterData?.sectionId
+  );
+  console.log(sectionsEdit, sectionOptions, 'sec');
   useEffect(() => {
-    if(propData?.isEdit){
-      handleSection(null,sectionsEdit)
+    if (propData?.isEdit) {
+      handleSection(null, sectionsEdit);
     }
     formRef.current.setFieldsValue({
-      section: sectionsEdit?.map((item) => item?.props?.children)
-    })
-  },[sections])
+      section: sectionsEdit?.map((item) => item?.props?.children),
+    });
+  }, [sections]);
   return (
     <Layout>
       <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
         <Breadcrumb separator='>'>
-          <Breadcrumb.Item
-            className='th-grey th-16 th-pointer'
-          >
-            Homework
-          </Breadcrumb.Item>
+          <Breadcrumb.Item className='th-grey th-16 th-pointer'>Homework</Breadcrumb.Item>
           <Breadcrumb.Item className='th-black-1 th-16'>
             {propData?.isEdit ? 'Edit Homework' : 'Add Homework'}
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
       {loading == true ? <Loader /> : ''}
-      <div className='card row' style={{ margin: '10px auto', width: '90%', padding: '15px', background: '#EEF2F8', cursor: 'pointer' }} onClick={() => goback()} >
-        <LeftOutlined style={{ display: 'flex', alignItems: 'center', color: '#535BA0' }} />
-        <p style={{ display: 'flex', alignItems: 'center', color: '#535BA0', fontWeight: '600' }} className='th-14 mx-1 my-0' >Back to Homework</p>
+      <div
+        className='card row'
+        style={{
+          margin: '10px auto',
+          width: '90%',
+          padding: '15px',
+          background: '#EEF2F8',
+          cursor: 'pointer',
+        }}
+        onClick={() => goback()}
+      >
+        <LeftOutlined
+          style={{ display: 'flex', alignItems: 'center', color: '#535BA0' }}
+        />
+        <p
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            color: '#535BA0',
+            fontWeight: '600',
+          }}
+          className='th-14 mx-1 my-0'
+        >
+          Back to Homework
+        </p>
       </div>
-      <div className='card row' style={{ margin: '10px auto', width: '80%', padding: '15px', background: '#EEF2F8' }}>
-        <p style={{ color: '#535BA0' }} className='th-14 col-md-6 th-fw-600' >Subject : {params.subject}</p>
-        <p style={{ color: '#535BA0', display: 'flex', justifyContent: 'flex-end' }} className='th-14 col-md-6 th-fw-600' >Creation Date : {moment(params.date).format('DD-MM-YYYY')}</p>
-
+      <div
+        className='card row'
+        style={{
+          margin: '10px auto',
+          width: '80%',
+          padding: '15px',
+          background: '#EEF2F8',
+        }}
+      >
+        <p style={{ color: '#535BA0' }} className='th-14 col-md-6 th-fw-600'>
+          Subject : {params.subject}
+        </p>
+        <p
+          style={{ color: '#535BA0', display: 'flex', justifyContent: 'flex-end' }}
+          className='th-14 col-md-6 th-fw-600'
+        >
+          Creation Date : {moment(params.date).format('DD-MM-YYYY')}
+        </p>
       </div>
-      <div className='card row' style={{ margin: '10px auto', width: '80%', padding: '15px' }}>
-        <Form ref={formRef} style={{ width: '100%' }} >
-          <p className='th-14 m-0 th-fw-600' >Title</p>
+      <div
+        className='card row'
+        style={{ margin: '10px auto', width: '80%', padding: '15px' }}
+      >
+        <Form ref={formRef} style={{ width: '100%' }}>
+          <p className='th-14 m-0 th-fw-600'>Title</p>
           <Form.Item name='title'>
-            <Input placeholder="Enter Title" className='th-br-5' onChange={(e) => {
-              setName(e.target.value);
-            }} style={{ background: '#EEF2F8' }} maxLength={30} />
+            <Input
+              placeholder='Enter Title'
+              className='th-br-5'
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              style={{ background: '#EEF2F8' }}
+              maxLength={30}
+            />
           </Form.Item>
           <div>
-            <p className='th-14 m-0 th-fw-600' >Instruction</p>
-            <Form.Item name='instruction'>
-              <Input placeholder="Enter Instruction" className='th-br-5' onChange={(e) => {
-                setDescription(e.target.value);
-              }} style={{ background: '#EEF2F8' }} maxLength={100} />
-            </Form.Item>
+            {!isAutoAssignDiary && (
+              <>
+                <p className='th-14 m-0 th-fw-600'>Instruction</p>
+                <Form.Item name='instruction'>
+                  <Input
+                    placeholder='Enter Instruction'
+                    className='th-br-5'
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                    }}
+                    style={{ background: '#EEF2F8' }}
+                    maxLength={100}
+                  />
+                </Form.Item>
+              </>
+            )}
           </div>
-          <div className='row' >
+          <div className='row'>
             <div className='p-0'>
               <div className='m-0 text-left th-fw-600 th-14'>Due Date</div>
               <Form.Item name='date'>
-                <DatePicker value={dateValue}
-                  onChange={handleDateChange} defaultValue={moment(params.date)} style={{ textAlign: 'left' }} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} className='dueDateaddHw' />
+                <DatePicker
+                  value={dateValue}
+                  onChange={handleDateChange}
+                  defaultValue={moment(params.date)}
+                  style={{ textAlign: 'left' }}
+                  disabledDate={(current) =>
+                    current.isBefore(moment().subtract(1, 'day'))
+                  }
+                  className='dueDateaddHw'
+                />
               </Form.Item>
             </div>
             <div className='p-0 mx-1 w-25'>
@@ -454,21 +555,20 @@ const AddHomeworkCordNew = ({ onAddHomework,onAddHomeworkedit, onSetSelectedHome
             </div>
           </Form.Item>
           <div className='row'>
-            <Button onClick={() => {
-              setQueIndexCounter(queIndexCounter + 1);
-              addNewQuestion(queIndexCounter + 1);
-            }} >
+            <Button
+              onClick={() => {
+                setQueIndexCounter(queIndexCounter + 1);
+                addNewQuestion(queIndexCounter + 1);
+              }}
+            >
               Add Another Question
             </Button>
             <Button className='mx-2' onClick={handleAddHomeWork} type='primary'>
-              {propData?.isEdit ? "Update" : 'Submit' }
+              {propData?.isEdit ? 'Update' : 'Submit'}
             </Button>
           </div>
-
         </Form>
-
       </div>
-
     </Layout>
   );
 };
@@ -479,14 +579,17 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onAddHomeworkedit: (reqObj , isEdit , hwId) => {
-    return dispatch(addHomeWork(reqObj, isEdit , hwId));
+  onAddHomeworkedit: (reqObj, isEdit, hwId) => {
+    return dispatch(addHomeWork(reqObj, isEdit, hwId));
   },
   onAddHomework: (reqObj) => {
     return dispatch(addHomeWorkCoord(reqObj));
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
+  },
+  getHomeworkDetailsById: (id) => {
+    dispatch(fetchTeacherHomeworkDetailsById(id));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(AddHomeworkCordNew);

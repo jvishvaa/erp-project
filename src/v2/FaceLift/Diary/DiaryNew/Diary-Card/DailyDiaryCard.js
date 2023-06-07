@@ -39,7 +39,7 @@ import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import toddlerGroup from '../../../../../assets/images/toddler-group.svg';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { getActivityColor } from 'v2/generalActivityFunction';
+import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
 const { Panel } = Collapse;
 let boardFilterArr = [
   'orchids.letseduvate.com',
@@ -344,6 +344,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         data: data,
         subject,
         isDiaryEdit: true,
+        isDiaryAutoAssign: data?.teacher_report?.homework ? true : false,
       },
     });
   };
@@ -560,55 +561,14 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         subject_id: subject?.subject_id,
         date: moment(diary?.created_at).format('YYYY-MM-DD'),
       });
-      if (subject.subject_name.includes('Physical Activity')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: diary?.grade_id,
-          section_id: diary?.section_id,
-          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
-          type: 'pa',
-        });
-      } else if (subject.subject_name.includes('Public Speaking')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: diary?.grade_id,
-          section_id: diary?.section_id,
-          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
-          type: 'ps',
-        });
-      } else if (subject.subject_name.includes('Visual Arts')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: diary?.grade_id,
-          section_id: diary?.section_id,
-          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
-          type: 'va',
-        });
-      } else if (subject.subject_name.includes('Music')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: diary?.grade_id,
-          section_id: diary?.section_id,
-          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
-          type: 'mu',
-        });
-      } else if (subject.subject_name.includes('Dance')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: diary?.grade_id,
-          section_id: diary?.section_id,
-          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
-          type: 'da',
-        });
-      } else if (subject.subject_name.includes('Theatre')) {
-        fetchActivityData({
-          branch_id: selectedBranch?.branch?.id,
-          grade_id: diary?.grade_id,
-          section_id: diary?.section_id,
-          start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
-          type: 'th',
-        });
-      }
+
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: diary?.grade_id,
+        section_id: diary?.section_id,
+        start_date: moment(diary?.created_at).format('YYYY-MM-DD'),
+        type: subject.subject_name.split('_')[subject.subject_name.split('_').length - 1],
+      });
     }
   }, [drawerVisible]);
 
@@ -644,41 +604,44 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
               {diary?.is_substitute_diary ? 'Substitute Dairy' : 'Daily Diary'}
             </Tag>
           </div>
-          {user_id == diary?.teacher_id && diary?.hw_status != 3 && diary?.hw_status != 4 && (
-            <div className='col-1 text-right pl-0'>
-              <Popover
-                content={
-                  <>
-                    <div
-                      className='row justify-content-between th-pointer'
-                      onClick={() => editDiary(diary)}
-                    >
-                      <span className='th-green th-16'>Edit</span>
-                    </div>
-
-                    {moment().format('DD/MM/YYYY') ==
-                      moment(diary?.created_at).format('DD/MM/YYYY') && (
-                      <Popconfirm
-                        placement='bottomRight'
-                        title={'Are you sure you want to delete this diary?'}
-                        onConfirm={() => deleteDiary(diary?.diary_id)}
-                        okText='Yes'
-                        cancelText='No'
+          {user_id == diary?.teacher_id &&
+            diary?.hw_status != 2 &&
+            diary?.hw_status != 3 &&
+            diary?.hw_status != 4 && (
+              <div className='col-1 text-right pl-0'>
+                <Popover
+                  content={
+                    <>
+                      <div
+                        className='row justify-content-between th-pointer'
+                        onClick={() => editDiary(diary)}
                       >
-                        <div className='row justify-content-between th-pointer pt-2'>
-                          <span className='th-red th-16 '>Delete</span>
-                        </div>
-                      </Popconfirm>
-                    )}
-                  </>
-                }
-                trigger='click'
-                placement='bottomRight'
-              >
-                <MoreOutlined />
-              </Popover>
-            </div>
-          )}
+                        <span className='th-green th-16'>Edit</span>
+                      </div>
+
+                      {moment().format('DD/MM/YYYY') ==
+                        moment(diary?.created_at).format('DD/MM/YYYY') && (
+                        <Popconfirm
+                          placement='bottomRight'
+                          title={'Are you sure you want to delete this diary?'}
+                          onConfirm={() => deleteDiary(diary?.diary_id)}
+                          okText='Yes'
+                          cancelText='No'
+                        >
+                          <div className='row justify-content-between th-pointer pt-2'>
+                            <span className='th-red th-16 '>Delete</span>
+                          </div>
+                        </Popconfirm>
+                      )}
+                    </>
+                  }
+                  trigger='click'
+                  placement='bottomRight'
+                >
+                  <MoreOutlined />
+                </Popover>
+              </div>
+            )}
         </div>
         <div className='row' onClick={showDrawer}>
           {!_.isEmpty(diary?.periods_data) ? (
@@ -696,7 +659,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     : ''}
                 </div>
                 <div className='col-12 px-0 th-10'>
-                  <div className='th-fw-600 th-black-1'>Key Concept</div>
+                  <div className='th-fw-600 th-black-1'>Chapter Name</div>
                 </div>
                 <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate th-16'>
                   {diary?.periods_data
@@ -707,7 +670,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             </div>
           ) : (
             <div className='col-12 p-1'>
-              {diary?.hw_description ? (
+              {diary.hw_due_date !== '' ? (
                 <div className='row th-bg-grey pl-1' style={{ height: 85 }}>
                   <div className='col-12 pl-0 th-10'>
                     <div className='th-fw-600 th-black-1'>Title</div>
@@ -750,13 +713,13 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 <div className={`row justify-content-end align-items-end h-100`}>
                   <div
                     className={`d-flex align-items-end th-bg-grey th-12 p-0  ${
-                      diary?.hw_description ? 'mr-2' : 'mr-1'
+                      diary?.hw_due_date ? 'mr-2' : 'mr-1'
                     }`}
                   >
                     <span>
                       <img src={hwIcon} height={30} />
                     </span>
-                    {!diary?.hw_description && (
+                    {diary.hw_due_date == '' && (
                       <span className='th-red px-2 th-lh-10 py-1 th-fw-500'>
                         Homework <br />
                         not assigned
@@ -1411,17 +1374,19 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     {homeworkDetails?.homework_name}
                   </div>
                 </div>
-                <div className='row py-2'>
-                  <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>
-                    Instructions
+                {homeworkDetails?.description && (
+                  <div className='row py-2'>
+                    <div className='th-black-1 th-fw-600 pb-1 col-12 px-0'>
+                      Instructions
+                    </div>
+                    <div
+                      className='th-black-1 col-12 px-1 th-br-6'
+                      style={{ border: '1px solid #d9d9d9' }}
+                    >
+                      {homeworkDetails?.description}
+                    </div>
                   </div>
-                  <div
-                    className='th-black-1 col-12 px-1 th-br-6'
-                    style={{ border: '1px solid #d9d9d9' }}
-                  >
-                    {homeworkDetails?.description}
-                  </div>
-                </div>
+                )}
                 <div className='row py-2'>
                   <div className='col-3 px-0 th-black-1 th-fw-600 pb-1'>Due Date</div>
                   <div className='col-9 th-black-1 pl-0 th-fw-700 pb-1'>

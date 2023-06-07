@@ -11,7 +11,10 @@ import {
   Button,
   Divider,
   Badge,
+  Popconfirm,
   Pagination,
+  Collapse,
+  Tag,
 } from 'antd';
 import {
   CloseOutlined,
@@ -27,7 +30,9 @@ import {
   FilePptOutlined,
   DownloadOutlined,
   FileUnknownOutlined,
-  PlusCircleOutlined,
+  PlusCircleFilled,
+  FormOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import axios2 from 'axios';
@@ -43,14 +48,6 @@ import periodIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons
 import tickIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/greenTick.svg';
 import analysisIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/analysisIcon.png';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
-import pdfFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pdfFileIcon.svg';
-import videoFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/videoFileIcon.svg';
-import audioFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/audiofile.svg';
-import textFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/textfile.svg';
-import excelFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/excelfile.svg';
-import imageFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/imagefile.svg';
-import defaultFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/defaultfile.svg';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import moment from 'moment';
 import _ from 'lodash';
@@ -61,7 +58,12 @@ import QuestionPaperView from './QuestionPaperView';
 import { addQuestionPaperToTest } from 'redux/actions';
 import { connect } from 'react-redux';
 import ASSIGNTEST from './../../../Assets/images/assigntest.png';
+import diaryIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/diaryIcon.png';
+import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
+import { getFileIcon } from 'v2/getFileIcon';
+
 const { Option } = Select;
+const { Panel } = Collapse;
 
 const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -122,6 +124,11 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   const [isPeriodView, setIsPeriodView] = useState(true);
   const [questionData, setQuestionData] = useState([]);
 
+  const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
+  const [loadingDiaryHW, setLoadingDiaryHW] = useState(false);
+  const [assignedHWList, setAssignedHWList] = useState([]);
+  const [assignedDiaryList, setAssignedDiaryList] = useState([]);
+
   let isStudent = window.location.pathname.includes('student-view');
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -174,7 +181,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   };
 
   const handleAssign = (files) => {
-    // console.log(files, 'period');
     const obj = {
       is_central: true,
       id: files?.question_paper_id,
@@ -186,7 +192,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       is_question_wise: files?.is_question_wise,
     };
     initAddQuestionPaperToTest(obj);
-    // console.log(obj, 'obj');
     history.push('/create-assesment');
   };
 
@@ -240,34 +245,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
 
   const closeSectionList = () => {
     setShowSection(false);
-  };
-  const getFileIcon = (type) => {
-    switch (type) {
-      case 'ppt':
-        return pptFileIcon;
-      case 'pptx':
-        return pptFileIcon;
-      case 'jpeg':
-        return imageFileIcon;
-      case 'jpg':
-        return imageFileIcon;
-      case 'png':
-        return imageFileIcon;
-      case 'xlsx':
-        return excelFileIcon;
-      case 'xls':
-        return excelFileIcon;
-      case 'pdf':
-        return pdfFileIcon;
-      case 'mp4':
-        return videoFileIcon;
-      case 'mp3':
-        return audioFileIcon;
-      case 'txt':
-        return textFileIcon;
-      default:
-        return defaultFileIcon;
-    }
   };
 
   const fetchVolumeListData = () => {
@@ -605,8 +582,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
-              if (!sectionsCompletedSuccess.includes(section?.section__section_name)) {
-                sectionsCompletedSuccess.push(section?.section__section_name);
+              if (
+                !sectionsCompletedSuccess?.map((item) => item?.id).includes(section?.id)
+              ) {
+                sectionsCompletedSuccess.push(section);
               }
               setSectionsCompleted(sectionsCompletedSuccess);
               if (index == completeSections?.length - 1) {
@@ -632,7 +611,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
             }
           })
           .catch((error) => {
-            message.error(error.response.data.message);
+            message.error(error?.response?.data?.message);
           })
           .finally(() => {
             setLoadingDrawer(false);
@@ -640,6 +619,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       });
     } else {
       setShowError(true);
+      setLoadingDrawer(false);
     }
   };
   const getSortedPeriodData = (data) => {
@@ -676,12 +656,21 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
     };
     axios
       .get(`academic/annual-plan/chapter-topic-wise-lp-data/`, {
-        params: { ...params },
+        params: { ...params, ...(allowAutoAssignDiary ? { config: 'True' } : {}) },
       })
       .then((result) => {
         if (result?.data?.status === 200) {
           setResourcesData(result?.data?.data[0]);
           setLoadingDrawer(false);
+          if (allowAutoAssignDiary) {
+            fetchDiaryCompletionStatus({
+              period_id: data?.id,
+              section_mapping: result?.data?.data[0]?.section_wise_completion
+                ?.map((item) => item?.id)
+                .join(','),
+              subject: subjectId,
+            });
+          }
         } else {
           setLoadingDrawer(false);
         }
@@ -737,6 +726,94 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
     fetchVolumeListData();
   }, [window.location.pathname]);
 
+  const fetchAllowAutoDiaryStatus = () => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=hw_auto_asgn`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setAllowAutoAssignDiary(true);
+          } else {
+            setAllowAutoAssignDiary(false);
+          }
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        message.error('error', error?.message);
+      });
+  };
+
+  // Diary Functions
+  const fetchDiaryCompletionStatus = (params = {}) => {
+    setLoadingDiaryHW(true);
+    axios
+      .get(`academic/diary/fetch-diary-homework/`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setAssignedHWList(response?.data?.result['homework']);
+          setAssignedDiaryList(response?.data?.result['diary']);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setLoadingDiaryHW(false);
+      });
+  };
+  const deleteHomework = (id) => {
+    axios
+      .delete(`/academic/${id}/hw-questions/`)
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          if (response?.data?.message.includes('cannot')) {
+            message.warning(response?.data?.message);
+          } else {
+            message.success('Homework deleted successfully!');
+          }
+          setAssignedDiaryList([]);
+          setAssignedHWList([]);
+          fetchDiaryCompletionStatus({
+            period_id: resourcesData?.id,
+            section_mapping: resourcesData?.section_wise_completion
+              ?.map((item) => item?.id)
+              .join(','),
+            subject: subjectId,
+          });
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  const deleteDiary = (id) => {
+    axios
+      .delete(`${endpoints?.dailyDiary?.updateDelete}${id}/update-delete-dairy/`)
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          message.success('Diary deleted successfully!');
+          setAssignedDiaryList([]);
+          setAssignedHWList([]);
+          fetchDiaryCompletionStatus({
+            period_id: resourcesData?.id,
+            section_mapping: resourcesData?.section_wise_completion
+              ?.map((item) => item?.id)
+              .join(','),
+            subject: subjectId,
+          });
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  useEffect(() => {
+    fetchAllowAutoDiaryStatus();
+  }, [selectedBranch]);
+
   useEffect(() => {
     if (myRef.current) executeScroll();
   }, [myRef.current]);
@@ -762,19 +839,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       setChapterId(Number(history?.location?.state?.chapterID));
       setBoardId(history?.location?.state?.boardID);
       setCentralGSID(history?.location?.state?.centralGSID);
-
-      // if (boardFilterArr.includes(window.location.host)) {
-      //   fetchModuleListData({
-      //     subject_id: history?.location?.state?.subjectID,
-      //     volume: history?.location?.state?.volumeID,
-      //     academic_year: history?.location?.state?.centralAcademicYearID,
-      //     grade_id: history?.location?.state?.gradeID,
-      //     branch_id: selectedBranch?.branch?.id,
-      //     board: history?.location?.state?.boardID,
-      //   });
-      // } else {
-
-      // }
     }
   }, [window.location.pathname]);
   useEffect(() => {
@@ -1070,16 +1134,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           });
                         }}
                       >
-                        {/* <div className='row th-fw-600 th-pointer th-primary'>
-                            <div className=''>Portion Document</div>
-                            <div className='ml-3'>
-                              <EyeFilled
-                                className='th-primary'
-                                fontSize={20}
-                                style={{ verticalAlign: 'inherit' }}
-                              />
-                            </div>
-                          </div> */}
                         <div className=' pl-0 col-12e4l th-primary '>
                           <Badge count='1'>
                             <Button icon={<FilePptOutlined />} />
@@ -1114,16 +1168,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           });
                         }}
                       >
-                        {/* <div className='row th-fw-600 th-pointer th-primary'>
-                            <div className=''>Yearly Curriculum Plan</div>
-                            <div className='ml-3'>
-                              <EyeFilled
-                                className='th-primary'
-                                fontSize={20}
-                                style={{ verticalAlign: 'inherit' }}
-                              />
-                            </div>
-                          </div> */}
                         <div className=' pl-0 col-12e4l th-primary '>
                           <Badge count='1'>
                             <Button icon={<SnippetsOutlined />} />
@@ -1520,6 +1564,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                             if (
                               (user_level == 13 &&
                                 files?.document_type == 'Lesson_Plan') ||
+                              (user_level == 13 && files?.document_type == 'Homework') ||
                               (user_level == 13 &&
                                 files?.document_type == 'Teacher_Reading_Material')
                             ) {
@@ -1598,8 +1643,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                         <div className='col-1'>
                                           <a
                                             rel='noopener noreferrer'
-                                            target='_blank'
-                                            // href={`${endpoints.lessonPlan.bucket}/${files?.media_file}`}
+                                            target='_self'
                                             onClick={() =>
                                               downloadMaterial(
                                                 `${endpoints.homework.resourcesFiles}/${each}`,
@@ -1689,32 +1733,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                     />
                                   </a>
                                 </div>
-                                {/* <div className='col-3'>
-                                  <Button
-                                    type='primary'
-                                    className='th-br-4'
-                                    onClick={() => openQpDrawer(files.question_paper_id)}
-                                  >
-                                    View
-                                  </Button>
-                                </div> */}
                               </div>
                             </div>
                           </div>
-                          {/* <div className='row justify-content-end mt-3'>
-                            <div
-                              className='col-md-5 text-right'
-                              style={{ marginRight: '-15px' }}
-                            >
-                              <Button
-                                type='primary'
-                                className='th-br-4 btn-sm'
-                                onClick={() => handleAssign(files)}
-                              >
-                                <PlusCircleOutlined /> Assign Test
-                              </Button>
-                            </div>
-                          </div> */}
                         </div>
                       ) : null}
                     </>
@@ -1769,85 +1790,581 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                       </div>
                     )}
                     {showSection && (
-                      <div className='row' style={{ border: '1px solid #d9d9d9' }}>
-                        {resourcesData?.section_wise_completion?.map((each, i) => (
-                          <div className='col-2 p-2'>
-                            {each.is_completed ? (
-                              <Button disabled>
-                                {each?.section__section_name.slice(-1).toUpperCase()}
-                              </Button>
-                            ) : (
-                              <Button
-                                type={
-                                  completeSections.includes(each) ? 'primary' : 'default'
-                                }
+                      <>
+                        <div className='row' style={{ border: '1px solid #d9d9d9' }}>
+                          {resourcesData?.section_wise_completion?.map((each, i) => (
+                            <div className='col-2 p-2'>
+                              {each.is_completed ? (
+                                <Button disabled>
+                                  {each?.section__section_name.slice(-1).toUpperCase()}
+                                </Button>
+                              ) : (
+                                <Button
+                                  type={
+                                    completeSections.includes(each)
+                                      ? 'primary'
+                                      : 'default'
+                                  }
+                                  onClick={() => {
+                                    if (completeSections.includes(each)) {
+                                      const index = completeSections.indexOf(each);
+                                      const newFileList = completeSections.slice();
+                                      newFileList.splice(index, 1);
+                                      setCompleteSections(newFileList);
+                                    } else {
+                                      setCompleteSections([...completeSections, each]);
+                                    }
+                                  }}
+                                >
+                                  {each?.section__section_name.slice(-1).toUpperCase()}
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                          <div
+                            className='row justify-content-end py-2 mt-2 text-center'
+                            style={{ borderTop: '1px solid #d9d9d9' }}
+                          >
+                            <div className='d-flex'>
+                              {completeSections?.length > 0 && (
+                                <div
+                                  className='th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                  onClick={() => setCompleteSections([])}
+                                >
+                                  Clear
+                                </div>
+                              )}
+
+                              {resourcesData?.section_wise_completion?.filter(
+                                (item) => item.is_completed
+                              )?.length ===
+                              resourcesData?.section_wise_completion?.length ? (
+                                <div
+                                  className='th-white p-2 mx-2 th-br-6'
+                                  style={{
+                                    background: '#8dadff',
+                                    cursor: 'not-allowed',
+                                  }}
+                                >
+                                  Update
+                                </div>
+                              ) : (
+                                <div
+                                  className='th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
+                                  onClick={() => {
+                                    markPeriodComplete(resourcesData);
+                                  }}
+                                >
+                                  Update
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {showError && completeSections?.length < 1 && (
+                            <div className='th-red'>
+                              Please select at least one section first!
+                            </div>
+                          )}
+                          <div className='row th-black-2 mt-2 '>
+                            <div className='col-12 th-grey pl-2 th-12'>
+                              Last Updated {getTimeInterval(resourcesData?.updated_at)}
+                            </div>
+                          </div>
+                        </div>
+                        {allowAutoAssignDiary ? (
+                          assignedDiaryList.map((item) => item?.section).flat().length <
+                          resourcesData?.section_wise_completion?.length ? (
+                            <>
+                              <div
+                                className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'
                                 onClick={() => {
-                                  if (completeSections.includes(each)) {
-                                    const index = completeSections.indexOf(each);
-                                    const newFileList = completeSections.slice();
-                                    newFileList.splice(index, 1);
-                                    setCompleteSections(newFileList);
+                                  if (completeSections?.length > 0) {
+                                    message.error(
+                                      'Please update the status of selected sections first!!'
+                                    );
                                   } else {
-                                    setCompleteSections([...completeSections, each]);
+                                    if (
+                                      resourcesData?.section_wise_completion
+                                        .filter((item) => item?.is_completed == true)
+                                        .map((item) => item?.id)
+                                        .filter(
+                                          (el) =>
+                                            assignedDiaryList
+                                              .map((item) => item.section_mapping)
+                                              .flat()
+                                              .indexOf(el) < 0
+                                        ).length > 0
+                                    ) {
+                                      let excludedSections =
+                                        resourcesData?.section_wise_completion
+                                          .filter((item) => item?.is_completed == true)
+                                          .map((item) => item?.id)
+                                          .filter(
+                                            (el) =>
+                                              assignedDiaryList
+                                                .map((item) => item.section_mapping)
+                                                .flat()
+                                                .indexOf(el) < 0
+                                          );
+                                      history.push({
+                                        pathname: '/create/diary',
+                                        state: {
+                                          periodData: {
+                                            subjectID: subjectId,
+                                            subjectName: subjectName,
+                                            gradeID: gradeId,
+                                            gradeName,
+                                            volumeID: volumeId,
+                                            periodID: resourcesData?.id,
+                                            periodName: resourcesData?.period_name,
+                                            sections:
+                                              resourcesData?.section_wise_completion.filter(
+                                                (item) =>
+                                                  excludedSections.includes(item?.id)
+                                              ),
+                                            chapterID: chapterId,
+                                            chapterName: resourcesData?.chapter_name,
+                                            keyConceptID: drawerData?.key_concept_id,
+                                            keyConceptName: resourcesData?.topic_name,
+                                            board: boardId,
+                                          },
+                                          isDiaryAutoAssign: true,
+                                          isDiaryEdit: assignedDiaryList
+                                            ?.map((item) => item.section_mapping)
+                                            .flat()
+                                            .every((elem) =>
+                                              resourcesData?.section_wise_completion
+                                                ?.filter(
+                                                  (item) => item?.is_completed == true
+                                                )
+                                                .map((item) => item?.id)
+                                                .includes(elem)
+                                            )
+                                            ? true
+                                            : false,
+                                        },
+                                      });
+                                    } else {
+                                      message.error(
+                                        'Please update the status of desired sections first!!'
+                                      );
+                                    }
                                   }
                                 }}
                               >
-                                {each?.section__section_name.slice(-1).toUpperCase()}
-                              </Button>
-                            )}
-                          </div>
-                        ))}
+                                <PlusCircleFilled className='mr-2' /> Add HW & Diary
+                              </div>
 
-                        <div
-                          className='row justify-content-end py-2 mt-2 text-center'
-                          style={{ borderTop: '1px solid #d9d9d9' }}
-                        >
-                          {completeSections?.length > 0 && (
-                            <div
-                              className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
-                              style={{ border: '1px solid #d9d9d9' }}
-                              onClick={() => setCompleteSections([])}
-                            >
-                              Clear
-                            </div>
-                          )}
-
-                          {resourcesData?.section_wise_completion?.filter(
-                            (item) => item.is_completed
-                          )?.length === resourcesData?.section_wise_completion?.length ? (
-                            <div
-                              className='col-3 th-white p-2 mx-2 th-br-6'
-                              style={{
-                                background: '#8dadff',
-                                cursor: 'not-allowed',
-                              }}
-                            >
-                              Update
-                            </div>
-                          ) : (
-                            <div
-                              className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
-                              onClick={() => {
-                                markPeriodComplete(resourcesData);
-                              }}
-                            >
-                              Update
-                            </div>
-                          )}
-                        </div>
-                        {showError && completeSections?.length < 1 && (
-                          <div className='th-red'>
-                            Please select at least one section first!
-                          </div>
-                        )}
-                        <div className='row th-black-2 mt-2 '>
-                          <div className='col-12 th-grey pl-2 th-12'>
-                            Last Updated {getTimeInterval(resourcesData?.updated_at)}
-                          </div>
-                        </div>
-                      </div>
+                              {/* {resourcesData?.section_wise_completion?.filter(
+                                (item) => item?.is_completed == true
+                              )?.length > 0 ? (
+                                <div className='th-bg-primary th-white p-2 text-center mt-2 th-br-8 th-pointer'>
+                                  Create Diary for Sections Rohan{' '}
+                                  {resourcesData?.section_wise_completion
+                                    .filter((item) => item?.is_completed == true)
+                                    .map((item) => item)
+                                    .filter((el) =>
+                                      assignedDiaryList
+                                        .map((item) => item.section_mapping)
+                                        .flat()
+                                        .includes(el?.id)
+                                    )}
+                                </div>
+                              ) : null} */}
+                            </>
+                          ) : null
+                        ) : null}
+                      </>
                     )}
                   </div>
+                  {loadingDiaryHW ? (
+                    <div className='mt-4 text-center'>
+                      <Spin tip='Loading...' />
+                    </div>
+                  ) : (
+                    <>
+                      <div className='row'>
+                        {user_level == 13 ? (
+                          <>
+                            {assignedDiaryList?.map((item) => (
+                              <div
+                                className='col-12 py-3 mt-3'
+                                style={{ border: '1px solid #d9d9d9' }}
+                              >
+                                <div className='d-flex justify-content-between align-items-center'>
+                                  <div className='d-flex justify-content-between align-items-center th-fw-600'>
+                                    <img
+                                      src={diaryIcon}
+                                      alt='image'
+                                      height={28}
+                                      className='mr-3'
+                                    />{' '}
+                                    Diary assigned
+                                  </div>
+                                  <div
+                                    className='th-pointer th-button-active th-br-8 px-2 py-1 th-12 text-capitalize'
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: '/diary/student',
+                                        state: {
+                                          diary_created_at: item?.diary_created_at,
+                                        },
+                                      });
+                                    }}
+                                  >
+                                    View Diary
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {assignedHWList?.map((item) => (
+                              <div
+                                className='col-12 py-3 mt-3'
+                                style={{ border: '1px solid #d9d9d9' }}
+                              >
+                                <div className='d-flex justify-content-between align-items-center'>
+                                  <div className='d-flex justify-content-between align-items-center th-fw-600'>
+                                    <img
+                                      src={hwIcon}
+                                      alt='image'
+                                      height={28}
+                                      className='mr-3'
+                                    />
+                                    Homework assigned
+                                  </div>
+                                  <div
+                                    className='th-pointer th-button-active th-br-8 px-2 py-1 th-12 text-capitalize'
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: '/homework/student',
+                                      });
+                                    }}
+                                  >
+                                    View Homework
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          <>
+                            {assignedDiaryList.length > 0 && (
+                              <div className='col-12 px-0'>
+                                <Collapse
+                                  expandIconPosition='right'
+                                  bordered={true}
+                                  className='th-br-6 my-2 th-bg-white th-width-100'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                  expandIcon={({ isActive }) => (
+                                    <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                                  )}
+                                >
+                                  <Panel
+                                    collapsible={true}
+                                    header={
+                                      <div className='row align-items-center'>
+                                        <div className='col-2 pr-0'>
+                                          <img src={diaryIcon} alt='image' height={28} />
+                                        </div>
+                                        <div className='col-10 pl-1'>
+                                          <div className='th-fw-500 th-16 text-capitalize'>
+                                            Diary
+                                          </div>
+                                          <div className='th-14 pr-3'>
+                                            Status :{' '}
+                                            <span className='th-green'>
+                                              Assigned&nbsp;
+                                            </span>
+                                            for Sections &nbsp;
+                                            {assignedDiaryList
+                                              .map((item) => item?.section)
+                                              .flat()
+                                              .map((el) => el?.slice(-1))
+                                              .join(', ')}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    }
+                                  >
+                                    <div className='row'>
+                                      {assignedDiaryList?.map((el, index) => {
+                                        return el?.section?.map((each, sectionIndex) => (
+                                          <div className='col-12'>
+                                            <div className='d-flex justify-content-between align-items-center py-2'>
+                                              <div className='th-fw-500 text-capitalize'>
+                                                {each}
+                                              </div>
+                                              {user_id ==
+                                                assignedDiaryList[index]?.created_by &&
+                                              assignedDiaryList[index]?.hw_status != 2 &&
+                                              assignedDiaryList[index]?.hw_status != 3 &&
+                                              assignedDiaryList[index]?.hw_status != 4 ? (
+                                                <Space>
+                                                  <Tag
+                                                    icon={<FormOutlined />}
+                                                    title='Edit'
+                                                    color='processing'
+                                                    className='th-pointer th-br-6'
+                                                    onClick={() => {
+                                                      history.push({
+                                                        pathname: '/create/diary',
+                                                        state: {
+                                                          data: {
+                                                            ...assignedDiaryList[index],
+                                                            grade_name: gradeName,
+                                                            diary_id:
+                                                              assignedDiaryList[index]
+                                                                .dairy_id,
+                                                            section_name: each,
+                                                            section_mapping_id:
+                                                              assignedDiaryList[index]
+                                                                .section_mapping[
+                                                                sectionIndex
+                                                              ],
+                                                            section_id:
+                                                              assignedDiaryList[index]
+                                                                ?.section_id[
+                                                                sectionIndex
+                                                              ],
+                                                            chapterID: chapterId,
+                                                            periodID: resourcesData?.id,
+                                                            keyConceptID:
+                                                              drawerData?.key_concept_id,
+                                                          },
+                                                          subject: {
+                                                            subject_name: subjectName,
+                                                            subject_id: subjectId,
+                                                          },
+                                                          isDiaryEdit: true,
+                                                          isDiaryAutoAssign: true,
+                                                        },
+                                                      });
+                                                    }}
+                                                  >
+                                                    Edit
+                                                  </Tag>
+                                                  <Popconfirm
+                                                    placement='bottomRight'
+                                                    title={
+                                                      'Are you sure you want to delete this diary?'
+                                                    }
+                                                    onConfirm={() =>
+                                                      deleteDiary(
+                                                        assignedDiaryList[index].dairy_id
+                                                      )
+                                                    }
+                                                    okText='Yes'
+                                                    cancelText='No'
+                                                    zIndex={2100}
+                                                  >
+                                                    <Tag
+                                                      icon={<DeleteOutlined />}
+                                                      title='Delete'
+                                                      color='volcano'
+                                                      className='th-pointer th-br-6'
+                                                    >
+                                                      Delete
+                                                    </Tag>
+                                                  </Popconfirm>
+                                                </Space>
+                                              ) : (
+                                                <Space>
+                                                  <div
+                                                    className='th-pointer th-button-active th-br-8 px-2 py-1 th-12'
+                                                    onClick={() => {
+                                                      history.push({
+                                                        pathname: '/diary/teacher',
+                                                        state: {
+                                                          diary_created_at:
+                                                            assignedDiaryList[index]
+                                                              ?.diary_created_at,
+                                                        },
+                                                      });
+                                                    }}
+                                                  >
+                                                    View Diary
+                                                  </div>
+                                                </Space>
+                                              )}
+                                            </div>
+                                          </div>
+                                        ));
+                                      })}
+                                    </div>
+                                  </Panel>
+                                </Collapse>
+                              </div>
+                            )}
+                            {assignedHWList.length > 0 && (
+                              <div className='col-12 px-0'>
+                                <Collapse
+                                  expandIconPosition='right'
+                                  bordered={true}
+                                  className='th-br-6 my-2 th-bg-white th-width-100'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                  expandIcon={({ isActive }) => (
+                                    <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                                  )}
+                                >
+                                  <Panel
+                                    collapsible={true}
+                                    header={
+                                      <div className='row align-items-center'>
+                                        <div className='col-2 pr-0'>
+                                          <img src={hwIcon} alt='image' height={28} />
+                                        </div>
+                                        <div className='col-10 pl-1'>
+                                          <div className='th-fw-500 th-16 text-capitalize'>
+                                            Homework
+                                          </div>
+                                          <div className='th-14 pr-3'>
+                                            Status :{' '}
+                                            <span className='th-green'>
+                                              Assigned&nbsp;
+                                            </span>
+                                            for Sections &nbsp;
+                                            {assignedHWList
+                                              .map((item) => item?.section)
+                                              .flat()
+                                              .map((el) => el?.slice(-1))
+                                              .join(', ')}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    }
+                                  >
+                                    <div className='row'>
+                                      {assignedHWList?.map((el, index) => {
+                                        return el?.section?.map((each, sectionIndex) => (
+                                          <div className='col-12'>
+                                            <div className='d-flex justify-content-between align-items-center py-2'>
+                                              <div className='th-fw-500 text-capitalize'>
+                                                {each}
+                                              </div>
+                                              {assignedHWList[index]?.hw_status != 2 &&
+                                              assignedHWList[index]?.hw_status != 3 &&
+                                              assignedHWList[index]?.hw_status != 4 ? (
+                                                <Space>
+                                                  <Tag
+                                                    icon={<FormOutlined />}
+                                                    title='Edit'
+                                                    color='processing'
+                                                    className='th-pointer th-br-6'
+                                                    onClick={() => {
+                                                      history.push({
+                                                        pathname: `/homework/addHomework/${moment(
+                                                          assignedHWList[index]
+                                                            ?.last_submission_dt
+                                                        ).format('YYYY-MM-DD')}/${
+                                                          selectedAcademicYear?.id
+                                                        }/${
+                                                          selectedBranch?.branch?.id
+                                                        }/${gradeId}/${subjectName}/${subjectId}/${
+                                                          assignedHWList[index]
+                                                            ?.uploaded_by
+                                                        }`,
+                                                        state: {
+                                                          isEdit: true,
+                                                          isFromLessonPlan: true,
+                                                          viewHomework: {
+                                                            hw_data: {
+                                                              data: {
+                                                                hw_id:
+                                                                  assignedHWList[index]
+                                                                    ?.hw_id,
+                                                              },
+                                                            },
+                                                            filterData: {
+                                                              sectionId:
+                                                                assignedHWList[index]
+                                                                  ?.section_id[
+                                                                  sectionIndex
+                                                                ],
+                                                            },
+                                                          },
+                                                        },
+                                                      });
+                                                    }}
+                                                  >
+                                                    Edit
+                                                  </Tag>
+                                                  <Popconfirm
+                                                    placement='bottomRight'
+                                                    title={
+                                                      'Are you sure you want to delete this homework?'
+                                                    }
+                                                    onConfirm={() =>
+                                                      deleteHomework(
+                                                        assignedHWList[index].homework_id
+                                                      )
+                                                    }
+                                                    okText='Yes'
+                                                    cancelText='No'
+                                                    zIndex={2100}
+                                                  >
+                                                    <Tag
+                                                      icon={<DeleteOutlined />}
+                                                      title='Delete'
+                                                      color='volcano'
+                                                      className='th-pointer th-br-6'
+                                                    >
+                                                      Delete
+                                                    </Tag>
+                                                  </Popconfirm>
+                                                </Space>
+                                              ) : (
+                                                <Space>
+                                                  <div
+                                                    className='th-pointer th-button-active th-br-8 px-2 py-1 th-12'
+                                                    onClick={() => {
+                                                      history.push({
+                                                        pathname: '/homework/teacher',
+                                                        state: {
+                                                          currentHomework: {
+                                                            assigned_date:
+                                                              assignedHWList[index]
+                                                                ?.created_at,
+                                                            grade_id: gradeId,
+                                                            grade_name: gradeName,
+                                                            section_name: each,
+                                                            section_mapping:
+                                                              assignedHWList[index]
+                                                                .section_mapping[
+                                                                sectionIndex
+                                                              ],
+                                                            section_id:
+                                                              assignedHWList[index]
+                                                                ?.section_id[
+                                                                sectionIndex
+                                                              ],
+                                                            subject_name: subjectName,
+                                                            submission_date:
+                                                              assignedHWList[index]
+                                                                ?.last_submission_dt,
+                                                          },
+                                                        },
+                                                      });
+                                                    }}
+                                                  >
+                                                    View Homework
+                                                  </div>
+                                                </Space>
+                                              )}
+                                            </div>
+                                          </div>
+                                        ));
+                                      })}
+                                    </div>
+                                  </Panel>
+                                </Collapse>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : null}
             </>
@@ -1945,7 +2462,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                   {sectionsCompleted?.length > 1 ? 'Sections' : 'Section'}&nbsp;
                   <span className='th-black-1 th-fw-600 '>
                     {sectionsCompleted
-                      ?.map((item) => item.slice(-1).toUpperCase())
+                      ?.map((item) =>
+                        item?.section__section_name?.slice(-1).toUpperCase()
+                      )
                       .join(', ')}
                   </span>
                 </div>
@@ -1975,12 +2494,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                         </div>
                       </div>
                     </div>
-                    {/* {nextPeriodDetails?.period_name} {'> '}
-                    {nextPeriodDetails?.key_concept__topic_name} {'> '}
-                    {nextPeriodDetails?.chapter__chapter_name} {'> '}
-                    {boardFilterArr.includes(window.location.host)
-                      ? nextPeriodDetails?.chapter__lt_module__lt_module_name + ' > '
-                      : null} */}
                   </div>
                 </div>
                 <div className='text-center'>
@@ -1994,6 +2507,38 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                 </div>
               </div>
             ) : null}
+            {allowAutoAssignDiary && (
+              <div className='col-12 text-center'>
+                <div
+                  className='th-bg-primary th-white p-2 mt-2 text-center th-br-6 th-pointer th-br-8'
+                  onClick={() => {
+                    history.push({
+                      pathname: '/create/diary',
+                      state: {
+                        periodData: {
+                          subjectID: subjectId,
+                          subjectName: subjectName,
+                          gradeID: gradeId,
+                          gradeName,
+                          volumeID: volumeId,
+                          periodID: resourcesData?.id,
+                          periodName: resourcesData?.period_name,
+                          sections: sectionsCompleted,
+                          chapterID: chapterId,
+                          chapterName: resourcesData?.chapter_name,
+                          keyConceptID: drawerData?.key_concept_id,
+                          keyConceptName: resourcesData?.topic_name,
+                          board: boardId,
+                        },
+                        isDiaryAutoAssign: true,
+                      },
+                    });
+                  }}
+                >
+                  <PlusCircleFilled className='mr-2' /> Add HW & Diary
+                </div>
+              </div>
+            )}
           </div>
         </Modal>
       </div>
@@ -2006,5 +2551,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(PeriodListView);
-
-// export default PeriodListView;

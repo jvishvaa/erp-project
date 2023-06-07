@@ -8,46 +8,69 @@ import endpoints from 'config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 import { IsV2Checker } from 'v2/isV2Checker';
-import { Alert, Space, Spin } from 'antd';
+import { Alert, Space, Spin, message } from 'antd';
 
 const TeacherHwConfig = () => {
   const [configOn, setConfigOn] = useState(true);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [isHWAutoAssign, setIsHWAutoAssign] = useState(false);
+
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const isV2 = IsV2Checker();
-  console.log(isV2, 'v2');
   const fetchConfigStatus = (params = {}) => {
-    setLoading(true)
+    setLoading(true);
     axios
-      .get(`${endpoints.academics.homeworkConfig}`, {
-      })
+      .get(`${endpoints.academics.homeworkConfig}`, {})
       .then((response) => {
-        console.log(response);
-        let checkActive = response?.data?.result.includes(selectedBranch?.branch?.id.toString())
-        console.log(checkActive, 'ceck');
-        setConfigOn(checkActive)
-        setLoading(false)
+        let checkActive = response?.data?.result.includes(
+          selectedBranch?.branch?.id.toString()
+        );
+        setConfigOn(checkActive);
+        setLoading(false);
       })
-      .catch((error) =>
-        setLoading(false));
+      .catch((error) => setLoading(false));
+  };
+
+  const fetchAllowAutoHWAssign = () => {
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=hw_auto_asgn`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setIsHWAutoAssign(true);
+          } else {
+            setIsHWAutoAssign(false);
+          }
+        }
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+      });
   };
 
   useEffect(() => {
     if (selectedBranch) {
       fetchConfigStatus();
+      fetchAllowAutoHWAssign();
     }
   }, [selectedBranch]);
   return (
     <>
-      {loading ?
-      <div style={{marginTop: '50vh' , display: 'flex', justifyContent: 'center'}}>
-        <Spin tip='Loading' size='Large' /> 
-      </div> :
+      {loading ? (
+        <div style={{ marginTop: '50vh', display: 'flex', justifyContent: 'center' }}>
+          <Spin tip='Loading' size='Large' />
+        </div>
+      ) : (
         <>
-          {configOn ? <CoordinatorTeacherHomeworkv2 /> : <TeacherHomework />}
-        </>}
+          {configOn ? (
+            <CoordinatorTeacherHomeworkv2 isHWAutoAssign={isHWAutoAssign} />
+          ) : (
+            <TeacherHomework />
+          )}
+        </>
+      )}
     </>
   );
 };
