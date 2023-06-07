@@ -149,6 +149,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
     'dev.olvorchidnaigaon.letseduvate.com',
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
+    'test.ordchids.letseduvate.com',
   ];
   const showDrawer = () => {
     setDrawerVisible(true);

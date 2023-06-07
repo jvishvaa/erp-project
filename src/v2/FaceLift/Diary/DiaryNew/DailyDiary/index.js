@@ -49,6 +49,7 @@ let boardFilterArr = [
   'dev.olvorchidnaigaon.letseduvate.com',
   'ui-revamp1.letseduvate.com',
   'qa.olvorchidnaigaon.letseduvate.com',
+  'test.orchids.letseduvate.com',
 ];
 const { Panel } = Collapse;
 const DailyDiary = ({ isSubstituteDiary }) => {
@@ -140,6 +141,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [selectedChapterTopic, setSelectedChapterTopic] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState({});
   const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
+  const [combinedQuestionList, setCombinedQuestionList] = useState([]);
+
   const questionModify = (questions) => {
     let arr = [];
     questions.map((question) => {
@@ -299,7 +302,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     };
     if (editAddedPeriods.length > 0) {
       payload['added_period_ids'] = editAddedPeriods.map((item) => item.id).toString();
-      payload['lesson_plan_id'] = editAddedPeriods.map((item) => item.id);
+      if (allowAutoAssignDiary) {
+        payload['lesson_plan_id'] = editAddedPeriods.map((item) => item.id);
+      }
     }
     if (editRemovedPeriods.length > 0) {
       payload['remove_period_ids'] = editRemovedPeriods.map((item) => item.id).toString();
@@ -385,10 +390,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     if (addedPeriods.length > 0 && !clearTodaysTopic) {
       payload['period_added_ids'] = addedPeriods.map((item) => item.id).toString();
     }
-    if (hwDiaryPeriodMappingId) {
-      payload['hw_diary_period_mapping_id'] = hwDiaryPeriodMappingId;
-    } else {
-      payload['lesson_plan_id'] = addedPeriods.map((item) => item.id);
+    if (allowAutoAssignDiary) {
+      if (hwDiaryPeriodMappingId) {
+        payload['hw_diary_period_mapping_id'] = hwDiaryPeriodMappingId;
+      } else {
+        payload['lesson_plan_id'] = addedPeriods.map((item) => item.id);
+      }
     }
     if (!_.isEmpty(upcomingPeriod)) {
       payload['upcoming_period_id'] = upcomingPeriod?.id;
@@ -834,6 +841,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       .catch((error) => message.error('error', error?.message));
   };
   useEffect(() => {
+    fetchAllowAutoDiaryStatus();
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -852,7 +860,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         }
       });
     }
-    fetchAllowAutoDiaryStatus();
   }, []);
   useEffect(() => {
     if (assignedHomework) {
@@ -875,10 +882,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         boardFilterArr.includes(window.location.host) &&
         allowAutoAssignDiary
       ) {
-        fetchCentralHomework({
-          chapter: lastPeriod?.chapter_id,
-          period: lastPeriod?.period_name,
-          topic_id: lastPeriod?.key_concept_id,
+        addedPeriods.map((el, index) => {
+          setTimeout(() => {
+            fetchCentralHomework({
+              chapter: el?.chapter_id,
+              period: el?.period_name,
+              topic_id: el?.key_concept_id,
+            });
+          }, index * 200);
         });
         let title = addedPeriods?.reduce((initialValue, data) => {
           let key = data['chapter__chapter_name'];
@@ -911,6 +922,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       }
     }
   }, [addedPeriods]);
+
   const mapAssignedHomework = () => {
     setQuestionEdit(true);
     axios
@@ -983,10 +995,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         delete qObj.id;
         return qObj;
       }),
-      lesson_plan_id: addedPeriods.map((item) => item.id),
     };
-    if (diaryID) {
-      reqObj['diary_id'] = diaryID;
+    if (allowAutoAssignDiary) {
+      reqObj['lesson_plan_id'] = addedPeriods.map((item) => item.id);
+      if (diaryID) {
+        reqObj['diary_id'] = diaryID;
+      }
     }
     try {
       const response = await dispatch(
@@ -1402,14 +1416,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               is_central: true,
             };
 
-            let newQuestionList = questionList.filter((el) => el.question !== '');
-            if (Array.isArray(newQuestionList)) {
+            if (Array.isArray(questionList)) {
               if (
-                !newQuestionList
+                !questionList
                   .map((item) => item?.question)
                   .includes(centralHomework?.question)
               ) {
-                setQuestionList(questionModify([...newQuestionList, centralHomework]));
+                setCombinedQuestionList(combinedQuestionList.concat(centralHomework));
+                // setQuestionList(questionModify([...newQuestionList, centralHomework]));
               }
             } else {
               setQuestionList(questionModify([centralHomework]));
@@ -1475,6 +1489,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [homeworkDetails]);
 
+  useEffect(() => {
+    if (combinedQuestionList.length > 0) {
+      let newQuestionList = questionList.filter((el) => el.question !== '');
+      setQuestionList(questionModify([...newQuestionList, combinedQuestionList].flat()));
+    }
+  }, [combinedQuestionList]);
   useEffect(() => {
     if (showPeriodInfoModal) {
       setTimeout(() => {
@@ -1966,13 +1986,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           }
                           if (addedPeriods.length > 0) {
                             setHomeworkTitle();
-                            // let lastPeriod = addedPeriods[addedPeriods.length - 1];
-                            addedPeriods.map((el) => {
-                              return fetchCentralHomework({
-                                chapter: el?.chapter_id,
-                                period: el?.period_name,
-                                topic_id: el?.key_concept_id,
-                              });
+                            addedPeriods.map((el, index) => {
+                              setTimeout(() => {
+                                fetchCentralHomework({
+                                  chapter: el?.chapter_id,
+                                  period: el?.period_name,
+                                  topic_id: el?.key_concept_id,
+                                });
+                              }, index * 200);
                             });
                             if (
                               boardFilterArr.includes(window.location.host) &&
@@ -1983,10 +2004,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 if (!initialValue[key]) {
                                   initialValue[key] = [];
                                 }
-                                // initialValue[key].push(data?.key_concept__topic_name);
-                                if (!initialValue[key][data?.key_concept__topic_name]) {
-                                  initialValue[key].push(data?.key_concept__topic_name);
-                                }
+                                initialValue[key].push(data?.key_concept__topic_name);
                                 return initialValue;
                               }, {});
                               let combinedTitle = Object.keys(title)
