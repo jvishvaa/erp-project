@@ -145,7 +145,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
   const questionModify = (questions) => {
     let arr = [];
-    questions.map((question) => {
+    let uniqueQuestions = _.uniqBy(questions, 'question');
+    uniqueQuestions.map((question) => {
       arr.push({
         id: question.id,
         question: question.question,
@@ -1709,7 +1710,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           openPeriodInfoModal();
                                           if (addedPeriods.length == 1) {
                                             setClearTodaysTopic(true);
-                                            if (allowAutoAssignDiary) {
+                                            if (allowAutoAssignDiary && !homeworkMapped) {
                                               setShowHomeworkForm(false);
                                             }
                                           }
@@ -1717,8 +1718,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           const newList = addedPeriods.slice();
                                           newList.splice(index, 1);
                                           setAddedPeriods(newList);
-
-                                          removeQuestion(index);
+                                          if (!homeworkMapped) {
+                                            removeQuestion(index);
+                                          }
                                           if (isDiaryEdit) {
                                             if (
                                               !editData?.periods_data
