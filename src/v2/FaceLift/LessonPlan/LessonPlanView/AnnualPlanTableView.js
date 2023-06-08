@@ -1269,13 +1269,15 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                       if (i !== currentPeriodPanel) {
                         setCurrentPeriodPanel(i);
                         setSelectedPeriod(resourcesData[i]);
-                        fetchDiaryCompletionStatus({
-                          period_id: resourcesData[i]?.id,
-                          section_mapping: resourcesData[i]?.section_wise_completion
-                            ?.map((item) => item?.id)
-                            .join(','),
-                          subject: subjectId,
-                        });
+                        if (allowAutoAssignDiary) {
+                          fetchDiaryCompletionStatus({
+                            period_id: resourcesData[i]?.id,
+                            section_mapping: resourcesData[i]?.section_wise_completion
+                              ?.map((item) => item?.id)
+                              .join(','),
+                            subject: subjectId,
+                          });
+                        }
                       }
                     }}
                   >

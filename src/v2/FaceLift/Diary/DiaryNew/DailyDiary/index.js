@@ -145,7 +145,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
   const questionModify = (questions) => {
     let arr = [];
-    questions.map((question) => {
+    let uniqueQuestions = _.uniqBy(questions, 'question');
+    uniqueQuestions.map((question) => {
       arr.push({
         id: question.id,
         question: question.question,
@@ -600,7 +601,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setHomeworkDetails({});
     setHomeworkMapped(false);
     setHomeworkInstructions();
-    setHomeworkTitle();
+    setHomeworkTitle('');
     setActivityData([]);
     setQuestionList([]);
     if (e) {
@@ -877,11 +878,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       }
 
       setCurrentPanel(addedPeriods.length - 1);
-      if (
-        isAutoAssignDiary &&
-        boardFilterArr.includes(window.location.host) &&
-        allowAutoAssignDiary
-      ) {
+      if (isAutoAssignDiary && allowAutoAssignDiary) {
         addedPeriods.map((el, index) => {
           setTimeout(() => {
             fetchCentralHomework({
@@ -918,7 +915,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setKeyConceptName();
       if (allowAutoAssignDiary) {
         setHomeworkInstructions('');
-        setHomeworkTitle();
+        setHomeworkTitle('');
       }
     }
   }, [addedPeriods]);
@@ -966,7 +963,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   }, [chapterID]);
 
   const handleAddHomeWork = async () => {
-    if (!homeworkTitle.trim().length) {
+    if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');
       return;
     }
@@ -1713,7 +1710,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           openPeriodInfoModal();
                                           if (addedPeriods.length == 1) {
                                             setClearTodaysTopic(true);
-                                            if (allowAutoAssignDiary) {
+                                            if (allowAutoAssignDiary && !homeworkMapped) {
                                               setShowHomeworkForm(false);
                                             }
                                           }
@@ -1721,8 +1718,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           const newList = addedPeriods.slice();
                                           newList.splice(index, 1);
                                           setAddedPeriods(newList);
-
-                                          removeQuestion(index);
+                                          if (!homeworkMapped) {
+                                            removeQuestion(index);
+                                          }
                                           if (isDiaryEdit) {
                                             if (
                                               !editData?.periods_data
@@ -1985,7 +1983,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             setHomeworkMapped(true);
                           }
                           if (addedPeriods.length > 0) {
-                            setHomeworkTitle();
+                            setHomeworkTitle('');
                             addedPeriods.map((el, index) => {
                               setTimeout(() => {
                                 fetchCentralHomework({
@@ -1995,10 +1993,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 });
                               }, index * 200);
                             });
-                            if (
-                              boardFilterArr.includes(window.location.host) &&
-                              allowAutoAssignDiary
-                            ) {
+                            if (allowAutoAssignDiary) {
                               let title = addedPeriods?.reduce((initialValue, data) => {
                                 let key = data['chapter__chapter_name'];
                                 if (!initialValue[key]) {
