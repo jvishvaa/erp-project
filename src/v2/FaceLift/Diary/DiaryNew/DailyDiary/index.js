@@ -601,7 +601,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setHomeworkDetails({});
     setHomeworkMapped(false);
     setHomeworkInstructions();
-    setHomeworkTitle();
+    setHomeworkTitle('');
     setActivityData([]);
     setQuestionList([]);
     if (e) {
@@ -915,7 +915,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setKeyConceptName();
       if (allowAutoAssignDiary) {
         setHomeworkInstructions('');
-        setHomeworkTitle();
+        setHomeworkTitle('');
       }
     }
   }, [addedPeriods]);
@@ -963,7 +963,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   }, [chapterID]);
 
   const handleAddHomeWork = async () => {
-    if (!homeworkTitle.trim().length) {
+    if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');
       return;
     }
@@ -1983,7 +1983,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             setHomeworkMapped(true);
                           }
                           if (addedPeriods.length > 0) {
-                            setHomeworkTitle();
+                            setHomeworkTitle('');
                             addedPeriods.map((el, index) => {
                               setTimeout(() => {
                                 fetchCentralHomework({
