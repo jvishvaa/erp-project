@@ -402,21 +402,20 @@ const EditSchoolDetailsForm = ({
           style={{ width: '100%' }}
           size='small'
           onChange={(event, value) => {
+            setSelectedDesignation('');
+            formik.setFieldValue('designation', '');
             setSelectedRole(value);
             formik.setFieldValue('userLevel', value);
             getDesignation(value?.id)
             formik.setFieldValue('designation', '');
             console.log(value);
-            if(value?.id == 13){
-              setSelectedDesignation('');
-              formik.setFieldValue('designation', '');
-            }
+          
           }}
           id='branch_id'
           className='dropdownIcon'
           value={formik.values.userLevel || ''}
-          options={roles}
-          getOptionLabel={(option) => option?.level_name}
+          options={roles || []}
+          getOptionLabel={(option) => option?.level_name || ''}
           disabled={details?.user_level == 13 ? true : false}
           filterSelectedOptions
           renderInput={(params) => (
@@ -435,14 +434,15 @@ const EditSchoolDetailsForm = ({
           style={{ width: '100%' }}
           size='small'
           onChange={(event, value) => {
+            console.log(value , 'designation');
             setSelectedDesignation(value);
             formik.setFieldValue('designation', value);
           }}
           id='branch_id'
           className='dropdownIcon'
           value={formik.values.designation || ''}
-          options={designation}
-          getOptionLabel={(option) => option?.designation}
+          options={designation  || []}
+          getOptionLabel={(option) => option?.designation || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField

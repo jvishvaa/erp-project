@@ -41,28 +41,7 @@ function AttachmentPreviewerUI() {
   const history = useHistory()
   const [webviewer, setWebViewer] = useState(false)
 
-  // useEffect(() => {
-  //   fetchConfig()
-  // }, [])
-
-  const fetchConfig = () => {
-    axiosInstance
-      .get(`${endpoints.academics.getConfigAnnouncement}?config_key=ppt-viewer`)
-      .then((response) => {
-        if (response?.data?.result) {
-          if (response?.data?.result[0] == 'True' || response?.data?.result == 'True') {
-            setWebViewer(true);
-          } else {
-            setWebViewer(false);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-
-      });
-  };
-
+  
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
@@ -171,23 +150,14 @@ function AttachmentPreviewerUI() {
                   </video>
                 ) : isPPt ? (
                   <>
-                  {/* { webviewer == true ?
-                    <>
-                      {handlePPt()}
-                    </> :
-                    <iframe
-                      id='attachment-iframe'
-                      title='attachment-iframe'
-                      src={pptFileSrc}
-                      className='attachment-viewer-frame-preview-iframe'
-                    />
-                  } */}
+               
                      <iframe
                       id='attachment-iframe'
                       title='attachment-iframe'
                       src={pptFileSrc}
                       className='attachment-viewer-frame-preview-iframe'
                     />
+                    <div className='overlayDwnld' style={{ height: '22px' , width: '94px' , bottom: '13px' , position: 'absolute' , background: '#444444' , right: '18px' }} ></div>
                   </>
                 ) : (
                   // <PdfjsPreview url={src} />

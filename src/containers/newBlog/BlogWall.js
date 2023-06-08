@@ -1021,7 +1021,11 @@ const BlogWall = () => {
                                       </>
                                     ) : (
                                       <img
-                                        src={item?.content?.s3_path}
+                                        src={
+                                          item?.content?.s3_path
+                                            ? item?.content?.s3_path
+                                            : getActivityIcon(item?.type)
+                                        }
                                         width='100%'
                                         height='200px'
                                         objectFit={'cover'}

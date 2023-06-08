@@ -168,6 +168,7 @@ export default {
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
     upcomingPeriodData: `${baseURLCentral}/lesson_plan/v2/upcoming-period-data/`,
+    centralHomeworkData: `${baseURLCentral}/lesson_plan/lesson/`,
   },
 
   diaryReport: {
@@ -249,8 +250,8 @@ export default {
     deleteSubjectWiseRatingSchemas: `${newBlogURL}/api/delete_scheme/`,
     updateSubjectWiseRatingSchemas: `${newBlogURL}/api/activity_scheme_update/`,
     // gradeWiseSubjects: `/academic/v4/lesson-plan-subjects/`,
-    getRoundShowHide: `${newBlogURL}/api/check_ps_rounds/`,
-    getCategoryOptions: `${newBlogURL}/api/school_wall_activity_types/`,
+    getRoundShowHide:`${newBlogURL}/api/check_ps_rounds/`,
+    getCategoryOptions:`${newBlogURL}/api/school_wall_activity_types/`,
   },
   fileDrive: {
     fileList: `/schools/school_file_list/`,

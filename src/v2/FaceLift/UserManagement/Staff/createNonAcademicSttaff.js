@@ -88,22 +88,29 @@ const CreateNoAcademicStaff = () => {
     let fd = new FormData();
 
     if (userData?.userUsername) {
-      //  userData[0].userUsername = formData.value;
-      if (
-        userData.userUsername.toString().slice(0, 4) ==
-          selectedYear?.session_year.toString().slice(0, 4) &&
-        userData.userUsername.toString().slice(4, 7) ==
-          userData?.userBranchCode.toString() &&
-        userData.userUsername.toString().charAt(11) == '_' &&
-        (userData.userUsername.toString().toLowerCase().slice(12, 15) == 'olv' ||
-          userData.userUsername.toString().toLowerCase().slice(12, 15) == 'ois')
-      ) {
-        // console.log(userData?.userUsername, 'debug2');
-      } else {
-        // console.log('debug2 - wrong format', selectedYear?.session_year, userData);
-        message.error('Wrong Format of username.');
+      let pattern =   /^\d{11}_[A-Z]{3}$/
+      if(!pattern.test(userData.userUsername)){
+        message.error('Username formatted incorrectly. It must have 11 numbers, followed by underscore and school code.');
         return false;
       }
+   
+
+      //  userData[0].userUsername = formData.value;
+      // if (
+      //   userData.userUsername.toString().slice(0, 4) ==
+      //     selectedYear?.session_year.toString().slice(0, 4) &&
+      //   userData.userUsername.toString().slice(4, 7) ==
+      //     userData?.userBranchCode.toString() &&
+      //   userData.userUsername.toString().charAt(11) == '_' &&
+      //   (userData.userUsername.toString().toLowerCase().slice(12, 15) == 'olv' ||
+      //     userData.userUsername.toString().toLowerCase().slice(12, 15) == 'ois')
+      // ) {
+        // console.log(userData?.userUsername, 'debug2');
+      // } else {
+        // console.log('debug2 - wrong format', selectedYear?.session_year, userData);
+      //   message.error('Wrong Format of username.');
+      //   return false;
+      // }
     }
     setRequestSent(true);
 
@@ -133,8 +140,7 @@ const CreateNoAcademicStaff = () => {
         }
       })
       .catch((error) => {
-        message.error(error.message);
-        // console.log('error');
+        message.error(error?.response?.data?.description);
       })
       .finally(() => {
         setRequestSent(false);
