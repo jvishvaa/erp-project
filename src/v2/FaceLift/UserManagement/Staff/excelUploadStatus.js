@@ -145,7 +145,7 @@ const ExcelUploadStatus = () => {
     <React.Fragment>
       <Layout>
         {/* Breadcrumb */}
-        <div className='row py-3 px-3'>
+        <div className='row py-3'>
           <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
@@ -164,72 +164,70 @@ const ExcelUploadStatus = () => {
           </div>
         </div>
 
-        {/* <div className='bg-white th-br-8 mx-3 py-3'> */}
-        <div className='row my-3 px-3'>
-          <div className='col-md-3'>
-            <Select
-              allowClear={true}
-              className='th-grey th-bg-white  w-100 text-left'
-              placement='bottomRight'
-              showArrow={true}
-              onChange={(e, value) => handleUserBranch(e, value)}
-              dropdownMatchSelectWidth={false}
-              filterOption={(input, options) => {
-                return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-              }}
-              showSearch
-              getPopupContainer={(trigger) => trigger.parentNode}
-              placeholder='Select Branch'
-            >
-              {branchListOptions}
-            </Select>
-          </div>
-          {/* <div className='col-md-6'></div>
-          <div className='col-md-3'>
-            <Button
-              onClick={() => history.push(`/user-management/create-non-academic-staff`)}
-              className='btn-block th-br-4'
-              type='primary'
-              icon={<PlusCircleOutlined style={{ color: '#fffff' }} />}
-            >
-              Create Staff
-            </Button>
-          </div> */}
-          <div className='col-md-12 mt-2 academic-staff'>
-            <Table
-              className='th-table mt-3'
-              rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-              }
-              loading={loading}
-              columns={columns}
-              rowKey={(record) => record?.id}
-              dataSource={statusData}
-              pagination={false}
-              scroll={{
-                x: window.innerWidth < 600 ? 'max-content' : null,
-                y: 'calc(300px)',
-              }}
-            />
+        <div className='row'>
+          <div className='col-md-12'>
+            <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
+              <div className='row my-3'>
+                <div className='col-md-3'>
+                  <Select
+                    allowClear={true}
+                    className='th-grey th-bg-white  w-100 text-left'
+                    placement='bottomRight'
+                    showArrow={true}
+                    onChange={(e, value) => handleUserBranch(e, value)}
+                    dropdownMatchSelectWidth={false}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    placeholder='Select Branch'
+                  >
+                    {branchListOptions}
+                  </Select>
+                </div>
 
-            {statusData?.length > 0 && (
-              <div className='pt-3 '>
-                <Pagination
-                  current={pageNo}
-                  total={totalPage}
-                  showSizeChanger={false}
-                  pageSize={pageLimit}
-                  onChange={(current) => {
-                    let params = `${endpoints.nonAcademicStaff.bulkUpload}?page=${current}&page_size=${pageLimit}`;
-                    if (selectedYear) params += `&academic_year=${selectedYear?.id}`;
-                    if (selectedBranch) params += `&branch=${selectedBranch}`;
-                    setPageNo(current);
-                    getUploadStatus(params);
-                  }}
-                  className='text-center'
-                />
+                <div className='col-md-12 mt-2 academic-staff'>
+                  <Table
+                    className='th-table mt-3'
+                    rowClassName={(record, index) =>
+                      index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                    }
+                    loading={loading}
+                    columns={columns}
+                    rowKey={(record) => record?.id}
+                    dataSource={statusData}
+                    pagination={false}
+                    scroll={{
+                      x: window.innerWidth < 600 ? 'max-content' : null,
+                      y: 'calc(300px)',
+                    }}
+                  />
+
+                  {statusData?.length > 0 && (
+                    <div className='pt-3 '>
+                      <Pagination
+                        current={pageNo}
+                        total={totalPage}
+                        showSizeChanger={false}
+                        pageSize={pageLimit}
+                        onChange={(current) => {
+                          let params = `${endpoints.nonAcademicStaff.bulkUpload}?page=${current}&page_size=${pageLimit}`;
+                          if (selectedYear)
+                            params += `&academic_year=${selectedYear?.id}`;
+                          if (selectedBranch) params += `&branch=${selectedBranch}`;
+                          setPageNo(current);
+                          getUploadStatus(params);
+                        }}
+                        className='text-center'
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </Layout>
