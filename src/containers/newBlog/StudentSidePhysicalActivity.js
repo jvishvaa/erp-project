@@ -5,6 +5,7 @@ import axios from 'axios';
 import Layout from 'containers/Layout';
 import './styles.scss';
 import endpoints from '../../config/endpoints';
+import { Switch } from '@material-ui/core';
 import {
   CloseOutlined,
   UserOutlined,
@@ -27,6 +28,8 @@ import {
   Button,
   message,
   Input,
+  Spin,
+  Typography,
 } from 'antd';
 import moment from 'moment';
 import ReactPlayer from 'react-player';
@@ -57,6 +60,9 @@ const StudentSidePhysicalActivity = () => {
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [isRoundAvailable, setIsRoundAvailable] = useState(false);
+  const [loadingMedia, setLoadingMedia] = useState(false);
+  const [playVideo, setPlayVideo] = useState(true);
+  const [physicalActivityToggle, setPhysicalActivityToggle] = useState(false);
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
@@ -80,11 +86,12 @@ const StudentSidePhysicalActivity = () => {
       .then((response) => {
         if (response?.data?.status_code === 200) {
           setActivityListData(response?.data?.result);
-
           setTotalCountAssigned(response?.data?.count);
           setTotalPagesAssigned(response?.data?.page_size);
           setCurrentPageAssigned(response?.data?.page);
           setLimitAssigned(Number(limitAssigned));
+          if (physicalActivityToggle) {
+          }
         }
         setLoading(false);
       })
@@ -100,20 +107,19 @@ const StudentSidePhysicalActivity = () => {
     } catch (e) {
       return false;
     }
-  }
+  };
 
   let funRemarks = (obj) => {
-    
-    try{
-      if(isJSON(obj?.remarks)){
+    try {
+      if (isJSON(obj?.remarks)) {
         return JSON.parse(obj?.remarks).filter((item) => item?.status == true)[0].name;
       } else {
         return obj?.remarks.toString();
       }
-    } catch(e){
+    } catch (e) {
       return '';
     }
-  }
+  };
 
   useEffect(() => {
     fetchStudentActivityList({
@@ -123,13 +129,15 @@ const StudentSidePhysicalActivity = () => {
       is_reviewed: 'True',
       is_submitted: 'True',
       page: currentPageAssigned,
-      page_size: limitAssigned
+      page_size: limitAssigned,
+      activity_name: 'Physical Activity',
+      is_round_available: physicalActivityToggle,
     });
-  }, [currentPageAssigned]);
+  }, [currentPageAssigned, physicalActivityToggle]);
 
   const handleShowReview = async (data) => {
-    setIsRoundAvailable(data?.is_round_available);
-    getRatingView(data?.id, data?.is_round_available);
+    setIsRoundAvailable(physicalActivityToggle);
+    getRatingView(data?.id, physicalActivityToggle);
     fetchMedia(data?.id);
     // if(isvalue){
     //   setShowDrawer(true);
@@ -144,13 +152,12 @@ const StudentSidePhysicalActivity = () => {
     fetchBMIData(data?.id);
   };
 
-  
-
   let array = [];
   const getRatingView = (id, is_round_available) => {
     axios
       .get(
-        `${endpoints.newBlog.studentReviewss
+        `${
+          endpoints.newBlog.studentReviewss
         }?booking_detail_id=${id}&response_is_change=${true}&is_round_available=${is_round_available}`,
         {
           headers: {
@@ -181,9 +188,10 @@ const StudentSidePhysicalActivity = () => {
         }
         setSelectedActivity(response.data);
         setLoading(false);
-      }).catch((error) => {
+      })
+      .catch((error) => {
         setLoading(false);
-      });;
+      });
   };
 
   const fetchBMIData = () => {
@@ -205,8 +213,7 @@ const StudentSidePhysicalActivity = () => {
           message.error('No BMI record found for the student');
         }
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const fetchMedia = (id) => {
     axios
@@ -220,8 +227,7 @@ const StudentSidePhysicalActivity = () => {
           setMediaFiles(response?.data?.result);
         }
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   let roundsArray = [];
   const filterRound = (data) => {
@@ -232,11 +238,14 @@ const StudentSidePhysicalActivity = () => {
       return data;
     }
   };
-  const columns = [
+
+  const columnsOld = [
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       align: 'center',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>,
+      render: (text, row, index) => (
+        <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Topic Name</span>,
@@ -282,6 +291,163 @@ const StudentSidePhysicalActivity = () => {
       ),
     },
   ];
+
+  const columns = [
+    {
+      title: <span className='th-white th-fw-700'>SL No.</span>,
+      align: 'center',
+      render: (text, row, index) => (
+        <span className='th-black-1'>{index + 1 + (currentPageAssigned - 1) * 10}</span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Topic Name</span>,
+      align: 'center',
+      render: (text, row, index) => (
+        <span className='th-black-1'>{row?.activity_detail?.title}</span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Submitted On</span>,
+      dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1'>
+          {moment(row?.submitted_on).format('DD-MM-YYYY')}
+        </span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Criteria Name</span>,
+      dataIndex: 'name',
+      align: 'center',
+      render: (text, row) => {
+        let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[0]
+          ?.name;
+        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Round 1</span>,
+      dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => {
+        let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[0]
+          ?.remarks;
+        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Round 2</span>,
+      dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => {
+        let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[1]
+          ?.remarks;
+        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Round 3</span>,
+      dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => {
+        let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[2]
+          ?.remarks;
+        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+      },
+    },
+    {
+      title: <span className='th-white th-fw-700 '>Overall</span>,
+      dataIndex: 'created_at',
+      align: 'center',
+      render: (text, row) => {
+        return (
+          <span>
+            {row?.reviews_data?.filter((el) => el.name === 'Overall')[0]?.remarks}
+          </span>
+        );
+      },
+    },
+    // {
+    //   title: <span className='th-white th-fw-700 '>Round 2</span>,
+    //   dataIndex: 'created_at',
+    //   align: 'center',
+    //   render: (text, row) => {
+    //     return (
+    //       <p>
+    //         {row?.reviews_data?.map((item, index) => (
+    //           <p>
+    //             {item.level === 'Round 2' && item.name !== 'Overall' ? (
+    //               item?.remarks
+    //             ) : (
+    //               <></>
+    //             )}
+    //           </p>
+    //         ))}
+    //       </p>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: <span className='th-white th-fw-700 '>Round 3</span>,
+    //   dataIndex: 'created_at',
+    //   align: 'center',
+    //   render: (text, row) => {
+    //     return (
+    //       <p>
+    //         {row?.reviews_data?.map((item, index) => (
+    //           <p>
+    //             {item.level === 'Round 3' && item.name !== 'Overall' ? (
+    //               item?.remarks
+    //             ) : (
+    //               <></>
+    //             )}
+    //           </p>
+    //         ))}
+    //       </p>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: <span className='th-white th-fw-700 '>Overall</span>,
+    //   dataIndex: 'created_at',
+    //   align: 'center',
+    //   render: (text, row) => {
+    //     return (
+    //       <p>
+    //         {row?.reviews_data?.map((item, index) => (
+    //           <p>
+    //             {item.level === 'Round 1' && item.name === 'Overall' ? (
+    //               item?.remarks
+    //             ) : (
+    //               <></>
+    //             )}
+    //           </p>
+    //         ))}
+    //       </p>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: <span className='th-white th-fw-700'>Actions</span>,
+    //   dataIndex: '',
+    //   align: 'center',
+    //   width: '25%',
+    //   render: (text, row) => (
+    //     <div className='th-black-1 d-flex justify-content-around'>
+    //       <Tag
+    //         icon={<PieChartOutlined className='th-14' />}
+    //         color='geekblue'
+    //         className='th-br-5 th-pointer py-1'
+    //         onClick={() => handleShowReview(row)}
+    //       >
+    //         <span className='th-fw-500 th-14'>Check Review</span>
+    //       </Tag>
+    //     </div>
+    //   ),
+    // },
+  ];
   const columnsBMI = [
     {
       title: <span className='th-white th-fw-700 '>Height(in cm)</span>,
@@ -323,6 +489,10 @@ const StudentSidePhysicalActivity = () => {
     },
   ];
 
+  const handlePhysicalActivityToggle = (event) => {
+    setPhysicalActivityToggle(event.target.checked);
+  };
+
   useEffect(() => {
     if (ratingReview.length > 0) {
       transformTable(ratingReview);
@@ -363,7 +533,7 @@ const StudentSidePhysicalActivity = () => {
   }
   const handlePaginationAssign = (page) => {
     setCurrentPageAssigned(page);
-  }
+  };
 
   return (
     <div>
@@ -392,353 +562,387 @@ const StudentSidePhysicalActivity = () => {
                 View BMI
               </Button>
             </div>
-          </div>
-          <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>
-            <div className='row '>
-              <div className='col-12 px-3'>
-                <Table
-                  columns={columns}
-                  dataSource={activityListData}
-                  className='th-table'
-                  rowClassName={(record, index) =>
-                    `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                  }
-                  loading={loading}
-                  pagination={{
-                    total: totalCountAssigned,
-                    current: Number(currentPageAssigned),
-                    pageSize: limitAssigned,
-                    showSizeChanger: false,
-                    onChange: (e) => {
-                      handlePaginationAssign(e);
-                    },
-                  }}
-                  scroll={{
-                    x: window.innerWidth > 600 ? '100%' : 'max-content',
-                    // y: 600,
-                  }}
-                />
+
+            <div className='col-12 th-bg-white py-3 mt-3 th-br-4'>
+              <div className='d-flex align-items-center pb-2'>
+                <span className='th-fw-600'>Question and Answer(Enable or Disable)</span>
+                <span className='ml-3'>
+                  <Switch
+                    onChange={handlePhysicalActivityToggle}
+                    checked={physicalActivityToggle}
+                  />
+                </span>
               </div>
-            </div>
-          </div>
-          <Modal
-            title='BMI Details'
-            className='th-upload-modal'
-            visible={showBMIModal}
-            centered
-            onOk={() => setShowBMIModal(false)}
-            onCancel={() => setShowBMIModal(false)}
-            width={'80vw'}
-            footer={null}
-            zIndex={1000}
-          >
-            <div className='row d-flex justify-content-end px-3 py-2'>
-              <div className='col-md-4 px-0 col-12 d-flex justify-content-end'>
-                <div
-                  className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
-                  style={{ alignItems: 'center' }}
-                >
-                  <span className='th-14 th-black pr-2'>Index : </span>
-                  <Button
-                    icon={<EyeOutlined />}
-                    type='primary'
-                    onClick={() => setVisible(true)}
-                  >
-                    Click Here To Check BMI Chart
-                  </Button>
-                </div>
-                <Modal
-                  title='BMI Chart'
-                  centered
-                  visible={visible}
-                  open={visible}
-                  footer={false}
-                  onCancel={() => setVisible(false)}
-                  width={1000}
-                >
-                  <img
-                    src={BMIDetailsImage}
-                    style={{
-                      height: '100%',
-                      width: '100%',
-                      objectFit: '-webkit-fill-available',
+
+              <div className='row '>
+                <div className='col-12 px-0'>
+                  <Table
+                    columns={physicalActivityToggle ? columns : columnsOld}
+                    dataSource={activityListData}
+                    className='th-table'
+                    rowClassName={(record, index) =>
+                      `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                    }
+                    loading={loading}
+                    pagination={{
+                      position: 'bottomCenter',
+                      total: totalCountAssigned,
+                      current: Number(currentPageAssigned),
+                      pageSize: limitAssigned,
+                      showSizeChanger: false,
+                      onChange: (e) => {
+                        handlePaginationAssign(e);
+                      },
+                    }}
+                    scroll={{
+                      x: window.innerWidth > 600 ? '100%' : 'max-content',
+                      // y: 600,
                     }}
                   />
-                </Modal>
+                </div>
               </div>
             </div>
-            <div className='row'>
-              <div className='col-12' style={{ padding: '1rem 1rem' }}>
-                <Table
-                  className='th-table'
-                  rowClassName={(record, index) =>
-                    `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                  }
-                  pagination={false}
-                  columns={columnsBMI}
-                  dataSource={studentBMIData}
-                />
-              </div>
-            </div>
-          </Modal>
-          <Drawer
-            title={<span className='th-fw-500'>Your Review</span>}
-            placement='right'
-            onClose={handleCloseSideViewMore}
-            zIndex={1300}
-            visible={showSideDrawer}
-            width={
-              window.innerWidth < 600 ? '95vw' : mediaFiles?.s3_path ? '70vw' : '35vw'
-            }
-            closable={false}
-            className='th-resources-drawer'
-            extra={
-              <Space>
-                <CloseOutlined onClick={handleCloseSideViewMore} />
-              </Space>
-            }
-          >
-            <div>
-              <div className='row'>
-                <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
-                  {mediaFiles?.file_type === 'image/jpeg' ||
-                    mediaFiles?.file_type === 'image/png' ? (
+            <Modal
+              title='BMI Details'
+              className='th-upload-modal'
+              visible={showBMIModal}
+              centered
+              onOk={() => setShowBMIModal(false)}
+              onCancel={() => setShowBMIModal(false)}
+              width={'80vw'}
+              footer={null}
+              zIndex={1000}
+            >
+              <div className='row d-flex justify-content-end px-3 py-2'>
+                <div className='col-md-4 px-0 col-12 d-flex justify-content-end'>
+                  <div
+                    className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
+                    style={{ alignItems: 'center' }}
+                  >
+                    <span className='th-14 th-black pr-2'>Index : </span>
+                    <Button
+                      icon={<EyeOutlined />}
+                      type='primary'
+                      onClick={() => setVisible(true)}
+                    >
+                      Click Here To Check BMI Chart
+                    </Button>
+                  </div>
+                  <Modal
+                    title='BMI Chart'
+                    centered
+                    visible={visible}
+                    open={visible}
+                    footer={false}
+                    onCancel={() => setVisible(false)}
+                    width={1000}
+                  >
                     <img
-                      src={mediaFiles?.s3_path}
-                      thumb={mediaFiles?.s3_path}
-                      alt={'image'}
-                      width='100%'
-                      loading='lazy'
+                      src={BMIDetailsImage}
+                      style={{
+                        height: '100%',
+                        width: '100%',
+                        objectFit: '-webkit-fill-available',
+                      }}
                     />
+                  </Modal>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col-12' style={{ padding: '1rem 1rem' }}>
+                  <Table
+                    className='th-table'
+                    rowClassName={(record, index) =>
+                      `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                    }
+                    pagination={false}
+                    columns={columnsBMI}
+                    dataSource={studentBMIData}
+                  />
+                </div>
+              </div>
+            </Modal>
+            <Drawer
+              title={<span className='th-fw-500'>Your Review</span>}
+              placement='right'
+              onClose={handleCloseSideViewMore}
+              zIndex={1300}
+              visible={showSideDrawer}
+              width={
+                window.innerWidth < 600 ? '95vw' : mediaFiles?.s3_path ? '70vw' : '35vw'
+              }
+              closable={false}
+              className='th-resources-drawer'
+              extra={
+                <Space>
+                  <CloseOutlined onClick={handleCloseSideViewMore} />
+                </Space>
+              }
+            >
+              <div>
+                <div className='row'>
+                  {loadingMedia ? (
+                    <div className='col-8 text-center mt-5'>
+                      <Spin tip='Loading...' size='large' />
+                    </div>
                   ) : (
-                    <ReactPlayer
-                      url={mediaFiles?.s3_path}
-                      thumb={mediaFiles?.s3_path}
-                      // key={index}
-                      width='100%'
-                      height='100%'
-                      playIcon={
-                        <Tooltip title='play'>
-                          <Button
+                    <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
+                      {mediaFiles?.file_type === 'image/jpeg' ||
+                      mediaFiles?.file_type === 'image/png' ? (
+                        <img
+                          src={mediaFiles?.s3_path}
+                          thumb={mediaFiles?.s3_path}
+                          alt={'image'}
+                          width='100%'
+                          loading='lazy'
+                        />
+                      ) : (
+                        <ReactPlayer
+                          url={mediaFiles?.s3_path}
+                          thumb={mediaFiles?.s3_path}
+                          // playing={playVideo}
+                          ref={playerRef}
+                          width='100%'
+                          height='100%'
+                          playIcon={
+                            <Tooltip title='play'>
+                              <Button
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  height: '30vh',
+                                  width: '30vw',
+                                }}
+                                shape='circle'
+                                icon={
+                                  <PlayCircleOutlined
+                                    style={{ color: 'white', fontSize: '70px' }}
+                                  />
+                                }
+                              />
+                            </Tooltip>
+                          }
+                          alt={'video'}
+                          controls={true}
+                        />
+                      )}
+                    </div>
+                  )}
+                  <div
+                    className={`${
+                      mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
+                    } px-0 th-bg-white`}
+                  >
+                    <div className='row'>
+                      <div className='col-12 px-1'>
+                        <div>
+                          <img
+                            src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                            alt='image'
                             style={{
-                              background: 'transparent',
-                              border: 'none',
-                              height: '30vh',
-                              width: '30vw',
+                              // width: '100%',
+                              height: 130,
+                              objectFit: 'fill',
                             }}
-                            shape='circle'
+                          />
+                        </div>
+                        <div className='d-flex align-items-center pr-1'>
+                          <Avatar
+                            size={50}
+                            aria-label='recipe'
                             icon={
-                              <PlayCircleOutlined
-                                style={{ color: 'white', fontSize: '70px' }}
+                              <UserOutlined
+                                color='#f3f3f3'
+                                style={{ color: '#f3f3f3' }}
+                                twoToneColor='white'
                               />
                             }
                           />
-                        </Tooltip>
-                      }
-                      alt={'video'}
-                      controls={true}
-                    />
-                  )}
-                </div>
-                <div
-                  className={`${mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
-                    } px-0 th-bg-white`}
-                >
-                  <div className='row'>
-                    <div className='col-12 px-1'>
-                      <div>
-                        <img
-                          src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                          alt='image'
-                          style={{
-                            // width: '100%',
-                            height: 130,
-                            objectFit: 'fill',
-                          }}
-                        />
-                      </div>
-                      <div className='d-flex align-items-center pr-1'>
-                        <Avatar
-                          size={50}
-                          aria-label='recipe'
-                          icon={
-                            <UserOutlined
-                              color='#f3f3f3'
-                              style={{ color: '#f3f3f3' }}
-                              twoToneColor='white'
-                            />
-                          }
-                        />
-                        <div className='text-left ml-3'>
-                          <div className=' th-fw-600 th-16'>
-                            {selectedActivity?.booked_user?.name}
-                          </div>
-                          <div className=' th-fw-500 th-14'>
-                            {selectedActivity?.branch?.name}
-                          </div>
-                          <div className=' th-fw-500 th-12'>
-                            {selectedActivity?.grade?.name}
+                          <div className='text-left ml-3'>
+                            <div className=' th-fw-600 th-16'>
+                              {selectedActivity?.booked_user?.name}
+                            </div>
+                            <div className=' th-fw-500 th-14'>
+                              {selectedActivity?.branch?.name}
+                            </div>
+                            <div className=' th-fw-500 th-12'>
+                              {selectedActivity?.grade?.name}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div
-                        className='p-2 mt-3 th-br-5 th-bg-grey'
-                        style={{ outline: '1px solid #d9d9d9' }}
-                      >
-                        <div>
-                          Title :{' '}
-                          <span className='th-fw-600'>
-                            {selectedActivity?.activity_detail?.title}
-                          </span>
-                        </div>
-                        <div>
-                          Instructions :{' '}
-                          <span className='th-fw-400'>
-                            {selectedActivity?.activity_detail?.description}
-                          </span>
-                        </div>
-                      </div>
-                      <div className='mt-3'>
-                        <div className='th-fw-500 th-16 mb-2'>Remarks</div>
                         <div
-                          className='px-1 py-2 th-br-5'
+                          className='p-2 mt-3 th-br-5 th-bg-grey'
                           style={{ outline: '1px solid #d9d9d9' }}
                         >
-                          {ratingReview?.map((obj, index) => {
-                            return (
-                              <div className='row py-1 align-items-center'>
-                                <div className='col-6 pl-1' key={index}>
-                                  {obj?.level?.name}
+                          <div>
+                            Title :{' '}
+                            <span className='th-fw-600'>
+                              {selectedActivity?.activity_detail?.title}
+                            </span>
+                          </div>
+                          <div>
+                            Instructions :{' '}
+                            <span className='th-fw-400'>
+                              {selectedActivity?.activity_detail?.description}
+                            </span>
+                          </div>
+                        </div>
+                        <div className='mt-3'>
+                          <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                          <div
+                            className='px-1 py-2 th-br-5'
+                            style={{ outline: '1px solid #d9d9d9' }}
+                          >
+                            {ratingReview?.map((obj, index) => {
+                              return (
+                                <div className='row py-1 align-items-center'>
+                                  <div className='col-6 pl-1' key={index}>
+                                    {obj?.level?.name}
+                                  </div>
+                                  <div className='col-6 pr-1'>
+                                    {!isRoundAvailable ? (
+                                      <Input
+                                        disabled
+                                        title={funRemarks(obj)}
+                                        value={funRemarks(obj)}
+                                      />
+                                    ) : (
+                                      <div></div>
+                                    )}
+                                  </div>
                                 </div>
-                                <div className='col-6 pr-1'>
-                                  {!isRoundAvailable ?
-                                    <Input
-                                      disabled
-                                      title= {funRemarks(obj)}
-                                      value={funRemarks(obj)}
-                                    /> : <div></div>
-                                  }
-                                </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Drawer>
-          <Modal
-            centered
-            visible={showDrawer}
-            onCancel={handleCloseViewMore}
-            footer={false}
-            width={1000}
-            className='th-upload-modal'
-            title={`Submit Review`}
-          >
-            <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
-              <div className='d-flex align-items-center pr-1'>
-                <Avatar
-                  size={50}
-                  aria-label='recipe'
-                  icon={
-                    <UserOutlined
-                      color='#F3F3F3'
-                      style={{ color: '#F3F3F3' }}
-                      twoToneColor='white'
-                    />
-                  }
-                />
-                <div className='text-left ml-3'>
-                  <div className=' th-fw-600 th-16'>
-                    {selectedActivity?.booked_user?.name}
+            </Drawer>
+            <Modal
+              centered
+              visible={showDrawer}
+              onCancel={handleCloseViewMore}
+              footer={false}
+              width={1000}
+              className='th-upload-modal'
+              title={`Submit Review`}
+            >
+              <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
+                <div className='d-flex align-items-center pr-1'>
+                  <Avatar
+                    size={50}
+                    aria-label='recipe'
+                    icon={
+                      <UserOutlined
+                        color='#F3F3F3'
+                        style={{ color: '#F3F3F3' }}
+                        twoToneColor='white'
+                      />
+                    }
+                  />
+                  <div className='text-left ml-3'>
+                    <div className=' th-fw-600 th-16'>
+                      {selectedActivity?.booked_user?.name}
+                    </div>
+                    <div className=' th-fw-500 th-14'>
+                      {selectedActivity?.branch?.name}
+                    </div>
+                    <div className=' th-fw-500 th-12'>
+                      {selectedActivity?.grade?.name}
+                    </div>
                   </div>
-                  <div className=' th-fw-500 th-14'>{selectedActivity?.branch?.name}</div>
-                  <div className=' th-fw-500 th-12'>{selectedActivity?.grade?.name}</div>
+                </div>
+
+                <div className='pr-1'>
+                  <img
+                    src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                    alt='image'
+                    style={{
+                      height: 60,
+                      width: 150,
+                      objectFit: 'fill',
+                    }}
+                  />
                 </div>
               </div>
-
-              <div className='pr-1'>
-                <img
-                  src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                  alt='image'
-                  style={{
-                    height: 60,
-                    width: 150,
-                    objectFit: 'fill',
-                  }}
-                />
+              <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
+                <table className='w-100' style={{ background: '#eee' }}>
+                  <thead>
+                    <tr
+                      style={{
+                        background: '#4800c9',
+                        textAlign: 'center',
+                        color: 'white',
+                      }}
+                    >
+                      <th> Rounds </th>
+                      {tableHeader?.map((item, i) => (
+                        <th>{item?.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(customRatingReview)?.length > 0 &&
+                      Object.keys(customRatingReview).map((item, index) => (
+                        <tr className='th-html-table'>
+                          <td
+                            style={{
+                              fontWeight: 500,
+                              padding: '2px',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {item}
+                          </td>
+                          {tableHeader?.map((each, i) => {
+                            let remarks = customRatingReview[item].filter(
+                              (round) => round.name === each.name
+                            )[0].remarks;
+                            return (
+                              <td style={{ padding: '5px' }}>
+                                <div className='text-center'>{remarks}</div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
               </div>
-            </div>
-            <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
-              <table className='w-100' style={{ background: '#eee' }}>
-                <thead>
-                  <tr
-                    style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}
-                  >
-                    <th> Rounds </th>
-                    {tableHeader?.map((item, i) => (
-                      <th>{item?.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.keys(customRatingReview)?.length > 0 &&
-                    Object.keys(customRatingReview).map((item, index) => (
-                      <tr className='th-html-table'>
-                        <td
-                          style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}
-                        >
-                          {item}
-                        </td>
-                        {tableHeader?.map((each, i) => {
-                          let remarks = customRatingReview[item].filter(
-                            (round) => round.name === each.name
-                          )[0].remarks;
-                          return (
-                            <td style={{ padding: '5px' }}>
-                              <div className='text-center'>{remarks}</div>
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
 
-            <div className='col-12 px-0'>
-              <div className='p-2 d-flex justify-content-start'>
-                {overallData.length > 0 &&
-                  overallData.map((item, index) => {
-                    return (
-                      <div className='col-6 pl-4 p-2 d-flex align-items-center justify-content-start'>
-                        <span
-                          style={{
-                            fontWeight: 500,
-                            marginRight: '5px',
-                            fontSize: '15px',
-                          }}
-                        >
-                          Overall {<CaretRightOutlined />}
-                        </span>
-                        <div
-                          className='text-center'
-                          style={{ fontSize: '15px', fontWeight: 600, color: 'blue' }}
-                        >
-                          {/* <Tag color='green'> */}
-                          {item?.remarks}
-                          {/* </Tag> */}
+              <div className='col-12 px-0'>
+                <div className='p-2 d-flex justify-content-start'>
+                  {overallData.length > 0 &&
+                    overallData.map((item, index) => {
+                      return (
+                        <div className='col-6 pl-4 p-2 d-flex align-items-center justify-content-start'>
+                          <span
+                            style={{
+                              fontWeight: 500,
+                              marginRight: '5px',
+                              fontSize: '15px',
+                            }}
+                          >
+                            Overall {<CaretRightOutlined />}
+                          </span>
+                          <div
+                            className='text-center'
+                            style={{ fontSize: '15px', fontWeight: 600, color: 'blue' }}
+                          >
+                            {/* <Tag color='green'> */}
+                            {item?.remarks}
+                            {/* </Tag> */}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                </div>
               </div>
-            </div>
-          </Modal>
+            </Modal>
+          </div>
         </div>
       </Layout>
     </div>
