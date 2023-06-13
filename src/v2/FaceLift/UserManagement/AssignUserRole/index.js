@@ -44,13 +44,11 @@ const AssignUserRole = () => {
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
 
   const isOrchids =
-    window.location.host.split('.')[0] === 'localhost:3000' ||
-    window.location.host.split('.')[0] === 'dev' ||
     window.location.host.split('.')[0] === 'qa' ||
     window.location.host.split('.')[0] === 'orchids'
       ? true
       : false;
-
+      
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -409,7 +407,11 @@ const AssignUserRole = () => {
       setSelectedUsers(selectedRowKeys);
     },
     getCheckboxProps: (record) => ({
-      disabled: record.level == 13 && isOrchids,
+      disabled:
+        (record?.roles?.role_name == 'Student' ||
+          record?.roles?.role_name == 'student' ||
+          record?.roles?.role_name == 'Anvesh_Student') &&
+        isOrchids,
     }),
   };
 
