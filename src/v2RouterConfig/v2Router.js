@@ -56,6 +56,13 @@ import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAca
 import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff';
 import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
+import User from 'v2/FaceLift/UserManagement/User/index';
+import AssignUserLevel from 'v2/FaceLift/UserManagement/AssignUserLevel';
+import AssignUserRole from 'v2/FaceLift/UserManagement/AssignUserRole';
+import SectionSuffle from 'v2/FaceLift/UserManagement/SectionSuffle';
+import AccessBlocker from 'v2/FaceLift/UserManagement/AccessBlocker';
+import VirtualSchool from 'v2/FaceLift/UserManagement/VirtualSchool';
+import UserGroup from 'v2/FaceLift/UserManagement/UserGroup';
 
 const V2Router = () => {
   useEffect(() => {
@@ -256,8 +263,30 @@ const V2Router = () => {
                         <Route path='/user-management/edit-non-academic-staff/:id'>
                           {({ match }) => <EditNonAcademicStaff match={match} />}
                         </Route>,
-                        <Route path='/user-management/bulk-upload-status'>
+                        <Route path='/user-management/bulk-upload'>
                           {({ match }) => <ExcelUploadStatus match={match} />}
+                        </Route>,
+
+                        <Route path='/user-management/view-users'>
+                          {({ match }) => <User match={match} />}
+                        </Route>,
+                        <Route path='/user-level-table'>
+                          {({ match }) => <AssignUserLevel match={match} />}
+                        </Route>,
+                        <Route path='/user-management/assign-role'>
+                          {({ match }) => <AssignUserRole match={match} />}
+                        </Route>,
+                        <Route path='/user-management/section-shuffling'>
+                          {({ match }) => <SectionSuffle match={match} />}
+                        </Route>,
+                        <Route path='/user-management/access-blocker'>
+                          {({ match }) => <AccessBlocker match={match} />}
+                        </Route>,
+                        <Route path='/virtual-school'>
+                          {({ match }) => <VirtualSchool match={match} />}
+                        </Route>,
+                        <Route path='/viewgroup'>
+                          {({ match }) => <UserGroup match={match} />}
                         </Route>,
                         {/* v1 router */}
                         {V1Router?.map((item) => {
