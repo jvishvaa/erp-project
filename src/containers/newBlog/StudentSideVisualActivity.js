@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 import Layout from 'containers/Layout';
 import './styles.scss';
 import endpoints from '../../config/endpoints';
-
 import {
   CloseOutlined,
   UserOutlined,
@@ -23,6 +22,7 @@ import {
   Input,
   Space,
   Button,
+  Spin,
 } from 'antd';
 
 import moment from 'moment';
@@ -31,6 +31,7 @@ import ReactPlayer from 'react-player';
 const StudentSideVisualActivity = () => {
   const userIdLocal = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
   const history = useHistory();
+  const playerRef = useRef(null);
   const activityDetails = history?.location?.state?.activity;
   const [loading, setLoading] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
@@ -38,15 +39,21 @@ const StudentSideVisualActivity = () => {
   const [activityListData, setActivityListData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState();
+  const [mediaFiles, setMediaFiles] = useState({});
   const [totalCountAssigned, setTotalCountAssigned] = useState(0);
   const [currentPageAssigned, setCurrentPageAssigned] = useState(1);
   const [limitAssigned, setLimitAssigned] = useState(10);
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
-
+  const [loadingMedia, setLoadingMedia] = useState(false);
+  const [playVideo, setPlayVideo] = useState(true);
   const handleCloseViewMore = () => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(0);
+    }
     setShowDrawer(false);
+    // setPlayVideo(false);
     setSelectedActivity(null);
+    setMediaFiles();
   };
   const fetchStudentActivityList = (params = {}) => {
     setLoading(true);
@@ -88,7 +95,6 @@ const StudentSideVisualActivity = () => {
   const handleShowReview = (data) => {
     getRatingView(data?.id);
     fetchMedia(data?.id);
-    setShowDrawer(true);
     setSelectedActivity(data);
   };
   let array = [];
@@ -114,6 +120,7 @@ const StudentSideVisualActivity = () => {
   };
 
   const fetchMedia = (id) => {
+    setLoadingMedia(true);
     axios
       .get(`${endpoints.newBlog.showVisualMedia}${id}/`, {
         headers: {
@@ -124,6 +131,10 @@ const StudentSideVisualActivity = () => {
         if (response.data?.status_code === 200) {
           setMediaFiles(response?.data?.result);
         }
+      })
+      .finally(() => {
+        setLoadingMedia(false);
+        setShowDrawer(true);
       });
   };
 
@@ -247,46 +258,54 @@ const StudentSideVisualActivity = () => {
           >
             <div>
               <div className='row'>
-                <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
-                  {mediaFiles?.file_type === 'image/jpeg' ||
-                  mediaFiles?.file_type === 'image/png' ? (
-                    <img
-                      src={mediaFiles?.s3_path}
-                      thumb={mediaFiles?.s3_path}
-                      alt={'image'}
-                      width='100%'
-                      loading='lazy'
-                    />
-                  ) : (
-                    <ReactPlayer
-                      url={mediaFiles?.s3_path}
-                      thumb={mediaFiles?.s3_path}
-                      // key={index}
-                      width='100%'
-                      height='100%'
-                      playIcon={
-                        <Tooltip title='play'>
-                          <Button
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              height: '30vh',
-                              width: '30vw',
-                            }}
-                            shape='circle'
-                            icon={
-                              <PlayCircleOutlined
-                                style={{ color: 'white', fontSize: '70px' }}
-                              />
-                            }
-                          />
-                        </Tooltip>
-                      }
-                      alt={'video'}
-                      controls={true}
-                    />
-                  )}
-                </div>
+                {loadingMedia ? (
+                  <div className='col-8 text-center mt-5'>
+                    <Spin tip='Loading...' size='large' />
+                  </div>
+                ) : (
+                  <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
+                    {mediaFiles?.file_type === 'image/jpeg' ||
+                    mediaFiles?.file_type === 'image/png' ? (
+                      <img
+                        src={mediaFiles?.s3_path}
+                        thumb={mediaFiles?.s3_path}
+                        alt={'image'}
+                        width='100%'
+                        loading='lazy'
+                      />
+                    ) : (
+                      <ReactPlayer
+                        url={mediaFiles?.s3_path}
+                        thumb={mediaFiles?.s3_path}
+                        // key={index}
+                        // playing={playVideo}
+                        ref={playerRef}
+                        width='100%'
+                        height='100%'
+                        playIcon={
+                          <Tooltip title='play'>
+                            <Button
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                height: '30vh',
+                                width: '30vw',
+                              }}
+                              shape='circle'
+                              icon={
+                                <PlayCircleOutlined
+                                  style={{ color: 'white', fontSize: '70px' }}
+                                />
+                              }
+                            />
+                          </Tooltip>
+                        }
+                        alt={'video'}
+                        controls={true}
+                      />
+                    )}
+                  </div>
+                )}
                 <div
                   className={`${
                     mediaFiles?.s3_path ? 'col-md-4' : 'col-12'

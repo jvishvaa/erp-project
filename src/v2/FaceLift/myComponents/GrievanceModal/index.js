@@ -77,7 +77,7 @@ const GrievanceModal = (props) => {
           }
         })
         .catch((error) => {
-          message.error(error.message);
+          message.error(error.response.data.message);
         })
         .finally(() => {
           setResquestSent(false);

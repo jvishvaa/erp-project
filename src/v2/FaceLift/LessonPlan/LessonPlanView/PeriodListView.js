@@ -33,7 +33,6 @@ import {
   PlusCircleFilled,
   FormOutlined,
   DeleteOutlined,
-  ReadOutlined,
 } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import axios2 from 'axios';
@@ -49,14 +48,6 @@ import periodIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons
 import tickIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/greenTick.svg';
 import analysisIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/PeriodViewIcons/analysisIcon.png';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
-import pdfFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pdfFileIcon.svg';
-import videoFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/videoFileIcon.svg';
-import audioFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/audiofile.svg';
-import textFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/textfile.svg';
-import excelFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/excelfile.svg';
-import imageFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/imagefile.svg';
-import defaultFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/defaultfile.svg';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import moment from 'moment';
 import _ from 'lodash';
@@ -67,6 +58,10 @@ import QuestionPaperView from './QuestionPaperView';
 import { addQuestionPaperToTest } from 'redux/actions';
 import { connect } from 'react-redux';
 import ASSIGNTEST from './../../../Assets/images/assigntest.png';
+import diaryIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/diaryIcon.png';
+import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
+import { getFileIcon } from 'v2/getFileIcon';
+
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -142,6 +137,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
     'dev.olvorchidnaigaon.letseduvate.com',
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
+    'test.orchids.letseduvate.com',
   ];
   const env = window.location.host;
   const domain = window.location.host.split('.');
@@ -250,34 +246,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
 
   const closeSectionList = () => {
     setShowSection(false);
-  };
-  const getFileIcon = (type) => {
-    switch (type) {
-      case 'ppt':
-        return pptFileIcon;
-      case 'pptx':
-        return pptFileIcon;
-      case 'jpeg':
-        return imageFileIcon;
-      case 'jpg':
-        return imageFileIcon;
-      case 'png':
-        return imageFileIcon;
-      case 'xlsx':
-        return excelFileIcon;
-      case 'xls':
-        return excelFileIcon;
-      case 'pdf':
-        return pdfFileIcon;
-      case 'mp4':
-        return videoFileIcon;
-      case 'mp3':
-        return audioFileIcon;
-      case 'txt':
-        return textFileIcon;
-      default:
-        return defaultFileIcon;
-    }
   };
 
   const fetchVolumeListData = () => {
@@ -652,6 +620,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       });
     } else {
       setShowError(true);
+      setLoadingDrawer(false);
     }
   };
   const getSortedPeriodData = (data) => {
@@ -801,7 +770,11 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       .delete(`/academic/${id}/hw-questions/`)
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          message.success('Homework deleted successfully!');
+          if (response?.data?.message.includes('cannot')) {
+            message.warning(response?.data?.message);
+          } else {
+            message.success('Homework deleted successfully!');
+          }
           setAssignedDiaryList([]);
           setAssignedHWList([]);
           fetchDiaryCompletionStatus({
@@ -1930,7 +1903,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                           .map((item) => item?.id)
                                           .filter(
                                             (el) =>
-                                              assignedHWList
+                                              assignedDiaryList
                                                 .map((item) => item.section_mapping)
                                                 .flat()
                                                 .indexOf(el) < 0
@@ -2022,7 +1995,12 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                               >
                                 <div className='d-flex justify-content-between align-items-center'>
                                   <div className='d-flex justify-content-between align-items-center th-fw-600'>
-                                    <ReadOutlined className='th-primary th-24 mr-3' />
+                                    <img
+                                      src={diaryIcon}
+                                      alt='image'
+                                      height={28}
+                                      className='mr-3'
+                                    />{' '}
                                     Diary assigned
                                   </div>
                                   <div
@@ -2048,7 +2026,12 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                               >
                                 <div className='d-flex justify-content-between align-items-center'>
                                   <div className='d-flex justify-content-between align-items-center th-fw-600'>
-                                    <ReadOutlined className='th-primary th-24 mr-3' />
+                                    <img
+                                      src={hwIcon}
+                                      alt='image'
+                                      height={28}
+                                      className='mr-3'
+                                    />
                                     Homework assigned
                                   </div>
                                   <div
@@ -2081,26 +2064,25 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                   <Panel
                                     collapsible={true}
                                     header={
-                                      <div className='row'>
-                                        <div className='col-2'>
-                                          <ReadOutlined
-                                            style={{
-                                              fontSize: 30,
-                                              color: '#1b4ccb',
-                                            }}
-                                          />
+                                      <div className='row align-items-center'>
+                                        <div className='col-2 pr-0'>
+                                          <img src={diaryIcon} alt='image' height={28} />
                                         </div>
-                                        <div className='col-10'>
+                                        <div className='col-10 pl-1'>
                                           <div className='th-fw-500 th-16 text-capitalize'>
                                             Diary
                                           </div>
-                                          <div className='th-green th-14'>
-                                            Successfully Assigned for Sections &nbsp;
+                                          <div className='th-14 pr-3'>
+                                            Status :{' '}
+                                            <span className='th-green'>
+                                              Assigned&nbsp;
+                                            </span>
+                                            for Sections &nbsp;
                                             {assignedDiaryList
                                               .map((item) => item?.section)
                                               .flat()
                                               .map((el) => el?.slice(-1))
-                                              .toString()}
+                                              .join(', ')}
                                           </div>
                                         </div>
                                       </div>
@@ -2115,7 +2097,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                 {each}
                                               </div>
                                               {user_id ==
-                                              assignedDiaryList[index]?.created_by ? (
+                                                assignedDiaryList[index]?.created_by &&
+                                              assignedDiaryList[index]?.hw_status != 2 &&
+                                              assignedDiaryList[index]?.hw_status != 3 &&
+                                              assignedDiaryList[index]?.hw_status != 4 ? (
                                                 <Space>
                                                   <Tag
                                                     icon={<FormOutlined />}
@@ -2128,6 +2113,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                         state: {
                                                           data: {
                                                             ...assignedDiaryList[index],
+                                                            grade_name: gradeName,
                                                             diary_id:
                                                               assignedDiaryList[index]
                                                                 .dairy_id,
@@ -2152,6 +2138,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                             subject_id: subjectId,
                                                           },
                                                           isDiaryEdit: true,
+                                                          isDiaryAutoAssign: true,
                                                         },
                                                       });
                                                     }}
@@ -2224,26 +2211,25 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                   <Panel
                                     collapsible={true}
                                     header={
-                                      <div className='row'>
-                                        <div className='col-2'>
-                                          <ReadOutlined
-                                            style={{
-                                              fontSize: 30,
-                                              color: '#1b4ccb',
-                                            }}
-                                          />
+                                      <div className='row align-items-center'>
+                                        <div className='col-2 pr-0'>
+                                          <img src={hwIcon} alt='image' height={28} />
                                         </div>
-                                        <div className='col-10'>
+                                        <div className='col-10 pl-1'>
                                           <div className='th-fw-500 th-16 text-capitalize'>
                                             Homework
                                           </div>
-                                          <div className='th-green th-14'>
-                                            Successfully Assigned for Sections &nbsp;
+                                          <div className='th-14 pr-3'>
+                                            Status :{' '}
+                                            <span className='th-green'>
+                                              Assigned&nbsp;
+                                            </span>
+                                            for Sections &nbsp;
                                             {assignedHWList
                                               .map((item) => item?.section)
                                               .flat()
                                               .map((el) => el?.slice(-1))
-                                              .toString()}
+                                              .join(', ')}
                                           </div>
                                         </div>
                                       </div>
@@ -2257,8 +2243,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                               <div className='th-fw-500 text-capitalize'>
                                                 {each}
                                               </div>
-                                              {user_id ==
-                                              assignedHWList[index]?.created_by_staff ? (
+                                              {assignedHWList[index]?.hw_status != 2 &&
+                                              assignedHWList[index]?.hw_status != 3 &&
+                                              assignedHWList[index]?.hw_status != 4 ? (
                                                 <Space>
                                                   <Tag
                                                     icon={<FormOutlined />}
@@ -2267,34 +2254,36 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                     className='th-pointer th-br-6'
                                                     onClick={() => {
                                                       history.push({
-                                                        pathname: '/create/diary',
+                                                        pathname: `/homework/addHomework/${moment(
+                                                          assignedHWList[index]
+                                                            ?.last_submission_dt
+                                                        ).format('YYYY-MM-DD')}/${
+                                                          selectedAcademicYear?.id
+                                                        }/${
+                                                          selectedBranch?.branch?.id
+                                                        }/${gradeId}/${subjectName}/${subjectId}/${
+                                                          assignedHWList[index]
+                                                            ?.uploaded_by
+                                                        }`,
                                                         state: {
-                                                          data: {
-                                                            ...assignedDiaryList[index],
-                                                            diary_id:
-                                                              assignedDiaryList[index]
-                                                                .dairy_id,
-                                                            section_name: each,
-                                                            section_mapping_id:
-                                                              assignedDiaryList[index]
-                                                                .section_mapping[
-                                                                sectionIndex
-                                                              ],
-                                                            section_id:
-                                                              assignedDiaryList[index]
-                                                                ?.section_id[
-                                                                sectionIndex
-                                                              ],
-                                                            chapterID: chapterId,
-                                                            periodID: resourcesData?.id,
-                                                            keyConceptID:
-                                                              drawerData?.key_concept_id,
+                                                          isEdit: true,
+                                                          isFromLessonPlan: true,
+                                                          viewHomework: {
+                                                            hw_data: {
+                                                              data: {
+                                                                hw_id:
+                                                                  assignedHWList[index]
+                                                                    ?.hw_id,
+                                                              },
+                                                            },
+                                                            filterData: {
+                                                              sectionId:
+                                                                assignedHWList[index]
+                                                                  ?.section_id[
+                                                                  sectionIndex
+                                                                ],
+                                                            },
                                                           },
-                                                          subject: {
-                                                            subject_name: subjectName,
-                                                            subject_id: subjectId,
-                                                          },
-                                                          isDiaryEdit: true,
                                                         },
                                                       });
                                                     }}
@@ -2331,16 +2320,35 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                     className='th-pointer th-button-active th-br-8 px-2 py-1 th-12'
                                                     onClick={() => {
                                                       history.push({
-                                                        pathname: '/diary/teacher',
+                                                        pathname: '/homework/teacher',
                                                         state: {
-                                                          diary_created_at:
-                                                            assignedDiaryList[index]
-                                                              ?.diary_created_at,
+                                                          currentHomework: {
+                                                            assigned_date:
+                                                              assignedHWList[index]
+                                                                ?.created_at,
+                                                            grade_id: gradeId,
+                                                            grade_name: gradeName,
+                                                            section_name: each,
+                                                            section_mapping:
+                                                              assignedHWList[index]
+                                                                .section_mapping[
+                                                                sectionIndex
+                                                              ],
+                                                            section_id:
+                                                              assignedHWList[index]
+                                                                ?.section_id[
+                                                                sectionIndex
+                                                              ],
+                                                            subject_name: subjectName,
+                                                            submission_date:
+                                                              assignedHWList[index]
+                                                                ?.last_submission_dt,
+                                                          },
                                                         },
                                                       });
                                                     }}
                                                   >
-                                                    View Diary
+                                                    View Homework
                                                   </div>
                                                 </Space>
                                               )}
@@ -2544,5 +2552,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(PeriodListView);
-
-// export default PeriodListView;

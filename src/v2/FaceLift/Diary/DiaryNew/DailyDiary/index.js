@@ -49,6 +49,7 @@ let boardFilterArr = [
   'dev.olvorchidnaigaon.letseduvate.com',
   'ui-revamp1.letseduvate.com',
   'qa.olvorchidnaigaon.letseduvate.com',
+  'test.orchids.letseduvate.com',
 ];
 const { Panel } = Collapse;
 const DailyDiary = ({ isSubstituteDiary }) => {
@@ -102,7 +103,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [questionEdit, setQuestionEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [homeworkMapped, setHomeworkMapped] = useState(false);
-  const [questionList, setQuestionList] = useState();
+  const [questionList, setQuestionList] = useState([]);
   // {
   //   id: cuid(),
   //   question: '',
@@ -140,9 +141,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [selectedChapterTopic, setSelectedChapterTopic] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState({});
   const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
+  const [combinedQuestionList, setCombinedQuestionList] = useState([]);
+
   const questionModify = (questions) => {
     let arr = [];
-    questions.map((question) => {
+    let uniqueQuestions = _.uniqBy(questions, 'question');
+    uniqueQuestions.map((question) => {
       arr.push({
         id: question.id,
         question: question.question,
@@ -190,10 +194,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
 
   const removeQuestion = (index) => {
-    setQuestionList((prevState) => [
-      ...prevState.slice(0, index),
-      ...prevState.slice(index + 1),
-    ]);
+    if (questionList.length > 0) {
+      setQuestionList((prevState) => [
+        ...prevState.slice(0, index),
+        ...prevState.slice(index + 1),
+      ]);
+    }
   };
 
   const addNewQuestion = (index) => {
@@ -250,6 +256,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       });
       setKeyConceptName(params.value.key_concept__topic_name);
       setChapterName(params.value.chapter__chapter_name);
+      setGSMappingID(params.value.chapter__grade_subject_mapping_id);
     }
   };
   const closeDrawer = () => {
@@ -296,7 +303,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     };
     if (editAddedPeriods.length > 0) {
       payload['added_period_ids'] = editAddedPeriods.map((item) => item.id).toString();
-      payload['lesson_plan_id'] = editAddedPeriods.map((item) => item.id);
+      if (allowAutoAssignDiary) {
+        payload['lesson_plan_id'] = editAddedPeriods.map((item) => item.id);
+      }
     }
     if (editRemovedPeriods.length > 0) {
       payload['remove_period_ids'] = editRemovedPeriods.map((item) => item.id).toString();
@@ -382,10 +391,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     if (addedPeriods.length > 0 && !clearTodaysTopic) {
       payload['period_added_ids'] = addedPeriods.map((item) => item.id).toString();
     }
-    if (hwDiaryPeriodMappingId) {
-      payload['hw_diary_period_mapping_id'] = hwDiaryPeriodMappingId;
-    } else {
-      payload['lesson_plan_id'] = addedPeriods.map((item) => item.id);
+    if (allowAutoAssignDiary) {
+      if (hwDiaryPeriodMappingId) {
+        payload['hw_diary_period_mapping_id'] = hwDiaryPeriodMappingId;
+      } else {
+        payload['lesson_plan_id'] = addedPeriods.map((item) => item.id);
+      }
     }
     if (!_.isEmpty(upcomingPeriod)) {
       payload['upcoming_period_id'] = upcomingPeriod?.id;
@@ -589,6 +600,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setShowHomeworkForm(false);
     setHomeworkDetails({});
     setHomeworkMapped(false);
+    setHomeworkInstructions();
+    setHomeworkTitle('');
     setActivityData([]);
     setQuestionList([]);
     if (e) {
@@ -777,15 +790,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         if (result?.data?.status == 200) {
           if (result?.data?.data.length > 0) {
             setAssignedHomework(result?.data?.data);
-          } else {
-            //   if (Object.keys(selectedPeriod).length > 0) {
-            //     fetchCentralHomework({
-            //       chapter: selectedPeriod?.chapterID,
-            //       period: selectedPeriod?.periodName,
-            //       topic_id: selectedPeriod?.keyConceptID,
-            //     });
-            //   }
-            // }
           }
         }
       })
@@ -838,6 +842,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       .catch((error) => message.error('error', error?.message));
   };
   useEffect(() => {
+    fetchAllowAutoDiaryStatus();
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -856,7 +861,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         }
       });
     }
-    fetchAllowAutoDiaryStatus();
   }, []);
   useEffect(() => {
     if (assignedHomework) {
@@ -872,26 +876,36 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       } else {
         fetchUpcomigPeriod(lastPeriod.id);
       }
-      // alert('add period use effect');
-      fetchCentralHomework({
-        chapter: lastPeriod?.chapter_id,
-        period: lastPeriod?.period_name,
-        topic_id: lastPeriod?.key_concept_id,
-      });
-      setCurrentPanel(addedPeriods.length - 1);
 
-      let title = addedPeriods?.reduce((initialValue, data) => {
-        let key = data['chapter__chapter_name'];
-        if (!initialValue[key]) {
-          initialValue[key] = [];
-        }
-        initialValue[key].push(data?.key_concept__topic_name);
-        return initialValue;
-      }, {});
-      let combinedTitle = Object.keys(title)
-        ?.map((item) => item + ' - ' + title[item]?.map((each) => each).join(','))
-        .join(',');
-      setHomeworkTitle(`HW : ${combinedTitle}`);
+      setCurrentPanel(addedPeriods.length - 1);
+      if (isAutoAssignDiary && allowAutoAssignDiary) {
+        addedPeriods.map((el, index) => {
+          setTimeout(() => {
+            fetchCentralHomework({
+              chapter: el?.chapter_id,
+              period: el?.period_name,
+              topic_id: el?.key_concept_id,
+            });
+          }, index * 200);
+        });
+        let title = addedPeriods?.reduce((initialValue, data) => {
+          let key = data['chapter__chapter_name'];
+          if (!initialValue[key]) {
+            initialValue[key] = [];
+          }
+          if (!initialValue[key][data?.key_concept__topic_name]) {
+            initialValue[key].push(data?.key_concept__topic_name);
+          }
+          return initialValue;
+        }, {});
+        let combinedTitle = Object.keys(title)
+          ?.map(
+            (item) =>
+              item + ' - ' + [...new Set(title[item])]?.map((each) => each).join(',')
+          )
+          .join(',');
+        setHomeworkTitle(`HW : ${combinedTitle}`);
+      }
     } else {
       setUpcomingPeriod({});
       setClearUpcomingPeriod(true);
@@ -899,7 +913,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setChapterName();
       setKeyConceptID();
       setKeyConceptName();
-      setHomeworkTitle();
+      if (allowAutoAssignDiary) {
+        setHomeworkInstructions('');
+        setHomeworkTitle('');
+      }
     }
   }, [addedPeriods]);
 
@@ -946,7 +963,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   }, [chapterID]);
 
   const handleAddHomeWork = async () => {
-    if (!homeworkTitle.trim().length) {
+    if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');
       return;
     }
@@ -959,6 +976,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
     setQuestionEdit(true);
+    setLoading(true);
     let reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
@@ -974,10 +992,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         delete qObj.id;
         return qObj;
       }),
-      lesson_plan_id: addedPeriods.map((item) => item.id),
     };
-    if (diaryID) {
-      reqObj['diary_id'] = diaryID;
+    if (allowAutoAssignDiary) {
+      reqObj['lesson_plan_id'] = addedPeriods.map((item) => item.id);
+      if (diaryID) {
+        reqObj['diary_id'] = diaryID;
+      }
     }
     try {
       const response = await dispatch(
@@ -989,6 +1009,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         )
       );
       setHwDiaryPeriodMappingId(response.data?.data?.hw_dairy_period_mapping_ids);
+      setLoading(false);
       message.success('Homework added');
       setQuestionList([]);
       setShowHomeworkForm(true);
@@ -1003,6 +1024,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
       // history.goBack();
     } catch (error) {
+      setLoading(false);
       message.error('Failed to add homework');
     }
     // }
@@ -1169,6 +1191,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       let editData = history.location.state.data;
       let editSubject = history.location.state.subject;
       setIsDiaryEdit(history?.location?.state?.isDiaryEdit);
+      setIsAutoAssignDiary(history?.location?.state?.isDiaryAutoAssign);
       setDiaryID(history.location.state.data?.diary_id);
       formRef.current.setFieldsValue({
         grade: editData?.grade_name,
@@ -1215,7 +1238,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: editSubject?.subject_id,
-        grade_id: editData?.grade_id,
+        grade_id: Array.isArray(editData?.grade_id)
+          ? editData?.grade_id[0]
+          : editData?.grade_id,
       });
       fetchAssessmentData({
         section_mapping: editData?.section_mapping_id,
@@ -1377,6 +1402,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
             (item) => item.document_type == 'Homework' && item?.homework_text !== ''
           );
           if (homeworkData.length > 0) {
+            setIsAutoAssignDiary(true);
             let centralHomework = {
               id: cuid(),
               question: homeworkData[0]?.homework_text,
@@ -1387,16 +1413,19 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               is_central: true,
             };
 
-            // if (questionList.length == 1) {
-            //   setQuestionList(questionModify([centralHomework]));
-            // } else {
             if (Array.isArray(questionList)) {
-              setQuestionList(questionModify([...questionList, centralHomework]));
+              if (
+                !questionList
+                  .map((item) => item?.question)
+                  .includes(centralHomework?.question)
+              ) {
+                setCombinedQuestionList(combinedQuestionList.concat(centralHomework));
+                // setQuestionList(questionModify([...newQuestionList, centralHomework]));
+              }
             } else {
               setQuestionList(questionModify([centralHomework]));
             }
-            // setQuestionList(questionModify([...questionList, centralHomework]));
-            // }
+
             setSubmissionDate(
               moment(homeworkDetails?.last_submission_dt)
                 .add(1, 'days')
@@ -1404,6 +1433,34 @@ const DailyDiary = ({ isSubstituteDiary }) => {
             );
             setShowHomeworkForm(true);
             // setHomeworkMapped(true);
+          } else {
+            if (allowAutoAssignDiary) {
+              if (questionList.length == 0) {
+                setQuestionList([
+                  {
+                    id: cuid(),
+                    question: '',
+                    attachments: [],
+                    is_attachment_enable: false,
+                    max_attachment: 2,
+                    penTool: false,
+                    is_central: false,
+                  },
+                ]);
+              }
+            } else {
+              setQuestionList([
+                {
+                  id: cuid(),
+                  question: '',
+                  attachments: [],
+                  is_attachment_enable: false,
+                  max_attachment: 2,
+                  penTool: false,
+                  is_central: false,
+                },
+              ]);
+            }
           }
         }
       })
@@ -1413,9 +1470,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
   useEffect(() => {
     if (Object.keys(homeworkDetails).length > 0) {
-      if (Array.isArray(questionList)) {
+      let newQuestionList = questionList.filter((el) => el.question !== '');
+      if (Array.isArray(newQuestionList)) {
         setQuestionList(
-          questionModify([...questionList, homeworkDetails?.hw_questions].flat())
+          questionModify([...newQuestionList, homeworkDetails?.hw_questions].flat())
         );
       } else {
         setQuestionList(questionModify(homeworkDetails?.hw_questions));
@@ -1423,34 +1481,17 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSubmissionDate(moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD'));
       setHomeworkTitle(homeworkDetails?.homework_name);
       setHomeworkInstructions(homeworkDetails?.description);
-      // alert('add homework use effect');
-      //   if(Object.keys(selectedPeriod).length > 0) {
-      //   setTimeout(() => {
-      //     fetchCentralHomework({
-      //       chapter: selectedPeriod?.chapterID,
-      //       period: selectedPeriod?.periodName,
-      //       topic_id: selectedPeriod?.keyConceptID,
-      //     });
-      //   }, 500);
-      // }
+    } else {
+      setHomeworkInstructions('');
     }
-    //  else if (!isAutoAssignDiary) {
-    //   setQuestionList([
-    //     {
-    //       id: cuid(),
-    //       question: '',
-    //       attachments: [],
-    //       is_attachment_enable: false,
-    //       max_attachment: 2,
-    //       penTool: false,
-    //     },
-    //   ]);
-    //   // setSubmissionDate();
-    //   setHomeworkTitle();
-    //   setHomeworkInstructions();
-    // }
   }, [homeworkDetails]);
 
+  useEffect(() => {
+    if (combinedQuestionList.length > 0) {
+      let newQuestionList = questionList.filter((el) => el.question !== '');
+      setQuestionList(questionModify([...newQuestionList, combinedQuestionList].flat()));
+    }
+  }, [combinedQuestionList]);
   useEffect(() => {
     if (showPeriodInfoModal) {
       setTimeout(() => {
@@ -1669,13 +1710,17 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                           openPeriodInfoModal();
                                           if (addedPeriods.length == 1) {
                                             setClearTodaysTopic(true);
-                                            setShowHomeworkForm(false);
+                                            if (allowAutoAssignDiary && !homeworkMapped) {
+                                              setShowHomeworkForm(false);
+                                            }
                                           }
                                           const index = addedPeriods.indexOf(item);
                                           const newList = addedPeriods.slice();
                                           newList.splice(index, 1);
                                           setAddedPeriods(newList);
-                                          removeQuestion(index);
+                                          if (!homeworkMapped) {
+                                            removeQuestion(index);
+                                          }
                                           if (isDiaryEdit) {
                                             if (
                                               !editData?.periods_data
@@ -1927,7 +1972,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     </div>
                   </div>
                 </div>
-
                 {subjectID && (
                   <div className='row px-3 py-2'>
                     {!showHomeworkForm ? (
@@ -1935,21 +1979,56 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                         className='th-bg-grey th-black-1 px-2 py-1 th-pointer th-br-6'
                         style={{ border: '1px solid #d9d9d9' }}
                         onClick={() => {
-                          setShowHomeworkForm(true);
                           if (hwMappingID) {
                             setHomeworkMapped(true);
                           }
-                          setQuestionList([
-                            {
-                              id: cuid(),
-                              question: '',
-                              attachments: [],
-                              is_attachment_enable: false,
-                              max_attachment: 2,
-                              penTool: false,
-                              is_central: false,
-                            },
-                          ]);
+                          if (addedPeriods.length > 0) {
+                            setHomeworkTitle('');
+                            addedPeriods.map((el, index) => {
+                              setTimeout(() => {
+                                fetchCentralHomework({
+                                  chapter: el?.chapter_id,
+                                  period: el?.period_name,
+                                  topic_id: el?.key_concept_id,
+                                });
+                              }, index * 200);
+                            });
+                            if (allowAutoAssignDiary) {
+                              let title = addedPeriods?.reduce((initialValue, data) => {
+                                let key = data['chapter__chapter_name'];
+                                if (!initialValue[key]) {
+                                  initialValue[key] = [];
+                                }
+                                initialValue[key].push(data?.key_concept__topic_name);
+                                return initialValue;
+                              }, {});
+                              let combinedTitle = Object.keys(title)
+                                ?.map(
+                                  (item) =>
+                                    item +
+                                    ' - ' +
+                                    [...new Set(title[item])]
+                                      ?.map((each) => each)
+                                      .join(',')
+                                )
+                                .join(',');
+                              setHomeworkTitle(`HW : ${combinedTitle}`);
+                            }
+                            setShowHomeworkForm(true);
+                          } else {
+                            setQuestionList([
+                              {
+                                id: cuid(),
+                                question: '',
+                                attachments: [],
+                                is_attachment_enable: false,
+                                max_attachment: 2,
+                                penTool: false,
+                                is_central: false,
+                              },
+                            ]);
+                            setShowHomeworkForm(true);
+                          }
                         }}
                       >
                         <PlusOutlined className='mr-2' />
@@ -1962,6 +2041,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           onClick={() => {
                             setShowHomeworkForm(false);
                             setHomeworkMapped(false);
+                            setQuestionList([]);
                           }}
                         >
                           Remove Homework <CloseCircleOutlined className='ml-2' />
@@ -1986,9 +2066,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           maxLength={100}
                         />
                       </div>
-                      {/* {questionList.hw_questions?.some(
-                        (e) => e.is_central === true
-                      ) ? null : (
+                      {isAutoAssignDiary ? null : (
                         <div className='row py-2'>
                           <div className='th-black-1 th-fw-600 pb-1'>Instructions</div>
                           <Input
@@ -1999,7 +2077,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             maxLength={250}
                           />
                         </div>
-                      )} */}
+                      )}
                       <div className='row align-items-center'>
                         <span className='th-black-1 th-fw-600'>Due Date</span>
                         <span className='th-br-4 p-1 th-bg-grey ml-2'>
@@ -2046,8 +2124,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               <Button
                                 className='th-width-100 th-br-6 th-pointer'
                                 onClick={() => {
-                                  setQueIndexCounter(queIndexCounter + 1);
-                                  addNewQuestion(queIndexCounter + 1);
+                                  setQueIndexCounter(questionList.length);
+                                  addNewQuestion(questionList.length);
                                 }}
                               >
                                 Add Another Question
@@ -2067,7 +2145,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     </div>
                   </div>
                 )}
-
                 {(todaysAssessment.length > 0 || upcomingAssessment.length > 0) &&
                   subjectID && (
                     <div
@@ -2190,7 +2267,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     />
                   </div>
                 </div>
-
                 <div className='row pt-3'>
                   <div className='col-md-2 col-6'>
                     <Button
@@ -2382,7 +2458,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               {isAutoAssignDiary ? (
                                 (
                                   Array.isArray(sectionMappingID)
-                                    ? sectionMappingID.every((val) =>
+                                    ? sectionMappingID?.every((val) =>
                                         item?.completion_status
                                           ?.filter((item) => item?.is_complete === true)
                                           ?.map((item) => item?.section_id)
@@ -2433,19 +2509,20 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 </div>
                               </div>
                             ) : null} */}
-
                           <div className='col-12 col-sm-6 pl-0'>
                             {isAutoAssignDiary ? (
-                              Array.isArray(sectionMappingID) ? (
-                                sectionMappingID?.every((val) =>
-                                  item?.completion_status
-                                    ?.filter((item) => item?.is_complete === true)
-                                    ?.map((item) => item?.section_id)
-                                    .includes(val)
-                                )
-                              ) : item?.completion_status?.filter(
-                                  (item) => item?.section_id === sectionMappingID
-                                )[0]?.is_complete === true ? null : (
+                              (
+                                Array.isArray(sectionMappingID)
+                                  ? sectionMappingID?.every((val) =>
+                                      item?.completion_status
+                                        ?.filter((item) => item?.is_complete === true)
+                                        ?.map((item) => item?.section_id)
+                                        .includes(val)
+                                    )
+                                  : item?.completion_status?.filter(
+                                      (item) => item?.section_id === sectionMappingID
+                                    )[0]?.is_complete == true
+                              ) ? null : (
                                 <div className='th-bg-green-2 px-2 py-1 th-br-6'>
                                   <Checkbox
                                     onChange={() => {
@@ -2462,7 +2539,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               )[0]?.is_complete === true ? null : (
                               <div className='th-bg-green-2 px-2 py-1 th-br-6'>
                                 <Checkbox
-                                  onChange={() => markPeriodComplete(item)}
+                                  onChange={() => {
+                                    markPeriodComplete(item);
+                                  }}
                                   className='th-green th-fw-500'
                                 >
                                   Mark Complete
@@ -2562,7 +2641,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                             //   (item) => item?.is_complete == false
                                             // ).length == 0
                                             Array.isArray(sectionMappingID)
-                                              ? sectionMappingID.every((val) =>
+                                              ? sectionMappingID?.every((val) =>
                                                   item?.completion_status
                                                     ?.filter(
                                                       (item) => item?.is_complete === true

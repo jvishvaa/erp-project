@@ -21,6 +21,7 @@ import {
   addHomeWorkCoord,
   setSelectedHomework,
   addHomeWork,
+  fetchTeacherHomeworkDetailsById,
 } from '../../../redux/actions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -99,6 +100,7 @@ const AddHomeworkCordNew = ({
   onAddHomeworkedit,
   onSetSelectedHomework,
   selectedHomeworkDetails,
+  getHomeworkDetailsById,
 }) => {
   const location = useLocation();
   const classes = useStyles();
@@ -154,10 +156,7 @@ const AddHomeworkCordNew = ({
       setName(selectedHomeworkDetails?.homework_name);
       setDateValue(selectedHomeworkDetails?.last_submission_dt);
       setDescription(selectedHomeworkDetails?.description);
-      if (
-        selectedHomeworkDetails?.hw_questions.some((e) => e.is_central === true) &&
-        propData.isEdit
-      ) {
+      if (selectedHomeworkDetails?.description == '' && propData.isEdit) {
         setIsAutoAssignDiary(true);
       }
 
@@ -173,7 +172,11 @@ const AddHomeworkCordNew = ({
     }
     console.log(formRef.current, 'form');
   }, [selectedHomeworkDetails, propData]);
-
+  useEffect(() => {
+    if (propData?.viewHomework?.hw_data?.data?.hw_id && propData?.isFromLessonPlan) {
+      getHomeworkDetailsById(propData?.viewHomework?.hw_data?.data?.hw_id);
+    }
+  }, [propData?.viewHomework?.hw_data?.data?.hw_id]);
   const validateHomework = () => {
     let isFormValid = true;
     if (!name.trim()) {
@@ -182,12 +185,15 @@ const AddHomeworkCordNew = ({
     } else {
       setErrors((prevState) => ({ ...prevState, name: '' }));
     }
-    if (!description.trim()) {
-      isFormValid = false;
-      setErrors((prevState) => ({ ...prevState, description: 'Required' }));
-    } else {
-      setErrors((prevState) => ({ ...prevState, description: '' }));
+    if (!isAutoAssignDiary) {
+      if (!description.trim()) {
+        isFormValid = false;
+        setErrors((prevState) => ({ ...prevState, description: 'Required' }));
+      } else {
+        setErrors((prevState) => ({ ...prevState, description: '' }));
+      }
     }
+
     const questionsWithValidations = [...questions];
     questions.forEach((q, index) => {
       const { error, errorObj } = validateQuestions(q);
@@ -209,8 +215,10 @@ const AddHomeworkCordNew = ({
     if (dateValue == undefined || dateValue == '') {
       return message.error('Please Add Due Date');
     }
-    if (description == undefined || description == '') {
-      return message.error('Please Add Description');
+    if (!isAutoAssignDiary) {
+      if (description == undefined || description == '') {
+        return message.error('Please Add Description');
+      }
     }
     if (sectionDisplay?.length == 0) {
       return message.error('Please Select Section');
@@ -579,6 +587,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
+  },
+  getHomeworkDetailsById: (id) => {
+    dispatch(fetchTeacherHomeworkDetailsById(id));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(AddHomeworkCordNew);
