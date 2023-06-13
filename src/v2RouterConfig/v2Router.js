@@ -63,6 +63,9 @@ import SectionSuffle from 'v2/FaceLift/UserManagement/SectionSuffle';
 import AccessBlocker from 'v2/FaceLift/UserManagement/AccessBlocker';
 import VirtualSchool from 'v2/FaceLift/UserManagement/VirtualSchool';
 import UserGroup from 'v2/FaceLift/UserManagement/UserGroup';
+import CreateUser from 'v2/FaceLift/UserManagement/User/CreateUser';
+import V1CreateUser from '../../src/containers/user-management/create-user';
+import V1EditUser from '../../src/containers/user-management/edit-user';
 
 const V2Router = () => {
   useEffect(() => {
@@ -99,6 +102,11 @@ const V2Router = () => {
       });
     }
   }, []);
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
 
   return (
     <Router>
@@ -256,39 +264,72 @@ const V2Router = () => {
                         </Route>
                         <Route path='/user-management/non-academic-staff'>
                           {({ match }) => <NonAcademicStaff match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/user-management/create-non-academic-staff'>
                           {({ match }) => <CreateNoAcademicStaff match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
+                        <Route path='/user-management/create-user'>
+                          {({ match }) =>
+                            isOrchids ? (
+                              <CreateUser match={match} />
+                            ) : (
+                              <div className='user-management-container'>
+                                <V1CreateUser match={match} />
+                              </div>
+                            )
+                          }
+                        </Route>
+                        ,
+                        <Route path='/user-management/edit-user/:id'>
+                          {({ match }) =>
+                            isOrchids ? (
+                              <CreateUser match={match} />
+                            ) : (
+                              <div className='user-management-container'>
+                                <V1EditUser match={match} />
+                              </div>
+                            )
+                          }
+                        </Route>
+                        ,
                         <Route path='/user-management/edit-non-academic-staff/:id'>
                           {({ match }) => <EditNonAcademicStaff match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/user-management/bulk-upload'>
                           {({ match }) => <ExcelUploadStatus match={match} />}
-                        </Route>,
-
+                        </Route>
+                        ,
                         <Route path='/user-management/view-users'>
                           {({ match }) => <User match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/user-level-table'>
                           {({ match }) => <AssignUserLevel match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/user-management/assign-role'>
                           {({ match }) => <AssignUserRole match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/user-management/section-shuffling'>
                           {({ match }) => <SectionSuffle match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/user-management/access-blocker'>
                           {({ match }) => <AccessBlocker match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/virtual-school'>
                           {({ match }) => <VirtualSchool match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/viewgroup'>
                           {({ match }) => <UserGroup match={match} />}
-                        </Route>,
-                        {/* v1 router */}
+                        </Route>
+                        ,{/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}
