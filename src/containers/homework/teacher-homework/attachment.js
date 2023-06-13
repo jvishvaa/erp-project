@@ -34,6 +34,7 @@ const Attachment = (props) => {
   const [openAudioModal, setOpenAudioModal] = useState(false);
   const isDairy = window.location.pathname.includes('/diary/') ? true : false;
 
+  console.log('homeworkAtta', props);
   let isAudioVideo = false;
   let isAudioFile = false;
   let isVideoFile = false;
@@ -115,8 +116,13 @@ const Attachment = (props) => {
             alt='File'
             onError={(e) => {
               if (!fileUrl.includes('/lesson_plan_file/')) {
-                setImagePreviewAvailable(false);
-                e.target.src = placeholder;
+                if (fileUrl.includes('doc')) {
+                  e.target.src = PowerPointIcon;
+                  setImagePreviewAvailable(true);
+                } else {
+                  setImagePreviewAvailable(false);
+                  e.target.src = placeholder;
+                }
               } else {
                 if (fileUrl.includes('pdf')) {
                   e.target.src = PDFIcon;
