@@ -5,6 +5,7 @@ import axios from 'axios';
 import Layout from 'containers/Layout';
 import './styles.scss';
 import endpoints from '../../config/endpoints';
+import { Switch } from '@material-ui/core';
 import {
   CloseOutlined,
   UserOutlined,
@@ -28,6 +29,7 @@ import {
   message,
   Input,
   Spin,
+  Typography,
 } from 'antd';
 import moment from 'moment';
 import ReactPlayer from 'react-player';
@@ -60,6 +62,7 @@ const StudentSidePhysicalActivity = () => {
   const [isRoundAvailable, setIsRoundAvailable] = useState(false);
   const [loadingMedia, setLoadingMedia] = useState(false);
   const [playVideo, setPlayVideo] = useState(true);
+  const [physicalActivityToggle, setPhysicalActivityToggle] = useState(false);
 
   const handleCloseViewMore = () => {
     // playerRef.current.seekTo(0);
@@ -132,8 +135,10 @@ const StudentSidePhysicalActivity = () => {
       is_submitted: 'True',
       page: currentPageAssigned,
       page_size: limitAssigned,
+      activity_name: 'Physical Activity',
+      is_round_available: physicalActivityToggle,
     });
-  }, [currentPageAssigned]);
+  }, [currentPageAssigned, physicalActivityToggle]);
 
   const handleShowReview = async (data) => {
     setIsRoundAvailable(data?.is_round_available);
@@ -334,6 +339,10 @@ const StudentSidePhysicalActivity = () => {
     },
   ];
 
+  const handlePhysicalActivityToggle = (event) => {
+    setPhysicalActivityToggle(event.target.checked);
+  };
+
   useEffect(() => {
     if (ratingReview.length > 0) {
       transformTable(ratingReview);
@@ -402,6 +411,17 @@ const StudentSidePhysicalActivity = () => {
               >
                 View BMI
               </Button>
+            </div>
+          </div>
+          <div className='col-md-12 col-6 d-flex  px-0'>
+            <Typography className='d-flex align-items-center'>
+              Question and Answer(Enable or Disable)
+            </Typography>
+            <div className='d-flex align-items-center'>
+              <Switch
+                onChange={handlePhysicalActivityToggle}
+                checked={physicalActivityToggle}
+              />
             </div>
           </div>
           <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>
