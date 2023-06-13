@@ -46,7 +46,7 @@ import axiosInstance from 'config/axios';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Divider, Button, Spin, Badge, Checkbox } from 'antd';
+import { Divider, Button, Spin, Badge, Checkbox, message } from 'antd';
 import {
   UploadOutlined,
   LeftOutlined,
@@ -183,13 +183,11 @@ const QuestionCardNew = ({
   };
 
   const handleFileUpload = async (file) => {
-    console.log(file);
     if (!file) {
       return null;
     }
     const isValid = FileValidators(file);
     !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
-
     if (isValid?.isValid) {
       try {
         if (
@@ -233,6 +231,8 @@ const QuestionCardNew = ({
         setLoading(false);
         setAlert('error', 'File upload failed');
       }
+    } else {
+      setAlert('error', 'Please upload valid file');
     }
   };
 
@@ -251,10 +251,11 @@ const QuestionCardNew = ({
 
   const assignResource = (resource) => {
     if (attachmentPreviews?.some((ai) => resource?.includes(ai))) {
-      setAlert('error', 'File already Added');
+      message.error('File already Added');
     } else {
       setAttachmentPreviews((prevState) => [...prevState, ...resource]);
       setAttachments((prevState) => [...prevState, ...resource]);
+      message.success('File added successfully');
     }
 
     setSelectedResources([]);
@@ -273,6 +274,7 @@ const QuestionCardNew = ({
           prevState.splice(pdfIndex, 1);
           return [...prevState];
         });
+        message.error('File removed successfully');
       } else {
         setAttachmentPreviews((prevState) => {
           let newObj = prevState[pdfIndex];
@@ -286,6 +288,7 @@ const QuestionCardNew = ({
           prevState[pdfIndex] = newObj;
           return [...prevState];
         });
+        message.error('File removed successfully');
       }
     } else {
       setAttachmentPreviews((prevState) => {
@@ -297,6 +300,7 @@ const QuestionCardNew = ({
         return [...prevState];
       });
     }
+    message.error('File removed successfully');
   };
 
   useEffect(() => {

@@ -13,14 +13,14 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import {
-    Grid,
-    // Button,
-    FormControl,
-    InputLabel,
-    OutlinedInput,
-    TextField,
-    Typography,
-    IconButton,
+  Grid,
+  // Button,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography,
+  IconButton,
 } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -35,697 +35,780 @@ import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 import {
-    fetchSubmittedHomeworkDetails,
-    evaluateHomework,
-    uploadFile,
-    finalEvaluationForHomework,
-    evaluateHomeworkQuestionWise
+  fetchSubmittedHomeworkDetails,
+  evaluateHomework,
+  uploadFile,
+  finalEvaluationForHomework,
+  evaluateHomeworkQuestionWise,
 } from '../../../redux/actions';
 
 import SubmittedQuestion from './submitted-question';
 import SubmittedQuestionNew from './submittedQuestionNew';
 import DescriptiveTestcorrectionModule from '../../../components/EvaluationTool';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
-import { CloseCircleOutlined, LeftOutlined, RightOutlined, EditOutlined, DownOutlined, CalendarOutlined, MoreOutlined } from '@ant-design/icons';
-import { message, Tabs, Input, Select, Drawer, Form, DatePicker, Button, Breadcrumb } from 'antd';
+import {
+  CloseCircleOutlined,
+  LeftOutlined,
+  RightOutlined,
+  EditOutlined,
+  DownOutlined,
+  CalendarOutlined,
+  MoreOutlined,
+} from '@ant-design/icons';
+import {
+  message,
+  Tabs,
+  Input,
+  Select,
+  Drawer,
+  Form,
+  DatePicker,
+  Button,
+  Breadcrumb,
+} from 'antd';
 import Loader from 'components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
-    attachmentIcon: {
-        color: '#ff6b6b',
-        marginLeft: '4%',
-        '&:hover': {
-            cursor: 'pointer',
-        },
+  attachmentIcon: {
+    color: '#ff6b6b',
+    marginLeft: '4%',
+    '&:hover': {
+      cursor: 'pointer',
     },
-    fileInput: {
-        fontSize: '50px',
-        position: 'absolute',
-        width: '20%',
-        top: 0,
-        bottom: 0,
-        opacity: 0,
+  },
+  fileInput: {
+    fontSize: '50px',
+    position: 'absolute',
+    width: '20%',
+    top: 0,
+    bottom: 0,
+    opacity: 0,
+  },
+  fileRow: {
+    padding: '6px',
+  },
+  modalButtons: {
+    position: 'sticky',
+    width: '98%',
+    margin: 'auto',
+    bottom: 0,
+  },
+  navCard: {
+    border: `1px solid ${theme.palette.primary.main}`,
+  },
+  homeworkblock: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+  },
+  headerText: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    fontSize: '1rem',
+    ['@media screen(min-width:768px)']: {
+      fontSize: '0.85rem',
     },
-    fileRow: {
-        padding: '6px',
+  },
+  homeworkSubmitwrapper: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '10px',
+    padding: '20px',
+    ['@media screen(min-width:768px)']: {
+      margin: '10px',
+      width: '90% !important',
+      height: 'auto !important',
     },
-    modalButtons: {
-        position: 'sticky',
-        width: '98%',
-        margin: 'auto',
-        bottom: 0,
-    },
-    navCard: {
-        border: `1px solid ${theme.palette.primary.main}`
-    },
-    homeworkblock: {
-        color: theme.palette.secondary.main,
-        fontWeight: 600
-    },
-    headerText: {
-        color: theme.palette.secondary.main,
-        fontWeight: 600,
-        fontSize: "1rem",
-        ['@media screen(min-width:768px)']: {
-            fontSize: "0.85rem",
-        }
-    },
-    homeworkSubmitwrapper: {
-        border: `1px solid ${theme.palette.primary.main}`,
-        borderRadius: "10px",
-        padding: "20px",
-        ['@media screen(min-width:768px)']: {
-            margin: "10px",
-            width: "90% !important",
-            height: "auto !important",
-        }
-    }
+  },
 }));
 
 const ViewHomeworkNew = withRouter(
-    ({
-        history,
-        homework,
-        setViewHomework,
-        getHomeworkDetails,
-        selectedHomeworkDetails,
-        onClose,
-        getSubmittedHomeworkDetails,
-        submittedHomeworkDetails,
-        totalSubmittedQuestions,
-        isQuestionwise,
-        collatedSubmissionFiles,
-        ...props
-    }) => {
-        const { setAlert } = useContext(AlertNotificationContext);
-        const themeContext = useTheme();
-        const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-        const classes = useStyles();
-        const { date, subjectName, studentHomeworkId } = homework || {};
-        const [activeQuestion, setActiveQuestion] = useState(1);
-        const [questionsState, setQuestionsState] = useState([]);
-        const [collatedQuestionState, setCollatedQuestionState] = useState({});
-        const [penToolOpen, setPenToolOpen] = useState(false);
-        const [penToolUrl, setPenToolUrl] = useState('');
-        const [remark, setRemark] = useState(null);
-        const [score, setScore] = useState(null);
-        const [homeworkId, setHomeworkId] = useState(null);
-        const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
-        const [disableEv, setDisableEv] = useState(true)
-        const scrollableContainer = useRef(null);
-        const [ loading , setLoading ] = useState(false)
+  ({
+    history,
+    homework,
+    setViewHomework,
+    getHomeworkDetails,
+    selectedHomeworkDetails,
+    onClose,
+    getSubmittedHomeworkDetails,
+    submittedHomeworkDetails,
+    totalSubmittedQuestions,
+    isQuestionwise,
+    collatedSubmissionFiles,
+    ...props
+  }) => {
+    const { setAlert } = useContext(AlertNotificationContext);
+    const themeContext = useTheme();
+    const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+    const classes = useStyles();
+    const { date, subjectName, studentHomeworkId } = homework || {};
+    const [activeQuestion, setActiveQuestion] = useState(1);
+    const [questionsState, setQuestionsState] = useState([]);
+    const [collatedQuestionState, setCollatedQuestionState] = useState({});
+    const [penToolOpen, setPenToolOpen] = useState(false);
+    const [penToolUrl, setPenToolUrl] = useState('');
+    const [remark, setRemark] = useState(null);
+    const [score, setScore] = useState(null);
+    const [homeworkId, setHomeworkId] = useState(null);
+    const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
+    const [disableEv, setDisableEv] = useState(true);
+    const scrollableContainer = useRef(null);
+    const [loading, setLoading] = useState(false);
 
-        const [qWiseSaveCount, setQwiseSaveCount] = useState(0)
+    const [qWiseSaveCount, setQwiseSaveCount] = useState(0);
 
-        const handleScroll = (dir) => {
-            if (dir === 'left') {
-                scrollableContainer.current.scrollLeft -= 150;
-            } else {
-                scrollableContainer.current.scrollLeft += 150;
+    const handleScroll = (dir) => {
+      if (dir === 'left') {
+        scrollableContainer.current.scrollLeft -= 150;
+      } else {
+        scrollableContainer.current.scrollLeft += 150;
+      }
+    };
 
-            }
-        };
+    const openInPenTool = (url, fileName) => {
+      setPenToolUrl(url);
+      setcurrentEvaluatedFileName(fileName);
 
-        const openInPenTool = (url, fileName) => {
-            setPenToolUrl(url);
-            setcurrentEvaluatedFileName(fileName);
+      // setPenToolOpen(true);
+    };
 
-            // setPenToolOpen(true);
-        };
+    const handleFinalEvaluationForHomework = async () => {
+      const reqData = {
+        remark,
+        score,
+      };
+      if (!remark) {
+        setAlert('error', 'Please provide a remark');
+        return;
+      }
+      //  else if (reqData.remark && reqData.remark.trim() == '') {
+      //   setAlert('error', 'Please provide a remark');
+      //   return;
+      // }
 
-        const handleFinalEvaluationForHomework = async () => {
-            const reqData = {
-                remark,
-                score,
-            };
-            if (!remark) {
-                setAlert('error', 'Please provide a remark');
-                return;
-            }
-            //  else if (reqData.remark && reqData.remark.trim() == '') {
-            //   setAlert('error', 'Please provide a remark');
-            //   return;
-            // }
+      if (!score) {
+        setAlert('error', 'Please provide a score');
+        return;
+      }
+      // else if (reqData.score && reqData.score.trim() == '') {
+      //   setAlert('error', 'Please provide a score');
+      //   return;
+      // }
+      try {
+        setLoading(true);
+        await finalEvaluationForHomework(homeworkId, reqData);
+        setAlert('success', 'Homework Evaluated');
+        onClose();
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        setAlert('error', 'Homework Evaluation Failed');
+      }
+    };
 
-            if (!score) {
-                setAlert('error', 'Please provide a score');
-                return;
-            }
-            // else if (reqData.score && reqData.score.trim() == '') {
-            //   setAlert('error', 'Please provide a score');
-            //   return;
-            // }
-            try {
-                setLoading(true)
-                await finalEvaluationForHomework(homeworkId, reqData);
-                setAlert('success', 'Homework Evaluated');
-                onClose();
-                setLoading(false)
-            } catch (e) {
-                setLoading(false)
-                setAlert('error', 'Homework Evaluation Failed');
-            }
-        };
+    const evaluateAnswer = async () => {
+      let currentQuestion;
+      if (isQuestionwise) {
+        console.log(questionsState, 'qstate');
+        let chckremark = questionsState?.filter((item) => item?.remark == '');
+        console.log(chckremark, 'cj');
+        if (chckremark?.length > 0) {
+          setAlert('error', 'Please Add Remark for All Questions');
+        } else {
+          try {
+            await evaluateHomeworkQuestionWise(homeworkId, questionsState);
+            setAlert('success', 'Saved Successfully');
+            setDisableEv(false);
+          } catch (e) {
+            setAlert('error', 'Evaluation failed');
+          }
+        }
+      } else {
+        currentQuestion = collatedQuestionState;
 
-        const evaluateAnswer = async () => {
-            let currentQuestion;
-            if (isQuestionwise) {
-                console.log(questionsState, 'qstate');
-                let chckremark = questionsState?.filter(item => item?.remark == "")
-                console.log(chckremark, 'cj');
-                if (chckremark?.length > 0) {
-                    setAlert('error', 'Please Add Remark for All Questions');
-                } else {
+        // if (
+        //   currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
+        // ) {
+        //   setAlert('error', 'Please evaluate all the attachments');
+        //   return;
+        // }
+        const { id, ...reqData } = currentQuestion;
+        try {
+          await evaluateHomework(id, reqData);
+          setAlert('success', 'Saved Successfully');
+          setDisableEv(false);
+        } catch (e) {
+          setAlert('error', 'Evaluation failed');
+        }
+      }
+    };
 
-                    try {
-                        await evaluateHomeworkQuestionWise(homeworkId, questionsState);
-                        setAlert('success', 'Saved Successfully');
-                        setDisableEv(false)
-                    } catch (e) {
-                        setAlert('error', 'Evaluation failed');
+    const handleChangeQuestionState = (fieldName, value) => {
+      const index = activeQuestion - 1;
+      console.log(questionsState, 'ques');
+
+      const currentQuestion = questionsState[index];
+      currentQuestion[fieldName] = value;
+      setQuestionsState([
+        ...questionsState.slice(0, index),
+        currentQuestion,
+        ...questionsState.slice(index + 1),
+      ]);
+    };
+
+    const deleteEvaluated = (index) => {
+      if (isQuestionwise) {
+        const currentQuestion = questionsState[activeQuestion - 1];
+        const valueToRemove = currentQuestion.corrected_submission[index];
+        currentQuestion.corrected_submission =
+          currentQuestion.corrected_submission.filter(function (item) {
+            return item !== valueToRemove;
+          });
+        setQuestionsState([...questionsState, currentQuestion]);
+      } else {
+        const currentQuestion = { ...collatedQuestionState };
+        currentQuestion.corrected_submission.splice(index, 1);
+        setCollatedQuestionState(currentQuestion);
+      }
+    };
+
+    const handleSaveEvaluatedFile = async (file) => {
+      const fd = new FormData();
+      fd.append('file', file);
+      const filePath = await uploadFile(fd);
+      if (isQuestionwise) {
+        const index = activeQuestion - 1;
+        const modifiedQuestion = { ...questionsState[index] };
+        modifiedQuestion.corrected_submission.push(filePath);
+        modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
+
+        const newQuestionsState = [
+          ...questionsState.slice(0, index),
+          modifiedQuestion,
+          ...questionsState.slice(index + 1),
+        ];
+        setQuestionsState(newQuestionsState);
+      } else {
+        const modifiedQuestion = collatedQuestionState;
+        modifiedQuestion.corrected_submission.push(filePath);
+        modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
+
+        setCollatedQuestionState(modifiedQuestion);
+      }
+      setPenToolUrl(null);
+      setcurrentEvaluatedFileName(null);
+    };
+
+    const handleCloseCorrectionModal = () => {
+      setPenToolUrl('');
+
+      // setPenToolOpen(false);
+    };
+
+    const fetchHomeworkDetails = async () => {
+      const data = await getSubmittedHomeworkDetails(studentHomeworkId);
+
+      const {
+        hw_questions: hwQuestions,
+        is_question_wise: isQuestionwise,
+        overall_remark: overallRemarks,
+        score: scores,
+        id,
+      } = data;
+      setHomeworkId(id);
+      setRemark(overallRemarks);
+      setScore(scores);
+
+      if (isQuestionwise) {
+        const initialQuestionsState = hwQuestions.map((q) => ({
+          homework_question_id: q.question_id,
+          remark: q.remark,
+          // comments: q.comment,
+          corrected_submission: q.corrected_files,
+          evaluated_files: q.evaluated_files,
+          teacher_comment: q.teacher_comment,
+        }));
+        setQuestionsState(initialQuestionsState);
+      } else {
+        setCollatedQuestionState({
+          id: hwQuestions.id,
+          corrected_submission: hwQuestions.corrected_files,
+          evaluated_files: hwQuestions.evaluated_files,
+          remarks: hwQuestions.remark,
+          // comments: hwQuestions.comment,
+          comments: hwQuestions?.teacher_comment,
+          student_comment: hwQuestions.student_comment,
+        });
+      }
+    };
+
+    const handleCollatedQuestionState = (field, value) => {
+      setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
+    };
+
+    useEffect(() => {
+      fetchHomeworkDetails();
+    }, []);
+
+    useEffect(() => {
+      if (penToolUrl) {
+        setPenToolOpen(true);
+      } else {
+        setPenToolOpen(false);
+      }
+    }, [penToolUrl]);
+
+    const mediaContent = {
+      file_content: penToolUrl,
+      // file_content:
+      //   'https://erp-revamp.s3.ap-south-1.amazonaws.com/homework/2020-12-14%2013:58:08.817012_Screenshot%20from%202020-11-18%2015-16-37.png',
+      // file_content:
+      //   'https://image.shutterstock.com/image-photo/bright-spring-view-cameo-island-260nw-1048185397.jpg',
+      id: 1,
+      splitted_media: null,
+    };
+    const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
+
+    const handleScrolleachques = (index, dir) => {
+      const ele = document.getElementById(`homework_student_question_container_${index}`);
+      if (dir === 'left') {
+        ele.scrollLeft -= 150;
+      } else {
+        ele.scrollLeft += 150;
+      }
+    };
+
+    return (
+      <div>
+        <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+          <Breadcrumb separator='>'>
+            <Breadcrumb.Item className='th-grey th-16 th-pointer'>
+              Homework
+            </Breadcrumb.Item>
+            <Breadcrumb.Item className='th-black-1 th-16'>
+              Evaluate Homework
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
+        {loading ? <Loader /> : ''}
+        <div className='view-homework-container-coordinator create_group_filter_container'>
+          <div
+            className='card row'
+            style={{
+              margin: '10px auto',
+              width: '100%',
+              padding: '15px',
+              background: '#EEF2F8',
+              cursor: 'pointer',
+            }}
+            onClick={() => onClose()}
+          >
+            <LeftOutlined
+              style={{ display: 'flex', alignItems: 'center', color: '#535BA0' }}
+            />
+            <p
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                color: '#535BA0',
+                fontWeight: '600',
+              }}
+              className='th-14 mx-1 my-0'
+            >
+              Back to Homework
+            </p>
+          </div>
+          <div
+            className='card row'
+            style={{
+              margin: '10px auto',
+              width: '80%',
+              padding: '15px',
+              background: '#EEF2F8',
+            }}
+          >
+            <p style={{ color: '#535BA0' }} className='th-14 col-md-6'>
+              Subject : {subjectName}
+            </p>
+            <p
+              style={{
+                color: '#535BA0',
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+              className='th-14 col-md-6'
+            >
+              Creation Date : {date}
+            </p>
+          </div>
+          <div style={{ width: '80%', margin: '0 auto' }}>
+            <div className='card w-100' style={{ width: '100%', margin: '0 auto' }}>
+              <div>
+                {isQuestionwise && submittedHomeworkDetails?.length && (
+                  <SubmittedQuestionNew
+                    question={submittedHomeworkDetails[activeQuestion - 1]}
+                    correctedQuestions={
+                      questionsState.length
+                        ? questionsState[activeQuestion - 1].corrected_submission
+                        : []
                     }
-                }
-            } else {
-                currentQuestion = collatedQuestionState;
-
-                // if (
-                //   currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
-                // ) {
-                //   setAlert('error', 'Please evaluate all the attachments');
-                //   return;
-                // }
-                const { id, ...reqData } = currentQuestion;
-                try {
-                    await evaluateHomework(id, reqData);
-                    setAlert('success', 'Saved Successfully');
-                    setDisableEv(false)
-                } catch (e) {
-                    setAlert('error', 'Evaluation failed');
-                }
-            }
-        };
-
-        const handleChangeQuestionState = (fieldName, value) => {
-            const index = activeQuestion - 1;
-            console.log(questionsState, 'ques');
-
-            const currentQuestion = questionsState[index];
-            currentQuestion[fieldName] = value;
-            setQuestionsState([
-                ...questionsState.slice(0, index),
-                currentQuestion,
-                ...questionsState.slice(index + 1),
-            ]);
-        };
-
-        const deleteEvaluated = (index) => {
-            if (isQuestionwise) {
-                const currentQuestion = questionsState[activeQuestion - 1];
-                const valueToRemove = currentQuestion.corrected_submission[index];
-                currentQuestion.corrected_submission = currentQuestion.corrected_submission.filter(
-                    function (item) {
-                        return item !== valueToRemove;
+                    alreadyCorrectedQuestions={
+                      questionsState.length
+                        ? questionsState[activeQuestion - 1].evaluated_files
+                        : []
                     }
-                );
-                setQuestionsState([...questionsState, currentQuestion]);
-            } else {
-                const currentQuestion = { ...collatedQuestionState };
-                currentQuestion.corrected_submission.splice(index, 1);
-                setCollatedQuestionState(currentQuestion);
-            }
-        };
+                    remark={
+                      questionsState.length
+                        ? questionsState[activeQuestion - 1].remark
+                        : ''
+                    }
+                    comment={
+                      questionsState.length
+                        ? questionsState[activeQuestion - 1].teacher_comment
+                        : []
+                    }
+                    activeQuestion={activeQuestion}
+                    totalQuestions={totalSubmittedQuestions}
+                    onNext={() => {
+                      setActiveQuestion((prev) =>
+                        prev < totalSubmittedQuestions ? prev + 1 : prev
+                      );
+                    }}
+                    onPrev={() => {
+                      setActiveQuestion((prev) => (prev > 1 ? prev - 1 : prev));
+                    }}
+                    onOpenInPenTool={openInPenTool}
+                    onDeleteCorrectedAttachment={deleteEvaluated}
+                    onChangeQuestionsState={handleChangeQuestionState}
+                    evaluateAnswer={evaluateAnswer}
+                    selectedHomeworkDetails={selectedHomeworkDetails}
+                  />
+                )}
 
-        const handleSaveEvaluatedFile = async (file) => {
-            const fd = new FormData();
-            fd.append('file', file);
-            const filePath = await uploadFile(fd);
-            if (isQuestionwise) {
-                const index = activeQuestion - 1;
-                const modifiedQuestion = { ...questionsState[index] };
-                modifiedQuestion.corrected_submission.push(filePath);
-                modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
-
-                const newQuestionsState = [
-                    ...questionsState.slice(0, index),
-                    modifiedQuestion,
-                    ...questionsState.slice(index + 1),
-                ];
-                setQuestionsState(newQuestionsState);
-            } else {
-                const modifiedQuestion = collatedQuestionState;
-                modifiedQuestion.corrected_submission.push(filePath);
-                modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
-
-                setCollatedQuestionState(modifiedQuestion);
-            }
-            setPenToolUrl(null);
-            setcurrentEvaluatedFileName(null);
-        };
-
-        const handleCloseCorrectionModal = () => {
-            setPenToolUrl('');
-
-            // setPenToolOpen(false);
-        };
-
-        const fetchHomeworkDetails = async () => {
-            const data = await getSubmittedHomeworkDetails(studentHomeworkId);
-
-            const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, overall_remark: overallRemarks, score: scores, id } = data;
-            setHomeworkId(id);
-            setRemark(overallRemarks);
-            setScore(scores);
-
-            if (isQuestionwise) {
-                const initialQuestionsState = hwQuestions.map((q) => ({
-                    homework_question_id: q.question_id,
-                    remark: q.remark,
-                    // comments: q.comment,
-                    corrected_submission: q.corrected_files,
-                    evaluated_files: q.evaluated_files,
-                    teacher_comment: q.teacher_comment,
-                }));
-                setQuestionsState(initialQuestionsState);
-            } else {
-                setCollatedQuestionState({
-                    id: hwQuestions.id,
-                    corrected_submission: hwQuestions.corrected_files,
-                    evaluated_files: hwQuestions.evaluated_files,
-                    remarks: hwQuestions.remark,
-                    // comments: hwQuestions.comment,
-                    comments: hwQuestions?.teacher_comment,
-                    student_comment: hwQuestions.student_comment
-                });
-            }
-        };
-
-        const handleCollatedQuestionState = (field, value) => {
-            setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
-        };
-
-        useEffect(() => {
-            fetchHomeworkDetails();
-        }, []);
-
-        useEffect(() => {
-            if (penToolUrl) {
-                setPenToolOpen(true);
-            } else {
-                setPenToolOpen(false);
-            }
-        }, [penToolUrl]);
-
-        const mediaContent = {
-            file_content: penToolUrl,
-            // file_content:
-            //   'https://erp-revamp.s3.ap-south-1.amazonaws.com/homework/2020-12-14%2013:58:08.817012_Screenshot%20from%202020-11-18%2015-16-37.png',
-            // file_content:
-            //   'https://image.shutterstock.com/image-photo/bright-spring-view-cameo-island-260nw-1048185397.jpg',
-            id: 1,
-            splitted_media: null,
-        };
-        const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
-
-        const handleScrolleachques = (index, dir) => {
-            const ele = document.getElementById(`homework_student_question_container_${index}`);
-            if (dir === 'left') {
-                ele.scrollLeft -= 150;
-            } else {
-                ele.scrollLeft += 150;
-            }
-        };
-
-        return (
-            <div>
-                <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
-                    <Breadcrumb separator='>'>
-                        <Breadcrumb.Item
-                            className='th-grey th-16 th-pointer'
-                        >
-                            Homework
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item className='th-black-1 th-16'>
-                            Evaluate Homework
-                        </Breadcrumb.Item>
-                    </Breadcrumb>
-                </div>
-                {loading ? <Loader /> : ''}
-                <div className='view-homework-container-coordinator create_group_filter_container'>
-                    <div className='card row' style={{ margin: '10px auto', width: '100%', padding: '15px', background: '#EEF2F8', cursor: 'pointer' }} onClick={() => onClose()} >
-                        <LeftOutlined style={{ display: 'flex', alignItems: 'center', color: '#535BA0' }} />
-                        <p style={{ display: 'flex', alignItems: 'center', color: '#535BA0', fontWeight: '600' }} className='th-14 mx-1 my-0' >Back to Homework</p>
-                    </div>
-                    <div className='card row' style={{ margin: '10px auto', width: '80%', padding: '15px', background: '#EEF2F8' }}>
-                        <p style={{ color: '#535BA0' }} className='th-14 col-md-6' >Subject : {subjectName}</p>
-                        <p style={{ color: '#535BA0', display: 'flex', justifyContent: 'flex-end' }} className='th-14 col-md-6' >Creation Date : {date}</p>
-
-                    </div>
-                    <div style={{ width: '80%', margin: '0 auto' }} >
-
-                        <div className='card w-100' style={{ width: '100%', margin: '0 auto' }}>
-                            <div >
-                                {isQuestionwise && submittedHomeworkDetails?.length && (
-                                    <SubmittedQuestionNew
-                                        question={submittedHomeworkDetails[activeQuestion - 1]}
-                                        correctedQuestions={
-                                            questionsState.length
-                                                ? questionsState[activeQuestion - 1].corrected_submission
-                                                : []
+                {!isQuestionwise &&
+                  submittedHomeworkDetails?.length &&
+                  submittedHomeworkDetails.map((question, index) => (
+                    <>
+                      <div
+                        className='homework-question-container-coordinator'
+                        key={`homework_student_question_${1}`}
+                      >
+                        <div className='w-100'>
+                          <div
+                            className='th-14 th-fw-600 p-2'
+                            style={{ color: '#556778', background: '#f4f9ff' }}
+                          >
+                            {' '}
+                            Question {index + 1} : {question.question}
+                          </div>
+                        </div>
+                      </div>
+                      <div className='attachments-container m-3'>
+                        <Typography component='h4' color='primary' className='header'>
+                          Question Attachments
+                        </Typography>
+                        <div className='attachments-list-outer-container'>
+                          <div className='prev-btn'>
+                            {question.question_files.length > 0 && (
+                              <IconButton
+                                onClick={() => handleScrolleachques(index, 'left')}
+                              >
+                                <ArrowBackIosIcon />
+                              </IconButton>
+                            )}
+                          </div>
+                          <SimpleReactLightbox>
+                            <div
+                              className='attachments-list'
+                              ref={scrollableContainer}
+                              id={`homework_student_question_container_${index}`}
+                              onScroll={(e) => {
+                                e.preventDefault();
+                              }}
+                            >
+                              {question.question_files.map((url, i) => {
+                                let cindex = 0;
+                                question.question_files.forEach((item, index) => {
+                                  if (index < i) {
+                                    if (typeof item == 'string') {
+                                      cindex = cindex + 1;
+                                    } else {
+                                      cindex = Object.keys(item).length + cindex;
+                                    }
+                                  }
+                                });
+                                if (typeof url == 'object') {
+                                  return Object.values(url).map((item, i) => {
+                                    return (
+                                      <div className='attachment'>
+                                        <Attachment
+                                          key={`homework_student_question_attachment_${i}`}
+                                          fileUrl={item}
+                                          fileName={`Attachment-${i + 1 + cindex}`}
+                                          urlPrefix={
+                                            item.includes('/lesson_plan_file/')
+                                              ? `${endpoints.homework.resourcesFiles}`
+                                              : `${endpoints.discussionForum.s3}/homework`
+                                          }
+                                          index={i + cindex}
+                                          onOpenInPenTool={(item) =>
+                                            openInPenTool(item, index)
+                                          }
+                                          actions={['preview', 'download']}
+                                        />
+                                      </div>
+                                    );
+                                  });
+                                } else
+                                  return (
+                                    <div className='attachment'>
+                                      <Attachment
+                                        key={`homework_student_question_attachment_${i}`}
+                                        fileUrl={url}
+                                        fileName={`Attachment-${i + 1}`}
+                                        urlPrefix={
+                                          url.includes('/lesson_plan_file/')
+                                            ? `${endpoints.homework.resourcesFiles}`
+                                            : `${endpoints.discussionForum.s3}/homework`
                                         }
-                                        alreadyCorrectedQuestions={
-                                            questionsState.length
-                                                ? questionsState[activeQuestion - 1].evaluated_files
-                                                : []
+                                        index={cindex}
+                                        onOpenInPenTool={(url) =>
+                                          openInPenTool(url, index)
                                         }
-                                        remark={
-                                            questionsState.length
-                                                ? questionsState[activeQuestion - 1].remark
-                                                : ''
+                                        actions={
+                                          url.includes('/lesson_plan_file/')
+                                            ? ['download']
+                                            : ['preview', 'download']
                                         }
-                                        comment={
-                                            questionsState.length
-                                                ? questionsState[activeQuestion - 1].teacher_comment
-                                                : []
-                                        }
-                                        activeQuestion={activeQuestion}
-                                        totalQuestions={totalSubmittedQuestions}
-                                        onNext={() => {
-                                            setActiveQuestion((prev) =>
-                                                prev < totalSubmittedQuestions ? prev + 1 : prev
-                                            );
-                                        }}
-                                        onPrev={() => {
-                                            setActiveQuestion((prev) => (prev > 1 ? prev - 1 : prev));
-                                        }}
-                                        onOpenInPenTool={openInPenTool}
-                                        onDeleteCorrectedAttachment={deleteEvaluated}
-                                        onChangeQuestionsState={handleChangeQuestionState}
-                                        evaluateAnswer={evaluateAnswer}
-                                        selectedHomeworkDetails={selectedHomeworkDetails}
+                                      />
+                                    </div>
+                                  );
+                              })}
+                              <div
+                                style={{
+                                  position: 'absolute',
+                                  visibility: 'hidden',
+                                  height: '0px',
+                                  width: '0px',
+                                }}
+                              >
+                                <SRLWrapper>
+                                  {question.question_files.map((url, i) => {
+                                    if (typeof url == 'object') {
+                                      return Object.values(url).map((item, i) => {
+                                        return (
+                                          <img
+                                            src={
+                                              item.includes('/lesson_plan_file/')
+                                                ? `${endpoints.homework.resourcesFiles}${item}`
+                                                : `${endpoints.discussionForum.s3}/homework/${item}`
+                                            }
+                                            onError={(e) => {
+                                              e.target.src = placeholder;
+                                            }}
+                                            alt={`Attachment-${i + 1}`}
+                                            style={{ width: '0px', height: '0px' }}
+                                          />
+                                        );
+                                      });
+                                    } else
+                                      return (
+                                        <img
+                                          src={
+                                            url.includes('/lesson_plan_file/')
+                                              ? `${endpoints.homework.resourcesFiles}${url}`
+                                              : `${endpoints.discussionForum.s3}/homework/${url}`
+                                          }
+                                          onError={(e) => {
+                                            e.target.src = placeholder;
+                                          }}
+                                          alt={`Attachment-${i + 1}`}
+                                          style={{ width: '0px', height: '0px' }}
+                                        />
+                                      );
+                                  })}
+                                </SRLWrapper>
+                              </div>
+                            </div>
+                          </SimpleReactLightbox>
+                          <div className='next-btn'>
+                            {question.question_files.length > 0 && (
+                              <IconButton
+                                onClick={() => handleScrolleachques(index, 'right')}
+                              >
+                                <ArrowForwardIosIcon color='primary' />
+                              </IconButton>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className='overallContainer'>
+                        {collatedQuestionState?.student_comment &&
+                          collatedQuestionState.student_comment[index] && (
+                            <div
+                              className='scoreBox1'
+                              style={{ width: '49%', margin: '1%', marginLeft: '2%' }}
+                            >
+                              Student Comment :{' '}
+                              {collatedQuestionState.student_comment[index]}
+                            </div>
+                          )}
+                      </div>
+                    </>
+                  ))}
+                {!isQuestionwise && (
+                  <>
+                    {collatedSubmissionFiles?.length && (
+                      <div className='attachments-container with-margin'>
+                        <Typography component='h4' color='primary' className='header'>
+                          Student Attachments
+                        </Typography>
+                        <div className='attachments-list-outer-container'>
+                          <div className='prev-btn'>
+                            {collatedSubmissionFiles.length > 2 && (
+                              <IconButton onClick={() => handleScroll('left')}>
+                                <ArrowBackIosIcon />
+                              </IconButton>
+                            )}
+                          </div>
+                          <SimpleReactLightbox>
+                            <div
+                              className='attachments-list'
+                              ref={scrollableContainer}
+                              onScroll={(e) => {
+                                e.preventDefault();
+                              }}
+                            >
+                              {collatedSubmissionFiles.map((url, i) => (
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${i}`}
+                                    fileUrl={url}
+                                    fileName={`Attachment-${i + 1}`}
+                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                    index={i}
+                                    actions={
+                                      url.includes('.doc')
+                                        ? ['download']
+                                        : ['preview', 'download', 'pentool']
+                                    }
+                                    onOpenInPenTool={openInPenTool}
+                                  />
+                                </div>
+                              ))}
+                              <div
+                                style={{
+                                  position: 'absolute',
+                                  width: '0',
+                                  height: '0',
+                                  visibility: 'hidden',
+                                }}
+                              >
+                                <SRLWrapper>
+                                  {collatedSubmissionFiles.map((url, i) => (
+                                    <img
+                                      src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                      onError={(e) => {
+                                        e.target.src = placeholder;
+                                      }}
+                                      alt={`Attachment-${i + 1}`}
+                                      style={{ width: '0', height: '0' }}
                                     />
-                                )}
-
-                                {!isQuestionwise &&
-                                    submittedHomeworkDetails?.length &&
-                                    submittedHomeworkDetails.map((question, index) => (
-                                        <>
-                                            <div
-                                                className='homework-question-container-coordinator'
-                                                key={`homework_student_question_${1}`}
-                                            >
-                                                <div className='w-100'>
-                                                    <div className='th-14 th-fw-600 p-2' style={{ color: '#556778', background: '#f4f9ff' }} > Question {index + 1} : {question.question}</div>
-                                                </div>
-                                            </div>
-                                            <div className='attachments-container m-3'>
-                                                <Typography component='h4' color='primary' className='header'>
-                                                    Question Attachments
-                                                </Typography>
-                                                <div className='attachments-list-outer-container'>
-                                                    <div className='prev-btn'>
-                                                        {question.question_files.length > 0 && (
-                                                            <IconButton onClick={() => handleScrolleachques(index, 'left')}>
-                                                                <ArrowBackIosIcon />
-                                                            </IconButton>
-                                                        )}
-                                                    </div>
-                                                    <SimpleReactLightbox>
-                                                        <div
-                                                            className='attachments-list'
-                                                            ref={scrollableContainer}
-                                                            id={`homework_student_question_container_${index}`}
-                                                            onScroll={(e) => {
-                                                                e.preventDefault();
-                                                            }}
-                                                        >
-                                                            {question.question_files.map((url, i) => {
-                                                                let cindex = 0;
-                                                                question.question_files.forEach((item, index) => {
-                                                                    if (index < i) {
-                                                                        if (typeof item == 'string') {
-                                                                            cindex = cindex + 1;
-                                                                        } else {
-                                                                            cindex = Object.keys(item).length + cindex;
-                                                                        }
-                                                                    }
-                                                                });
-                                                                if (typeof url == 'object') {
-                                                                    return Object.values(url).map((item, i) => {
-                                                                        return (
-                                                                            <div className='attachment'>
-                                                                                <Attachment
-                                                                                    key={`homework_student_question_attachment_${i}`}
-                                                                                    fileUrl={item}
-                                                                                    fileName={`Attachment-${i + 1 + cindex}`}
-                                                                                    urlPrefix={
-                                                                                        item.includes('/lesson_plan_file/')
-                                                                                            ? `${endpoints.homework.resourcesFiles}`
-                                                                                            : `${endpoints.discussionForum.s3}/homework`
-                                                                                    }
-                                                                                    index={i + cindex}
-                                                                                    onOpenInPenTool={(item) =>
-                                                                                        openInPenTool(item, index)
-                                                                                    }
-                                                                                    actions={[
-                                                                                        'preview',
-                                                                                        'download',
-                                                                                    ]}
-                                                                                />
-                                                                            </div>
-                                                                        );
-                                                                    });
-                                                                } else
-                                                                    return (
-                                                                        <div className='attachment'>
-                                                                            <Attachment
-                                                                                key={`homework_student_question_attachment_${i}`}
-                                                                                fileUrl={url}
-                                                                                fileName={`Attachment-${i + 1}`}
-                                                                                urlPrefix={
-                                                                                    url.includes('/lesson_plan_file/')
-                                                                                        ? `${endpoints.homework.resourcesFiles}`
-                                                                                        : `${endpoints.discussionForum.s3}/homework`
-                                                                                }
-                                                                                index={cindex}
-                                                                                onOpenInPenTool={(url) =>
-                                                                                    openInPenTool(url, index)
-                                                                                }
-                                                                                actions={
-                                                                                    url.includes('/lesson_plan_file/')
-                                                                                        ? ['download']
-                                                                                        : [
-                                                                                            'preview',
-                                                                                            'download',
-                                                                                        ]
-                                                                                }
-                                                                            />
-                                                                        </div>
-                                                                    );
-                                                            })}
-                                                            <div style={{ position: 'absolute', visibility: 'hidden', height: '0px', width: '0px' }}>
-                                                                <SRLWrapper>
-                                                                    {question.question_files.map((url, i) => {
-                                                                        if (typeof url == 'object') {
-                                                                            return Object.values(url).map((item, i) => {
-                                                                                return (
-                                                                                    <img
-                                                                                        src={
-                                                                                            item.includes('/lesson_plan_file/')
-                                                                                                ? `${endpoints.homework.resourcesFiles}${item}`
-                                                                                                : `${endpoints.discussionForum.s3}/homework/${item}`
-                                                                                        }
-                                                                                        onError={(e) => {
-                                                                                            e.target.src = placeholder;
-                                                                                        }}
-                                                                                        alt={`Attachment-${i + 1}`}
-                                                                                        style={{ width: '0px', height: '0px' }}
-                                                                                    />
-                                                                                );
-                                                                            });
-                                                                        } else
-                                                                            return (
-                                                                                <img
-                                                                                    src={
-                                                                                        url.includes('/lesson_plan_file/')
-                                                                                            ? `${endpoints.homework.resourcesFiles}${url}`
-                                                                                            : `${endpoints.discussionForum.s3}/homework/${url}`
-                                                                                    }
-                                                                                    onError={(e) => {
-                                                                                        e.target.src = placeholder;
-                                                                                    }}
-                                                                                    alt={`Attachment-${i + 1}`}
-                                                                                    style={{ width: '0px', height: '0px' }}
-                                                                                />
-                                                                            );
-                                                                    })}
-                                                                </SRLWrapper>
-                                                            </div>
-                                                        </div>
-                                                    </SimpleReactLightbox>
-                                                    <div className='next-btn'>
-                                                        {question.question_files.length > 0 && (
-                                                            <IconButton onClick={() => handleScrolleachques(index, 'right')}>
-                                                                <ArrowForwardIosIcon color='primary' />
-                                                            </IconButton>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-
-                                            </div>
-                                            <div className="overallContainer">
-                                                {collatedQuestionState?.student_comment && collatedQuestionState.student_comment[index] &&
-                                                    <div className="scoreBox1" style={{ width: '49%', margin: '1%', marginLeft: '2%' }}>
-                                                        Student Comment : {collatedQuestionState.student_comment[index]}
-                                                    </div>}
-                                            </div>
-                                        </>
-                                    ))}
-                                {!isQuestionwise && (
-                                    <>
-                                        {collatedSubmissionFiles?.length && (
-                                            <div className='attachments-container with-margin'>
-                                                <Typography component='h4' color='primary' className='header'>
-                                                    Student Attachments
-                                                </Typography>
-                                                <div className='attachments-list-outer-container'>
-                                                    <div className='prev-btn'>
-                                                        {collatedSubmissionFiles.length > 2 && (
-                                                            <IconButton onClick={() => handleScroll('left')}>
-                                                                <ArrowBackIosIcon />
-                                                            </IconButton>
-                                                        )}
-                                                    </div>
-                                                    <SimpleReactLightbox>
-                                                        <div
-                                                            className='attachments-list'
-                                                            ref={scrollableContainer}
-                                                            onScroll={(e) => {
-                                                                e.preventDefault();
-                                                            }}
-                                                        >
-                                                            {collatedSubmissionFiles.map((url, i) => (
-                                                                <div className='attachment'>
-                                                                    <Attachment
-                                                                        key={`homework_student_question_attachment_${i}`}
-                                                                        fileUrl={url}
-                                                                        fileName={`Attachment-${i + 1}`}
-                                                                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                                                        index={i}
-                                                                        actions={['preview', 'download', 'pentool']}
-                                                                        onOpenInPenTool={openInPenTool}
-                                                                    />
-                                                                </div>
-                                                            ))}
-                                                            <div
-                                                                style={{
-                                                                    position: 'absolute',
-                                                                    width: '0',
-                                                                    height: '0',
-                                                                    visibility: 'hidden',
-                                                                }}
-                                                            >
-                                                                <SRLWrapper>
-                                                                    {collatedSubmissionFiles.map((url, i) => (
-                                                                        <img
-                                                                            src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                                                                            onError={(e) => {
-                                                                                e.target.src = placeholder;
-                                                                            }}
-                                                                            alt={`Attachment-${i + 1}`}
-                                                                            style={{ width: '0', height: '0' }}
-                                                                        />
-                                                                    ))}
-                                                                </SRLWrapper>
-                                                            </div>
-                                                        </div>
-                                                    </SimpleReactLightbox>
-                                                    <div className='next-btn'>
-                                                        {collatedSubmissionFiles.length > 2 && (
-                                                            <IconButton onClick={() => handleScroll('right')}>
-                                                                <ArrowForwardIosIcon color='primary' />
-                                                            </IconButton>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {collatedQuestionState.corrected_submission?.length > 0 && (
-                                            <div className='attachments-container with-margin'>
-                                                <Typography component='h4' color='primary' className='header'>
-                                                    Evaluated Attachments
-                                                </Typography>
-                                                <div className='attachments-list-outer-container'>
-                                                    <div className='prev-btn'>
-                                                        {collatedQuestionState.corrected_submission?.length > 2 && (
-                                                            <IconButton onClick={() => handleScroll('left')}>
-                                                                <ArrowBackIosIcon />
-                                                            </IconButton>
-                                                        )}
-                                                    </div>
-                                                    <SimpleReactLightbox>
-                                                        <div
-                                                            className='attachments-list'
-                                                            ref={scrollableContainer}
-                                                            onScroll={(e) => {
-                                                                e.preventDefault();
-                                                            }}
-                                                        >
-                                                            {collatedQuestionState.corrected_submission.map((url, i) => (
-                                                                <div className='attachment'>
-                                                                    <Attachment
-                                                                        key={`homework_student_question_attachment_${i}`}
-                                                                        fileUrl={url}
-                                                                        fileName={`Attachment-${i + 1}`}
-                                                                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                                                        index={i}
-                                                                        actions={['preview', 'download', 'delete']}
-                                                                        onOpenInPenTool={openInPenTool}
-                                                                        onDelete={deleteEvaluated}
-                                                                    />
-                                                                </div>
-                                                            ))}
-                                                            <div
-                                                                style={{
-                                                                    position: 'absolute',
-                                                                    width: '0',
-                                                                    height: '0',
-                                                                    visibility: 'hidden',
-                                                                }}
-                                                            >
-                                                                <SRLWrapper>
-                                                                    {collatedQuestionState.corrected_submission?.length &&
-                                                                        collatedQuestionState.corrected_submission.map(
-                                                                            (url, i) => (
-                                                                                <img
-                                                                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                                                                                    onError={(e) => {
-                                                                                        e.target.src = placeholder;
-                                                                                    }}
-                                                                                    alt={`Attachment-${i + 1}`}
-                                                                                    style={{ width: '0', height: '0' }}
-                                                                                />
-                                                                            )
-                                                                        )}
-                                                                </SRLWrapper>
-                                                            </div>
-                                                        </div>
-                                                    </SimpleReactLightbox>
-                                                    <div className='next-btn'>
-                                                        {collatedQuestionState.corrected_submission?.length > 2 && (
-                                                            <IconButton onClick={() => handleScroll('right')}>
-                                                                <ArrowForwardIosIcon color='primary' />
-                                                            </IconButton>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div
-                                            className='comments-remarks-container'
-                                            style={{ display: 'flex', width: '95%', margin: '0 auto' }}
-                                        >
-                                            {/* <div className='item comment'>
+                                  ))}
+                                </SRLWrapper>
+                              </div>
+                            </div>
+                          </SimpleReactLightbox>
+                          <div className='next-btn'>
+                            {collatedSubmissionFiles.length > 2 && (
+                              <IconButton onClick={() => handleScroll('right')}>
+                                <ArrowForwardIosIcon color='primary' />
+                              </IconButton>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {collatedQuestionState.corrected_submission?.length > 0 && (
+                      <div className='attachments-container with-margin'>
+                        <Typography component='h4' color='primary' className='header'>
+                          Evaluated Attachments
+                        </Typography>
+                        <div className='attachments-list-outer-container'>
+                          <div className='prev-btn'>
+                            {collatedQuestionState.corrected_submission?.length > 2 && (
+                              <IconButton onClick={() => handleScroll('left')}>
+                                <ArrowBackIosIcon />
+                              </IconButton>
+                            )}
+                          </div>
+                          <SimpleReactLightbox>
+                            <div
+                              className='attachments-list'
+                              ref={scrollableContainer}
+                              onScroll={(e) => {
+                                e.preventDefault();
+                              }}
+                            >
+                              {collatedQuestionState.corrected_submission.map(
+                                (url, i) => (
+                                  <div className='attachment'>
+                                    <Attachment
+                                      key={`homework_student_question_attachment_${i}`}
+                                      fileUrl={url}
+                                      fileName={`Attachment-${i + 1}`}
+                                      urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                      index={i}
+                                      actions={
+                                        url.includes('.doc')
+                                          ? ['download']
+                                          : ['preview', 'download', 'pentool']
+                                      }
+                                      onOpenInPenTool={openInPenTool}
+                                      onDelete={deleteEvaluated}
+                                    />
+                                  </div>
+                                )
+                              )}
+                              <div
+                                style={{
+                                  position: 'absolute',
+                                  width: '0',
+                                  height: '0',
+                                  visibility: 'hidden',
+                                }}
+                              >
+                                <SRLWrapper>
+                                  {collatedQuestionState.corrected_submission?.length &&
+                                    collatedQuestionState.corrected_submission.map(
+                                      (url, i) => (
+                                        <img
+                                          src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                          onError={(e) => {
+                                            e.target.src = placeholder;
+                                          }}
+                                          alt={`Attachment-${i + 1}`}
+                                          style={{ width: '0', height: '0' }}
+                                        />
+                                      )
+                                    )}
+                                </SRLWrapper>
+                              </div>
+                            </div>
+                          </SimpleReactLightbox>
+                          <div className='next-btn'>
+                            {collatedQuestionState.corrected_submission?.length > 2 && (
+                              <IconButton onClick={() => handleScroll('right')}>
+                                <ArrowForwardIosIcon color='primary' />
+                              </IconButton>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div
+                      className='comments-remarks-container'
+                      style={{ display: 'flex', width: '95%', margin: '0 auto' }}
+                    >
+                      {/* <div className='item comment'>
                                                 <FormControl variant='outlined' fullWidth size='small'>
                                                     <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
                                                     <OutlinedInput
@@ -744,128 +827,130 @@ const ViewHomeworkNew = withRouter(
                                                     />
                                                 </FormControl>
                                             </div> */}
-                                            <div className='item'>
-                                                <FormControl variant='outlined' fullWidth size='small'>
-                                                    <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
-                                                    <OutlinedInput
-                                                        id='remarks'
-                                                        name='remarks'
-                                                        inputProps={{ maxLength: 150 }}
-                                                        multiline
-                                                        rows={4}
-                                                        rowsMax={4}
-                                                        label='Remarks'
-                                                        value={collatedQuestionState?.remarks || ''}
-                                                        onChange={(e) => {
-                                                            handleCollatedQuestionState('remarks', e.target.value);
-                                                        }}
-                                                        autoFocus
-                                                    />
-                                                </FormControl>
-                                            </div>
-                                        </div>
-                                        <div className='evaluate-answer-btn-container'>
-                                            <Button variant='contained' color='primary' onClick={evaluateAnswer}>
-                                                SAVE
-                                            </Button>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                            <div className='overall-evaluation-container mb-3'>
-                                <div className='col-md-8 d-flex'>
-                                    <div className='col-md-6'>
-                                        <FormControl variant='outlined' fullWidth size='small'>
-
-                                            <TextField
-                                                id='remarks'
-                                                name='remarks'
-                                                label='Overall remarks'
-                                                variant='outlined'
-                                                size='small'
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                onChange={(e) => {
-                                                    setRemark(e.target.value);
-                                                }}
-                                                value={remark}
-                                                inputProps={{ maxLength: 15 }}
-                                            />
-                                        </FormControl>
-                                    </div>
-                                    <div className='col-md-6' >
-                                        <FormControl variant='outlined' fullWidth size='small'>
-
-                                            <TextField
-                                                id='score'
-                                                name='score'
-                                                label='Overall score'
-                                                variant='outlined'
-                                                size='small'
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                onChange={(e) => {
-                                                    setScore(e.target.value);
-                                                }}
-                                                value={score}
-                                                inputProps={{ maxLength: 5 }}
-                                            />
-                                        </FormControl>
-                                    </div>
-                                </div>
-                                <div className='col-md-4 d-flex'>
-                                    <div className=' d-flex justify-content-end'>
-                                        <Button variant='contained' type='secondary' onClick={onClose}>
-                                            Cancel
-                                        </Button>
-                                    </div>
-                                    <div className='mx-2'>
-                                        <Button
-                                            variant='contained'
-                                            type='primary'
-                                            onClick={handleFinalEvaluationForHomework}
-                                            disabled={disableEv}
-                                        >
-                                            EVALUATION DONE
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                      <div className='item'>
+                        <FormControl variant='outlined' fullWidth size='small'>
+                          <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
+                          <OutlinedInput
+                            id='remarks'
+                            name='remarks'
+                            inputProps={{ maxLength: 150 }}
+                            multiline
+                            rows={4}
+                            rowsMax={4}
+                            label='Remarks'
+                            value={collatedQuestionState?.remarks || ''}
+                            onChange={(e) => {
+                              handleCollatedQuestionState('remarks', e.target.value);
+                            }}
+                            autoFocus
+                          />
+                        </FormControl>
+                      </div>
                     </div>
-                    {penToolOpen && (
-                        <DescriptiveTestcorrectionModule
-                            desTestDetails={desTestDetails}
-                            mediaContent={mediaContent}
-                            handleClose={handleCloseCorrectionModal}
-                            alert={undefined}
-                            open={penToolOpen}
-                            callBackOnPageChange={() => { }}
-                            handleSaveFile={handleSaveEvaluatedFile}
-                        />
-                    )}
+                    <div className='evaluate-answer-btn-container'>
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={evaluateAnswer}
+                      >
+                        SAVE
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className='overall-evaluation-container mb-3'>
+                <div className='col-md-8 d-flex'>
+                  <div className='col-md-6'>
+                    <FormControl variant='outlined' fullWidth size='small'>
+                      <TextField
+                        id='remarks'
+                        name='remarks'
+                        label='Overall remarks'
+                        variant='outlined'
+                        size='small'
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={(e) => {
+                          setRemark(e.target.value);
+                        }}
+                        value={remark}
+                        inputProps={{ maxLength: 15 }}
+                      />
+                    </FormControl>
+                  </div>
+                  <div className='col-md-6'>
+                    <FormControl variant='outlined' fullWidth size='small'>
+                      <TextField
+                        id='score'
+                        name='score'
+                        label='Overall score'
+                        variant='outlined'
+                        size='small'
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={(e) => {
+                          setScore(e.target.value);
+                        }}
+                        value={score}
+                        inputProps={{ maxLength: 5 }}
+                      />
+                    </FormControl>
+                  </div>
                 </div>
+                <div className='col-md-4 d-flex'>
+                  <div className=' d-flex justify-content-end'>
+                    <Button variant='contained' type='secondary' onClick={onClose}>
+                      Cancel
+                    </Button>
+                  </div>
+                  <div className='mx-2'>
+                    <Button
+                      variant='contained'
+                      type='primary'
+                      onClick={handleFinalEvaluationForHomework}
+                      disabled={disableEv}
+                    >
+                      EVALUATION DONE
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
-        );
-    }
+          </div>
+          {penToolOpen && (
+            <DescriptiveTestcorrectionModule
+              desTestDetails={desTestDetails}
+              mediaContent={mediaContent}
+              handleClose={handleCloseCorrectionModal}
+              alert={undefined}
+              open={penToolOpen}
+              callBackOnPageChange={() => {}}
+              handleSaveFile={handleSaveEvaluatedFile}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
 );
 
 const mapStateToProps = (state) => ({
-    submittedHomeworkDetails: state.teacherHomework.submittedHomeworkDetails,
-    selectedHomeworkDetails: state.teacherHomework.selectedHomeworkDetails,
-    totalSubmittedQuestions: state.teacherHomework.totalSubmittedQuestions,
-    fetchingSubmittedHomeworkDetails:
-        state.teacherHomework.fetchingSubmittedHomeworkDetails,
-    isQuestionwise: state.teacherHomework.isQuestionwise,
-    collatedSubmissionFiles: state.teacherHomework.collatedSubmissionFiles,
+  submittedHomeworkDetails: state.teacherHomework.submittedHomeworkDetails,
+  selectedHomeworkDetails: state.teacherHomework.selectedHomeworkDetails,
+  totalSubmittedQuestions: state.teacherHomework.totalSubmittedQuestions,
+  fetchingSubmittedHomeworkDetails:
+    state.teacherHomework.fetchingSubmittedHomeworkDetails,
+  isQuestionwise: state.teacherHomework.isQuestionwise,
+  collatedSubmissionFiles: state.teacherHomework.collatedSubmissionFiles,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getSubmittedHomeworkDetails: (id) => {
-        return dispatch(fetchSubmittedHomeworkDetails(id));
-    },
+  getSubmittedHomeworkDetails: (id) => {
+    return dispatch(fetchSubmittedHomeworkDetails(id));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewHomeworkNew);

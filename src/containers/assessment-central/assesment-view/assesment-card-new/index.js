@@ -16,10 +16,7 @@ import axios from 'axios';
 import { addQuestionPaperToTest } from '../../../../redux/actions';
 import Divider from '@material-ui/core/Divider';
 import ConfirmPopOver from '../../../../../src/containers/time-table/ConfirmPopOver';
-
-
-// import '../../lesson-plan-view/lesson.css';
-// import downloadAll from '../../../../assets/images/downloadAll.svg';
+import { message } from 'antd';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const AssessmentCard = ({
@@ -79,11 +76,11 @@ const AssessmentCard = ({
           setPublishFlag(true);
           setSelectedIndex(-1);
         } else {
-          setAlert('error', result.data.message);
+          message.error(result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        message.error(error.message);
       });
   };
 
@@ -99,15 +96,16 @@ const AssessmentCard = ({
       })
       .then((result) => {
         if (result?.data?.status_code > 199 && result?.data?.status_code < 300) {
-          setAlert('success', result?.data?.message);
+          // setAlert('success', result?.data?.message);
+          message.success('Question Paper deleted successfully');
           setPublishFlag(true);
           setSelectedIndex(-1);
         } else {
-          setAlert('error', result?.data?.message);
+          message.error(result?.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error?.message);
+        message.error(error?.message);
       });
   };
 
@@ -119,7 +117,7 @@ const AssessmentCard = ({
     );
     axiosInstance
       .put(url, {
-        is_delete : false,
+        is_delete: false,
       })
       .then((result) => {
         if (result.data.status_code > 199 && result.data.status_code < 300) {
@@ -127,13 +125,13 @@ const AssessmentCard = ({
           setPublishFlag(true);
           setSelectedIndex(-1);
         } else {
-          setAlert('error', result.data.message);
+          message.error(result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        message.error(error.message);
       });
-  }
+  };
 
   const handleViewMore = () => {
     setLoading(true);
@@ -173,7 +171,7 @@ const AssessmentCard = ({
             setViewMore(false);
             setViewMoreData([]);
             setPeriodDataForView();
-            setAlert('error', result.data.message);
+            message.error(result.data.message);
             setSelectedIndex(-1);
           }
         })
@@ -182,11 +180,10 @@ const AssessmentCard = ({
           setViewMore(false);
           setViewMoreData([]);
           setPeriodDataForView();
-          setAlert('error', error.message);
+          message.error(error.message);
           setSelectedIndex(-1);
         });
-    }
-    else {
+    } else {
       const url = endpoints.assessmentErp?.questionPaperViewMoreCentral.replace(
         '<question-paper-id>',
         period?.id
@@ -220,7 +217,7 @@ const AssessmentCard = ({
             setViewMore(false);
             setViewMoreData([]);
             setPeriodDataForView();
-            setAlert('error', result.data.message);
+            message.error(result.data.message);
             setSelectedIndex(-1);
           }
         })
@@ -229,7 +226,7 @@ const AssessmentCard = ({
           setViewMore(false);
           setViewMoreData([]);
           setPeriodDataForView();
-          setAlert('error', error.message);
+          message.error(error.message);
           setSelectedIndex(-1);
         });
     }
@@ -237,11 +234,10 @@ const AssessmentCard = ({
 
   return (
     <Paper
-      className={`${periodColor ? classes.selectedRoot : classes.root} ${period.is_verified ? classes.verifiedColor : classes.notverified}`}
-      style={
-        (isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }
-        )
-      }
+      className={`${periodColor ? classes.selectedRoot : classes.root} ${
+        period.is_verified ? classes.verifiedColor : classes.notverified
+      }`}
+      style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
     >
       <Grid container spacing={2}>
         <Grid item xs={9}>
@@ -284,44 +280,64 @@ const AssessmentCard = ({
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
                   {period.is_verified && !period?.is_delete && (
-                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '140px',marginLeft:'-100px' }}>
-                      <span onClick={handleAssign} style={{ marginBottom: 10 }}>Assign Test</span>
+                    <span
+                      className={` ${classes.tooltiptext} tooltiptext`}
+                      style={{ width: '140px', marginLeft: '-100px' }}
+                    >
+                      <span onClick={handleAssign} style={{ marginBottom: 10 }}>
+                        Assign Test
+                      </span>
                       <Divider />
                       {!period.is_central && (
-                        <span onClick={() => {
-                          setConfirmMessage('delete');
-                          setOpenModal(true);
-                        }} style={{ marginTop: 10 }}>Delete</span>
-                      )
-                      }
+                        <span
+                          onClick={() => {
+                            setConfirmMessage('delete');
+                            setOpenModal(true);
+                          }}
+                          style={{ marginTop: 10 }}
+                        >
+                          Delete
+                        </span>
+                      )}
                     </span>
                   )}
                   {period?.is_delete && (
-                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '140px',marginLeft:'-100px' }}>
+                    <span
+                      className={` ${classes.tooltiptext} tooltiptext`}
+                      style={{ width: '140px', marginLeft: '-100px' }}
+                    >
                       <span onClick={handleRestore}>Restore</span>
                     </span>
                   )}
-                  {!period.is_verified && !period?.is_delete &&  (
-                    <span className='tooltiptext' style={{ width: '160px',marginLeft:'-120px' }}>
-                      <span onClick={handlePublish} style={{ marginBottom: 10 }}>Publish Paper</span>
+                  {!period.is_verified && !period?.is_delete && (
+                    <span
+                      className='tooltiptext'
+                      style={{ width: '160px', marginLeft: '-120px' }}
+                    >
+                      <span onClick={handlePublish} style={{ marginBottom: 10 }}>
+                        Publish Paper
+                      </span>
                       <Divider />
-                      <span onClick={() => {
-                        setConfirmMessage('delete');
-                        setOpenModal(true);
-                      }} style={{ marginTop: 10 }}>Delete</span>
+                      <span
+                        onClick={() => {
+                          setConfirmMessage('delete');
+                          setOpenModal(true);
+                        }}
+                        style={{ marginTop: 10 }}
+                      >
+                        Delete
+                      </span>
                     </span>
                   )}
-                  {
-                    openModal && (
-                      <ConfirmPopOver
-                        submit={() => handleDelete()}
-                        openModal={openModal}
-                        setOpenModal={setOpenModal}
-                        operation={confirmMessage}
-                        opendelete={true}
-                      />
-                    )
-                  }
+                  {openModal && (
+                    <ConfirmPopOver
+                      submit={() => handleDelete()}
+                      openModal={openModal}
+                      setOpenModal={setOpenModal}
+                      operation={confirmMessage}
+                      opendelete={true}
+                    />
+                  )}
                 </div>
               ) : null}
             </span>
@@ -336,9 +352,12 @@ const AssessmentCard = ({
               component='p'
               color='secondary'
             >
-              {tabIsErpCentral.id == 1 ?
-                <FlagIcon className={classes.checkCentral} /> :
-                <FlagIcon className={classes.checkCentralNot} />}Created On :{period.created_at.substring(0, 10)}
+              {tabIsErpCentral.id == 1 ? (
+                <FlagIcon className={classes.checkCentral} />
+              ) : (
+                <FlagIcon className={classes.checkCentralNot} />
+              )}
+              Created On :{period.created_at.substring(0, 10)}
             </Typography>
           </Box>
           {/* <Box>
@@ -352,11 +371,16 @@ const AssessmentCard = ({
             </Typography>
           </Box> */}
         </Grid>
-        <Grid item xs={2} className={classes.textRight} style={{marginLeft:'16%'}}>
+        <Grid item xs={2} className={classes.textRight} style={{ marginLeft: '16%' }}>
           {!periodColor && (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '100%' , borderRadius:'6px' ,height:'32px' }}
+              style={{
+                color: 'white',
+                width: '100%',
+                borderRadius: '6px',
+                height: '32px',
+              }}
               color='primary'
               size='small'
               onClick={handleViewMore}

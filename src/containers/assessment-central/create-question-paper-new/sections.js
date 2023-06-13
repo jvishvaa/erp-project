@@ -137,7 +137,7 @@ const Sections = ({
   erpCategory,
   questionPaperWise,
   deleteOneSection,
-  isEdit
+  isEdit,
 }) => {
   let history = useHistory();
 
@@ -148,10 +148,9 @@ const Sections = ({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dispatch = useDispatch();
   const [isOptionalQues, setisOptionalQues] = useState(false);
-  const [deleteSection , setDeleteSection] = useState(false)
-  const [sectionId , setSectionId] = useState()
-  const [quesId , setQuestionId] = useState()
-
+  const [deleteSection, setDeleteSection] = useState(false);
+  const [sectionId, setSectionId] = useState();
+  const [quesId, setQuestionId] = useState();
 
   const handleDeleteSectionclose = () => {
     setQuestionId(null);
@@ -159,18 +158,19 @@ const Sections = ({
     setDeleteSection(false);
   };
 
-  const handledeleteSectionpopup = (qid , secid) => {
+  const handledeleteSectionpopup = (qid, secid) => {
     setQuestionId(qid);
     setSectionId(secid);
     setDeleteSection(true);
   };
 
   const DeleteSection = () => {
-    deleteOneSection(quesId, sectionId)
+    deleteOneSection(quesId, sectionId);
     setQuestionId(null);
     setSectionId(null);
     setDeleteSection(false);
-  }
+    message.info('Section deleted successfully');
+  };
   // const sectionMarks = section?.test_marks?.forEach((item) => {
   //       marks += parseInt(item?.question_mark[0])
   // } )
@@ -180,17 +180,17 @@ const Sections = ({
     for (let i = 0; i < section?.mandatory_questions; i++) {
       marks += parseFloat(section?.test_marks[i]?.question_mark[0]);
     }
-    if(section?.questions?.length > 0){
+    if (section?.questions?.length > 0) {
       return marks;
-    }else return 0;
+    } else return 0;
   };
   useEffect(() => {
-    if(!isEdit && section){
+    if (!isEdit && section) {
       handleOptionalQuestion(section?.questions?.length, '');
-    }else if(isEdit && section){
-        if(section?.questions?.length < section?.mandatory_questions){
-          handleOptionalQuestion(section?.questions?.length, '');
-        }
+    } else if (isEdit && section) {
+      if (section?.questions?.length < section?.mandatory_questions) {
+        handleOptionalQuestion(section?.questions?.length, '');
+      }
     }
   }, [section?.questions?.length]);
 
@@ -244,7 +244,7 @@ const Sections = ({
   const handleDeleteQuestion = (q, v) => {
     handleMenuClose();
     onDeleteQuestion(q?.id, section);
-    message.success('Question Deleted')
+    message.success('Question Deleted');
   };
   const handleDeleteCancel = () => {
     setDeleteAlert(false);
@@ -392,11 +392,7 @@ const Sections = ({
           <Button onClick={handleDeleteSectionclose} className='labelColor cancelButton'>
             Cancel
           </Button>
-          <Button
-            type='primary'
-            variant='contained'
-            onClick={DeleteSection}
-          >
+          <Button type='primary' variant='contained' onClick={DeleteSection}>
             Confirm
           </Button>
         </DialogActions>

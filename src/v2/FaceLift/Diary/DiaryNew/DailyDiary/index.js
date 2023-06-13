@@ -199,6 +199,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         ...prevState.slice(0, index),
         ...prevState.slice(index + 1),
       ]);
+      message.info('Question removed successfully');
     }
   };
 
