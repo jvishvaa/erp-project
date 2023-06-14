@@ -23,7 +23,7 @@ import endpoints from 'config/endpoints';
 import Layout from 'containers/Layout';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { fetchBranchesForCreateUser } from 'redux/actions';
 import axiosInstance from 'v2/config/axios';
 import axios from 'axios';
@@ -197,10 +197,12 @@ const User = () => {
                   </Popconfirm>
                 )}
 
-                <EditOutlined
-                  title='Edit'
-                  style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
-                />
+                <Link to={`/user-management/edit-user/${data.id}`}>
+                  <EditOutlined
+                    title='Edit'
+                    style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
+                  />
+                </Link>
               </>
             ) : (
               ''

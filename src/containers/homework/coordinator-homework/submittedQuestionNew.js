@@ -216,6 +216,9 @@ const SubmittedQuestionNew = ({
               }}
             >
               {question.submitted_files.map((url, i) => {
+                {
+                  console.log('homeworkAtta', url, url.includes('.doc'));
+                }
                 const actions = ['preview', 'download'];
                 if (!alreadyCorrectedQuestions.includes(url)) {
                   actions.push('pentool');
@@ -229,7 +232,11 @@ const SubmittedQuestionNew = ({
                         fileName={`Attachment-${i + 1}`}
                         urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                         index={i}
-                        actions={['preview', 'download', 'pentool']}
+                        actions={
+                          url.includes('.doc')
+                            ? ['download']
+                            : ['preview', 'download', 'pentool']
+                        }
                         onOpenInPenTool={onOpenInPenTool}
                       />
                     </div>

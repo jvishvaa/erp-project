@@ -23,7 +23,6 @@ import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-
 const BackButton = withStyles({
   root: {
     color: 'rgb(140, 140, 140)',
@@ -48,9 +47,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const [selectedRole, setSelectedRole] = useState('');
   const [designation, setDesignation] = useState([]);
   const [selectedDesignation, setSelectedDesignation] = useState('');
-  const selectedYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
+  const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -68,16 +65,19 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         }
       });
     }
-    getRoleApi()
+    getRoleApi();
   }, []);
 
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
-    ? true
-    : false;
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'localhost:3000' ||
+    window.location.host.split('.')[0] === 'mcollege' ||
+    window.location.host.split('.')[0] === 'dps'
+      ? true
+      : false;
 
-let levelObj = {};
+  let levelObj = {};
 
   const getRoleApi = async () => {
     try {
@@ -88,7 +88,7 @@ let levelObj = {};
         },
       });
       if (result.status === 200) {
-        setRoles(result?.data?.result)
+        setRoles(result?.data?.result);
         // const activeRole = [];
         // const levels = result?.data?.result;
         // levels.forEach((item) => {
@@ -108,16 +108,18 @@ let levelObj = {};
 
   const getDesignation = async (id) => {
     try {
-      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
-        headers: {
-          // Authorization: `Bearer ${token}`,
-          'x-api-key': 'vikash@12345#1231',
-        },
-      });
+      const result = await axios.get(
+        `${endpoints.lessonPlan.designation}?user_level=${id}`,
+        {
+          headers: {
+            // Authorization: `Bearer ${token}`,
+            'x-api-key': 'vikash@12345#1231',
+          },
+        }
+      );
       if (result.status === 200) {
         console.log(result);
-        setDesignation(result?.data?.result)
-    
+        setDesignation(result?.data?.result);
       } else {
         setAlert('error', result?.data?.message);
       }
@@ -134,7 +136,7 @@ let levelObj = {};
       section: details.section,
       subjects: details.subjects,
       userLevel: details.userLevel,
-      designation: details.designation
+      designation: details.designation,
     },
     validationSchema,
     onSubmit: (values) => {
@@ -143,8 +145,6 @@ let levelObj = {};
     validateOnChange: false,
     validateOnBlur: false,
   });
-
-
 
   // const fetchAcademicYears = () => {
   //   getAcademicYears(moduleId).then((data) => {
@@ -224,11 +224,11 @@ let levelObj = {};
       fetchGrades(selectedYear?.id, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
-            item_id: grade?.id,
-            id: grade?.grade_id,
-            grade_name: grade?.grade__grade_name,
-            branch_id: grade?.acad_session__branch_id,
-          }))
+              item_id: grade?.id,
+              id: grade?.grade_id,
+              grade_name: grade?.grade__grade_name,
+              branch_id: grade?.acad_session__branch_id,
+            }))
           : [];
         if (transformedData?.length > 1) {
           transformedData.unshift({
@@ -256,12 +256,12 @@ let levelObj = {};
       fetchSections(selectedYear?.id, branchList, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
-            item_id: section.id,
-            id: section.section_id,
-            section_name: `${section.section__section_name}`,
-            branch_id: section?.branch_id,
-            grade_id: section?.grade_id,
-          }))
+              item_id: section.id,
+              id: section.section_id,
+              section_name: `${section.section__section_name}`,
+              branch_id: section?.branch_id,
+              grade_id: section?.grade_id,
+            }))
           : [];
         if (transformedData?.length > 1) {
           transformedData.unshift({
@@ -294,27 +294,29 @@ let levelObj = {};
     if (values?.length > 0) {
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
       const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade; // Added
-      getSubjects(selectedYear?.id, branchList, gradeList, values, moduleId).then((data) => {
-        const transformedData =
-          data &&
-          data.map((obj) => ({
-            id: obj.subject__id,
-            item_id: obj.id,
-            subject_name: obj.subject__subject_name,
-          }));
-        // if (transformedData?.length > 1) {
-        //   transformedData.unshift({
-        //     id: 'all',
-        //     item_id: 'all',
-        //     subject_name: 'Select All',
-        //   });
-        // }
-        setSubjects(transformedData);
-        // const filteredSelectedSections = formik.values.section.filter(
-        //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
-        // );
-        // formik.setFieldValue('section', filteredSelectedSections);
-      });
+      getSubjects(selectedYear?.id, branchList, gradeList, values, moduleId).then(
+        (data) => {
+          const transformedData =
+            data &&
+            data.map((obj) => ({
+              id: obj.subject__id,
+              item_id: obj.id,
+              subject_name: obj.subject__subject_name,
+            }));
+          // if (transformedData?.length > 1) {
+          //   transformedData.unshift({
+          //     id: 'all',
+          //     item_id: 'all',
+          //     subject_name: 'Select All',
+          //   });
+          // }
+          setSubjects(transformedData);
+          // const filteredSelectedSections = formik.values.section.filter(
+          //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
+          // );
+          // formik.setFieldValue('section', filteredSelectedSections);
+        }
+      );
       // fetchSubjects(branch, values);
     }
   };
@@ -343,98 +345,117 @@ let levelObj = {};
   }, [moduleId, selectedYear]);
 
   const handleSubmit = () => {
-
     if (formik.values.subjects.length === 0) {
-      setAlert('error', 'Please select all fields')
-    }
-    else if(formik.values.userLevel == '' && isOrchids == true || formik.values.userLevel == null && isOrchids == true ){
-      setAlert('error', 'Please select User Level')
+      setAlert('error', 'Please select all fields');
+    } else if (
+      (formik.values.userLevel == '' && isOrchids == true) ||
+      (formik.values.userLevel == null && isOrchids == true)
+    ) {
+      setAlert('error', 'Please select User Level');
     } else {
-      if(formik.values.userLevel?.id != 13 && isOrchids == true && formik.values.designation == '' || formik.values.userLevel?.id != 13 && isOrchids == true && formik.values.designation == null ){
-      setAlert('error', 'Please select Designation')
-      }else{
-        formik.handleSubmit()
+      if (
+        (formik.values.userLevel?.id != 13 &&
+          isOrchids == true &&
+          formik.values.designation == '') ||
+        (formik.values.userLevel?.id != 13 &&
+          isOrchids == true &&
+          formik.values.designation == null)
+      ) {
+        setAlert('error', 'Please select Designation');
+      } else {
+        formik.handleSubmit();
         console.log(formik.values.designation);
       }
     }
-  }
+  };
 
   const classes = useStyles();
 
   return (
     <Grid container spacing={4} className='school-details-form-container'>
-    {isOrchids == true ? 
-      <div className='w-100 d-flex' >
-        <div className='col-md-4' >
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={(event, value) => {
-            setSelectedRole(value);
-            formik.setFieldValue('userLevel', value);
-            console.log(value);
-            if(value?.id == 13){
-              setSelectedDesignation('');
-              formik.setFieldValue('designation', '');
-            }
-            if(value?.id){
-              getDesignation(value?.id)
-            }
-          }}
-          id='branch_id'
-          className='dropdownIcon'
-          value={formik.values.userLevel || ''}
-          options={roles}
-          getOptionLabel={(option) => option?.level_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='User Level'
-              placeholder='Select User Level'
+      {isOrchids == true ? (
+        <div className='w-100 d-flex'>
+          <div className='col-md-4'>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedRole(value);
+                formik.setFieldValue('userLevel', value);
+                console.log(value);
+                if (value?.id == 13) {
+                  setSelectedDesignation('');
+                  formik.setFieldValue('designation', '');
+                }
+                if (value?.id) {
+                  getDesignation(value?.id);
+                }
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={formik.values.userLevel || ''}
+              options={roles}
+              getOptionLabel={(option) => option?.level_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='User Level'
+                  placeholder='Select User Level'
+                />
+              )}
             />
+          </div>
+          {console.log(selectedRole, 'rol')}
+          {formik.values.userLevel?.id == 13 ||
+          formik.values.userLevel == '' ||
+          formik.values.userLevel == null ? (
+            ''
+          ) : (
+            <div className='col-md-4'>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  setSelectedDesignation(value);
+                  formik.setFieldValue('designation', value);
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={formik.values.designation || ''}
+                options={designation || []}
+                getOptionLabel={(option) => option?.designation}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Designation'
+                    placeholder='Select Designation'
+                  />
+                )}
+              />
+            </div>
           )}
-        />
-        </div> 
-        {console.log(selectedRole , 'rol')}
-        {formik.values.userLevel?.id == 13 || formik.values.userLevel == '' || formik.values.userLevel == null ? '' : 
-        <div className='col-md-4' >
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={(event, value) => {
-            setSelectedDesignation(value);
-            formik.setFieldValue('designation', value);
-          }}
-          id='branch_id'
-          className='dropdownIcon'
-          value={formik.values.designation || ''}
-          options={designation || []}
-          getOptionLabel={(option) => option?.designation}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Designation'
-              placeholder='Select Designation'
-            />
-          )}
-        />
         </div>
-        }
-      </div> : '' }
+      ) : (
+        ''
+      )}
       <Grid item xs={12}>
         <Divider />
       </Grid>
       <Grid item md={4} xs={12}>
         <TextField
-          id="outlined-required"
-          label="Academic Year"
+          id='outlined-required'
+          label='Academic Year'
           style={{ width: '100%', padding: '0px !important', height: '7px !important' }}
-          defaultValue={details?.erp_id ? details?.academic_year?.session_year : selectedYear?.session_year}
-          variant="outlined"
+          defaultValue={
+            details?.erp_id
+              ? details?.academic_year?.session_year
+              : selectedYear?.session_year
+          }
+          variant='outlined'
           disabled
           size='small'
         />
@@ -485,11 +506,7 @@ let levelObj = {};
             onChange={(e, value) => {
               formik.setFieldValue('section', []);
               formik.setFieldValue('subjects', []);
-              handleChangeGrade(
-                value,
-                selectedYear?.id,
-                formik.values.branch
-              );
+              handleChangeGrade(value, selectedYear?.id, formik.values.branch);
             }}
             multiple
             value={formik.values.grade || []}
@@ -609,7 +626,7 @@ let levelObj = {};
             variant='contained'
             color='primary'
             onClick={() => {
-              handleSubmit()
+              handleSubmit();
             }}
             style={{ float: 'right' }}
           >

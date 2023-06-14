@@ -37,6 +37,10 @@ const AccessBlocker = () => {
     setSearchedData('');
     setSelectedSection('');
     setSelectedGrade('');
+    if (key === '1') {
+      setShowFilter(true);
+      formRef.current.resetFields();
+    }
   };
 
   const [pageNo, setPageNo] = useState(1);

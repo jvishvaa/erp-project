@@ -67,7 +67,7 @@ const SectionSuffle = () => {
   };
 
   const handleSectionSuffle = () => {
-    if (selectedFile === '') {
+    if (!selectedFile) {
       message.error('Please select a file to upload');
       return;
     }
@@ -141,7 +141,7 @@ const SectionSuffle = () => {
                 User Management
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
-                Section Suffle
+                Section Shuffle
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
