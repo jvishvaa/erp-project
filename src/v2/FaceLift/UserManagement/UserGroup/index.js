@@ -56,7 +56,6 @@ const UserGroup = () => {
     if (key === '1') {
       setIsEdit(false);
       setEditData([]);
-      formRef.current.resetFields();
     }
   };
 
@@ -202,13 +201,19 @@ const UserGroup = () => {
 
   const handleUserBranch = (e, value) => {
     setPageNo(1);
-    if (e != undefined) {
+    if (e) {
       setSelectedBranch(e);
       fetchGrade(value?.branchId);
+      setSelectedGrade('');
+      setUserGroupData([]);
+      formRef.current.setFieldsValue({
+        grade: null,
+      });
     } else {
       setSelectedBranch('');
       setSelectedGrade('');
       setGradeList([]);
+      setUserGroupData([]);
       formRef.current.setFieldsValue({
         branch: null,
         grade: null,
@@ -243,8 +248,10 @@ const UserGroup = () => {
     setPageNo(1);
     if (e != undefined) {
       setSelectedGrade(e);
+      setUserGroupData([]);
     } else {
       setSelectedGrade('');
+      setUserGroupData([]);
       formRef.current.setFieldsValue({
         grade: null,
       });
@@ -342,7 +349,7 @@ const UserGroup = () => {
   };
 
   const handleFetchUserGroup = (page) => {
-    if (page) {
+    if (page && selectedBranch && selectedGrade) {
       fetchUserGroup(1, searchedData, selectedBranch, selectedGrade);
       onTabChange('1');
     }

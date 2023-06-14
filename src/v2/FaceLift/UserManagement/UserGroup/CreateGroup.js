@@ -87,13 +87,13 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
   const fetchBranches = async () => {
     if (selectedYear) {
       try {
-        const result = await axiosInstance.get(
-          `${endpoints.masterManagement.branchList}?session_year=${selectedYear.id}&module_id=${moduleId}`
+        const response = await axiosInstance.get(
+          `${endpoints.academics.branches}?session_year=${selectedYear.id}&module_id=${moduleId}`
         );
-        if (result.data.status_code === 200) {
-          setBranchList(result?.data?.data);
+        if (response.data.status_code === 200) {
+          setBranchList(response?.data?.data?.results);
         } else {
-          message.error(result?.data?.message);
+          message.error(response?.data?.message);
         }
       } catch (error) {
         message.error(error.message);
@@ -166,8 +166,8 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
 
   const branchListOptions = branchList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
-        {each?.branch_name}
+      <Option key={each?.id} value={each.id} branchId={each?.branch?.id}>
+        {each?.branch?.branch_name}
       </Option>
     );
   });
@@ -189,14 +189,19 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
   });
 
   const handleUserBranch = (e, value) => {
-    if (e !== undefined) {
-      setSelectedBranch(e);
+    if (e) {
+      setSelectedBranch(value?.branchId);
       setSelectedBranchName(value?.children);
-      fetchGrade(e);
+      fetchGrade(value?.branchId);
+      setSelectedSection([]);
+      setUserData([]);
+      formRef.current.setFieldsValue({
+        grade: null,
+        section: [],
+      });
     } else {
       setSelectedBranch('');
       setSelectedBranchName('');
-      //   setSelectedGrade('');
       setSelectedSection('');
       setGradeList([]);
       setSectionList([]);
@@ -212,11 +217,15 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
   };
 
   const handleGrade = (e) => {
-    if (e !== undefined) {
-      //   setSelectedGrade(e);
+    if (e) {
       fetchSection(e, selectedBranch);
+      setSelectedSection([]);
+      setSelectedUsers([]);
+      setUserData([]);
+      formRef.current.setFieldsValue({
+        section: [],
+      });
     } else {
-      //   setSelectedGrade('');
       setSelectedSection('');
       setSectionList([]);
       setSelectedUsers([]);
@@ -229,43 +238,22 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
     }
   };
 
-  const handleSection = (e) => {
-    if (e.length > 0) {
-      setSelectedSection(e);
-    } else {
-      setSelectedSection('');
-      setUserData([]);
+  const handleChangeSection = (each) => {
+    setPageNo(1);
+    if (each.some((item) => item.value === 'all')) {
+      const allsections = sectionList.map((item) => item.id).join(',');
+      setSelectedSection(allsections);
       formRef.current.setFieldsValue({
-        section: [],
+        section: sectionList.map((item) => item.id),
       });
+    } else {
+      setSelectedSection(each.map((item) => item.value).join(','));
     }
   };
-  // const handleSelectSection = (each) => {
-  //   if (each.value == 'all') {
-  //     formRef.current.setFieldsValue({
-  //       section: sectionList?.map((item) => item.id),
-  //     });
-  //     setSelectedSection(sectionList.map((item) => item.id));
-  //   } else {
-  //     if (!selectedSection.includes(each.value)) {
-  //       setSelectedSection([...selectedSection, Number(each.value)]);
-  //     }
-  //   }
-  // };
 
-  // const handleDeSelectSection = (each) => {
-  //   if (each.value == 'all') {
-  //     setSelectedSection([]);
-  //   } else {
-  //     const sectionMappingIdIndex = selectedSection.indexOf(each?.value);
-  //     const newSectionMappingIdList = selectedSection.slice();
-  //     newSectionMappingIdList.splice(sectionMappingIdIndex, 1);
-  //     setSelectedSection(newSectionMappingIdList);
-  //   }
-  // };
-  // const handleClearSection = () => {
-  //   setSelectedSection([]);
-  // };
+  const handleClearSection = () => {
+    setSelectedSection([]);
+  };
 
   const columns = [
     {
@@ -471,11 +459,8 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
                     className='th-grey th-bg-grey th-br-4 w-100 text-left'
                     placement='bottomRight'
                     showArrow={true}
-                    onChange={(e, value) => handleSection(e, value)}
-                    // onDeselect={(e, value) => {
-                    //   handleDeSelectSection(value);
-                    // }}
-                    // onClear={handleClearSection}
+                    onChange={(e, value) => handleChangeSection(value)}
+                    onClear={handleClearSection}
                     dropdownMatchSelectWidth={true}
                     filterOption={(input, options) => {
                       return (
@@ -485,13 +470,13 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
                     showSearch
                     placeholder='Select section*'
                   >
-                    {/* {sectionOptions.length > 1 && (
+                    {sectionList.length > 1 && (
                       <>
                         <Option key={0} value={'all'}>
-                          All
+                          Select All
                         </Option>
                       </>
-                    )} */}
+                    )}
                     {sectionOptions}
                   </Select>
                 </Form.Item>
