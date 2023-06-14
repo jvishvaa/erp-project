@@ -47,6 +47,7 @@ const User = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [pageNo, setPageNo] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
+  //eslint-disable-next-line
   const [pageLimit, setPageLimit] = useState(15);
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +55,8 @@ const User = () => {
   const [searchData, setSearchData] = useState('');
   const [showFilterPage, setShowFilter] = useState(true);
 
-  const [deactivateId, setDeactivateId] = useState(null);
+  const formRef = useRef();
+  const searchRef = useRef();
 
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
@@ -230,6 +232,7 @@ const User = () => {
       });
     }
   }, []);
+
   useEffect(() => {
     fetchUserLevel();
     fetchBranches();
@@ -292,9 +295,17 @@ const User = () => {
 
   const handleUserBranch = (e) => {
     setPageNo(1);
-    if (e != undefined) {
+    if (e) {
       setBranch(e);
       fetchGrade(e);
+      setGrade('');
+      setSection('');
+      setGradeList([]);
+      setSectionList([]);
+      formRef.current.setFieldsValue({
+        grade: [],
+        section: [],
+      });
     } else {
       setBranch('');
       setGrade('');
@@ -332,20 +343,36 @@ const User = () => {
     );
   });
 
-  const handleGrade = (e) => {
+  const handleChangeGrade = (each) => {
     setPageNo(1);
-    if (e.length > 0) {
-      setGrade(e);
-      fetchSection(e);
-    } else {
-      setGrade('');
-      setSection('');
-      setSectionList([]);
+    if (each.some((item) => item.value === 'all')) {
+      const allGrade = gradeList.map((item) => item.grade_id).join(',');
+      setGrade(allGrade);
+      fetchSection(allGrade);
+      setSection([]);
       formRef.current.setFieldsValue({
-        grade: [],
+        grade: gradeList.map((item) => item.grade_id),
+        section: [],
+      });
+    } else {
+      const singleGrade = each.map((item) => item.value).join(',');
+      setGrade(singleGrade);
+      fetchSection(singleGrade);
+      setSection([]);
+      formRef.current.setFieldsValue({
         section: [],
       });
     }
+  };
+
+  const handleClearGrade = () => {
+    setGrade([]);
+    setSection('');
+    setSectionList([]);
+    formRef.current.setFieldsValue({
+      grade: [],
+      section: [],
+    });
   };
 
   const fetchSection = async (grade) => {
@@ -371,16 +398,21 @@ const User = () => {
     );
   });
 
-  const handleSection = (e) => {
+  const handleChangeSection = (each) => {
     setPageNo(1);
-    if (e != undefined) {
-      setSection(e);
-    } else {
-      setSection('');
+    if (each.some((item) => item.value === 'all')) {
+      const allsections = sectionList.map((item) => item.id).join(',');
+      setSection(allsections);
       formRef.current.setFieldsValue({
-        section: null,
+        section: sectionList.map((item) => item.id),
       });
+    } else {
+      setSection(each.map((item) => item.value).join(','));
     }
+  };
+
+  const handleClearSection = () => {
+    setSection([]);
   };
 
   const statusOptions = [
@@ -483,9 +515,6 @@ const User = () => {
         console.log(error);
       });
   };
-
-  const formRef = useRef();
-  const searchRef = useRef();
 
   const handleExcel = () => {
     setLoading(true);
@@ -717,7 +746,8 @@ const User = () => {
                           className='th-grey th-bg-grey th-br-4 w-100 text-left'
                           placement='bottomRight'
                           showArrow={true}
-                          onChange={(e, value) => handleGrade(e, value)}
+                          onChange={(e, value) => handleChangeGrade(value)}
+                          onClear={handleClearGrade}
                           dropdownMatchSelectWidth={false}
                           filterOption={(input, options) => {
                             return (
@@ -729,6 +759,13 @@ const User = () => {
                           showSearch
                           placeholder='Select Grade'
                         >
+                          {gradeList.length > 1 && (
+                            <>
+                              <Option key={0} value={'all'}>
+                                Select All
+                              </Option>
+                            </>
+                          )}
                           {gradeOptions}
                         </Select>
                       </Form.Item>
@@ -744,7 +781,8 @@ const User = () => {
                           className='th-grey th-bg-grey th-br-4 w-100 text-left'
                           placement='bottomRight'
                           showArrow={true}
-                          onChange={(e, value) => handleSection(e, value)}
+                          onChange={(e, value) => handleChangeSection(value)}
+                          onClear={handleClearSection}
                           dropdownMatchSelectWidth={false}
                           filterOption={(input, options) => {
                             return (
@@ -756,6 +794,13 @@ const User = () => {
                           showSearch
                           placeholder='Select section'
                         >
+                          {sectionList.length > 1 && (
+                            <>
+                              <Option key={0} value={'all'}>
+                                Select All
+                              </Option>
+                            </>
+                          )}
                           {sectionOptions}
                         </Select>
                       </Form.Item>
