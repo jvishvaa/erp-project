@@ -299,6 +299,11 @@ const AcademicYearList = ({
                   ]);
                   onChange(e, 'academic_year');
                 }}
+                getPopupContainer={(trigger) => trigger.parentNode}
+                showSearch
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
                 placeholder='Academic Year'
                 className='w-100'
               >
@@ -318,17 +323,39 @@ const AcademicYearList = ({
               label='Branch'
             >
               <Select
+                maxTagCount={3}
+                allowClear
                 value={currentObj?.branch}
                 onChange={(e, obj) => {
-                  let branch_code = obj?.map((i) => i.code);
-                  fetchGrades(e, branch_code);
+                  if (e.includes('all')) {
+                    let values = branches?.map((e) => e?.id);
+                    acadForm.current.setFieldsValue({
+                      branch: values,
+                    });
+                    let branch_code = branches?.map((i) => i.branch_code);
+                    fetchGrades(values, branch_code);
+                    onChange(values, 'branch');
+                  } else {
+                    let branch_code = obj?.map((i) => i.code);
+                    fetchGrades(e, branch_code);
+                    onChange(e, 'branch');
+                  }
                   acadForm.current.resetFields(['grade', 'section', 'subjects']);
-                  onChange(e, 'branch');
+                }}
+                getPopupContainer={(trigger) => trigger.parentNode}
+                showSearch
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
                 mode='multiple'
                 placeholder='Branch'
                 className='w-100'
               >
+                {branches?.length > 1 && (
+                  <Select.Option key={'all'} value={'all'}>
+                    Select All
+                  </Select.Option>
+                )}
                 {branchOption}
               </Select>
             </Form.Item>
@@ -346,16 +373,35 @@ const AcademicYearList = ({
               label='Grade'
             >
               <Select
+                maxTagCount={3}
                 value={currentObj?.grade}
+                getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {
-                  fetchSections(value?.map((e) => e.id));
+                  if (e.includes('all')) {
+                    let values = grades?.map((e) => e?.grade_name);
+                    acadForm.current.setFieldsValue({
+                      grade: values,
+                    });
+                    fetchSections(grades?.map((e) => e?.id));
+                  } else {
+                    fetchSections(value?.map((e) => e.id));
+                  }
                   acadForm.current.resetFields(['section', 'subjects']);
                   // onChange(e, 'grade');
+                }}
+                showSearch
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
                 mode='multiple'
                 placeholder='Grade'
                 className='w-100'
               >
+                {grades?.length > 1 && (
+                  <Select.Option key={'all'} value={'all'}>
+                    Select All
+                  </Select.Option>
+                )}
                 {gradeOption}
               </Select>
             </Form.Item>
@@ -372,16 +418,36 @@ const AcademicYearList = ({
               label='Section'
             >
               <Select
+                maxTagCount={3}
                 value={currentObj?.section}
+                getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {
-                  fetchSubjects(value?.map((e) => e.id));
+                  if (e.includes('all')) {
+                    let values = sections?.map((e) => e?.item_id);
+                    acadForm.current.setFieldsValue({
+                      section: values,
+                    });
+                    fetchSubjects(sections?.map((e) => e?.id));
+                    onChange(values, 'section');
+                  } else {
+                    fetchSubjects(value?.map((e) => e.id));
+                    onChange(e, 'section');
+                  }
                   acadForm.current.resetFields(['subjects']);
-                  onChange(e, 'section');
+                }}
+                showSearch
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
                 mode='multiple'
                 placeholder='Section'
                 className='w-100'
               >
+                {sections?.length > 1 && (
+                  <Select.Option key={'all'} value={'all'}>
+                    Select All
+                  </Select.Option>
+                )}
                 {sectionOption}
               </Select>
             </Form.Item>
@@ -398,15 +464,35 @@ const AcademicYearList = ({
               label='Subject'
             >
               <Select
+                maxTagCount={3}
                 value={currentObj?.subjects}
+                getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {
-                  setSelectedSubjects(value?.map((e) => e.id));
-                  onChange(e, 'subjects');
+                  if (e.includes('all')) {
+                    let values = subjects?.map((e) => e?.id);
+                    acadForm.current.setFieldsValue({
+                      subjects: values,
+                    });
+                    setSelectedSubjects(subjects?.map((e) => e?.id));
+                    onChange(values, 'subjects');
+                  } else {
+                    setSelectedSubjects(value?.map((e) => e.id));
+                    onChange(e, 'subjects');
+                  }
+                }}
+                showSearch
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
                 mode='multiple'
                 placeholder='Subject'
                 className='w-100'
               >
+                {subjects?.length > 1 && (
+                  <Select.Option key={'all'} value={'all'}>
+                    Select All
+                  </Select.Option>
+                )}
                 {subjectOption}
               </Select>
             </Form.Item>

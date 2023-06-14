@@ -2,7 +2,14 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, Divider, Form, Input, InputNumber, Radio, Row } from 'antd';
 import React, { useState } from 'react';
 
-const SiblingInformation = ({ siblings, setSiblings, handleBack, handleSubmit }) => {
+const SiblingInformation = ({
+  siblings,
+  setSiblings,
+  handleBack,
+  handleSubmit,
+  loading,
+  editId,
+}) => {
   const handleChange = (e, id, field) => {
     let temp = siblings;
     for (let i = 0; i < siblings?.length; i++) {
@@ -18,7 +25,7 @@ const SiblingInformation = ({ siblings, setSiblings, handleBack, handleSubmit })
   return (
     <React.Fragment>
       <div
-        className=''
+        className='px-2'
         style={{
           height: '70vh',
           overflowY: 'scroll',
@@ -148,8 +155,13 @@ const SiblingInformation = ({ siblings, setSiblings, handleBack, handleSubmit })
         >
           Back
         </Button>
-        <Button onClick={handleSubmit} className='ml-3 px-4' type='primary'>
-          Submit
+        <Button
+          loading={loading}
+          onClick={handleSubmit}
+          className='ml-3 px-4'
+          type='primary'
+        >
+          {editId ? 'Update' : 'Submit'}
         </Button>
       </div>
     </React.Fragment>

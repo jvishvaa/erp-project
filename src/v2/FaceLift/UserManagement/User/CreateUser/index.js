@@ -12,7 +12,7 @@ import Layout from 'containers/Layout';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
 import moment from 'moment/moment';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import AcademicYearList from './AcademicYearList';
 const { Step } = Steps;
 const CreateUser = () => {
@@ -38,6 +38,9 @@ const CreateUser = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [multipleAcademicYear, setMultipleAcademicYear] = useState([]);
   const [sectionMappingId, setSectionMappingId] = useState([]);
+  const [userLevel, setUserLevel] = useState(null);
+  const [parent, setParent] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [siblings, setSiblings] = useState([
     {
       id: Math.random(),
@@ -48,6 +51,7 @@ const CreateUser = () => {
       school_name: '',
     },
   ]);
+  const history = useHistory();
   const params = useParams();
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   useEffect(() => {
@@ -110,6 +114,21 @@ const CreateUser = () => {
             default:
               gender = 1;
               break;
+          }
+
+          setUserLevel(user?.user_level);
+          if (user?.user_level !== 13) {
+            let parentDetails = user?.parent_details;
+            if (parentDetails?.father_first_name && !parentDetails?.guardian_first_name) {
+              setParent(['parent']);
+            } else if (
+              !parentDetails?.father_first_name &&
+              parentDetails?.guardian_first_name
+            ) {
+              setParent(['guardian']);
+            } else {
+              setParent(['parent', 'guardian']);
+            }
           }
 
           let transformedUser = {
@@ -508,14 +527,22 @@ const CreateUser = () => {
     if (currentStep < 3) setCurrentStep(currentStep + 1);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (formValues) => {
+    setLoading(true);
     console.log(schoolFormValues, studentFormValues, familyFormValues, siblings);
+    let familyValues = {};
+    if (userLevel === 13) {
+      familyValues = familyFormValues;
+    } else {
+      familyValues = formValues;
+    }
     const formData = new FormData();
     //SCHOOL INFORMATION
 
     //SCHOOL INFORMATION
     formData.append('user_level', schoolFormValues?.user_level);
-    formData.append('designation', schoolFormValues?.designation);
+    if (schoolFormValues?.designation)
+      formData.append('designation', schoolFormValues?.designation);
     // STUDENT INFO
     formData.append('first_name', studentFormValues?.first_name ?? '');
     formData.append('middle_name', studentFormValues?.middle_name ?? '');
@@ -530,22 +557,28 @@ const CreateUser = () => {
     formData.append('old_school_name', studentFormValues?.old_school_name ?? '');
     formData.append('special_needs', studentFormValues?.special_needs ?? '');
     formData.append('medical_info', studentFormValues?.medical_info ?? '');
-    formData.append(
-      'single_parent',
-      studentFormValues?.single_parent
-        ? studentFormValues?.single_parent === 'father'
-          ? 1
-          : studentFormValues?.single_parent === 'mother'
-          ? 2
-          : 3
-        : null
-    );
-    formData.append('email', familyFormValues?.email ?? '');
-    formData.append(
-      'contact',
-      `${familyFormValues?.contact ? `+91-` + familyFormValues?.contact : ''}`
-    );
-    formData.append('address', familyFormValues?.address ?? '');
+    if (userLevel === 13)
+      formData.append(
+        'single_parent',
+        studentFormValues?.single_parent
+          ? studentFormValues?.single_parent === 'father'
+            ? 1
+            : studentFormValues?.single_parent === 'mother'
+            ? 2
+            : 3
+          : null
+      );
+    formData.append('email', familyValues?.email ?? '');
+    let contact =
+      userLevel === 13
+        ? familyValues?.father_mobile
+          ? familyValues?.father_mobile
+          : familyValues?.mother_mobile
+          ? familyValues?.mother_mobile
+          : familyValues?.guardian_mobile
+        : familyValues?.contact;
+    formData.append('contact', `${contact ?? ''}`);
+    formData.append('address', familyValues?.address ?? '');
     if (studentFormValues?.profile) {
       formData.append(
         'profile',
@@ -557,47 +590,43 @@ const CreateUser = () => {
 
     // FAMILY INFO
     let parentObj = {};
-    Object.keys(familyFormValues).forEach((key) => {
+    Object.keys(familyValues).forEach((key) => {
       if (
         !key.includes('photo') &&
         key !== 'email' &&
-        key !== 'contact'
+        key !== 'contact' &&
+        familyValues[key]
         // !key.includes('address')
       ) {
         if (key.includes('mobile')) {
-          parentObj[key] = familyFormValues[key] ? `+91-` + familyFormValues[key] : '';
-        } else parentObj[key] = familyFormValues[key];
+          parentObj[key] = familyValues[key] ? `+91-` + familyValues[key] : '';
+        } else parentObj[key] = familyValues[key];
       }
     });
+
     formData.append('parent', JSON.stringify(parentObj));
-    if (
-      familyFormValues.father_photo &&
-      !typeof familyFormValues.father_photo === 'string'
-    ) {
+    if (familyValues?.father_photo && !typeof familyValues?.father_photo === 'string') {
       formData.append(
         'father_photo',
-        familyFormValues?.father_photo,
-        familyFormValues?.father_photo?.name
+        familyValues?.father_photo,
+        familyValues?.father_photo?.name
       );
     }
-    if (
-      familyFormValues.mother_photo &&
-      !typeof familyFormValues.mother_photo === 'string'
-    ) {
+    if (familyValues.mother_photo && !typeof familyValues?.mother_photo === 'string') {
       formData.append(
         'mother_photo',
-        familyFormValues?.mother_photo,
-        familyFormValues?.mother_photo?.name
+        familyValues?.mother_photo,
+        familyValues?.mother_photo?.name
       );
     }
     if (
-      familyFormValues.guardian_photo &&
-      !typeof familyFormValues.guardian_photo === 'string'
+      familyValues.guardian_photo &&
+      !typeof familyValues?.guardian_photo === 'string'
     ) {
       formData.append(
         'guardian_photo',
-        familyFormValues?.guardian_photo,
-        familyFormValues?.guardian_photo?.name
+        familyValues?.guardian_photo,
+        familyValues?.guardian_photo?.name
       );
     }
     // FAMILY INFO
@@ -635,13 +664,17 @@ const CreateUser = () => {
         .post('/erp_user/add_user/', formData)
         .then(() => {
           message.success('User Created Successfully!');
+          history.push('/user-management/view-users');
         })
         .catch((error) => {
           message.error(error?.response?.data?.message ?? 'Something went wrong!');
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
-
+  let totalStep = userLevel && userLevel === 13 ? 4 : 3;
   return (
     <React.Fragment>
       <Layout>
@@ -678,16 +711,12 @@ const CreateUser = () => {
                   type='primary'
                 >
                   <Step key={0} title='School Information' />
-                  <Step key={1} title='Student Information' />
+                  <Step
+                    key={1}
+                    title={`${userLevel === 13 ? 'Student' : 'User'} Information`}
+                  />
                   <Step key={2} title='Family Information' />
-                  <Step key={3} title='Sibling Information' />
-                  {/* <div style={{ marginTop: '16px' }}>
-              <Row gutter={[16, 16]}>
-                <Col key={1} span={8}>
-                  <Card>{'School Information'}</Card>
-                </Col>
-              </Row>
-            </div> */}
+                  {userLevel === 13 && <Step key={3} title='Sibling Information' />}
                 </Steps>
                 <Progress
                   strokeColor='#1B4CCB'
@@ -699,9 +728,11 @@ const CreateUser = () => {
                   trailColor='primary'
                   width={100}
                   type='circle'
-                  percent={(currentStep / 4) * 100}
+                  percent={Math.ceil((currentStep / totalStep) * 100)}
                 />
-                <div className='th-primary th-18 th-fw-600'>Step {currentStep + 1}/4</div>
+                <div className='th-primary th-18 th-fw-600'>
+                  Step {currentStep + 1}/{totalStep}
+                </div>
               </div>
             </div>
             <div className='pl-2' style={{ width: `calc(100% )`, height: '80vh' }}>
@@ -710,11 +741,13 @@ const CreateUser = () => {
                 {currentStep === 0
                   ? 'School'
                   : currentStep === 1
-                  ? 'Student'
+                  ? userLevel === 13
+                    ? 'Student'
+                    : 'User'
                   : currentStep === 2
                   ? 'Family'
                   : 'Sibling'}{' '}
-                Information (Step {currentStep + 1}/4)
+                Information (Step {currentStep + 1}/{totalStep})
               </div>
               <Card
                 className='h-100'
@@ -746,6 +779,9 @@ const CreateUser = () => {
                         setMultipleAcademicYear={setMultipleAcademicYear}
                         sectionMappingId={sectionMappingId}
                         setSectionMappingId={setSectionMappingId}
+                        userLevel={userLevel}
+                        setUserLevel={setUserLevel}
+                        parent={setParent}
                       />
                     </>
                   )}
@@ -759,6 +795,8 @@ const CreateUser = () => {
                       setSingleParent={setSingleParent}
                       guardian={guardian}
                       setGuardian={setGuardian}
+                      userLevel={userLevel}
+                      setParent={setParent}
                     />
                   )}
                   {currentStep === 2 && (
@@ -769,6 +807,12 @@ const CreateUser = () => {
                       handleNext={handleNext}
                       handleBack={handleBack}
                       guardian={guardian}
+                      userLevel={userLevel}
+                      parent={parent}
+                      setParent={setParent}
+                      handleSubmit={handleSubmit}
+                      loading={loading}
+                      editId={editId}
                     />
                   )}
                   {currentStep === 3 && (
@@ -777,6 +821,8 @@ const CreateUser = () => {
                       setSiblings={setSiblings}
                       handleBack={handleBack}
                       handleSubmit={handleSubmit}
+                      loading={loading}
+                      editId={editId}
                     />
                   )}
                 </div>
