@@ -65,9 +65,7 @@ const StudentSidePhysicalActivity = () => {
   const [physicalActivityToggle, setPhysicalActivityToggle] = useState(false);
 
   const handleCloseViewMore = () => {
-    // playerRef.current.seekTo(0);
     setShowDrawer(false);
-    // setPlayVideo(false);
     setSelectedActivity(null);
   };
 
@@ -145,13 +143,6 @@ const StudentSidePhysicalActivity = () => {
     setIsRoundAvailable(physicalActivityToggle);
     getRatingView(data?.id, physicalActivityToggle);
     fetchMedia(data?.id);
-    // if(isvalue){
-    //   setShowDrawer(true);
-    //   setShowSideDrawer(false);
-    // }else {
-    //   setShowDrawer(false);
-    //   setShowSideDrawer(true);
-    // }
     setSelectedActivity(data);
   };
   const handleViewBMIModal = (data) => {
@@ -186,13 +177,11 @@ const StudentSidePhysicalActivity = () => {
           array.push(temp);
         });
         setRatingReview(response.data);
-        // fetchMedia(response.data?.id);
         if (is_round_available) {
           setShowDrawer(true);
         } else {
           setShowSideDrawer(true);
         }
-        // setSelectedActivity(response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -273,14 +262,6 @@ const StudentSidePhysicalActivity = () => {
         </span>
       ),
     },
-    // {
-    //   title: <span className='th-white th-fw-700'>Overall Score</span>,
-    //   dataIndex: 'creator',
-    //   align: 'center',
-    //   render: (text, row) => (
-    //     <span className='th-black-1'> {row?.user_reviews?.remarks}</span>
-    //   ),
-    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -378,84 +359,6 @@ const StudentSidePhysicalActivity = () => {
         );
       },
     },
-    // {
-    //   title: <span className='th-white th-fw-700 '>Round 2</span>,
-    //   dataIndex: 'created_at',
-    //   align: 'center',
-    //   render: (text, row) => {
-    //     return (
-    //       <p>
-    //         {row?.reviews_data?.map((item, index) => (
-    //           <p>
-    //             {item.level === 'Round 2' && item.name !== 'Overall' ? (
-    //               item?.remarks
-    //             ) : (
-    //               <></>
-    //             )}
-    //           </p>
-    //         ))}
-    //       </p>
-    //     );
-    //   },
-    // },
-    // {
-    //   title: <span className='th-white th-fw-700 '>Round 3</span>,
-    //   dataIndex: 'created_at',
-    //   align: 'center',
-    //   render: (text, row) => {
-    //     return (
-    //       <p>
-    //         {row?.reviews_data?.map((item, index) => (
-    //           <p>
-    //             {item.level === 'Round 3' && item.name !== 'Overall' ? (
-    //               item?.remarks
-    //             ) : (
-    //               <></>
-    //             )}
-    //           </p>
-    //         ))}
-    //       </p>
-    //     );
-    //   },
-    // },
-    // {
-    //   title: <span className='th-white th-fw-700 '>Overall</span>,
-    //   dataIndex: 'created_at',
-    //   align: 'center',
-    //   render: (text, row) => {
-    //     return (
-    //       <p>
-    //         {row?.reviews_data?.map((item, index) => (
-    //           <p>
-    //             {item.level === 'Round 1' && item.name === 'Overall' ? (
-    //               item?.remarks
-    //             ) : (
-    //               <></>
-    //             )}
-    //           </p>
-    //         ))}
-    //       </p>
-    //     );
-    //   },
-    // },
-    // {
-    //   title: <span className='th-white th-fw-700'>Actions</span>,
-    //   dataIndex: '',
-    //   align: 'center',
-    //   width: '25%',
-    //   render: (text, row) => (
-    //     <div className='th-black-1 d-flex justify-content-around'>
-    //       <Tag
-    //         icon={<PieChartOutlined className='th-14' />}
-    //         color='geekblue'
-    //         className='th-br-5 th-pointer py-1'
-    //         onClick={() => handleShowReview(row)}
-    //       >
-    //         <span className='th-fw-500 th-14'>Check Review</span>
-    //       </Tag>
-    //     </div>
-    //   ),
-    // },
   ];
   const columnsBMI = [
     {
@@ -605,7 +508,6 @@ const StudentSidePhysicalActivity = () => {
                     }}
                     scroll={{
                       x: window.innerWidth > 600 ? '100%' : 'max-content',
-                      // y: 600,
                     }}
                   />
                 </div>
@@ -709,7 +611,6 @@ const StudentSidePhysicalActivity = () => {
                         <ReactPlayer
                           url={mediaFiles?.s3_path}
                           thumb={mediaFiles?.s3_path}
-                          // playing={playVideo}
                           ref={playerRef}
                           width='100%'
                           height='100%'
@@ -749,7 +650,6 @@ const StudentSidePhysicalActivity = () => {
                             src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                             alt='image'
                             style={{
-                              // width: '100%',
                               height: 130,
                               objectFit: 'fill',
                             }}
