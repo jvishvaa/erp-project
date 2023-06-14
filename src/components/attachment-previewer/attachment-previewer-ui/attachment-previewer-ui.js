@@ -41,7 +41,11 @@ function AttachmentPreviewerUI() {
   const history = useHistory()
   const [webviewer, setWebViewer] = useState(false)
 
-  
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'localhost:3000'
+    ? true
+    : false;
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
@@ -157,7 +161,8 @@ function AttachmentPreviewerUI() {
                       src={pptFileSrc}
                       className='attachment-viewer-frame-preview-iframe'
                     />
-                    <div className='overlayDwnld' style={{ height: '22px' , width: '94px' , bottom: '13px' , position: 'absolute' , background: '#444444' , right: '18px' }} ></div>
+                    {isOrchids ? '' : 
+                    <div className='overlayDwnld' style={{ height: '22px' , width: '94px' , bottom: '13px' , position: 'absolute' , background: '#444444' , right: '18px' }} ></div> }
                   </>
                 ) : (
                   // <PdfjsPreview url={src} />
