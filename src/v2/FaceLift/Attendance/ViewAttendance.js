@@ -178,12 +178,8 @@ const ViewAttendance = () => {
 
   //   API Calls
   const fetchUserLevelList = () => {
-    axiosInstance
-      .get(`${endpoints.userManagement.userLevelList}`, {
-        headers: {
-          'X-Api-Key': 'vikash@12345#1231',
-        },
-      })
+    axios
+      .get(`/erp_user/central-user-level/`)
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setUserLevelList(res?.data?.result);
@@ -518,6 +514,7 @@ const ViewAttendance = () => {
                   index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                 }
                 loading={loading}
+                pagination={false}
                 columns={columns}
                 rowKey={(record) => record?.id}
                 dataSource={attendanceData.filter(

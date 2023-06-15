@@ -21,6 +21,7 @@ import endpoints from 'config/endpoints';
 import moment from 'moment';
 import { UserOutlined, DownOutlined, CloseOutlined } from '@ant-design/icons';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import _ from 'lodash';
 
 const { Option } = Select;
 const isOrchids = IsOrchidsChecker();
@@ -46,8 +47,10 @@ const MarkStudentAttendance = () => {
   const [sectionIDs, setSectionIDs] = useState([]);
   const [sectionMappingIDs, setSectionMappingIDs] = useState([]);
   const [userListData, setUserListData] = useState([]);
+  const [userAggregateData, setUserAggregateData] = useState({});
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [noticationAlreadySent, setNoticationAlreadySent] = useState(true);
 
   let columns = [
     {
@@ -95,7 +98,7 @@ const MarkStudentAttendance = () => {
           value={row?.attendence_status ?? 'present'}
           className='d-flex justify-content-around'
           onChange={(e) => {
-            let attendanceInfo = userListData?.slice();
+            let attendanceInfo = _.cloneDeep(userListData);
             attendanceInfo[index].attendence_status = e.target.value;
             setUserListData(attendanceInfo);
           }}
@@ -176,12 +179,9 @@ const MarkStudentAttendance = () => {
   //   API Calls
   const fetchUserLevelList = () => {
     setUserListData([]);
-    axiosInstance
-      .get(`${endpoints.userManagement.userLevelList}`, {
+    axios
+      .get(`/erp_user/central-user-level/`, {
         params: { exclude_student: true },
-        headers: {
-          'X-Api-Key': 'vikash@12345#1231',
-        },
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -244,6 +244,12 @@ const MarkStudentAttendance = () => {
       .then((res) => {
         if (res?.data?.attendance_data.length > 0) {
           setUserListData(res?.data?.attendance_data);
+          setUserAggregateData(res?.data?.aggregate_counts);
+          if (selectedUserLevel == 13) {
+            if (res?.data?.attendance_data?.some((el) => el.attendence_status === null)) {
+              setNoticationAlreadySent(false);
+            }
+          }
         } else {
           setUserListData([]);
         }
@@ -272,7 +278,8 @@ const MarkStudentAttendance = () => {
           if (
             isStudent &&
             isOrchids &&
-            attendanceInfo.some((el) => el.attendence_status == 'absent')
+            attendanceInfo.some((el) => el.attendence_status == 'absent') &&
+            !noticationAlreadySent
           ) {
             setShowNotificationModal(true);
           }
@@ -303,6 +310,7 @@ const MarkStudentAttendance = () => {
           message.error(result?.data?.message);
         }
         closeNotificationModal();
+        setNoticationAlreadySent(true);
       })
       .catch((err) => {
         message.error(err.message);
@@ -382,7 +390,8 @@ const MarkStudentAttendance = () => {
                 <Form.Item name='month' label='Select Date'>
                   <DatePicker
                     defaultValue={moment(selectedDate)}
-                    disabledDate={(current) => current.isAfter(moment())}
+                    disabled={true}
+                    // disabledDate={(current) => current.isAfter(moment())}
                     format={'YYYY-MM-DD'}
                     inputReadOnly={true}
                     allowClear={false}
@@ -489,10 +498,17 @@ const MarkStudentAttendance = () => {
               </div>
             </div>
           </Form>
-          <div className='row pt-3 pb-2 th-bg-white'>
+          <div className='row pb-2 th-bg-white'>
+            {userListData?.length > 0 && (
+              <div className='col-12 pb-2 text-right'>
+                <div className='th-fw-500 th-20 pr-2'>
+                  If the user is not present, please mark them
+                </div>
+              </div>
+            )}
             <div className='col-12' style={{ height: '350px' }}>
               <Table
-                className='th-table'
+                className='th-table '
                 rowClassName={(record, index) =>
                   index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                 }
@@ -508,7 +524,7 @@ const MarkStudentAttendance = () => {
           {userListData?.length > 0 && (
             <div
               className='row th-bg-grey'
-              style={{ position: 'absolute', bottom: '10px', width: '91vw' }}
+              style={{ position: 'absolute', bottom: '10px', maxWidth: '91vw' }}
             >
               <div className='col-12 py-2'>
                 <div
@@ -520,30 +536,24 @@ const MarkStudentAttendance = () => {
                       <div className='col-md-4 col-6  w-100'>
                         Total:{' '}
                         <span className='th-primary'>
-                          {handleNumberView(userListData?.length)}
+                          {handleNumberView(userAggregateData?.total)}
                         </span>
                       </div>
                       <div className='col-md-4 col-6 '>
                         Present:{' '}
                         <span className='th-green'>
-                          {handleNumberView(
-                            userListData?.filter(
-                              (el) => el.attendence_status === 'present'
-                            ).length
-                          )}
+                          {handleNumberView(userAggregateData?.present)}
                         </span>
                       </div>
                       <div className='col-md-4 col-6 '>
                         Absent:{' '}
                         <span className='th-fw-500 th-red'>
                           {handleNumberView(
-                            userListData?.filter(
-                              (el) => el.attendence_status !== 'present'
-                            ).length
+                            userAggregateData?.total - userAggregateData?.present
                           )}
                         </span>
                       </div>
-                      {selectedUserLevel == 13 && isOrchids && (
+                      {selectedUserLevel == 13 && isOrchids && !noticationAlreadySent && (
                         <div className='col-12 th-fw-600 th-black-1 pt-1'>
                           Note : - When attendance is confirmed, an SMS will be sent to
                           the absentees
