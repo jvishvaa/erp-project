@@ -542,6 +542,7 @@ const PhysicalActivity = () => {
     history.goBack();
   };
   const handleSubActivity = (e) => {
+    setCurrentPageAssigned(1);
     setSubActivityId(e);
     setSubActId(e);
   };
