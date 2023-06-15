@@ -330,6 +330,8 @@ const V2Router = () => {
                         ,
                         <Route path='/viewgroup'>
                           {({ match }) => <UserGroup match={match} />}
+                        </Route>
+                        ,
                         <Route path='/teacher-attendance-verify'>
                           {({ match }) => <ViewAttendance match={match} />}
                         </Route>
