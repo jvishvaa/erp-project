@@ -314,7 +314,11 @@ const StudentSidePhysicalActivity = () => {
       render: (text, row) => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[0]
           ?.name;
-        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+        return (
+          <div className='text-justify text-center'>
+            {currentRemarks ? currentRemarks : 'N/A'}
+          </div>
+        );
       },
     },
     {
@@ -324,7 +328,11 @@ const StudentSidePhysicalActivity = () => {
       render: (text, row) => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[0]
           ?.remarks;
-        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+        return (
+          <div className='text-justify text-center'>
+            {currentRemarks ? currentRemarks : 'N/A'}
+          </div>
+        );
       },
     },
     {
@@ -334,7 +342,11 @@ const StudentSidePhysicalActivity = () => {
       render: (text, row) => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[1]
           ?.remarks;
-        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+        return (
+          <div className='text-justify text-center'>
+            {currentRemarks ? currentRemarks : 'N/A'}
+          </div>
+        );
       },
     },
     {
@@ -344,7 +356,11 @@ const StudentSidePhysicalActivity = () => {
       render: (text, row) => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[2]
           ?.remarks;
-        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+        return (
+          <div className='text-justify text-center'>
+            {currentRemarks ? currentRemarks : 'N/A'}
+          </div>
+        );
       },
     },
     {
@@ -353,9 +369,9 @@ const StudentSidePhysicalActivity = () => {
       align: 'center',
       render: (text, row) => {
         return (
-          <span>
+          <div className='text-justify text-center'>
             {row?.reviews_data?.filter((el) => el.name === 'Overall')[0]?.remarks}
-          </span>
+          </div>
         );
       },
     },
@@ -574,7 +590,11 @@ const StudentSidePhysicalActivity = () => {
               </div>
             </Modal>
             <Drawer
-              title={<span className='th-fw-500'>Your Review</span>}
+              title={
+                <div className='th-fw-500 d-flex justify-content-between'>
+                  <span>Your Review</span>
+                </div>
+              }
               placement='right'
               onClose={handleCloseSideViewMore}
               zIndex={1300}
@@ -593,11 +613,11 @@ const StudentSidePhysicalActivity = () => {
               <div>
                 <div className='row'>
                   {loadingMedia ? (
-                    <div className='col-8 text-center mt-5'>
+                    <div className='col-12 text-center mt-5'>
                       <Spin tip='Loading...' size='large' />
                     </div>
                   ) : (
-                    <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
+                    <div className={mediaFiles?.s3_path ? 'col-12' : 'd-none'}>
                       {mediaFiles?.file_type === 'image/jpeg' ||
                       mediaFiles?.file_type === 'image/png' ? (
                         <img
@@ -613,7 +633,8 @@ const StudentSidePhysicalActivity = () => {
                           thumb={mediaFiles?.s3_path}
                           ref={playerRef}
                           width='100%'
-                          height='100%'
+                          height='60vh'
+                          objectFit='fill'
                           playIcon={
                             <Tooltip title='play'>
                               <Button
@@ -638,49 +659,50 @@ const StudentSidePhysicalActivity = () => {
                       )}
                     </div>
                   )}
-                  <div
-                    className={`${
-                      mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
-                    } px-0 th-bg-white`}
-                  >
-                    <div className='row'>
+                  <div className={`col-12 th-bg-white`}>
+                    <div className='row mt-3'>
                       <div className='col-12 px-1'>
-                        <div>
-                          <img
-                            src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                            alt='image'
-                            style={{
-                              height: 130,
-                              objectFit: 'fill',
-                            }}
-                          />
-                        </div>
-                        <div className='d-flex align-items-center pr-1'>
-                          <Avatar
-                            size={50}
-                            aria-label='recipe'
-                            icon={
-                              <UserOutlined
-                                color='#f3f3f3'
-                                style={{ color: '#f3f3f3' }}
-                                twoToneColor='white'
-                              />
-                            }
-                          />
-                          <div className='text-left ml-3'>
-                            <div className=' th-fw-600 th-16'>
-                              {selectedActivity?.booked_user?.name}
+                        {/* <div>
+                          
+                        </div> */}
+                        <div className='d-flex align-items-center justify-content-between pr-1'>
+                          <div className='d-flex align-items-center'>
+                            <Avatar
+                              size={50}
+                              aria-label='recipe'
+                              icon={
+                                <UserOutlined
+                                  color='#f3f3f3'
+                                  style={{ color: '#f3f3f3' }}
+                                  twoToneColor='white'
+                                />
+                              }
+                            />
+                            <div className='text-left ml-3'>
+                              <div className=' th-fw-600 th-16'>
+                                {selectedActivity?.booked_user?.name}
+                              </div>
+                              <div className=' th-fw-500 th-14'>
+                                {selectedActivity?.branch?.name}
+                              </div>
+                              <div className=' th-fw-500 th-12'>
+                                {selectedActivity?.grade?.name}
+                              </div>
                             </div>
-                            <div className=' th-fw-500 th-14'>
-                              {selectedActivity?.branch?.name}
-                            </div>
-                            <div className=' th-fw-500 th-12'>
-                              {selectedActivity?.grade?.name}
-                            </div>
+                          </div>
+                          <div className='pr-3'>
+                            <img
+                              src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                              alt='image'
+                              style={{
+                                height: 100,
+                                objectFit: 'fill',
+                              }}
+                            />
                           </div>
                         </div>
                         <div
-                          className='p-2 mt-3 th-br-5 th-bg-grey'
+                          className='p-2 mt-3 th-br-5 th-bg-grey '
                           style={{ outline: '1px solid #d9d9d9' }}
                         >
                           <div>
@@ -689,8 +711,8 @@ const StudentSidePhysicalActivity = () => {
                               {selectedActivity?.activity_detail?.title}
                             </span>
                           </div>
-                          <div>
-                            Instructions :{' '}
+                          <div className='text-justify'>
+                            Description :{' '}
                             <span className='th-fw-400'>
                               {selectedActivity?.activity_detail?.description}
                             </span>
@@ -704,20 +726,17 @@ const StudentSidePhysicalActivity = () => {
                           >
                             {ratingReview?.map((obj, index) => {
                               return (
-                                <div className='row py-1 align-items-center'>
-                                  <div className='col-6 pl-1' key={index}>
+                                <div
+                                  className='row py-1 align-items-center text-justify'
+                                  style={{ borderBottom: '1px solid #d9d9d9' }}
+                                >
+                                  <div className='col-6' key={index}>
                                     {obj?.level?.name}
                                   </div>
-                                  <div className='col-6 pr-1'>
+                                  <div className='col-6 '>
                                     {!isRoundAvailable ? (
-                                      <Input
-                                        disabled
-                                        title={funRemarks(obj)}
-                                        value={funRemarks(obj)}
-                                      />
-                                    ) : (
-                                      <div></div>
-                                    )}
+                                      <div title={funRemarks(obj)}>{funRemarks(obj)}</div>
+                                    ) : null}
                                   </div>
                                 </div>
                               );

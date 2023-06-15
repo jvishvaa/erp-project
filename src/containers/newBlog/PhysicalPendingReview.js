@@ -63,8 +63,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '95vw',
     width: '100%',
-    // margin: '20px auto',
-    // marginTop: theme.spacing(4),
     paddingLeft: '20px',
     boxShadow: 'none',
   },
@@ -252,8 +250,7 @@ const PhysicalPendingReview = (props) => {
     let isFormValid = true;
     if (ratingReview.length > 0) {
       ratingReview.forEach((item, index) => {
-
-        if (item.name !== "Overall") {
+        if (item.name !== 'Overall') {
           if (!item?.remarks) {
             if (isFormValid) {
               message.error('Please Enter All details');
@@ -264,10 +261,10 @@ const PhysicalPendingReview = (props) => {
       });
     }
     let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
-      if (!mandatory[0].remarks && isFormValid) {
-        message.error('Overall Remarks Is Compulsory');
-        isFormValid = false;
-      }
+    if (!mandatory[0].remarks && isFormValid) {
+      message.error('Overall Remarks Is Compulsory');
+      isFormValid = false;
+    }
 
     return isFormValid;
   };
@@ -277,7 +274,6 @@ const PhysicalPendingReview = (props) => {
     if (validateOptionSubmit()) {
       setLoading(true);
       setView(false);
-      
 
       let body = ratingReview;
       let overAllIndex = body.findIndex((each) => each?.name === 'Overall');
@@ -289,7 +285,6 @@ const PhysicalPendingReview = (props) => {
           },
         })
         .then((response) => {
-          // props.setValue(1)
           setView(false);
           erpAPI();
           message.success(' Review Submitted Successfully');
@@ -305,7 +300,6 @@ const PhysicalPendingReview = (props) => {
         });
     }
   };
-
 
   const handleInputCreativity = (event, index) => {
     let arr = [...ratingReview];
@@ -408,7 +402,8 @@ const PhysicalPendingReview = (props) => {
         setLoading(true);
         axios
           .get(
-            `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data?.booking_detail_id
+            `${endpoints.newBlog.studentReviewss}?booking_detail_id=${
+              data?.booking_detail_id
             }&response_is_change=${true}&is_round_available=${isRoundAvailable}`,
             {
               headers: {
@@ -417,18 +412,7 @@ const PhysicalPendingReview = (props) => {
             }
           )
           .then((response) => {
-            // response.data.map((obj) => {
-            //   let temp = {};
-            //   temp['id'] = obj?.id;
-            //   temp['name'] = obj?.level.name;
-            //   temp['remarks'] = obj?.remarks;
-            //   temp['given_rating'] = obj?.given_rating;
-            //   temp['remarks'] = JSON.parse(obj?.level?.rating);
-            //   temp['reviewer_id'] = user_id;
-            //   array.push(temp);
-            // });
             setRatingReview(response?.data);
-            //setRatinglevelReview(array);
             setLoading(false);
             setView(true);
           })
@@ -472,7 +456,8 @@ const PhysicalPendingReview = (props) => {
     setLoading(true);
     axios
       .get(
-        `${endpoints.newBlog.bookingDetailsApi}?erp_id=${data?.erp_id
+        `${endpoints.newBlog.bookingDetailsApi}?erp_id=${
+          data?.erp_id
         }&activity_detail_id=${ActivityId?.id}&user_level=${13}`,
         {
           headers: {
@@ -526,7 +511,6 @@ const PhysicalPendingReview = (props) => {
       return obj;
     });
     setRatinglevelReview(arr1);
-    // setRemarkedData()
     let newArr = [];
     arr1.map((obj) => {
       let newTemp = {};
@@ -605,19 +589,6 @@ const PhysicalPendingReview = (props) => {
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.erp_id}</span>,
     },
-    // {
-    //   title: <span className='th-white th-fw-700'>Attendance</span>,
-    //   align: 'center',
-    //   render: (text, row) => (
-    //     <span className='th-black-1'>
-    //       {row?.attendence_status === null ? (
-    //         <Tag color='red'>Absent</Tag>
-    //       ) : (
-    //         <Tag color='green'>Present</Tag>
-    //       )}
-    //     </span>
-    //   ),
-    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -677,27 +648,6 @@ const PhysicalPendingReview = (props) => {
     setCustomRatingReview(rounds);
   }
 
-  // let roundData = Object.keys(arr[0]).filter(
-  //   (item) => item.toLowerCase() !== 'overall'
-  // );
-
-  // setTableRound(roundData);
-  // let valueData = Object.keys(arr[0])
-  //   .filter((item) => item.toLowerCase() !== 'overall')
-  //   .map((item) => arr[0][item]);
-  // let columnsData = Object.keys(arr[0])
-  //   .filter((item) => item.toLowerCase() !== 'overall')
-  //   .map((item) => Object.keys(arr[0][item]))[0];
-
-  // let overKey = Object.keys(arr[0]).filter((item) => item.toLowerCase() === 'overall');
-
-
-  // let overValueAllData = Object.keys(arr[0])
-  //   .filter((item) => item.toLowerCase() === 'overall')
-  //   .map((item) => arr[0][item]);
-  // setOverAllData([overKey]);
-  // setReviewData(columnsData);
-  // }
   const handleInputEvent = (event, round, value) => {
     const newReview = ratingReview.map((item) => {
       if (item.name == value?.name && item.level == round) {
@@ -773,7 +723,6 @@ const PhysicalPendingReview = (props) => {
                       src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                       alt='image'
                       style={{
-                        // width: '100%',
                         height: 100,
                         objectFit: 'fill',
                       }}
@@ -939,15 +888,15 @@ const PhysicalPendingReview = (props) => {
             />
           </div>
         </div>
-
-        {isRoundAvailable
-          ?
+        {isRoundAvailable ? (
           <>
             <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
               <table className='w-100' style={{ background: '#eee' }}>
                 <thead>
-                  <tr style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}>
-                    <th> </th>
+                  <tr
+                    style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}
+                  >
+                    <th style={{ textAlign: 'center' }}> Rounds </th>
                     {tableHeader?.map((item, i) => (
                       <th>{item?.name}</th>
                     ))}
@@ -957,7 +906,9 @@ const PhysicalPendingReview = (props) => {
                   {Object.keys(customRatingReview)?.length > 0 &&
                     Object.keys(customRatingReview).map((item, index) => (
                       <tr className='th-html-table'>
-                        <td style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}>
+                        <td
+                          style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}
+                        >
                           {item}
                         </td>
                         {tableHeader?.map((each, i) => (
@@ -968,6 +919,8 @@ const PhysicalPendingReview = (props) => {
                                   (el) => el?.name == each?.name && el.level == item
                                 )[0]?.remarks
                               }
+                              showCount
+                              maxLength='200'
                               className='text-center'
                               placeholder={`Enter ${each?.name} for ${item}`}
                               onChange={(event) => handleInputEvent(event, item, each)}
@@ -984,7 +937,7 @@ const PhysicalPendingReview = (props) => {
                 {overallData.length > 0 &&
                   overallData.map((item, index) => {
                     return (
-                      <div className='col-6 px-0 d-flex align-items-center justify-content-start'>
+                      <div className='col-12 px-0 d-flex align-items-center justify-content-start'>
                         <span
                           style={{
                             fontWeight: 500,
@@ -997,6 +950,8 @@ const PhysicalPendingReview = (props) => {
                           Overall {<CaretRightOutlined />}
                         </span>
                         <Input
+                          showCount
+                          maxLength='500'
                           value={overallRemarks}
                           placeholder={`Enter for OverAll`}
                           onChange={(event) => handleOverAll(event, item, index)}
@@ -1018,11 +973,9 @@ const PhysicalPendingReview = (props) => {
               </div>
             </div>
           </>
-          : <>
-            <div
-              className='px-1 py-2 th-br-5'
-              style={{ outline: '1px solid #D9D9D9' }}
-            >
+        ) : (
+          <>
+            <div className='px-1 py-2 th-br-5' style={{ outline: '1px solid #D9D9D9' }}>
               {ratingLevelReview?.map((obj, index) => {
                 return (
                   <div className='row py-1 align-items-center'>
@@ -1041,14 +994,11 @@ const PhysicalPendingReview = (props) => {
                         onChange={(e, val) => handleRemark(val, obj?.id)}
                         filterOption={(input, options) => {
                           return (
-                            options.children
-                              .toLowerCase()
-                              .indexOf(input.toLowerCase()) >= 0
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
                           );
                         }}
-                        menuItemSelectedIcon={
-                          <CheckOutlined className='th-primary' />
-                        }
+                        menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
                       >
                         {obj?.remarks?.map((each) => {
                           return (
@@ -1086,10 +1036,7 @@ const PhysicalPendingReview = (props) => {
                         </div>
 
                         <div className='th-pointer ml-2'>
-                          <img
-                            src={smallCloseIcon}
-                            onClick={() => setFile(null)}
-                          />
+                          <img src={smallCloseIcon} onClick={() => setFile(null)} />
                         </div>
                       </div>
                     </div>
@@ -1108,9 +1055,9 @@ const PhysicalPendingReview = (props) => {
                 </ButtonAnt>
               </div>
             </div>
-
-
-          </>}
+          </>
+        )}
+        git{' '}
       </Modal>
     </>
   );

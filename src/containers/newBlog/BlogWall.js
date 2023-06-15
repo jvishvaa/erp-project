@@ -111,21 +111,11 @@ const BlogWall = () => {
     'Section',
     'Blog of the Month',
   ];
-  // const options = [
-  //   { id: 1, value: 'All' },
-  //   { id: 2, value: 'Blogs' },
-  //   { id: 3, value: 'Dance', visible: isStudent },
-  //   { id: 4, value: 'Music', visible: isStudent },
-  //   { id: 5, value: 'Posts' },
-  //   { id: 6, value: 'Public Speaking', visible: isStudent },
-  //   { id: 7, value: 'Theatre', visible: isStudent },
-  //   { id: 8, value: 'Visual Art', visible: isStudent },
-  //   { id: 9, value: 'Physical Activity', visible: isStudent },
-  // ].filter((item) => item?.visible !== false);
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(null);
   const [showPostDetailsModal, setShowPostDetailsModal] = useState(false);
+  const [showPhysicalActivityModal, setShowPhysicalActivityModal] = useState(false);
   const [showOtherActivityModal, setShowOtherActivityModal] = useState(false);
   const [selectedOtherActivity, setSelectedOtherActivity] = useState(null);
   const [postModalContentData, setPostModalContentData] = useState(null);
@@ -593,7 +583,12 @@ const BlogWall = () => {
       getRatingView({ data: data?.booking_detail?.id, otherActvity: true });
     }
     setSelectedOtherActivity(data);
-    setShowOtherActivityModal(true);
+    if (data?.type == 'Physical Activity') {
+      setShowPhysicalActivityModal(true);
+    } else {
+      setShowOtherActivityModal(true);
+    }
+
     // fetchPostDetails(data);
   };
   const fetchStudentPublicSpeakingDetails = (params = {}) => {
@@ -1670,6 +1665,128 @@ const BlogWall = () => {
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+          </Modal>
+        )}
+        {showPhysicalActivityModal && (
+          <Modal
+            title={
+              <div className='d-flex justify-conten-end'>
+                <span>{selectedOtherActivity?.type}</span>
+              </div>
+            }
+            className='th-upload-modal'
+            centered
+            visible={showPhysicalActivityModal}
+            destroyOnClose={true}
+            onOk={() => setShowPhysicalActivityModal(false)}
+            onCancel={() => {
+              setShowPhysicalActivityModal(false);
+            }}
+            width={'80vw'}
+            footer={null}
+            closeIcon={<CloseOutlined />}
+          >
+            <div className='row p-3' style={{ maxHeight: '75vh', overflowY: 'scroll' }}>
+              <div className='col-12'>
+                <div className='d-flex align-items-center h-100'>
+                  {selectedOtherActivity?.content?.file_type === 'image/png' ||
+                  selectedOtherActivity?.content?.file_type === 'image/jpeg' ? (
+                    <img
+                      src={
+                        selectedOtherActivity?.content?.s3_path
+                          ? selectedOtherActivity?.content?.s3_path
+                          : getActivityIcon(selectedOtherActivity?.type)
+                      }
+                      alt={'image'}
+                      width='100%'
+                      loading='lazy'
+                    />
+                  ) : (
+                    <video
+                      preload='auto'
+                      controls
+                      src={selectedOtherActivity?.content?.s3_path}
+                      className='th-br-5'
+                      style={{
+                        height: '500px',
+                        width: '100%',
+                        objectFit: 'fill',
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className='col-12'>
+                <div className='row justify-content-between mt-3'>
+                  <div className='col-12 py-2 px-0'>
+                    <div className='d-flex align-items-center'>
+                      <Avatar size={40} icon={<UserOutlined />} />
+                      <div className='d-flex flex-column ml-2'>
+                        <div className=' th-black-1 th-fw-500'>
+                          {selectedOtherActivity?.activity_detail?.title}
+                        </div>
+                        <div>
+                          <span className='th-12 th-fw-500 th-black-2'>
+                            {selectedOtherActivity?.grade?.name}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-12 py-2 px-0'>
+                    <div
+                      className='th-bg-grey p-3 th-br-8'
+                      style={{ outline: '1px solid #d9d9d9' }}
+                    >
+                      <div className=' th-12 th-black-2'>
+                        Title :{' '}
+                        <span className='th-16 th-fw-500 th-black-1'>
+                          {selectedOtherActivity?.activity_detail?.title}
+                        </span>
+                      </div>
+                      <div
+                        className='mt-2 text-justify'
+                        style={{ overflowY: 'auto', maxHeight: '25vh' }}
+                      >
+                        <span className='th-12 th-black-2'>Description :&nbsp;</span>
+                        <span className='th-16 th-fw-400 th-black-1 '>
+                          {selectedOtherActivity?.activity_detail?.description}
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      className='p-2 mt-2 th-br-8'
+                      style={{ outline: '1px solid #d9d9d9' }}
+                    >
+                      {ratingReview?.map((obj, index) => {
+                        return (
+                          <div
+                            className='row py-1 align-items-center text-justify'
+                            style={{ borderBottom: '1px solid #d9d9d9' }}
+                          >
+                            <div className='col-6'>{obj?.name}</div>
+                            <div className='col-6'>
+                              <div
+                                className='text-wrap'
+                                title={
+                                  obj?.remarks?.filter((item) => item.status == true)[0]
+                                    ?.name
+                                }
+                              >
+                                {
+                                  obj?.remarks?.filter((item) => item.status == true)[0]
+                                    ?.name
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </Modal>
