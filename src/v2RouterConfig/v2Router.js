@@ -66,7 +66,6 @@ import UserGroup from 'v2/FaceLift/UserManagement/UserGroup';
 import CreateUser from 'v2/FaceLift/UserManagement/User/CreateUser';
 import V1CreateUser from '../../src/containers/user-management/create-user';
 import V1EditUser from '../../src/containers/user-management/edit-user';
-import ProfileV2 from 'v2/FaceLift/Profile';
 import ViewAttendance from 'v2/FaceLift/Attendance/ViewAttendance';
 import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
 
