@@ -314,7 +314,11 @@ const StudentSidePhysicalActivity = () => {
       render: (text, row) => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[0]
           ?.name;
-        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+        return (
+          <div className='text-justify text-center'>
+            {currentRemarks ? currentRemarks : 'N/A'}
+          </div>
+        );
       },
     },
     {
@@ -324,7 +328,11 @@ const StudentSidePhysicalActivity = () => {
       render: (text, row) => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[0]
           ?.remarks;
-        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+        return (
+          <div className='text-justify text-center'>
+            {currentRemarks ? currentRemarks : 'N/A'}
+          </div>
+        );
       },
     },
     {
@@ -334,7 +342,11 @@ const StudentSidePhysicalActivity = () => {
       render: (text, row) => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[1]
           ?.remarks;
-        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+        return (
+          <div className='text-justify text-center'>
+            {currentRemarks ? currentRemarks : 'N/A'}
+          </div>
+        );
       },
     },
     {
@@ -344,7 +356,11 @@ const StudentSidePhysicalActivity = () => {
       render: (text, row) => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[2]
           ?.remarks;
-        return <span>{currentRemarks ? currentRemarks : 'N/A'}</span>;
+        return (
+          <div className='text-justify text-center'>
+            {currentRemarks ? currentRemarks : 'N/A'}
+          </div>
+        );
       },
     },
     {
@@ -353,9 +369,9 @@ const StudentSidePhysicalActivity = () => {
       align: 'center',
       render: (text, row) => {
         return (
-          <span>
+          <div className='text-justify text-center'>
             {row?.reviews_data?.filter((el) => el.name === 'Overall')[0]?.remarks}
-          </span>
+          </div>
         );
       },
     },

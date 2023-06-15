@@ -1813,9 +1813,9 @@ const RatingCreate = () => {
                 <div className='col-md-6 md-sm-0'>Activity Types</div>
               </div>
               <div className='row mt-2'>
-                <dv className='col-md-6 md-sm-0'>
+                <div className='col-md-6 md-sm-0'>
                   <Input className='mt-2' disabled placeholder={isEditData?.name} />
-                </dv>
+                </div>
               </div>
 
               {isEditData && isEditData?.name === 'Physical Activity' ? (
@@ -1824,13 +1824,13 @@ const RatingCreate = () => {
                     <div className='col-md-6 md-sm-0'>Sub-Activity</div>
                   </div>
                   <div className='row mt-2'>
-                    <dv className='col-md-6 md-sm-0'>
+                    <div className='col-md-6 md-sm-0'>
                       <Input
                         className='mt-2'
                         disabled
                         placeholder={isEditData?.sub_type}
                       />
-                    </dv>
+                    </div>
                   </div>
                 </>
               ) : (
@@ -1999,51 +1999,47 @@ const RatingCreate = () => {
                     <>
                       {isEditData?.is_round_available === true ? (
                         <>
-                          <div className='row m-2'>
+                          <div className='row'>
                             {isEditData.name.toLowerCase() === 'public speaking' ? (
                               ''
                             ) : (
                               <>
-                                <AntDivider
-                                  orientation='left'
-                                  orientationMargin='0'
-                                  plain
-                                  style={{ alignItems: 'flex-start' }}
-                                >
-                                  Add Criteria Title
-                                </AntDivider>
-                                <div className='col-3'>
-                                  <Input
-                                    placeholder='Criteria Title'
-                                    defaultValue={isEditData?.criteria_title}
-                                    width={100}
-                                    value={
-                                      Object.keys(isEditData)
-                                        ? isEditData?.criteria_title
-                                        : remarksType
-                                    }
-                                    onChange={(event) => handleInputRemarksEdit(event)}
-                                  />
+                                <div className='row mt-2'>
+                                  <div className='col-md-6 md-sm-0'>
+                                    Add Criteria Title
+                                  </div>
+                                </div>
+                                <div className='row mt-2'>
+                                  <div className='col-md-6 mt-2'>
+                                    <Input
+                                      maxLength={100}
+                                      showCount
+                                      placeholder='Criteria Title'
+                                      defaultValue={isEditData?.criteria_title}
+                                      width={100}
+                                      value={
+                                        Object.keys(isEditData)
+                                          ? isEditData?.criteria_title
+                                          : remarksType
+                                      }
+                                      onChange={(event) => handleInputRemarksEdit(event)}
+                                    />
+                                  </div>
                                 </div>
                               </>
                             )}
                           </div>
-                          <div className='row m-2'>
-                            <AntDivider
-                              orientation='left'
-                              orientationMargin='0'
-                              plain
-                              style={{ alignItems: 'flex-start' }}
-                            >
-                              Add Criteria Name
-                            </AntDivider>
+
+                          <div className='row mt-2'>
+                            <div className='col-md-6 md-sm-0'>Add Criteria Name</div>
                           </div>
+
                           {Object.keys(isEditData)
                             ? isEditData?.grading_scheme?.map((input, index) => (
                                 <>
                                   <div className='row m-2'>
                                     <div
-                                      className='col-3'
+                                      className='col-md-6 mt-2 md-sm-0'
                                       style={{
                                         display:
                                           input?.name.toLowerCase() == 'overall'
@@ -2052,6 +2048,8 @@ const RatingCreate = () => {
                                       }}
                                     >
                                       <Input
+                                        showCount
+                                        maxLength={500}
                                         placeholder='Criteria'
                                         width={100}
                                         defaultValue={input?.name}
@@ -2061,6 +2059,7 @@ const RatingCreate = () => {
                                         }
                                       />
                                     </div>
+
                                     {showPhy ? (
                                       ''
                                     ) : (
