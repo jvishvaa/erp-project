@@ -514,6 +514,7 @@ const ViewAttendance = () => {
                   index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                 }
                 loading={loading}
+                pagination={false}
                 columns={columns}
                 rowKey={(record) => record?.id}
                 dataSource={attendanceData.filter(
