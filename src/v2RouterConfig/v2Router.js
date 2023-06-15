@@ -66,6 +66,8 @@ import UserGroup from 'v2/FaceLift/UserManagement/UserGroup';
 import CreateUser from 'v2/FaceLift/UserManagement/User/CreateUser';
 import V1CreateUser from '../../src/containers/user-management/create-user';
 import V1EditUser from '../../src/containers/user-management/edit-user';
+import ViewAttendance from 'v2/FaceLift/Attendance/ViewAttendance';
+import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
 
 const V2Router = () => {
   useEffect(() => {
@@ -328,6 +330,16 @@ const V2Router = () => {
                         ,
                         <Route path='/viewgroup'>
                           {({ match }) => <UserGroup match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/teacher-attendance-verify'>
+                          {({ match }) => <ViewAttendance match={match} />}
+                        </Route>
+                        <Route path='/mark-student-attendance'>
+                          {({ match }) => <MarkAttendance match={match} />}
+                        </Route>
+                        <Route path='/mark-staff-attendance'>
+                          {({ match }) => <MarkAttendance match={match} />}
                         </Route>
                         ,{/* v1 router */}
                         {V1Router?.map((item) => {
