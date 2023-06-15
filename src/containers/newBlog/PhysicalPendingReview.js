@@ -888,6 +888,7 @@ const PhysicalPendingReview = (props) => {
             />
           </div>
         </div>
+
         {isRoundAvailable ? (
           <>
             <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
@@ -1057,7 +1058,6 @@ const PhysicalPendingReview = (props) => {
             </div>
           </>
         )}
-        git{' '}
       </Modal>
     </>
   );

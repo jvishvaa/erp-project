@@ -418,6 +418,7 @@ const StudentSidePhysicalActivity = () => {
   ];
 
   const handlePhysicalActivityToggle = (event) => {
+    setCurrentPageAssigned(1);
     setPhysicalActivityToggle(event.target.checked);
   };
 

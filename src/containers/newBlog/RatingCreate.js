@@ -86,7 +86,6 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonColor: {
     color: `${theme.palette.primary.main} !important`,
-    // backgroundColor: 'white',
   },
   tabStyle: {
     color: 'white !important',
@@ -694,7 +693,6 @@ const RatingCreate = () => {
       if (obj.is_round_available == false && item?.va_rating == null) {
         if (item?.va_rating == null && item?.rating.includes('[{') == true) {
           return JSON.parse(item.rating);
-          // return item?.rating
         }
       } else {
         return JSON.parse(item?.va_rating);
@@ -726,7 +724,6 @@ const RatingCreate = () => {
             temp['question'] = obj?.grading_scheme?.map((item) => item?.name);
             temp['va_rating'] = vaRating(obj);
             temp['is_round_available'] = obj?.is_round_available;
-            // temp['va_rating'] = obj?.grading_scheme.map((item) => JSON.parse(item?.va_rating));
             temp['is_editable'] = obj?.is_editable;
             array.push(temp);
           });
@@ -1024,14 +1021,12 @@ const RatingCreate = () => {
 
   const handleOptionDelete = (id, index) => {
     let newOptionList = [...optionList];
-    // let newList = newOptionList.filter((item) => item?.name !== id?.name);
     newOptionList.splice(index, 1);
     setOptionList(newOptionList);
   };
 
   const handleOptionDeleteEdit = (id, index) => {
     let newOptionList = [...editOption];
-    // let newList = newOptionList.filter((item) => item?.name !== id?.name);
     newOptionList.splice(index, 1);
     setEditOption(newOptionList);
   };
@@ -1058,7 +1053,6 @@ const RatingCreate = () => {
 
   const handleRemoveVisualQuestion = (id, index) => {
     let newVisualList = [...visualInputlList];
-    // const newList = newVisualList.filter((item) => item?.name !== id?.name);
     newVisualList.splice(index, 1);
     setVisualInputList(newVisualList);
   };
@@ -1139,7 +1133,6 @@ const RatingCreate = () => {
     if (e) {
       setIsEdit(true);
       setIsEditData(data);
-      // let optionData = data?.va_rating[0];
       let varatingArr = data?.va_rating[0];
       let optionData;
       if (varatingArr == undefined) {
@@ -1147,8 +1140,6 @@ const RatingCreate = () => {
       } else {
         optionData = data?.va_rating[0];
       }
-      // let optionData = varatingArr == undefined ? [] : (varatingArr.every(el => e == undefined) ? null : data?.va_rating[0])
-      // let optionData = varatingArr.every(el => e == undefined) ? null : data?.va_rating[0];
       setEditOption(optionData);
     }
   };
@@ -1320,7 +1311,6 @@ const RatingCreate = () => {
                     <Select
                       getPopupContainer={(trigger) => trigger.parentNode}
                       placeholder='Sub Activity Type'
-                      // showSearch
                       value={subActivityType}
                       optionFilterProp='children'
                       filterOption={(input, option) => {
@@ -2037,7 +2027,7 @@ const RatingCreate = () => {
                           {Object.keys(isEditData)
                             ? isEditData?.grading_scheme?.map((input, index) => (
                                 <>
-                                  <div className='row m-2'>
+                                  <div className='row mt-2'>
                                     <div
                                       className='col-md-6 mt-2 md-sm-0'
                                       style={{
