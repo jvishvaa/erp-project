@@ -744,10 +744,7 @@ const AssignUserRole = () => {
                       rowSelection={{ ...rowSelection }}
                       dataSource={userData}
                       pagination={false}
-                      // scroll={{
-                      //   x: window.innerWidth < 600 ? 'max-content' : null,
-                      //   y: 'calc(80vh - 220px)',
-                      // }}
+                      scroll={{ y: '300px' }}
                     />
 
                     {userData?.length > 0 && (

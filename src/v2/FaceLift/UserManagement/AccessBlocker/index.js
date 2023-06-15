@@ -677,6 +677,7 @@ const AccessBlocker = () => {
                             columns={columns}
                             dataSource={blockList}
                             pagination={false}
+                            scroll={{ y: '300px' }}
                           />
 
                           {blockList?.length > 0 && (

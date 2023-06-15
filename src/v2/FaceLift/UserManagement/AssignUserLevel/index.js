@@ -38,7 +38,7 @@ const AssignUserLevel = () => {
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
     window.location.host.split('.')[0] === 'localhost:3000' ||
-    window.location.host.split('.')[0] === 'qa' 
+    window.location.host.split('.')[0] === 'qa'
       ? true
       : false;
 
@@ -358,10 +358,7 @@ const AssignUserLevel = () => {
                       rowSelection={{ ...rowSelection }}
                       dataSource={userData}
                       pagination={false}
-                      // scroll={{
-                      //   x: window.innerWidth < 600 ? 'max-content' : null,
-                      //   y: 'calc(80vh - 220px)',
-                      // }}
+                      scroll={{ y: '300px' }}
                     />
 
                     {userData?.length > 0 && (

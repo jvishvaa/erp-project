@@ -572,7 +572,6 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
                   columns={columns}
                   rowKey={(record) => record?.id}
                   rowSelection={{ ...rowSelection }}
-                  //   dataSource={userData}
                   preserveSelectedRowKeys={true}
                   dataSource={userData.filter(
                     (item) =>
@@ -585,6 +584,7 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
                       item?.erp_id.toLowerCase().includes(searchedData.toLowerCase())
                   )}
                   pagination={false}
+                  scroll={{ y: '300px' }}
                 />
 
                 {userData?.length > 0 && (
