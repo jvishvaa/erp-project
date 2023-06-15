@@ -36,6 +36,9 @@ const SchoolInformation = ({
   setMultipleAcademicYear,
   sectionMappingId,
   setSectionMappingId,
+  setUserLevel,
+  setParent,
+  userLevel,
 }) => {
   const schoolForm = useRef();
   const [loading, setLoading] = useState(false);
@@ -43,7 +46,15 @@ const SchoolInformation = ({
     console.log(schoolFormValues, 'schoolFormValues');
     if (schoolFormValues && Object.keys(schoolFormValues).length > 0) {
       schoolForm.current.setFieldsValue(schoolFormValues);
+      if (!schoolFormValues.academic_year) {
+        schoolForm.current.setFieldsValue({
+          academic_year: selectedYear?.session_year,
+        });
+      }
     }
+    schoolForm.current.setFieldsValue({
+      academic_year: selectedYear?.session_year,
+    });
   }, [schoolFormValues]);
 
   const roleOption = roles?.map((each) => (
@@ -90,7 +101,7 @@ const SchoolInformation = ({
   return (
     <React.Fragment>
       <div
-        className=''
+        className='px-2'
         style={{
           height: '70vh',
           overflowY: 'scroll',
@@ -114,34 +125,52 @@ const SchoolInformation = ({
                 <Select
                   onChange={(e) => {
                     fetchDesignation(e);
+                    setUserLevel(e);
                     schoolForm.current.resetFields(['designation']);
                   }}
                   placeholder='User Level'
                   className='w-100'
+                  showSearch
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
                 >
                   {roleOption}
                 </Select>
               </Form.Item>
             </Col>
-            <Col md={8}>
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please select designation!',
-                  },
-                ]}
-                name={'designation'}
-                label='Designation'
-              >
-                <Select placeholder='Designation' className='w-100'>
-                  {designationOption}
-                </Select>
-              </Form.Item>
-            </Col>
+            {userLevel !== 13 && (
+              <Col md={8}>
+                <Form.Item
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please select designation!',
+                    },
+                  ]}
+                  name={'designation'}
+                  label='Designation'
+                >
+                  <Select
+                    showSearch
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    placeholder='Designation'
+                    className='w-100'
+                  >
+                    {designationOption}
+                  </Select>
+                </Form.Item>
+              </Col>
+            )}
           </Row>
           <Divider className='my-1' />
-          <Row className='py-2' gutter={24}>
+          <Row className='py-2 ' gutter={24}>
             <Col md={8}>
               <Form.Item name={'academic_year'} label='Academic Year'>
                 <Input
@@ -164,15 +193,39 @@ const SchoolInformation = ({
                 label='Branch'
               >
                 <Select
+                  maxTagCount={3}
+                  allowClear
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, obj) => {
-                    let branch_code = obj?.map((i) => i.code);
-                    fetchGrades(e, branch_code);
+                    if (e.includes('all')) {
+                      let values = branches?.map((e) => e?.id);
+                      schoolForm.current.setFieldsValue({
+                        branch: values,
+                      });
+                      let branch_code = branches?.map((i) => i.branch_code);
+                      fetchGrades(values, branch_code);
+                    } else {
+                      let branch_code = obj?.map((i) => i.code);
+                      fetchGrades(e, branch_code);
+                    }
+
                     schoolForm.current.resetFields(['grade']);
+                  }}
+                  showSearch
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
                   }}
                   mode='multiple'
                   placeholder='Branch'
                   className='w-100'
                 >
+                  {branches?.length > 1 && (
+                    <Select.Option key={'all'} value={'all'}>
+                      Select All
+                    </Select.Option>
+                  )}
                   {branchOption}
                 </Select>
               </Form.Item>
@@ -191,14 +244,35 @@ const SchoolInformation = ({
                 label='Grade'
               >
                 <Select
+                  maxTagCount={3}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, value) => {
-                    fetchSections(value?.map((e) => e.id));
+                    if (e.includes('all')) {
+                      let values = grades?.map((e) => e?.grade_name);
+                      schoolForm.current.setFieldsValue({
+                        grade: values,
+                      });
+                      fetchSections(grades?.map((e) => e?.id));
+                    } else {
+                      fetchSections(value?.map((e) => e.id));
+                    }
                     schoolForm.current.resetFields(['section']);
+                  }}
+                  showSearch
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
                   }}
                   mode='multiple'
                   placeholder='Grade'
                   className='w-100'
                 >
+                  {grades?.length > 1 && (
+                    <Select.Option key={'all'} value={'all'}>
+                      Select All
+                    </Select.Option>
+                  )}
                   {gradeOption}
                 </Select>
               </Form.Item>
@@ -215,15 +289,37 @@ const SchoolInformation = ({
                 label='Section'
               >
                 <Select
+                  maxTagCount={3}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, value) => {
-                    setSectionMappingId(value?.map((e) => e.mapping_id));
-                    fetchSubjects(value?.map((e) => e.id));
+                    if (e.includes('all')) {
+                      let values = sections?.map((e) => e?.section_name);
+                      schoolForm.current.setFieldsValue({
+                        section: values,
+                      });
+                      fetchSubjects(sections?.map((e) => e?.id));
+                      setSectionMappingId(sections?.map((e) => e?.item_id));
+                    } else {
+                      setSectionMappingId(value?.map((e) => e?.mapping_id));
+                      fetchSubjects(value?.map((e) => e.id));
+                    }
                     schoolForm.current.resetFields(['subject']);
+                  }}
+                  showSearch
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
                   }}
                   mode='multiple'
                   placeholder='Section'
                   className='w-100'
                 >
+                  {sections?.length > 1 && (
+                    <Select.Option key={'all'} value={'all'}>
+                      Select All
+                    </Select.Option>
+                  )}
                   {sectionOption}
                 </Select>
               </Form.Item>
@@ -240,51 +336,75 @@ const SchoolInformation = ({
                 label='Subject'
               >
                 <Select
+                  maxTagCount={3}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, value) => {
-                    setSelectedSubjects(value?.map((e) => e.id));
+                    if (e.includes('all')) {
+                      let values = subjects?.map((e) => e?.subject_name);
+                      schoolForm.current.setFieldsValue({
+                        subjects: values,
+                      });
+                      setSelectedSubjects(subjects?.map((e) => e?.id));
+                    } else {
+                      setSelectedSubjects(value?.map((e) => e.id));
+                    }
+                  }}
+                  showSearch
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
                   }}
                   mode='multiple'
                   placeholder='Subject'
                   className='w-100'
                 >
+                  {subjects?.length > 1 && (
+                    <Select.Option key={'all'} value={'all'}>
+                      Select All
+                    </Select.Option>
+                  )}
                   {subjectOption}
                 </Select>
               </Form.Item>
             </Col>
           </Row>
         </Form>
-        {editId &&
-          multipleAcademicYear?.map((each) => (
-            <AcademicYearList
-              key={each?.id}
-              currentObj={each}
-              multipleAcademicYear={multipleAcademicYear}
-              setMultipleAcademicYear={setMultipleAcademicYear}
-            />
-          ))}
-        <div className='d-flex justify-content-end align-items-center my-4'>
-          <Button
-            onClick={() => {
-              setMultipleAcademicYear([
-                ...multipleAcademicYear,
-                {
-                  id: Math.random(),
-                  academic_year: null,
-                  branch: [],
-                  grade: [],
-                  section: [],
-                  subjects: [],
-                  isEdit: false,
-                },
-              ]);
-            }}
-            className='ml-3 px-4'
-            type='primary'
-            icon={<PlusOutlined />}
-          >
-            Add
-          </Button>
-        </div>
+        {editId && (
+          <>
+            {multipleAcademicYear?.map((each) => (
+              <AcademicYearList
+                key={each?.id}
+                currentObj={each}
+                multipleAcademicYear={multipleAcademicYear}
+                setMultipleAcademicYear={setMultipleAcademicYear}
+              />
+            ))}
+            <div className='d-flex justify-content-end align-items-center my-4 '>
+              <Button
+                onClick={() => {
+                  setMultipleAcademicYear([
+                    ...multipleAcademicYear,
+                    {
+                      id: Math.random(),
+                      academic_year: null,
+                      branch: [],
+                      grade: [],
+                      section: [],
+                      subjects: [],
+                      isEdit: false,
+                    },
+                  ]);
+                }}
+                className='ml-3 px-4'
+                type='primary'
+                icon={<PlusOutlined />}
+              >
+                Add
+              </Button>
+            </div>
+          </>
+        )}
       </div>
       <div
         // style={{ position: 'sticky', bottom: '59px' }}

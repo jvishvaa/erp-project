@@ -37,6 +37,10 @@ const AccessBlocker = () => {
     setSearchedData('');
     setSelectedSection('');
     setSelectedGrade('');
+    if (key === '1') {
+      setShowFilter(true);
+      formRef.current.resetFields();
+    }
   };
 
   const [pageNo, setPageNo] = useState(1);
@@ -228,9 +232,17 @@ const AccessBlocker = () => {
 
   const handleUserBranch = (e) => {
     setPageNo(1);
-    if (e != undefined) {
+    if (e) {
       setSelectedBranch(e);
       fetchGrade(e);
+      setSelectedGrade('');
+      setSelectedSection('');
+      setGradeList([]);
+      setSectionList([]);
+      formRef.current.setFieldsValue({
+        grade: [],
+        section: [],
+      });
     } else {
       setSelectedBranch('');
       setSelectedGrade('');
@@ -268,20 +280,36 @@ const AccessBlocker = () => {
     );
   });
 
-  const handleGrade = (e) => {
+  const handleChangeGrade = (each) => {
     setPageNo(1);
-    if (e.length > 0) {
-      setSelectedGrade(e);
-      fetchSection(e);
-    } else {
-      setSelectedGrade('');
-      setSelectedSection('');
-      setSectionList([]);
+    if (each.some((item) => item.value === 'all')) {
+      const allGrade = gradeList.map((item) => item.grade_id).join(',');
+      setSelectedGrade(allGrade);
+      fetchSection(allGrade);
+      setSelectedSection([]);
       formRef.current.setFieldsValue({
-        grade: [],
+        grade: gradeList.map((item) => item.grade_id),
+        section: [],
+      });
+    } else {
+      const singleGrade = each.map((item) => item.value).join(',');
+      setSelectedGrade(singleGrade);
+      fetchSection(singleGrade);
+      setSelectedSection([]);
+      formRef.current.setFieldsValue({
         section: [],
       });
     }
+  };
+
+  const handleClearGrade = () => {
+    setSelectedGrade([]);
+    setSelectedSection('');
+    setSectionList([]);
+    formRef.current.setFieldsValue({
+      grade: [],
+      section: [],
+    });
   };
 
   const fetchSection = async (selectedGrade) => {
@@ -307,16 +335,21 @@ const AccessBlocker = () => {
     );
   });
 
-  const handleSection = (e) => {
+  const handleChangeSection = (each) => {
     setPageNo(1);
-    if (e != undefined) {
-      setSelectedSection(e);
-    } else {
-      setSelectedSection('');
+    if (each.some((item) => item.value === 'all')) {
+      const allsections = sectionList.map((item) => item.id).join(',');
+      setSelectedSection(allsections);
       formRef.current.setFieldsValue({
-        section: null,
+        section: sectionList.map((item) => item.id),
       });
+    } else {
+      setSelectedSection(each.map((item) => item.value).join(','));
     }
+  };
+
+  const handleClearSection = () => {
+    setSelectedSection([]);
   };
 
   const fetchBlockList = async (
@@ -517,7 +550,8 @@ const AccessBlocker = () => {
                               className='th-grey th-bg-grey th-br-4 w-100 text-left'
                               placement='bottomRight'
                               showArrow={true}
-                              onChange={(e, value) => handleGrade(e, value)}
+                              onChange={(e, value) => handleChangeGrade(value)}
+                              onClear={handleClearGrade}
                               dropdownMatchSelectWidth={true}
                               filterOption={(input, options) => {
                                 return (
@@ -529,6 +563,13 @@ const AccessBlocker = () => {
                               showSearch
                               placeholder='Select Grade'
                             >
+                              {gradeList.length > 1 && (
+                                <>
+                                  <Option key={0} value={'all'}>
+                                    Select All
+                                  </Option>
+                                </>
+                              )}
                               {gradeOptions}
                             </Select>
                           </Form.Item>
@@ -544,7 +585,8 @@ const AccessBlocker = () => {
                               className='th-grey th-bg-grey th-br-4 w-100 text-left'
                               placement='bottomRight'
                               showArrow={true}
-                              onChange={(e, value) => handleSection(e, value)}
+                              onChange={(e, value) => handleChangeSection(value)}
+                              onClear={handleClearSection}
                               dropdownMatchSelectWidth={true}
                               filterOption={(input, options) => {
                                 return (
@@ -556,6 +598,13 @@ const AccessBlocker = () => {
                               showSearch
                               placeholder='Select section'
                             >
+                              {sectionList.length > 1 && (
+                                <>
+                                  <Option key={0} value={'all'}>
+                                    Select All
+                                  </Option>
+                                </>
+                              )}
                               {sectionOptions}
                             </Select>
                           </Form.Item>
@@ -628,6 +677,7 @@ const AccessBlocker = () => {
                             columns={columns}
                             dataSource={blockList}
                             pagination={false}
+                            scroll={{ y: '300px' }}
                           />
 
                           {blockList?.length > 0 && (

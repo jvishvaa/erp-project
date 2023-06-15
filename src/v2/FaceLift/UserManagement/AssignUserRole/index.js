@@ -44,8 +44,6 @@ const AssignUserRole = () => {
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
 
   const isOrchids =
-    window.location.host.split('.')[0] === 'localhost:3000' ||
-    window.location.host.split('.')[0] === 'dev' ||
     window.location.host.split('.')[0] === 'qa' ||
     window.location.host.split('.')[0] === 'orchids'
       ? true
@@ -142,9 +140,17 @@ const AssignUserRole = () => {
 
   const handleUserBranch = (e) => {
     setPageNo(1);
-    if (e != undefined) {
+    if (e) {
       setSelectedBranch(e);
       fetchGrade(e);
+      setSelectedGrade('');
+      setSelectedSection('');
+      setGradeList([]);
+      setSectionList([]);
+      formRef.current.setFieldsValue({
+        grade: [],
+        section: [],
+      });
     } else {
       setSelectedBranch('');
       setSelectedGrade('');
@@ -182,20 +188,36 @@ const AssignUserRole = () => {
     );
   });
 
-  const handleGrade = (e) => {
+  const handleChangeGrade = (each) => {
     setPageNo(1);
-    if (e.length > 0) {
-      setSelectedGrade(e);
-      fetchSection(e);
-    } else {
-      setSelectedGrade('');
-      setSelectedSection('');
-      setSectionList([]);
+    if (each.some((item) => item.value === 'all')) {
+      const allGrade = gradeList.map((item) => item.grade_id).join(',');
+      setSelectedGrade(allGrade);
+      fetchSection(allGrade);
+      setSelectedSection([]);
       formRef.current.setFieldsValue({
-        grade: [],
+        grade: gradeList.map((item) => item.grade_id),
+        section: [],
+      });
+    } else {
+      const singleGrade = each.map((item) => item.value).join(',');
+      setSelectedGrade(singleGrade);
+      fetchSection(singleGrade);
+      setSelectedSection([]);
+      formRef.current.setFieldsValue({
         section: [],
       });
     }
+  };
+
+  const handleClearGrade = () => {
+    setSelectedGrade([]);
+    setSelectedSection('');
+    setSectionList([]);
+    formRef.current.setFieldsValue({
+      grade: [],
+      section: [],
+    });
   };
 
   const fetchSection = async (selectedGrade) => {
@@ -221,16 +243,21 @@ const AssignUserRole = () => {
     );
   });
 
-  const handleSection = (e) => {
+  const handleChangeSection = (each) => {
     setPageNo(1);
-    if (e != undefined) {
-      setSelectedSection(e);
-    } else {
-      setSelectedSection('');
+    if (each.some((item) => item.value === 'all')) {
+      const allsections = sectionList.map((item) => item.id).join(',');
+      setSelectedSection(allsections);
       formRef.current.setFieldsValue({
-        section: null,
+        section: sectionList.map((item) => item.id),
       });
+    } else {
+      setSelectedSection(each.map((item) => item.value).join(','));
     }
+  };
+
+  const handleClearSection = () => {
+    setSelectedSection([]);
   };
 
   const filterData = (
@@ -409,7 +436,11 @@ const AssignUserRole = () => {
       setSelectedUsers(selectedRowKeys);
     },
     getCheckboxProps: (record) => ({
-      disabled: record.level == 13 && isOrchids,
+      disabled:
+        (record?.roles?.role_name == 'Student' ||
+          record?.roles?.role_name == 'student' ||
+          record?.roles?.role_name == 'Anvesh_Student') &&
+        isOrchids,
     }),
   };
 
@@ -545,7 +576,8 @@ const AssignUserRole = () => {
                         className='th-grey th-bg-grey th-br-4 w-100 text-left'
                         placement='bottomRight'
                         showArrow={true}
-                        onChange={(e, value) => handleGrade(e, value)}
+                        onChange={(e, value) => handleChangeGrade(value)}
+                        onClear={handleClearGrade}
                         dropdownMatchSelectWidth={true}
                         filterOption={(input, options) => {
                           return (
@@ -556,6 +588,13 @@ const AssignUserRole = () => {
                         showSearch
                         placeholder='Select Grade'
                       >
+                        {gradeList.length > 1 && (
+                          <>
+                            <Option key={0} value={'all'}>
+                              Select All
+                            </Option>
+                          </>
+                        )}
                         {gradeOptions}
                       </Select>
                     </Form.Item>
@@ -571,7 +610,10 @@ const AssignUserRole = () => {
                         className='th-grey th-bg-grey th-br-4 w-100 text-left'
                         placement='bottomRight'
                         showArrow={true}
-                        onChange={(e, value) => handleSection(e, value)}
+                        onChange={(e, value) => {
+                          handleChangeSection(value);
+                        }}
+                        onClear={handleClearSection}
                         dropdownMatchSelectWidth={true}
                         filterOption={(input, options) => {
                           return (
@@ -582,6 +624,13 @@ const AssignUserRole = () => {
                         showSearch
                         placeholder='Select section'
                       >
+                        {sectionList.length > 1 && (
+                          <>
+                            <Option key={0} value={'all'}>
+                              Select All
+                            </Option>
+                          </>
+                        )}
                         {sectionOptions}
                       </Select>
                     </Form.Item>
@@ -695,10 +744,7 @@ const AssignUserRole = () => {
                       rowSelection={{ ...rowSelection }}
                       dataSource={userData}
                       pagination={false}
-                      // scroll={{
-                      //   x: window.innerWidth < 600 ? 'max-content' : null,
-                      //   y: 'calc(80vh - 220px)',
-                      // }}
+                      scroll={{ y: '300px' }}
                     />
 
                     {userData?.length > 0 && (

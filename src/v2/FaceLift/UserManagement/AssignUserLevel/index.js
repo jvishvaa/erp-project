@@ -35,9 +35,12 @@ const AssignUserLevel = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [assignUserLevel, setAssignUserLevel] = useState('');
 
-  const isOrchids = ['localhost:3000', 'dev', 'qa', 'orchids'].includes(
-    window.location.host.split('.')[0]
-  );
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'localhost:3000' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
 
   useEffect(() => {
     fetchUserLevel();
@@ -258,7 +261,7 @@ const AssignUserLevel = () => {
                   <div className='col-md-3 col-sm-6 col-12'>
                     <Form.Item name='search-input'>
                       <Input
-                        placeholder='Search input'
+                        placeholder='Search user'
                         prefix={
                           <SearchOutlined className='site-form-item-icon th-grey' />
                         }
@@ -355,10 +358,7 @@ const AssignUserLevel = () => {
                       rowSelection={{ ...rowSelection }}
                       dataSource={userData}
                       pagination={false}
-                      // scroll={{
-                      //   x: window.innerWidth < 600 ? 'max-content' : null,
-                      //   y: 'calc(80vh - 220px)',
-                      // }}
+                      scroll={{ y: '300px' }}
                     />
 
                     {userData?.length > 0 && (

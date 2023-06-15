@@ -78,15 +78,6 @@ const PhysicalReviewed = (props) => {
         }
       )
       .then((response) => {
-        // response.data.map((obj, index) => {
-        //   let temp = {};
-        //   temp['id'] = obj.id;
-        //   temp['name'] = obj.level.name;
-        //   temp['remarks'] = obj.remarks;
-        //   temp['given_rating'] = obj.given_rating;
-        //   temp['level'] = obj?.level?.rating;
-        //   array.push(temp);
-        // });
         setRatingReview(response.data);
         setLoading(false);
       });
@@ -263,7 +254,6 @@ const PhysicalReviewed = (props) => {
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
       align: 'center',
-      // width: '15%',
       render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
     },
     {
@@ -278,19 +268,6 @@ const PhysicalReviewed = (props) => {
         <span className='th-black-1'>{row?.submitted_on?.substring(0, 10)}</span>
       ),
     },
-    // {
-    //   title: <span className='th-white th-fw-700'>Reviewed By</span>,
-    //   align: 'center',
-    //   render: (text, row) => <span className='th-black-1'>{row?.reviewer}</span>,
-    // },
-
-    // {
-    //   title: <span className='th-white th-fw-700'>Overall Remarks</span>,
-    //   align: 'center',
-    //   render: (text, row) => (
-    //     <span className='th-black-1'>{row?.user_reviews?.remarks}</span>
-    //   ),
-    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -396,7 +373,6 @@ const PhysicalReviewed = (props) => {
                   url={file?.s3_path}
                   ref={playerRef}
                   thumb={file?.s3_path}
-                  // key={index}
                   width='100%'
                   height='100%'
                   playIcon={
@@ -430,7 +406,6 @@ const PhysicalReviewed = (props) => {
                       src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                       alt='image'
                       style={{
-                        // width: '100%',
                         height: 130,
                         objectFit: 'fill',
                       }}
@@ -552,10 +527,12 @@ const PhysicalReviewed = (props) => {
         <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
           <table className='w-100' style={{ background: '#eee' }}>
             <thead>
-              <tr style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}>
-                <th> Rounds </th>
+              <tr style={{ background: '#4800c9', color: 'white' }}>
+                <th style={{ textAlign: 'center' }}> Rounds </th>
                 {tableHeader?.map((item, i) => (
-                  <th>{item?.name}</th>
+                  <th style={{ padding: '5px' }}>
+                    {<div className='text-justify'>{item?.name}</div>}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -563,7 +540,10 @@ const PhysicalReviewed = (props) => {
               {Object.keys(customRatingReview)?.length > 0 &&
                 Object.keys(customRatingReview).map((item, index) => (
                   <tr className='th-html-table'>
-                    <td style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}>
+                    <td
+                      width='10%'
+                      style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}
+                    >
                       {item}
                     </td>
                     {tableHeader?.map((each, i) => {
@@ -572,7 +552,7 @@ const PhysicalReviewed = (props) => {
                       )[0].remarks;
                       return (
                         <td style={{ padding: '5px' }}>
-                          <div className='text-center'>{remarks}</div>
+                          <div className='text-justify'>{remarks}</div>
                         </td>
                       );
                     })}
@@ -587,14 +567,14 @@ const PhysicalReviewed = (props) => {
             {overallData.length > 0 &&
               overallData.map((item, index) => {
                 return (
-                  <div className='col-6 pl-4 p-2 d-flex align-items-center justify-content-start'>
-                    <span
+                  <div className='row-12 p-2 d-flex align-items-center justify-content-start'>
+                    <div
                       style={{ fontWeight: 500, marginRight: '5px', fontSize: '15px' }}
                     >
                       Overall {<CaretRightOutlined />}
-                    </span>
+                    </div>
                     <div
-                      className='text-center'
+                      className='col-11 pl-0 pr-0 text-justify'
                       style={{ fontSize: '15px', fontWeight: 600, color: 'blue' }}
                     >
                       {/* <Tag color='green'> */}
