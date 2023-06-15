@@ -487,7 +487,7 @@ const User = () => {
 
     setShowFilter(false);
 
-    let params = `?page=${pageNo}&page_size=${pageLimit}&session_year=${
+    let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}&session_year=${
       selectedYear?.id
     }${branchParams ? `&branch=${branch}` : ''}${
       userLevelParams.length > 0 ? `&user_level=${userLevel}` : ''
@@ -926,10 +926,7 @@ const User = () => {
                       rowKey={(record) => record?.id}
                       dataSource={userData}
                       pagination={false}
-                      // scroll={{
-                      //   x: window.innerWidth < 600 ? 'max-content' : null,
-                      //   y: 'calc(100vh - 220px)',
-                      // }}
+                      scroll={{ y: '300px' }}
                     />
 
                     {userData?.length > 0 && (
@@ -950,7 +947,14 @@ const User = () => {
                             ) {
                               onChangeSearch(current, searchData);
                             } else {
-                              filterData(current, branch, userLevel, grade, section, '');
+                              filterData(
+                                current,
+                                branch,
+                                userLevel,
+                                grade,
+                                section,
+                                status
+                              );
                             }
                           }}
                           className='text-center'

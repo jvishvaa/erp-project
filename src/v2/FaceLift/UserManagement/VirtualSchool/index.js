@@ -348,10 +348,7 @@ const VirtualSchool = () => {
                             columns={columns}
                             dataSource={virtualSchoolList}
                             pagination={false}
-                            // scroll={{
-                            //   x: window.innerWidth < 600 ? 'max-content' : null,
-                            //   y: 'calc(80vh - 220px)',
-                            // }}
+                            scroll={{ y: '300px' }}
                           />
 
                           {virtualSchoolList?.length > 0 && (
