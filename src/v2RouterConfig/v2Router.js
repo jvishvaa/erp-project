@@ -68,6 +68,7 @@ import V1CreateUser from '../../src/containers/user-management/create-user';
 import V1EditUser from '../../src/containers/user-management/edit-user';
 import ViewAttendance from 'v2/FaceLift/Attendance/ViewAttendance';
 import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
+import UserBulkUpload from 'v2/FaceLift/UserManagement/User/CreateUser/BulkUpload';
 
 const V2Router = () => {
   useEffect(() => {
@@ -294,6 +295,10 @@ const V2Router = () => {
                               </div>
                             )
                           }
+                        </Route>
+                        ,
+                        <Route path='/user-management/user-bulk-upload'>
+                          {({ match }) => <UserBulkUpload match={match} />}
                         </Route>
                         ,
                         <Route path='/user-management/edit-non-academic-staff/:id'>

@@ -401,10 +401,10 @@ const User = () => {
   const handleChangeSection = (each) => {
     setPageNo(1);
     if (each.some((item) => item.value === 'all')) {
-      const allsections = sectionList.map((item) => item.id).join(',');
+      const allsections = sectionList?.map((item) => item.id).join(',');
       setSection(allsections);
       formRef.current.setFieldsValue({
-        section: sectionList.map((item) => item.id),
+        section: sectionList?.map((item) => item.id),
       });
     } else {
       setSection(each.map((item) => item.value).join(','));
@@ -657,6 +657,21 @@ const User = () => {
     }
   };
 
+  const handleClearFilter = () => {
+    setUserLevel('');
+    setBranch('');
+    setGrade('');
+    setSection('');
+    setStatus('');
+    setSearchData('');
+    setGradeList([]);
+    setSectionList([]);
+    setUserData([]);
+    setShowFilter(true);
+    formRef.current.resetFields();
+    searchRef.current.resetFields();
+  };
+
   return (
     <React.Fragment>
       <Layout>
@@ -682,7 +697,13 @@ const User = () => {
           <div className='col-md-12'>
             <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
               <div className='row'>
-                <Form id='filterForm' className='mt-3' layout={'vertical'} ref={formRef}>
+                <Form
+                  id='filterForm'
+                  className='mt-3'
+                  layout={'vertical'}
+                  ref={formRef}
+                  style={{ width: '100%' }}
+                >
                   <div className='row'>
                     <div className='col-md-3 col-sm-6 col-12'>
                       <Form.Item name='userlevel'>
@@ -847,10 +868,10 @@ const User = () => {
                     </div>
                     <div className='col-md-3 col-sm-6 col-12 mb-3'>
                       <div className='row no-gutters'>
-                        <div className='col-md-6 col-sm-6 col-6 pr-2'>
+                        <div className='col-md-6 col-sm-6 col-6 pr-1'>
                           <Button
                             type='primary'
-                            className='btn-block th-br-4'
+                            className='btn-block th-br-4 th-12'
                             onClick={() =>
                               filterData(
                                 pageNo,
@@ -865,22 +886,13 @@ const User = () => {
                             View
                           </Button>
                         </div>
-                        {/* <div className='col-md-6 col-sm-6 col-6 pl-2'>
+                        <div className='col-md-6 col-sm-6 col-6 pl-1'>
                           <Button
                             type='secondary'
-                            className='btn-block mt-0 th-br-4'
+                            className='btn-block mt-0 th-br-4 th-12'
                             onClick={handleClearFilter}
                           >
                             Clear
-                          </Button>
-                        </div> */}
-                        <div className='col-md-6 col-sm-6 col-6 pl-2'>
-                          <Button
-                            type='primary'
-                            className='btn-block th-br-4'
-                            onClick={handleExcel}
-                          >
-                            Download
                           </Button>
                         </div>
                       </div>
@@ -888,12 +900,21 @@ const User = () => {
 
                     <div className='col-md-3 col-sm-6 col-12 mb-3'>
                       <div className='row no-gutters'>
-                        <div className='col-md-12 col-sm-12 col-12'>
+                        <div className='col-md-6 col-sm-6 col-6 pr-1'>
+                          <Button
+                            type='primary'
+                            className='btn-block th-br-4 th-12'
+                            onClick={handleExcel}
+                          >
+                            Download
+                          </Button>
+                        </div>
+                        <div className='col-md-6 col-sm-6 col-12 pl-1'>
                           <Button
                             onClick={() => history.push(`/user-management/create-user`)}
-                            className='btn-block th-br-4'
+                            className='btn-block th-br-4 th-12'
                             type='primary'
-                            icon={<PlusCircleOutlined style={{ color: '#fffff' }} />}
+                            // icon={<PlusCircleOutlined style={{ color: '#fffff' }} />}
                           >
                             Create User
                           </Button>
