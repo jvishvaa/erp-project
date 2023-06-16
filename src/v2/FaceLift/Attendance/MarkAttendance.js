@@ -138,6 +138,7 @@ const MarkStudentAttendance = () => {
     formRef.current.setFieldsValue({
       section: [],
     });
+    setSectionData([]);
     if (e) {
       setGradeID(e);
       if (isStudent) {
@@ -150,7 +151,6 @@ const MarkStudentAttendance = () => {
       }
     } else {
       setGradeID();
-      setSectionData([]);
     }
   };
 

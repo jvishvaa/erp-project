@@ -1648,7 +1648,7 @@ const BlogWall = () => {
                       {ratingReview?.map((obj, index) => {
                         return (
                           <div
-                            className='row py-1 align-items-center text-justify text-center'
+                            className='row py-1 text-justify text-center'
                             style={{
                               borderBottom:
                                 index == ratingReview.length - 1

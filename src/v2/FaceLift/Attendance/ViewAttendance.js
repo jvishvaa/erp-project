@@ -155,8 +155,7 @@ const ViewAttendance = () => {
         else if (attendanceData[i]?.attendance[j]?.attendence_status === 'halfday')
           a = 'HD';
         else if (attendanceData[i]?.attendance[j]?.attendence_status === 'late') a = 'L';
-        else if (attendanceData[i]?.attendance[j]?.attendence_status === 'holiday')
-          a = 'H';
+        else if (attendanceData[i]?.attendance[j]?.attendence_status === 'H') a = 'H';
 
         userAttendanceData[i][attendanceData[i]?.attendance[j]?.date] = a;
       }
