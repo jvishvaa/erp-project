@@ -240,14 +240,17 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
 
   const handleChangeSection = (each) => {
     setPageNo(1);
+    setSelectedUsers([]);
+    setUserData([]);
+    setShowFilter(true);
     if (each.some((item) => item.value === 'all')) {
-      const allsections = sectionList.map((item) => item.id).join(',');
+      const allsections = sectionList.map((item) => item.id);
       setSelectedSection(allsections);
       formRef.current.setFieldsValue({
         section: sectionList.map((item) => item.id),
       });
     } else {
-      setSelectedSection(each.map((item) => item.value).join(','));
+      setSelectedSection(each.map((item) => item.value));
     }
   };
 

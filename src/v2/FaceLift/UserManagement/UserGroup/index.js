@@ -497,10 +497,7 @@ const UserGroup = () => {
                           rowKey={(record) => record?.user_id}
                           dataSource={userGroupData}
                           pagination={false}
-                          // scroll={{
-                          //   x: window.innerWidth < 600 ? 'max-content' : null,
-                          //   y: 'calc(80vh - 220px)',
-                          // }}
+                          scroll={{ y: '300px' }}
                         />
 
                         {userGroupData?.length > 0 && (
