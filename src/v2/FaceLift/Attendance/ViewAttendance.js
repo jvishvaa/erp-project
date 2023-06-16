@@ -74,7 +74,7 @@ const ViewAttendance = () => {
   const getAttendanceColor = (status) => {
     switch (status) {
       case 'present':
-        return 'green';
+        return '#00ff00';
       case 'absent':
         return 'red';
       case 'late':
@@ -84,7 +84,7 @@ const ViewAttendance = () => {
       case 'H':
         return '#81c3b4';
       case 'NA':
-        return 'black';
+        return 'rgb(118 94 111)';
     }
   };
   const handleMonthChange = (e) => {
@@ -261,7 +261,11 @@ const ViewAttendance = () => {
                       color: getAttendanceColor(row?.attendance[i]?.attendence_status),
                     }}
                   >
-                    {row?.attendance[i]?.attendence_status}
+                    {row?.attendance[i]?.attendence_status === 'NA'
+                      ? 'NA'
+                      : row?.attendance[i]?.attendence_status === 'halfday'
+                      ? 'HD'
+                      : row?.attendance[i]?.attendence_status.substr(0, 1).toUpperCase()}
                   </span>
                 ),
               };
