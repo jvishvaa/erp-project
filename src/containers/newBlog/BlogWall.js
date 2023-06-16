@@ -115,9 +115,10 @@ const BlogWall = () => {
   const [blogDrawerData, setBlogDrawerData] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(null);
   const [showPostDetailsModal, setShowPostDetailsModal] = useState(false);
-  const [showPhysicalActivityModal, setShowPhysicalActivityModal] = useState(false);
   const [showOtherActivityModal, setShowOtherActivityModal] = useState(false);
+  const [showPublicSpeakingModal, setShowPublicSpeakingModal] = useState(false);
   const [selectedOtherActivity, setSelectedOtherActivity] = useState(null);
+  const [selectedPublicSpeaking, setSelectedPublicSpeaking] = useState(null);
   const [postModalContentData, setPostModalContentData] = useState(null);
   const [selectedPostData, setSelectedPostData] = useState();
   const [currentComment, setCurrentComment] = useState(null);
@@ -266,32 +267,6 @@ const BlogWall = () => {
         setShowTab('1');
       });
   };
-
-  // useEffect(() => {
-  //   if (localStorage.getItem('ActivityManagementSession') == null) ActvityLocalStorage();
-  // }, [window.location.pathname]);
-  // const ActvityLocalStorage = () => {
-  //   setLoading(true);
-  //   axios
-  //     .post(
-  //       `${endpoints.newBlog.activityWebLogin}`,
-  //       {},
-  //       {
-  //         headers: {
-  //           Authorization: `${token}`,
-  //           'X-DTS-HOST': X_DTS_HOST,
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       localStorage.setItem(
-  //         'ActivityManagement',
-  //         JSON.stringify(response?.data?.result)
-  //       );
-  //       getActivitySession();
-  //       setLoading(false);
-  //     });
-  // };
 
   const fetchGradeData = () => {
     // setLoading(true);
@@ -582,11 +557,12 @@ const BlogWall = () => {
     } else {
       getRatingView({ data: data?.booking_detail?.id, otherActvity: true });
     }
-    setSelectedOtherActivity(data);
-    if (data?.type == 'Physical Activity') {
-      setShowPhysicalActivityModal(true);
-    } else {
+    if (data?.type !== 'Public Speaking') {
       setShowOtherActivityModal(true);
+      setSelectedOtherActivity(data);
+    } else {
+      setShowPublicSpeakingModal(true);
+      setSelectedPublicSpeaking(data);
     }
 
     // fetchPostDetails(data);
@@ -1447,16 +1423,16 @@ const BlogWall = () => {
             </div>
           </Modal>
         )}
-        {showOtherActivityModal && (
+        {showPublicSpeakingModal && (
           <Modal
             title={selectedOtherActivity?.type}
             className='th-upload-modal'
             centered
-            visible={showOtherActivityModal}
+            visible={showPublicSpeakingModal}
             destroyOnClose={true}
-            onOk={() => setShowOtherActivityModal(false)}
+            onOk={() => setShowPublicSpeakingModal(false)}
             onCancel={() => {
-              setShowOtherActivityModal(false);
+              setShowPublicSpeakingModal(false);
             }}
             width={'80vw'}
             footer={null}
@@ -1465,43 +1441,17 @@ const BlogWall = () => {
             <div className='row p-3'>
               <div className='col-7 '>
                 <div className='d-flex align-items-center h-100'>
-                  {selectedOtherActivity?.type == 'Public Speaking' ? (
-                    <video
-                      preload='auto'
-                      controls
-                      src={selectedOtherActivity?.asset?.signed_URL}
-                      className='th-br-5'
-                      style={{
-                        height: '500px',
-                        width: '100%',
-                        objectFit: 'fill',
-                      }}
-                    />
-                  ) : selectedOtherActivity?.content?.file_type === 'image/png' ||
-                    selectedOtherActivity?.content?.file_type === 'image/jpeg' ? (
-                    <img
-                      src={
-                        selectedOtherActivity?.content?.s3_path
-                          ? selectedOtherActivity?.content?.s3_path
-                          : getActivityIcon(selectedOtherActivity?.type)
-                      }
-                      alt={'image'}
-                      width='100%'
-                      loading='lazy'
-                    />
-                  ) : (
-                    <video
-                      preload='auto'
-                      controls
-                      src={selectedOtherActivity?.content?.s3_path}
-                      className='th-br-5'
-                      style={{
-                        height: '500px',
-                        width: '100%',
-                        objectFit: 'fill',
-                      }}
-                    />
-                  )}
+                  <video
+                    preload='auto'
+                    controls
+                    src={selectedPublicSpeaking?.asset?.signed_URL}
+                    className='th-br-5'
+                    style={{
+                      height: '500px',
+                      width: '100%',
+                      objectFit: 'fill',
+                    }}
+                  />
                 </div>
               </div>
               <div className='col-5' style={{ height: 600, overflowY: 'auto' }}>
@@ -1511,165 +1461,99 @@ const BlogWall = () => {
                       <Avatar size={40} icon={<UserOutlined />} />
                       <div className='d-flex flex-column ml-2'>
                         <div className=' th-black-1 th-fw-500'>
-                          {selectedOtherActivity?.type == 'Public Speaking'
-                            ? selectedOtherActivity?.group?.activity?.name
-                            : selectedOtherActivity?.activity_detail?.title}
+                          {selectedPublicSpeaking?.group?.activity?.name}
                         </div>
                         <div>
                           <span className='th-12 th-fw-500 th-black-2'>
-                            {selectedOtherActivity?.type == 'Public Speaking'
-                              ? selectedOtherActivity?.grade
-                              : selectedOtherActivity?.grade?.name}
+                            {selectedPublicSpeaking?.grade}
                           </span>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className='col-12 py-2 px-0'>
-                    {selectedOtherActivity?.type == 'Public Speaking' ? (
+                    <>
+                      {selectedPublicSpeaking?.state == 'graded' ? (
+                        <Table
+                          className='th-table'
+                          columns={columns}
+                          loading={loading}
+                          dataSource={publicSpeakingrating}
+                          pagination={false}
+                          rowClassName={(record, index) =>
+                            index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                          }
+                          scroll={{ y: '400px' }}
+                        />
+                      ) : (
+                        ''
+                      )}
+                    </>
+                  </div>
+                </div>
+                <div className='row mt-2 align-item-center'>
+                  <div className='col-6 px-0'>
+                    <span className='th-18 th-fw-600'>
+                      Comments
+                      {chatDetails?.length > 0 ? `(${chatDetails?.length})` : null}
+                    </span>
+                  </div>
+                  <div className='col-6 text-right'>
+                    <span
+                      className='th-pointer'
+                      onClick={() =>
+                        getWhatsAppDetails({
+                          erp_id: data?.erp,
+                          created_at__date__gte:
+                            studentPubliSpeakingData?.created_at__date__gte,
+                          created_at__date__lte:
+                            studentPubliSpeakingData?.created_at__date__lte,
+                          activity_id: studentPubliSpeakingData?.activity,
+                        })
+                      }
+                    >
+                      <RedoOutlined />
+                    </span>
+                  </div>
+
+                  <div className='row'>
+                    {chatDetails.length > 0 ? (
                       <>
-                        {selectedOtherActivity?.state == 'graded' ? (
-                          <Table
-                            className='th-table'
-                            columns={columns}
-                            loading={loading}
-                            dataSource={
-                              selectedOtherActivity?.type == 'Public Speaking'
-                                ? publicSpeakingrating
-                                : null
-                            }
-                            pagination={false}
-                            rowClassName={(record, index) =>
-                              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                            }
-                            scroll={{ y: '400px' }}
-                          />
-                        ) : (
-                          ''
-                        )}
+                        {chatDetails.map((item, index) => {
+                          if (item?.is_reply == true) {
+                            return (
+                              <Comment
+                                author={
+                                  <div className='th-fw-500 th-16'>{item?.name}</div>
+                                }
+                                avatar={<Avatar size={40} icon={<UserOutlined />} />}
+                                content={<p>{item?.message}</p>}
+                                datetime={
+                                  <>
+                                    <div
+                                      title={moment(item?.sent_at).format('MMM Do,YYYY')}
+                                    >
+                                      {moment(item?.sent_at).format('MMM Do,YYYY')}
+                                    </div>
+                                  </>
+                                }
+                              />
+                            );
+                          }
+                        })}
                       </>
                     ) : (
-                      <>
-                        <div
-                          className='th-bg-grey py-3 px-2 th-br-8'
-                          style={{ outline: '1px solid #d9d9d9' }}
-                        >
-                          <div className=' th-12 th-black-2'>
-                            Title :{' '}
-                            <span className='th-16 th-fw-500 th-black-1'>
-                              {selectedOtherActivity?.activity_detail?.title}
-                            </span>
-                          </div>
-                          <div
-                            className='mt-2'
-                            style={{ overflowY: 'auto', maxHeight: '25vh' }}
-                          >
-                            <span className='th-12 th-black-2'>Description :&nbsp;</span>
-                            <span className='th-16 th-fw-400 th-black-1'>
-                              {selectedOtherActivity?.activity_detail?.description}
-                            </span>
-                          </div>
-                        </div>
-                        <div
-                          className='p-2 mt-2 th-br-8'
-                          style={{ outline: '1px solid #d9d9d9' }}
-                        >
-                          {ratingReview?.map((obj, index) => {
-                            return (
-                              <div className='row py-1 align-items-center'>
-                                <div className='col-6 pl-1' key={index}>
-                                  {obj?.name}
-                                </div>
-                                <div className='col-6 pr-1'>
-                                  <Input
-                                    disabled
-                                    title={
-                                      obj?.remarks?.filter(
-                                        (item) => item.status == true
-                                      )[0]?.name
-                                    }
-                                    value={
-                                      obj?.remarks?.filter(
-                                        (item) => item.status == true
-                                      )[0]?.name
-                                    }
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </>
+                      <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
+                        No Comments Submitted
+                      </div>
                     )}
                   </div>
                 </div>
-                {selectedOtherActivity?.type == 'Public Speaking' && (
-                  <div className='row mt-2 align-item-center'>
-                    <div className='col-6 px-0'>
-                      <span className='th-18 th-fw-600'>
-                        Comments
-                        {chatDetails?.length > 0 ? `(${chatDetails?.length})` : null}
-                      </span>
-                    </div>
-                    <div className='col-6 text-right'>
-                      <span
-                        className='th-pointer'
-                        onClick={() =>
-                          getWhatsAppDetails({
-                            erp_id: data?.erp,
-                            created_at__date__gte:
-                              studentPubliSpeakingData?.created_at__date__gte,
-                            created_at__date__lte:
-                              studentPubliSpeakingData?.created_at__date__lte,
-                            activity_id: studentPubliSpeakingData?.activity,
-                          })
-                        }
-                      >
-                        <RedoOutlined />
-                      </span>
-                    </div>
-
-                    <div className='row'>
-                      {chatDetails.length > 0 ? (
-                        <>
-                          {chatDetails.map((item, index) => {
-                            if (item?.is_reply == true) {
-                              return (
-                                <Comment
-                                  author={
-                                    <div className='th-fw-500 th-16'>{item?.name}</div>
-                                  }
-                                  avatar={<Avatar size={40} icon={<UserOutlined />} />}
-                                  content={<p>{item?.message}</p>}
-                                  datetime={
-                                    <>
-                                      <div
-                                        title={moment(item?.sent_at).format(
-                                          'MMM Do,YYYY'
-                                        )}
-                                      >
-                                        {moment(item?.sent_at).format('MMM Do,YYYY')}
-                                      </div>
-                                    </>
-                                  }
-                                />
-                              );
-                            }
-                          })}
-                        </>
-                      ) : (
-                        <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
-                          No Comments Submitted
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </Modal>
         )}
-        {showPhysicalActivityModal && (
+        {showOtherActivityModal && (
           <Modal
             title={
               <div className='d-flex justify-conten-end'>
@@ -1678,17 +1562,17 @@ const BlogWall = () => {
             }
             className='th-upload-modal'
             centered
-            visible={showPhysicalActivityModal}
+            visible={showOtherActivityModal}
             destroyOnClose={true}
-            onOk={() => setShowPhysicalActivityModal(false)}
+            onOk={() => setShowOtherActivityModal(false)}
             onCancel={() => {
-              setShowPhysicalActivityModal(false);
+              setShowOtherActivityModal(false);
             }}
-            width={'80vw'}
+            width={'60vw'}
             footer={null}
             closeIcon={<CloseOutlined />}
           >
-            <div className='row p-3' style={{ maxHeight: '75vh', overflowY: 'scroll' }}>
+            <div className='row p-3' style={{ maxHeight: '85vh', overflowY: 'scroll' }}>
               <div className='col-12'>
                 <div className='d-flex align-items-center h-100'>
                   {selectedOtherActivity?.content?.file_type === 'image/png' ||
@@ -1710,7 +1594,7 @@ const BlogWall = () => {
                       src={selectedOtherActivity?.content?.s3_path}
                       className='th-br-5'
                       style={{
-                        height: '500px',
+                        height: '400px',
                         width: '100%',
                         objectFit: 'fill',
                       }}
@@ -1756,20 +1640,26 @@ const BlogWall = () => {
                         </span>
                       </div>
                     </div>
-                    <div
-                      className='p-2 mt-2 th-br-8'
-                      style={{ outline: '1px solid #d9d9d9' }}
-                    >
+                    <div className='row align-items-center text-center py-2 th-fw-600'>
+                      <div className='col-6'>Questions</div>
+                      <div className='col-6'>Options</div>
+                    </div>
+                    <div className='p-2 th-br-8' style={{ outline: '1px solid #d9d9d9' }}>
                       {ratingReview?.map((obj, index) => {
                         return (
                           <div
-                            className='row py-1 align-items-center text-justify'
-                            style={{ borderBottom: '1px solid #d9d9d9' }}
+                            className='row py-1 align-items-center text-justify text-center'
+                            style={{
+                              borderBottom:
+                                index == ratingReview.length - 1
+                                  ? null
+                                  : '1px solid #d9d9d9',
+                            }}
                           >
                             <div className='col-6'>{obj?.name}</div>
                             <div className='col-6'>
                               <div
-                                className='text-wrap'
+                                className='text-wrap th-bg-grey p-2'
                                 title={
                                   obj?.remarks?.filter((item) => item.status == true)[0]
                                     ?.name

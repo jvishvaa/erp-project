@@ -315,8 +315,8 @@ const StudentSidePhysicalActivity = () => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[0]
           ?.name;
         return (
-          <div className='text-justify text-center'>
-            {currentRemarks ? currentRemarks : 'N/A'}
+          <div className='d-flex justify-content-center'>
+            <div className='text-justify'>{currentRemarks ? currentRemarks : 'N/A'}</div>
           </div>
         );
       },
@@ -329,8 +329,8 @@ const StudentSidePhysicalActivity = () => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[0]
           ?.remarks;
         return (
-          <div className='text-justify text-center'>
-            {currentRemarks ? currentRemarks : 'N/A'}
+          <div className='d-flex justify-content-center'>
+            <div className='text-justify'>{currentRemarks ? currentRemarks : 'N/A'}</div>
           </div>
         );
       },
@@ -343,8 +343,8 @@ const StudentSidePhysicalActivity = () => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[1]
           ?.remarks;
         return (
-          <div className='text-justify text-center'>
-            {currentRemarks ? currentRemarks : 'N/A'}
+          <div className='d-flex justify-content-center'>
+            <div className='text-justify'>{currentRemarks ? currentRemarks : 'N/A'}</div>
           </div>
         );
       },
@@ -357,8 +357,8 @@ const StudentSidePhysicalActivity = () => {
         let currentRemarks = row?.reviews_data?.filter((el) => el.name !== 'Overall')[2]
           ?.remarks;
         return (
-          <div className='text-justify text-center'>
-            {currentRemarks ? currentRemarks : 'N/A'}
+          <div className='d-flex justify-content-center'>
+            <div className='text-justify'>{currentRemarks ? currentRemarks : 'N/A'}</div>
           </div>
         );
       },
@@ -369,8 +369,10 @@ const StudentSidePhysicalActivity = () => {
       align: 'center',
       render: (text, row) => {
         return (
-          <div className='text-justify text-center'>
-            {row?.reviews_data?.filter((el) => el.name === 'Overall')[0]?.remarks}
+          <div className='d-flex justify-content-center'>
+            <div className='text-justify'>
+              {row?.reviews_data?.filter((el) => el.name === 'Overall')[0]?.remarks}
+            </div>
           </div>
         );
       },
@@ -600,11 +602,9 @@ const StudentSidePhysicalActivity = () => {
               onClose={handleCloseSideViewMore}
               zIndex={1300}
               visible={showSideDrawer}
-              width={
-                window.innerWidth < 600 ? '95vw' : mediaFiles?.s3_path ? '70vw' : '35vw'
-              }
+              width={window.innerWidth < 600 ? '95vw' : '55vw'}
               closable={false}
-              className='th-resources-drawer'
+              className='th-activity-drawer'
               extra={
                 <Space>
                   <CloseOutlined onClick={handleCloseSideViewMore} />
@@ -663,11 +663,8 @@ const StudentSidePhysicalActivity = () => {
                   <div className={`col-12 th-bg-white`}>
                     <div className='row mt-3'>
                       <div className='col-12 px-1'>
-                        {/* <div>
-                          
-                        </div> */}
-                        <div className='d-flex align-items-center justify-content-between pr-1'>
-                          <div className='d-flex align-items-center'>
+                        <div className='d-flex justify-content-between'>
+                          <div className='d-flex align-items-center pr-1'>
                             <Avatar
                               size={50}
                               aria-label='recipe'
@@ -721,22 +718,36 @@ const StudentSidePhysicalActivity = () => {
                         </div>
                         <div className='mt-3'>
                           <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                          <div className='row align-items-center text-center pb-2 th-fw-600'>
+                            <div className='col-6'>Questions</div>
+                            <div className='col-6'>Options</div>
+                          </div>
                           <div
-                            className='px-1 py-2 th-br-5'
+                            className='px-1 py-2 th-br-4'
                             style={{ outline: '1px solid #d9d9d9' }}
                           >
                             {ratingReview?.map((obj, index) => {
                               return (
                                 <div
-                                  className='row py-1 align-items-center text-justify'
-                                  style={{ borderBottom: '1px solid #d9d9d9' }}
+                                  className='row py-1 text-justify text-center'
+                                  style={{
+                                    borderBottom:
+                                      index == ratingReview.length - 1
+                                        ? null
+                                        : '1px solid #d9d9d9',
+                                  }}
                                 >
                                   <div className='col-6' key={index}>
                                     {obj?.level?.name}
                                   </div>
                                   <div className='col-6 '>
                                     {!isRoundAvailable ? (
-                                      <div title={funRemarks(obj)}>{funRemarks(obj)}</div>
+                                      <div
+                                        className='p-2 th-bg-grey'
+                                        title={funRemarks(obj)}
+                                      >
+                                        {funRemarks(obj)}
+                                      </div>
                                     ) : null}
                                   </div>
                                 </div>
