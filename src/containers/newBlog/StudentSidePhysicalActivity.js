@@ -140,12 +140,14 @@ const StudentSidePhysicalActivity = () => {
   }, [currentPageAssigned, physicalActivityToggle]);
 
   const handleShowReview = async (data) => {
+    setLoadingMedia(true);
     setIsRoundAvailable(physicalActivityToggle);
     getRatingView(data?.id, physicalActivityToggle);
     fetchMedia(data?.id);
     setSelectedActivity(data);
   };
   const handleViewBMIModal = (data) => {
+    setLoadingMedia(true);
     fetchBMIData(data?.id);
   };
 
@@ -208,10 +210,14 @@ const StudentSidePhysicalActivity = () => {
           message.error('No BMI record found for the student');
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        message.error(error?.message);
+      })
+      .finally(() => {
+        setLoadingMedia(false);
+      });
   };
   const fetchMedia = (id) => {
-    setLoadingMedia(true);
     axios
       .get(`${endpoints.newBlog.showVisualMedia}${id}/`, {
         headers: {
@@ -612,12 +618,14 @@ const StudentSidePhysicalActivity = () => {
               }
             >
               <div>
-                <div className='row'>
-                  {loadingMedia ? (
-                    <div className='col-12 text-center mt-5'>
-                      <Spin tip='Loading...' size='large' />
+                {loadingMedia ? (
+                  <div className='row'>
+                    <div className='col-12 text-center py-5'>
+                      <Spin size='large' tip='Loading...' />
                     </div>
-                  ) : (
+                  </div>
+                ) : (
+                  <div className='row'>
                     <div className={mediaFiles?.s3_path ? 'col-12' : 'd-none'}>
                       {mediaFiles?.file_type === 'image/jpeg' ||
                       mediaFiles?.file_type === 'image/png' ? (
@@ -659,106 +667,107 @@ const StudentSidePhysicalActivity = () => {
                         />
                       )}
                     </div>
-                  )}
-                  <div className={`col-12 th-bg-white`}>
-                    <div className='row mt-3'>
-                      <div className='col-12 px-1'>
-                        <div className='d-flex justify-content-between'>
-                          <div className='d-flex align-items-center pr-1'>
-                            <Avatar
-                              size={50}
-                              aria-label='recipe'
-                              icon={
-                                <UserOutlined
-                                  color='#f3f3f3'
-                                  style={{ color: '#f3f3f3' }}
-                                  twoToneColor='white'
-                                />
-                              }
-                            />
-                            <div className='text-left ml-3'>
-                              <div className=' th-fw-600 th-16'>
-                                {selectedActivity?.booked_user?.name}
-                              </div>
-                              <div className=' th-fw-500 th-14'>
-                                {selectedActivity?.branch?.name}
-                              </div>
-                              <div className=' th-fw-500 th-12'>
-                                {selectedActivity?.grade?.name}
+
+                    <div className={`col-12 th-bg-white`}>
+                      <div className='row mt-3'>
+                        <div className='col-12 px-1'>
+                          <div className='d-flex justify-content-between'>
+                            <div className='d-flex align-items-center pr-1'>
+                              <Avatar
+                                size={50}
+                                aria-label='recipe'
+                                icon={
+                                  <UserOutlined
+                                    color='#f3f3f3'
+                                    style={{ color: '#f3f3f3' }}
+                                    twoToneColor='white'
+                                  />
+                                }
+                              />
+                              <div className='text-left ml-3'>
+                                <div className=' th-fw-600 th-16'>
+                                  {selectedActivity?.booked_user?.name}
+                                </div>
+                                <div className=' th-fw-500 th-14'>
+                                  {selectedActivity?.branch?.name}
+                                </div>
+                                <div className=' th-fw-500 th-12'>
+                                  {selectedActivity?.grade?.name}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div className='pr-3'>
-                            <img
-                              src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                              alt='image'
-                              style={{
-                                height: 100,
-                                objectFit: 'fill',
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div
-                          className='p-2 mt-3 th-br-5 th-bg-grey '
-                          style={{ outline: '1px solid #d9d9d9' }}
-                        >
-                          <div>
-                            Title :{' '}
-                            <span className='th-fw-600'>
-                              {selectedActivity?.activity_detail?.title}
-                            </span>
-                          </div>
-                          <div className='text-justify'>
-                            Description :{' '}
-                            <span className='th-fw-400'>
-                              {selectedActivity?.activity_detail?.description}
-                            </span>
-                          </div>
-                        </div>
-                        <div className='mt-3'>
-                          <div className='th-fw-500 th-16 mb-2'>Remarks</div>
-                          <div className='row align-items-center text-center pb-2 th-fw-600'>
-                            <div className='col-6'>Questions</div>
-                            <div className='col-6'>Options</div>
+                            <div className='pr-3'>
+                              <img
+                                src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                                alt='image'
+                                style={{
+                                  height: 100,
+                                  objectFit: 'fill',
+                                }}
+                              />
+                            </div>
                           </div>
                           <div
-                            className='px-1 py-2 th-br-4'
+                            className='p-2 mt-3 th-br-5 th-bg-grey '
                             style={{ outline: '1px solid #d9d9d9' }}
                           >
-                            {ratingReview?.map((obj, index) => {
-                              return (
-                                <div
-                                  className='row py-1 text-justify text-center'
-                                  style={{
-                                    borderBottom:
-                                      index == ratingReview.length - 1
-                                        ? null
-                                        : '1px solid #d9d9d9',
-                                  }}
-                                >
-                                  <div className='col-6' key={index}>
-                                    {obj?.level?.name}
+                            <div>
+                              Title :{' '}
+                              <span className='th-fw-600'>
+                                {selectedActivity?.activity_detail?.title}
+                              </span>
+                            </div>
+                            <div className='text-justify'>
+                              Description :{' '}
+                              <span className='th-fw-400'>
+                                {selectedActivity?.activity_detail?.description}
+                              </span>
+                            </div>
+                          </div>
+                          <div className='mt-3'>
+                            <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                            <div className='row align-items-center text-center pb-2 th-fw-600'>
+                              <div className='col-6'>Questions</div>
+                              <div className='col-6'>Options</div>
+                            </div>
+                            <div
+                              className='px-1 py-2 th-br-4'
+                              style={{ outline: '1px solid #d9d9d9' }}
+                            >
+                              {ratingReview?.map((obj, index) => {
+                                return (
+                                  <div
+                                    className='row py-1 text-justify text-center'
+                                    style={{
+                                      borderBottom:
+                                        index == ratingReview.length - 1
+                                          ? null
+                                          : '1px solid #d9d9d9',
+                                    }}
+                                  >
+                                    <div className='col-6' key={index}>
+                                      {obj?.level?.name}
+                                    </div>
+                                    <div className='col-6 '>
+                                      {!isRoundAvailable ? (
+                                        <div
+                                          className='p-2 th-bg-grey'
+                                          title={funRemarks(obj)}
+                                        >
+                                          {funRemarks(obj)}
+                                        </div>
+                                      ) : null}
+                                    </div>
                                   </div>
-                                  <div className='col-6 '>
-                                    {!isRoundAvailable ? (
-                                      <div
-                                        className='p-2 th-bg-grey'
-                                        title={funRemarks(obj)}
-                                      >
-                                        {funRemarks(obj)}
-                                      </div>
-                                    ) : null}
-                                  </div>
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </Drawer>
             <Modal
