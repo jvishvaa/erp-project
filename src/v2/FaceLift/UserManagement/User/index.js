@@ -45,6 +45,7 @@ const User = () => {
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const loggedUserData = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [pageNo, setPageNo] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   //eslint-disable-next-line
@@ -442,7 +443,7 @@ const User = () => {
     setStatus('');
     setShowFilter(false);
     if (value) {
-      let params = `?page=${pageNo}&page_size=${pageLimit}&session_year=${selectedYear?.id}&search=${value}`;
+      let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}&session_year=${selectedYear?.id}&search=${value}`;
       axiosInstance
         .get(`${endpoints.communication.viewUser}${params}`)
         .then((res) => {
@@ -524,10 +525,17 @@ const User = () => {
     let gradeParams = grade || '';
     let sectionParams = section || '';
     let statusparams = status || '';
-
-    if (userLevel == '' && branch == '' && grade == '' && section == '' && status == '') {
-      message.error('Please select atleast one filter');
-      return;
+    if (!loggedUserData?.is_superuser) {
+      if (
+        userLevel == '' &&
+        branch == '' &&
+        grade == '' &&
+        section == '' &&
+        status == ''
+      ) {
+        message.error('Please select atleast one filter');
+        return;
+      }
     }
 
     let params = `communication/erp-user-info-excel-v2/?module_id=${moduleId}&session_year=${
