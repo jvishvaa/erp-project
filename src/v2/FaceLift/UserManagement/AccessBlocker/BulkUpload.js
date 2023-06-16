@@ -63,6 +63,9 @@ const BulkUpload = () => {
         setSelectedFile(...file[1]);
         setFileTypeError(false);
       } else {
+        message.error(
+          'Only excel file is acceptable either with .xls or .xlsx extension'
+        );
         setFileTypeError(true);
       }
 
