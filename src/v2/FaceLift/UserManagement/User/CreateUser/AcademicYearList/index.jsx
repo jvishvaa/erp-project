@@ -298,6 +298,10 @@ const AcademicYearList = ({
                     'subjects',
                   ]);
                   onChange(e, 'academic_year');
+                  setBranches([]);
+                  setGrades([]);
+                  setSections([]);
+                  setSubjects([]);
                 }}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 showSearch
@@ -341,6 +345,9 @@ const AcademicYearList = ({
                     onChange(e, 'branch');
                   }
                   acadForm.current.resetFields(['grade', 'section', 'subjects']);
+                  setGrades([]);
+                  setSections([]);
+                  setSubjects([]);
                 }}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 showSearch
@@ -374,6 +381,7 @@ const AcademicYearList = ({
             >
               <Select
                 maxTagCount={3}
+                allowClear
                 value={currentObj?.grade}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {
@@ -388,6 +396,8 @@ const AcademicYearList = ({
                   }
                   acadForm.current.resetFields(['section', 'subjects']);
                   // onChange(e, 'grade');
+                  setSections([]);
+                  setSubjects([]);
                 }}
                 showSearch
                 filterOption={(input, options) => {
@@ -419,6 +429,7 @@ const AcademicYearList = ({
             >
               <Select
                 maxTagCount={3}
+                allowClear
                 value={currentObj?.section}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {
@@ -434,6 +445,7 @@ const AcademicYearList = ({
                     onChange(e, 'section');
                   }
                   acadForm.current.resetFields(['subjects']);
+                  setSubjects([]);
                 }}
                 showSearch
                 filterOption={(input, options) => {
@@ -465,6 +477,7 @@ const AcademicYearList = ({
             >
               <Select
                 maxTagCount={3}
+                allowClear
                 value={currentObj?.subjects}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {

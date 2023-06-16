@@ -39,6 +39,9 @@ const SchoolInformation = ({
   setUserLevel,
   setParent,
   userLevel,
+  setGrades,
+  setSections,
+  setSubjects,
 }) => {
   const schoolForm = useRef();
   const [loading, setLoading] = useState(false);
@@ -209,7 +212,10 @@ const SchoolInformation = ({
                       fetchGrades(e, branch_code);
                     }
 
-                    schoolForm.current.resetFields(['grade']);
+                    schoolForm.current.resetFields(['grade', 'section', 'subjects']);
+                    setGrades([]);
+                    setSections([]);
+                    setSubjects([]);
                   }}
                   showSearch
                   filterOption={(input, options) => {
@@ -245,6 +251,7 @@ const SchoolInformation = ({
               >
                 <Select
                   maxTagCount={3}
+                  allowClear
                   getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
@@ -256,7 +263,10 @@ const SchoolInformation = ({
                     } else {
                       fetchSections(value?.map((e) => e.id));
                     }
-                    schoolForm.current.resetFields(['section']);
+                    schoolForm.current.resetFields(['section', 'subjects']);
+
+                    setSections([]);
+                    setSubjects([]);
                   }}
                   showSearch
                   filterOption={(input, options) => {
@@ -290,6 +300,7 @@ const SchoolInformation = ({
               >
                 <Select
                   maxTagCount={3}
+                  allowClear
                   getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
@@ -303,7 +314,8 @@ const SchoolInformation = ({
                       setSectionMappingId(value?.map((e) => e?.mapping_id));
                       fetchSubjects(value?.map((e) => e.id));
                     }
-                    schoolForm.current.resetFields(['subject']);
+                    schoolForm.current.resetFields(['subjects']);
+                    setSubjects([]);
                   }}
                   showSearch
                   filterOption={(input, options) => {
@@ -337,6 +349,7 @@ const SchoolInformation = ({
               >
                 <Select
                   maxTagCount={3}
+                  allowClear
                   getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, value) => {
                     if (e.includes('all')) {

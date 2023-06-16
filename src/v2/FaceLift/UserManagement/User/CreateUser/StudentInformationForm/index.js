@@ -90,7 +90,7 @@ const StudentInformation = ({
                   ) : (
                     <Avatar shape='square' icon={<UserOutlined />} size={80} />
                   )}
-                  {!photo ? (
+                  {!photo && !selectedImage ? (
                     <div className='pl-3'>
                       <div className='pb-1'>No file uploaded</div>
                       <label
@@ -110,7 +110,7 @@ const StudentInformation = ({
                     </div>
                   ) : (
                     <div className='pl-3'>
-                      <div className='pb-1'>{photo && photo?.name}</div>
+                      {/* <div className='pb-1'>{photo && photo?.name}</div> */}
                       <Button
                         onClick={(e) => {
                           e.preventDefault();
@@ -187,26 +187,10 @@ const StudentInformation = ({
                 name={'age'}
                 label='Age'
               >
-                <InputNumber disabled />
+                <InputNumber className='w-100' disabled />
               </Form.Item>
             </Col>
-            {userLevel !== 13 && (
-              <Col md={8} className='py-2'>
-                <Form.Item
-                  rules={[
-                    {
-                      required: false,
-                      pattern: /^\d+_[A-Za-z]{3}$/,
-                      message: 'Enter username in the format 2021000001_XYZ',
-                    },
-                  ]}
-                  name={'username'}
-                  label='Username'
-                >
-                  <Input className='w-100' />
-                </Form.Item>
-              </Col>
-            )}
+
             {userLevel === 13 && (
               <>
                 <Col md={8} className='py-2'>
@@ -214,26 +198,57 @@ const StudentInformation = ({
                     <Input className='w-100' />
                   </Form.Item>
                 </Col>
-                <Col md={8} className='py-2'>
-                  <Form.Item name={'old_school_name'} label='Previous School Name'>
-                    <Input className='' />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={8}>
-                  <Form.Item
-                    name={'special_needs'}
-                    label='1. Any Special Needs for the Child'
-                  >
-                    <Input className='w-100 ' />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={8}>
-                  <Form.Item name={'medical_info'} label='2. Allergy/Injury Information'>
-                    <Input className='w-100 ' />
-                  </Form.Item>
-                </Col>
               </>
             )}
+            <Col md={24}>
+              <Row gutter={24}>
+                {userLevel === 13 && (
+                  <Col md={8} className='py-2'>
+                    <Form.Item name={'old_school_name'} label='Previous School Name'>
+                      <Input className='' />
+                    </Form.Item>
+                  </Col>
+                )}
+                <Col md={8} className='py-2'>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: false,
+                        pattern: /^\d+_[A-Za-z]{3}$/,
+                        message: 'Enter username in the format 2021000001_XYZ',
+                      },
+                    ]}
+                    name={'username'}
+                    label='Username'
+                  >
+                    <Input className='w-100' />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
+            {userLevel === 13 && (
+              <Col md={24}>
+                <Row gutter={24}>
+                  <Col className='py-2' md={8}>
+                    <Form.Item
+                      name={'special_needs'}
+                      label='1. Any Special Needs for the Child'
+                    >
+                      <Input className='w-100 ' />
+                    </Form.Item>
+                  </Col>
+                  <Col className='py-2' md={8}>
+                    <Form.Item
+                      name={'medical_info'}
+                      label='2. Allergy/Injury Information'
+                    >
+                      <Input className='w-100 ' />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Col>
+            )}
+
             {/* <Col md={24}>
               <Row className='py-2' gutter={24}>
                 <Col md={8}>

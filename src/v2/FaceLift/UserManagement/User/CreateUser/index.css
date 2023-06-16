@@ -107,3 +107,10 @@
     background-color: #1b4ccb;
 }
   
+.th-primary-contact-checkbox .ant-form-item-control-input{
+    min-height: auto;
+}
+
+.th-primary-contact-check .ant-space-item .ant-form-item{
+    margin-bottom: 0px !important;
+}   
