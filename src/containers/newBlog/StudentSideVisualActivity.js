@@ -245,11 +245,9 @@ const StudentSideVisualActivity = () => {
             onClose={handleCloseViewMore}
             zIndex={1300}
             visible={showDrawer}
-            width={
-              window.innerWidth < 600 ? '95vw' : mediaFiles?.s3_path ? '70vw' : '35vw'
-            }
+            width={window.innerWidth < 600 ? '95vw' : '55vw'}
             closable={false}
-            className='th-resources-drawer'
+            className='th-activity-drawer'
             extra={
               <Space>
                 <CloseOutlined onClick={handleCloseViewMore} />
@@ -259,11 +257,11 @@ const StudentSideVisualActivity = () => {
             <div>
               <div className='row'>
                 {loadingMedia ? (
-                  <div className='col-8 text-center mt-5'>
+                  <div className='col-12 text-center mt-5'>
                     <Spin tip='Loading...' size='large' />
                   </div>
                 ) : (
-                  <div className={mediaFiles?.s3_path ? 'col-md-8' : 'd-none'}>
+                  <div className={mediaFiles?.s3_path ? 'col-12' : 'd-none'}>
                     {mediaFiles?.file_type === 'image/jpeg' ||
                     mediaFiles?.file_type === 'image/png' ? (
                       <img
@@ -281,7 +279,7 @@ const StudentSideVisualActivity = () => {
                         // playing={playVideo}
                         ref={playerRef}
                         width='100%'
-                        height='100%'
+                        height='60vh'
                         playIcon={
                           <Tooltip title='play'>
                             <Button
@@ -306,48 +304,46 @@ const StudentSideVisualActivity = () => {
                     )}
                   </div>
                 )}
-                <div
-                  className={`${
-                    mediaFiles?.s3_path ? 'col-md-4' : 'col-12'
-                  } px-0 th-bg-white`}
-                >
-                  <div className='row'>
+                <div className={`col-12 th-bg-white`}>
+                  <div className='row mt-3'>
                     <div className='col-12 px-1'>
-                      <div>
-                        <img
-                          src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                          alt='image'
-                          style={{
-                            // width: '100%',
-                            height: 130,
-                            objectFit: 'fill',
-                          }}
-                        />
-                      </div>
-                      <div className='d-flex align-items-center pr-1'>
-                        <Avatar
-                          size={50}
-                          aria-label='recipe'
-                          icon={
-                            <UserOutlined
-                              color='#f3f3f3'
-                              style={{ color: '#f3f3f3' }}
-                              twoToneColor='white'
-                            />
-                          }
-                        />
-                        <div className='text-left ml-3'>
-                          <div className=' th-fw-600 th-16'>
-                            {selectedActivity?.booked_user?.name}
-                          </div>
-                          <div className=' th-fw-500 th-14'>
-                            {selectedActivity?.branch?.name}
-                          </div>
-                          <div className=' th-fw-500 th-12'>
-                            {selectedActivity?.grade?.name}
+                      <div className='d-flex justify-content-between'>
+                        <div className='d-flex align-items-center pr-1'>
+                          <Avatar
+                            size={50}
+                            aria-label='recipe'
+                            icon={
+                              <UserOutlined
+                                color='#f3f3f3'
+                                style={{ color: '#f3f3f3' }}
+                                twoToneColor='white'
+                              />
+                            }
+                          />
+                          <div className='text-left ml-3'>
+                            <div className=' th-fw-600 th-16'>
+                              {selectedActivity?.booked_user?.name}
+                            </div>
+                            <div className=' th-fw-500 th-14'>
+                              {selectedActivity?.branch?.name}
+                            </div>
+                            <div className=' th-fw-500 th-12'>
+                              {selectedActivity?.grade?.name}
+                            </div>
                           </div>
                         </div>
+                        <div>
+                          <img
+                            src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                            alt='image'
+                            style={{
+                              height: 100,
+                              objectFit: 'fill',
+                            }}
+                          />
+                        </div>
                       </div>
+
                       <div
                         className='p-2 mt-3 th-br-5 th-bg-grey'
                         style={{ outline: '1px solid #d9d9d9' }}
@@ -367,30 +363,43 @@ const StudentSideVisualActivity = () => {
                       </div>
                       <div className='mt-3'>
                         <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                        <div className='row align-items-center text-center pb-2 th-fw-600'>
+                          <div className='col-6'>Questions</div>
+                          <div className='col-6'>Options</div>
+                        </div>
                         <div
                           className='px-1 py-2 th-br-5'
                           style={{ outline: '1px solid #d9d9d9' }}
                         >
                           {ratingReview?.map((obj, index) => {
                             return (
-                              <div className='row py-1 align-items-center'>
-                                <div className='col-6 pl-1' key={index}>
+                              <div
+                                className='row py-1 text-justify text-center'
+                                style={{
+                                  borderBottom:
+                                    index == ratingReview.length - 1
+                                      ? null
+                                      : '1px solid #d9d9d9',
+                                }}
+                              >
+                                <div className='col-6 ' key={index}>
                                   {obj?.name}
                                 </div>
-                                <div className='col-6 pr-1'>
-                                  <Input
-                                    disabled
+                                <div className='col-6'>
+                                  <div
+                                    className='th-bg-grey p-2'
                                     title={
                                       obj?.remarks.filter(
                                         (item) => item.status == true
                                       )[0].name
                                     }
-                                    value={
+                                  >
+                                    {
                                       obj?.remarks.filter(
                                         (item) => item.status == true
                                       )[0].name
                                     }
-                                  />
+                                  </div>
                                 </div>
                               </div>
                             );

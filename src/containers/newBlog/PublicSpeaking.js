@@ -36,7 +36,6 @@ const StudentSidePublicSpeaking = () => {
         },
       })
       .then((response) => {
-        console.log('response', response);
         if (response?.data?.status_code === 200) {
           setTotalCountAssigned(response?.data?.total);
           setTotalPagesAssigned(response?.data?.page_size);
@@ -184,6 +183,7 @@ const StudentSidePublicSpeaking = () => {
                   loading={loading}
                   pagination={false}
                   // pagination={{
+                  //   position: ['bottomCenter'],
                   //   total: totalCountAssigned,
                   //   current: Number(currentPageAssigned),
                   //   pageSize: limitAssigned,
@@ -239,9 +239,11 @@ const StudentSidePublicSpeaking = () => {
                   <video
                     src={mediaFiles?.signed_URL}
                     controls
-                    alt={'image'}
-                    width='100%'
-                    height='95%'
+                    alt={'video'}
+                    style={{
+                      height: '70vh',
+                      width: '100%',
+                    }}
                   />
                 </div>
                 {permissionState === 'graded' ? (
@@ -254,10 +256,7 @@ const StudentSidePublicSpeaking = () => {
                       <div className='col-12 px-1'>
                         <div className='mt-3'>
                           <div className='th-fw-500 th-16 mb-2'>Remarks</div>
-                          <div
-                            className='px-1 py-2 th-br-5'
-                            style={{ outline: '1px solid #d9d9d9' }}
-                          >
+                          <div className='px-1 py-2 th-br-5'>
                             <Table
                               className='th-table'
                               columns={columnMarks}
@@ -275,9 +274,8 @@ const StudentSidePublicSpeaking = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className='col-md-5 d-flex justify-content-center align-items-center h4'>
-                    {' '}
-                    No Remarks Found
+                  <div className='col-md-5 text-center'>
+                    <div className='th-fw-500 th-20 p-2'>No Remarks Found</div>
                   </div>
                 )}
               </div>
