@@ -1,4 +1,4 @@
-import { Card, message, Progress, Steps } from 'antd';
+import { Breadcrumb, Card, message, Progress, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import './index.css';
 import './index.css';
@@ -40,6 +40,12 @@ const CreateUser = () => {
   const [sectionMappingId, setSectionMappingId] = useState([]);
   const [userLevel, setUserLevel] = useState(null);
   const [parent, setParent] = useState(null);
+  const [fatherPrimary, setFatherPrimary] = useState(false);
+  const [motherPrimary, setMotherPrimary] = useState(false);
+  const [guardianPrimary, setGuardianPrimary] = useState(false);
+  const [fatherPrimaryEmail, setFatherPrimaryEmail] = useState(false);
+  const [motherPrimaryEmail, setMotherPrimaryEmail] = useState(false);
+  const [guardianPrimaryEmail, setGuardianPrimaryEmail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [siblings, setSiblings] = useState([
     {
@@ -117,17 +123,26 @@ const CreateUser = () => {
           }
 
           setUserLevel(user?.user_level);
+          let parentSelected = [];
           if (user?.user_level !== 13) {
             let parentDetails = user?.parent_details;
             if (parentDetails?.father_first_name && !parentDetails?.guardian_first_name) {
               setParent(['parent']);
+              parentSelected = ['parent'];
             } else if (
               !parentDetails?.father_first_name &&
               parentDetails?.guardian_first_name
             ) {
               setParent(['guardian']);
+              parentSelected = ['guardian'];
+            } else if (
+              parentDetails?.father_first_name &&
+              parentDetails?.guardian_first_name
+            ) {
+              setParent(['guardian', 'parent']);
+              parentSelected = ['guardian', 'parent'];
             } else {
-              setParent(['parent', 'guardian']);
+              setParent([]);
             }
           }
 
@@ -229,10 +244,12 @@ const CreateUser = () => {
               father_middle_name: user?.parent_details?.father_middle_name || '',
               father_email: user?.parent_details?.father_email || '',
               mother_email: user?.parent_details?.mother_email || '',
-              father_mobile:
-                user?.parent_details?.father_mobile?.split('+91-')?.pop() || '',
-              mother_mobile:
-                user?.parent_details?.mother_mobile?.split('+91-')?.pop() || '',
+              father_mobile: user?.parent_details?.father_mobile?.split('-')[1] || '',
+              father_mobile_code:
+                user?.parent_details?.father_mobile?.split('-')[0] || '',
+              mother_mobile: user?.parent_details?.mother_mobile?.split('-')[1] || '',
+              mother_mobile_code:
+                user?.parent_details?.mother_mobile?.split('-')[0] || '',
               mother_photo: user?.parent_details?.mother_photo || '',
               father_photo: user?.parent_details?.father_photo || '',
               father_qualification: user?.parent_details?.father_qualification || '',
@@ -250,23 +267,53 @@ const CreateUser = () => {
               address: user?.parent_details?.address,
               pin_code: user?.parent_details?.pin_code,
               email: user?.parent_details?.email,
-              contact: user?.contact?.split('+91-')?.pop(),
+              contact: user?.contact?.split('-')[1] || '',
+              contact_code: user?.contact?.split('-')[0] || '',
               guardian_first_name: user?.parent_details?.guardian_first_name || '',
               guardian_middle_name: user?.parent_details?.guardian_middle_name || '',
               guardian_last_name: user?.parent_details?.guardian_last_name || '',
               guardian_email: user?.parent_details?.guardian_email || '',
-              guardian_mobile:
-                user?.parent_details?.guardian_mobile?.split('+91-')?.pop() || '',
+              guardian_mobile: user?.parent_details?.guardian_mobile?.split('-')[1] || '',
+              guardian_mobile_code:
+                user?.parent_details?.guardian_mobile?.split('-')[0] || '',
               guardian_photo: user?.parent_details?.guardian_photo || '',
+              single: parentSelected,
             },
             user_level: user?.user_level,
             designation: user?.designation,
             siblings: user?.siblings,
           };
+          if (user?.parent_details?.email === user?.parent_details?.father_email) {
+            setFatherPrimaryEmail(true);
+            setMotherPrimaryEmail(false);
+            setGuardianPrimaryEmail(false);
+          } else if (user?.parent_details?.email === user?.parent_details?.mother_email) {
+            setFatherPrimaryEmail(false);
+            setMotherPrimaryEmail(true);
+            setGuardianPrimaryEmail(false);
+          } else {
+            setFatherPrimaryEmail(false);
+            setMotherPrimaryEmail(false);
+            setGuardianPrimaryEmail(true);
+          }
+          if (user?.contact === user?.parent_details?.father_mobile) {
+            setFatherPrimary(true);
+            setMotherPrimary(false);
+            setGuardianPrimary(false);
+          } else if (user?.contact === user?.parent_details?.mother_mobile) {
+            setFatherPrimary(false);
+            setMotherPrimary(true);
+            setGuardianPrimary(false);
+          } else {
+            setFatherPrimary(false);
+            setMotherPrimary(false);
+            setGuardianPrimary(true);
+          }
           setUserDetails(transformedUser);
           var transformedSchoolDetails = transformedUser;
           var gradeObj = transformedSchoolDetails?.grade?.pop();
           var sectionObj = transformedSchoolDetails?.section?.pop();
+          var subjectObj = transformedSchoolDetails?.subjects?.pop();
           var schoolDetails = {
             user_level: transformedSchoolDetails?.user_level,
             designation: transformedSchoolDetails?.designation?.id,
@@ -275,7 +322,7 @@ const CreateUser = () => {
             branch: transformedUser?.branch?.pop()?.map((e) => e.id),
             grade: gradeObj?.map((e) => e.grade_name),
             section: sectionObj?.map((e) => e.section_name),
-            subjects: transformedUser?.subjects?.pop()?.map((e) => e.subject_name),
+            subjects: subjectObj?.map((e) => e.subject_name),
           };
           setSectionMappingId(sectionObj?.map((e) => e?.item_id));
           console.log(sectionObj, 'sectionObj');
@@ -293,7 +340,9 @@ const CreateUser = () => {
             single_parent: transformedUser?.single_parent === 1 && 'father',
             profile_photo: transformedUser?.profile,
             old_school_name: transformedUser?.old_school_name,
+            username: user?.user?.username,
           };
+          setSelectedSubjects(subjectObj?.map((e) => e?.id));
           setSingleParent(transformedUser?.single_parent === 1 ? true : false);
           fetchDesignation(schoolDetails?.user_level);
           fetchGrades(schoolDetails?.branch, null, module);
@@ -401,7 +450,6 @@ const CreateUser = () => {
     if (branches?.length > 0) {
       setBranchCode(branch_code);
       setSelectedBranch(branches);
-      console.log(selectedYear, 'oiuyyyyyyyyyyyyyyyuio');
       axiosInstance
         .get(
           `${endpoints.academics.grades}?session_year=${
@@ -568,16 +616,49 @@ const CreateUser = () => {
             : 3
           : null
       );
-    formData.append('email', familyValues?.email ?? '');
-    let contact =
-      userLevel === 13
-        ? familyValues?.father_mobile
-          ? familyValues?.father_mobile
+    let email = '';
+    if (userLevel === 13) {
+      email = fatherPrimaryEmail
+        ? familyValues?.father_email
+        : motherPrimaryEmail
+        ? familyValues?.mother_email
+        : familyValues?.guardian_email;
+    } else {
+      email = familyValues?.email ?? '';
+    }
+    formData.append('email', email ?? '');
+    let contact = '';
+    if (userLevel === 13) {
+      if (fatherPrimary || motherPrimary || guardianPrimary) {
+        contact = fatherPrimary
+          ? (familyValues?.father_mobile_code ?? '+91') +
+            '-' +
+            familyValues?.father_mobile
+          : motherPrimary
+          ? (familyValues?.mother_mobile_code ?? '+91') +
+            '-' +
+            familyValues?.mother_mobile
+          : (familyValues?.guardian_mobile_code ?? '+91') +
+            '-' +
+            familyValues?.guardian_mobile;
+      } else {
+        contact = familyValues?.father_mobile
+          ? (familyValues?.father_mobile_code ?? '+91') +
+            '-' +
+            familyValues?.father_mobile
           : familyValues?.mother_mobile
-          ? familyValues?.mother_mobile
-          : familyValues?.guardian_mobile
-        : familyValues?.contact;
-    formData.append('contact', `${contact ?? ''}`);
+          ? (familyValues?.mother_mobile_code ?? '+91') +
+            '-' +
+            familyValues?.mother_mobile
+          : (familyValues?.guardian_mobile_code ?? '+91') +
+            '-' +
+            familyValues?.guardian_mobile;
+      }
+    } else {
+      contact = (familyValues?.contact_code ?? '+91') + '-' + familyValues?.contact;
+    }
+    console.log(contact, 'contacts');
+    formData.append('contact', `${contact ? contact : ''}`);
     formData.append('address', familyValues?.address ?? '');
     if (studentFormValues?.profile) {
       formData.append(
@@ -599,7 +680,9 @@ const CreateUser = () => {
         // !key.includes('address')
       ) {
         if (key.includes('mobile')) {
-          parentObj[key] = familyValues[key] ? `+91-` + familyValues[key] : '';
+          parentObj[key] = familyValues[key]
+            ? (familyValues[key + '_code'] ?? '+91') + '-' + familyValues[key]
+            : '';
         } else parentObj[key] = familyValues[key];
       }
     });
@@ -648,9 +731,13 @@ const CreateUser = () => {
         .put('/erp_user/update-user/', formData)
         .then(() => {
           message.success('User Updated Successfully!');
+          history.push('/user-management/view-users');
         })
         .catch((error) => {
           message.error(error?.response?.data?.message ?? 'Something went wrong!');
+        })
+        .finally(() => {
+          setLoading(false);
         });
     } else {
       formData.append('academic_year', selectedYear?.id);
@@ -679,6 +766,21 @@ const CreateUser = () => {
     <React.Fragment>
       <Layout>
         <div className='th-bg-white py-4 mb-5 pb-5 px-3'>
+          <div className='row pb-3'>
+            <div className='col-md-9' style={{ zIndex: 2 }}>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item
+                  href='/user-management/view-users'
+                  className='th-grey th-16'
+                >
+                  User Management
+                </Breadcrumb.Item>
+                <Breadcrumb.Item className='th-black-1 th-16'>
+                  {params?.id ? 'Edit' : 'Create'} User
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
+          </div>
           {/* <div className='th-small-steps d-block d-sm-block d-md-none'>
             <Steps
               onChange={(key) => {
@@ -695,16 +797,39 @@ const CreateUser = () => {
               <Step key={3} title='34r' />
             </Steps>
           </div> */}
-          <div className='d-flex  th-bg-white'>
-            <div className='d-none d-xs-none d-sm-none d-md-block'>
-              <div
-                className='text-center th-erp-steps '
-                style={{
-                  height: '70vh',
-                }}
-              >
-                <Steps
-                  onChange={null}
+          <div className='th-bg-white pl-2'>
+            <Steps
+              // onChange={(e) => {
+              //   setCurrentStep(e);
+              // }}
+              onChange={null}
+              current={currentStep}
+              className=' h-100'
+              type='primary'
+            >
+              <Step key={0} title='School Information' />
+              <Step
+                key={1}
+                title={`${userLevel === 13 ? 'Student' : 'User'} Information`}
+              />
+              <Step key={2} title='Family Information' />
+              {userLevel === 13 && <Step key={3} title='Sibling Information' />}
+            </Steps>
+            <div className='d-flex  '>
+              <div className='d-none d-xs-none d-sm-none d-md-block'>
+                <div
+                  className='text-center  '
+                  style={
+                    {
+                      // height: '70vh',
+                    }
+                  }
+                >
+                  {/* <Steps
+                  onChange={(e) => {
+                    setCurrentStep(e);
+                  }}
+                  // onChange={null}
                   current={currentStep}
                   direction={'vertical'}
                   className='custom-vertical-steps h-100'
@@ -717,8 +842,9 @@ const CreateUser = () => {
                   />
                   <Step key={2} title='Family Information' />
                   {userLevel === 13 && <Step key={3} title='Sibling Information' />}
-                </Steps>
-                <Progress
+                </Steps> */}
+
+                  {/* <Progress
                   strokeColor='#1B4CCB'
                   format={(percent) => (
                     <span className='th-primary th-fw-600 th-18'>
@@ -728,106 +854,121 @@ const CreateUser = () => {
                   trailColor='primary'
                   width={100}
                   type='circle'
-                  percent={Math.ceil((currentStep / totalStep) * 100)}
-                />
-                <div className='th-primary th-18 th-fw-600'>
-                  Step {currentStep + 1}/{totalStep}
+                  percent={Math.ceil(((currentStep + 1) / totalStep) * 100)}
+                /> */}
+                  {/* <div className='th-primary th-18 th-fw-600'>
+                    Step {currentStep + 1}/{totalStep}
+                  </div> */}
                 </div>
               </div>
-            </div>
-            <div className='pl-2' style={{ width: `calc(100% )`, height: '80vh' }}>
-              <div className='mb-3 th-primary th-fw-500 th-16'>
-                Please fill the{' '}
-                {currentStep === 0
-                  ? 'School'
-                  : currentStep === 1
-                  ? userLevel === 13
-                    ? 'Student'
-                    : 'User'
-                  : currentStep === 2
-                  ? 'Family'
-                  : 'Sibling'}{' '}
-                Information (Step {currentStep + 1}/{totalStep})
-              </div>
-              <Card
-                className='h-100'
-                style={{
-                  background: '#F8F8F8',
-                }}
-              >
-                <div className='px-1'>
-                  {currentStep === 0 && (
-                    <>
-                      <SchoolInformation
-                        roles={roles}
-                        designations={designations}
-                        fetchDesignation={fetchDesignation}
-                        branches={branches}
-                        fetchGrades={fetchGrades}
-                        grades={grades}
-                        fetchSections={fetchSections}
-                        sections={sections}
-                        fetchSubjects={fetchSubjects}
-                        subjects={subjects}
+              <div className='pl-2  mt-4' style={{ width: `calc(100%)`, height: '75vh' }}>
+                <div className='mb-3 th-primary th-fw-500 th-16'>
+                  Please fill the{' '}
+                  {currentStep === 0
+                    ? 'School'
+                    : currentStep === 1
+                    ? userLevel === 13
+                      ? 'Student'
+                      : 'User'
+                    : currentStep === 2
+                    ? 'Family'
+                    : 'Sibling'}{' '}
+                  Information (Step {currentStep + 1}/{totalStep})
+                </div>
+                <Card
+                  className='h-100'
+                  style={{
+                    background: '#F8F8F8',
+                  }}
+                >
+                  <div className='px-1'>
+                    {currentStep === 0 && (
+                      <>
+                        <SchoolInformation
+                          roles={roles}
+                          designations={designations}
+                          fetchDesignation={fetchDesignation}
+                          branches={branches}
+                          fetchGrades={fetchGrades}
+                          grades={grades}
+                          fetchSections={fetchSections}
+                          sections={sections}
+                          fetchSubjects={fetchSubjects}
+                          subjects={subjects}
+                          handleNext={handleNext}
+                          schoolFormValues={schoolFormValues}
+                          setSchoolFormValues={setSchoolFormValues}
+                          selectedYear={selectedYear}
+                          setSelectedSubjects={setSelectedSubjects}
+                          editId={editId}
+                          multipleAcademicYear={multipleAcademicYear}
+                          setMultipleAcademicYear={setMultipleAcademicYear}
+                          sectionMappingId={sectionMappingId}
+                          setSectionMappingId={setSectionMappingId}
+                          userLevel={userLevel}
+                          setUserLevel={setUserLevel}
+                          parent={setParent}
+                          setGrades={setGrades}
+                          setSections={setSections}
+                          setSubjects={setSubjects}
+                        />
+                      </>
+                    )}
+                    {currentStep === 1 && (
+                      <StudentInformation
                         handleNext={handleNext}
-                        schoolFormValues={schoolFormValues}
-                        setSchoolFormValues={setSchoolFormValues}
-                        selectedYear={selectedYear}
-                        setSelectedSubjects={setSelectedSubjects}
-                        editId={editId}
-                        multipleAcademicYear={multipleAcademicYear}
-                        setMultipleAcademicYear={setMultipleAcademicYear}
-                        sectionMappingId={sectionMappingId}
-                        setSectionMappingId={setSectionMappingId}
+                        handleBack={handleBack}
+                        studentFormValues={studentFormValues}
+                        setStudentFormValues={setStudentFormValues}
+                        singleParent={singleParent}
+                        setSingleParent={setSingleParent}
+                        guardian={guardian}
+                        setGuardian={setGuardian}
                         userLevel={userLevel}
-                        setUserLevel={setUserLevel}
-                        parent={setParent}
+                        setParent={setParent}
                       />
-                    </>
-                  )}
-                  {currentStep === 1 && (
-                    <StudentInformation
-                      handleNext={handleNext}
-                      handleBack={handleBack}
-                      studentFormValues={studentFormValues}
-                      setStudentFormValues={setStudentFormValues}
-                      singleParent={singleParent}
-                      setSingleParent={setSingleParent}
-                      guardian={guardian}
-                      setGuardian={setGuardian}
-                      userLevel={userLevel}
-                      setParent={setParent}
-                    />
-                  )}
-                  {currentStep === 2 && (
-                    <FamilyInformation
-                      familyFormValues={familyFormValues}
-                      setFamilyFormValues={setFamilyFormValues}
-                      singleParent={singleParent}
-                      handleNext={handleNext}
-                      handleBack={handleBack}
-                      guardian={guardian}
-                      userLevel={userLevel}
-                      parent={parent}
-                      setParent={setParent}
-                      handleSubmit={handleSubmit}
-                      loading={loading}
-                      editId={editId}
-                    />
-                  )}
-                  {currentStep === 3 && (
-                    <SiblingInformation
-                      siblings={siblings}
-                      setSiblings={setSiblings}
-                      handleBack={handleBack}
-                      handleSubmit={handleSubmit}
-                      loading={loading}
-                      editId={editId}
-                    />
-                  )}
-                </div>
-              </Card>
-              {/* <div
+                    )}
+                    {currentStep === 2 && (
+                      <FamilyInformation
+                        familyFormValues={familyFormValues}
+                        setFamilyFormValues={setFamilyFormValues}
+                        singleParent={singleParent}
+                        handleNext={handleNext}
+                        handleBack={handleBack}
+                        guardian={guardian}
+                        userLevel={userLevel}
+                        parent={parent}
+                        setParent={setParent}
+                        handleSubmit={handleSubmit}
+                        loading={loading}
+                        editId={editId}
+                        fatherPrimary={fatherPrimary}
+                        setFatherPrimary={setFatherPrimary}
+                        motherPrimary={motherPrimary}
+                        setMotherPrimary={setMotherPrimary}
+                        guardianPrimary={guardianPrimary}
+                        setGuardianPrimary={setGuardianPrimary}
+                        fatherPrimaryEmail={fatherPrimaryEmail}
+                        setFatherPrimaryEmail={setFatherPrimaryEmail}
+                        motherPrimaryEmail={motherPrimaryEmail}
+                        setMotherPrimaryEmail={setMotherPrimaryEmail}
+                        guardianPrimaryEmail={guardianPrimaryEmail}
+                        setGuardianPrimaryEmail={setGuardianPrimaryEmail}
+                      />
+                    )}
+                    {currentStep === 3 && (
+                      <SiblingInformation
+                        siblings={siblings}
+                        setSiblings={setSiblings}
+                        handleBack={handleBack}
+                        handleSubmit={handleSubmit}
+                        loading={loading}
+                        editId={editId}
+                      />
+                    )}
+                  </div>
+                </Card>
+                {/* <div
                 // style={{ position: 'sticky', bottom: '59px' }}
                 className='d-flex justify-content-end align-items-center my-4'
               >
@@ -849,6 +990,7 @@ const CreateUser = () => {
                   Next
                 </Button>
               </div> */}
+              </div>
             </div>
           </div>
         </div>

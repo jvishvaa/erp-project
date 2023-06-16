@@ -11,9 +11,13 @@ import {
   message,
   Radio,
   Row,
+  Select,
+  Space,
+  Tooltip,
 } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { InfoCircleFilled, UserOutlined } from '@ant-design/icons';
 import TextArea from 'antd/lib/input/TextArea';
+import countryList from 'containers/user-management/list';
 const FamilyInformation = ({
   singleParent,
   handleNext,
@@ -28,6 +32,18 @@ const FamilyInformation = ({
   handleSubmit,
   loading,
   editId,
+  fatherPrimary,
+  setFatherPrimary,
+  motherPrimary,
+  setMotherPrimary,
+  guardianPrimary,
+  setGuardianPrimary,
+  fatherPrimaryEmail,
+  setFatherPrimaryEmail,
+  motherPrimaryEmail,
+  setMotherPrimaryEmail,
+  guardianPrimaryEmail,
+  setGuardianPrimaryEmail,
 }) => {
   useEffect(() => {
     if (familyFormValues && Object.keys(familyFormValues).length > 0) {
@@ -54,15 +70,85 @@ const FamilyInformation = ({
       mother_photo: selectedImageMother,
       guardian_photo: selectedImageGuardian,
     });
+    console.log(formValues, 'formValues');
     if (userLevel === 13) {
-      handleNext();
+      if (!fatherPrimary || !motherPrimary || !guardianPrimary) {
+        message.error('Select a contact number as primary!');
+      }
+      if (!fatherPrimaryEmail || !motherPrimaryEmail || !guardianPrimaryEmail) {
+        message.error('Select an email as primary!');
+      }
+    }
+    if (fatherPrimary && !formValues?.father_mobile) {
+      message.error(`Enter Father's Contact Number!`);
+      return;
+    }
+    if (motherPrimary && !formValues?.mother_mobile) {
+      message.error(`Enter Mother's Contact Number!`);
+      return;
+    }
+    if (guardianPrimary && !formValues?.guardian_mobile) {
+      message.error(`Enter Guardian's Contact Number!`);
+      return;
+    }
+    if (userLevel === 13) {
+      if (
+        formValues.father_aadhaar ||
+        formValues.mother_aadhaar ||
+        formValues.guardian_aadhaar
+      ) {
+        handleNext();
+      } else {
+        message.error(`Either of Father's or Mother's or Guardian's aadhar is required!`);
+        return;
+      }
+      if (
+        formValues.father_mobile ||
+        formValues.mother_mobile ||
+        formValues.guardian_mobile
+      ) {
+        handleNext();
+      } else {
+        message.error(
+          `Either of Father's or Mother's or Guardian's Contact is required!`
+        );
+        return;
+      }
     } else {
-      handleSubmit({
-        ...formValues,
-        father_photo: selectedImageFather,
-        mother_photo: selectedImageMother,
-        guardian_photo: selectedImageGuardian,
-      });
+      if (
+        parent &&
+        parent.length > 0 &&
+        !formValues.father_aadhaar &&
+        !formValues.mother_aadhaar &&
+        !formValues.guardian_aadhaar
+      ) {
+        message.error(`Either of Father's or Mother's or Guardian's aadhar is required!`);
+      } else {
+        handleSubmit({
+          ...formValues,
+          father_photo: selectedImageFather,
+          mother_photo: selectedImageMother,
+          guardian_photo: selectedImageGuardian,
+        });
+      }
+      if (
+        parent &&
+        parent.length > 0 &&
+        !formValues.father_mobile &&
+        !formValues.mother_mobile &&
+        !formValues.guardian_mobile
+      ) {
+        message.error(
+          `Either of Father's or Mother's or Guardian's Contact is required!`
+        );
+      } else {
+        handleSubmit({
+          ...formValues,
+          father_photo: selectedImageFather,
+          mother_photo: selectedImageMother,
+          guardian_photo: selectedImageGuardian,
+        });
+      }
     }
   };
   const guardianOption = [
@@ -70,6 +156,11 @@ const FamilyInformation = ({
     { label: 'Guardian', value: 'guardian' },
   ];
   let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png'];
+  const countryCodeOptions = countryList?.map((each) => (
+    <Select.Option key={each?.callingCode} value={each?.callingCode}>
+      {each?.country} ({each?.callingCode})
+    </Select.Option>
+  ));
   return (
     <React.Fragment>
       <div
@@ -136,9 +227,7 @@ const FamilyInformation = ({
                       )}
                       <div className='pl-3'>
                         <div className='pb-1'>
-                          {selectedImageFather
-                            ? selectedImageFather?.name
-                            : 'No file uploaded'}
+                          {selectedImageFather ? '' : 'No file uploaded'}
                         </div>
                         {selectedImageFather ? (
                           <Button
@@ -217,7 +306,7 @@ const FamilyInformation = ({
                   </Form.Item>
                 </Col>
 
-                {/* <Col md={6} className='py-2'>
+                <Col md={6} className='py-2'>
                   <Form.Item
                     rules={[
                       {
@@ -228,11 +317,37 @@ const FamilyInformation = ({
                       },
                     ]}
                     name='father_email'
-                    label="Father's Email"
+                    label={
+                      <Space align='end' className='th-primary-contact-check'>
+                        {userLevel === 13 && (
+                          <Form.Item
+                            style={{ marginBottom: '0px' }}
+                            className='mb-0 th-primary-contact-checkbox'
+                            name={'father_primary_email'}
+                          >
+                            <Checkbox
+                              checked={fatherPrimaryEmail}
+                              onChange={(e) => {
+                                setFatherPrimaryEmail(e.target.checked);
+                                setMotherPrimaryEmail(false);
+                                setGuardianPrimaryEmail(false);
+                              }}
+                              className='w-100 h-100'
+                            />
+                          </Form.Item>
+                        )}
+                        <div>Father's Email</div>
+                        {userLevel === 13 && (
+                          <Tooltip title={`Make Father's  Email as primary`}>
+                            <InfoCircleFilled />
+                          </Tooltip>
+                        )}
+                      </Space>
+                    }
                   >
                     <Input className='w-100' />
                   </Form.Item>
-                </Col> */}
+                </Col>
                 <Col className='py-2'>
                   <Form.Item
                     rules={[
@@ -252,6 +367,54 @@ const FamilyInformation = ({
                 </Col>
                 <Col className='py-2' md={24}>
                   <Row gutter={24}>
+                    <Col md={6} className=''>
+                      <Space align='start'>
+                        <Form.Item name={'father_mobile_code'} label='Code'>
+                          <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
+                        </Form.Item>
+                        <Form.Item
+                          rules={[
+                            {
+                              required: false,
+                              pattern: /^[0-9]{10}$/,
+                              message: `Father's Contact Number is invalid!`,
+                            },
+                          ]}
+                          name={'father_mobile'}
+                          label={
+                            <Space align='end' className='th-primary-contact-check'>
+                              {userLevel === 13 && (
+                                <Form.Item
+                                  style={{ marginBottom: '0px' }}
+                                  className='mb-0 th-primary-contact-checkbox'
+                                  name={'father_primary'}
+                                >
+                                  <Checkbox
+                                    checked={fatherPrimary}
+                                    onChange={(e) => {
+                                      setFatherPrimary(e.target.checked);
+                                      setMotherPrimary(false);
+                                      setGuardianPrimary(false);
+                                    }}
+                                    className='w-100 h-100'
+                                  />
+                                </Form.Item>
+                              )}
+                              <div>Contact Number</div>
+                              {userLevel === 13 && (
+                                <Tooltip
+                                  title={`Make Father's contact number as primary`}
+                                >
+                                  <InfoCircleFilled />
+                                </Tooltip>
+                              )}
+                            </Space>
+                          }
+                        >
+                          <Input className='w-100' />
+                        </Form.Item>
+                      </Space>
+                    </Col>
                     <Col md={6}>
                       <Form.Item
                         rules={[
@@ -286,32 +449,12 @@ const FamilyInformation = ({
                         <Input className='' />
                       </Form.Item>
                     </Col>
+
                     <Col md={6}>
                       <Form.Item
                         rules={[
                           {
-                            required:
-                              guardian === 'father' ||
-                              !singleParent ||
-                              (userLevel !== 13 && parent && parent?.includes('parent')),
-                            pattern: /^[0-9]{10}$/,
-                            message: `Father's Contact Number is invalid!`,
-                          },
-                        ]}
-                        name={'father_mobile'}
-                        label="Father's Contact Number"
-                      >
-                        <Input className='' />
-                      </Form.Item>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Item
-                        rules={[
-                          {
-                            required:
-                              guardian === 'father' ||
-                              !singleParent ||
-                              (userLevel !== 13 && parent && parent?.includes('parent')),
+                            required: false,
                             message: `Invalid Aadhar Number!`,
                             pattern: /^\d{12}$/,
                           },
@@ -359,9 +502,7 @@ const FamilyInformation = ({
                       )}
                       <div className='pl-3'>
                         <div className='pb-1'>
-                          {selectedImageMother
-                            ? selectedImageMother?.name
-                            : 'No file uploaded'}
+                          {selectedImageMother ? '' : 'No file uploaded'}
                         </div>
                         {selectedImageMother ? (
                           <Button
@@ -440,7 +581,7 @@ const FamilyInformation = ({
                   </Form.Item>
                 </Col>
 
-                {/* <Col md={6} className='py-2'>
+                <Col md={6} className='py-2'>
                   <Form.Item
                     rules={[
                       {
@@ -451,11 +592,39 @@ const FamilyInformation = ({
                       },
                     ]}
                     name='mother_email'
-                    label="Mother's Email"
+                    label={
+                      <Space align='end' className='th-primary-contact-check'>
+                        {userLevel === 13 && (
+                          <Form.Item
+                            style={{ marginBottom: '0px' }}
+                            className='mb-0 th-primary-contact-checkbox'
+                            name={'mother_primary_email'}
+                          >
+                            {userLevel === 13 && (
+                              <Checkbox
+                                checked={motherPrimaryEmail}
+                                onChange={(e) => {
+                                  setFatherPrimaryEmail(false);
+                                  setMotherPrimaryEmail(e.target.checked);
+                                  setGuardianPrimaryEmail(false);
+                                }}
+                                className='w-100 h-100'
+                              />
+                            )}
+                          </Form.Item>
+                        )}
+                        <div>Mother's Email</div>
+                        {userLevel === 13 && (
+                          <Tooltip title={`Make Mother's  Email as primary`}>
+                            <InfoCircleFilled />
+                          </Tooltip>
+                        )}
+                      </Space>
+                    }
                   >
                     <Input className='w-100' />
                   </Form.Item>
-                </Col> */}
+                </Col>
                 <Col className='py-2'>
                   <Form.Item
                     rules={[
@@ -473,8 +642,57 @@ const FamilyInformation = ({
                     <InputNumber />
                   </Form.Item>
                 </Col>
+
                 <Col className='py-2' md={24}>
                   <Row gutter={24}>
+                    <Col md={6} className=''>
+                      <Space align='start'>
+                        <Form.Item name={'mother_mobile_code'} label='Code'>
+                          <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
+                        </Form.Item>
+                        <Form.Item
+                          rules={[
+                            {
+                              required: false,
+                              pattern: /^[0-9]{10}$/,
+                              message: `Mother's Contact Number is invalid!`,
+                            },
+                          ]}
+                          name={'mother_mobile'}
+                          label={
+                            <Space align='end' className='th-primary-contact-check'>
+                              <Form.Item
+                                style={{ marginBottom: '0px' }}
+                                className='mb-0 th-primary-contact-checkbox'
+                                name={'mother_primary'}
+                              >
+                                {userLevel === 13 && (
+                                  <Checkbox
+                                    checked={motherPrimary}
+                                    onChange={(e) => {
+                                      setFatherPrimary(false);
+                                      setMotherPrimary(e.target.checked);
+                                      setGuardianPrimary(false);
+                                    }}
+                                    className='w-100 h-100'
+                                  />
+                                )}
+                              </Form.Item>
+                              <div>Contact Number</div>
+                              {userLevel === 13 && (
+                                <Tooltip
+                                  title={`Make Mother's contact number as primary`}
+                                >
+                                  <InfoCircleFilled />
+                                </Tooltip>
+                              )}
+                            </Space>
+                          }
+                        >
+                          <Input className='w-100' />
+                        </Form.Item>
+                      </Space>
+                    </Col>
                     <Col md={6}>
                       <Form.Item
                         rules={[
@@ -513,28 +731,7 @@ const FamilyInformation = ({
                       <Form.Item
                         rules={[
                           {
-                            required:
-                              guardian === 'mother' ||
-                              !singleParent ||
-                              (userLevel !== 13 && parent && parent?.includes('parent')),
-                            pattern: /^[0-9]{10}$/,
-                            message: `Mother's Contact Number is invalid!`,
-                          },
-                        ]}
-                        name={'mother_mobile'}
-                        label="Mother's Contact Number"
-                      >
-                        <Input className='' />
-                      </Form.Item>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Item
-                        rules={[
-                          {
-                            required:
-                              guardian === 'mother' ||
-                              !singleParent ||
-                              (userLevel !== 13 && parent && parent?.includes('parent')),
+                            required: false,
                             message: `Invalid Aadhar Number!`,
                             pattern: /^\d{12}$/,
                           },
@@ -575,9 +772,7 @@ const FamilyInformation = ({
                       )}
                       <div className='pl-3'>
                         <div className='pb-1'>
-                          {selectedImageGuardian
-                            ? selectedImageGuardian?.name
-                            : 'No file uploaded'}
+                          {selectedImageGuardian ? '' : 'No file uploaded'}
                         </div>
                         {selectedImageGuardian ? (
                           <Button
@@ -653,7 +848,7 @@ const FamilyInformation = ({
                   </Form.Item>
                 </Col>
 
-                {/* <Col md={6} className='py-2'>
+                <Col md={6} className='py-2'>
                   <Form.Item
                     rules={[
                       {
@@ -664,11 +859,37 @@ const FamilyInformation = ({
                       },
                     ]}
                     name='guardian_email'
-                    label="Guardian's Email"
+                    label={
+                      <Space align='end' className='th-primary-contact-check'>
+                        {userLevel === 13 && (
+                          <Form.Item
+                            style={{ marginBottom: '0px' }}
+                            className='mb-0 th-primary-contact-checkbox'
+                            name={'guardian_primary_email'}
+                          >
+                            <Checkbox
+                              checked={guardianPrimaryEmail}
+                              onChange={(e) => {
+                                setFatherPrimaryEmail(false);
+                                setMotherPrimaryEmail(false);
+                                setGuardianPrimaryEmail(e.target.checked);
+                              }}
+                              className='w-100 h-100'
+                            />
+                          </Form.Item>
+                        )}
+                        <div>Guardian's Email</div>
+                        {userLevel === 13 && (
+                          <Tooltip title={`Make Guardian's  Email as primary`}>
+                            <InfoCircleFilled />
+                          </Tooltip>
+                        )}
+                      </Space>
+                    }
                   >
                     <Input className='w-100' />
                   </Form.Item>
-                </Col> */}
+                </Col>
                 <Col className='py-2'>
                   <Form.Item
                     rules={[
@@ -687,6 +908,54 @@ const FamilyInformation = ({
                 </Col>
                 <Col className='py-2' md={24}>
                   <Row gutter={24}>
+                    <Col md={6} className=''>
+                      <Space align='start'>
+                        <Form.Item name={'guardian_mobile_code'} label='Code'>
+                          <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
+                        </Form.Item>
+                        <Form.Item
+                          rules={[
+                            {
+                              required: false,
+                              pattern: /^[0-9]{10}$/,
+                              message: `Guardian's Contact Number is invalid!`,
+                            },
+                          ]}
+                          name={'guardian_mobile'}
+                          label={
+                            <Space align='end' className='th-primary-contact-check'>
+                              {userLevel === 13 && (
+                                <Form.Item
+                                  style={{ marginBottom: '0px' }}
+                                  className='mb-0 th-primary-contact-checkbox'
+                                  name={'guardian_primary'}
+                                >
+                                  <Checkbox
+                                    checked={guardianPrimary}
+                                    onChange={(e) => {
+                                      setFatherPrimary(false);
+                                      setMotherPrimary(false);
+                                      setGuardianPrimary(e.target.checked);
+                                    }}
+                                    className='w-100 h-100'
+                                  />
+                                </Form.Item>
+                              )}
+                              <div>Contact Number</div>
+                              {userLevel === 13 && (
+                                <Tooltip
+                                  title={`Make Guardian's contact number as primary`}
+                                >
+                                  <InfoCircleFilled />
+                                </Tooltip>
+                              )}
+                            </Space>
+                          }
+                        >
+                          <Input className='w-100' />
+                        </Form.Item>
+                      </Space>
+                    </Col>
                     <Col md={6}>
                       <Form.Item
                         rules={[
@@ -723,34 +992,27 @@ const FamilyInformation = ({
                         <Input className='' />
                       </Form.Item>
                     </Col>
+                    {/* 
                     <Col md={6}>
                       <Form.Item
                         rules={[
                           {
-                            required:
-                              guardian === 'guardian' ||
-                              (userLevel !== 13 &&
-                                parent &&
-                                parent?.includes('guardian')),
+                            required: false,
                             pattern: /^[0-9]{10}$/,
                             message: `Guardian's Contact Number is invalid!`,
                           },
                         ]}
                         name={'guardian_mobile'}
-                        label="Guardian's Contact Number"
+                        label='Contact Number'
                       >
                         <Input className='' />
                       </Form.Item>
-                    </Col>
+                    </Col> */}
                     <Col md={6}>
                       <Form.Item
                         rules={[
                           {
-                            required:
-                              guardian === 'guardian' ||
-                              (userLevel !== 13 &&
-                                parent &&
-                                parent?.includes('guardian')),
+                            required: false,
                             message: `Invalid Aadhar Number!`,
                             pattern: /^\d{12}$/,
                           },
@@ -797,39 +1059,46 @@ const FamilyInformation = ({
                 <Input />
               </Form.Item>
             </Col>
-            <Col md={6}>
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: 'Invalid Email!',
-                  },
-                ]}
-                name={'email'}
-                label='Email Id'
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row className='py-2' gutter={24}>
             {userLevel !== 13 && (
-              <Col md={8}>
+              <Col md={6}>
                 <Form.Item
                   rules={[
                     {
                       required: true,
-                      pattern: /^[0-9]{10}$/,
-                      message: 'Contact Number is invalid!',
+                      pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: 'Invalid Email!',
                     },
                   ]}
-                  name={'contact'}
-                  required
-                  label='Contact Number'
+                  name={'email'}
+                  label='Email Id'
                 >
-                  <Input className='w-100' />
+                  <Input />
                 </Form.Item>
+              </Col>
+            )}
+          </Row>
+          <Row className='py-2' gutter={24}>
+            {userLevel !== 13 && (
+              <Col md={8} className='py-2'>
+                <Space align='start'>
+                  <Form.Item name={'contact_code'} label='Code'>
+                    <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        pattern: /^[0-9]{10}$/,
+                        message: 'Contact Number is invalid!',
+                      },
+                    ]}
+                    name={'contact'}
+                    required
+                    label='Contact Number'
+                  >
+                    <Input className='w-100' />
+                  </Form.Item>
+                </Space>
               </Col>
             )}
             {/* <Col md={6}>

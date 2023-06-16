@@ -64,7 +64,7 @@ import AccessBlocker from 'v2/FaceLift/UserManagement/AccessBlocker';
 import VirtualSchool from 'v2/FaceLift/UserManagement/VirtualSchool';
 import UserGroup from 'v2/FaceLift/UserManagement/UserGroup';
 import CreateUser from 'v2/FaceLift/UserManagement/User/CreateUser';
-import V1CreateUser from '../../src/containers/user-management/create-user';
+import CreateUserConfig from 'v2/FaceLift/UserManagement/User/CreateUserConfig';
 import V1EditUser from '../../src/containers/user-management/edit-user';
 import ViewAttendance from 'v2/FaceLift/Attendance/ViewAttendance';
 import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
@@ -274,27 +274,11 @@ const V2Router = () => {
                         </Route>
                         ,
                         <Route path='/user-management/create-user'>
-                          {({ match }) =>
-                            isOrchids ? (
-                              <CreateUser match={match} />
-                            ) : (
-                              <div className='user-management-container'>
-                                <V1CreateUser match={match} />
-                              </div>
-                            )
-                          }
+                          {({ match }) => <CreateUserConfig match={match} />}
                         </Route>
                         ,
                         <Route path='/user-management/edit-user/:id'>
-                          {({ match }) =>
-                            isOrchids ? (
-                              <CreateUser match={match} />
-                            ) : (
-                              <div className='user-management-container'>
-                                <V1EditUser match={match} />
-                              </div>
-                            )
-                          }
+                          {({ match }) => <CreateUserConfig match={match} />}
                         </Route>
                         ,
                         <Route path='/user-management/user-bulk-upload'>
