@@ -42,6 +42,9 @@ const AssignUserRole = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
+  const selectedAcadBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const isOrchids =
     window.location.host.split('.')[0] === 'qa' ||
@@ -70,7 +73,17 @@ const AssignUserRole = () => {
   useEffect(() => {
     if (moduleId && selectedYear) {
       fetchBranches(selectedYear?.id);
+      fetchGrade(selectedAcadBranch?.branch?.id);
+      filterData(
+        pageNo,
+        searchedData,
+        selectedRole,
+        selectedAcadBranch?.branch?.id,
+        selectedGrade,
+        selectedSection
+      );
     }
+
     fetchUserRole();
   }, [moduleId, selectedYear]);
 
@@ -104,12 +117,17 @@ const AssignUserRole = () => {
     );
   });
 
-  const handleUserRole = (e) => {
+  const handleChangeRole = (each) => {
     setPageNo(1);
-    if (e != undefined) {
-      setSelectedRole(e);
+    if (each.some((item) => item.value === 'all')) {
+      const allRole = userRoleList.map((item) => item.grade_id).join(',');
+      setSelectedRole(allRole);
+      formRef.current.setFieldsValue({
+        userrole: userRoleList.map((item) => item.grade_id),
+      });
     } else {
-      setSelectedRole('');
+      const singleRole = each.map((item) => item.value).join(',');
+      setSelectedRole(singleRole);
     }
   };
 
@@ -427,6 +445,7 @@ const AssignUserRole = () => {
     setSelectedSection('');
     setSelectedUsers([]);
     setShowFilter(true);
+    filterData(1, '', '', selectedAcadBranch?.branch?.id, '', '');
     formRef.current.resetFields();
   };
 
@@ -476,7 +495,7 @@ const AssignUserRole = () => {
             1,
             searchedData,
             selectedRole,
-            selectedBranch,
+            selectedAcadBranch?.branch?.id,
             selectedGrade,
             selectedSection
           );
@@ -520,6 +539,7 @@ const AssignUserRole = () => {
                   <div className='col-md-3 col-sm-6 col-12'>
                     <Form.Item name='userrole'>
                       <Select
+                        mode='multiple'
                         getPopupContainer={(trigger) => trigger.parentNode}
                         maxTagCount={1}
                         allowClear={true}
@@ -527,7 +547,7 @@ const AssignUserRole = () => {
                         className='th-grey th-bg-grey th-br-4 w-100 text-left'
                         placement='bottomRight'
                         showArrow={true}
-                        onChange={(e, value) => handleUserRole(e, value)}
+                        onChange={(e, value) => handleChangeRole(value)}
                         dropdownMatchSelectWidth={true}
                         filterOption={(input, options) => {
                           return (
@@ -542,7 +562,7 @@ const AssignUserRole = () => {
                       </Select>
                     </Form.Item>
                   </div>
-                  <div className='col-md-3 col-sm-6 col-12'>
+                  {/* <div className='col-md-3 col-sm-6 col-12'>
                     <Form.Item name='branch'>
                       <Select
                         allowClear={true}
@@ -564,7 +584,7 @@ const AssignUserRole = () => {
                         {branchListOptions}
                       </Select>
                     </Form.Item>
-                  </div>
+                  </div> */}
                   <div className='col-md-3 col-sm-6 col-12'>
                     <Form.Item name='grade'>
                       <Select
@@ -658,7 +678,7 @@ const AssignUserRole = () => {
                               pageNo,
                               searchedData,
                               selectedRole,
-                              selectedBranch,
+                              selectedAcadBranch?.branch?.id,
                               selectedGrade,
                               selectedSection
                             )
@@ -760,7 +780,7 @@ const AssignUserRole = () => {
                               current,
                               searchedData,
                               selectedRole,
-                              selectedBranch,
+                              selectedAcadBranch?.branch?.id,
                               selectedGrade,
                               selectedSection
                             );
