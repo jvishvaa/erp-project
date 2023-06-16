@@ -5,23 +5,20 @@ import {
   Breadcrumb,
   message,
   Select,
-  Input,
   Form,
   Button,
   Table,
   DatePicker,
-  Affix,
-  Tag,
   Radio,
   Modal,
 } from 'antd';
 import axios from 'v2/config/axios';
-import axiosInstance from 'axios';
 import endpoints from 'config/endpoints';
 import moment from 'moment';
-import { UserOutlined, DownOutlined, CloseOutlined } from '@ant-design/icons';
+import { DownOutlined, CloseOutlined } from '@ant-design/icons';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import _ from 'lodash';
+import { Prompt } from 'react-router-dom';
 
 const { Option } = Select;
 const isOrchids = IsOrchidsChecker();
@@ -51,6 +48,9 @@ const MarkStudentAttendance = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [noticationAlreadySent, setNoticationAlreadySent] = useState(true);
+  const [presentCount, setPresentCount] = useState(0);
+  const [absentCount, setAbsentCount] = useState(0);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   let columns = [
     {
@@ -98,6 +98,7 @@ const MarkStudentAttendance = () => {
           value={row?.attendence_status ?? 'present'}
           className='d-flex justify-content-around'
           onChange={(e) => {
+            setHasUnsavedChanges(true);
             let attendanceInfo = _.cloneDeep(userListData);
             attendanceInfo[index].attendence_status = e.target.value;
             setUserListData(attendanceInfo);
@@ -239,6 +240,7 @@ const MarkStudentAttendance = () => {
       section_id: sectionIDs.toString(),
     };
     setLoading(true);
+    getReportData();
     axios
       .get(`${endpoints.academics.teacherAttendanceData}`, { params: { ...params } })
       .then((res) => {
@@ -283,6 +285,7 @@ const MarkStudentAttendance = () => {
           ) {
             setShowNotificationModal(true);
           }
+          setHasUnsavedChanges(false);
           fetchUserList();
         }
       })
@@ -314,6 +317,49 @@ const MarkStudentAttendance = () => {
       })
       .catch((err) => {
         message.error(err.message);
+      });
+  };
+
+  const getReportData = () => {
+    let params;
+    if (sectionMappingIDs.length > 0) {
+      params = {
+        date: selectedDate,
+        user_level: selectedUserLevel,
+        section_mapping_id: sectionMappingIDs,
+      };
+    } else {
+      params = {
+        date: selectedDate,
+        user_level: selectedUserLevel,
+        section_mapping_id: sectionMappingIDs,
+        grade_id: gradeID,
+        branch_id: selectedBranch?.branch?.id,
+        session_year_id: selectedAcademicYear?.id,
+      };
+    }
+    axios
+      .get(`${endpoints.academics.dataupdate}`, { params: { ...params } })
+      .then((res) => {
+        if (res.data?.status_code === 200) {
+          let present;
+          let absent;
+          present = res?.data?.result
+            ?.filter((item) => item.attendence_status !== 'absent')
+            .reduce((accumulator, item) => {
+              return accumulator + item.count;
+            }, 0);
+          absent = res?.data?.result
+            ?.filter((item) => item.attendence_status == 'absent')
+            .reduce((accumulator, item) => {
+              return accumulator + item.count;
+            }, 0);
+          setAbsentCount(absent);
+          setPresentCount(present);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
   // select Options
@@ -371,6 +417,24 @@ const MarkStudentAttendance = () => {
       });
     }
   }, [moduleId]);
+  useEffect(() => {
+    if (hasUnsavedChanges) {
+      const unloadCallback = (event) => {
+        const e = event || window.event;
+        e.preventDefault();
+        if (e) {
+          e.returnValue = '';
+        }
+        return '';
+      };
+
+      window.addEventListener('beforeunload', unloadCallback);
+      return () => {
+        //cleanup function
+        window.removeEventListener('beforeunload', unloadCallback);
+      };
+    }
+  }, [hasUnsavedChanges]);
 
   return (
     <Layout>
@@ -387,7 +451,7 @@ const MarkStudentAttendance = () => {
           <Form id='filterForm' ref={formRef} layout={'vertical'}>
             <div className='row align-items-center th-bg-white pt-2'>
               <div className='col-md-2 col-6 '>
-                <Form.Item name='month' label='Select Date'>
+                <Form.Item name='month' label='Date'>
                   <DatePicker
                     defaultValue={moment(selectedDate)}
                     disabled={true}
@@ -502,7 +566,8 @@ const MarkStudentAttendance = () => {
             {userListData?.length > 0 && (
               <div className='col-12 pb-2 text-right'>
                 <div className='th-fw-500 th-20 pr-2'>
-                  If the user is not present, please mark them
+                  Update the attendance to reflect the user's absence and validate the
+                  attendance.
                 </div>
               </div>
             )}
@@ -523,8 +588,8 @@ const MarkStudentAttendance = () => {
           </div>
           {userListData?.length > 0 && (
             <div
-              className='row th-bg-grey'
-              style={{ position: 'absolute', bottom: '10px', maxWidth: '91vw' }}
+              className='th-width-98 th-bg-grey'
+              style={{ position: 'absolute', bottom: '10px' }}
             >
               <div className='col-12 py-2'>
                 <div
@@ -542,15 +607,13 @@ const MarkStudentAttendance = () => {
                       <div className='col-md-4 col-6 '>
                         Present:{' '}
                         <span className='th-green'>
-                          {handleNumberView(userAggregateData?.present)}
+                          {handleNumberView(presentCount ?? 0)}
                         </span>
                       </div>
                       <div className='col-md-4 col-6 '>
                         Absent:{' '}
                         <span className='th-fw-500 th-red'>
-                          {handleNumberView(
-                            userAggregateData?.total - userAggregateData?.present
-                          )}
+                          {handleNumberView(absentCount ?? 0)}
                         </span>
                       </div>
                       {selectedUserLevel == 13 && isOrchids && !noticationAlreadySent && (
@@ -615,6 +678,11 @@ const MarkStudentAttendance = () => {
             </div>
           </Modal>
         </div>
+        <Prompt
+          when={hasUnsavedChanges}
+          title={'Leaving?'}
+          message={'Changes you made may not be saved.'}
+        />
       </div>
     </Layout>
   );
