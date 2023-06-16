@@ -132,19 +132,21 @@ const PhysicalPendingReview = (props) => {
   const allowedFiles = ['.jpeg', '.jpg', '.png', '.mp4'];
   const fileRef = useRef();
   const [bookingID, setBookingID] = useState(null);
-
   const [firstLoad, setFirstLoad] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
 
   const handleCloseViewMore = () => {
     setView(false);
     setRatingReview([]);
     setFile(null);
+    setRequestSent(false);
   };
 
   const handleCloseViewLevelMore = () => {
     setviewLevelDrawer(false);
     setRatinglevelReview([]);
     setFile(null);
+    setRequestSent(true);
   };
 
   const [values, setValues] = useState();
@@ -180,6 +182,7 @@ const PhysicalPendingReview = (props) => {
   };
 
   const submitLevelReview = () => {
+    setRequestSent(true);
     let body = [];
     let checkSelected = ratingLevelReview.every((item) => item.checked);
     if (!checkSelected) {
@@ -215,6 +218,9 @@ const PhysicalPendingReview = (props) => {
       })
       .catch(() => {
         setLoading(false);
+      })
+      .finally(() => {
+        setRequestSent(false);
       });
   };
 
@@ -273,6 +279,7 @@ const PhysicalPendingReview = (props) => {
   const submitReview = () => {
     if (validateOptionSubmit()) {
       setLoading(true);
+      setRequestSent(true);
       setView(false);
 
       let body = ratingReview;
@@ -296,7 +303,10 @@ const PhysicalPendingReview = (props) => {
         })
         .catch((err) => {
           message.error(err);
+        })
+        .finally(() => {
           setLoading(false);
+          setRequestSent(true);
         });
     }
   };
@@ -472,6 +482,9 @@ const PhysicalPendingReview = (props) => {
       })
       .catch((error) => {
         setLoading(false);
+      })
+      .finally(() => {
+        setRequestSent(false);
       });
   };
 
@@ -836,6 +849,7 @@ const PhysicalPendingReview = (props) => {
                         <ButtonAnt
                           className='th-button-active th-br-6 text-truncate th-pointer'
                           onClick={() => submitLevelReview()}
+                          loading={requestSent}
                         >
                           Submit Review
                         </ButtonAnt>
@@ -967,6 +981,7 @@ const PhysicalPendingReview = (props) => {
                 <ButtonAnt
                   type='primary'
                   icon={<ScheduleOutlined />}
+                  loading={requestSent}
                   onClick={() => submitReview()}
                 >
                   Submit Review
@@ -1050,6 +1065,7 @@ const PhysicalPendingReview = (props) => {
                 <ButtonAnt
                   type='primary'
                   icon={<ScheduleOutlined />}
+                  loading={requestSent}
                   onClick={() => submitLevelReview()}
                 >
                   Submit Review

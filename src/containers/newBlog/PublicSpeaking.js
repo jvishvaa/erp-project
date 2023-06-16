@@ -55,8 +55,8 @@ const StudentSidePublicSpeaking = () => {
     });
   }, [currentPageAssigned]);
   const handleShowReview = (data) => {
-    setLoadingReview(true);
     setShowDrawer(true);
+    setLoadingReview(true);
     let rating = JSON.parse(data?.grading?.grade_scheme_markings);
     fetchMedia({ asset_id: data?.asset?.id });
     setPermissionState(data?.state);

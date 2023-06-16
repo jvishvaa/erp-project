@@ -435,7 +435,25 @@ const MarkStudentAttendance = () => {
       };
     }
   }, [hasUnsavedChanges]);
-
+  useEffect(() => {
+    formRef.current.setFieldsValue({
+      user_level: null,
+      grade: null,
+      section: [],
+    });
+    if (isStudent) {
+      setSelectedUserLevel(13);
+    } else {
+      setSelectedUserLevel();
+    }
+    setGradeID();
+    setSectionIDs([]);
+    setSectionMappingIDs([]);
+    setUserListData([]);
+    setPresentCount();
+    setAbsentCount();
+    setUserAggregateData();
+  }, [window.location.pathname]);
   return (
     <Layout>
       <div className='row py-3 px-2' style={{ position: 'relative' }}>
@@ -451,7 +469,7 @@ const MarkStudentAttendance = () => {
           <Form id='filterForm' ref={formRef} layout={'vertical'}>
             <div className='row align-items-center th-bg-white pt-2'>
               <div className='col-md-2 col-6 '>
-                <Form.Item name='month' label='Date'>
+                <Form.Item name='date' label='Date'>
                   <DatePicker
                     defaultValue={moment(selectedDate)}
                     disabled={true}
