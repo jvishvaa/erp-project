@@ -64,6 +64,11 @@ const Appbar = ({ children, history, ...props }) => {
   let acdemicCurrentYear = useSelector((state) => state.commonFilterReducer.selectedYear);
   let branchList = useSelector((state) => state.commonFilterReducer.branchList);
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [centralSchoolLogo, setCentralSchoolLogo] = useState('');
@@ -906,7 +911,7 @@ const Appbar = ({ children, history, ...props }) => {
                     )}
                   </Link>
                 </IconButton>
-                {userData?.user_level == 14 || userData?.user_level == 8 ?
+                {userData?.user_level == 14 && isOrchids || userData?.user_level == 8 && isOrchids ?
                   <Tooltip title='Redirect to CRM' >
                     <div
                       className='py-2 th-icon-no-hover th-pointer'
