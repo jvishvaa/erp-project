@@ -69,6 +69,7 @@ import V1EditUser from '../../src/containers/user-management/edit-user';
 import ViewAttendance from 'v2/FaceLift/Attendance/ViewAttendance';
 import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
 import UserBulkUpload from 'v2/FaceLift/UserManagement/User/CreateUser/BulkUpload';
+import LoginFormSSO from 'containers/login/ssologin';
 
 const V2Router = () => {
   useEffect(() => {
@@ -125,6 +126,15 @@ const V2Router = () => {
                         <Route exact path='/'>
                           {({ match, history }) => (
                             <Login match={match} history={history} setTheme={setTheme} />
+                          )}
+                        </Route>
+                        <Route exact path='/sso/:erp/:hmac/auth/login'>
+                          {({ match, history }) => (
+                            <LoginFormSSO
+                              match={match}
+                              history={history}
+                              setTheme={setTheme}
+                            />
                           )}
                         </Route>
                         <Route path='/profile'>
@@ -274,11 +284,15 @@ const V2Router = () => {
                         </Route>
                         ,
                         <Route path='/user-management/create-user'>
-                          {({ match }) => <CreateUserConfig match={match} />}
+                          {({ match, history }) => (
+                            <CreateUserConfig match={match} history={history} />
+                          )}
                         </Route>
                         ,
                         <Route path='/user-management/edit-user/:id'>
-                          {({ match }) => <CreateUserConfig match={match} />}
+                          {({ match, history }) => (
+                            <CreateUserConfig match={match} history={history} />
+                          )}
                         </Route>
                         ,
                         <Route path='/user-management/user-bulk-upload'>

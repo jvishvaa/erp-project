@@ -6,6 +6,7 @@ import endpoints from 'config/endpoints';
 import Layout from 'containers/Layout';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 const BulkUpload = () => {
   const { Option } = Select;
@@ -30,7 +31,7 @@ const BulkUpload = () => {
   const [subjectList, setSubjectList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
   const [showSuggestion, setShowSuggestion] = useState(false);
-
+  const history = useHistory();
   const guidelines = [
     {
       name: '',
@@ -212,6 +213,7 @@ const BulkUpload = () => {
           setSelectedFile('');
           setAcadId('');
           bulkUploadFormRef.current.resetFields();
+          history.push(`/user-management/bulk-upload`);
         } else {
           message.error('Uploaded format is incorrect');
         }
@@ -472,8 +474,8 @@ const BulkUpload = () => {
                       <span className='text-muted'>
                         <a
                           style={{ cursor: 'pointer' }}
-                          href='/assets/download-format/erp_userb2b.xlsx'
-                          download='erp_user.xlsx'
+                          href='/assets/download-format/bulk_user_upload_v2.xlsx'
+                          download='bulk_user_upload_v2.xlsx'
                         >
                           Download format
                         </a>

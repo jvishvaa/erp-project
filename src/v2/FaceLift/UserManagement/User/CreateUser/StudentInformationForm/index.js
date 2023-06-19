@@ -232,21 +232,7 @@ const StudentInformation = ({
                 </Col>
               </Row>
             </Col>
-            <Col md={8} className='py-2'>
-              <Form.Item
-                rules={[
-                  {
-                    required: false,
-                    message: `Invalid Aadhar Number!`,
-                    pattern: /^\d{12}$/,
-                  },
-                ]}
-                name={'aadhaar_number'}
-                label={(userLevel === 13 ? 'Student' : 'User') + ' Aadhaar'}
-              >
-                <Input className='w-100' />
-              </Form.Item>
-            </Col>
+
             {userLevel === 13 && (
               <Col md={24}>
                 <Row gutter={24}>
