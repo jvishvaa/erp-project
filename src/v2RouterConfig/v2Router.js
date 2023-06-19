@@ -69,7 +69,7 @@ import V1EditUser from '../../src/containers/user-management/edit-user';
 import ViewAttendance from 'v2/FaceLift/Attendance/ViewAttendance';
 import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
 import UserBulkUpload from 'v2/FaceLift/UserManagement/User/CreateUser/BulkUpload';
-import LoginFormSSO from 'containers/login/ssologin';
+import ReportPipeline from 'v2/FaceLift/ReportPipeline';
 
 const V2Router = () => {
   useEffect(() => {
@@ -126,15 +126,6 @@ const V2Router = () => {
                         <Route exact path='/'>
                           {({ match, history }) => (
                             <Login match={match} history={history} setTheme={setTheme} />
-                          )}
-                        </Route>
-                        <Route exact path='/sso/:erp/:hmac/auth/login'>
-                          {({ match, history }) => (
-                            <LoginFormSSO
-                              match={match}
-                              history={history}
-                              setTheme={setTheme}
-                            />
                           )}
                         </Route>
                         <Route path='/profile'>
@@ -343,6 +334,9 @@ const V2Router = () => {
                         </Route>
                         <Route path='/mark-staff-attendance'>
                           {({ match }) => <MarkAttendance match={match} />}
+                        </Route>
+                        <Route path='/report-pipeline'>
+                          {({ match }) => <ReportPipeline match={match} />}
                         </Route>
                         ,{/* v1 router */}
                         {V1Router?.map((item) => {
