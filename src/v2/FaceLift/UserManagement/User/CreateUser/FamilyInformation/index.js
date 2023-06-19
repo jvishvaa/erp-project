@@ -74,30 +74,35 @@ const FamilyInformation = ({
     if (userLevel === 13) {
       if (!fatherPrimary && !motherPrimary && !guardianPrimary) {
         message.error('Select a contact number as primary!');
+        return;
       }
       if (!fatherPrimaryEmail && !motherPrimaryEmail && !guardianPrimaryEmail) {
         message.error('Select an email as primary!');
+        return;
       }
-    }
-    if (fatherPrimary && !formValues?.father_mobile) {
-      message.error(`Enter Father's Contact Number!`);
-      return;
-    }
-    if (motherPrimary && !formValues?.mother_mobile) {
-      message.error(`Enter Mother's Contact Number!`);
-      return;
-    }
-    if (guardianPrimary && !formValues?.guardian_mobile) {
-      message.error(`Enter Guardian's Contact Number!`);
-      return;
+      if (fatherPrimary && !formValues?.father_mobile) {
+        message.error(`Enter Father's Contact Number!`);
+        return;
+      }
+      if (motherPrimary && !formValues?.mother_mobile) {
+        message.error(`Enter Mother's Contact Number!`);
+        return;
+      }
+      if (guardianPrimary && !formValues?.guardian_mobile) {
+        message.error(`Enter Guardian's Contact Number!`);
+        return;
+      }
     }
     if (userLevel === 13) {
       if (
         !formValues.father_aadhaar &&
         !formValues.mother_aadhaar &&
-        !formValues.guardian_aadhaar
+        !formValues.guardian_aadhaar &&
+        !formValues.aadhaar_number
       ) {
-        message.error(`Either of Father's or Mother's or Guardian's aadhar is required!`);
+        message.error(
+          `Either of Father's or Mother's or Guardian's or Student's aadhar is required!`
+        );
         return;
       }
       if (
@@ -1091,6 +1096,23 @@ const FamilyInformation = ({
                     <Input className='w-100' />
                   </Form.Item>
                 </Space>
+              </Col>
+            )}
+            {userLevel === 13 && (
+              <Col md={8} className='py-2'>
+                <Form.Item
+                  rules={[
+                    {
+                      required: false,
+                      message: `Invalid Aadhar Number!`,
+                      pattern: /^\d{12}$/,
+                    },
+                  ]}
+                  name={'aadhaar_number'}
+                  label={'Student Aadhaar'}
+                >
+                  <Input className='w-100' />
+                </Form.Item>
               </Col>
             )}
             {/* <Col md={6}>
