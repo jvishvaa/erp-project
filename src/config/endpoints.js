@@ -12,6 +12,7 @@ const {
     newBlogURL,
     erpBlogURL,
     msOriginUrl,
+    crm
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -33,6 +34,8 @@ export default {
   auth: {
     login: '/auth/login/',
     mobileLogin: '/erp_user/erp-contact-login/',
+    crmHcmToken : `${crm}/qbox/hmac_token/`,
+    generateLoginToken : `/erp_user/login_token/`,
   },
   checkAcademicView: {
     isAcademicView: '/period/period-erp-system-config/',
