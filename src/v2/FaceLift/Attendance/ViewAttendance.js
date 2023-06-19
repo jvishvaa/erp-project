@@ -365,7 +365,7 @@ const ViewAttendance = () => {
           <Form id='filterForm' ref={formRef} layout={'vertical'}>
             <div className='row align-items-center th-bg-white py-2'>
               <div className='col-md-2 col-6 '>
-                <Form.Item name='month' label='Select Month'>
+                <Form.Item name='month' label='Month'>
                   <DatePicker
                     picker='month'
                     defaultValue={moment(selectedMonth)}

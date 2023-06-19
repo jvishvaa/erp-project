@@ -247,10 +247,10 @@ const CreateUser = () => {
               mother_email: user?.parent_details?.mother_email || '',
               father_mobile: user?.parent_details?.father_mobile?.split('-')[1] || '',
               father_mobile_code:
-                user?.parent_details?.father_mobile?.split('-')[0] || '',
+                user?.parent_details?.father_mobile?.split('-')[0] || '+91',
               mother_mobile: user?.parent_details?.mother_mobile?.split('-')[1] || '',
               mother_mobile_code:
-                user?.parent_details?.mother_mobile?.split('-')[0] || '',
+                user?.parent_details?.mother_mobile?.split('-')[0] || '+91',
               mother_photo: user?.parent_details?.mother_photo || '',
               father_photo: user?.parent_details?.father_photo || '',
               father_qualification: user?.parent_details?.father_qualification || '',
@@ -276,7 +276,7 @@ const CreateUser = () => {
               guardian_email: user?.parent_details?.guardian_email || '',
               guardian_mobile: user?.parent_details?.guardian_mobile?.split('-')[1] || '',
               guardian_mobile_code:
-                user?.parent_details?.guardian_mobile?.split('-')[0] || '',
+                user?.parent_details?.guardian_mobile?.split('-')[0] || '+91',
               guardian_photo: user?.parent_details?.guardian_photo || '',
               single: parentSelected,
             },
@@ -343,7 +343,9 @@ const CreateUser = () => {
                 ? 'father'
                 : transformedUser?.single_parent === 2
                 ? 'mother'
-                : 'guardian',
+                : transformedUser?.single_parent === 3
+                ? 'guardian'
+                : null,
             profile_photo: transformedUser?.profile,
             old_school_name: transformedUser?.old_school_name,
             username: user?.user?.username,
@@ -619,6 +621,7 @@ const CreateUser = () => {
     formData.append('special_needs', studentFormValues?.special_needs ?? '');
     formData.append('medical_info', studentFormValues?.medical_info ?? '');
     formData.append('aadhaar_number', familyFormValues?.aadhaar_number ?? '');
+    formData.append('username', studentFormValues?.username ?? '');
     if (userLevel === 13 && studentFormValues?.single_parent)
       formData.append(
         'single_parent',
@@ -824,10 +827,10 @@ const CreateUser = () => {
                   }}
                 >
                   <Steps
-                    onChange={(e) => {
-                      setCurrentStep(e);
-                    }}
-                    // onChange={null}
+                    // onChange={(e) => {
+                    //   setCurrentStep(e);
+                    // }}
+                    onChange={null}
                     current={currentStep}
                     direction={'vertical'}
                     className='custom-vertical-steps h-100'

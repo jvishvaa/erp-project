@@ -70,6 +70,7 @@ import ViewAttendance from 'v2/FaceLift/Attendance/ViewAttendance';
 import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
 import UserBulkUpload from 'v2/FaceLift/UserManagement/User/CreateUser/BulkUpload';
 import LoginFormSSO from 'containers/login/ssologin';
+import ReportPipeline from 'v2/FaceLift/ReportPipeline';
 
 const V2Router = () => {
   useEffect(() => {
@@ -284,11 +285,15 @@ const V2Router = () => {
                         </Route>
                         ,
                         <Route path='/user-management/create-user'>
-                          {({ match }) => <CreateUserConfig match={match} />}
+                          {({ match, history }) => (
+                            <CreateUserConfig match={match} history={history} />
+                          )}
                         </Route>
                         ,
                         <Route path='/user-management/edit-user/:id'>
-                          {({ match }) => <CreateUserConfig match={match} />}
+                          {({ match, history }) => (
+                            <CreateUserConfig match={match} history={history} />
+                          )}
                         </Route>
                         ,
                         <Route path='/user-management/user-bulk-upload'>
@@ -339,6 +344,9 @@ const V2Router = () => {
                         </Route>
                         <Route path='/mark-staff-attendance'>
                           {({ match }) => <MarkAttendance match={match} />}
+                        </Route>
+                        <Route path='/report-pipeline'>
+                          {({ match }) => <ReportPipeline match={match} />}
                         </Route>
                         ,{/* v1 router */}
                         {V1Router?.map((item) => {

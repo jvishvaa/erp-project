@@ -7,7 +7,7 @@ import V1EditUser from '../../../../../containers/user-management/edit-user';
 import { useSelector } from 'react-redux';
 import Layout from 'containers/Layout';
 import CreateUserTab from '../CreateUserTab';
-const CreateUserConfig = ({ match }) => {
+const CreateUserConfig = ({ match, history }) => {
   const [config, setConfig] = useState([]);
   const [loading, setLoading] = useState(true);
   const selectedBranch = useSelector(
@@ -66,9 +66,9 @@ const CreateUserConfig = ({ match }) => {
       ) : (
         <div className='user-management-container'>
           {window.location.pathname.includes('edit') ? (
-            <V1EditUser match={match} />
+            <V1EditUser match={match} history={history} />
           ) : (
-            <V1CreateUser match={match} />
+            <V1CreateUser match={match} history={history} />
           )}
         </div>
       )}
