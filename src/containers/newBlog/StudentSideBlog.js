@@ -135,7 +135,13 @@ const StudentSideBlog = () => {
                     </div>
                   </div>
                 </div>
-                <div className='col-12 py-2 th-pointer'>
+                <div
+                  className={`col-12 py-2 ${
+                    moment().diff(moment(each?.submission_date), 'hours') > 24
+                      ? ''
+                      : 'th-pointer'
+                  }`}
+                >
                   <img
                     src={each?.template?.template_path}
                     loading='lazy'
@@ -148,7 +154,7 @@ const StudentSideBlog = () => {
                 </div>
                 <div className='col-12 py-2 text-center'>
                   {moment().diff(moment(each?.submission_date), 'hours') > 24 ? (
-                    <Button type='dashed' danger>
+                    <Button type='dashed' danger style={{ cursor: 'text' }}>
                       Expired
                     </Button>
                   ) : (
@@ -273,9 +279,9 @@ const StudentSideBlog = () => {
     }
   }, [tabValue, page]);
 
-  useEffect(() =>{
-    setPage(1)
-  },[tabValue])
+  useEffect(() => {
+    setPage(1);
+  }, [tabValue]);
   const handlePageChange = (page, pageSize) => {
     setPage(page);
   };
@@ -301,7 +307,7 @@ const StudentSideBlog = () => {
                 <Tabs type='card' onChange={handleTab} defaultActiveKeys={tabValue}>
                   <TabPane tab='ASSIGNED' key='0'>
                     <div className='row pt-3'>{showContent()}</div>
-                    <div>
+                    <div className='d-flex justify-content-center py-2'>
                       <Pagination
                         defaultCurrent={page}
                         current={page}
@@ -310,13 +316,12 @@ const StudentSideBlog = () => {
                         size='default'
                         showSizeChanger={false}
                         onChange={handlePageChange}
-                        style={{ display: 'flex', justifyContent: 'center' }}
                       />
                     </div>
                   </TabPane>
                   <TabPane tab='TOTAL SUBMITTED' key='1'>
                     <div className='row pt-3'>{showContent()}</div>
-                    <div>
+                    <div className='d-flex justify-content-center py-2'>
                       <Pagination
                         defaultCurrent={page}
                         current={page}
@@ -324,13 +329,12 @@ const StudentSideBlog = () => {
                         total={totalPages}
                         showSizeChanger={false}
                         onChange={handlePageChange}
-                        style={{ display: 'flex', justifyContent: 'center' }}
                       />
                     </div>
                   </TabPane>
                   <TabPane tab='REVIEWED' key='2'>
                     <div className='row pt-3'>{showContent()}</div>
-                    <div>
+                    <div className='d-flex justify-content-center py-2'>
                       <Pagination
                         defaultCurrent={page}
                         current={page}
@@ -338,13 +342,12 @@ const StudentSideBlog = () => {
                         total={totalPages}
                         showSizeChanger={false}
                         onChange={handlePageChange}
-                        style={{ display: 'flex', justifyContent: 'center' }}
                       />
                     </div>
                   </TabPane>
                   <TabPane tab='PUBLISHED' key='3'>
                     <div className='row pt-3'>{showContent()}</div>
-                    <div>
+                    <div className='d-flex justify-content-center py-2'>
                       <Pagination
                         defaultCurrent={page}
                         current={page}
@@ -352,7 +355,6 @@ const StudentSideBlog = () => {
                         total={totalPages}
                         showSizeChanger={false}
                         onChange={handlePageChange}
-                        style={{ display: 'flex', justifyContent: 'center' }}
                       />
                     </div>
                   </TabPane>

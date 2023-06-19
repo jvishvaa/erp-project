@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import { Breadcrumb, Tabs, Spin, Button } from 'antd';
+import { Breadcrumb, Tabs, Spin, Button, message } from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { RightCircleOutlined, ReconciliationOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -125,9 +125,11 @@ const CentralBlogRedirection = () => {
           (item) => item?.name.toLowerCase() === 'theatre'
         );
         setTheaterSubId(theaterActivityData[0]);
-        setLoading(false);
       })
       .catch((err) => {
+        message.error(err.message);
+      })
+      .finally(() => {
         setLoading(false);
       });
     // }
@@ -239,8 +241,6 @@ const CentralBlogRedirection = () => {
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
-
-        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -248,7 +248,6 @@ const CentralBlogRedirection = () => {
   };
 
   const ActvityLocalStorage = () => {
-    setLoading(true);
     axios
       .post(
         `${endpoints.newBlog.activityWebLogin}`,
@@ -267,7 +266,6 @@ const CentralBlogRedirection = () => {
           'ActivityManagement',
           JSON.stringify(response?.data?.result)
         );
-        setLoading(false);
       });
   };
 
@@ -291,9 +289,6 @@ const CentralBlogRedirection = () => {
       <div className='row px-2'>
         <div className='col-md-10' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey th-18'>
-              Dashboard
-            </Breadcrumb.Item>
             <Breadcrumb.Item href='' className='th-black-1 th-18'>
               Activities Management
             </Breadcrumb.Item>
@@ -359,7 +354,7 @@ const CentralBlogRedirection = () => {
                               <span className='th-12 th-fw-500 ml-2'>{each?.title}</span>
                             </div>
                           </div>
-                          <div className='row align-item-center'>
+                          <div className='row align-items-center'>
                             <div className='col-sm-6 pl-0'>
                               <div className='th-12 th-fw-300 text-capitalize th-black-1'>
                                 Last Updated
@@ -368,14 +363,13 @@ const CentralBlogRedirection = () => {
                                 {moment(each?.last_update).format('ll')}
                               </div>
                             </div>
-                            <div className='col-sm-6 text-sm-right px-0 px-sm-2 pt-1 pt-sm-0'>
-                              <Button
-                                className='th-button-active th-br-6 text-truncate th-pointer'
+                            <div className='col-sm-6  px-0 pt-1 pt-sm-0'>
+                              <div
+                                className='th-button-active th-br-6 text-truncate th-pointer text-center p-1'
                                 onClick={() => handleExplore(each)}
-                                icon={<RightCircleOutlined />}
                               >
-                                Explore
-                              </Button>
+                                <RightCircleOutlined /> Explore
+                              </div>
                             </div>
                           </div>
                         </div>

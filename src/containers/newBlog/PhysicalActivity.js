@@ -32,6 +32,7 @@ import {
   Tag,
   Modal,
   Tooltip,
+  Spin,
 } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 import TopBar from 'v2/Layout/TopBar';
@@ -97,6 +98,7 @@ const PhysicalActivity = () => {
   const [subActivityId, setSubActivityId] = useState('');
   const [sudActId, setSubActId] = useState(history?.location?.state?.subActiveId);
   const [subActivityListData, setSubActivityListData] = useState([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -380,8 +382,8 @@ const PhysicalActivity = () => {
   }, [value, selectedBranch, currentPageAssigned, currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
   const handlePreview = (data) => {
-    setLoading(true);
     setPreview(true);
+    setPreviewLoading(true);
     axios
       .get(`${endpoints.newBlog.previewDetails}${data?.id}/`, {
         headers: {
@@ -390,7 +392,12 @@ const PhysicalActivity = () => {
       })
       .then((response) => {
         setPreviewData(response?.data?.result);
-        setLoading(false);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setPreviewLoading(false);
       });
   };
   const closePreview = () => {
@@ -761,537 +768,105 @@ const PhysicalActivity = () => {
             className='th-upload-modal'
             title={`Preview - Physical Activity`}
           >
-            <div className='row th-bg-white p-2 pb-3'>
-              <div className='col-12'>
-                <span className='th-black-1 th-fw-500 th-25'>{previewData?.title}</span>
+            {previewLoading ? (
+              <div className='row th-bg-white'>
+                <div className='col-12 py-5 text-center'>
+                  <Spin tip='Loading' size='large' />
+                </div>
               </div>
-              <div className='col-12'>
-                <span className='th-grey th-12'>
-                  Submission on -
-                  {moment(previewData?.submission_date).format('DD/MM/YYYY')}
-                </span>
-              </div>
-              <div className='col-12 mt-3'>
-                <div className='row th-12 th-grey'>
-                  <div className='col-2 px-0 th-14'>
-                    <div className='d-flex justify-content-between'>
-                      <span>Grades</span>
-                      <span>:&nbsp;</span>
+            ) : (
+              <div className='row th-bg-white p-2 pb-3'>
+                <div className='col-12'>
+                  <span className='th-black-1 th-fw-500 th-25'>{previewData?.title}</span>
+                </div>
+                <div className='col-12'>
+                  <span className='th-grey th-12'>
+                    Submission on -
+                    {moment(previewData?.submission_date).format('DD/MM/YYYY')}
+                  </span>
+                </div>
+                <div className='col-12 mt-3'>
+                  <div className='row th-12 th-grey'>
+                    <div className='col-2 px-0 th-14'>
+                      <div className='d-flex justify-content-between'>
+                        <span>Grades</span>
+                        <span>:&nbsp;</span>
+                      </div>
+                    </div>
+                    <div className='col-10 pl-0'>
+                      <span>
+                        {previewData?.grades
+                          .slice(0, 2)
+                          .map((item) => item?.name)
+                          .toString()}
+                      </span>
+                      {previewData?.grades.length > 2 && (
+                        <Tooltip
+                          placement='bottomLeft'
+                          title={
+                            <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
+                              {previewData?.grades?.map((item) => (
+                                <div>{item?.name}</div>
+                              ))}
+                            </div>
+                          }
+                          trigger='click'
+                          className='th-pointer'
+                          zIndex={2000}
+                        >
+                          <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
+                            Show All
+                          </span>
+                        </Tooltip>
+                      )}
                     </div>
                   </div>
-                  <div className='col-10 pl-0'>
-                    <span>
-                      {previewData?.grades
-                        .slice(0, 2)
-                        .map((item) => item?.name)
-                        .toString()}
-                    </span>
-                    {previewData?.grades.length > 2 && (
-                      <Tooltip
-                        placement='bottomLeft'
-                        title={
-                          <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
-                            {previewData?.grades?.map((item) => (
-                              <div>{item?.name}</div>
-                            ))}
-                          </div>
-                        }
-                        trigger='click'
-                        className='th-pointer'
-                        zIndex={2000}
-                      >
-                        <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
-                          Show All
-                        </span>
-                      </Tooltip>
-                    )}
-                  </div>
-                </div>
-                <div className='row th-12 th-grey'>
-                  <div className='col-2 px-0 th-14'>
-                    <div className='d-flex justify-content-between'>
-                      <span>Sections</span>
-                      <span>:&nbsp;</span>
+                  <div className='row th-12 th-grey'>
+                    <div className='col-2 px-0 th-14'>
+                      <div className='d-flex justify-content-between'>
+                        <span>Sections</span>
+                        <span>:&nbsp;</span>
+                      </div>
+                    </div>
+                    <div className='col-10 pl-0'>
+                      <span>
+                        {previewData?.sections
+                          .slice(0, 2)
+                          .map((item) => item?.name)
+                          .toString()}
+                      </span>
+                      {previewData?.sections.length > 2 && (
+                        <Tooltip
+                          placement='bottomLeft'
+                          title={
+                            <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
+                              {previewData?.sections?.map((item) => (
+                                <div>{item?.name}</div>
+                              ))}
+                            </div>
+                          }
+                          trigger='click'
+                          className='th-pointer'
+                          zIndex={2000}
+                        >
+                          <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
+                            Show All
+                          </span>
+                        </Tooltip>
+                      )}
                     </div>
                   </div>
-                  <div className='col-10 pl-0'>
-                    <span>
-                      {previewData?.sections
-                        .slice(0, 2)
-                        .map((item) => item?.name)
-                        .toString()}
-                    </span>
-                    {previewData?.sections.length > 2 && (
-                      <Tooltip
-                        placement='bottomLeft'
-                        title={
-                          <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
-                            {previewData?.sections?.map((item) => (
-                              <div>{item?.name}</div>
-                            ))}
-                          </div>
-                        }
-                        trigger='click'
-                        className='th-pointer'
-                        zIndex={2000}
-                      >
-                        <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
-                          Show All
-                        </span>
-                      </Tooltip>
-                    )}
-                  </div>
-                </div>
-                <div className='row th-12 th-grey'>
-                  <div className='d-flex flex-column'>
-                    <div className='th-14'>Instructions</div>
-                    <div>{previewData?.description}</div>
+                  <div className='row th-12 th-grey'>
+                    <div className='d-flex flex-column'>
+                      <div className='th-14'>Instructions</div>
+                      <div>{previewData?.description}</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </Modal>
         </div>
-        {/* <Grid
-          container
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            paddingLeft: '22px',
-            paddingBottom: '15px',
-          }}
-        >
-          <div
-            className='col-md-6'
-            style={{ zIndex: 2, display: 'flex', alignItems: 'center' }}
-          >
-            <div>
-              <IconButton aria-label='back' onClick={handleGoBack}>
-                <KeyboardBackspaceIcon style={{ fontSize: '20px', color: 'black' }} />
-              </IconButton>
-            </div>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item
-                href='/blog/wall/central/redirect'
-                className='th-grey th-400'
-              >
-                Activities Management
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-grey th-400'>
-                Physical Activity
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div
-            className='col-md-4'
-            style={{
-              zIndex: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'end',
-            }}
-          >
-            <ButtonAnt
-              type='primary'
-              icon={<AppstoreAddOutlined />}
-              size={'large'}
-              onClick={createPush}
-            >
-              Create Physical Activity
-            </ButtonAnt>
-          </div>
-          <div
-            className='col-md-2'
-            style={{
-              zIndex: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <ButtonAnt
-              type='primary'
-              icon={<AppstoreAddOutlined />}
-              size={'large'}
-              onClick={redirectBMI}
-            >
-              Add BMI
-            </ButtonAnt>
-          </div>
-          <div className='row mt-2'>
-            <div className='col-12'>
-              <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-                <div className='row align-items-center'>
-                  <div className='col-md-2 col-6 pl-0'>
-                    <div className='mb-2 text-left'>Sub-Activity </div>
-                    <Form.Item name='board'>
-                      <Select
-                        placeholder='Select Sub-Activity'
-                        showSearch
-                        suffixIcon={<DownOutlined className='th-grey' />}
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                        onChange={(e) => {
-                          handleSubActivity(e);
-                        }}
-                        onClear={handleClearSubActivity}
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                        bordered={true}
-                      >
-                        {subActivityOption}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                  <div
-                    className='col-md-2 col-6 pr-0 px-0 pl-md-3 mt-3'
-                    style={{ display: 'flex', paddingTop: '5px' }}
-                  >
-                    <div className='mb-2 text-left'> </div>
-                  </div>
-                </div>
-              </Form>
-            </div>
-          </div>
-        </Grid>
-        <Grid>
-          <Paper className={`${classes.root} common-table`} id='singleStudent'>
-            <TableContainer
-              className={`table table-shadow view_users_table ${classes.container}`}
-            >
-              <Table stickyHeader aria-label='sticky table'>
-                <TableHead className={`${classes.columnHeader} table-header-row`}>
-                  <TableRow>
-                    <TableCell
-                      className={classes.tableCell}
-                      style={{ whiteSpace: 'nowrap' }}
-                    >
-                      S No.
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>Topic Name</TableCell>
-                    <TableCell className={classes.tableCell}>Assigned On</TableCell>
-                    <TableCell className={classes.tableCell}>Created By</TableCell>
-                    <TableCell style={{ width: '252px' }} className={classes.tableCell}>
-                      Action
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                {assingeds?.map((response, index) => (
-                  <TableBody>
-                    <TableRow hover role='checkbox' tabIndex={-1}>
-                      <TableCell className={classes.tableCells}>
-                        {index + 1 + (Number(currentPageAssigned) - 1) * limitAssigned}
-                      </TableCell>
-                      <TableCell className={classes.tableCells}>
-                        {response.title}
-                      </TableCell>
-                      <TableCell className={classes.tableCells}>
-                        {moment(response?.created_at).format('DD-MM-YYYY')}
-                      </TableCell>
-                      <TableCell className={classes.tableCells}>
-                        {response?.creator?.name}
-                      </TableCell>
-                      <TableCell className={classes.tableCells}>
-                        <ButtonAnt
-                          type='primary'
-                          icon={<PieChartOutlined />}
-                          size={'medium'}
-                          onClick={() => viewedAssign(response)}
-                        >
-                          Review
-                        </ButtonAnt>
-                        &nbsp;&nbsp;
-                        <ButtonAnt
-                          type='primary'
-                          icon={<IdcardOutlined />}
-                          size={'medium'}
-                          style={{
-                            backgroundColor: '#ff9800',
-                            border: '1px solid #ff9800',
-                          }}
-                          onClick={() => handlePreview(response)}
-                        >
-                          Preview
-                        </ButtonAnt>
-                        &nbsp;&nbsp;
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                ))}
-              </Table>
-              <TablePagination
-                component='div'
-                count={totalCountAssigned}
-                rowsPerPage={limitAssigned}
-                page={Number(currentPageAssigned) - 1}
-                onChangePage={(e, page) => {
-                  handlePaginationAssign(e, page + 1);
-                }}
-                rowsPerPageOptions={false}
-                className='table-pagination'
-                classes={{
-                  spacer: classes.tablePaginationSpacer,
-                  toolbar: classes.tablePaginationToolbar,
-                }}
-              />
-            </TableContainer>
-          </Paper>
-        </Grid>
-
-        <Dialog open={preview} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '642px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '12px',
-              }}
-            >
-              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-              <div style={{ marginTop: '21px', marginRight: '34px' }}>
-                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
-              </div>
-            </div>
-
-            <div
-              style={{
-                border: '1px solid lightgray',
-                height: ' auto',
-                marginLeft: '16px',
-                marginRight: '32px',
-                borderRadius: '10px',
-                marginBottom: '9px',
-              }}
-            >
-              <div style={{ marginLeft: '23px', marginTop: '28px', overflow: 'scroll' }}>
-                <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
-                <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
-                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                  Submission on -{previewData?.submission_date?.substring(0, 10)}
-                </div>
-                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                  Branch -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Grade -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.grades.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Section -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div
-                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                ></div>
-                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                  Instructions
-                </div>
-                <div style={{ paddingTop: '8px', fontSize: '16px' }}>
-                  {previewData?.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        </Dialog>
-
-        <Dialog maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '503px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div>
-                <DoneIcon style={{ color: 'green', fontSize: '81px' }} />
-              </div>
-              <div style={{ fontSize: '20px', marginBottom: '2px' }}>
-                Blog Successfully Assigned
-              </div>
-              <div style={{ fontSize: '15px', marginBottom: '24px' }}>
-                Check Assigned tab for new submissions
-              </div>
-              <div style={{ marginBottom: '15px' }}>
-                <Button variant='contained' size='small'>
-                  Okay
-                </Button>{' '}
-              </div>
-            </div>
-          </div>
-        </Dialog>
-
-        {assigned == true && (
-          <Dialog
-            open={assigned}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <DialogTitle id='draggable-dialog-title'>
-              <strong>Assign Details</strong>
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText>Are you sure you want to assign ?</DialogContentText>
-            </DialogContent>
-
-            <Divider className={classes.divider} />
-            <DialogActions>
-              <Button style={{ backgroundColor: 'lightgray' }} onClick={closeconfirm}>
-                Cancel
-              </Button>
-              <Button
-                color='primary'
-                variant='contained'
-                style={{ color: 'white' }}
-                onClick={confirmassign}
-              >
-                Confirm
-              </Button>
-            </DialogActions>
-          </Dialog>
-        )}
-
-        <Dialog open={view} maxWidth={maxWidth}>
-          {' '}
-          <div style={{ width: '700px' }}>
-            <Grid
-              container
-              direction='row'
-              alignItems='center'
-              justifyContent='space-between'
-              style={{ justifyContent: 'space-between' }}
-            >
-              <Grid item>
-                <Typography>
-                  <strong
-                    style={{ fontSize: '14px', color: themeContext.palette.primary.main }}
-                  >
-                    Please Select Your Branch
-                  </strong>
-                </Typography>
-              </Grid>
-              <Grid item>
-                <IconButton size='small' style={{ visibility: 'hidden' }}>
-                  <Close />
-                </IconButton>
-              </Grid>
-              <Grid item>
-                <IconButton size='small' onClick={() => handleClose()}>
-                  <Close />
-                </IconButton>
-              </Grid>
-            </Grid>
-
-            <Divider className={classes.divider} />
-            <Grid
-              container
-              direction='row'
-              style={{ marginLeft: '5px', marginBottom: '20px' }}
-            >
-              {branchView == true && (
-                <Grid item>
-                  Branch Name:{' '}
-                  <Button
-                    size='small'
-                    color='primary'
-                    className={classes.buttonColor}
-                    variant='contained'
-                    onClick={branchViewed}
-                    endIcon={<ArrowDropDownIcon />}
-                    style={{ width: '576px' }}
-                  >
-                    {data == '' ? 'Select' : data.label}
-                  </Button>
-                </Grid>
-              )}
-              {data && (
-                <Grid
-                  item
-                  style={{
-                    marginLeft: '580px',
-                    marginTop: '25px',
-                  }}
-                >
-                  <Button variant='contained' size='small' color='primary'>
-                    {' '}
-                    Proceed
-                  </Button>
-                </Grid>
-              )}
-              {branchSearch == true && branchView == false && (
-                <Grid item style={{ display: 'flex' }}>
-                  Branch Name:&nbsp;
-                  <Paper
-                    style={{
-                      border: '1px solid gray',
-                      width: '576px',
-                      height: '321px',
-                      overflowY: 'auto',
-                    }}
-                  >
-                    <div>
-                      <TextField
-                        placeholder='Type Text...'
-                        style={{ background: 'lightgray', width: '574px' }}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                        variant='standard'
-                      />
-                    </div>
-                    <div>
-                      <TableContainer>
-                        <Table aria-label='simple table'>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.searchTable}>
-                                Branch Name
-                              </TableCell>
-                              <TableCell className={classes.searchTable} align='right'>
-                                Total Submitted
-                              </TableCell>
-                              <TableCell className={classes.searchTable} align='right'>
-                                Reviewed
-                              </TableCell>
-                              <TableCell className={classes.searchTable} align='right'>
-                                Review Pending
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {months.map((option) => (
-                              <TableRow
-                                key={option.value}
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => handleDate(option)}
-                              >
-                                <TableCell component='th' scope='row'>
-                                  {option.value}
-                                </TableCell>
-                                <TableCell align='right'>{option.label}</TableCell>
-                                <TableCell align='right'>22</TableCell>
-                                <TableCell align='right'>30</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div>
-                  </Paper>
-                </Grid>
-              )}
-            </Grid>
-          </div>
-        </Dialog> */}
       </Layout>
     </div>
   );

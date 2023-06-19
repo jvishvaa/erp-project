@@ -61,6 +61,7 @@ const StudentSidePhysicalActivity = () => {
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [isRoundAvailable, setIsRoundAvailable] = useState(false);
   const [loadingMedia, setLoadingMedia] = useState(false);
+  const [loadingBMI, setLoadingBMI] = useState(false);
   const [playVideo, setPlayVideo] = useState(true);
   const [physicalActivityToggle, setPhysicalActivityToggle] = useState(false);
 
@@ -74,8 +75,8 @@ const StudentSidePhysicalActivity = () => {
       playerRef.current.seekTo(0);
     }
     setShowSideDrawer(false);
-    setSelectedActivity(null);
     setMediaFiles({});
+    setSelectedActivity(null);
   };
 
   const fetchStudentActivityList = (params = {}) => {
@@ -147,7 +148,7 @@ const StudentSidePhysicalActivity = () => {
     setSelectedActivity(data);
   };
   const handleViewBMIModal = (data) => {
-    setLoadingMedia(true);
+    setLoadingBMI(true);
     fetchBMIData(data?.id);
   };
 
@@ -179,11 +180,6 @@ const StudentSidePhysicalActivity = () => {
           array.push(temp);
         });
         setRatingReview(response.data);
-        if (is_round_available) {
-          setShowDrawer(true);
-        } else {
-          setShowSideDrawer(true);
-        }
         setLoading(false);
       })
       .catch((error) => {
@@ -214,7 +210,7 @@ const StudentSidePhysicalActivity = () => {
         message.error(error?.message);
       })
       .finally(() => {
-        setLoadingMedia(false);
+        setLoadingBMI(false);
       });
   };
   const fetchMedia = (id) => {
@@ -279,7 +275,14 @@ const StudentSidePhysicalActivity = () => {
             icon={<PieChartOutlined className='th-14' />}
             color='geekblue'
             className='th-br-5 th-pointer py-1'
-            onClick={() => handleShowReview(row)}
+            onClick={() => {
+              if (physicalActivityToggle) {
+                setShowDrawer(true);
+              } else {
+                setShowSideDrawer(true);
+              }
+              handleShowReview(row);
+            }}
           >
             <span className='th-fw-500 th-14'>Check Review</span>
           </Tag>
@@ -494,6 +497,7 @@ const StudentSidePhysicalActivity = () => {
               <Button
                 className='th-button-active th-br-6 text-truncate th-pointer'
                 icon={<FundViewOutlined />}
+                loading={loadingBMI}
                 onClick={handleViewBMIModal}
               >
                 View BMI
@@ -522,7 +526,7 @@ const StudentSidePhysicalActivity = () => {
                     }
                     loading={loading}
                     pagination={{
-                      position: 'bottomCenter',
+                      position: ['bottomCenter'],
                       total: totalCountAssigned,
                       current: Number(currentPageAssigned),
                       pageSize: limitAssigned,

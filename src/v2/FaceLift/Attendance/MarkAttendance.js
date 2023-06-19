@@ -702,7 +702,8 @@ const MarkStudentAttendance = () => {
               <div className='col-12 py-4'>
                 <span className='th-fw-500 th-20'>
                   {' '}
-                  Share the attendance status for the students marked 'Absent'
+                  Share the attendance status for the students marked{' '}
+                  <span className='th-red'>'Absent'</span>
                 </span>
               </div>
             </div>

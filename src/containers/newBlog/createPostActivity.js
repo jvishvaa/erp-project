@@ -436,7 +436,6 @@ const CreatePostActivity = () => {
               </div>
             </div>
           </div>
-
           <UploadModalBlog
             show={showUploadModal}
             branchId={boardId}
