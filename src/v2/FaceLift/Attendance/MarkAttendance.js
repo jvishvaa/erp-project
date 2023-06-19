@@ -51,6 +51,7 @@ const MarkStudentAttendance = () => {
   const [presentCount, setPresentCount] = useState(0);
   const [absentCount, setAbsentCount] = useState(0);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const isDateEditable = [1, 2, 8, 9].includes(user_level);
 
   let columns = [
     {
@@ -139,6 +140,8 @@ const MarkStudentAttendance = () => {
       section: [],
     });
     setSectionData([]);
+    setSectionIDs([]);
+    setSectionMappingIDs([]);
     if (e) {
       setGradeID(e);
       if (isStudent) {
@@ -468,20 +471,22 @@ const MarkStudentAttendance = () => {
         <div className='col-12 mt-3 '>
           <Form id='filterForm' ref={formRef} layout={'vertical'}>
             <div className='row align-items-center th-bg-white pt-2'>
-              <div className='col-md-2 col-6 '>
-                <Form.Item name='date' label='Date'>
-                  <DatePicker
-                    defaultValue={moment(selectedDate)}
-                    disabled={true}
-                    // disabledDate={(current) => current.isAfter(moment())}
-                    format={'YYYY-MM-DD'}
-                    inputReadOnly={true}
-                    allowClear={false}
-                    className='th-date-picker th-width-100'
-                    onChange={(e) => handleDateChange(e)}
-                  />
-                </Form.Item>
-              </div>
+              {isDateEditable && (
+                <div className='col-md-2 col-6 '>
+                  <Form.Item name='date' label='Date'>
+                    <DatePicker
+                      defaultValue={moment(selectedDate)}
+                      disabledDate={(current) => current.isAfter(moment())}
+                      format={'YYYY-MM-DD'}
+                      inputReadOnly={true}
+                      allowClear={false}
+                      showToday={false}
+                      className='th-date-picker th-width-100'
+                      onChange={(e) => handleDateChange(e)}
+                    />
+                  </Form.Item>
+                </div>
+              )}
               {!isStudent && (
                 <div className='col-md-2 col-6 '>
                   <Form.Item name='user_level' label='User Level'>
