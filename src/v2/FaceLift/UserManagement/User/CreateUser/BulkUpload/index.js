@@ -421,26 +421,10 @@ const BulkUpload = () => {
 
   return (
     <React.Fragment>
-      <Layout>
-        <div className='row pt-3 pb-3'>
-          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item
-                href='/user-management/view-users'
-                className='th-black-1 th-16 th-grey'
-              >
-                User Management
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>
-                User bulk upload
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-        </div>
-
+      <>
         <div className='row mb-3'>
           <div className='col-md-12'>
-            <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
+            <div className='th-br-5 py-3 px-2'>
               <Form ref={bulkUploadFormRef} id='bulkUploadForm' layout={'vertical'}>
                 <div className='row mt-1'>
                   <div className='col-md-3 col-sm-4 col-12'>
@@ -484,8 +468,8 @@ const BulkUpload = () => {
                       <span className='text-muted'>
                         <a
                           style={{ cursor: 'pointer' }}
-                          href='/assets/download-format/upload_virtual_student.xlsx'
-                          download='virtual_student.xlsx'
+                          href='/assets/download-format/erp_userb2b.xlsx'
+                          download='erp_user.xlsx'
                         >
                           Download format
                         </a>
@@ -707,7 +691,7 @@ const BulkUpload = () => {
             </div>
           </div>
         </div>
-      </Layout>
+      </>
     </React.Fragment>
   );
 };

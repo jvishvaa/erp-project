@@ -27,7 +27,7 @@ const SiblingInformation = ({
       <div
         className='px-2'
         style={{
-          height: '70vh',
+          height: '60vh',
           overflowY: 'scroll',
           overflowX: 'hidden',
           background: '#F8F8F8',

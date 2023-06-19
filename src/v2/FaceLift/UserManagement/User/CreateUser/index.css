@@ -114,3 +114,7 @@
 .th-primary-contact-check .ant-space-item .ant-form-item{
     margin-bottom: 0px !important;
 }   
+
+.th-primary-contact-check .ant-checkbox-inner{
+    border-color: #1B4CCB !important;
+}

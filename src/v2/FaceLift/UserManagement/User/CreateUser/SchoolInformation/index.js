@@ -106,7 +106,7 @@ const SchoolInformation = ({
       <div
         className='px-2'
         style={{
-          height: '70vh',
+          height: '60vh',
           overflowY: 'scroll',
           overflowX: 'hidden',
           background: '#F8F8F8',
@@ -419,10 +419,7 @@ const SchoolInformation = ({
           </>
         )}
       </div>
-      <div
-        // style={{ position: 'sticky', bottom: '59px' }}
-        className='d-flex justify-content-end align-items-center my-4'
-      >
+      <div className='d-flex justify-content-end align-items-center my-4'>
         <Button
           loading={loading}
           htmlType='submit'

@@ -1,4 +1,4 @@
-import { Breadcrumb, Card, message, Progress, Steps } from 'antd';
+import { Breadcrumb, Card, message, Progress, Spin, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import './index.css';
 import './index.css';
@@ -81,6 +81,7 @@ const CreateUser = () => {
     }
     if (params?.id) {
       setEditId(params?.id);
+      setLoading(true);
       axiosInstance
         .get(`/erp_user/user-data/?erp_user_id=${params?.id}`)
         .then((response) => {
@@ -375,6 +376,12 @@ const CreateUser = () => {
                   },
                 ]
           );
+        })
+        .catch((error) => {
+          message.error(error?.response?.data?.message ?? 'Something went wrong!');
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
     getRoleApi();
@@ -605,7 +612,8 @@ const CreateUser = () => {
     formData.append('old_school_name', studentFormValues?.old_school_name ?? '');
     formData.append('special_needs', studentFormValues?.special_needs ?? '');
     formData.append('medical_info', studentFormValues?.medical_info ?? '');
-    if (userLevel === 13)
+    formData.append('aadhaar_number', familyFormValues?.aadhaar_number ?? '');
+    if (userLevel === 13 && studentFormValues?.single_parent)
       formData.append(
         'single_parent',
         studentFormValues?.single_parent
@@ -676,6 +684,7 @@ const CreateUser = () => {
         !key.includes('photo') &&
         key !== 'email' &&
         key !== 'contact' &&
+        key !== 'aadhaar_number' &&
         familyValues[key]
         // !key.includes('address')
       ) {
@@ -764,23 +773,25 @@ const CreateUser = () => {
   let totalStep = userLevel && userLevel === 13 ? 4 : 3;
   return (
     <React.Fragment>
-      <Layout>
-        <div className='th-bg-white py-4 mb-5 pb-5 px-3'>
-          <div className='row pb-3'>
-            <div className='col-md-9' style={{ zIndex: 2 }}>
-              <Breadcrumb separator='>'>
-                <Breadcrumb.Item
-                  href='/user-management/view-users'
-                  className='th-grey th-16'
-                >
-                  User Management
-                </Breadcrumb.Item>
-                <Breadcrumb.Item className='th-black-1 th-16'>
-                  {params?.id ? 'Edit' : 'Create'} User
-                </Breadcrumb.Item>
-              </Breadcrumb>
+      <>
+        <div className='th-bg-white  mb-5 pb-5 px-3'>
+          {params?.id && (
+            <div className='row pb-3 py-4'>
+              <div className='col-md-9' style={{ zIndex: 2 }}>
+                <Breadcrumb separator='>'>
+                  <Breadcrumb.Item
+                    href='/user-management/view-users'
+                    className='th-grey th-16'
+                  >
+                    User Management
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item className='th-black-1 th-16'>
+                    Edit User
+                  </Breadcrumb.Item>
+                </Breadcrumb>
+              </div>
             </div>
-          </div>
+          )}
           {/* <div className='th-small-steps d-block d-sm-block d-md-none'>
             <Steps
               onChange={(key) => {
@@ -797,71 +808,52 @@ const CreateUser = () => {
               <Step key={3} title='34r' />
             </Steps>
           </div> */}
-          <div className='th-bg-white pl-2'>
-            <Steps
-              // onChange={(e) => {
-              //   setCurrentStep(e);
-              // }}
-              onChange={null}
-              current={currentStep}
-              className=' h-100'
-              type='primary'
-            >
-              <Step key={0} title='School Information' />
-              <Step
-                key={1}
-                title={`${userLevel === 13 ? 'Student' : 'User'} Information`}
-              />
-              <Step key={2} title='Family Information' />
-              {userLevel === 13 && <Step key={3} title='Sibling Information' />}
-            </Steps>
+          <Spin spinning={loading} tip='Loading..' size='large' className='th-primary'>
             <div className='d-flex  '>
               <div className='d-none d-xs-none d-sm-none d-md-block'>
                 <div
-                  className='text-center  '
-                  style={
-                    {
-                      // height: '70vh',
-                    }
-                  }
-                >
-                  {/* <Steps
-                  onChange={(e) => {
-                    setCurrentStep(e);
+                  className='text-center th-erp-steps '
+                  style={{
+                    height: '65vh',
                   }}
-                  // onChange={null}
-                  current={currentStep}
-                  direction={'vertical'}
-                  className='custom-vertical-steps h-100'
-                  type='primary'
                 >
-                  <Step key={0} title='School Information' />
-                  <Step
-                    key={1}
-                    title={`${userLevel === 13 ? 'Student' : 'User'} Information`}
+                  <Steps
+                    // onChange={(e) => {
+                    //   setCurrentStep(e);
+                    // }}
+                    onChange={null}
+                    current={currentStep}
+                    direction={'vertical'}
+                    className='custom-vertical-steps h-100'
+                    type='primary'
+                  >
+                    <Step key={0} title='School Information' />
+                    <Step
+                      key={1}
+                      title={`${userLevel === 13 ? 'Student' : 'User'} Information`}
+                    />
+                    <Step key={2} title='Family Information' />
+                    {userLevel === 13 && <Step key={3} title='Sibling Information' />}
+                  </Steps>
+                  <Progress
+                    strokeColor='#1B4CCB'
+                    format={(percent) => (
+                      <span className='th-primary th-fw-600 th-18'>
+                        {percent}% <br />{' '}
+                        <span className='th-12 th-fw-400'>Completed</span>
+                      </span>
+                    )}
+                    trailColor='primary'
+                    width={100}
+                    type='circle'
+                    percent={Math.ceil(((currentStep + 1) / totalStep) * 100)}
                   />
-                  <Step key={2} title='Family Information' />
-                  {userLevel === 13 && <Step key={3} title='Sibling Information' />}
-                </Steps> */}
-
-                  {/* <Progress
-                  strokeColor='#1B4CCB'
-                  format={(percent) => (
-                    <span className='th-primary th-fw-600 th-18'>
-                      {percent}% <br /> <span className='th-12 th-fw-400'>Completed</span>
-                    </span>
-                  )}
-                  trailColor='primary'
-                  width={100}
-                  type='circle'
-                  percent={Math.ceil(((currentStep + 1) / totalStep) * 100)}
-                /> */}
-                  {/* <div className='th-primary th-18 th-fw-600'>
+                  <div className='th-primary th-18 th-fw-600'>
                     Step {currentStep + 1}/{totalStep}
-                  </div> */}
+                  </div>
                 </div>
               </div>
-              <div className='pl-2  mt-4' style={{ width: `calc(100%)`, height: '75vh' }}>
+              <div className='pl-2' style={{ width: `calc(100% )`, height: '74vh' }}>
                 <div className='mb-3 th-primary th-fw-500 th-16'>
                   Please fill the{' '}
                   {currentStep === 0
@@ -992,9 +984,9 @@ const CreateUser = () => {
               </div> */}
               </div>
             </div>
-          </div>
+          </Spin>
         </div>
-      </Layout>
+      </>
     </React.Fragment>
   );
 };
