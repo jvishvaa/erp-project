@@ -1016,6 +1016,11 @@ export default {
     getCategoryOptions: `${newBlogURL}/api/school_wall_activity_types/`,
   },
 
+  reportPipeline: {
+    viewReportPipeline: `${baseURLCentral}/central-admin/b2b-report-pipeline/`,
+    reportPipelineConfig: `${baseURLCentral}/central-admin/b2b-report-config/`,
+  },
+
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
