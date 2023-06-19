@@ -29,6 +29,7 @@ const StudentInformation = ({
   setParent,
 }) => {
   const studentForm = useRef();
+  const [radioSelected, setRadioSelected] = useState(true);
   useEffect(() => {
     if (studentFormValues && Object.keys(studentFormValues).length > 0) {
       studentForm.current.setFieldsValue(studentFormValues);
@@ -56,6 +57,10 @@ const StudentInformation = ({
     setSelectedImage(URL.createObjectURL(file));
   };
   const handleSubmit = (formValues) => {
+    if (userLevel === 13 && !formValues.single) {
+      setRadioSelected(false);
+      return;
+    }
     setStudentFormValues({
       ...formValues,
       profile: photo,
@@ -69,7 +74,7 @@ const StudentInformation = ({
       <div
         className='px-2'
         style={{
-          height: '70vh',
+          height: '60vh',
           overflowY: 'scroll',
           overflowX: 'hidden',
           background: '#F8F8F8',
@@ -226,6 +231,21 @@ const StudentInformation = ({
                 </Col>
               </Row>
             </Col>
+            <Col md={8} className='py-2'>
+              <Form.Item
+                rules={[
+                  {
+                    required: false,
+                    message: `Invalid Aadhar Number!`,
+                    pattern: /^\d{12}$/,
+                  },
+                ]}
+                name={'aadhaar_number'}
+                label={(userLevel === 13 ? 'Student' : 'User') + ' Aadhaar'}
+              >
+                <Input className='w-100' />
+              </Form.Item>
+            </Col>
             {userLevel === 13 && (
               <Col md={24}>
                 <Row gutter={24}>
@@ -261,18 +281,24 @@ const StudentInformation = ({
           </Row>
           {userLevel === 13 && (
             <Row align='middle' gutter={24}>
-              <Col className='py-2' md={12}>
+              <Col className='py-2'>
                 <div>
                   <div className='pb-1'>Note *</div>
-                  <div className='d-flex th-padding-card align-items-center'>
+                  <div
+                    className='d-flex th-padding-card align-items-center'
+                    style={{ borderColor: radioSelected ? '#d9d9d9' : '#ff4d4f' }}
+                  >
                     <div className=''>Does the student have a single parent?</div>
                     <Form.Item
-                      rules={[{ required: true, message: 'Please select!' }]}
+                      // rules={[{ required: true, message: 'Please select!' }]}
                       style={{ margin: '0px' }}
                       name={'single'}
                     >
                       <Radio.Group
-                        onChange={(e) => setSingleParent(e.target.value)}
+                        onChange={(e) => {
+                          setSingleParent(e.target.value);
+                          setRadioSelected(true);
+                        }}
                         className='pl-2'
                       >
                         <Radio value={true}>Yes</Radio>
@@ -281,24 +307,27 @@ const StudentInformation = ({
                     </Form.Item>
                   </div>
                 </div>
+                {!radioSelected && (
+                  <div className='pt-2' style={{ color: '#ff4d4f' }}>
+                    This field is required
+                  </div>
+                )}
               </Col>
               {singleParent && (
                 <Col
                   className='py-2 pt-4 d-flex  align-items-center th-form-bottom-0'
                   md={12}
                 >
-                  <div className=''>Select</div>
                   <Form.Item
+                    label='Select'
                     rules={[{ required: true, message: 'Please select parent' }]}
                     name={'single_parent'}
                   >
                     <Radio.Group
-                      label=''
                       value={guardian}
                       onChange={(e) => {
                         setGuardian(e.target.value);
                       }}
-                      className='pl-3'
                     >
                       <Radio value={'father'}>Father</Radio>
                       <Radio value={'mother'}>Mother</Radio>

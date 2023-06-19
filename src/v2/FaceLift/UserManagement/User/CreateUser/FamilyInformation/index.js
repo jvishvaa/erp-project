@@ -72,10 +72,10 @@ const FamilyInformation = ({
     });
     console.log(formValues, 'formValues');
     if (userLevel === 13) {
-      if (!fatherPrimary || !motherPrimary || !guardianPrimary) {
+      if (!fatherPrimary && !motherPrimary && !guardianPrimary) {
         message.error('Select a contact number as primary!');
       }
-      if (!fatherPrimaryEmail || !motherPrimaryEmail || !guardianPrimaryEmail) {
+      if (!fatherPrimaryEmail && !motherPrimaryEmail && !guardianPrimaryEmail) {
         message.error('Select an email as primary!');
       }
     }
@@ -93,27 +93,24 @@ const FamilyInformation = ({
     }
     if (userLevel === 13) {
       if (
-        formValues.father_aadhaar ||
-        formValues.mother_aadhaar ||
-        formValues.guardian_aadhaar
+        !formValues.father_aadhaar &&
+        !formValues.mother_aadhaar &&
+        !formValues.guardian_aadhaar
       ) {
-        handleNext();
-      } else {
         message.error(`Either of Father's or Mother's or Guardian's aadhar is required!`);
         return;
       }
       if (
-        formValues.father_mobile ||
-        formValues.mother_mobile ||
-        formValues.guardian_mobile
+        !formValues.father_mobile &&
+        !formValues.mother_mobile &&
+        !formValues.guardian_mobile
       ) {
-        handleNext();
-      } else {
         message.error(
           `Either of Father's or Mother's or Guardian's Contact is required!`
         );
         return;
       }
+      handleNext();
     } else {
       if (
         parent &&
@@ -123,13 +120,7 @@ const FamilyInformation = ({
         !formValues.guardian_aadhaar
       ) {
         message.error(`Either of Father's or Mother's or Guardian's aadhar is required!`);
-      } else {
-        handleSubmit({
-          ...formValues,
-          father_photo: selectedImageFather,
-          mother_photo: selectedImageMother,
-          guardian_photo: selectedImageGuardian,
-        });
+        return;
       }
       if (
         parent &&
@@ -141,14 +132,14 @@ const FamilyInformation = ({
         message.error(
           `Either of Father's or Mother's or Guardian's Contact is required!`
         );
-      } else {
-        handleSubmit({
-          ...formValues,
-          father_photo: selectedImageFather,
-          mother_photo: selectedImageMother,
-          guardian_photo: selectedImageGuardian,
-        });
+        return;
       }
+      handleSubmit({
+        ...formValues,
+        father_photo: selectedImageFather,
+        mother_photo: selectedImageMother,
+        guardian_photo: selectedImageGuardian,
+      });
     }
   };
   const guardianOption = [
@@ -158,7 +149,8 @@ const FamilyInformation = ({
   let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png'];
   const countryCodeOptions = countryList?.map((each) => (
     <Select.Option key={each?.callingCode} value={each?.callingCode}>
-      {each?.country} ({each?.callingCode})
+      {/* {each?.country} ( */}
+      {each?.callingCode}
     </Select.Option>
   ));
   return (
@@ -166,7 +158,7 @@ const FamilyInformation = ({
       <div
         className='px-2'
         style={{
-          height: '70vh',
+          height: '60vh',
           overflowY: 'scroll',
           overflowX: 'hidden',
           background: '#F8F8F8',
@@ -367,7 +359,7 @@ const FamilyInformation = ({
                 </Col>
                 <Col className='py-2' md={24}>
                   <Row gutter={24}>
-                    <Col md={6} className=''>
+                    <Col md={8} className=''>
                       <Space align='start'>
                         <Form.Item name={'father_mobile_code'} label='Code'>
                           <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
@@ -645,8 +637,8 @@ const FamilyInformation = ({
 
                 <Col className='py-2' md={24}>
                   <Row gutter={24}>
-                    <Col md={6} className=''>
-                      <Space align='start'>
+                    <Col md={8} className=''>
+                      <Space>
                         <Form.Item name={'mother_mobile_code'} label='Code'>
                           <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
                         </Form.Item>
@@ -908,7 +900,7 @@ const FamilyInformation = ({
                 </Col>
                 <Col className='py-2' md={24}>
                   <Row gutter={24}>
-                    <Col md={6} className=''>
+                    <Col md={8} className=''>
                       <Space align='start'>
                         <Form.Item name={'guardian_mobile_code'} label='Code'>
                           <Select defaultValue={'+91'}>{countryCodeOptions}</Select>

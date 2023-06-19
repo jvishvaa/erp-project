@@ -6,6 +6,7 @@ import V1CreateUser from '../../../../../containers/user-management/create-user'
 import V1EditUser from '../../../../../containers/user-management/edit-user';
 import { useSelector } from 'react-redux';
 import Layout from 'containers/Layout';
+import CreateUserTab from '../CreateUserTab';
 const CreateUserConfig = ({ match }) => {
   const [config, setConfig] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +56,13 @@ const CreateUserConfig = ({ match }) => {
           </div>
         </Layout>
       ) : config?.includes(selectedBranch?.id?.toString()) && isOrchids ? (
-        <CreateUser />
+        window.location.pathname.includes('edit') ? (
+          <Layout>
+            <CreateUser />
+          </Layout>
+        ) : (
+          <CreateUserTab />
+        )
       ) : (
         <div className='user-management-container'>
           {window.location.pathname.includes('edit') ? (
