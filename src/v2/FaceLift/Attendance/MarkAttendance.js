@@ -15,7 +15,7 @@ import {
 import axios from 'v2/config/axios';
 import endpoints from 'config/endpoints';
 import moment from 'moment';
-import { DownOutlined, CloseOutlined } from '@ant-design/icons';
+import { DownOutlined, CloseOutlined, InfoCircleTwoTone } from '@ant-design/icons';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import _ from 'lodash';
 import { Prompt } from 'react-router-dom';
@@ -85,6 +85,7 @@ const MarkStudentAttendance = () => {
       title: <span className='th-white th-fw-700'>SECTION</span>,
       dataIndex: 'section_mapping__section__section_name',
       align: 'center',
+      width: '10%',
       visible: isStudent ? true : false,
       render: (data) => <span className='th-black-1 th-16'>{data}</span>,
     },
@@ -536,7 +537,7 @@ const MarkStudentAttendance = () => {
                 </Form.Item>
               </div>
               {isStudent && (
-                <div className='col-md-2 col-6 '>
+                <div className='col-md-3 col-6 '>
                   <Form.Item name='section' label='Sections'>
                     <Select
                       placeholder='Select Sections *'
@@ -587,14 +588,20 @@ const MarkStudentAttendance = () => {
           </Form>
           <div className='row pb-2 th-bg-white'>
             {userListData?.length > 0 && (
-              <div className='col-12 pb-2 text-right'>
-                <div className='th-fw-500 th-20 pr-2'>
-                  Update the attendance to reflect the user's absence and validate the
-                  attendance.
-                </div>
+              <div className='col-12 text-left py-2 my-1'>
+                <span
+                  className='th-16 th-br-4 p-2'
+                  style={{ border: '1px solid #d9d9d9' }}
+                >
+                  <InfoCircleTwoTone className='pr-2' />
+                  <i className='th-grey th-fw-500 '>
+                    Update the attendance to reflect the user's absence and validate the
+                    attendance.
+                  </i>
+                </span>
               </div>
             )}
-            <div className='col-12' style={{ height: '350px' }}>
+            <div className='col-12' style={{ height: '50vh' }}>
               <Table
                 className='th-table '
                 rowClassName={(record, index) =>
@@ -605,7 +612,7 @@ const MarkStudentAttendance = () => {
                 pagination={false}
                 rowKey={(record) => record?.id}
                 dataSource={userListData}
-                scroll={{ x: userListData?.length > 0 ? 'max-content' : null, y: 210 }}
+                scroll={{ x: userListData?.length > 0 ? 'max-content' : null, y: '32vh' }}
               />
             </div>
           </div>
