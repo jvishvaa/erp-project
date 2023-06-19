@@ -1,5 +1,16 @@
 import { DeleteOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Form, Input, InputNumber, Radio, Row, Select } from 'antd';
+import {
+  Button,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Popconfirm,
+  Radio,
+  Row,
+  Select,
+} from 'antd';
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import endpoints from 'v2/config/endpoints';
@@ -513,15 +524,18 @@ const AcademicYearList = ({
           {!currentObj?.isEdit && (
             <Col md={4}>
               <Form.Item label=' '>
-                <Button
-                  onClick={() => {
+                <Popconfirm
+                  onConfirm={() => {
                     handleDelete();
                   }}
-                  type='primary'
-                  icon={<DeleteOutlined />}
+                  title='Are you sure to delete?'
+                  okText='Yes'
+                  cancelText='No'
                 >
-                  Delete
-                </Button>
+                  <Button type='primary' icon={<DeleteOutlined />}>
+                    Delete
+                  </Button>
+                </Popconfirm>
               </Form.Item>
             </Col>
           )}

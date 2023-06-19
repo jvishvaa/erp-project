@@ -337,14 +337,20 @@ const CreateUser = () => {
             birth_place: transformedUser?.birth_place,
             medical_info: transformedUser?.medical_info,
             special_needs: transformedUser?.special_needs,
-            single: transformedUser?.single_parent === 1 ? true : false,
-            single_parent: transformedUser?.single_parent === 1 && 'father',
+            single: transformedUser?.single_parent ? true : false,
+            single_parent:
+              transformedUser?.single_parent === 1
+                ? 'father'
+                : transformedUser?.single_parent === 2
+                ? 'mother'
+                : 'guardian',
             profile_photo: transformedUser?.profile,
             old_school_name: transformedUser?.old_school_name,
             username: user?.user?.username,
           };
+          setGuardian(studentInformation?.single_parent);
           setSelectedSubjects(subjectObj?.map((e) => e?.id));
-          setSingleParent(transformedUser?.single_parent === 1 ? true : false);
+          setSingleParent(transformedUser?.single_parent ? true : false);
           fetchDesignation(schoolDetails?.user_level);
           fetchGrades(schoolDetails?.branch, null, module);
           fetchSections(
@@ -818,10 +824,10 @@ const CreateUser = () => {
                   }}
                 >
                   <Steps
-                    // onChange={(e) => {
-                    //   setCurrentStep(e);
-                    // }}
-                    onChange={null}
+                    onChange={(e) => {
+                      setCurrentStep(e);
+                    }}
+                    // onChange={null}
                     current={currentStep}
                     direction={'vertical'}
                     className='custom-vertical-steps h-100'
@@ -846,7 +852,7 @@ const CreateUser = () => {
                     trailColor='primary'
                     width={100}
                     type='circle'
-                    percent={Math.ceil(((currentStep + 1) / totalStep) * 100)}
+                    percent={Math.ceil((currentStep / totalStep) * 100)}
                   />
                   <div className='th-primary th-18 th-fw-600'>
                     Step {currentStep + 1}/{totalStep}

@@ -57,7 +57,8 @@ const StudentInformation = ({
     setSelectedImage(URL.createObjectURL(file));
   };
   const handleSubmit = (formValues) => {
-    if (userLevel === 13 && !formValues.single) {
+    console.log(formValues.single, 'single');
+    if (userLevel === 13 && formValues.single === undefined) {
       setRadioSelected(false);
       return;
     }
