@@ -148,7 +148,7 @@ const FamilyInformation = ({
   ];
   let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png'];
   const countryCodeOptions = countryList?.map((each) => (
-    <Select.Option key={each?.callingCode} value={each?.callingCode}>
+    <Select.Option key={each?.country} value={each?.callingCode}>
       {/* {each?.country} ( */}
       {each?.callingCode}
     </Select.Option>

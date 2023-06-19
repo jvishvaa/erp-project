@@ -291,15 +291,19 @@ const BulkUpload = () => {
   };
 
   const fetchSubject = (section) => {
-    const result = axiosInstance.get(
-      `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch}&grade=${selectedGrade}&section=${section}&module_id=${moduleId}`
-    );
-    if (result?.status_code === 200) {
-      setSubjectList(result?.data);
-    } else {
-      message.error(result?.message);
-      setSubjectList([]);
-    }
+    axiosInstance
+      .get(
+        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch}&grade=${selectedGrade}&section=${section}&module_id=${moduleId}`
+      )
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setSubjectList(response?.data?.data);
+        }
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message);
+        setSubjectList([]);
+      });
   };
 
   const gradeOptions = gradeList?.map((each) => {
@@ -554,8 +558,7 @@ const BulkUpload = () => {
                         dataSource={userLevelList}
                         pagination={false}
                         scroll={{
-                          x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
