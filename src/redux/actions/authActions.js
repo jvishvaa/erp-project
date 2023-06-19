@@ -92,6 +92,65 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
     });
 };
 
+export const loginSSo = (payload, isOtpLogin) => (dispatch) => {
+  console.log(payload, isOtpLogin , 'login payload');
+  dispatch({ type: LOGIN_REQUEST });
+  const url =  '/erp_user/login/';
+  const config = { timeout: LOGIN_TIMEOUT };
+  return axios
+    .post(url, config , {
+      headers: {
+          'Authorization': `Bearer ${payload}`,
+      }
+  })
+    .then((response) => {
+      const data = isOtpLogin ? response.data.login_response : response.data;
+      // const data = response.data;
+      // dispatch(selectedVersion(data?.result?.is_v2_enabled));
+      // localStorage.setItem('isV2', data?.result?.is_v2_enabled);
+
+      if (data.status_code === 200) {
+        const actualData = data;
+        if (isOtpLogin && data.status_code !== 200) {
+          dispatch({ type: LOGIN_FAILURE });
+          const result = { isLogin: false, message: data.message };
+          return result;
+        }
+        dispatch(selectedVersion(data?.result?.is_v2_enabled));
+        localStorage.setItem('isV2', data?.result?.is_v2_enabled);
+        dispatch({
+          type: LOGIN_SUCCESS,
+          userDetails: actualData?.result?.user_details,
+          navigationData: actualData?.result?.navigation_data,
+        });
+        localStorage.setItem(
+          'userDetails',
+          JSON.stringify(actualData?.result?.user_details)
+        );
+        localStorage.setItem(
+          'navigationData',
+          JSON.stringify(actualData?.result?.navigation_data)
+        );
+        if (isOtpLogin === true) {
+          localStorage.setItem(
+            'apps',
+            JSON.stringify(response?.data?.login_response?.result?.apps)
+          );
+        } else {
+          localStorage.setItem('apps', JSON.stringify(response?.data?.result?.apps));
+        }
+        const result = { isLogin: true, message: actualData.message };
+        return result;
+      }
+      dispatch({ type: LOGIN_FAILURE });
+      const result = { isLogin: false, message: data.message };
+      return result;
+    })
+    .catch(() => {
+      dispatch({ type: LOGIN_FAILURE });
+    });
+};
+
 export const loginMobile = (payload, isOtpMobileLogin) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
   const url = isOtpMobileLogin ? '/erp_user/mobile-verify-otp/' : '/erp_user/login/';

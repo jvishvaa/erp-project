@@ -25,6 +25,7 @@ const local = {
     msReportsUrl: 'https://dev.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
+    crm: 'https://marketing.dev-k8.letseduvate.com'
   },
 };
 const dev = {
@@ -52,6 +53,7 @@ const dev = {
     newBlogURL: 'https://activities-ms.dev-k8.letseduvate.com',
     // newBlogURL:'https://activities-revamp.dev-k8.letseduvate.com',
     erpBlogURL: 'https://dev.olvorchidnaigaon.letseduvate.com/mb_droid/',
+    crm: 'https://marketing.dev-k8.letseduvate.com'
   },
 };
 
@@ -79,6 +81,7 @@ const qa = {
     finance: 'https://qafinance.school.letseduvate.com',
     newBlogURL: 'https://activities-ms.qa.letseduvate.com',
     erpBlogURL: 'https://qa.olvorchidnaigaon.letseduvate.com/mb_droid/',
+    crm: 'https://marketing.qa.letseduvate.com'
   },
 };
 
@@ -103,6 +106,7 @@ const stage = {
     newBlogURL: 'https://activities.letseduvate.com',
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     msReportsUrl: 'https://reports.qa.letseduvate.com',
+    crm: 'https://marketing-stage.letseduvate.com'
   },
 };
 
@@ -131,6 +135,7 @@ const prod = {
     finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
     newBlogURL: 'https://activities.letseduvate.com',
     erpBlogURL: `${window.location.origin}/mb_droid/`,
+    crm: 'https://marketing.letseduvate.com'
   },
 };
 

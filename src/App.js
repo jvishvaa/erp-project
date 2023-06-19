@@ -485,6 +485,7 @@ import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAca
 import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff';
 import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
+import LoginFormSSO from 'containers/login/ssologin';
 // import PPTView from './components/attachment-previewer/attachment-previewer-ui/pptview';
 
 function App({ alert, isMsAPI, erpConfig }) {
@@ -581,6 +582,15 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/'>
                               {({ match, history }) => (
                                 <Login
+                                  match={match}
+                                  history={history}
+                                  setTheme={setTheme}
+                                />
+                              )}
+                            </Route>
+                            <Route exact path='/sso/:erp/:hmac/auth/login'>
+                              {({ match, history }) => (
+                                <LoginFormSSO
                                   match={match}
                                   history={history}
                                   setTheme={setTheme}
