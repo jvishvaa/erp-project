@@ -906,7 +906,7 @@ const Appbar = ({ children, history, ...props }) => {
                     )}
                   </Link>
                 </IconButton>
-                {userData?.user_level == 14 ?
+                {userData?.user_level == 14 || userData?.user_level == 8 ?
                   <Tooltip title='Redirect to CRM' >
                     <div
                       className='py-2 th-icon-no-hover th-pointer'
