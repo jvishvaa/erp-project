@@ -1,12 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useStyles } from './useStyles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { IconButton } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
+
 import Typography from '@material-ui/core/Typography';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import { connect } from 'react-redux';
@@ -17,12 +12,15 @@ import endpoints from 'config/endpoints';
 import endpointsV2 from 'v2/config/endpoints';
 import { Spin, message } from 'antd';
 import EduvateLogo from 'assets/images/logo.png';
+import { logout } from 'redux/actions';
 
 function LoginFormSSO(props) {
     const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;
     const classes = useStyles();
     const [uname, pass, checked] =
         JSON.parse(localStorage.getItem('rememberDetails')) || [];
+  const dispatch = useDispatch();
+
     const [username, setUsername] = useState('' || uname);
     const [password, setPassword] = useState('' || pass);
     const [check, setCheck] = useState(false || checked);
@@ -53,6 +51,18 @@ function LoginFormSSO(props) {
             handleLogin()
         }
     }, [authToken])
+
+    useEffect(() => {
+        handleLogout()
+    },[])
+
+    const handleLogout = () => {
+        dispatch(logout());
+        const list = ['rememberDetails'];
+        Object.keys(localStorage).forEach((key) => {
+          if (!list.includes(key)) localStorage.removeItem(key);
+        });
+      };
 
     const fetchERPSystemConfig = async (status) => {
         let data = (await JSON.parse(localStorage.getItem('userDetails'))) || {};
