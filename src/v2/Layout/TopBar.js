@@ -65,10 +65,10 @@ const Appbar = ({ children, history, ...props }) => {
   let branchList = useSelector((state) => state.commonFilterReducer.branchList);
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+    window.location.host.split('.')[0] === 'orchids' ||
+      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3001'
+      ? true
+      : false;
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [centralSchoolLogo, setCentralSchoolLogo] = useState('');
@@ -170,12 +170,12 @@ const Appbar = ({ children, history, ...props }) => {
     let encryptedID = encodeURIComponent(
       window.btoa(
         JSON.stringify({
-          erp: onlyId.substr(0,onlyId?.length - 4),
+          erp: onlyId.substr(0, onlyId?.length - 4),
           hmac: hmac,
         })
       )
     );
-    
+
     window.open(
       `${ENVCONFIG?.apiGateway?.crm}/sso-login/?token=${encryptedID}`,
       '_blank'
@@ -191,7 +191,7 @@ const Appbar = ({ children, history, ...props }) => {
   const fetchTokenCrm = () => {
     let onlyId = erpID?.erp
     let body = {
-      erp: onlyId?.substr(0,onlyId.length - 4)
+      erp: onlyId?.substr(0, onlyId.length - 4)
     }
     axios
       .post(`${endpoints.auth.crmHcmToken}`, body)
@@ -863,6 +863,17 @@ const Appbar = ({ children, history, ...props }) => {
             ) : (
               <></>
             )}
+            {userData?.user_level == 14 && isOrchids || userData?.user_level == 8 && isOrchids ?
+              <Tooltip title='Redirect to CRM' >
+                <div
+                  className='py-2 th-icon-no-hover th-pointer'
+                  onClick={handleCrm}
+                >
+                  <img src={CrmIcon} width='24px' height='24px' />
+
+                </div>
+              </Tooltip>
+              : ''}
 
             {isMobile ? null : (
               <>
@@ -911,17 +922,7 @@ const Appbar = ({ children, history, ...props }) => {
                     )}
                   </Link>
                 </IconButton>
-                {userData?.user_level == 14 && isOrchids || userData?.user_level == 8 && isOrchids ?
-                  <Tooltip title='Redirect to CRM' >
-                    <div
-                      className='py-2 th-icon-no-hover th-pointer'
-                      onClick={handleCrm}
-                    >
-                      <img src={CrmIcon} width='24px' height='24px' />
 
-                    </div>
-                  </Tooltip>
-                  : ''}
                 <div className={classes.sectionDesktop}>
                   <IconButton
                     className='py-2 th-icon-no-hover'
