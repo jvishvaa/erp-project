@@ -37,11 +37,24 @@ const QuestionPaperView = ({ questionData }) => {
     }
   };
 
-  const extractContent = (s) => {
-    const span = document.createElement('span');
-    span.innerHTML = s;
-    return span.textContent || span.innerText;
-  };
+  // const extractContent = (s) => {
+  //   const span = document.createElement('span');
+  //   span.innerHTML = s;
+  //   return span.textContent || span.innerText;
+  // };
+  function extractContent(s) {
+    if (s?.length > 0 && s.indexOf('<') > -1) {
+      let newarr = s.replace('<', '&lt;')
+      console.log(newarr , 'arr');
+      const span = document.createElement('span');
+      span.innerHTML = newarr;
+      return span.textContent || span.innerText;
+    } else {
+      const span = document.createElement('span');
+      span.innerHTML = s;
+      return span.textContent || span.innerText;
+    }
+  }
 
   const toggleAnswer = (id) => {
     if (answerHidden.includes(id)) {
