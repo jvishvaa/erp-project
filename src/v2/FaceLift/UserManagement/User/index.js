@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import { Input, Space } from 'antd';
 import endpoints from 'config/endpoints';
+import endpointsV2 from 'v2/config/endpoints';
 import Layout from 'containers/Layout';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -55,6 +56,7 @@ const User = () => {
   const [userData, setUserData] = useState('');
   const [searchData, setSearchData] = useState('');
   const [showFilterPage, setShowFilter] = useState(true);
+  const [downloadLoading, setDownloadLoading] = useState(false);
 
   const formRef = useRef();
   const searchRef = useRef();
@@ -140,7 +142,7 @@ const User = () => {
           <>
             {data && data.status === 'deleted' ? (
               <Popconfirm
-                title='Sure to delete?'
+                title='Sure to restore?'
                 onConfirm={(e) => handleRestoreUser(data.id, '1')}
               >
                 <HistoryOutlined
@@ -537,17 +539,25 @@ const User = () => {
         return;
       }
     }
-
-    let params = `communication/erp-user-info-excel-v2/?module_id=${moduleId}&session_year=${
-      selectedYear.id
-    }${branchParams ? `&branch=${branch}` : ''}${
-      userLevelParams ? `&user_level=${userLevel}` : ''
-    }${gradeParams ? `&grade=${grade}` : ''}${
-      sectionParams ? `&section_mapping_id=${section}` : ''
-    }${statusparams ? `&status=${statusparams}` : ''}`;
+    setDownloadLoading(true);
+    let paramsObj = {};
+    paramsObj.module_id = moduleId;
+    paramsObj.session_year = selectedYear.id;
+    if (branch) {
+      paramsObj.branch = branch ? branch : '';
+    }
+    paramsObj.user_level = userLevel ? userLevel?.toString() : '';
+    if (grade) {
+      paramsObj.grade = grade;
+    }
+    if (section) {
+      paramsObj.section_mapping_id = section;
+    }
+    paramsObj.status = statusparams ? statusparams : '';
 
     axiosInstance
-      .get(`${params}`, {
+      .get(endpointsV2.userManagement.downloadUserData, {
+        params: { ...paramsObj },
         responseType: 'arraybuffer',
       })
       .then((res) => {
@@ -555,9 +565,13 @@ const User = () => {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
         FileSaver.saveAs(blob, 'user_list.xls');
+        setDownloadLoading(false);
         setLoading(false);
       })
-      .catch((error) => message.error('Something Wrong!'));
+      .catch((error) => {
+        message.error('Something Wrong!');
+        setDownloadLoading(false);
+      });
   };
 
   const showContactInfo = async (id, index, mail) => {
@@ -910,6 +924,7 @@ const User = () => {
                       <div className='row no-gutters'>
                         <div className='col-md-6 col-sm-6 col-6 pr-1'>
                           <Button
+                            loading={downloadLoading}
                             type='primary'
                             className='btn-block th-br-4 th-12'
                             onClick={handleExcel}
