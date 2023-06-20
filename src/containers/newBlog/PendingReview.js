@@ -38,13 +38,11 @@ const StyledRating = withStyles((theme) => ({
 
 const PendingReview = (props) => {
   // debugger
-  console.log(props, 'lp');
   const history = useHistory();
   const { Option } = Select;
   const [value, setValue] = useState();
   // const { setAlert } = useContext(AlertNotificationContext);
   const ActivityId = JSON.parse(localStorage.getItem('ActivityId')) || {};
-  console.log(ActivityId, 'ActivityId');
   const [inputList, setInputList] = useState([{ remarks: '', id: '', given_rating: '' }]);
   const [totalSubmitted, setTotalSubmitted] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -67,7 +65,6 @@ const PendingReview = (props) => {
 
   const [values, setValues] = useState();
   const [loading, setLoading] = useState(false);
-  console.log(values, 'values');
   const [publish, setPublish] = useState(false);
   const createPublish = () => {
     setPublish(true);
@@ -93,7 +90,6 @@ const PendingReview = (props) => {
         })
         .then((response) => {
           props.setValue(1);
-          console.log(response);
           setView(false);
           setLoading(false);
           message.success(' Review Submitted Successfully');
@@ -124,14 +120,11 @@ const PendingReview = (props) => {
   };
 
   const handleInputCreativity = (event, index) => {
-    console.log(index, 'text');
-
     let arr = [...ratingReview];
     arr[index].remarks = event.target.value;
     setRatingReview(arr);
   };
   const handleInputCreativityOne = (event, newValue, index) => {
-    console.log(index, newValue, 'event');
     let arr = [...ratingReview];
 
     arr[index].given_rating = Number(event.target.value);
@@ -156,7 +149,6 @@ const PendingReview = (props) => {
           ActivityId?.id
         }&branch_ids=${
           props == '' ? null : props.selectedBranch?.id
-          // }&grade_id=${gradeIds}&is_reviewed=False&page=${currentPage}&page_size=${limit}`,
         }&grade_id=${gradeIds}&is_reviewed=False&page=${currentPage}`,
         {
           headers: {
@@ -189,7 +181,6 @@ const PendingReview = (props) => {
         },
       })
       .then((response) => {
-        console.log(response, 'responses');
         response.data.map((obj, index) => {
           let temp = {};
           temp['id'] = obj.id;
@@ -236,7 +227,6 @@ const PendingReview = (props) => {
       average += parameter.given_rating;
       ave += Number(parameter.rating);
       aver = ave - Number('5');
-      console.log(average, 'average', aver, 'ave');
     });
     return (average / aver) * 5;
   };

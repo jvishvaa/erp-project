@@ -591,6 +591,7 @@ const SubjectWiseRatings = () => {
                   `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                 }
                 pagination={{
+                  position: ['bottomCenter'],
                   total: pageDetails.total,
                   current: pageDetails.current,
                   pageSize: 10,

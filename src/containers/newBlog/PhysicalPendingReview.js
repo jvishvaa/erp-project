@@ -147,7 +147,7 @@ const PhysicalPendingReview = (props) => {
     setviewLevelDrawer(false);
     setRatinglevelReview([]);
     setFile(null);
-    setRequestSent(true);
+    setRequestSent(false);
   };
 
   const [values, setValues] = useState();
@@ -168,8 +168,8 @@ const PhysicalPendingReview = (props) => {
     beforeUpload: (...file) => {
       setFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      if (file[0]?.size > 31457280) {
-        message.error('Selected file size should be less than 30MB');
+      if (file[0]?.size > 41943040) {
+        message.error('Selected file size should be less than 40MB');
         return false;
       }
       if (allowedFiles.includes(type)) {
@@ -478,7 +478,11 @@ const PhysicalPendingReview = (props) => {
         }
       )
       .then((response) => {
-        showReview(response?.data?.result);
+        if (response.data.status_code === 200) {
+          showReview(response?.data?.result);
+        } else {
+          message.error(response.data.message);
+        }
       })
       .catch((error) => {
         message.error(error.message);
@@ -717,7 +721,7 @@ const PhysicalPendingReview = (props) => {
         onClose={handleCloseViewLevelMore}
         zIndex={1300}
         visible={viewLevelDrawer}
-        width={'35vw'}
+        width={'55vw'}
         closable={false}
         className='th-resources-drawer'
         extra={
@@ -766,7 +770,7 @@ const PhysicalPendingReview = (props) => {
                     >
                       {ratingLevelReview?.map((obj, index) => {
                         return (
-                          <div className='row py-1 align-items-center'>
+                          <div className='row py-1'>
                             <div className='col-6 text-left' key={index}>
                               {obj?.name}
                             </div>
@@ -835,19 +839,10 @@ const PhysicalPendingReview = (props) => {
                           )}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          marginRight: '10px',
-                          marginLeft: '6px',
-                          marginBottom: '15px',
-                          marginTop: '32px',
-                        }}
-                      >
+                      <div className='col-12 py-2 text-center'>
                         {' '}
                         <ButtonAnt
-                          className='th-button-active th-br-6 text-truncate th-pointer'
+                          className='th-button-active th-br-6 th-width-50 text-truncate th-pointer'
                           onClick={() => submitLevelReview()}
                           loading={requestSent}
                         >

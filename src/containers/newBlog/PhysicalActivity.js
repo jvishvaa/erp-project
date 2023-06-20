@@ -745,6 +745,7 @@ const PhysicalActivity = () => {
                     }
                     loading={loading}
                     pagination={{
+                      position: ['bottomCenter'],
                       total: totalCountAssigned,
                       current: Number(currentPageAssigned),
                       pageSize: limitAssigned,

@@ -68,19 +68,19 @@ function AddTemplates() {
   };
   const handleTextArea = () => {
     if (!height) {
-      message.error('Please Add Height')
+      message.error('Please Add Height');
       return;
     } else if (!width) {
-      message.error("Please Add Width")
+      message.error('Please Add Width');
       return;
     } else if (!placeholder) {
-      message.error("Please Add Pleaceholder")
+      message.error('Please Add Pleaceholder');
       return;
     } else if (!x) {
-      message.error('Please Add X- Cordinate')
+      message.error('Please Add X- Cordinate');
       return;
     } else if (!y) {
-      message.error('Please Add y-Cordinate')
+      message.error('Please Add y-Cordinate');
       return;
     }
     showDrawer(false);
@@ -146,8 +146,13 @@ function AddTemplates() {
             },
           })
           .then((response) => {
-            message.success(response?.data?.message)
+            message.success(response?.data?.message);
             history.push('/blog/blogview');
+          })
+          .catch((err) => {
+            message.error(err.message);
+          })
+          .finally(() => {
             setLoading(false);
           });
       }
@@ -166,15 +171,15 @@ function AddTemplates() {
         },
       })
       .then((response) => {
-        dummyFunction(response.data.result)
+        dummyFunction(response.data.result);
         setLoading(false);
       });
   };
 
-  const dummyFunction =(data) => {
-    let res = data.filter((item) => item?.name == "Blog Activity")
-    setActivityCategory(res)
-  }
+  const dummyFunction = (data) => {
+    let res = data.filter((item) => item?.name == 'Blog Activity');
+    setActivityCategory(res);
+  };
 
   useEffect(() => {
     getActivityCategory();
@@ -191,8 +196,8 @@ function AddTemplates() {
     setFileUrl(null);
     setSelectedFile(null);
     fileRef.current.value = null;
-    message.success('Successfull Template Deleted')
-    return
+    message.success('Successfull Template Deleted');
+    return;
   };
 
   const handleGoBack = () => {
@@ -220,10 +225,16 @@ function AddTemplates() {
           <div className='row'>
             <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
-                <Breadcrumb.Item href='/blog/wall/central/redirect' className='th-black th-pointer th-16'>
+                <Breadcrumb.Item
+                  href='/blog/wall/central/redirect'
+                  className='th-black th-pointer th-16'
+                >
                   Activity Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href='/blog/createratingtype' className='th-black th-pointer th-16'>
+                <Breadcrumb.Item
+                  href='/blog/createratingtype'
+                  className='th-black th-pointer th-16'
+                >
                   Create Rating
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href='' className='th-black th-pointer th-16'>
@@ -307,7 +318,12 @@ function AddTemplates() {
               </div>
               <div className='d-flex justify-content-center align-item-center row p-0'>
                 <div className='col-3 p-0 mt-4'>
-                  <Button type='primary' className='w-100 th-400' onClick={submitProcess}>
+                  <Button
+                    type='primary'
+                    className='w-100 th-400'
+                    loading={loading}
+                    onClick={submitProcess}
+                  >
                     Submit
                   </Button>
                 </div>

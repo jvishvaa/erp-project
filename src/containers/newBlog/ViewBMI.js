@@ -314,9 +314,15 @@ const ViewBMI = () => {
       subject: null,
       // board: null,
     });
+    setSubjectData([]);
+    setSubjectId();
+    setSubjectName('');
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
+    } else {
+      setGradeId(null);
+      setGradeName(null);
     }
   };
 
@@ -409,6 +415,9 @@ const ViewBMI = () => {
       // setSubjectId(item.value);
       setSubjectId(item.value);
       setSubjectName(item?.mappingId);
+    } else {
+      setSubjectId(null);
+      setSubjectName('');
     }
   };
 
@@ -568,6 +577,7 @@ const ViewBMI = () => {
                       onChange={(e, value) => {
                         handleSubject(value);
                       }}
+                      allowClear
                       onClear={handleClearSubject}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       bordered={true}
