@@ -17,6 +17,7 @@ import {
   Space,
   Input,
   message,
+  Spin,
 } from 'antd';
 import endpoints from '../../config/endpoints';
 import ReactPlayer from 'react-player';
@@ -45,10 +46,10 @@ const VisualReviews = (props) => {
   const [buttonFlag, setButtonFlag] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState([]);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   let array = [];
   const getRatingView = (data) => {
-    setLoading(true);
     showMedia(data);
     axios
       .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
@@ -67,7 +68,12 @@ const VisualReviews = (props) => {
           array.push(temp);
         });
         setRatingReview(array);
-        setLoading(false);
+      })
+      .catch((err) => {
+        message.error(err.message);
+      })
+      .finally(() => {
+        setLoadingDetails(false);
       });
   };
 
@@ -109,6 +115,7 @@ const VisualReviews = (props) => {
 
   const assignPage = (data) => {
     if (data?.length !== 0) {
+      setLoadingDetails(true);
       setView(true);
       setData(data);
       setDataId(data?.id);
@@ -239,128 +246,139 @@ const VisualReviews = (props) => {
         }
       >
         <div>
-          <div className='row'>
-            <div className={file?.s3_path ? 'col-md-8' : 'd-none'}>
-              {file?.file_type === 'image/jpeg' || file?.file_type === 'image/png' ? (
-                <img
-                  src={file?.s3_path}
-                  thumb={file?.s3_path}
-                  alt={'image'}
-                  width='100%'
-                  height='95%'
-                />
-              ) : (
-                <ReactPlayer
-                  url={file?.s3_path}
-                  thumb={file?.s3_path}
-                  // key={index}
-                  ref={playerRef}
-                  width='100%'
-                  height='100%'
-                  playIcon={
-                    <Tooltip title='play'>
-                      <Button
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          height: '30vh',
-                          width: '30vw',
-                        }}
-                        shape='circle'
-                        icon={
-                          <PlayCircleOutlined
-                            style={{ color: 'white', fontSize: '70px' }}
-                          />
-                        }
-                      />
-                    </Tooltip>
-                  }
-                  alt={'video'}
-                  controls={true}
-                />
-              )}
+          {loadingDetails ? (
+            <div className='row'>
+              <div className='col-12 text-center py-5'>
+                <Spin tip='Loading...' size='large' />
+              </div>
             </div>
-            <div className={`${file?.s3_path ? 'col-md-4' : 'col-12'} px-0 th-bg-white`}>
-              <div className='row'>
-                <div className='col-12 px-1'>
-                  <div>
-                    <img
-                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                      alt='image'
-                      style={{
-                        // width: '100%',
-                        height: 130,
-                        objectFit: 'fill',
-                      }}
-                    />
-                  </div>
-                  <div className='d-flex align-items-center pr-1'>
-                    <Avatar
-                      size={50}
-                      aria-label='recipe'
-                      icon={
-                        <UserOutlined
-                          color='#f3f3f3'
-                          style={{ color: '#f3f3f3' }}
-                          twoToneColor='white'
+          ) : (
+            <div className='row'>
+              <div className={file?.s3_path ? 'col-12' : 'd-none'}>
+                {file?.file_type === 'image/jpeg' || file?.file_type === 'image/png' ? (
+                  <img
+                    src={file?.s3_path}
+                    thumb={file?.s3_path}
+                    alt={'image'}
+                    width='100%'
+                    height='60vh'
+                  />
+                ) : (
+                  <ReactPlayer
+                    url={file?.s3_path}
+                    thumb={file?.s3_path}
+                    // key={index}
+                    ref={playerRef}
+                    width='100%'
+                    height='60vh'
+                    playIcon={
+                      <Tooltip title='play'>
+                        <Button
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            height: '30vh',
+                            width: '30vw',
+                          }}
+                          shape='circle'
+                          icon={
+                            <PlayCircleOutlined
+                              style={{ color: 'white', fontSize: '70px' }}
+                            />
+                          }
                         />
-                      }
-                    />
-                    <div className='text-left ml-3'>
-                      <div className=' th-fw-600 th-16'>{data?.booked_user?.name}</div>
-                      <div className=' th-fw-500 th-14'>{data?.branch?.name}</div>
-                      <div className=' th-fw-500 th-12'>{data?.grade?.name}</div>
+                      </Tooltip>
+                    }
+                    alt={'video'}
+                    controls={true}
+                  />
+                )}
+              </div>
+              <div className={`col-12 th-bg-white`}>
+                <div className='row'>
+                  <div className='col-12 px-1'>
+                    <div className='d-flex justify-content-between'>
+                      <div className='d-flex align-items-center pr-1'>
+                        <Avatar
+                          size={50}
+                          aria-label='recipe'
+                          icon={
+                            <UserOutlined
+                              color='#f3f3f3'
+                              style={{ color: '#f3f3f3' }}
+                              twoToneColor='white'
+                            />
+                          }
+                        />
+                        <div className='text-left ml-3'>
+                          <div className=' th-fw-600 th-16'>
+                            {data?.booked_user?.name}
+                          </div>
+                          <div className=' th-fw-500 th-14'>{data?.branch?.name}</div>
+                          <div className=' th-fw-500 th-12'>{data?.grade?.name}</div>
+                        </div>
+                      </div>
+                      <img
+                        src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                        alt='image'
+                        style={{
+                          height: 100,
+                          objectFit: 'fill',
+                        }}
+                      />
                     </div>
-                  </div>
-                  <div
-                    className='p-2 mt-3 th-br-5 th-bg-grey'
-                    style={{ outline: '1px solid #d9d9d9' }}
-                  >
-                    <div>
-                      Title :{' '}
-                      <span className='th-fw-600'>{data?.activity_detail?.title}</span>
-                    </div>
-                    <div>
-                      Instructions :{' '}
-                      <span className='th-fw-400'>
-                        {data?.activity_detail?.description}
-                      </span>
-                    </div>
-                  </div>
-                  <div className='mt-3'>
-                    <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+
                     <div
-                      className='px-1 py-2 th-br-5'
+                      className='p-2 mt-3 th-br-5 th-bg-grey'
                       style={{ outline: '1px solid #d9d9d9' }}
                     >
-                      {ratingReview?.map((obj, index) => {
-                        return (
-                          <div className='row py-1 align-items-center'>
-                            <div className='col-6 pl-1' key={index}>
-                              {obj?.name}
+                      <div>
+                        Title :{' '}
+                        <span className='th-fw-600'>{data?.activity_detail?.title}</span>
+                      </div>
+                      <div>
+                        Instructions :{' '}
+                        <span className='th-fw-400'>
+                          {data?.activity_detail?.description}
+                        </span>
+                      </div>
+                    </div>
+                    <div className='mt-3'>
+                      <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                      <div
+                        className='px-1 py-2 th-br-5'
+                        style={{ outline: '1px solid #d9d9d9' }}
+                      >
+                        {ratingReview?.map((obj, index) => {
+                          return (
+                            <div className='row py-1 text-center'>
+                              <div className='col-6' key={index}>
+                                {obj?.name}
+                              </div>
+                              <div className='col-6'>
+                                <div
+                                  title={
+                                    obj?.remarks.filter((item) => item.status == true)[0]
+                                      .name
+                                  }
+                                  className='p-2 th-bg-grey text-wrap'
+                                >
+                                  {
+                                    obj?.remarks.filter((item) => item.status == true)[0]
+                                      .name
+                                  }
+                                </div>
+                              </div>
                             </div>
-                            <div className='col-6 pr-1'>
-                              <Input
-                                disabled
-                                title={
-                                  obj?.remarks.filter((item) => item.status == true)[0]
-                                    .name
-                                }
-                                value={
-                                  obj?.remarks.filter((item) => item.status == true)[0]
-                                    .name
-                                }
-                              />
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </Drawer>
     </>

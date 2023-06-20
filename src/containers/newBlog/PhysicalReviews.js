@@ -12,6 +12,7 @@ import {
   Space,
   Modal,
   Input,
+  Spin,
 } from 'antd';
 import {
   UserOutlined,
@@ -62,10 +63,10 @@ const PhysicalReviewed = (props) => {
   const [overallRemarks, setOverAllRemarks] = useState('');
   const [isRoundAvailable, setIsRoundAvailable] = useState(false);
   const [firstLoad, setFirstLoad] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   let array = [];
   const getRatingView = (data) => {
-    setLoading(true);
     axios
       .get(
         `${
@@ -79,12 +80,16 @@ const PhysicalReviewed = (props) => {
       )
       .then((response) => {
         setRatingReview(response.data);
-        setLoading(false);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setLoadingDetails(false);
       });
   };
 
   const getDrawerRatingView = (data) => {
-    setLoading(true);
     showMedia(data);
     axios
       .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
@@ -103,7 +108,12 @@ const PhysicalReviewed = (props) => {
           array.push(temp);
         });
         setDrawerRatingReview(array);
-        setLoading(false);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setLoadingDetails(false);
       });
   };
 
@@ -116,6 +126,9 @@ const PhysicalReviewed = (props) => {
       })
       .then((response) => {
         setFile(response.data.result);
+      })
+      .catch((error) => {
+        message.error(error.message);
       });
   };
 
@@ -194,12 +207,14 @@ const PhysicalReviewed = (props) => {
   const assignPage = (data) => {
     if (data?.length !== 0) {
       if (isRoundAvailable) {
+        setLoadingDetails(true);
         setView(true);
         setData(data);
         setDataId(data?.id);
 
         getRatingView(data?.id);
       } else {
+        setLoadingDetails(true);
         setDrawerView(true);
         setDrawerData(data);
         setDrawerDataId(data?.id);
@@ -358,130 +373,144 @@ const PhysicalReviewed = (props) => {
         }
       >
         <div>
-          <div className='row'>
-            <div className={file?.s3_path ? 'col-md-8' : 'd-none'}>
-              {file?.file_type === 'image/jpeg' || file?.file_type === 'image/png' ? (
-                <img
-                  src={file?.s3_path}
-                  thumb={file?.s3_path}
-                  alt={'image'}
-                  width='100%'
-                  height='95%'
-                />
-              ) : (
-                <ReactPlayer
-                  url={file?.s3_path}
-                  ref={playerRef}
-                  thumb={file?.s3_path}
-                  width='100%'
-                  height='100%'
-                  playIcon={
-                    <Tooltip title='play'>
-                      <Button
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          height: '30vh',
-                          width: '30vw',
-                        }}
-                        shape='circle'
-                        icon={
-                          <PlayCircleOutlined
-                            style={{ color: 'white', fontSize: '70px' }}
-                          />
-                        }
-                      />
-                    </Tooltip>
-                  }
-                  alt={'video'}
-                  controls={true}
-                />
-              )}
+          {loadingDetails ? (
+            <div className='row'>
+              <div className='col-12 text-center py-5'>
+                <Spin tip='Loading...' size='large' />
+              </div>
             </div>
-            <div className={`${file?.s3_path ? 'col-md-4' : 'col-12'} px-0 th-bg-white`}>
-              <div className='row'>
-                <div className='col-12 px-1'>
-                  <div>
-                    <img
-                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                      alt='image'
-                      style={{
-                        height: 130,
-                        objectFit: 'fill',
-                      }}
-                    />
-                  </div>
-                  <div className='d-flex align-items-center pr-1'>
-                    <Avatar
-                      size={50}
-                      aria-label='recipe'
-                      icon={
-                        <UserOutlined
-                          color='#f3f3f3'
-                          style={{ color: '#f3f3f3' }}
-                          twoToneColor='white'
+          ) : (
+            <div className='row'>
+              <div className={file?.s3_path ? 'col-12' : 'd-none'}>
+                {file?.file_type === 'image/jpeg' || file?.file_type === 'image/png' ? (
+                  <img
+                    src={file?.s3_path}
+                    thumb={file?.s3_path}
+                    alt={'image'}
+                    width='100%'
+                    height='95%'
+                  />
+                ) : (
+                  <ReactPlayer
+                    url={file?.s3_path}
+                    ref={playerRef}
+                    thumb={file?.s3_path}
+                    width='100%'
+                    height='100%'
+                    playIcon={
+                      <Tooltip title='play'>
+                        <Button
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            height: '30vh',
+                            width: '30vw',
+                          }}
+                          shape='circle'
+                          icon={
+                            <PlayCircleOutlined
+                              style={{ color: 'white', fontSize: '70px' }}
+                            />
+                          }
                         />
-                      }
-                    />
-                    <div className='text-left ml-3'>
-                      <div className=' th-fw-600 th-16'>
-                        {drawerdata?.booked_user?.name}
+                      </Tooltip>
+                    }
+                    alt={'video'}
+                    controls={true}
+                  />
+                )}
+              </div>
+              <div className={`col-12 th-bg-white`}>
+                <div className='row'>
+                  <div className='col-12 px-1'>
+                    <div className='d-flex justify-content-between'>
+                      <div className='d-flex align-items-center pr-1'>
+                        <Avatar
+                          size={50}
+                          aria-label='recipe'
+                          icon={
+                            <UserOutlined
+                              color='#f3f3f3'
+                              style={{ color: '#f3f3f3' }}
+                              twoToneColor='white'
+                            />
+                          }
+                        />
+                        <div className='text-left ml-3'>
+                          <div className=' th-fw-600 th-16'>
+                            {drawerdata?.booked_user?.name}
+                          </div>
+                          <div className=' th-fw-500 th-14'>
+                            {drawerdata?.branch?.name}
+                          </div>
+                          <div className=' th-fw-500 th-12'>
+                            {drawerdata?.grade?.name}
+                          </div>
+                        </div>
                       </div>
-                      <div className=' th-fw-500 th-14'>{drawerdata?.branch?.name}</div>
-                      <div className=' th-fw-500 th-12'>{drawerdata?.grade?.name}</div>
+                      <img
+                        src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                        alt='image'
+                        style={{
+                          height: 130,
+                          objectFit: 'fill',
+                        }}
+                      />
                     </div>
-                  </div>
-                  <div
-                    className='p-2 mt-3 th-br-5 th-bg-grey'
-                    style={{ outline: '1px solid #d9d9d9' }}
-                  >
-                    <div>
-                      Title :{' '}
-                      <span className='th-fw-600'>
-                        {drawerdata?.activity_detail?.title}
-                      </span>
-                    </div>
-                    <div>
-                      Instructions :{' '}
-                      <span className='th-fw-400'>
-                        {drawerdata?.activity_detail?.description}
-                      </span>
-                    </div>
-                  </div>
-                  <div className='mt-3'>
-                    <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+
                     <div
-                      className='px-1 py-2 th-br-5'
+                      className='p-2 mt-3 th-br-5 th-bg-grey'
                       style={{ outline: '1px solid #d9d9d9' }}
                     >
-                      {drawerratingReview?.map((obj, index) => {
-                        return (
-                          <div className='row py-1 align-items-center'>
-                            <div className='col-6 pl-1' key={index}>
-                              {obj?.name}
+                      <div>
+                        Title :{' '}
+                        <span className='th-fw-600'>
+                          {drawerdata?.activity_detail?.title}
+                        </span>
+                      </div>
+                      <div>
+                        Instructions :{' '}
+                        <span className='th-fw-400'>
+                          {drawerdata?.activity_detail?.description}
+                        </span>
+                      </div>
+                    </div>
+                    <div className='mt-3'>
+                      <div className='th-fw-500 th-16 mb-2'>Remarks</div>
+                      <div
+                        className='px-1 py-2 th-br-5'
+                        style={{ outline: '1px solid #d9d9d9' }}
+                      >
+                        {drawerratingReview?.map((obj, index) => {
+                          return (
+                            <div className='row py-1 text-center'>
+                              <div className='col-6 ' key={index}>
+                                {obj?.name}
+                              </div>
+                              <div className='col-6'>
+                                <div
+                                  className='text-wrap th-bg-grey p-2'
+                                  title={
+                                    obj?.remarks.filter((item) => item.status == true)[0]
+                                      .name
+                                  }
+                                >
+                                  {
+                                    obj?.remarks.filter((item) => item.status == true)[0]
+                                      .name
+                                  }
+                                </div>
+                              </div>
                             </div>
-                            <div className='col-6 pr-1'>
-                              <Input
-                                disabled
-                                title={
-                                  obj?.remarks.filter((item) => item.status == true)[0]
-                                    .name
-                                }
-                                value={
-                                  obj?.remarks.filter((item) => item.status == true)[0]
-                                    .name
-                                }
-                              />
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </Drawer>
       <Modal
@@ -493,99 +522,113 @@ const PhysicalReviewed = (props) => {
         className='th-upload-modal'
         title={`Submit Review`}
       >
-        <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
-          <div className='d-flex align-items-center pr-1'>
-            <Avatar
-              size={50}
-              aria-label='recipe'
-              icon={
-                <UserOutlined
-                  color='#F3F3F3'
-                  style={{ color: '#F3F3F3' }}
-                  twoToneColor='white'
-                />
-              }
-            />
-            <div className='text-left ml-3'>
-              <div className=' th-fw-600 th-16'>{data?.booked_user?.name}</div>
-              <div className=' th-fw-500 th-14'>{data?.booked_user?.username}</div>
+        {loadingDetails ? (
+          <div className='row'>
+            <div className='col-12 text-center py-5'>
+              <Spin tip='Loading...' size='large' />
             </div>
           </div>
+        ) : (
+          <div className='row'>
+            <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
+              <div className='d-flex align-items-center pr-1'>
+                <Avatar
+                  size={50}
+                  aria-label='recipe'
+                  icon={
+                    <UserOutlined
+                      color='#F3F3F3'
+                      style={{ color: '#F3F3F3' }}
+                      twoToneColor='white'
+                    />
+                  }
+                />
+                <div className='text-left ml-3'>
+                  <div className=' th-fw-600 th-16'>{data?.booked_user?.name}</div>
+                  <div className=' th-fw-500 th-14'>{data?.booked_user?.username}</div>
+                </div>
+              </div>
 
-          <div className='pr-1'>
-            <img
-              src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-              alt='image'
-              style={{
-                height: 60,
-                width: 150,
-                objectFit: 'fill',
-              }}
-            />
-          </div>
-        </div>
-        <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
-          <table className='w-100' style={{ background: '#eee' }}>
-            <thead>
-              <tr style={{ background: '#4800c9', color: 'white' }}>
-                <th style={{ textAlign: 'center' }}> Rounds </th>
-                {tableHeader?.map((item, i) => (
-                  <th style={{ padding: '5px' }}>
-                    {<div className='text-justify'>{item?.name}</div>}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(customRatingReview)?.length > 0 &&
-                Object.keys(customRatingReview).map((item, index) => (
-                  <tr className='th-html-table'>
-                    <td
-                      width='10%'
-                      style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}
-                    >
-                      {item}
-                    </td>
-                    {tableHeader?.map((each, i) => {
-                      let remarks = customRatingReview[item].filter(
-                        (round) => round.name === each.name
-                      )[0].remarks;
-                      return (
-                        <td style={{ padding: '5px' }}>
-                          <div className='text-justify'>{remarks}</div>
-                        </td>
-                      );
-                    })}
+              <div className='pr-1'>
+                <img
+                  src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                  alt='image'
+                  style={{
+                    height: 60,
+                    width: 150,
+                    objectFit: 'fill',
+                  }}
+                />
+              </div>
+            </div>
+            <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
+              <table className='w-100' style={{ background: '#eee' }}>
+                <thead>
+                  <tr style={{ background: '#4800c9', color: 'white' }}>
+                    <th style={{ textAlign: 'center' }}> Rounds </th>
+                    {tableHeader?.map((item, i) => (
+                      <th style={{ padding: '5px' }}>
+                        {<div className='text-justify'>{item?.name}</div>}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {Object.keys(customRatingReview)?.length > 0 &&
+                    Object.keys(customRatingReview).map((item, index) => (
+                      <tr className='th-html-table'>
+                        <td
+                          width='10%'
+                          style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}
+                        >
+                          {item}
+                        </td>
+                        {tableHeader?.map((each, i) => {
+                          let remarks = customRatingReview[item].filter(
+                            (round) => round.name === each.name
+                          )[0].remarks;
+                          return (
+                            <td style={{ padding: '5px' }}>
+                              <div className='text-justify'>{remarks}</div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
 
-        <div className='col-12 px-0'>
-          <div className='p-2 d-flex justify-content-start'>
-            {overallData.length > 0 &&
-              overallData.map((item, index) => {
-                return (
-                  <div className='row-12 p-2 d-flex align-items-center justify-content-start'>
-                    <div
-                      style={{ fontWeight: 500, marginRight: '5px', fontSize: '15px' }}
-                    >
-                      Overall {<CaretRightOutlined />}
-                    </div>
-                    <div
-                      className='col-11 pl-0 pr-0 text-justify'
-                      style={{ fontSize: '15px', fontWeight: 600, color: 'blue' }}
-                    >
-                      {/* <Tag color='green'> */}
-                      {item?.remarks}
-                      {/* </Tag> */}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className='col-12 px-0'>
+              <div className='p-2 d-flex justify-content-start'>
+                {overallData.length > 0 &&
+                  overallData.map((item, index) => {
+                    return (
+                      <div className='row-12 p-2 d-flex align-items-center justify-content-start'>
+                        <div
+                          style={{
+                            fontWeight: 500,
+                            marginRight: '5px',
+                            fontSize: '15px',
+                          }}
+                        >
+                          Overall {<CaretRightOutlined />}
+                        </div>
+                        <div
+                          className='col-11 pl-0 pr-0 text-justify'
+                          style={{ fontSize: '15px', fontWeight: 600, color: 'blue' }}
+                        >
+                          {/* <Tag color='green'> */}
+                          {item?.remarks}
+                          {/* </Tag> */}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </Modal>
     </>
   );

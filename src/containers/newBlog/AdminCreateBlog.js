@@ -1233,7 +1233,13 @@ const AdminCreateBlog = () => {
               <div className='col-md-6'>
                 <span className='th-grey th-14'>Description*</span>
                 <div className='th-editor py-2'>
-                  <TextArea rows={5} value={description} onChange={handleDescription} />
+                  <TextArea
+                    rows={5}
+                    value={description}
+                    onChange={handleDescription}
+                    maxLength={300}
+                    showCount
+                  />
                 </div>
               </div>
             </div>

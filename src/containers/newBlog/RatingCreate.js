@@ -1467,7 +1467,11 @@ const RatingCreate = () => {
                         </Button>
                       </div>
                       <div className='col-12 padding-style'>
-                        <Button type='primary' onClick={handleOptionSubmit}>
+                        <Button
+                          type='primary'
+                          loading={loading}
+                          onClick={handleOptionSubmit}
+                        >
                           Submit
                         </Button>
 
@@ -1757,6 +1761,7 @@ const RatingCreate = () => {
                             color='green'
                             type='primary'
                             className='th-br-5 th-pointer py-1 th-14 th-fw-500 mr-2'
+                            loading={loading}
                             onClick={handleActivityTypeSubmit}
                           >
                             Submit
@@ -2130,6 +2135,7 @@ const RatingCreate = () => {
                                 color='green'
                                 type='primary'
                                 className='th-br-5 th-pointer py-1 th-14 th-fw-500 mr-2'
+                                loading={loading}
                                 onClick={handleActivityTypeSubmitEdit}
                               >
                                 Submit

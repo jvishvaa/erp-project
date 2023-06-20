@@ -77,6 +77,7 @@ const ReportTypeFilter = ({
   const { session_year } =
     useSelector((state) => state.commonFilterReducer?.selectedYear) || {};
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [isReportButtonUnable, setIsReportButtonUnable] = useState(false);
 
@@ -137,7 +138,9 @@ const ReportTypeFilter = ({
   const fetchReportPipelineConfig = () => {
     axios
       .get(
-        `${endpoints?.reportPipeline?.reportPipelineConfig}?user_level=${user_level}`,
+        `${endpoints?.reportPipeline?.reportPipelineConfig}?user_level=${
+          is_superuser ? 1 : user_level
+        }`,
         {
           headers: {
             'x-api-key': 'vikash@12345#1231',

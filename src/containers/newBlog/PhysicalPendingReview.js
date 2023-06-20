@@ -134,6 +134,7 @@ const PhysicalPendingReview = (props) => {
   const [bookingID, setBookingID] = useState(null);
   const [firstLoad, setFirstLoad] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const handleCloseViewMore = () => {
     setView(false);
@@ -146,7 +147,7 @@ const PhysicalPendingReview = (props) => {
     setviewLevelDrawer(false);
     setRatinglevelReview([]);
     setFile(null);
-    setRequestSent(true);
+    setRequestSent(false);
   };
 
   const [values, setValues] = useState();
@@ -167,8 +168,8 @@ const PhysicalPendingReview = (props) => {
     beforeUpload: (...file) => {
       setFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      if (file[0]?.size > 31457280) {
-        message.error('Selected file size should be less than 30MB');
+      if (file[0]?.size > 41943040) {
+        message.error('Selected file size should be less than 40MB');
         return false;
       }
       if (allowedFiles.includes(type)) {
@@ -463,7 +464,7 @@ const PhysicalPendingReview = (props) => {
   };
 
   const addBookingApi = (data) => {
-    setLoading(true);
+    setLoadingDetails(true);
     axios
       .get(
         `${endpoints.newBlog.bookingDetailsApi}?erp_id=${
@@ -477,14 +478,17 @@ const PhysicalPendingReview = (props) => {
         }
       )
       .then((response) => {
-        showReview(response?.data?.result);
-        setLoading(false);
+        if (response.data.status_code === 200) {
+          showReview(response?.data?.result);
+        } else {
+          message.error(response.data.message);
+        }
       })
       .catch((error) => {
-        setLoading(false);
+        message.error(error.message);
       })
       .finally(() => {
-        setRequestSent(false);
+        setLoadingDetails(false);
       });
   };
 
@@ -717,7 +721,7 @@ const PhysicalPendingReview = (props) => {
         onClose={handleCloseViewLevelMore}
         zIndex={1300}
         visible={viewLevelDrawer}
-        width={'35vw'}
+        width={'55vw'}
         closable={false}
         className='th-resources-drawer'
         extra={
@@ -766,7 +770,7 @@ const PhysicalPendingReview = (props) => {
                     >
                       {ratingLevelReview?.map((obj, index) => {
                         return (
-                          <div className='row py-1 align-items-center'>
+                          <div className='row py-1'>
                             <div className='col-6 text-left' key={index}>
                               {obj?.name}
                             </div>
@@ -835,19 +839,10 @@ const PhysicalPendingReview = (props) => {
                           )}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          marginRight: '10px',
-                          marginLeft: '6px',
-                          marginBottom: '15px',
-                          marginTop: '32px',
-                        }}
-                      >
+                      <div className='col-12 py-2 text-center'>
                         {' '}
                         <ButtonAnt
-                          className='th-button-active th-br-6 text-truncate th-pointer'
+                          className='th-button-active th-br-6 th-width-50 text-truncate th-pointer'
                           onClick={() => submitLevelReview()}
                           loading={requestSent}
                         >
@@ -871,209 +866,235 @@ const PhysicalPendingReview = (props) => {
         className='th-upload-modal'
         title={`Submit Review`}
       >
-        <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
-          <div className='d-flex align-items-center pr-1'>
-            <Avatar
-              size={50}
-              aria-label='recipe'
-              icon={
-                <UserOutlined
-                  color='#F3F3F3'
-                  style={{ color: '#F3F3F3' }}
-                  twoToneColor='white'
-                />
-              }
-            />
-            <div className='text-left ml-3'>
-              <div className=' th-fw-600 th-16'>{data?.student_name}</div>
-              <div className=' th-fw-500 th-14'>{data?.erp_id}</div>
+        <div className='row'>
+          {loadingDetails ? (
+            <div className='col-12 py-5 text-center'>
+              <Spin tip='Loading...' size='large' />{' '}
             </div>
-          </div>
+          ) : (
+            <>
+              <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
+                <div className='d-flex align-items-center pr-1'>
+                  <Avatar
+                    size={50}
+                    aria-label='recipe'
+                    icon={
+                      <UserOutlined
+                        color='#F3F3F3'
+                        style={{ color: '#F3F3F3' }}
+                        twoToneColor='white'
+                      />
+                    }
+                  />
+                  <div className='text-left ml-3'>
+                    <div className=' th-fw-600 th-16'>{data?.student_name}</div>
+                    <div className=' th-fw-500 th-14'>{data?.erp_id}</div>
+                  </div>
+                </div>
 
-          <div className='pr-1'>
-            <img
-              src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-              alt='image'
-              style={{
-                height: 60,
-                width: 150,
-                objectFit: 'fill',
-              }}
-            />
-          </div>
-        </div>
+                <div className='pr-1'>
+                  <img
+                    src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                    alt='image'
+                    style={{
+                      height: 60,
+                      width: 150,
+                      objectFit: 'fill',
+                    }}
+                  />
+                </div>
+              </div>
 
-        {isRoundAvailable ? (
-          <>
-            <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
-              <table className='w-100' style={{ background: '#eee' }}>
-                <thead>
-                  <tr
-                    style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}
-                  >
-                    <th style={{ textAlign: 'center' }}> Rounds </th>
-                    {tableHeader?.map((item, i) => (
-                      <th>{item?.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.keys(customRatingReview)?.length > 0 &&
-                    Object.keys(customRatingReview).map((item, index) => (
-                      <tr className='th-html-table'>
-                        <td
-                          style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}
-                        >
-                          {item}
-                        </td>
-                        {tableHeader?.map((each, i) => (
-                          <td style={{ padding: '5px' }}>
-                            <Input
-                              value={
-                                ratingReview.filter(
-                                  (el) => el?.name == each?.name && el.level == item
-                                )[0]?.remarks
-                              }
-                              showCount
-                              maxLength='200'
-                              className='text-center'
-                              placeholder={`Enter ${each?.name} for ${item}`}
-                              onChange={(event) => handleInputEvent(event, item, each)}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-            <div className='col-12 px-0'>
-              <div className='p-2 d-flex justify-content-start'>
-                {overallData.length > 0 &&
-                  overallData.map((item, index) => {
-                    return (
-                      <div className='col-12 px-0 d-flex align-items-center justify-content-start'>
-                        <span
+              {isRoundAvailable ? (
+                <>
+                  <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
+                    <table className='w-100' style={{ background: '#eee' }}>
+                      <thead>
+                        <tr
                           style={{
-                            fontWeight: 500,
-                            marginRight: '5px',
-                            fontSize: '15px',
-                            display: 'flex',
-                            alignItems: 'center',
+                            background: '#4800c9',
+                            textAlign: 'center',
+                            color: 'white',
                           }}
                         >
-                          Overall {<CaretRightOutlined />}
-                        </span>
-                        <Input
-                          showCount
-                          maxLength='500'
-                          value={overallRemarks}
-                          placeholder={`Enter for OverAll`}
-                          onChange={(event) => handleOverAll(event, item, index)}
-                        />
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-            <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
-              <div className='p-2'>
-                <ButtonAnt
-                  type='primary'
-                  icon={<ScheduleOutlined />}
-                  loading={requestSent}
-                  onClick={() => submitReview()}
-                >
-                  Submit Review
-                </ButtonAnt>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className='px-1 py-2 th-br-5' style={{ outline: '1px solid #D9D9D9' }}>
-              {ratingLevelReview?.map((obj, index) => {
-                return (
-                  <div className='row py-1 align-items-center'>
-                    <div className='col-6 text-left' key={index}>
-                      {obj?.name}
-                    </div>
-                    <div className='col-6'>
-                      <Select
-                        className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-                        bordered={true}
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        placement='bottomRight'
-                        placeholder='Select Option'
-                        suffixIcon={<DownOutlined className='th-black-1' />}
-                        dropdownMatchSelectWidth={false}
-                        onChange={(e, val) => handleRemark(val, obj?.id)}
-                        filterOption={(input, options) => {
+                          <th style={{ textAlign: 'center' }}> Rounds </th>
+                          {tableHeader?.map((item, i) => (
+                            <th>{item?.name}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.keys(customRatingReview)?.length > 0 &&
+                          Object.keys(customRatingReview).map((item, index) => (
+                            <tr className='th-html-table'>
+                              <td
+                                style={{
+                                  fontWeight: 500,
+                                  padding: '2px',
+                                  textAlign: 'center',
+                                }}
+                              >
+                                {item}
+                              </td>
+                              {tableHeader?.map((each, i) => (
+                                <td style={{ padding: '5px' }}>
+                                  <Input
+                                    value={
+                                      ratingReview.filter(
+                                        (el) => el?.name == each?.name && el.level == item
+                                      )[0]?.remarks
+                                    }
+                                    showCount
+                                    maxLength='200'
+                                    className='text-center'
+                                    placeholder={`Enter ${each?.name} for ${item}`}
+                                    onChange={(event) =>
+                                      handleInputEvent(event, item, each)
+                                    }
+                                  />
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className='col-12 px-0'>
+                    <div className='p-2 d-flex justify-content-start'>
+                      {overallData.length > 0 &&
+                        overallData.map((item, index) => {
                           return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                        menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                      >
-                        {obj?.remarks?.map((each) => {
-                          return (
-                            <Option value={each?.name} key={each?.score}>
-                              {each?.name}
-                            </Option>
+                            <div className='col-12 px-0 d-flex align-items-center justify-content-start'>
+                              <span
+                                style={{
+                                  fontWeight: 500,
+                                  marginRight: '5px',
+                                  fontSize: '15px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                Overall {<CaretRightOutlined />}
+                              </span>
+                              <Input
+                                showCount
+                                maxLength='500'
+                                value={overallRemarks}
+                                placeholder={`Enter for OverAll`}
+                                onChange={(event) => handleOverAll(event, item, index)}
+                              />
+                            </div>
                           );
                         })}
-                      </Select>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-            <div className='col-12 px-0 d-flex justify-content-right align-items-center'>
-              <div className='row align-items-center'>
-                <div className='col-md-4 py-12 th-16'>
-                  <Upload {...uploadProps} className='w-75'>
-                    <Button icon={<UploadOutlined />}>
-                      {file ? 'Change' : 'Upload'} File
-                    </Button>
-                  </Upload>
-                </div>
-                <div className='col-md-8 py-2 th-10'>
-                  {!file ? (
-                    'Upload .jpeg,.png,.mp4 file only'
-                  ) : (
-                    <div className='th-14'>
-                      <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
-                        <div
-                          className='th-12 th-black-1 text-truncate th-width-90'
-                          title={file?.name}
-                        >
-                          {file?.name}
+                  <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
+                    <div className='p-2'>
+                      <ButtonAnt
+                        type='primary'
+                        icon={<ScheduleOutlined />}
+                        loading={requestSent}
+                        onClick={() => submitReview()}
+                      >
+                        Submit Review
+                      </ButtonAnt>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    className='px-1 py-2 th-br-5'
+                    style={{ outline: '1px solid #D9D9D9' }}
+                  >
+                    {ratingLevelReview?.map((obj, index) => {
+                      return (
+                        <div className='row py-1 align-items-center'>
+                          <div className='col-6 text-left' key={index}>
+                            {obj?.name}
+                          </div>
+                          <div className='col-6'>
+                            <Select
+                              className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                              bordered={true}
+                              getPopupContainer={(trigger) => trigger.parentNode}
+                              placement='bottomRight'
+                              placeholder='Select Option'
+                              suffixIcon={<DownOutlined className='th-black-1' />}
+                              dropdownMatchSelectWidth={false}
+                              onChange={(e, val) => handleRemark(val, obj?.id)}
+                              filterOption={(input, options) => {
+                                return (
+                                  options.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                              menuItemSelectedIcon={
+                                <CheckOutlined className='th-primary' />
+                              }
+                            >
+                              {obj?.remarks?.map((each) => {
+                                return (
+                                  <Option value={each?.name} key={each?.score}>
+                                    {each?.name}
+                                  </Option>
+                                );
+                              })}
+                            </Select>
+                          </div>
                         </div>
+                      );
+                    })}
+                  </div>
+                  <div className='col-12 px-0 d-flex justify-content-right align-items-center'>
+                    <div className='row align-items-center'>
+                      <div className='col-md-4 py-12 th-16'>
+                        <Upload {...uploadProps} className='w-75'>
+                          <Button icon={<UploadOutlined />}>
+                            {file ? 'Change' : 'Upload'} File
+                          </Button>
+                        </Upload>
+                      </div>
+                      <div className='col-md-8 py-2 th-10'>
+                        {!file ? (
+                          'Upload .jpeg,.png,.mp4 file only'
+                        ) : (
+                          <div className='th-14'>
+                            <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                              <div
+                                className='th-12 th-black-1 text-truncate th-width-90'
+                                title={file?.name}
+                              >
+                                {file?.name}
+                              </div>
 
-                        <div className='th-pointer ml-2'>
-                          <img src={smallCloseIcon} onClick={() => setFile(null)} />
-                        </div>
+                              <div className='th-pointer ml-2'>
+                                <img src={smallCloseIcon} onClick={() => setFile(null)} />
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
-              <div className='p-2'>
-                <ButtonAnt
-                  type='primary'
-                  icon={<ScheduleOutlined />}
-                  loading={requestSent}
-                  onClick={() => submitLevelReview()}
-                >
-                  Submit Review
-                </ButtonAnt>
-              </div>
-            </div>
-          </>
-        )}
+                  </div>
+                  <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
+                    <div className='p-2'>
+                      <ButtonAnt
+                        type='primary'
+                        icon={<ScheduleOutlined />}
+                        loading={requestSent}
+                        onClick={() => submitLevelReview()}
+                      >
+                        Submit Review
+                      </ButtonAnt>
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
       </Modal>
     </>
   );

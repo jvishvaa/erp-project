@@ -133,6 +133,8 @@ const CurriculumCompletion = (props) => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [collapseData, setCollapseData] = useState([]);
   const [volumeListData, setVolumeListData] = useState([]);
@@ -663,7 +665,7 @@ const CurriculumCompletion = (props) => {
     setCompletionReportLoader(true)
     axios
       .get(
-        `${endpoints?.reportPipeline?.reportPipelineConfig}?user_level=${user_level}`,
+        `${endpoints?.reportPipeline?.reportPipelineConfig}?user_level=${is_superuser ? 1 :user_level}`,
         {
           headers: {
             'x-api-key': 'vikash@12345#1231',

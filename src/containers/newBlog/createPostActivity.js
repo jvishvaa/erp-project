@@ -416,7 +416,9 @@ const CreatePostActivity = () => {
                             value={description}
                             onChange={handleDescription}
                             fullWidth
+                            helperText={`${description?.length}/300`}
                             style={{ maxWidth: '97%' }}
+                            inputProps={{ maxLength: 300 }}
                             rows='8'
                             variant='outlined'
                           />
@@ -436,7 +438,6 @@ const CreatePostActivity = () => {
               </div>
             </div>
           </div>
-
           <UploadModalBlog
             show={showUploadModal}
             branchId={boardId}
