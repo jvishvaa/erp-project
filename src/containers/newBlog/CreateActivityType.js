@@ -49,6 +49,7 @@ const CreateActivityType = () => {
   ]);
 
   const [isDisabled, setIsDisabled] = useState(false);
+  const [loadingCreate, setLoadingCreate] = useState(false);
 
   const columns = [
     {
@@ -226,10 +227,10 @@ const CreateActivityType = () => {
   const [SubActivityType, setSubActivityType] = useState('');
 
   const submitActivity = () => {
-    setLoading(true);
+    setLoadingCreate(true);
     if (!ActivityType) {
-      setLoading(false);
       message.error('Please Enter Activity Type');
+      setLoadingCreate(false);
       return;
     } else {
       let body = {
@@ -245,15 +246,19 @@ const CreateActivityType = () => {
         .then((response) => {
           if (response?.data?.status_code === 400) {
             message.error(response?.data?.message);
-            setLoading(false);
             return;
           } else {
             setActivityType('');
             setAccordianBulkFilter(false);
             getActivityCategory();
             message.success('Activity Created Successfully');
-            setLoading(false);
           }
+        })
+        .catch((error) => {
+          message.error(error.message);
+        })
+        .finally(() => {
+          setLoadingCreate(false);
         });
     }
   };
@@ -329,7 +334,7 @@ const CreateActivityType = () => {
           <div className='row'>
             <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
-                <Breadcrumb.Item> Activity</Breadcrumb.Item>
+                <Breadcrumb.Item> Activity Management</Breadcrumb.Item>
                 <Breadcrumb.Item> Create Activity</Breadcrumb.Item>
               </Breadcrumb>
             </div>
@@ -343,7 +348,8 @@ const CreateActivityType = () => {
                 placeholder='Enter Activity Type'
                 type='text'
                 value={ActivityType}
-                onChange={(e) => setActivityType(e.target.value)}/>
+                onChange={(e) => setActivityType(e.target.value)}
+              />
             </div>
             <div
               className='col-md-4 col-6 p-2'
@@ -367,6 +373,7 @@ const CreateActivityType = () => {
               <Button
                 icon={<CheckCircleOutlined />}
                 onClick={submitActivity}
+                loading={loadingCreate}
                 type='primary'
               >
                 Submit

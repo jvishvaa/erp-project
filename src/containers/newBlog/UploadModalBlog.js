@@ -95,10 +95,9 @@ const UploadModalBlog = (props) => {
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
       if (['jpeg', 'jpg', 'png', 'mp4', 'mpeg'].includes(type)) {
-        if (file[0]?.size > 58085272) {
+        if (file[0]?.size > 41943040) {
           setFileSizeError(true);
         } else {
-          console.log(file, 'wt 88');
           setFileList([...fileList, ...file[1]]);
           setFileSizeError(false);
         }
@@ -195,7 +194,7 @@ const UploadModalBlog = (props) => {
           )}
           {fileSizeError && (
             <div className='row pt-3 justify-content-center th-red'>
-              This file size must be less than 50 MB
+              This file size must be less than 40 MB
             </div>
           )}
           {fileList?.length > 0 && (

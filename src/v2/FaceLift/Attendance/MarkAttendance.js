@@ -118,6 +118,7 @@ const MarkStudentAttendance = () => {
       ),
     },
   ].filter((item) => item.visible !== false);
+
   // Functions
 
   const handleNumberView = (n) => {
@@ -140,6 +141,7 @@ const MarkStudentAttendance = () => {
     formRef.current.setFieldsValue({
       section: [],
     });
+    handleClearData();
     setSectionData([]);
     setSectionIDs([]);
     setSectionMappingIDs([]);
@@ -159,6 +161,7 @@ const MarkStudentAttendance = () => {
   };
 
   const handleChangeSection = (each) => {
+    handleClearData();
     if (each.some((item) => item.value === 'all')) {
       const allsections = sectionData.map((item) => item.section_id).join(',');
       const allsectionsMapping = sectionData.map((item) => item.id).join(',');
@@ -180,7 +183,10 @@ const MarkStudentAttendance = () => {
   const closeNotificationModal = () => {
     setShowNotificationModal(false);
   };
-
+  const handleClearData = () => {
+    setUserListData([]);
+    setUserAggregateData({});
+  };
   //   API Calls
   const fetchUserLevelList = () => {
     setUserListData([]);
@@ -251,11 +257,11 @@ const MarkStudentAttendance = () => {
         if (res?.data?.attendance_data.length > 0) {
           setUserListData(res?.data?.attendance_data);
           setUserAggregateData(res?.data?.aggregate_counts);
-          if (selectedUserLevel == 13) {
-            if (res?.data?.attendance_data?.some((el) => el.attendence_status === null)) {
-              setNoticationAlreadySent(false);
-            }
-          }
+          // if (selectedUserLevel == 13) {
+          //   if (res?.data?.attendance_data?.some((el) => el.attendence_status === null)) {
+          //     setNoticationAlreadySent(false);
+          //   }
+          // }
         } else {
           setUserListData([]);
         }
@@ -281,12 +287,7 @@ const MarkStudentAttendance = () => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           message.success(res?.data?.message);
-          if (
-            isStudent &&
-            isOrchids &&
-            attendanceInfo.some((el) => el.attendence_status == 'absent') &&
-            !noticationAlreadySent
-          ) {
+          if (isStudent && isOrchids) {
             setShowNotificationModal(true);
           }
           setHasUnsavedChanges(false);
@@ -317,7 +318,7 @@ const MarkStudentAttendance = () => {
           message.error(result?.data?.message);
         }
         closeNotificationModal();
-        setNoticationAlreadySent(true);
+        // setNoticationAlreadySent(true);
       })
       .catch((err) => {
         message.error(err.message);
@@ -646,7 +647,7 @@ const MarkStudentAttendance = () => {
                           {handleNumberView(absentCount ?? 0)}
                         </span>
                       </div>
-                      {selectedUserLevel == 13 && isOrchids && !noticationAlreadySent && (
+                      {selectedUserLevel == 13 && isOrchids && (
                         <div className='col-12 th-fw-600 th-black-1 pt-1'>
                           Note : - When attendance is confirmed, an SMS will be sent to
                           the absentees
