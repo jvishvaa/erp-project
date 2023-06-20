@@ -53,6 +53,11 @@ const BulkUpload = () => {
         ' is a mandatory field in which ID has to be passed for Male, Female and Others as 0, 1, 2 respectively',
     },
     {
+      name: 'Single_Parent',
+      field:
+        'is a  field in which ID has to be passed for Mother, Father and Guardian as 1, 2, 3 respectively and should be left if no single parent',
+    },
+    {
       name: 'How to use Suggestions ?',
       field:
         " From the following dropdowns select grade & section and use the respective Id's for user creation",
@@ -73,10 +78,12 @@ const BulkUpload = () => {
       const file = e.dataTransfer.files;
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      console.log(type, allowedFiles);
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file);
         setFileTypeError(false);
       } else {
+        message.error('Only .xls, .xlsx files are allowed!');
         setFileTypeError(true);
       }
 
@@ -89,11 +96,13 @@ const BulkUpload = () => {
         setSelectedFile(...file[1]);
         setFileTypeError(false);
       } else {
+        message.error('Only .xls, .xlsx files are allowed!');
         setFileTypeError(true);
       }
 
       return false;
     },
+
     selectedFile,
   };
 

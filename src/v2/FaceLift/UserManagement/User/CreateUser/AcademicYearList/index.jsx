@@ -21,6 +21,10 @@ const AcademicYearList = ({
   multipleAcademicYear,
   setMultipleAcademicYear,
   currentObj,
+  maxSubjectSelection,
+  roleConfig,
+  user_level,
+  is_superuser,
 }) => {
   const acadForm = useRef();
   const [moduleId, setModuleId] = useState('');
@@ -482,6 +486,19 @@ const AcademicYearList = ({
                   required: true,
                   message: 'Please select subject',
                 },
+                {
+                  validator: (_, value) => {
+                    if (roleConfig?.includes(user_level) || is_superuser) {
+                      return Promise.resolve();
+                    }
+                    if (value && value.length > maxSubjectSelection) {
+                      return Promise.reject(
+                        `You can select up to ${maxSubjectSelection} subjects.`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
               ]}
               name={'subjects'}
               label='Subject'
@@ -491,6 +508,7 @@ const AcademicYearList = ({
                 allowClear
                 value={currentObj?.subjects}
                 getPopupContainer={(trigger) => trigger.parentNode}
+                maxLength={maxSubjectSelection ?? subjects?.length}
                 onChange={(e, value) => {
                   if (e.includes('all')) {
                     let values = subjects?.map((e) => e?.id);
@@ -512,11 +530,12 @@ const AcademicYearList = ({
                 placeholder='Subject'
                 className='w-100'
               >
-                {subjects?.length > 1 && (
-                  <Select.Option key={'all'} value={'all'}>
-                    Select All
-                  </Select.Option>
-                )}
+                {subjects?.length > 1 &&
+                  (roleConfig?.includes(user_level) || is_superuser) && (
+                    <Select.Option key={'all'} value={'all'}>
+                      Select All
+                    </Select.Option>
+                  )}
                 {subjectOption}
               </Select>
             </Form.Item>

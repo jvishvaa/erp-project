@@ -523,10 +523,6 @@ const User = () => {
   const handleExcel = () => {
     setLoading(true);
 
-    let userLevelParams = userLevel || '';
-    let branchParams = branch || '';
-    let gradeParams = grade || '';
-    let sectionParams = section || '';
     let statusparams = status || '';
     if (!loggedUserData?.is_superuser) {
       if (
@@ -547,14 +543,18 @@ const User = () => {
     if (branch) {
       paramsObj.branch = branch ? branch : '';
     }
-    paramsObj.user_level = userLevel ? userLevel?.toString() : '';
+    if (userLevel) {
+      paramsObj.user_level = userLevel;
+    }
     if (grade) {
       paramsObj.grade = grade;
     }
     if (section) {
       paramsObj.section_mapping_id = section;
     }
-    paramsObj.status = statusparams ? statusparams : '';
+    if (statusparams) {
+      paramsObj.status = statusparams;
+    }
 
     axiosInstance
       .get(endpointsV2.userManagement.downloadUserData, {
