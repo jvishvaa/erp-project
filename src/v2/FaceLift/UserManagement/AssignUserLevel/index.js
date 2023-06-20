@@ -154,6 +154,7 @@ const AssignUserLevel = () => {
     setUserLevel('');
     setSearchedData('');
     setShowFilter(true);
+    setUserData([]);
     formRef.current.resetFields();
   };
 

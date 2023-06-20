@@ -419,8 +419,9 @@ const User = () => {
   };
 
   const statusOptions = [
+    { value: 0, label: 'All' },
     { value: 1, label: 'Active' },
-    { value: 2, label: 'Deactive' },
+    { value: 2, label: 'Inactive' },
     { value: 3, label: 'Deleted' },
   ].map((each) => (
     <Option key={each?.value} value={each?.value}>
@@ -851,9 +852,10 @@ const User = () => {
                     <div className='col-md-3 col-sm-6 col-12'>
                       <Form.Item name='status'>
                         <Select
+                          defaultValue={0}
                           getPopupContainer={(trigger) => trigger.parentNode}
                           maxTagCount={1}
-                          allowClear={true}
+                          allowClear={false}
                           suffixIcon={<DownOutlined className='th-grey' />}
                           className='th-grey th-bg-grey th-br-4 w-100 text-left'
                           placement='bottomRight'
