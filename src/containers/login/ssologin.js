@@ -19,7 +19,7 @@ function LoginFormSSO(props) {
     const classes = useStyles();
     const [uname, pass, checked] =
         JSON.parse(localStorage.getItem('rememberDetails')) || [];
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     const [username, setUsername] = useState('' || uname);
     const [password, setPassword] = useState('' || pass);
@@ -54,15 +54,15 @@ function LoginFormSSO(props) {
 
     useEffect(() => {
         handleLogout()
-    },[])
+    }, [])
 
     const handleLogout = () => {
         dispatch(logout());
         const list = ['rememberDetails'];
         Object.keys(localStorage).forEach((key) => {
-          if (!list.includes(key)) localStorage.removeItem(key);
+            if (!list.includes(key)) localStorage.removeItem(key);
         });
-      };
+    };
 
     const fetchERPSystemConfig = async (status) => {
         let data = (await JSON.parse(localStorage.getItem('userDetails'))) || {};
@@ -137,7 +137,11 @@ function LoginFormSSO(props) {
                     window.location.reload();
                 });
             } else {
-                setAlert('error', response?.message);
+                if (response?.message == "Your Account deactivated"){
+                    message.error('User role is not assigned,contact with administrator')
+                }else {
+                    message.error(response?.message);
+                }
                 setDisableLogin(false);
             }
         });
@@ -174,8 +178,8 @@ function LoginFormSSO(props) {
                 setAuthToken(result?.data?.data?.token)
             })
             .catch((error) => {
-                console.error(error.response , 'err');
-                if(error?.response?.status == 401){
+                console.error(error.response, 'err');
+                if (error?.response?.status == 401) {
                     message.error(error?.response?.data?.message)
                     history.push('/')
                 }
