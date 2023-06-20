@@ -942,15 +942,13 @@ const BlogWall = () => {
                                         className='text-truncate th-black-1 th-fw-500 th-width-75'
                                         title={item?.name}
                                       >
-                                        {item?.type == 'Public Speaking'
-                                          ? ` ${data?.first_name} ${data?.last_name}`
-                                          : item?.name}
+                                        {item?.name}
                                       </div>
                                       <div>
                                         <span className='px-2 th-br-8 th-bg-grey'>
                                           <span className='th-12 th-fw-500 th-primary'>
                                             {item?.type == 'Public Speaking'
-                                              ? item?.grade
+                                              ? item?.grade?.name
                                               : item?.section?.name}
                                           </span>
                                         </span>
@@ -1499,16 +1497,23 @@ const BlogWall = () => {
                   <div className='col-5' style={{ height: 600, overflowY: 'auto' }}>
                     <div className='row justify-content-between'>
                       <div className='col-12 py-2 px-0'>
-                        <div className='d-flex align-items-center'>
-                          <Avatar size={40} icon={<UserOutlined />} />
-                          <div className='d-flex flex-column ml-2'>
-                            <div className=' th-black-1 th-fw-500'>
-                              {selectedPublicSpeaking?.group?.activity?.name}
-                            </div>
-                            <div>
-                              <span className='th-12 th-fw-500 th-black-2'>
-                                {selectedPublicSpeaking?.grade}
-                              </span>
+                        <div className='d-flex justify-content-between'>
+                          <div className='d-flex align-items-center'>
+                            <Avatar size={40} icon={<UserOutlined />} />
+                            <div className='d-flex flex-column ml-2'>
+                              <div className=' th-black-1 th-fw-500'>
+                                {selectedPublicSpeaking?.name}
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedPublicSpeaking?.grade?.name}
+                                </span>
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedPublicSpeaking?.branch?.name}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1662,18 +1667,31 @@ const BlogWall = () => {
                   <div className='col-12'>
                     <div className='row justify-content-between mt-3'>
                       <div className='col-12 py-2 px-0'>
-                        <div className='d-flex align-items-center'>
-                          <Avatar size={40} icon={<UserOutlined />} />
-                          <div className='d-flex flex-column ml-2'>
-                            <div className=' th-black-1 th-fw-500'>
-                              {selectedOtherActivity?.activity_detail?.title}
-                            </div>
-                            <div>
-                              <span className='th-12 th-fw-500 th-black-2'>
-                                {selectedOtherActivity?.grade?.name}
-                              </span>
+                        <div className='d-flex justify-content-between'>
+                          <div className='d-flex align-items-center'>
+                            <Avatar size={40} icon={<UserOutlined />} />
+                            <div className='d-flex flex-column ml-2'>
+                              <div className=' th-black-1 th-fw-500'>
+                                {console.log({ selectedOtherActivity })}
+                                {selectedOtherActivity?.name}
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedOtherActivity?.grade?.name}
+                                </span>
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedOtherActivity?.branch?.name}
+                                </span>
+                              </div>
                             </div>
                           </div>
+                          <img
+                            src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                            width='130'
+                            alt='image'
+                          />
                         </div>
                       </div>
                       <div className='col-12 py-2 px-0'>
