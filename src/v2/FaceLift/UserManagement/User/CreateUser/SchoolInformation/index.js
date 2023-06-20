@@ -42,9 +42,14 @@ const SchoolInformation = ({
   setGrades,
   setSections,
   setSubjects,
+  maxSubjectSelection,
+  roleConfig,
 }) => {
   const schoolForm = useRef();
   const [loading, setLoading] = useState(false);
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const is_superuser = userData?.user_level?.is_superuser;
+  const user_level = userData?.user_level;
   useEffect(() => {
     console.log(schoolFormValues, 'schoolFormValues');
     if (schoolFormValues && Object.keys(schoolFormValues).length > 0) {
@@ -343,6 +348,19 @@ const SchoolInformation = ({
                     required: true,
                     message: 'Please select subject',
                   },
+                  {
+                    validator: (_, value) => {
+                      if (roleConfig?.includes(user_level) || is_superuser) {
+                        return Promise.resolve();
+                      }
+                      if (value && value.length > maxSubjectSelection) {
+                        return Promise.reject(
+                          `You can select up to ${maxSubjectSelection} subjects.`
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
                 ]}
                 name={'subjects'}
                 label='Subject'
@@ -350,6 +368,7 @@ const SchoolInformation = ({
                 <Select
                   maxTagCount={3}
                   allowClear
+                  maxLength={maxSubjectSelection ?? subjects?.length}
                   getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
@@ -372,11 +391,12 @@ const SchoolInformation = ({
                   placeholder='Subject'
                   className='w-100'
                 >
-                  {subjects?.length > 1 && (
-                    <Select.Option key={'all'} value={'all'}>
-                      Select All
-                    </Select.Option>
-                  )}
+                  {subjects?.length > 1 &&
+                    (roleConfig?.includes(user_level) || is_superuser) && (
+                      <Select.Option key={'all'} value={'all'}>
+                        Select All
+                      </Select.Option>
+                    )}
                   {subjectOption}
                 </Select>
               </Form.Item>
@@ -391,6 +411,10 @@ const SchoolInformation = ({
                 currentObj={each}
                 multipleAcademicYear={multipleAcademicYear}
                 setMultipleAcademicYear={setMultipleAcademicYear}
+                maxSubjectSelection={maxSubjectSelection}
+                roleConfig={roleConfig}
+                user_level={user_level}
+                is_superuser={is_superuser}
               />
             ))}
             <div className='d-flex justify-content-end align-items-center my-4 '>

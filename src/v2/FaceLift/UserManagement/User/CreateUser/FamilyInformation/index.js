@@ -367,7 +367,19 @@ const FamilyInformation = ({
                     <Col md={8} className=''>
                       <Space align='start'>
                         <Form.Item name={'father_mobile_code'} label='Code'>
-                          <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
+                          <Select
+                            showSearch
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            defaultValue={'+91'}
+                          >
+                            {countryCodeOptions}
+                          </Select>
                         </Form.Item>
                         <Form.Item
                           rules={[
@@ -645,7 +657,19 @@ const FamilyInformation = ({
                     <Col md={8} className=''>
                       <Space>
                         <Form.Item name={'mother_mobile_code'} label='Code'>
-                          <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
+                          <Select
+                            showSearch
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            defaultValue={'+91'}
+                          >
+                            {countryCodeOptions}
+                          </Select>
                         </Form.Item>
                         <Form.Item
                           rules={[
@@ -908,7 +932,19 @@ const FamilyInformation = ({
                     <Col md={8} className=''>
                       <Space align='start'>
                         <Form.Item name={'guardian_mobile_code'} label='Code'>
-                          <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
+                          <Select
+                            showSearch
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            defaultValue={'+91'}
+                          >
+                            {countryCodeOptions}
+                          </Select>
                         </Form.Item>
                         <Form.Item
                           rules={[
@@ -1079,7 +1115,17 @@ const FamilyInformation = ({
               <Col md={8} className='py-2'>
                 <Space align='start'>
                   <Form.Item name={'contact_code'} label='Code'>
-                    <Select defaultValue={'+91'}>{countryCodeOptions}</Select>
+                    <Select
+                      showSearch
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      defaultValue={'+91'}
+                    >
+                      {countryCodeOptions}
+                    </Select>
                   </Form.Item>
                   <Form.Item
                     rules={[
@@ -1108,7 +1154,7 @@ const FamilyInformation = ({
                       pattern: /^\d{12}$/,
                     },
                   ]}
-                  name={'aadhaar_number'}
+                  name={'aadhaar'}
                   label={'Student Aadhaar'}
                 >
                   <Input className='w-100' />
