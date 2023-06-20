@@ -153,7 +153,7 @@ const EventsMarkOld = () => {
           is_full_day: false,
           grade_ids: selectedGrade.map((el) => el?.grade_id),
           // academic_year: selectedAcademicYear?.id,
-          // branch_ids: selectedBranch.map((el) => el?.id),
+          branch_id: selectedBranch.map((el) => el?.id),
           acad_session: selectedSession,
           start_time: "00:01",
           end_time: "23:59",
@@ -178,7 +178,7 @@ const EventsMarkOld = () => {
           grade_ids: selectedGrade.map((el) => el?.grade_id),
           // academic_year: selectedAcademicYear?.id,
           acad_session: selectedSession,
-          // branch_ids: selectedBranch.map((el) => el?.id),
+          branch_id: selectedBranch.map((el) => el?.id),
           start_time: "00:01",
           end_time: "23:59",
           event_category: selectedCategory?.id
