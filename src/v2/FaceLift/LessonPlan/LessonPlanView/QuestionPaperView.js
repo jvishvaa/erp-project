@@ -4,6 +4,9 @@ import { CaretRightOutlined } from '@ant-design/icons';
 import ReactHtmlParser from 'react-html-parser';
 import endpoints from 'v2/config/endpoints';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import {  SvgIcon } from '@material-ui/core';
+
 const { Panel } = Collapse;
 
 const QuestionPaperView = ({ questionData }) => {
@@ -285,171 +288,244 @@ const QuestionPaperView = ({ questionData }) => {
                                     {subitem.question_type == 1 ||
                                     subitem.question_type == 2 ||
                                     subitem.question_type == 9 ? (
-                                      <div className='lp-sub-question-box'>
-                                        <div className='row'>
-                                          <div className='col-12'>
-                                            <p className='th-black th-fw-600 mb-0'>
-                                              Question {subindex + 1}
-                                            </p>
-                                            <p className='lp-question'>
-                                              {ReactHtmlParser(
-                                                subitem.question_answer[0].question
-                                              )}
-                                            </p>
+                                      // <div className='lp-sub-question-box'>
+                                      //   <div className='row'>
+                                      //     <div className='col-12'>
+                                      //       <p className='th-black th-fw-600 mb-0'>
+                                      //         Question {subindex + 1}
+                                      //       </p>
+                                      //       <p className='lp-question'>
+                                      //         {ReactHtmlParser(
+                                      //           subitem.question_answer[0].question
+                                      //         )}
+                                      //       </p>
+                                      //     </div>
+                                      //     <div className='col-12'>
+                                      //       <p className='th-black th-fw-600 mb-0'>
+                                      //         Options
+                                      //       </p>
+                                      //       <ul style={{ listStyle: 'none' }}>
+                                      //         {Array.isArray(
+                                      //           subitem.question_answer[0].options
+                                      //         ) &&
+                                      //           subitem.question_answer[0].options
+                                      //             .length > 0 &&
+                                      //           subitem.question_answer[0].options.map(
+                                      //             (subopitem, subopindex) => (
+                                      //               <li key={subopindex}>
+                                      //                 <span className='pr-2'>
+                                      //                   Option {subopindex + 1}.{' '}
+                                      //                 </span>
+                                      //                 {extractContent(
+                                      //                   subopitem[
+                                      //                     `option${subopindex + 1}`
+                                      //                   ].optionValue
+                                      //                 )}
+
+                                      //                 {Array.isArray(
+                                      //                   subopitem[
+                                      //                     `option${subopindex + 1}`
+                                      //                   ].images
+                                      //                 ) &&
+                                      //                   subopitem[
+                                      //                     `option${subopindex + 1}`
+                                      //                   ].images.map(
+                                      //                     (imgitem, imgindex) => (
+                                      //                       <img
+                                      //                         onClick={() => {
+                                      //                           openPreview({
+                                      //                             currentAttachmentIndex:
+                                      //                               imgindex,
+                                      //                             attachmentsArray:
+                                      //                               (() => {
+                                      //                                 const images =
+                                      //                                   `${
+                                      //                                     subopitem[
+                                      //                                       `option${
+                                      //                                         subopindex +
+                                      //                                         1
+                                      //                                       }`
+                                      //                                     ].images
+                                      //                                   }`.split(',') ||
+                                      //                                   {};
+                                      //                                 const attachmentsArray =
+                                      //                                   [];
+                                      //                                 images.forEach(
+                                      //                                   (image) => {
+                                      //                                     const attachmentObj =
+                                      //                                       {
+                                      //                                         src: getS3DomainURL(
+                                      //                                           image
+                                      //                                         ),
+                                      //                                         name: `${image}`
+                                      //                                           .split(
+                                      //                                             '.'
+                                      //                                           )
+                                      //                                           .slice(
+                                      //                                             0,
+                                      //                                             -1
+                                      //                                           )
+                                      //                                           .join(
+                                      //                                             '.'
+                                      //                                           ),
+                                      //                                         extension: `.${
+                                      //                                           `${image}`
+                                      //                                             .split(
+                                      //                                               '.'
+                                      //                                             )
+                                      //                                             .slice(
+                                      //                                               -1
+                                      //                                             )[0]
+                                      //                                         }`,
+                                      //                                       };
+                                      //                                     // console.log('attachmentObj', attachmentObj)
+                                      //                                     attachmentsArray.push(
+                                      //                                       attachmentObj
+                                      //                                     );
+                                      //                                   }
+                                      //                                 );
+
+                                      //                                 return attachmentsArray;
+                                      //                               })(),
+                                      //                           });
+                                      //                         }}
+                                      //                         src={getS3DomainURL(
+                                      //                           imgitem
+                                      //                         )}
+                                      //                         alt={getS3DomainURL(
+                                      //                           `${
+                                      //                             subopitem[
+                                      //                               `option${
+                                      //                                 subopindex + 1
+                                      //                               }`
+                                      //                             ].images
+                                      //                           }`
+                                      //                         )}
+                                      //                         height='50px'
+                                      //                         width='75px'
+                                      //                       />
+                                      //                     )
+                                      //                   )}
+                                      //               </li>
+                                      //             )
+                                      //           )}
+                                      //       </ul>
+                                      //     </div>
+                                      //   </div>
+
+                                      //   <div className='row'>
+                                      //     <div className='col-12'>
+                                      //       <Button
+                                      //         type='primary'
+                                      //         className='th-br-4 mb-2'
+                                      //         onClick={() => {
+                                      //           toggleAnswer(subitem.id);
+                                      //         }}
+                                      //       >
+                                      //         {answerHidden?.includes(subitem.id)
+                                      //           ? 'Hide Answer'
+                                      //           : 'Show Answer'}
+                                      //       </Button>
+                                      //       {Array.isArray(
+                                      //         subitem.question_answer[0].answer
+                                      //       ) &&
+                                      //         subitem.question_answer[0].answer.length >
+                                      //           0 &&
+                                      //         subitem.question_answer[0].answer.map(
+                                      //           (subansitem, subansindex) => (
+                                      //             <>
+                                      //               {answerHidden?.includes(
+                                      //                 subitem.id
+                                      //               ) ? (
+                                      //                 <p
+                                      //                   className={`mb-1 ${item.name}q-${
+                                      //                     qindex + 1
+                                      //                   }`}
+                                      //                   id={`${item.name}q-${qindex + 1}`}
+                                      //                   key={subansindex}
+                                      //                 >
+                                      //                   {subansitem}
+                                      //                 </p>
+                                      //               ) : null}
+                                      //             </>
+                                      //           )
+                                      //         )}
+                                      //     </div>
+                                      //   </div>
+                                      // </div>
+                                      <>
+                                      <div className='mcq-container'>
+                                        <div className='question-container'>
+                                          <div>
+                                            {subitem.question_type === 1
+                                              ? 'MCQ SINGLE'
+                                              : 'MCQ MULTI'}
                                           </div>
-                                          <div className='col-12'>
-                                            <p className='th-black th-fw-600 mb-0'>
-                                              Options
-                                            </p>
-                                            <ul style={{ listStyle: 'none' }}>
-                                              {Array.isArray(
-                                                subitem.question_answer[0].options
-                                              ) &&
-                                                subitem.question_answer[0].options
-                                                  .length > 0 &&
-                                                subitem.question_answer[0].options.map(
-                                                  (subopitem, subopindex) => (
-                                                    <li key={subopindex}>
-                                                      <span className='pr-2'>
-                                                        Option {subopindex + 1}.{' '}
-                                                      </span>
-                                                      {extractContent(
-                                                        subopitem[
-                                                          `option${subopindex + 1}`
-                                                        ].optionValue
-                                                      )}
-
-                                                      {Array.isArray(
-                                                        subopitem[
-                                                          `option${subopindex + 1}`
-                                                        ].images
-                                                      ) &&
-                                                        subopitem[
-                                                          `option${subopindex + 1}`
-                                                        ].images.map(
-                                                          (imgitem, imgindex) => (
-                                                            <img
-                                                              onClick={() => {
-                                                                openPreview({
-                                                                  currentAttachmentIndex:
-                                                                    imgindex,
-                                                                  attachmentsArray:
-                                                                    (() => {
-                                                                      const images =
-                                                                        `${
-                                                                          subopitem[
-                                                                            `option${
-                                                                              subopindex +
-                                                                              1
-                                                                            }`
-                                                                          ].images
-                                                                        }`.split(',') ||
-                                                                        {};
-                                                                      const attachmentsArray =
-                                                                        [];
-                                                                      images.forEach(
-                                                                        (image) => {
-                                                                          const attachmentObj =
-                                                                            {
-                                                                              src: getS3DomainURL(
-                                                                                image
-                                                                              ),
-                                                                              name: `${image}`
-                                                                                .split(
-                                                                                  '.'
-                                                                                )
-                                                                                .slice(
-                                                                                  0,
-                                                                                  -1
-                                                                                )
-                                                                                .join(
-                                                                                  '.'
-                                                                                ),
-                                                                              extension: `.${
-                                                                                `${image}`
-                                                                                  .split(
-                                                                                    '.'
-                                                                                  )
-                                                                                  .slice(
-                                                                                    -1
-                                                                                  )[0]
-                                                                              }`,
-                                                                            };
-                                                                          // console.log('attachmentObj', attachmentObj)
-                                                                          attachmentsArray.push(
-                                                                            attachmentObj
-                                                                          );
-                                                                        }
-                                                                      );
-
-                                                                      return attachmentsArray;
-                                                                    })(),
-                                                                });
-                                                              }}
-                                                              src={getS3DomainURL(
-                                                                imgitem
-                                                              )}
-                                                              alt={getS3DomainURL(
-                                                                `${
-                                                                  subopitem[
-                                                                    `option${
-                                                                      subopindex + 1
-                                                                    }`
-                                                                  ].images
-                                                                }`
-                                                              )}
-                                                              height='50px'
-                                                              width='75px'
-                                                            />
-                                                          )
-                                                        )}
-                                                    </li>
-                                                  )
-                                                )}
-                                            </ul>
+                                          <div style={{ color: '#014B7E' }}>
+                                            <span style={{ color: 'red', fontSize: 16 }}>
+                                              {`Q${index + 1}`}:{' '}
+                                            </span>{' '}
+                                            {ReactHtmlParser(
+                                              subitem.question_answer[0].question
+                                            )}
                                           </div>
                                         </div>
-
-                                        <div className='row'>
-                                          <div className='col-12'>
-                                            <Button
-                                              type='primary'
-                                              className='th-br-4 mb-2'
-                                              onClick={() => {
-                                                toggleAnswer(subitem.id);
-                                              }}
-                                            >
-                                              {answerHidden?.includes(subitem.id)
-                                                ? 'Hide Answer'
-                                                : 'Show Answer'}
-                                            </Button>
-                                            {Array.isArray(
-                                              subitem.question_answer[0].answer
-                                            ) &&
-                                              subitem.question_answer[0].answer.length >
-                                                0 &&
-                                              subitem.question_answer[0].answer.map(
-                                                (subansitem, subansindex) => (
-                                                  <>
-                                                    {answerHidden?.includes(
-                                                      subitem.id
-                                                    ) ? (
-                                                      <p
-                                                        className={`mb-1 ${item.name}q-${
-                                                          qindex + 1
-                                                        }`}
-                                                        id={`${item.name}q-${qindex + 1}`}
-                                                        key={subansindex}
-                                                      >
-                                                        {subansitem}
-                                                      </p>
-                                                    ) : null}
-                                                  </>
-                                                )
-                                              )}
-                                          </div>
+                                        <div className='resourceBulkDownload'>Answers</div>
+                                        <div className='question-container'>
+                                          {subitem?.question_answer[0]?.answer.map(
+                                            (obj, i) => (
+                                              <div>{obj}</div>
+                                            )
+                                          )}
+                                        </div>
+                                        <div className='resourceBulkDownload'>Options</div>
+                                        <div>
+                                          {subitem?.question_answer[0]?.options.map(
+                                            (obj, i) => (
+                                              <div className='question-container'>
+                                                {`OPTION${i + 1}:   ${
+                                                  obj[`option${i + 1}`].optionValue
+                                                }`}
+                                                {`${obj[`option${i + 1}`].images}`.length > 0 && (
+                                                  <div>
+                                                    <a
+                                                      onClick={() => {
+                                                        openPreview({
+                                                          currentAttachmentIndex: 0,
+                                                          attachmentsArray: (() => {
+                                                            const images =
+                                                              `${obj[`option${i + 1}`].images}`.split(
+                                                                ','
+                                                              ) || {};
+                                                            const attachmentsArray = [];
+                                                            images.forEach((image) => {
+                                                              const attachmentObj = {
+                                                                src: getS3DomainURL(image),
+                                                                name: `${image}`
+                                                                  .split('.')
+                                                                  .slice(0, -1)
+                                                                  .join('.'),
+                                                                extension: `.${
+                                                                  `${image}`.split('.').slice(-1)[0]
+                                                                }`,
+                                                              };
+                                                              attachmentsArray.push(attachmentObj);
+                                                            });
+                                                            return attachmentsArray;
+                                                          })(),
+                                                        });
+                                                      }}
+                                                    >
+                                                      <SvgIcon component={() => <VisibilityIcon />} />
+                                                    </a>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            )
+                                          )}
                                         </div>
                                       </div>
+                                    </>
                                     ) : null}
 
                                     {subitem.question_type == 8 ? (
