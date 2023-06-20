@@ -240,6 +240,7 @@ const BlogWall = () => {
   };
 
   const getActivitySession = () => {
+    setLoading(true);
     axios
       .post(
         `${endpoints.newBlog.activitySessionLogin}`,
@@ -597,7 +598,7 @@ const BlogWall = () => {
           {!(user_level == '13' || user_level == '10') && (
             <div className='col-12 px-0'>
               <div className='row align-items-end'>
-                <div className='col-md-2 col-5 px-0 px-md-2'>
+                <div className='col-md-3 col-5 px-0 px-md-2'>
                   <div className='mb-2 text-left'>Grade</div>
                   <Select
                     className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
@@ -607,7 +608,7 @@ const BlogWall = () => {
                     placement='bottomRight'
                     placeholder='Select Grade'
                     suffixIcon={<DownOutlined className='th-black-1' />}
-                    dropdownMatchSelectWidth={false}
+                    dropdownMatchSelectWidth={true}
                     onChange={(e, val) => handleGradeChange(val)}
                     allowClear
                     menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
@@ -615,7 +616,7 @@ const BlogWall = () => {
                     {gradeOptions}
                   </Select>
                 </div>{' '}
-                <div className='col-md-2 col-5 px-0 px-md-2'>
+                <div className='col-md-3 col-5 px-0 px-md-2'>
                   <div className='mb-2 text-left'>Blog List</div>
                   <Select
                     className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
@@ -625,7 +626,7 @@ const BlogWall = () => {
                     placement='bottomRight'
                     placeholder='Select Blog List'
                     suffixIcon={<DownOutlined className='th-black-1' />}
-                    dropdownMatchSelectWidth={false}
+                    dropdownMatchSelectWidth={true}
                     onChange={(e, val) => handleBlogListChange(e, val)}
                     allowClear
                     menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
@@ -642,7 +643,7 @@ const BlogWall = () => {
                     showToday={false}
                     suffixIcon={<DownOutlined />}
                     onChange={(value) => handleDateChange(value)}
-                    className='th-range-picker th-br-4 w-80'
+                    className='th-range-picker th-br-4 th-width-100'
                     separator={'to'}
                     format={'DD/MM/YYYY'}
                   />
@@ -1226,7 +1227,6 @@ const BlogWall = () => {
             onCancel={() => {
               setShowPostDetailsModal(false);
               setCurrentComment(null);
-              handleSearch();
             }}
             width={'80vw'}
             footer={null}
@@ -1460,9 +1460,13 @@ const BlogWall = () => {
             centered
             visible={showPublicSpeakingModal}
             destroyOnClose={true}
-            onOk={() => setShowPublicSpeakingModal(false)}
+            onOk={() => {
+              setShowPublicSpeakingModal(false);
+              setChatDetails([]);
+            }}
             onCancel={() => {
               setShowPublicSpeakingModal(false);
+              setChatDetails([]);
             }}
             width={'80vw'}
             footer={null}

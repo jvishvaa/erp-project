@@ -265,8 +265,8 @@ const BlogWallRedirect = () => {
                                 </span>
                               </div>
                             </div>
-                            <div className='row align-item-center'>
-                              <div className='col-sm-6 pl-0'>
+                            <div className='row align-items-center'>
+                              <div className='col-sm-6 pl-0 pr-1'>
                                 <div className='th-12 th-fw-300 text-capitalize th-black-1'>
                                   Last Updated
                                 </div>
@@ -274,14 +274,13 @@ const BlogWallRedirect = () => {
                                   {moment(each?.last_update).format('ll')}
                                 </div>
                               </div>
-                              <div className='col-sm-6 text-sm-right px-0 px-sm-2 pt-1 pt-sm-0'>
-                                <Button
-                                  className='th-button-active th-br-6 text-truncate th-pointer'
+                              <div className='col-sm-6  px-0 pt-1 pt-sm-0'>
+                                <div
+                                  className='th-button-active th-br-6 text-truncate th-pointer text-center p-1'
                                   onClick={() => handleExplore(each)}
-                                  icon={<RightCircleOutlined />}
                                 >
-                                  Explore
-                                </Button>
+                                  <RightCircleOutlined /> Explore
+                                </div>
                               </div>
                             </div>
                           </div>
