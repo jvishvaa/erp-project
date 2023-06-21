@@ -48,10 +48,9 @@ const SchoolInformation = ({
   const schoolForm = useRef();
   const [loading, setLoading] = useState(false);
   const userData = JSON.parse(localStorage.getItem('userDetails'));
-  const is_superuser = userData?.user_level?.is_superuser;
+  const is_superuser = userData?.is_superuser;
   const user_level = userData?.user_level;
   useEffect(() => {
-    console.log(schoolFormValues, 'schoolFormValues');
     if (schoolFormValues && Object.keys(schoolFormValues).length > 0) {
       schoolForm.current.setFieldsValue(schoolFormValues);
       if (!schoolFormValues.academic_year) {
@@ -96,7 +95,7 @@ const SchoolInformation = ({
     </Select.Option>
   ));
   const subjectOption = subjects?.map((each) => (
-    <Select.Option key={each?.item_id} value={each?.subject_name} id={each?.id}>
+    <Select.Option key={each?.item_id} value={each?.item_id} id={each?.id}>
       {each?.subject_name}
     </Select.Option>
   ));
@@ -106,7 +105,7 @@ const SchoolInformation = ({
     handleNext();
     setLoading(false);
   };
-  return (
+   return (
     <React.Fragment>
       <div
         className='px-2'
@@ -372,7 +371,7 @@ const SchoolInformation = ({
                   getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
-                      let values = subjects?.map((e) => e?.subject_name);
+                      let values = subjects?.map((e) => e?.item_id);
                       schoolForm.current.setFieldsValue({
                         subjects: values,
                       });

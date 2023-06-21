@@ -121,7 +121,6 @@ const CreateUser = () => {
       .then((response) => {
         const user = response.data.result;
         let multipleYears = user?.mapping_bgs?.slice(0, -1) ?? [];
-        console.log(multipleYears, 'multipleYears');
         let modifiedMultipleYears = [];
         for (let i = 0; i < multipleYears?.length; i++) {
           let obj = {
@@ -356,10 +355,9 @@ const CreateUser = () => {
           branch: transformedUser?.branch?.pop()?.map((e) => e.id),
           grade: gradeObj?.map((e) => e.grade_name),
           section: sectionObj?.map((e) => e.section_name),
-          subjects: subjectObj?.map((e) => e.subject_name),
+          subjects: subjectObj?.map((e) => e.item_id),
         };
         setSectionMappingId(sectionObj?.map((e) => e?.item_id));
-        console.log(sectionObj, 'sectionObj');
         var studentInformation = {
           first_name: transformedUser?.first_name,
           middle_name: transformedUser?.middle_name,
@@ -449,7 +447,7 @@ const CreateUser = () => {
         },
       })
       .then((res) => {
-        setDesignation([...res?.data?.result]);
+        setDesignation(res?.data?.result);
       })
       .catch((err) => {
         message.error(err?.response?.data?.message ?? 'Something went wrong!');
@@ -523,8 +521,8 @@ const CreateUser = () => {
             }
           }
         })
-        .catch(() => {
-          console.log('');
+        .catch((err) => {
+          console.log(err);
         });
     } else {
       setGrades([]);
@@ -563,8 +561,8 @@ const CreateUser = () => {
             }
           }
         })
-        .catch(() => {
-          console.log('');
+        .catch((err) => {
+          console.log(err);
         });
     } else {
       setSections([]);
@@ -572,7 +570,6 @@ const CreateUser = () => {
   };
 
   const fetchSubjects = (sections, editBranch, editGrade, module) => {
-    console.log(sections, editGrade, 'oiyyui');
     if (sections?.length > 0) {
       setSelectedSections(sections);
       axiosInstance
@@ -604,8 +601,8 @@ const CreateUser = () => {
             }
           }
         })
-        .catch(() => {
-          console.log('');
+        .catch((err) => {
+          console.log(err);
         });
     } else {
       setSubjects([]);
@@ -622,7 +619,6 @@ const CreateUser = () => {
 
   const handleSubmit = (formValues) => {
     setLoading(true);
-    console.log(schoolFormValues, studentFormValues, familyFormValues, siblings);
     let familyValues = {};
     if (userLevel === 13) {
       familyValues = familyFormValues;
@@ -704,7 +700,6 @@ const CreateUser = () => {
     } else {
       contact = (familyValues?.contact_code ?? '+91') + '-' + familyValues?.contact;
     }
-    console.log(contact, 'contacts');
     formData.append('contact', `${contact ? contact : ''}`);
     formData.append('address', familyValues?.address ?? '');
     if (studentFormValues?.profile) {

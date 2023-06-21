@@ -70,7 +70,6 @@ const FamilyInformation = ({
       mother_photo: selectedImageMother,
       guardian_photo: selectedImageGuardian,
     });
-    console.log(formValues, 'formValues');
     if (userLevel === 13) {
       if (!fatherPrimary && !motherPrimary && !guardianPrimary) {
         message.error('Select a contact number as primary!');
@@ -1085,6 +1084,16 @@ const FamilyInformation = ({
                     required: true,
                     message: 'Pincode is required!',
                   },
+                  {
+                    validator: (_, value) => {
+                      if (value && !/^\d{6}$/.test(value)) {
+                        return Promise.reject(
+                          `Enter Valid Pincode`
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  }
                 ]}
                 name={'pin_code'}
                 label='Pincode'
