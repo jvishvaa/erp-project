@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { message, Table, Breadcrumb, Button } from 'antd';
+import { message, Table, Breadcrumb, Button, DatePicker } from 'antd';
 import Layout from 'containers/Layout';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
@@ -16,7 +16,12 @@ const ReportPipeline = () => {
     : window?.location?.host?.split('.')[0];
 
   useEffect(
-    () => fetchReportStatus({ school_name: schoolName, erp_id: userDetails?.erp }),
+    () =>
+      fetchReportStatus({
+        school_name: schoolName,
+        erp_id: userDetails?.erp,
+        current_date: moment().format('YYYY-MM-DD'),
+      }),
     []
   );
 
@@ -117,6 +122,26 @@ const ReportPipeline = () => {
         </div>
         <div className='col-12 mt-3'>
           <div className='p-2 bg-white'>
+            <div className='d-flex justify-content-end'>
+              <div className='col-md-2 col-12 mb-2 p-0 mr-1'>
+                <DatePicker
+                  className='w-100 th-black-2 pl-0 th-date-picker th-pointer'
+                  allowClear={false}
+                  defaultValue={moment()}
+                  format={'DD-MM-YYYY'}
+                  disabledDate={(current) => {
+                    return current && current > moment().endOf('day');
+                  }}
+                  onChange={(e) => {
+                    fetchReportStatus({
+                      school_name: schoolName,
+                      erp_id: userDetails?.erp,
+                      current_date: moment(e).format('YYYY-MM-DD'),
+                    });
+                  }}
+                />
+              </div>
+            </div>
             <Table
               className='th-table '
               columns={columns}
