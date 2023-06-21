@@ -1022,6 +1022,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           isAutoAssignDiary
         )
       );
+
       setHwDiaryPeriodMappingId(response.data?.data?.hw_dairy_period_mapping_ids);
       setLoading(false);
       message.success('Homework added');
@@ -2073,10 +2074,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                         <div className='th-black-1 th-fw-600 pb-1'>Title</div>
                         <Input
                           className='th-width-100 th-br-6'
+                          title={homeworkTitle}
                           value={homeworkTitle}
                           onChange={(e) => setHomeworkTitle(e.target.value)}
                           placeholder='Enter Title'
-                          maxLength={100}
+                          // maxLength={100}
                         />
                       </div>
                       {isAutoAssignDiary ? null : (
