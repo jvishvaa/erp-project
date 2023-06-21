@@ -136,11 +136,12 @@ function LoginFormSSO(props) {
           window.location.reload();
         });
       } else {
-        if (response?.message == 'Your Account deactivated') {
+        if (response?.message == "Your account is deactivated") {
           message.error('User role is not assigned,contact with administrator');
           history.push('/');
         } else {
           message.error(response?.message);
+          history.push('/');
         }
         setDisableLogin(false);
       }
