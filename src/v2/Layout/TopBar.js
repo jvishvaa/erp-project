@@ -66,7 +66,7 @@ const Appbar = ({ children, history, ...props }) => {
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
-      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3001'
+      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'test' || window.location.host.split('.')[0] === 'dev'
       ? true
       : false;
 
@@ -98,7 +98,7 @@ const Appbar = ({ children, history, ...props }) => {
   const profileDetails = JSON.parse(localStorage.getItem('profileDetails')) || {};
   const [profile, setProfile] = useState(selectedProfileDetails.name);
   const [hmac, setHmac] = useState(null)
-
+  const getHmac = localStorage.getItem('hmac') || null
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
     if (navigationData) {
@@ -171,7 +171,7 @@ const Appbar = ({ children, history, ...props }) => {
       window.btoa(
         JSON.stringify({
           erp: onlyId.substr(0, onlyId?.length - 4),
-          hmac: hmac,
+          hmac: getHmac,
         })
       )
     );
@@ -183,7 +183,7 @@ const Appbar = ({ children, history, ...props }) => {
   }
 
   useEffect(() => {
-    if (hmac == null && erpID?.erp) {
+    if (getHmac == null && erpID?.erp && isOrchids) {
       fetchTokenCrm()
     }
   }, [erpID])
@@ -198,6 +198,7 @@ const Appbar = ({ children, history, ...props }) => {
       .then((response) => {
         console.log(response, 'response');
         setHmac(response.data.result)
+        localStorage.setItem('hmac' ,response.data.result )
       })
       .catch((error) => {
         console.error('error', error?.message);
