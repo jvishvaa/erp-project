@@ -159,8 +159,17 @@ function AddTemplates() {
     }
   };
   const onFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setFileUrl(URL.createObjectURL(event.target.files[0]));
+    let file = event.target.files[0];
+    if (file.type.includes('image/')) {
+      if (file.size > 41943040) {
+        message.error('Image size must be less than 40 MB');
+      } else {
+        setSelectedFile(file);
+        setFileUrl(URL.createObjectURL(file));
+      }
+    } else {
+      message.error('Please select image file only');
+    }
   };
   const getActivityCategory = () => {
     setLoading(true);
@@ -272,8 +281,8 @@ function AddTemplates() {
                   <Input
                     type='file'
                     inputRef={fileRef}
-                    accept='image/x-png,image/gif,image/jpeg,image/jpeg,video/mp4'
-                    inputProps={{ accept: '.mp4,.jpeg,.png' }}
+                    accept='image/x-png,image/gif,image/jpeg,'
+                    inputProps={{ accept: '.jpeg,.png,.jpg' }}
                     onChange={onFileChange}
                     // onChange={handleFileChange}
                   />

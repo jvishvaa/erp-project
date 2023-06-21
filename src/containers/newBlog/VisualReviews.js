@@ -351,11 +351,11 @@ const VisualReviews = (props) => {
                       >
                         {ratingReview?.map((obj, index) => {
                           return (
-                            <div className='row py-1 text-center'>
-                              <div className='col-6' key={index}>
+                            <div className='row py-1 justify-content-center'>
+                              <div className='col-6 text-justify' key={index}>
                                 {obj?.name}
                               </div>
-                              <div className='col-6'>
+                              <div className='col-6 text-justify'>
                                 <div
                                   title={
                                     obj?.remarks.filter((item) => item.status == true)[0]
