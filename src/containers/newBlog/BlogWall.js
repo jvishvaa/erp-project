@@ -263,6 +263,7 @@ const BlogWall = () => {
       })
       .catch((err) => {
         message.error(err?.message);
+        setLoading(false);
       });
   };
 
@@ -1564,9 +1565,9 @@ const BlogWall = () => {
                       </div>
 
                       <div className='row'>
-                        {chatDetails.length > 0 ? (
+                        {chatDetails?.length > 0 ? (
                           <>
-                            {chatDetails.map((item, index) => {
+                            {chatDetails?.map((item, index) => {
                               if (item?.is_reply == true) {
                                 return (
                                   <Comment
@@ -1728,7 +1729,7 @@ const BlogWall = () => {
                                 className='row py-1 text-justify text-center'
                                 style={{
                                   borderBottom:
-                                    index == ratingReview.length - 1
+                                    index == ratingReview?.length - 1
                                       ? null
                                       : '1px solid #d9d9d9',
                                 }}
