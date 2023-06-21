@@ -57,7 +57,7 @@ const ReportPipeline = () => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700 '>Date</span>,
+      title: <span className='th-white th-fw-700 '>Requested Date</span>,
       dataIndex: 'created_at',
       key: 'created_at',
       align: 'center',
@@ -67,7 +67,7 @@ const ReportPipeline = () => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700 '>Time</span>,
+      title: <span className='th-white th-fw-700 '>Requested Time</span>,
       dataIndex: 'created_at',
       key: 'created_at',
       align: 'center',
@@ -89,7 +89,7 @@ const ReportPipeline = () => {
       title: <span className='th-white th-fw-700 '>Report Link</span>,
       key: 's3_path',
       align: 'center',
-      //   width: '25%',
+      width: '30%',
       render: (data) => (
         <span className='th-black-2'>
           {data?.is_published ? (
@@ -102,7 +102,7 @@ const ReportPipeline = () => {
               Download Report
             </Button>
           ) : (
-            'Report is being published.'
+            'Come back later to download the report request, it is currently being processed.'
           )}
         </span>
       ),
