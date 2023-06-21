@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import endpoints from 'config/endpoints';
 import axios from 'axios';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
+import Loading from './../../../../components/loader/loader';
 
 const reportTypes = [
   {
@@ -80,6 +81,7 @@ const ReportTypeFilter = ({
   const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [isReportButtonUnable, setIsReportButtonUnable] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const query = new URLSearchParams(window.location.search);
   const isReportView = Boolean(query.get('report-card'));
@@ -118,6 +120,7 @@ const ReportTypeFilter = ({
       report_name: 'quiz_report',
       requested_by: `${userDetails?.first_name} ${userDetails?.last_name}`,
     };
+    setLoading(true);
     axios
       .post(`${endpoints?.reportPipeline?.viewReportPipeline}`, obj, {
         headers: {
@@ -132,7 +135,10 @@ const ReportTypeFilter = ({
       .catch((error) => {
         setAlert('error', error?.message);
       })
-      .finally(() => history.push('/report-pipeline'));
+      .finally(() => {
+        history.push('/report-pipeline');
+        setLoading(false);
+      });
   };
 
   const fetchReportPipelineConfig = () => {
@@ -165,6 +171,7 @@ const ReportTypeFilter = ({
         margin: isMobile ? '0px 0px -10px 0px' : '-10px 0px 20px 8px',
       }}
     >
+      {loading ? <Loading message='Loading...' /> : null}
       <Grid item xs={12} sm={6} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
