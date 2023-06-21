@@ -220,12 +220,17 @@ const VisualActivityReview = () => {
   const handleGrade = (item) => {
     formRef.current.setFieldsValue({
       subject: null,
-      // board: null,
     });
+    setGradeId();
+    setGradeName();
     setFlag(false);
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
+    } else {
+      setSubjectData([]);
+      setSubjectId();
+      setSubjectName();
     }
   };
 
@@ -310,6 +315,9 @@ const VisualActivityReview = () => {
     if (item) {
       setSubjectId(item.value);
       setSubjectName(item?.mappingId);
+    } else {
+      setSubjectId();
+      setSubjectName();
     }
   };
 

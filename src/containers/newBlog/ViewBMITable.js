@@ -112,6 +112,8 @@ const ViewBMITableCustom = (props) => {
                 setBmi();
                 setBmiRemarks();
                 showModal();
+                // setSelectedStudentsDetails(row);
+                CheckBMIFun(row);
               }}
             >
               Add BMI
@@ -245,7 +247,7 @@ const ViewBMITableCustom = (props) => {
         return;
       } else {
         const requestData = {
-          student_id: checkBMIData?.id,
+          student_id: selectedStudentDetails?.id,
           height: height,
           weight: weight,
           age: age,
@@ -410,7 +412,9 @@ const ViewBMITableCustom = (props) => {
           },
         })
         .then((response) => {
-          setCheckBMIData(response?.data?.result);
+          if (response.data?.status_code == 200) {
+            setCheckBMIData(response?.data?.result);
+          }
           // setAlert('success', response?.data?.message)
         })
         .catch((error) => {
@@ -434,8 +438,12 @@ const ViewBMITableCustom = (props) => {
           },
         })
         .then((response) => {
-          setCheckBMIData(response?.data?.result);
-          showBMITable(response?.data?.result);
+          if (response.data.status_code == 200) {
+            setCheckBMIData(response?.data?.result);
+            showBMITable(response?.data?.result);
+          } else {
+            message.error(response.data.message);
+          }
         })
         .catch((error) => {
           message.error(error.message);
@@ -574,6 +582,7 @@ const ViewBMITableCustom = (props) => {
         width={1000}
         centered
       >
+        {console.log({ selectedStudentDetails })}
         <Row style={{ padding: '0.5rem 1rem' }}>
           <Col span={24}>
             <div

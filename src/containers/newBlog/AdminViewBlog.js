@@ -574,7 +574,7 @@ const AdminViewBlog = () => {
             <div className='col-6'>
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
-                  href='/blog/wall/central/redirect'
+                  onClick={() => history.push('/blog/wall/central/redirect')}
                   className='th-grey-1 th-16'
                 >
                   Activity Management

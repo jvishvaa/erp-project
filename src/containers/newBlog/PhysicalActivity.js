@@ -657,7 +657,7 @@ const PhysicalActivity = () => {
             <div className='col-6'>
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
-                  href='/blog/wall/central/redirect'
+                  onClick={() => history.push('/blog/wall/central/redirect')}
                   className='th-grey th-400 th-16'
                 >
                   Activity Management

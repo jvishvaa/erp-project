@@ -1506,12 +1506,12 @@ const BlogWall = () => {
                               </div>
                               <div>
                                 <span className='th-12 th-fw-500 th-black-2'>
-                                  {selectedPublicSpeaking?.grade?.name}
+                                  {selectedPublicSpeaking?.branch?.name}
                                 </span>
                               </div>
                               <div>
                                 <span className='th-12 th-fw-500 th-black-2'>
-                                  {selectedPublicSpeaking?.branch?.name}
+                                  {selectedPublicSpeaking?.grade?.name}
                                 </span>
                               </div>
                             </div>
@@ -1672,17 +1672,16 @@ const BlogWall = () => {
                             <Avatar size={40} icon={<UserOutlined />} />
                             <div className='d-flex flex-column ml-2'>
                               <div className=' th-black-1 th-fw-500'>
-                                {console.log({ selectedOtherActivity })}
                                 {selectedOtherActivity?.name}
                               </div>
                               <div>
                                 <span className='th-12 th-fw-500 th-black-2'>
-                                  {selectedOtherActivity?.grade?.name}
+                                  {selectedOtherActivity?.branch?.name}
                                 </span>
                               </div>
                               <div>
                                 <span className='th-12 th-fw-500 th-black-2'>
-                                  {selectedOtherActivity?.branch?.name}
+                                  {selectedOtherActivity?.grade?.name}
                                 </span>
                               </div>
                             </div>
