@@ -152,7 +152,7 @@ const ExcelUploadStatus = () => {
                 Dashboard
               </Breadcrumb.Item>
               <Breadcrumb.Item
-                href='/user-management/non-academic-staff'
+                href='/user-management/view-users'
                 className='th-grey th-16'
               >
                 User Management
