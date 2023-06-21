@@ -111,7 +111,6 @@ const ViewBMITableCustom = (props) => {
                 setRemarks();
                 setBmi();
                 setBmiRemarks();
-                showModal();
                 // setSelectedStudentsDetails(row);
                 CheckBMIFun(row);
               }}
@@ -247,7 +246,7 @@ const ViewBMITableCustom = (props) => {
         return;
       } else {
         const requestData = {
-          student_id: selectedStudentDetails?.id,
+          student_id: checkBMIData?.id,
           height: height,
           weight: weight,
           age: age,
@@ -402,8 +401,6 @@ const ViewBMITableCustom = (props) => {
       setWeight('');
       setAge(null);
       setRemarks('');
-      // showModal();
-      setLoading(true);
       axios
         .get(`${endpoints.newBlog.checkBMIApi}?erp_id=${data?.erp_id}&user_level=${13}`, {
           headers: {
@@ -414,8 +411,10 @@ const ViewBMITableCustom = (props) => {
         .then((response) => {
           if (response.data?.status_code == 200) {
             setCheckBMIData(response?.data?.result);
+            showModal();
+          } else {
+            message.error(response?.data?.message);
           }
-          // setAlert('success', response?.data?.message)
         })
         .catch((error) => {
           message.error(error.message);
