@@ -31,6 +31,7 @@ const BulkUpload = () => {
   const [subjectList, setSubjectList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
   const [showSuggestion, setShowSuggestion] = useState(false);
+  const [roleList, setRoleList] = useState([]);
   const history = useHistory();
   const guidelines = [
     {
@@ -123,6 +124,7 @@ const BulkUpload = () => {
       });
     }
     fetchUserLevel();
+    fetchUserRoles()
   }, []);
 
   useEffect(() => {
@@ -130,7 +132,16 @@ const BulkUpload = () => {
       fetchBranches(selectedYear?.id);
     }
   }, [moduleId, selectedYear]);
-
+  const fetchUserRoles = async () => {
+    axiosInstance.get(
+      `${endpoints.communication.roles}`
+    ).then((response)=>{
+        setRoleList(response?.data?.result)
+    }).
+    catch ((error)=> {
+      message.error(error.response.message.data??'Something went!');
+    })
+  };
   const fetchBranches = async () => {
     if (selectedYear) {
       try {
@@ -434,6 +445,23 @@ const BulkUpload = () => {
     },
   ];
 
+  const roleColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>ID</span>,
+      dataIndex: 'id',
+      width: '20%',
+      className: 'text-center',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Role Name</span>,
+      dataIndex: 'role_name',
+      width: '60%',
+      className: 'text-center',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+  ];
+
   return (
     <React.Fragment>
       <>
@@ -558,6 +586,21 @@ const BulkUpload = () => {
                   </div>
 
                   <div className='row'>
+                  <div className='col-md-4'>
+                      <Table
+                        className='th-table'
+                        rowClassName={(record, index) =>
+                          index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                        }
+                        columns={roleColumns}
+                        rowKey={(record) => record?.id}
+                        dataSource={roleList}
+                        pagination={false}
+                        scroll={{
+                          y: 200,
+                        }}
+                      />
+                    </div>
                     <div className='col-md-4'>
                       <Table
                         className='th-table'

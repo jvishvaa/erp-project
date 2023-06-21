@@ -14,7 +14,6 @@ const SiblingInformation = ({
     let temp = siblings;
     for (let i = 0; i < siblings?.length; i++) {
       if (id === temp[i].id) {
-        console.log(e);
         if (field) {
           temp[i] = { ...temp[i], [field]: e };
         } else temp[i] = { ...temp[i], [e.target.name]: e.target.value };

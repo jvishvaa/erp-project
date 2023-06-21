@@ -73,7 +73,6 @@ const AcademicYearList = ({
         section: currentObj?.section,
         subjects: currentObj?.subjects,
       });
-      console.log(currentObj, 'currentObj');
       fetchBranches(currentObj?.academic_year);
       fetchGrades(currentObj?.branch, null, module, currentObj?.academic_year);
       fetchSections(
@@ -173,8 +172,8 @@ const AcademicYearList = ({
             setGrades([...transformedData]);
           }
         })
-        .catch(() => {
-          console.log('');
+        .catch((err) => {
+          console.log(err);
         });
     } else {
       setGrades([]);
@@ -203,12 +202,11 @@ const AcademicYearList = ({
                   grade_id: section?.grade_id,
                 }))
               : [];
-            console.log(transformedData, 'section');
             setSections([...transformedData]);
           }
         })
-        .catch(() => {
-          console.log('');
+        .catch((err) => {
+          console.log(err);
         });
     } else {
       setSections([]);
@@ -216,7 +214,6 @@ const AcademicYearList = ({
   };
 
   const fetchSubjects = (sections, editBranch, editGrade, module, session_year) => {
-    console.log(sections, editGrade, grades, 'oiyyui');
     if (sections?.length > 0) {
       setSelectedSections(sections);
       axiosInstance
@@ -238,20 +235,11 @@ const AcademicYearList = ({
                   subject_name: obj.subject__subject_name,
                 }))
               : [];
-            if (transformedData?.length > 1) {
-              //   transformedData.unshift({
-              //     item_id: 'all',
-              //     id: 'all',
-              //     grade_name: 'Select All',
-              //     branch_id: '',
-              //   });
-              // }
-            }
             setSubjects([...transformedData]);
           }
         })
-        .catch(() => {
-          console.log('');
+        .catch((err) => {
+          console.log(err);
         });
     } else {
       setSubjects([]);
@@ -294,7 +282,6 @@ const AcademicYearList = ({
   const handleDelete = () => {
     setMultipleAcademicYear(multipleAcademicYear?.filter((e) => e.id !== currentObj?.id));
   };
-  console.log(multipleAcademicYear, 'multipleAcademicYear');
   return (
     <React.Fragment>
       <Form ref={acadForm} layout='vertical'>

@@ -39,7 +39,6 @@ const CreateUserConfig = ({ match, history }) => {
     window.location.host.split('.')[0] === 'qa'
       ? true
       : false;
-  console.log(selectedBranch?.id?.toString(), 'selectedBranch');
   return (
     <React.Fragment>
       {loading ? (

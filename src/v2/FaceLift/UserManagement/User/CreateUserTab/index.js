@@ -25,7 +25,7 @@ const CreateUserTab = () => {
         <div className='row pt-3'>
           <div className='col-md-12'>
             <div className='th-tabs th-bg-white mb-3'>
-              <Tabs type='card' onChange={(e) => console.log(e)}>
+              <Tabs type='card'>
                 <TabPane tab='Create User' key='1'>
                   <CreateUser />
                 </TabPane>

@@ -24,8 +24,6 @@ const AssignUserRole = () => {
   const [userRoleList, setUserRoleList] = useState([]);
   const [selectedRole, setSelectedRole] = useState('');
   const [searchedData, setSearchedData] = useState('');
-  const [branchList, setBranchList] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
@@ -72,7 +70,6 @@ const AssignUserRole = () => {
 
   useEffect(() => {
     if (moduleId && selectedYear) {
-      fetchBranches(selectedYear?.id);
       fetchGrade(selectedAcadBranch?.branch?.id);
       filterData(
         pageNo,
@@ -128,58 +125,6 @@ const AssignUserRole = () => {
     } else {
       const singleRole = each.map((item) => item.value).join(',');
       setSelectedRole(singleRole);
-    }
-  };
-
-  const fetchBranches = async () => {
-    if (selectedYear) {
-      try {
-        const result = await axiosInstance.get(
-          `${endpoints.masterManagement.branchList}?session_year=${selectedYear.id}&module_id=${moduleId}`
-        );
-        if (result.data.status_code === 200) {
-          setBranchList(result?.data?.data);
-        } else {
-          message.error(result?.data?.message);
-        }
-      } catch (error) {
-        message.error(error.message);
-      }
-    }
-  };
-
-  const branchListOptions = branchList?.map((each) => {
-    return (
-      <Option key={each?.id} value={each.id}>
-        {each?.branch_name}
-      </Option>
-    );
-  });
-
-  const handleUserBranch = (e) => {
-    setPageNo(1);
-    if (e) {
-      setSelectedBranch(e);
-      fetchGrade(e);
-      setSelectedGrade('');
-      setSelectedSection('');
-      setGradeList([]);
-      setSectionList([]);
-      formRef.current.setFieldsValue({
-        grade: [],
-        section: [],
-      });
-    } else {
-      setSelectedBranch('');
-      setSelectedGrade('');
-      setSelectedSection('');
-      setGradeList([]);
-      setSectionList([]);
-      formRef.current.setFieldsValue({
-        branch: null,
-        grade: [],
-        section: [],
-      });
     }
   };
 
@@ -241,7 +186,7 @@ const AssignUserRole = () => {
   const fetchSection = async (selectedGrade) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch}&grade_id=${selectedGrade}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedAcadBranch?.branch?.id}&grade_id=${selectedGrade}&module_id=${moduleId}`
       );
       if (result.data.status_code === 200) {
         setSectionList(result.data.data);
@@ -440,7 +385,6 @@ const AssignUserRole = () => {
   const handleClearFilter = () => {
     setSearchedData('');
     setSelectedRole('');
-    setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSection('');
     setSelectedUsers([]);
@@ -562,29 +506,6 @@ const AssignUserRole = () => {
                       </Select>
                     </Form.Item>
                   </div>
-                  {/* <div className='col-md-3 col-sm-6 col-12'>
-                    <Form.Item name='branch'>
-                      <Select
-                        allowClear={true}
-                        className='th-grey th-bg-white  w-100 text-left'
-                        placement='bottomRight'
-                        showArrow={true}
-                        onChange={(e, value) => handleUserBranch(e, value)}
-                        dropdownMatchSelectWidth={true}
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                        showSearch
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        placeholder='Select Branch'
-                      >
-                        {branchListOptions}
-                      </Select>
-                    </Form.Item>
-                  </div> */}
                   <div className='col-md-3 col-sm-6 col-12'>
                     <Form.Item name='grade'>
                       <Select
