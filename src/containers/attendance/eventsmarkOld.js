@@ -153,7 +153,7 @@ const EventsMarkOld = () => {
           is_full_day: false,
           grade_ids: selectedGrade.map((el) => el?.grade_id),
           // academic_year: selectedAcademicYear?.id,
-          branch_id: selectedBranch.map((el) => el?.id),
+          branch_id: selectedBranch?.length > 0 && selectedBranch[0]?.id,
           acad_session: selectedSession,
           start_time: "00:01",
           end_time: "23:59",
