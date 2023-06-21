@@ -553,54 +553,64 @@ const StudentSidePhysicalActivity = () => {
               footer={null}
               zIndex={1000}
             >
-              <div className='row d-flex justify-content-end px-3 py-2'>
-                <div className='col-md-4 px-0 col-12 d-flex justify-content-end'>
-                  <div
-                    className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
-                    style={{ alignItems: 'center' }}
-                  >
-                    <span className='th-14 th-black pr-2'>Index : </span>
-                    <Button
-                      icon={<EyeOutlined />}
-                      type='primary'
-                      onClick={() => setVisible(true)}
-                    >
-                      Click Here To Check BMI Chart
-                    </Button>
+              {loadingBMI ? (
+                <div className='row'>
+                  <div className='col-12 py-5 text-center'>
+                    <Spin tip='Loading..' size='large' />
                   </div>
-                  <Modal
-                    title='BMI Chart'
-                    centered
-                    visible={visible}
-                    open={visible}
-                    footer={false}
-                    onCancel={() => setVisible(false)}
-                    width={1000}
-                  >
-                    <img
-                      src={BMIDetailsImage}
-                      style={{
-                        height: '100%',
-                        width: '100%',
-                        objectFit: '-webkit-fill-available',
-                      }}
-                    />
-                  </Modal>
                 </div>
-              </div>
-              <div className='row'>
-                <div className='col-12' style={{ padding: '1rem 1rem' }}>
-                  <Table
-                    className='th-table'
-                    rowClassName={(record, index) =>
-                      `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                    }
-                    pagination={false}
-                    columns={columnsBMI}
-                    dataSource={studentBMIData}
-                  />
-                </div>
-              </div>
+              ) : (
+                <>
+                  <div className='row d-flex justify-content-end px-3 py-2'>
+                    <div className='col-md-4 px-0 col-12 d-flex justify-content-end'>
+                      <div
+                        className='col-12 th-primary d-flex align-item-center px-0  justify-content-end'
+                        style={{ alignItems: 'center' }}
+                      >
+                        <span className='th-14 th-black pr-2'>Index : </span>
+                        <Button
+                          icon={<EyeOutlined />}
+                          type='primary'
+                          onClick={() => setVisible(true)}
+                        >
+                          Click Here To Check BMI Chart
+                        </Button>
+                      </div>
+                      <Modal
+                        title='BMI Chart'
+                        centered
+                        visible={visible}
+                        open={visible}
+                        footer={false}
+                        onCancel={() => setVisible(false)}
+                        width={1000}
+                      >
+                        <img
+                          src={BMIDetailsImage}
+                          style={{
+                            height: '100%',
+                            width: '100%',
+                            objectFit: '-webkit-fill-available',
+                          }}
+                        />
+                      </Modal>
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-12' style={{ padding: '1rem 1rem' }}>
+                      <Table
+                        className='th-table'
+                        rowClassName={(record, index) =>
+                          `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                        }
+                        pagination={false}
+                        columns={columnsBMI}
+                        dataSource={studentBMIData}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
             </Modal>
             <Drawer
               title={
