@@ -63,8 +63,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '95vw',
     width: '100%',
-    // margin: '20px auto',
-    // marginTop: theme.spacing(4),
     paddingLeft: '20px',
     boxShadow: 'none',
   },
@@ -134,19 +132,22 @@ const PhysicalPendingReview = (props) => {
   const allowedFiles = ['.jpeg', '.jpg', '.png', '.mp4'];
   const fileRef = useRef();
   const [bookingID, setBookingID] = useState(null);
-
   const [firstLoad, setFirstLoad] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const handleCloseViewMore = () => {
     setView(false);
     setRatingReview([]);
     setFile(null);
+    setRequestSent(false);
   };
 
   const handleCloseViewLevelMore = () => {
     setviewLevelDrawer(false);
     setRatinglevelReview([]);
     setFile(null);
+    setRequestSent(false);
   };
 
   const [values, setValues] = useState();
@@ -167,8 +168,8 @@ const PhysicalPendingReview = (props) => {
     beforeUpload: (...file) => {
       setFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      if (file[0]?.size > 31457280) {
-        message.error('Selected file size should be less than 30MB');
+      if (file[0]?.size > 41943040) {
+        message.error('Selected file size should be less than 40MB');
         return false;
       }
       if (allowedFiles.includes(type)) {
@@ -182,6 +183,7 @@ const PhysicalPendingReview = (props) => {
   };
 
   const submitLevelReview = () => {
+    setRequestSent(true);
     let body = [];
     let checkSelected = ratingLevelReview.every((item) => item.checked);
     if (!checkSelected) {
@@ -217,6 +219,9 @@ const PhysicalPendingReview = (props) => {
       })
       .catch(() => {
         setLoading(false);
+      })
+      .finally(() => {
+        setRequestSent(false);
       });
   };
 
@@ -252,8 +257,7 @@ const PhysicalPendingReview = (props) => {
     let isFormValid = true;
     if (ratingReview.length > 0) {
       ratingReview.forEach((item, index) => {
-
-        if (item.name !== "Overall") {
+        if (item.name !== 'Overall') {
           if (!item?.remarks) {
             if (isFormValid) {
               message.error('Please Enter All details');
@@ -264,10 +268,10 @@ const PhysicalPendingReview = (props) => {
       });
     }
     let mandatory = ratingReview.filter((e) => e?.name === 'Overall');
-      if (!mandatory[0].remarks && isFormValid) {
-        message.error('Overall Remarks Is Compulsory');
-        isFormValid = false;
-      }
+    if (!mandatory[0].remarks && isFormValid) {
+      message.error('Overall Remarks Is Compulsory');
+      isFormValid = false;
+    }
 
     return isFormValid;
   };
@@ -276,8 +280,8 @@ const PhysicalPendingReview = (props) => {
   const submitReview = () => {
     if (validateOptionSubmit()) {
       setLoading(true);
+      setRequestSent(true);
       setView(false);
-      
 
       let body = ratingReview;
       let overAllIndex = body.findIndex((each) => each?.name === 'Overall');
@@ -289,7 +293,6 @@ const PhysicalPendingReview = (props) => {
           },
         })
         .then((response) => {
-          // props.setValue(1)
           setView(false);
           erpAPI();
           message.success(' Review Submitted Successfully');
@@ -301,11 +304,13 @@ const PhysicalPendingReview = (props) => {
         })
         .catch((err) => {
           message.error(err);
+        })
+        .finally(() => {
           setLoading(false);
+          setRequestSent(true);
         });
     }
   };
-
 
   const handleInputCreativity = (event, index) => {
     let arr = [...ratingReview];
@@ -408,7 +413,8 @@ const PhysicalPendingReview = (props) => {
         setLoading(true);
         axios
           .get(
-            `${endpoints.newBlog.studentReviewss}?booking_detail_id=${data?.booking_detail_id
+            `${endpoints.newBlog.studentReviewss}?booking_detail_id=${
+              data?.booking_detail_id
             }&response_is_change=${true}&is_round_available=${isRoundAvailable}`,
             {
               headers: {
@@ -417,18 +423,7 @@ const PhysicalPendingReview = (props) => {
             }
           )
           .then((response) => {
-            // response.data.map((obj) => {
-            //   let temp = {};
-            //   temp['id'] = obj?.id;
-            //   temp['name'] = obj?.level.name;
-            //   temp['remarks'] = obj?.remarks;
-            //   temp['given_rating'] = obj?.given_rating;
-            //   temp['remarks'] = JSON.parse(obj?.level?.rating);
-            //   temp['reviewer_id'] = user_id;
-            //   array.push(temp);
-            // });
             setRatingReview(response?.data);
-            //setRatinglevelReview(array);
             setLoading(false);
             setView(true);
           })
@@ -469,10 +464,11 @@ const PhysicalPendingReview = (props) => {
   };
 
   const addBookingApi = (data) => {
-    setLoading(true);
+    setLoadingDetails(true);
     axios
       .get(
-        `${endpoints.newBlog.bookingDetailsApi}?erp_id=${data?.erp_id
+        `${endpoints.newBlog.bookingDetailsApi}?erp_id=${
+          data?.erp_id
         }&activity_detail_id=${ActivityId?.id}&user_level=${13}`,
         {
           headers: {
@@ -482,11 +478,17 @@ const PhysicalPendingReview = (props) => {
         }
       )
       .then((response) => {
-        showReview(response?.data?.result);
-        setLoading(false);
+        if (response.data.status_code === 200) {
+          showReview(response?.data?.result);
+        } else {
+          message.error(response.data.message);
+        }
       })
       .catch((error) => {
-        setLoading(false);
+        message.error(error.message);
+      })
+      .finally(() => {
+        setLoadingDetails(false);
       });
   };
 
@@ -526,7 +528,6 @@ const PhysicalPendingReview = (props) => {
       return obj;
     });
     setRatinglevelReview(arr1);
-    // setRemarkedData()
     let newArr = [];
     arr1.map((obj) => {
       let newTemp = {};
@@ -605,19 +606,6 @@ const PhysicalPendingReview = (props) => {
       align: 'center',
       render: (text, row) => <span className='th-black-1'>{row?.erp_id}</span>,
     },
-    // {
-    //   title: <span className='th-white th-fw-700'>Attendance</span>,
-    //   align: 'center',
-    //   render: (text, row) => (
-    //     <span className='th-black-1'>
-    //       {row?.attendence_status === null ? (
-    //         <Tag color='red'>Absent</Tag>
-    //       ) : (
-    //         <Tag color='green'>Present</Tag>
-    //       )}
-    //     </span>
-    //   ),
-    // },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
       dataIndex: '',
@@ -677,27 +665,6 @@ const PhysicalPendingReview = (props) => {
     setCustomRatingReview(rounds);
   }
 
-  // let roundData = Object.keys(arr[0]).filter(
-  //   (item) => item.toLowerCase() !== 'overall'
-  // );
-
-  // setTableRound(roundData);
-  // let valueData = Object.keys(arr[0])
-  //   .filter((item) => item.toLowerCase() !== 'overall')
-  //   .map((item) => arr[0][item]);
-  // let columnsData = Object.keys(arr[0])
-  //   .filter((item) => item.toLowerCase() !== 'overall')
-  //   .map((item) => Object.keys(arr[0][item]))[0];
-
-  // let overKey = Object.keys(arr[0]).filter((item) => item.toLowerCase() === 'overall');
-
-
-  // let overValueAllData = Object.keys(arr[0])
-  //   .filter((item) => item.toLowerCase() === 'overall')
-  //   .map((item) => arr[0][item]);
-  // setOverAllData([overKey]);
-  // setReviewData(columnsData);
-  // }
   const handleInputEvent = (event, round, value) => {
     const newReview = ratingReview.map((item) => {
       if (item.name == value?.name && item.level == round) {
@@ -754,7 +721,7 @@ const PhysicalPendingReview = (props) => {
         onClose={handleCloseViewLevelMore}
         zIndex={1300}
         visible={viewLevelDrawer}
-        width={'35vw'}
+        width={'55vw'}
         closable={false}
         className='th-resources-drawer'
         extra={
@@ -773,7 +740,6 @@ const PhysicalPendingReview = (props) => {
                       src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
                       alt='image'
                       style={{
-                        // width: '100%',
                         height: 100,
                         objectFit: 'fill',
                       }}
@@ -804,7 +770,7 @@ const PhysicalPendingReview = (props) => {
                     >
                       {ratingLevelReview?.map((obj, index) => {
                         return (
-                          <div className='row py-1 align-items-center'>
+                          <div className='row py-1'>
                             <div className='col-6 text-left' key={index}>
                               {obj?.name}
                             </div>
@@ -873,20 +839,12 @@ const PhysicalPendingReview = (props) => {
                           )}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          marginRight: '10px',
-                          marginLeft: '6px',
-                          marginBottom: '15px',
-                          marginTop: '32px',
-                        }}
-                      >
+                      <div className='col-12 py-2 text-center'>
                         {' '}
                         <ButtonAnt
-                          className='th-button-active th-br-6 text-truncate th-pointer'
+                          className='th-button-active th-br-6 th-width-50 text-truncate th-pointer'
                           onClick={() => submitLevelReview()}
+                          loading={requestSent}
                         >
                           Submit Review
                         </ButtonAnt>
@@ -908,209 +866,235 @@ const PhysicalPendingReview = (props) => {
         className='th-upload-modal'
         title={`Submit Review`}
       >
-        <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
-          <div className='d-flex align-items-center pr-1'>
-            <Avatar
-              size={50}
-              aria-label='recipe'
-              icon={
-                <UserOutlined
-                  color='#F3F3F3'
-                  style={{ color: '#F3F3F3' }}
-                  twoToneColor='white'
-                />
-              }
-            />
-            <div className='text-left ml-3'>
-              <div className=' th-fw-600 th-16'>{data?.student_name}</div>
-              <div className=' th-fw-500 th-14'>{data?.erp_id}</div>
+        <div className='row'>
+          {loadingDetails ? (
+            <div className='col-12 py-5 text-center'>
+              <Spin tip='Loading...' size='large' />{' '}
             </div>
-          </div>
+          ) : (
+            <>
+              <div className='col-12 p-2 d-flex align-items-center justify-content-between'>
+                <div className='d-flex align-items-center pr-1'>
+                  <Avatar
+                    size={50}
+                    aria-label='recipe'
+                    icon={
+                      <UserOutlined
+                        color='#F3F3F3'
+                        style={{ color: '#F3F3F3' }}
+                        twoToneColor='white'
+                      />
+                    }
+                  />
+                  <div className='text-left ml-3'>
+                    <div className=' th-fw-600 th-16'>{data?.student_name}</div>
+                    <div className=' th-fw-500 th-14'>{data?.erp_id}</div>
+                  </div>
+                </div>
 
-          <div className='pr-1'>
-            <img
-              src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-              alt='image'
-              style={{
-                height: 60,
-                width: 150,
-                objectFit: 'fill',
-              }}
-            />
-          </div>
-        </div>
+                <div className='pr-1'>
+                  <img
+                    src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                    alt='image'
+                    style={{
+                      height: 60,
+                      width: 150,
+                      objectFit: 'fill',
+                    }}
+                  />
+                </div>
+              </div>
 
-        {isRoundAvailable
-          ?
-          <>
-            <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
-              <table className='w-100' style={{ background: '#eee' }}>
-                <thead>
-                  <tr style={{ background: '#4800c9', textAlign: 'center', color: 'white' }}>
-                    <th> </th>
-                    {tableHeader?.map((item, i) => (
-                      <th>{item?.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.keys(customRatingReview)?.length > 0 &&
-                    Object.keys(customRatingReview).map((item, index) => (
-                      <tr className='th-html-table'>
-                        <td style={{ fontWeight: 500, padding: '2px', textAlign: 'center' }}>
-                          {item}
-                        </td>
-                        {tableHeader?.map((each, i) => (
-                          <td style={{ padding: '5px' }}>
-                            <Input
-                              value={
-                                ratingReview.filter(
-                                  (el) => el?.name == each?.name && el.level == item
-                                )[0]?.remarks
-                              }
-                              className='text-center'
-                              placeholder={`Enter ${each?.name} for ${item}`}
-                              onChange={(event) => handleInputEvent(event, item, each)}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-            <div className='col-12 px-0'>
-              <div className='p-2 d-flex justify-content-start'>
-                {overallData.length > 0 &&
-                  overallData.map((item, index) => {
-                    return (
-                      <div className='col-6 px-0 d-flex align-items-center justify-content-start'>
-                        <span
+              {isRoundAvailable ? (
+                <>
+                  <div className='col-12 d-flex justify-content-center align-items-center, p-2'>
+                    <table className='w-100' style={{ background: '#eee' }}>
+                      <thead>
+                        <tr
                           style={{
-                            fontWeight: 500,
-                            marginRight: '5px',
-                            fontSize: '15px',
-                            display: 'flex',
-                            alignItems: 'center',
+                            background: '#4800c9',
+                            textAlign: 'center',
+                            color: 'white',
                           }}
                         >
-                          Overall {<CaretRightOutlined />}
-                        </span>
-                        <Input
-                          value={overallRemarks}
-                          placeholder={`Enter for OverAll`}
-                          onChange={(event) => handleOverAll(event, item, index)}
-                        />
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-            <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
-              <div className='p-2'>
-                <ButtonAnt
-                  type='primary'
-                  icon={<ScheduleOutlined />}
-                  onClick={() => submitReview()}
-                >
-                  Submit Review
-                </ButtonAnt>
-              </div>
-            </div>
-          </>
-          : <>
-            <div
-              className='px-1 py-2 th-br-5'
-              style={{ outline: '1px solid #D9D9D9' }}
-            >
-              {ratingLevelReview?.map((obj, index) => {
-                return (
-                  <div className='row py-1 align-items-center'>
-                    <div className='col-6 text-left' key={index}>
-                      {obj?.name}
-                    </div>
-                    <div className='col-6'>
-                      <Select
-                        className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-                        bordered={true}
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        placement='bottomRight'
-                        placeholder='Select Option'
-                        suffixIcon={<DownOutlined className='th-black-1' />}
-                        dropdownMatchSelectWidth={false}
-                        onChange={(e, val) => handleRemark(val, obj?.id)}
-                        filterOption={(input, options) => {
+                          <th style={{ textAlign: 'center' }}> Rounds </th>
+                          {tableHeader?.map((item, i) => (
+                            <th>{item?.name}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.keys(customRatingReview)?.length > 0 &&
+                          Object.keys(customRatingReview).map((item, index) => (
+                            <tr className='th-html-table'>
+                              <td
+                                style={{
+                                  fontWeight: 500,
+                                  padding: '2px',
+                                  textAlign: 'center',
+                                }}
+                              >
+                                {item}
+                              </td>
+                              {tableHeader?.map((each, i) => (
+                                <td style={{ padding: '5px' }}>
+                                  <Input
+                                    value={
+                                      ratingReview.filter(
+                                        (el) => el?.name == each?.name && el.level == item
+                                      )[0]?.remarks
+                                    }
+                                    showCount
+                                    maxLength='200'
+                                    className='text-center'
+                                    placeholder={`Enter ${each?.name} for ${item}`}
+                                    onChange={(event) =>
+                                      handleInputEvent(event, item, each)
+                                    }
+                                  />
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className='col-12 px-0'>
+                    <div className='p-2 d-flex justify-content-start'>
+                      {overallData.length > 0 &&
+                        overallData.map((item, index) => {
                           return (
-                            options.children
-                              .toLowerCase()
-                              .indexOf(input.toLowerCase()) >= 0
-                          );
-                        }}
-                        menuItemSelectedIcon={
-                          <CheckOutlined className='th-primary' />
-                        }
-                      >
-                        {obj?.remarks?.map((each) => {
-                          return (
-                            <Option value={each?.name} key={each?.score}>
-                              {each?.name}
-                            </Option>
+                            <div className='col-12 px-0 d-flex align-items-center justify-content-start'>
+                              <span
+                                style={{
+                                  fontWeight: 500,
+                                  marginRight: '5px',
+                                  fontSize: '15px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                Overall {<CaretRightOutlined />}
+                              </span>
+                              <Input
+                                showCount
+                                maxLength='500'
+                                value={overallRemarks}
+                                placeholder={`Enter for OverAll`}
+                                onChange={(event) => handleOverAll(event, item, index)}
+                              />
+                            </div>
                           );
                         })}
-                      </Select>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-            <div className='col-12 px-0 d-flex justify-content-right align-items-center'>
-              <div className='row align-items-center'>
-                <div className='col-md-4 py-12 th-16'>
-                  <Upload {...uploadProps} className='w-75'>
-                    <Button icon={<UploadOutlined />}>
-                      {file ? 'Change' : 'Upload'} File
-                    </Button>
-                  </Upload>
-                </div>
-                <div className='col-md-8 py-2 th-10'>
-                  {!file ? (
-                    'Upload .jpeg,.png,.mp4 file only'
-                  ) : (
-                    <div className='th-14'>
-                      <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
-                        <div
-                          className='th-12 th-black-1 text-truncate th-width-90'
-                          title={file?.name}
-                        >
-                          {file?.name}
+                  <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
+                    <div className='p-2'>
+                      <ButtonAnt
+                        type='primary'
+                        icon={<ScheduleOutlined />}
+                        loading={requestSent}
+                        onClick={() => submitReview()}
+                      >
+                        Submit Review
+                      </ButtonAnt>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    className='px-1 py-2 th-br-5'
+                    style={{ outline: '1px solid #D9D9D9' }}
+                  >
+                    {ratingLevelReview?.map((obj, index) => {
+                      return (
+                        <div className='row py-1 align-items-center'>
+                          <div className='col-6 text-left' key={index}>
+                            {obj?.name}
+                          </div>
+                          <div className='col-6'>
+                            <Select
+                              className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                              bordered={true}
+                              getPopupContainer={(trigger) => trigger.parentNode}
+                              placement='bottomRight'
+                              placeholder='Select Option'
+                              suffixIcon={<DownOutlined className='th-black-1' />}
+                              dropdownMatchSelectWidth={false}
+                              onChange={(e, val) => handleRemark(val, obj?.id)}
+                              filterOption={(input, options) => {
+                                return (
+                                  options.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                              menuItemSelectedIcon={
+                                <CheckOutlined className='th-primary' />
+                              }
+                            >
+                              {obj?.remarks?.map((each) => {
+                                return (
+                                  <Option value={each?.name} key={each?.score}>
+                                    {each?.name}
+                                  </Option>
+                                );
+                              })}
+                            </Select>
+                          </div>
                         </div>
+                      );
+                    })}
+                  </div>
+                  <div className='col-12 px-0 d-flex justify-content-right align-items-center'>
+                    <div className='row align-items-center'>
+                      <div className='col-md-4 py-12 th-16'>
+                        <Upload {...uploadProps} className='w-75'>
+                          <Button icon={<UploadOutlined />}>
+                            {file ? 'Change' : 'Upload'} File
+                          </Button>
+                        </Upload>
+                      </div>
+                      <div className='col-md-8 py-2 th-10'>
+                        {!file ? (
+                          'Upload .jpeg,.png,.mp4 file only'
+                        ) : (
+                          <div className='th-14'>
+                            <div className='d-flex jusify-content-between pl-1 py-2  align-items-center'>
+                              <div
+                                className='th-12 th-black-1 text-truncate th-width-90'
+                                title={file?.name}
+                              >
+                                {file?.name}
+                              </div>
 
-                        <div className='th-pointer ml-2'>
-                          <img
-                            src={smallCloseIcon}
-                            onClick={() => setFile(null)}
-                          />
-                        </div>
+                              <div className='th-pointer ml-2'>
+                                <img src={smallCloseIcon} onClick={() => setFile(null)} />
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
-              <div className='p-2'>
-                <ButtonAnt
-                  type='primary'
-                  icon={<ScheduleOutlined />}
-                  onClick={() => submitLevelReview()}
-                >
-                  Submit Review
-                </ButtonAnt>
-              </div>
-            </div>
-
-
-          </>}
+                  </div>
+                  <div className='col-12 px-0 d-flex justify-content-center align-items-center'>
+                    <div className='p-2'>
+                      <ButtonAnt
+                        type='primary'
+                        icon={<ScheduleOutlined />}
+                        loading={requestSent}
+                        onClick={() => submitLevelReview()}
+                      >
+                        Submit Review
+                      </ButtonAnt>
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
       </Modal>
     </>
   );

@@ -202,7 +202,7 @@ const UploadExcel = () => {
       .then((res) => {
         if (res.data.status_code === 200) {
           message.success(res?.data?.message);
-          history.push('/user-management/bulk-upload-status');
+          history.push('/user-management/bulk-upload');
         } else {
           message.error('Uploaded format is incorrect');
         }
@@ -383,7 +383,7 @@ const UploadExcel = () => {
             <Button
               type='primary'
               className='btn btn-block btn-primary'
-              onClick={() => history.push(`/user-management/bulk-upload-status`)}
+              onClick={() => history.push(`/user-management/bulk-upload`)}
             >
               Bulk Upload Status
             </Button>

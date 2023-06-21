@@ -5,11 +5,7 @@ import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axios from 'axios';
 
-import {
-  Divider,
-  Button,
-  DialogActions,
-} from '@material-ui/core';
+import { Divider, Button, DialogActions } from '@material-ui/core';
 import Layout from 'containers/Layout';
 import DoneIcon from '@material-ui/icons/Done';
 import { useTheme } from '@material-ui/core/styles';
@@ -28,6 +24,7 @@ import {
   Table,
   Tag,
   Modal,
+  Spin,
 } from 'antd';
 import {
   PlusSquareOutlined,
@@ -84,6 +81,7 @@ const AdminViewBlog = () => {
   const [branchView, setBranchView] = useState(true);
   const [branchSearch, setBranchSearch] = useState(true);
   const [branchList, setBranchList] = useState([]);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const blogActivityId = localStorage.getItem('BlogActivityId')
     ? JSON.parse(localStorage.getItem('BlogActivityId'))
@@ -393,8 +391,8 @@ const AdminViewBlog = () => {
 
   const [previewData, setPreviewData] = useState();
   const handlePreview = (data) => {
-    setLoading(true);
     setPreview(true);
+    setLoadingDetails(true);
     axios
       .get(`${endpoints.newBlog.previewDetails}${data?.id}/`, {
         headers: {
@@ -403,11 +401,17 @@ const AdminViewBlog = () => {
       })
       .then((response) => {
         setPreviewData(response?.data?.result);
-        setLoading(false);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setLoadingDetails(false);
       });
   };
   const closePreview = () => {
     setPreview(false);
+    setPreviewData(null);
   };
   const EditActivity = (data) => {
     history.push({
@@ -570,7 +574,7 @@ const AdminViewBlog = () => {
             <div className='col-6'>
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
-                  href='/blog/wall/central/redirect'
+                  onClick={() => history.push('/blog/wall/central/redirect')}
                   className='th-grey-1 th-16'
                 >
                   Activity Management
@@ -688,53 +692,61 @@ const AdminViewBlog = () => {
             className='th-upload-modal'
             title={`Preview Blog Activity`}
           >
-            <div>
-              <div style={{ margin: '10px', overflow: 'scroll', maxHeight: '80vh' }}>
-                <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
-                <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
-                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                  Submission on -{previewData?.submission_date?.substring(0, 10)}
-                </div>
-                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                  Branch -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Grade -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.grades.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Section -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-
-                <div
-                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                ></div>
-                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                  Instructions
-                </div>
-                <div style={{ paddingTop: '8px', fontSize: '16px' }}>
-                  {previewData?.description}
-                </div>
-                <div
-                  style={{
-                    paddingTop: '28px',
-                    fontSize: '14px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <img src={previewData?.template?.template_path} width='50%' />
+            {loadingDetails ? (
+              <div className='row'>
+                <div className='col-12 text-center py-5'>
+                  <Spin tip='Loading..' size='large'></Spin>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div>
+                <div style={{ margin: '10px', overflow: 'scroll', maxHeight: '80vh' }}>
+                  <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
+                  <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
+                  <div style={{ fontSize: '10px', color: '#7F92A3' }}>
+                    Submission on -{previewData?.submission_date?.substring(0, 10)}
+                  </div>
+                  <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
+                    Branch -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'gray' }}>
+                    Grade -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {previewData?.grades.map((obj) => obj?.name).join(', ')},{' '}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'gray' }}>
+                    Section -&nbsp;
+                    <span style={{ color: 'black' }}>
+                      {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
+                    </span>
+                  </div>
+
+                  <div
+                    style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
+                  ></div>
+                  <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
+                    Instructions
+                  </div>
+                  <div style={{ paddingTop: '8px', fontSize: '16px' }}>
+                    {previewData?.description}
+                  </div>
+                  <div
+                    style={{
+                      paddingTop: '28px',
+                      fontSize: '14px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <img src={previewData?.template?.template_path} width='50%' />
+                  </div>
+                </div>
+              </div>
+            )}
           </Modal>
           {/* </Dialog> */}
           <Dialog maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
@@ -794,539 +806,6 @@ const AdminViewBlog = () => {
           )}
         </div>
       </Layout>
-      {/* <div>
-      {loading && <Loader />}
-      <Layout>
-        <Grid
-          container
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            paddingLeft: '22px',
-            paddingBottom: '15px',
-          }}
-        >
-          <Grid item xs={4} md={4}>
-            <Breadcrumbs
-              separator={<NavigateNextIcon fontSize='small' />}
-              aria-label='breadcrumb'
-            >
-              <Typography color='textPrimary' variant='h6'>
-                <strong>Activity Management</strong>
-              </Typography>
-              <Typography
-                color='Primary'
-                style={{ fontSize: '23px', color: 'black', fontWeight: 'bold' }}
-              >
-                Activity
-              </Typography>
-            </Breadcrumbs>
-          </Grid>
-          <Grid item md={2} xs={2} style={{ visibility: 'hidden' }} />
-
-          <Grid
-            item
-            xs={6}
-            md={6}
-            style={{ display: 'flex', justifyContent: 'end', paddingRight: '20px' }}
-          >
-            {user_level === 11 || user_level == 10 || user_level == 8 ? (
-              ''
-            ) : (
-              <Button
-                variant='contained'
-                color='primary'
-                size='medium'
-                className={classes.buttonColor}
-                startIcon={<AddCircleIcon />}
-                onClick={createPush}
-              >
-                Create Activity
-              </Button>
-            )}
-            &nbsp;&nbsp;
-            <Button
-              variant='contained'
-              style={{ backgroundColor: '#F7B519' }}
-              color='primary'
-              startIcon={<ForumIcon />}
-              onClick={createPushBlogWall}
-            >
-              School Wall
-            </Button>
-          </Grid>
-        </Grid>
-        <Grid container style={{ paddingTop: '25px', paddingLeft: '23px' }}>
-          &nbsp;&nbsp;
-        </Grid>
-
-        <Grid container>
-          <Grid item md={12} xs={12} className={classes.tabStatic}>
-            <Tabs
-                
-              textColor='primary'
-              indicatorColor='primary'
-              value={value}
-            >
-              {(user_level !== 11 || user_level !== 10 || user_level !== 8) && (
-                <Tab
-                  label='Unassigned'
-                  classes={{
-                    selected: classes.selected2,
-                  }}
-                  className={value === 0 ? classes.tabsFont : classes.tabsFont1}
-                />
-              )}
-              <Tab
-                label='Assigned'
-                classes={{
-                  selected: classes.selected1,
-                }}
-                className={value === 1 ? classes.tabsFont : classes.tabsFont1}
-              />
-            </Tabs>
-
-            <Divider className={classes.dividerColor} />
-          </Grid>
-        </Grid>
-
-        {(value === 1 ||
-          (value === 0 && user_level === 11) ||
-          user_level === 10 ||
-          user_level === 8) && (
-          <Paper className={`${classes.root} common-table`} id='singleStudent'>
-            <TableContainer
-              className={`table table-shadow view_users_table ${classes.container}`}
-            >
-              <Table stickyHeader aria-label='sticky table'>
-                <TableHead className={`${classes.columnHeader} table-header-row`}>
-                  <TableRow>
-                    <TableCell
-                      className={classes.tableCell}
-                      style={{ whiteSpace: 'nowrap' }}
-                    >
-                      S No.
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>Topic Name</TableCell>
-                    <TableCell className={classes.tableCell}>Assigned On</TableCell>
-                    <TableCell className={classes.tableCell}>Created By</TableCell>
-                    <TableCell style={{ width: '252px' }} className={classes.tableCell}>
-                      Action
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                {assingeds?.map((response, index) => (
-                  <TableBody>
-                    <TableRow hover role='checkbox' tabIndex={-1}>
-                      <TableCell className={classes.tableCells}>
-                        {index + 1 + (Number(currentPageAssigned) - 1) * limitAssigned}
-                      </TableCell>
-                      <TableCell className={classes.tableCells}>
-                        {response.title}
-                      </TableCell>
-                      <TableCell className={classes.tableCells}>
-                        {moment(response.issue_date).format('DD-MM-YYYY')}
-                      </TableCell>
-                      <TableCell className={classes.tableCells}>
-                        {response?.creator?.name}
-                      </TableCell>
-                      <TableCell className={classes.tableCells}>
-                        <Button
-                          variant='outlined'
-                          size='small'
-                          className={classes.buttonColor2}
-                          onClick={() => viewedAssign(response)}
-                        >
-                          Review
-                        </Button>{' '}
-                        &nbsp;&nbsp;
-                        <Button
-                          variant='outlined'
-                          size='small'
-                          className={classes.buttonColor2}
-                          onClick={() => handlePreview(response)}
-                        >
-                          Preview
-                        </Button>
-                        &nbsp;&nbsp;
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                ))}
-              </Table>
-              <TablePagination
-                component='div'
-                count={totalCountAssigned}
-                rowsPerPage={limitAssigned}
-                page={Number(currentPageAssigned) - 1}
-                onChangePage={(e, page) => {
-                  handlePaginationAssign(e, page + 1);
-                }}
-                rowsPerPageOptions={false}
-                className='table-pagination'
-                classes={{
-                  spacer: classes.tablePaginationSpacer,
-                  toolbar: classes.tablePaginationToolbar,
-                }}
-              />
-            </TableContainer>
-          </Paper>
-        )}
-
-        {value === 0 && (
-          <Paper className={`${classes.root} common-table`} id='singleStudent'>
-            {user_level == 11 || user_level == 10 || user_level == 8 ? (
-              ''
-            ) : (
-              <TableContainer
-                className={`table table-shadow view_users_table ${classes.container}`}
-              >
-                <Table stickyHeader aria-label='sticky table'>
-                  <TableHead className={`${classes.columnHeader} table-header-row`}>
-                    <TableRow>
-                      <TableCell
-                        className={classes.tableCell}
-                        style={{ whiteSpace: 'nowrap' }}
-                      >
-                        S No.
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>Topic Name</TableCell>
-                      <TableCell className={classes.tableCell}>Submission On</TableCell>
-                      <TableCell className={classes.tableCell}>Created By</TableCell>
-                      <TableCell style={{ width: '287px' }} className={classes.tableCell}>
-                        Action
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  {unassingeds.map((response, index) => (
-                    <TableBody>
-                      <TableRow hover role='checkbox' tabIndex={-1}>
-                        <TableCell className={classes.tableCells}>
-                          {index + 1 + (Number(currentPageUnassign) - 1) * limitUnassign}
-                        </TableCell>
-                        <TableCell className={classes.tableCells}>
-                          {response.title}
-                        </TableCell>
-                        <TableCell className={classes.tableCells}>
-                          {moment(response.submission_date).format('DD-MM-YYYY')}
-                        </TableCell>
-                        <TableCell className={classes.tableCells}>
-                          {response?.creator?.name}
-                        </TableCell>
-                        <TableCell className={classes.tableCells}>
-                          <Button
-                            variant='outlined'
-                            size='small'
-                            className={classes.buttonColor2}
-                            onClick={() => EditActivity(response)}
-                            disabled={
-                              user_level == 11 || user_level == 10 || user_level == 8
-                            }
-                          >
-                            Edit
-                          </Button>
-                          &nbsp;
-                          <Button
-                            variant='outlined'
-                            size='small'
-                            className={classes.buttonColor2}
-                            onClick={() => assignIcon(response)}
-                            disabled={
-                              user_level == 11 || user_level == 10 || user_level == 8
-                            }
-                          >
-                            Assign
-                          </Button>
-                          &nbsp;{' '}
-                          <Button
-                            variant='outlined'
-                            size='small'
-                            className={classes.buttonColor2}
-                            onClick={() => handlePreview(response)}
-                          >
-                            Preview
-                          </Button>
-                          &nbsp;
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  ))}
-                </Table>
-                <TablePagination
-                  component='div'
-                  count={totalCountUnassign}
-                  rowsPerPage={limitUnassign}
-                  page={Number(currentPageUnassign) - 1}
-                  onChangePage={(e, page) => {
-                    handlePaginationUnassign(e, page);
-                  }}
-                  rowsPerPageOptions={false}
-                  className='table-pagination'
-                  classes={{
-                    spacer: classes.tablePaginationSpacer,
-                    toolbar: classes.tablePaginationToolbar,
-                  }}
-                />
-              </TableContainer>
-            )}
-          </Paper>
-        )}
-        <Dialog open={preview} maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '642px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '12px',
-              }}
-            >
-              <DialogTitle id='confirm-dialog'>Preview</DialogTitle>
-              <div style={{ marginTop: '21px', marginRight: '34px' }}>
-                <CloseIcon style={{ cursor: 'pointer' }} onClick={closePreview} />
-              </div>
-            </div>
-
-            <div
-              style={{
-                border: '1px solid lightgray',
-                height: ' auto',
-                marginLeft: '16px',
-                marginRight: '32px',
-                borderRadius: '10px',
-                marginBottom: '9px',
-              }}
-            >
-              <div style={{ marginLeft: '23px', marginTop: '28px', overflow: 'scroll' }}>
-                <div style={{ fontSize: '15px', color: '#7F92A3' }}>{}</div>
-                <div style={{ fontSize: '21px' }}>{previewData?.title}</div>
-                <div style={{ fontSize: '10px', color: '#7F92A3' }}>
-                  Submission on -{previewData?.submission_date?.substring(0, 10)}
-                </div>
-                <div style={{ fontSize: '10px', paddingTop: '10px', color: 'gray' }}>
-                  Branch -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.branches.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Grade -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.grades.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'gray' }}>
-                  Section -&nbsp;
-                  <span style={{ color: 'black' }}>
-                    {previewData?.sections.map((obj) => obj?.name).join(', ')},{' '}
-                  </span>
-                </div>
-
-                <div
-                  style={{ paddingTop: '16px', fontSize: '12px', color: '#536476' }}
-                ></div>
-                <div style={{ paddingTop: '19px', fontSize: '16px', color: '#7F92A3' }}>
-                  Instructions
-                </div>
-                <div style={{ paddingTop: '8px', fontSize: '16px' }}>
-                  {previewData?.description}
-                </div>
-                <div style={{ paddingTop: '28px', fontSize: '14px' }}>
-                  <img src={previewData?.template?.template_path} width='50%' />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Dialog>
-
-        <Dialog maxWidth={maxWidth} style={{ borderRadius: '10px' }}>
-          <div style={{ width: '503px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div>
-                <DoneIcon style={{ color: 'green', fontSize: '81px' }} />
-              </div>
-              <div style={{ fontSize: '20px', marginBottom: '2px' }}>
-                Blog Successfully Assigned
-              </div>
-              <div style={{ fontSize: '15px', marginBottom: '24px' }}>
-                Check Assigned tab for new submissions
-              </div>
-              <div style={{ marginBottom: '15px' }}>
-                <Button variant='contained' size='small'>
-                  Okay
-                </Button>{' '}
-              </div>
-            </div>
-          </div>
-        </Dialog>
-
-        {assigned == true && (
-          <Dialog
-            open={assigned}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <DialogTitle id='draggable-dialog-title'>
-              <strong>Assign Details</strong>
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText>Are you sure you want to assign ?</DialogContentText>
-            </DialogContent>
-
-            <Divider className={classes.divider} />
-            <DialogActions>
-              <Button style={{ backgroundColor: 'lightgray' }} onClick={closeconfirm}>
-                Cancel
-              </Button>
-              <Button
-                color='primary'
-                variant='contained'
-                style={{ color: 'white' }}
-                onClick={confirmassign}
-              >
-                Confirm
-              </Button>
-            </DialogActions>
-          </Dialog>
-        )}
-
-        <Dialog open={view} maxWidth={maxWidth}>
-          {' '}
-          <div style={{ width: '700px' }}>
-            <Grid
-              container
-              direction='row'
-              alignItems='center'
-              justifyContent='space-between'
-              style={{ justifyContent: 'space-between' }}
-            >
-              <Grid item>
-                <Typography>
-                  <strong
-                    style={{ fontSize: '14px', color: themeContext.palette.primary.main }}
-                  >
-                    Please Select Your Branch
-                  </strong>
-                </Typography>
-              </Grid>
-              <Grid item>
-                <IconButton size='small' style={{ visibility: 'hidden' }}>
-                  <Close />
-                </IconButton>
-              </Grid>
-              <Grid item>
-                <IconButton size='small' onClick={() => handleClose()}>
-                  <Close />
-                </IconButton>
-              </Grid>
-            </Grid>
-
-            <Divider className={classes.divider} />
-            <Grid
-              container
-              direction='row'
-              style={{ marginLeft: '5px', marginBottom: '20px' }}
-            >
-              {branchView == true && (
-                <Grid item>
-                  Branch Name:{' '}
-                  <Button
-                    size='small'
-                    color='primary'
-                    className={classes.buttonColor}
-                    variant='contained'
-                    onClick={branchViewed}
-                    endIcon={<ArrowDropDownIcon />}
-                    style={{ width: '576px' }}
-                  >
-                    {data == '' ? 'Select' : data.label}
-                  </Button>
-                </Grid>
-              )}
-              {data && (
-                <Grid
-                  item
-                  style={{
-                    marginLeft: '580px',
-                    marginTop: '25px',
-                  }}
-                >
-                  <Button variant='contained' size='small' color='primary'>
-                    {' '}
-                    Proceed
-                  </Button>
-                </Grid>
-              )}
-              {branchSearch == true && branchView == false && (
-                <Grid item style={{ display: 'flex' }}>
-                  Branch Name:&nbsp;
-                  <Paper
-                    style={{
-                      border: '1px solid gray',
-                      width: '576px',
-                      height: '321px',
-                      overflowY: 'auto',
-                    }}
-                  >
-                    <div>
-                      <TextField
-                        placeholder='Type Text...'
-                        style={{ background: 'lightgray', width: '574px' }}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                        variant='standard'
-                      />
-                    </div>
-                    <div>
-                      <TableContainer>
-                        <Table aria-label='simple table'>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.searchTable}>
-                                Branch Name
-                              </TableCell>
-                              <TableCell className={classes.searchTable} align='right'>
-                                Total Submitted
-                              </TableCell>
-                              <TableCell className={classes.searchTable} align='right'>
-                                Reviewed
-                              </TableCell>
-                              <TableCell className={classes.searchTable} align='right'>
-                                Review Pending
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {months.map((option) => (
-                              <TableRow
-                                key={option.value}
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => handleDate(option)}
-                              >
-                                <TableCell component='th' scope='row'>
-                                  {option.value}
-                                </TableCell>
-                                <TableCell align='right'>{option.label}</TableCell>
-                                <TableCell align='right'>22</TableCell>
-                                <TableCell align='right'>30</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div>
-                  </Paper>
-                </Grid>
-              )}
-            </Grid>
-          </div>
-        </Dialog>
-      </Layout>
-    </div> */}
     </>
   );
 };

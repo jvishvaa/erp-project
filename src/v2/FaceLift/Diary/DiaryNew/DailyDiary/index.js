@@ -199,6 +199,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         ...prevState.slice(0, index),
         ...prevState.slice(index + 1),
       ]);
+      message.info('Question removed successfully');
     }
   };
 
@@ -916,6 +917,19 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       if (allowAutoAssignDiary) {
         setHomeworkInstructions('');
         setHomeworkTitle('');
+        if (!homeworkMapped) {
+          setQuestionList([
+            {
+              id: cuid(),
+              question: '',
+              attachments: [],
+              is_attachment_enable: false,
+              max_attachment: 2,
+              penTool: false,
+              is_central: false,
+            },
+          ]);
+        }
       }
     }
   }, [addedPeriods]);
@@ -1008,6 +1022,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           isAutoAssignDiary
         )
       );
+
       setHwDiaryPeriodMappingId(response.data?.data?.hw_dairy_period_mapping_ids);
       setLoading(false);
       message.success('Homework added');
@@ -1432,7 +1447,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 .format('YYYY-MM-DD')
             );
             setShowHomeworkForm(true);
-            // setHomeworkMapped(true);
           } else {
             if (allowAutoAssignDiary) {
               if (questionList.length == 0) {
@@ -2060,10 +2074,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                         <div className='th-black-1 th-fw-600 pb-1'>Title</div>
                         <Input
                           className='th-width-100 th-br-6'
+                          title={homeworkTitle}
                           value={homeworkTitle}
                           onChange={(e) => setHomeworkTitle(e.target.value)}
                           placeholder='Enter Title'
-                          maxLength={100}
+                          // maxLength={100}
                         />
                       </div>
                       {isAutoAssignDiary ? null : (
@@ -2455,7 +2470,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                           <div className='col-12 col-sm-6 th-black-2 pl-0'>
                             <div className='row'>
                               Status :{' '}
-                              {isAutoAssignDiary ? (
+                              {allowAutoAssignDiary ? (
                                 (
                                   Array.isArray(sectionMappingID)
                                     ? sectionMappingID?.every((val) =>
@@ -2510,7 +2525,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               </div>
                             ) : null} */}
                           <div className='col-12 col-sm-6 pl-0'>
-                            {isAutoAssignDiary ? (
+                            {allowAutoAssignDiary ? (
                               (
                                 Array.isArray(sectionMappingID)
                                   ? sectionMappingID?.every((val) =>
@@ -2625,7 +2640,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                         const newList = addedPeriods.slice();
                                         newList.splice(index, 1);
                                         setAddedPeriods(newList);
-                                        removeQuestion(index);
+                                        if (!homeworkMapped) {
+                                          removeQuestion(index);
+                                        }
                                       }}
                                     >
                                       Remove
@@ -2634,12 +2651,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                     <div
                                       className='th-bg-white th-primary py-1 px-2 th-br-6 th-pointer'
                                       onClick={() => {
-                                        // if(item?.)isAutoAssignDiary && item?.completion_status.every((item) => item?.is_complete == true) &&
-                                        if (isAutoAssignDiary) {
+                                        if (allowAutoAssignDiary) {
                                           if (
-                                            // item?.completion_status.filter(
-                                            //   (item) => item?.is_complete == false
-                                            // ).length == 0
                                             Array.isArray(sectionMappingID)
                                               ? sectionMappingID?.every((val) =>
                                                   item?.completion_status

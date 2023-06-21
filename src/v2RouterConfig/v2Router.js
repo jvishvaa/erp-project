@@ -56,6 +56,21 @@ import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAca
 import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff';
 import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
+import User from 'v2/FaceLift/UserManagement/User/index';
+import AssignUserLevel from 'v2/FaceLift/UserManagement/AssignUserLevel';
+import AssignUserRole from 'v2/FaceLift/UserManagement/AssignUserRole';
+import SectionSuffle from 'v2/FaceLift/UserManagement/SectionSuffle';
+import AccessBlocker from 'v2/FaceLift/UserManagement/AccessBlocker';
+import VirtualSchool from 'v2/FaceLift/UserManagement/VirtualSchool';
+import UserGroup from 'v2/FaceLift/UserManagement/UserGroup';
+import CreateUser from 'v2/FaceLift/UserManagement/User/CreateUser';
+import CreateUserConfig from 'v2/FaceLift/UserManagement/User/CreateUserConfig';
+import V1EditUser from '../../src/containers/user-management/edit-user';
+import ViewAttendance from 'v2/FaceLift/Attendance/ViewAttendance';
+import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
+import UserBulkUpload from 'v2/FaceLift/UserManagement/User/CreateUser/BulkUpload';
+import LoginFormSSO from 'containers/login/ssologin';
+import ReportPipeline from 'v2/FaceLift/ReportPipeline';
 
 const V2Router = () => {
   useEffect(() => {
@@ -92,6 +107,11 @@ const V2Router = () => {
       });
     }
   }, []);
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+      window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
 
   return (
     <Router>
@@ -107,6 +127,15 @@ const V2Router = () => {
                         <Route exact path='/'>
                           {({ match, history }) => (
                             <Login match={match} history={history} setTheme={setTheme} />
+                          )}
+                        </Route>
+                        <Route exact path='/sso/:erp/:hmac/auth/login'>
+                          {({ match, history }) => (
+                            <LoginFormSSO
+                              match={match}
+                              history={history}
+                              setTheme={setTheme}
+                            />
                           )}
                         </Route>
                         <Route path='/profile'>
@@ -249,17 +278,77 @@ const V2Router = () => {
                         </Route>
                         <Route path='/user-management/non-academic-staff'>
                           {({ match }) => <NonAcademicStaff match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
                         <Route path='/user-management/create-non-academic-staff'>
                           {({ match }) => <CreateNoAcademicStaff match={match} />}
-                        </Route>,
+                        </Route>
+                        ,
+                        <Route path='/user-management/create-user'>
+                          {({ match, history }) => (
+                            <CreateUserConfig match={match} history={history} />
+                          )}
+                        </Route>
+                        ,
+                        <Route path='/user-management/edit-user/:id'>
+                          {({ match, history }) => (
+                            <CreateUserConfig match={match} history={history} />
+                          )}
+                        </Route>
+                        ,
+                        <Route path='/user-management/user-bulk-upload'>
+                          {({ match }) => <UserBulkUpload match={match} />}
+                        </Route>
+                        ,
                         <Route path='/user-management/edit-non-academic-staff/:id'>
                           {({ match }) => <EditNonAcademicStaff match={match} />}
-                        </Route>,
-                        <Route path='/user-management/bulk-upload-status'>
+                        </Route>
+                        ,
+                        <Route path='/user-management/bulk-upload'>
                           {({ match }) => <ExcelUploadStatus match={match} />}
-                        </Route>,
-                        {/* v1 router */}
+                        </Route>
+                        ,
+                        <Route path='/user-management/view-users'>
+                          {({ match }) => <User match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/user-level-table'>
+                          {({ match }) => <AssignUserLevel match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/user-management/assign-role'>
+                          {({ match }) => <AssignUserRole match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/user-management/section-shuffling'>
+                          {({ match }) => <SectionSuffle match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/user-management/access-blocker'>
+                          {({ match }) => <AccessBlocker match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/virtual-school'>
+                          {({ match }) => <VirtualSchool match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/viewgroup'>
+                          {({ match }) => <UserGroup match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/teacher-attendance-verify'>
+                          {({ match }) => <ViewAttendance match={match} />}
+                        </Route>
+                        <Route path='/mark-student-attendance'>
+                          {({ match }) => <MarkAttendance match={match} />}
+                        </Route>
+                        <Route path='/mark-staff-attendance'>
+                          {({ match }) => <MarkAttendance match={match} />}
+                        </Route>
+                        <Route path='/report-pipeline'>
+                          {({ match }) => <ReportPipeline match={match} />}
+                        </Route>
+                        ,{/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}

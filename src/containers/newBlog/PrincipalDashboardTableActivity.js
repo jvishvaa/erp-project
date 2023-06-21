@@ -390,6 +390,7 @@ const PrincipalDashboardTableActivity = () => {
                       <ButtonAnt
                         className='th-button-active th-br-6 text-truncate th-pointer'
                         icon={<SearchOutlined />}
+                        loading={flag}
                         onClick={goSearch}
                       >
                         Search

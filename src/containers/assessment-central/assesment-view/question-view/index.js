@@ -251,93 +251,166 @@ const QuestionView = ({ question, showHeader, index }) => {
           )}
           <div>
             {questionType == 2 && (
-              <div className='mcq-container'>
-                <div className='question-container'>
-                  {ReactHtmlParser(question.question_answer[0].question)}
-                </div>
-                <div className='answers-container'>
-                  <div className={classes.answersHeader}>Options</div>
-                  {/* <Divider className='secondary-divider' /> */}
-                  <div className='options-container'>
-                    {question.question_answer[0]?.options.map((optionObj, subIndex) => (
-                      <div className='option' key={`option-item-${index}`} style={{ display: 'flex' }}>
-                        <div>{subIndex + 1}.&nbsp;
-                          {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}</div>
-                        {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
-                          <div>
-                            <a
-                              onClick={() => {
-                                openPreview({
-                                  currentAttachmentIndex: 0,
-                                  attachmentsArray: (() => {
-                                    const images =
-                                      `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
+              // <div className='mcq-container'>
+              //   <div className='question-container'>
+              //     {ReactHtmlParser(question.question_answer[0].question)}
+              //   </div>
+              //   <div className='answers-container'>
+              //     <div className={classes.answersHeader}>Options</div>
+              //     {/* <Divider className='secondary-divider' /> */}
+              //     <div className='options-container'>
+              //       {question.question_answer[0]?.options.map((optionObj, subIndex) => (
+              //         <div className='option' key={`option-item-${index}`} style={{ display: 'flex' }}>
+              //           <div>{subIndex + 1}.&nbsp;
+              //             {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}</div>
+              //           {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
+              //             <div>
+              //               <a
+              //                 onClick={() => {
+              //                   openPreview({
+              //                     currentAttachmentIndex: 0,
+              //                     attachmentsArray: (() => {
+              //                       const images =
+              //                         `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
 
-                                    const attachmentsArray = [];
-                                    images.forEach((image) => {
-                                      const attachmentObj = {
-                                        src: getS3DomainURL(image),
-                                        name: `${image}`.split('.').slice(0, -1).join('.'),
-                                        extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                      };
-                                      attachmentsArray.push(attachmentObj);
-                                    });
-                                    return attachmentsArray;
-                                  })(),
-                                });
-                              }}
-                            >
-                              <SvgIcon component={() => <VisibilityIcon />} />
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <Divider className='secondary-divider' />
-                </div>
-                <div className='answers-container'>
-                  <div className={classes.answersHeader}>Answers</div>
-                  {/* <Divider className='secondary-divider' /> */}
-                  <div className='options-container'>
-                    {question.question_answer[0]?.answer.map((optionObj, subIndex) => (
-                      <div className='option' key={`option-item-${index}`}>
-                        {ReactHtmlParser(optionObj)}
-                        {/* {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
-                          <div>
-                            <a
-                              onClick={() => {
-                                openPreview({
-                                  currentAttachmentIndex: 0,
-                                  attachmentsArray: (() => {
-                                    const images =
-                                      `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
+              //                       const attachmentsArray = [];
+              //                       images.forEach((image) => {
+              //                         const attachmentObj = {
+              //                           src: getS3DomainURL(image),
+              //                           name: `${image}`.split('.').slice(0, -1).join('.'),
+              //                           extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+              //                         };
+              //                         attachmentsArray.push(attachmentObj);
+              //                       });
+              //                       return attachmentsArray;
+              //                     })(),
+              //                   });
+              //                 }}
+              //               >
+              //                 <SvgIcon component={() => <VisibilityIcon />} />
+              //               </a>
+              //             </div>
+              //           )}
+              //         </div>
+              //       ))}
+              //     </div>
+              //     <Divider className='secondary-divider' />
+              //   </div>
+              //   <div className='answers-container'>
+              //     <div className={classes.answersHeader}>Answers</div>
+              //     {/* <Divider className='secondary-divider' /> */}
+              //     <div className='options-container'>
+              //       {question.question_answer[0]?.answer.map((optionObj, subIndex) => (
+              //         <div className='option' key={`option-item-${index}`}>
+              //           {ReactHtmlParser(optionObj)}
+              //           {/* {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
+              //             <div>
+              //               <a
+              //                 onClick={() => {
+              //                   openPreview({
+              //                     currentAttachmentIndex: 0,
+              //                     attachmentsArray: (() => {
+              //                       const images =
+              //                         `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
 
-                                    const attachmentsArray = [];
-                                    images.forEach((image) => {
-                                      const attachmentObj = {
-                                        src: getS3DomainURL(image),
-                                        name: `${image}`.split('.').slice(0, -1).join('.'),
-                                        extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                      };
-                                      attachmentsArray.push(attachmentObj);
-                                    });
-                                    return attachmentsArray;
-                                  })(),
-                                });
-                              }}
-                            >
-                              <SvgIcon component={() => <VisibilityIcon />} />
-                            </a>
-                          </div>
-                        )} */}
-                      </div>
-                    ))}
-                  </div>
-                  <Divider className='secondary-divider' />
-                </div>
+              //                       const attachmentsArray = [];
+              //                       images.forEach((image) => {
+              //                         const attachmentObj = {
+              //                           src: getS3DomainURL(image),
+              //                           name: `${image}`.split('.').slice(0, -1).join('.'),
+              //                           extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+              //                         };
+              //                         attachmentsArray.push(attachmentObj);
+              //                       });
+              //                       return attachmentsArray;
+              //                     })(),
+              //                   });
+              //                 }}
+              //               >
+              //                 <SvgIcon component={() => <VisibilityIcon />} />
+              //               </a>
+              //             </div>
+              //           )} */}
+              //         </div>
+              //       ))}
+              //     </div>
+              //     <Divider className='secondary-divider' />
+              //   </div>
 
-              </div>
+              // </div>
+               <>
+               <div className='mcq-container'>
+                 <div className='question-container'>
+                   <div>
+                     {question.question_type === 1
+                       ? 'MCQ SINGLE'
+                       : 'MCQ MULTI'}
+                   </div>
+                   <div style={{ color: '#014B7E' }}>
+                     <span style={{ color: 'red', fontSize: 16 }}>
+                       {`Q${index + 1}`}:{' '}
+                     </span>{' '}
+                     {ReactHtmlParser(
+                       question.question_answer[0].question
+                     )}
+                   </div>
+                 </div>
+                 <div className='resourceBulkDownload'>Answers</div>
+                 <div className='question-container'>
+                   {question?.question_answer[0]?.answer.map(
+                     (obj, i) => (
+                       <div>{obj}</div>
+                     )
+                   )}
+                 </div>
+                 <div className='resourceBulkDownload'>Options</div>
+                 <div>
+                   {question?.question_answer[0]?.options.map(
+                     (obj, i) => (
+                       <div className='question-container'>
+                         {`OPTION${i + 1}:   ${
+                           obj[`option${i + 1}`].optionValue
+                         }`}
+                         {`${obj[`option${i + 1}`].images}`.length > 0 && (
+                           <div>
+                             <a
+                               onClick={() => {
+                                 openPreview({
+                                   currentAttachmentIndex: 0,
+                                   attachmentsArray: (() => {
+                                     const images =
+                                       `${obj[`option${i + 1}`].images}`.split(
+                                         ','
+                                       ) || {};
+                                     const attachmentsArray = [];
+                                     images.forEach((image) => {
+                                       const attachmentObj = {
+                                         src: getS3DomainURL(image),
+                                         name: `${image}`
+                                           .split('.')
+                                           .slice(0, -1)
+                                           .join('.'),
+                                         extension: `.${
+                                           `${image}`.split('.').slice(-1)[0]
+                                         }`,
+                                       };
+                                       attachmentsArray.push(attachmentObj);
+                                     });
+                                     return attachmentsArray;
+                                   })(),
+                                 });
+                               }}
+                             >
+                               <SvgIcon component={() => <VisibilityIcon />} />
+                             </a>
+                           </div>
+                         )}
+                       </div>
+                     )
+                   )}
+                 </div>
+               </div>
+             </>
             )}
           </div>
 
@@ -477,21 +550,30 @@ const QuestionView = ({ question, showHeader, index }) => {
             </div>
           )}
           {questionType === 10 && (
-            <div className='descriptive-container'>
-              <div className='question-container'>
-                {ReactHtmlParser(question.question_answer[0]?.question)}
-              </div>
-              <div className='answers-container'>
-                <div className={classes.answersHeader}>Answers</div>
-                {/* <Divider className='secondary-divider' /> */}
-                <div className='options-container'>
-                  <div className='option'>
-                    {ReactHtmlParser(question.question_answer[0]?.answer)}
-                  </div>
-                </div>
-              </div>
-              <Divider className='secondary-divider' />
-            </div>
+               <>
+               <div>
+                 <div className='question-container'>
+                   <div style={{ color: '#014B7E' }}>
+                     <span style={{ color: 'red', fontSize: 16 }}>
+                       {`Q${index + 1}`}:{' '}
+                     </span>{' '}
+                     {ReactHtmlParser(
+                       question?.question_answer[0]?.question
+                     )}
+                   </div>
+                 </div>
+
+                 <div className='resourceBulkDownload'>Answers</div>
+
+                 <div className='question-container'>
+                   <div style={{ color: '#014B7E' }}>
+                     {ReactHtmlParser(
+                       question?.question_answer[0]?.answer
+                     )}
+                   </div>
+                 </div>
+               </div>
+             </>
           )}
           {questionType === 4 && (
             <div className='video-container'>

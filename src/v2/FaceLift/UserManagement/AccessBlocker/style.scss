@@ -1,0 +1,21 @@
+.th-access-blocker-action {
+  .action-btn {
+    padding: 0.5rem 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    color: #fff;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+}
+.th-vertical-line::before {
+  content: '';
+  background-color: #ebebeb;
+  position: absolute;
+  width: 3px;
+  height: 60px;
+  top: 10px;
+  left: -1%;
+  display: block;
+}

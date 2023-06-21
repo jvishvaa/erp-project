@@ -132,6 +132,9 @@ const CurriculumCompletion = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [collapseData, setCollapseData] = useState([]);
   const [volumeListData, setVolumeListData] = useState([]);
@@ -139,8 +142,12 @@ const CurriculumCompletion = (props) => {
   const [volumeName, setVolumeName] = useState('');
   const [teacherErp, setTeacherErp] = useState('')
   const [page, setPage] = useState(1)
+  const [isCompletionReportUnable, setIsCompletionReportUnable] = useState(false);
+  const [completionReportLoader, setCompletionReportLoader] = useState(false);  
 
   const formRef = createRef();
+
+  useEffect(() => fetchReportPipelineConfig(), [user_level]);
 
   const onTableRowExpand = (expanded, record) => {
     console.log(record);
@@ -624,6 +631,58 @@ const CurriculumCompletion = (props) => {
     setPage(page)
   }
 
+  const handleCompletionReport = () => {
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    const schoolName = ['dev', 'qa', 'test', 'localhost:3000']?.includes(
+      window?.location?.host?.split('.')[0]
+    )
+      ? 'olvorchidnaigaon'
+      : window?.location?.host?.split('.')[0];
+
+    const obj = {
+      school_name: schoolName,
+      report_name: 'completion_report',
+      requested_by: `${userDetails?.first_name} ${userDetails?.last_name}`,
+    };
+    axios
+      .post(`${endpoints?.reportPipeline?.viewReportPipeline}`, obj, {
+        headers: {
+          'X-Api-Key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          message.success(result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        message.error(error?.message);
+      })
+      .finally(() => history.push('/report-pipeline'));
+  };
+
+  const fetchReportPipelineConfig = () => {
+    setCompletionReportLoader(true)
+    axios
+      .get(
+        `${endpoints?.reportPipeline?.reportPipelineConfig}?user_level=${is_superuser ? 1 :user_level}`,
+        {
+          headers: {
+            'x-api-key': 'vikash@12345#1231',
+          },
+        }
+      )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setIsCompletionReportUnable(result?.data?.result?.access);
+        }
+      })
+      .catch((error) => {
+        console.log(error?.message);
+      }).
+      finally(() => setCompletionReportLoader(false));
+  };
+
   return (
     <Layout>
       <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
@@ -726,6 +785,11 @@ const CurriculumCompletion = (props) => {
             </div>
             :
             <>
+              {isCompletionReportUnable && <div className='w-100 d-flex justify-content-end mb-2 mr-3'>
+                <Button loading={completionReportLoader} className='rounded th-br-4' type='primary' onClick={handleCompletionReport}>
+                  Download Completion Report
+                </Button>
+              </div>}
               <div className='row '>
                 <div className='col-12'>
                   <Table

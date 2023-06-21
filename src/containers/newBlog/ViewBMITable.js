@@ -66,6 +66,8 @@ const ViewBMITableCustom = (props) => {
   const [selectedStudentDetails, setSelectedStudentsDetails] = useState([]);
   const [bmiRemarks, setBmiRemarks] = useState('');
   const [visible, setVisible] = useState(false);
+  const [loadingCreation, setLoadingCreation] = useState(false);
+  const [loadingBMIDetails, setLoadingBMIDetails] = useState(false);
 
   const columns = [
     {
@@ -102,7 +104,16 @@ const ViewBMITableCustom = (props) => {
               type='primary'
               icon={<FileAddOutlined />}
               size={'medium'}
-              onClick={() => CheckBMIFun(row)}
+              onClick={() => {
+                setHeight();
+                setWeight();
+                setAge();
+                setRemarks();
+                setBmi();
+                setBmiRemarks();
+                // setSelectedStudentsDetails(row);
+                CheckBMIFun(row);
+              }}
             >
               Add BMI
             </ButtonAnt>
@@ -202,17 +213,26 @@ const ViewBMITableCustom = (props) => {
             Authorization: `${token}`,
           },
         };
-        axios.post(`${endpoints.newBlog.addBMIApi}`, requestData, options).then((res) => {
-          if (res?.data?.status_code === 200) {
-            message.success(res?.data?.message);
-            setIsEdit(false);
-            setIsModalOpen(false);
-            showBMITable(editData?.student);
-          } else {
-            message.error(res?.data?.message);
-            setIsModalOpen(false);
-          }
-        });
+        setLoadingCreation(true);
+        axios
+          .post(`${endpoints.newBlog.addBMIApi}`, requestData, options)
+          .then((res) => {
+            if (res?.data?.status_code === 200) {
+              message.success(res?.data?.message);
+              setIsEdit(false);
+              setIsModalOpen(false);
+              showBMITable(editData?.student);
+            } else {
+              message.error(res?.data?.message);
+              setIsModalOpen(false);
+            }
+          })
+          .catch((error) => {
+            message.error(error.message);
+          })
+          .finally(() => {
+            setLoadingCreation(false);
+          });
       }
     } else {
       if (!height) {
@@ -239,16 +259,25 @@ const ViewBMITableCustom = (props) => {
             Authorization: `${token}`,
           },
         };
-        axios.post(`${endpoints.newBlog.addBMIApi}`, requestData, options).then((res) => {
-          if (res?.data?.status_code === 200) {
-            message.success(res?.data?.message);
-            setIsEdit(false);
-            setIsModalOpen(false);
-          } else {
-            message.error(res?.data?.message);
-            setIsModalOpen(false);
-          }
-        });
+        setLoadingCreation(true);
+        axios
+          .post(`${endpoints.newBlog.addBMIApi}`, requestData, options)
+          .then((res) => {
+            if (res?.data?.status_code === 200) {
+              message.success(res?.data?.message);
+              setIsEdit(false);
+              setIsModalOpen(false);
+            } else {
+              message.error(res?.data?.message);
+              setIsModalOpen(false);
+            }
+          })
+          .catch((error) => {
+            message.error(error.message);
+          })
+          .finally(() => {
+            setLoadingCreation(false);
+          });
       }
     }
   };
@@ -372,8 +401,6 @@ const ViewBMITableCustom = (props) => {
       setWeight('');
       setAge(null);
       setRemarks('');
-      showModal();
-      setLoading(true);
       axios
         .get(`${endpoints.newBlog.checkBMIApi}?erp_id=${data?.erp_id}&user_level=${13}`, {
           headers: {
@@ -382,8 +409,17 @@ const ViewBMITableCustom = (props) => {
           },
         })
         .then((response) => {
-          setCheckBMIData(response?.data?.result);
-          // setAlert('success', response?.data?.message)
+          if (response.data?.status_code == 200) {
+            setCheckBMIData(response?.data?.result);
+            showModal();
+          } else {
+            message.error(response?.data?.message);
+          }
+        })
+        .catch((error) => {
+          message.error(error.message);
+        })
+        .finally(() => {
           setLoading(false);
         });
     }
@@ -392,7 +428,7 @@ const ViewBMITableCustom = (props) => {
     setSelectedStudentsDetails([]);
     if (data) {
       setSelectedStudentsDetails(data);
-      setLoading(true);
+      setLoadingBMIDetails(true);
       axios
         .get(`${endpoints.newBlog.checkBMIApi}?erp_id=${data?.erp_id}&user_level=${13}`, {
           headers: {
@@ -401,9 +437,18 @@ const ViewBMITableCustom = (props) => {
           },
         })
         .then((response) => {
-          setCheckBMIData(response?.data?.result);
-          showBMITable(response?.data?.result);
-          // message.success(response?.data?.message);
+          if (response.data.status_code == 200) {
+            setCheckBMIData(response?.data?.result);
+            showBMITable(response?.data?.result);
+          } else {
+            message.error(response.data.message);
+          }
+        })
+        .catch((error) => {
+          message.error(error.message);
+        })
+        .finally(() => {
+          setLoadingBMIDetails(false);
           setLoading(false);
         });
     }
@@ -532,9 +577,11 @@ const ViewBMITableCustom = (props) => {
         onCancel={handleCancel}
         visible={isModalOpen}
         okText={'Submit'}
+        confirmLoading={loadingCreation}
         width={1000}
         centered
       >
+        {console.log({ selectedStudentDetails })}
         <Row style={{ padding: '0.5rem 1rem' }}>
           <Col span={24}>
             <div
@@ -648,8 +695,12 @@ const ViewBMITableCustom = (props) => {
                 width={1000}
               >
                 <img
-                src={BMIDetailsImage}
-                style={{height:'100%', width:'100%', objectFit: '-webkit-fill-available'}}
+                  src={BMIDetailsImage}
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    objectFit: '-webkit-fill-available',
+                  }}
                 />
               </Modal>
             </div>

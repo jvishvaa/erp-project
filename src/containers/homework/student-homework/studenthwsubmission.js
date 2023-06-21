@@ -459,7 +459,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.mp4') > 0
+        fil.name.toLowerCase().lastIndexOf('.mp4') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.doc') > 0
+        // fil.name.toLowerCase().lastIndexOf('.docx') > 0
       ) {
         setUploadLoading(true);
         const formData = new FormData();
@@ -493,6 +495,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             setUploadLoading(false);
             // setAlert('error',error.message)
           });
+        console.log('homework', fil);
       } else {
         setUploadLoading(false);
         setAlert(
@@ -1430,7 +1433,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   </div>
                   <small className={classes.acceptedfiles}>
                     {' '}
-                    Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                    Accepted files: jpeg,jpg,mp3,mp4,pdf,png,doc,docx
                   </small>
                 </>
                 <div className='bulk_upload_attachments'>
@@ -1553,7 +1556,12 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           : `${endpoints.discussionForum.s3}/homework`
                                       }
                                       index={i}
-                                      actions={['preview', 'download']}
+                                      // actions={['preview', 'download']}
+                                      actions={
+                                        url.includes('.doc')
+                                          ? ['download']
+                                          : ['preview', 'download']
+                                      }
                                     />
                                   </div>
                                 </>

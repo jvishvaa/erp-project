@@ -53,13 +53,6 @@ function ContactNumber() {
           8888888999
         </Link>{' '}
         &nbsp; &nbsp;
-        <WhatsAppIcon />
-        <Link
-          href='https://wa.me/918884016161'
-          style={{ marginTop: 5, textDecoration: 'none' }}
-        >
-          8884016161
-        </Link>
       </div>
     </Typography>
   );
