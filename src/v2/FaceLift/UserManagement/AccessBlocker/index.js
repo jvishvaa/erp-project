@@ -374,12 +374,13 @@ const AccessBlocker = () => {
       return;
     }
 
-    let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}
-    ${sessionyearparams ? `&academic_year=${selectedYear?.id}` : ''}
-    ${branchParams ? `&branch=${selectedBranch}` : ''}
-    ${gradeParams ? `&grade=${selectedGrade}` : ''}
-    ${sectionParams ? `&section=${selectedSection}` : ''}
-    ${searchParams ? `&search=${searchedData}` : ''}`;
+    let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}${
+      sessionyearparams ? `&academic_year=${selectedYear?.id}` : ''
+    }${branchParams ? `&branch=${selectedBranch}` : ''}${
+      gradeParams ? `&grade=${selectedGrade}` : ''
+    }${sectionParams ? `&section=${selectedSection}` : ''}${
+      searchParams ? `&search=${searchedData}` : ''
+    }`;
     setShowFilter(false);
     setLoading(true);
     try {

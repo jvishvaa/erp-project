@@ -273,11 +273,11 @@ const UserGroup = () => {
       return;
     }
 
-    let params = `?page=${pageNo}&page_size=${pageLimit}
-    ${branchParams ? `&acad_session=${selectedBranch}` : ''}
-    ${gradeParams ? `&grade=${selectedGrade}` : ''}
-    ${searchParams ? `&search=${searchedData}` : ''}`;
-
+    let params = `?page=${pageNo}&page_size=${pageLimit}${
+      branchParams ? `&acad_session=${selectedBranch}` : ''
+    }${gradeParams ? `&grade=${selectedGrade}` : ''}${
+      searchParams ? `&search=${searchedData}` : ''
+    }`;
     setShowFilter(false);
     setLoading(true);
     axiosInstance
