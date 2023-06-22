@@ -158,7 +158,7 @@ const AssignUserLevel = () => {
     setShowFilter(true);
     setUserData([]);
     formRef.current.resetFields();
-    filterData(pageNo, '', '', 'default');
+    filterData(1, '', '', 'default');
   };
 
   const rowSelection = {
@@ -374,7 +374,7 @@ const AssignUserLevel = () => {
                           pageSize={pageLimit}
                           onChange={(current) => {
                             setPageNo(current);
-                            filterData(current, searchedData, userLevel, '');
+                            filterData(current, searchedData, userLevel, 'default');
                           }}
                           className='text-center'
                         />
