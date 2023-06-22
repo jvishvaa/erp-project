@@ -32,7 +32,6 @@ class CreateUser extends Component {
       isOrchids:
         window.location.host.split('.')[0] === 'orchids' ||
         window.location.host.split('.')[0] === 'qa' ||
-        window.location.host.split('.')[0] === 'localhost:3000' ||
         window.location.host.split('.')[0] === 'mcollege' ||
         window.location.host.split('.')[0] === 'dps'
           ? true

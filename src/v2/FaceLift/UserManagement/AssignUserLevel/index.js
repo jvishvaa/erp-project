@@ -37,7 +37,6 @@ const AssignUserLevel = () => {
 
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'localhost:3000' ||
     window.location.host.split('.')[0] === 'qa'
       ? true
       : false;
@@ -202,7 +201,7 @@ const AssignUserLevel = () => {
         message.success('User level assigned successfully');
         setSelectedUsers([]);
         setAssignUserLevel('');
-        filterData(1, searchedData, userLevel, '');
+        filterData(1, searchedData, userLevel, 'default');
         formRef.current.setFieldsValue({
           assignlevel: null,
         });
