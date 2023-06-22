@@ -633,10 +633,10 @@ const CurriculumCompletion = (props) => {
 
   const handleCompletionReport = () => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-    const schoolName = ['dev', 'qa', 'test', 'localhost:3000']?.includes(
+    const schoolName = ['dev', 'qa', 'test']?.includes(
       window?.location?.host?.split('.')[0]
     )
-      ? 'olvorchidnaigaon'
+      ? window?.location?.host?.split('.')[1]
       : window?.location?.host?.split('.')[0];
 
     const obj = {
@@ -656,7 +656,7 @@ const CurriculumCompletion = (props) => {
         }
       })
       .catch((error) => {
-        message.error(error?.message);
+        message.error(error?.response?.data?.description);
       })
       .finally(() => history.push('/report-pipeline'));
   };

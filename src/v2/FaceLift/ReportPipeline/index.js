@@ -9,10 +9,10 @@ const ReportPipeline = () => {
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-  const schoolName = ['dev', 'qa', 'test', 'localhost:3000']?.includes(
+  const schoolName = ['dev', 'qa', 'test']?.includes(
     window?.location?.host?.split('.')[0]
   )
-    ? 'olvorchidnaigaon'
+    ? window?.location?.host?.split('.')[1]
     : window?.location?.host?.split('.')[0];
 
   useEffect(
@@ -40,7 +40,7 @@ const ReportPipeline = () => {
         }
       })
       .catch((error) => {
-        message.error(error?.message);
+        message.error(error?.response?.data?.description);
       })
       .finally(() => setLoading(false));
   };

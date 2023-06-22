@@ -109,10 +109,10 @@ const ReportTypeFilter = ({
 
   const handleQuizReport = () => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-    const schoolName = ['dev', 'qa', 'test', 'localhost:3000']?.includes(
+    const schoolName = ['dev', 'qa', 'test']?.includes(
       window?.location?.host?.split('.')[0]
     )
-      ? 'olvorchidnaigaon'
+      ? window?.location?.host?.split('.')[1]
       : window?.location?.host?.split('.')[0];
 
     const obj = {
@@ -133,7 +133,7 @@ const ReportTypeFilter = ({
         }
       })
       .catch((error) => {
-        setAlert('error', error?.message);
+        setAlert('error', error?.response?.data?.description);
       })
       .finally(() => {
         history.push('/report-pipeline');
