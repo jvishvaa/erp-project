@@ -169,10 +169,7 @@ const VirtualSchool = () => {
       return;
     }
 
-    let params = `?page=${pageNo}&page_size=${pageLimit}
-    ${actualBranchParams ? `&actual_branch=${selectedAtualBranch}` : ''}
-    ${virtualBranchParams ? `&virtual_branch=${selectedVirtualBranch}` : ''}
-    ${searchParams ? `&search=${searchedData}` : ''}`;
+    let params = `?page=${pageNo}&page_size=${pageLimit}${actualBranchParams ? `&actual_branch=${selectedAtualBranch}` : ''}${virtualBranchParams ? `&virtual_branch=${selectedVirtualBranch}` : ''}${searchParams ? `&search=${searchedData}` : ''}`;
     setShowFilter(false);
     setLoading(true);
     try {

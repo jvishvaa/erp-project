@@ -177,13 +177,7 @@ const BulkUpload = () => {
     formData.append('file', selectedFile);
 
     let branchParams = selectedBranch || '';
-    let params = `?academic_year=${selectedYear?.id}
-    ${branchParams !== '' ? `&branch=${selectedBranch}` : ''}`;
-
-    let data = {
-      data: formData,
-    };
-
+    let params = `?academic_year=${selectedYear?.id}${branchParams !== '' ? `&branch=${selectedBranch}` : ''}`;
     axiosInstance
       .delete(`/erp_user/virtual-school-bulk-remove/${params}`, { data: formData })
       .then((res) => {

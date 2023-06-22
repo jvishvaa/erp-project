@@ -43,6 +43,7 @@ const AssignUserRole = () => {
   const selectedAcadBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  const isSuperUser = JSON.parse(localStorage.getItem('userDetails'))?.is_superuser;
 
   const isOrchids =
     window.location.host.split('.')[0] === 'qa' ||
@@ -248,18 +249,31 @@ const AssignUserRole = () => {
       return;
     }
 
-    let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}
-    ${sessionyearparams ? `&session_year=${selectedYear?.id}` : ''}
-    ${userRoleParams ? `&role=${selectedRole}` : ''}
-    ${branchParams ? `&branch=${selectedBranch}` : ''}
-    ${gradeParams ? `&grade=${selectedGrade}` : ''}
-    ${sectionParams ? `&section_mapping_id=${selectedSection}` : ''}
-    ${searchParams ? `&search=${searchedData}` : ''}`;
+    let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}${
+      sessionyearparams ? `&session_year=${selectedYear?.id}` : ''
+    }${userRoleParams ? `&role=${selectedRole}` : ''}${
+      branchParams ? `&branch=${selectedBranch}` : ''
+    }${gradeParams ? `&grade=${selectedGrade}` : ''}${
+      sectionParams ? `&section_mapping_id=${selectedSection}` : ''
+    }${searchParams ? `&search=${searchedData}` : ''}`;
 
     setShowFilter(false);
     setLoading(true);
+    let userEndpoint = '';
+    if (
+      (window.location.host == 'orchids.letseduvate.com' ||
+        window.location.host == 'qa.olvorchidnaigaon.letseduvate.com' ||
+        window.location.host == 'test.orchids.letseduvate.com' ||
+        window.location.host == 'dev.olvorchidnaigaon.letseduvate.com') &&
+      !isSuperUser
+    ) {
+      userEndpoint = `${endpoints.communication.userListV2}`;
+    } else {
+      userEndpoint = `${endpoints.communication.userList}`;
+    }
+
     axiosInstance
-      .get(`${endpoints.communication.userList}${params}`)
+      .get(`${userEndpoint}${params}`)
       .then((res) => {
         if (res?.status === 200) {
           setLoading(false);
@@ -450,9 +464,6 @@ const AssignUserRole = () => {
       })
       .catch((err) => {
         console.log('error', err);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
 
