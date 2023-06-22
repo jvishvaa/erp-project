@@ -138,9 +138,7 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
       return;
     }
 
-    let params = `?page=${pageNo}&page_size=${pageLimit}&level=13
-    ${sectionParams ? `&section_mapping_id=${selectedSection}` : ''}`;
-
+    let params = `?page=${pageNo}&page_size=${pageLimit}&level=13${sectionParams ? `&section_mapping_id=${selectedSection}` : ''}`;
     setShowFilter(false);
     setLoading(true);
     axiosInstance
@@ -484,19 +482,6 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
                   </Select>
                 </Form.Item>
               </div>
-              <div className='col-md-3 col-sm-6 col-12'>
-                <Form.Item name='search-input'>
-                  <Input
-                    prefix={<SearchOutlined className='site-form-item-icon th-grey' />}
-                    placeholder='Search'
-                    allowClear
-                    onChange={(e) => setSearchedData(e.target.value)}
-                    // onChange={(e) => handleSearch(e.target.value)}
-                  />
-                </Form.Item>
-              </div>
-            </div>
-            <div className='row'>
               <div className='col-md-3 col-sm-6 col-12 text-right'>
                 <div className='row no-gutters'>
                   <div className='col-md-6 col-sm-6 col-6 pr-2'>
@@ -519,6 +504,18 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
                   </div>
                 </div>
               </div>
+           
+              <div className='col-md-3 col-sm-6 col-12'>
+                <Form.Item name='search-input'>
+                  <Input
+                    prefix={<SearchOutlined className='site-form-item-icon th-grey' />}
+                    placeholder='Type to search'
+                    allowClear
+                    onChange={(e) => setSearchedData(e.target.value)}
+                  />
+                </Form.Item>
+              </div>
+
               {(!showFilterPage && selectedUsers.length > 0) || editData.id ? (
                 <>
                   <div className='col-md-3 col-sm-6 col-12'>

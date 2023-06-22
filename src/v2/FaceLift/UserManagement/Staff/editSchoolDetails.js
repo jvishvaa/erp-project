@@ -103,7 +103,7 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
   };
 
   useEffect(() => {
-    if (userDetails) {
+    if (userDetails?.user_level) {
       fetchUserDesignation(userDetails?.user_level?.id);
     }
     if (formRef.current) {

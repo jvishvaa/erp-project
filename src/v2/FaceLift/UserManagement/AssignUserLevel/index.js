@@ -44,6 +44,7 @@ const AssignUserLevel = () => {
 
   useEffect(() => {
     fetchUserLevel();
+    filterData(pageNo, searchedData, userLevel, 'default');
   }, []);
 
   const handleSearch = (e) => {
@@ -83,13 +84,15 @@ const AssignUserLevel = () => {
     setSelectedUsers([]);
   };
 
-  const filterData = (pageNo, searchedData, userLevel) => {
+  const filterData = (pageNo, searchedData, userLevel, calltype) => {
     let userLevelParams = userLevel || '';
     let searchParams = searchedData || '';
 
-    if (userLevel == '' && searchedData == '') {
-      message.error('Please select user level to view data');
-      return;
+    if (calltype !== 'default') {
+      if (userLevel == '' && searchedData == '') {
+        message.error('Please select user level to view data');
+        return;
+      }
     }
 
     let params = `?page_num=${pageNo}&page_size=${pageLimit}${
@@ -156,6 +159,7 @@ const AssignUserLevel = () => {
     setShowFilter(true);
     setUserData([]);
     formRef.current.resetFields();
+    filterData(pageNo, '', '', 'default');
   };
 
   const rowSelection = {
@@ -198,7 +202,7 @@ const AssignUserLevel = () => {
         message.success('User level assigned successfully');
         setSelectedUsers([]);
         setAssignUserLevel('');
-        filterData(1, searchedData, userLevel);
+        filterData(1, searchedData, userLevel, '');
         formRef.current.setFieldsValue({
           assignlevel: null,
         });
@@ -277,7 +281,7 @@ const AssignUserLevel = () => {
                         <Button
                           type='primary'
                           className='btn-block th-br-4'
-                          onClick={() => filterData(pageNo, searchedData, userLevel)}
+                          onClick={() => filterData(pageNo, searchedData, userLevel, '')}
                         >
                           Filter
                         </Button>
@@ -371,7 +375,7 @@ const AssignUserLevel = () => {
                           pageSize={pageLimit}
                           onChange={(current) => {
                             setPageNo(current);
-                            filterData(current, searchedData, userLevel);
+                            filterData(current, searchedData, userLevel, '');
                           }}
                           className='text-center'
                         />
