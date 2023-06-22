@@ -34,11 +34,7 @@ const CreateUserConfig = ({ match, history }) => {
         setLoading(false);
       });
   };
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+
   return (
     <React.Fragment>
       {loading ? (
@@ -54,7 +50,7 @@ const CreateUserConfig = ({ match, history }) => {
             <Spin tip='Loading..' size='large' className='th-primary' />
           </div>
         </Layout>
-      ) : config?.includes(selectedBranch?.id?.toString()) && isOrchids ? (
+      ) : config?.includes(selectedBranch?.id?.toString()) ? (
         window.location.pathname.includes('edit') ? (
           <Layout>
             <CreateUser />
