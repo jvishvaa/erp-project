@@ -82,21 +82,27 @@ const CreateUser = () => {
         }
       });
     }
-    if (params?.id) {
-      setEditId(params?.id);
-      fetchUserData(
-        {
-          erp_user_id: params?.id,
-        },
-        module
-      );
-    }
+
     fetchRoleConfig({
       config_key: 'subject_limit',
     });
     getRoleApi();
     fetchBranches(module);
-  }, [module]);
+  }, []);
+  useEffect(() => {
+if(moduleId){
+  if (params?.id) {
+    setEditId(params?.id);
+    fetchUserData(
+      {
+        erp_user_id: params?.id,
+      },
+      moduleId
+    );
+  }
+}
+  }, [moduleId])
+  
   const fetchRoleConfig = (params = {}) => {
     setLoading(true);
     axiosInstance
@@ -114,7 +120,7 @@ const CreateUser = () => {
         setLoading(false);
       });
   };
-  const fetchUserData = (parameters = {}, module) => {
+  const fetchUserData = (parameters = {}) => {
     setLoading(true);
     axiosInstance
       .get(`/erp_user/user-data/`, { params: { ...parameters } })
@@ -385,18 +391,16 @@ const CreateUser = () => {
         setSelectedSubjects(subjectObj?.map((e) => e?.id));
         setSingleParent(transformedUser?.single_parent ? true : false);
         fetchDesignation(schoolDetails?.user_level);
-        fetchGrades(schoolDetails?.branch, null, module);
+        fetchGrades(schoolDetails?.branch, null);
         fetchSections(
           gradeObj?.map((e) => e.id),
           null,
-          schoolDetails?.branch,
-          module
+          schoolDetails?.branch
         );
         fetchSubjects(
           sectionObj?.map((e) => e.id),
           schoolDetails?.branch,
-          gradeObj?.map((e) => e.id),
-          module
+          gradeObj?.map((e) => e.id)
         );
         setSchoolFormValues(schoolDetails);
         setStudentFormValues(studentInformation);
@@ -489,7 +493,7 @@ const CreateUser = () => {
     }
   };
 
-  const fetchGrades = (branches, branch_code, module) => {
+  const fetchGrades = (branches, branch_code) => {
     if (branches?.length > 0) {
       setBranchCode(branch_code);
       setSelectedBranch(branches);
@@ -497,7 +501,7 @@ const CreateUser = () => {
         .get(
           `${endpoints.academics.grades}?session_year=${
             selectedYear?.id
-          }&branch_id=${branches?.toString()}&module_id=${params?.id ? module : moduleId}`
+          }&branch_id=${branches?.toString()}&module_id=${moduleId}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
@@ -529,14 +533,14 @@ const CreateUser = () => {
     }
   };
 
-  const fetchSections = (grades, grade_id, editBranch, module) => {
+  const fetchSections = (grades, grade_id, editBranch) => {
     if (grades?.length > 0) {
       setSelectedGrade(grades);
       axiosInstance
         .get(
           `${endpoints.academics.sections}?session_year=${selectedYear?.id}&branch_id=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
-          }&grade_id=${grades?.toString()}&module_id=${params?.id ? module : moduleId}`
+          }&grade_id=${grades?.toString()}&module_id=${moduleId}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
@@ -569,7 +573,7 @@ const CreateUser = () => {
     }
   };
 
-  const fetchSubjects = (sections, editBranch, editGrade, module) => {
+  const fetchSubjects = (sections, editBranch, editGrade) => {
     if (sections?.length > 0) {
       setSelectedSections(sections);
       axiosInstance
@@ -578,7 +582,7 @@ const CreateUser = () => {
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade=${
             editGrade ? editGrade?.toString() : selectedGrade?.toString()
-          }&section=${sections?.toString()}&module_id=${params?.id ? module : moduleId}`
+          }&section=${sections?.toString()}&module_id=${moduleId}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
