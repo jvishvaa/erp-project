@@ -307,7 +307,7 @@ const PhysicalPendingReview = (props) => {
         })
         .finally(() => {
           setLoading(false);
-          setRequestSent(true);
+          setRequestSent(false);
         });
     }
   };
@@ -423,7 +423,17 @@ const PhysicalPendingReview = (props) => {
             }
           )
           .then((response) => {
-            setRatingReview(response?.data);
+            response.data.map((obj) => {
+              let temp = {};
+              temp['id'] = obj?.id;
+              temp['level'] = obj?.level;
+              temp['remarks'] = obj?.remarks;
+              temp['name'] = obj?.name;
+              temp['given_rating'] = obj?.given_rating;
+              temp['reviewer_id'] = user_id;
+              array.push(temp);
+            });
+            setRatingReview(array);
             setLoading(false);
             setView(true);
           })
