@@ -53,7 +53,9 @@ function AddTemplates() {
   const [openModal, setOpenModal] = useState(false);
   const fileRef = useRef();
   const [loading, setLoading] = useState(false);
-
+  const blogActivityId = localStorage.getItem('BlogActivityId')
+    ? JSON.parse(localStorage.getItem('BlogActivityId'))
+    : {};
   const handleImage = () => {
     setTrued(true);
     setImage(
@@ -147,7 +149,11 @@ function AddTemplates() {
           })
           .then((response) => {
             message.success(response?.data?.message);
-            history.push('/blog/blogview');
+            if (blogActivityId.length > 0) {
+              history.push('/blog/blogview');
+            } else {
+              history.push('/blog/wall/central/redirect');
+            }
           })
           .catch((err) => {
             message.error(err.message);
@@ -235,13 +241,13 @@ function AddTemplates() {
             <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
-                  href='/blog/wall/central/redirect'
+                  onClick={() => history.push('/blog/wall/central/redirect')}
                   className='th-black th-pointer th-16'
                 >
                   Activity Management
                 </Breadcrumb.Item>
                 <Breadcrumb.Item
-                  href='/blog/createratingtype'
+                  onClick={() => history.push('/blog/createratingtype')}
                   className='th-black th-pointer th-16'
                 >
                   Create Rating
