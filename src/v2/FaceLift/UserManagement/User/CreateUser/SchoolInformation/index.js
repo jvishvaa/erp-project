@@ -15,6 +15,7 @@ import {
 import { PlusOutlined, UserOutlined } from '@ant-design/icons';
 import TextArea from 'antd/lib/input/TextArea';
 import AcademicYearList from '../AcademicYearList';
+import { useParams } from 'react-router-dom';
 const SchoolInformation = ({
   roles,
   designations,
@@ -50,18 +51,15 @@ const SchoolInformation = ({
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const is_superuser = userData?.is_superuser;
   const user_level = userData?.user_level;
+  const params = useParams();
   useEffect(() => {
     if (schoolFormValues && Object.keys(schoolFormValues).length > 0) {
       schoolForm.current.setFieldsValue(schoolFormValues);
-      if (!schoolFormValues.academic_year) {
-        schoolForm.current.setFieldsValue({
-          academic_year: selectedYear?.session_year,
-        });
-      }
+    } else {
+      schoolForm.current.setFieldsValue({
+        academic_year: selectedYear?.session_year,
+      });
     }
-    schoolForm.current.setFieldsValue({
-      academic_year: selectedYear?.session_year,
-    });
   }, [schoolFormValues]);
 
   const roleOption = roles?.map((each) => (
@@ -106,12 +104,13 @@ const SchoolInformation = ({
     setLoading(false);
   };
   const isOrchids =
-    (window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa' ||  window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
-    ? true
-    : 
-    false);
-   return (
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'mcollege' ||
+    window.location.host.split('.')[0] === 'dps'
+      ? true
+      : false;
+  return (
     <React.Fragment>
       <div
         className='px-2'
@@ -188,7 +187,7 @@ const SchoolInformation = ({
               <Form.Item name={'academic_year'} label='Academic Year'>
                 <Input
                   disabled
-                  value={selectedYear?.session_year}
+                  // value={params?.id ? schoolFormValues?.academic_year:selectedYear?.session_year}
                   placeholder='Academic Year'
                   className='w-100'
                 />
@@ -208,7 +207,7 @@ const SchoolInformation = ({
                 <Select
                   maxTagCount={3}
                   allowClear
-                  disabled={editId && userLevel===13 && isOrchids}
+                  disabled={editId && userLevel === 13 && isOrchids}
                   getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, obj) => {
                     if (e.includes('all')) {
@@ -264,7 +263,7 @@ const SchoolInformation = ({
                   maxTagCount={3}
                   allowClear
                   getPopupContainer={(trigger) => trigger.parentNode}
-                  disabled={editId && userLevel===13 && isOrchids}
+                  disabled={editId && userLevel === 13 && isOrchids}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
                       let values = grades?.map((e) => e?.grade_name);
