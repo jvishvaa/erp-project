@@ -94,39 +94,6 @@ const BlogReview = () => {
     }
   }, [window.location.pathname]);
 
-  function callApi(api, key) {
-    setLoading(true);
-    axiosInstance.get(api).then((result) => {
-      if (result.status === 200) {
-        if (key === 'academicYearList') {
-          setAcademicYear(result?.data?.data || []);
-          const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
-          if (
-            window.location.pathname !== '/erp-online-class-student-view' &&
-            !viewMoreData?.academic
-          )
-            callApi(
-              `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
-              'branchList'
-            );
-        }
-        if (key === 'branchList') {
-          setBranchList(result?.data?.data?.results || []);
-        }
-        if (key === 'gradeList') {
-          const gradeData = result?.data?.data || [];
-          gradeData.unshift({
-            grade_grade_name: 'Select All',
-            grade_id: 'all',
-            id: 'all',
-          });
-          // setGradeList(gradeData);
-        }
-      }
-      setLoading(false);
-    });
-  }
-
   const fetchBranches = () => {
     const transformedData = newBranches?.branches?.map((obj) => ({
       id: obj.id,
@@ -259,6 +226,7 @@ const BlogReview = () => {
                       <Button
                         className='th-button-active th-br-6 text-truncate th-pointer'
                         icon={<SearchOutlined />}
+                        loading={flag}
                         onClick={goSearch}
                       >
                         Search

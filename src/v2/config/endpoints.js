@@ -25,6 +25,7 @@ export default {
   userManagement: {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
     userDesignation: `${baseURLCentral}/central-admin/user_designation/`,
+    downloadUserData: '/communication/erp-user-info-excel-v2/',
   },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',

@@ -1,0 +1,120 @@
+ .th-erp-steps .ant-steps-item-container {
+    outline: none;
+    display: grid;
+    place-items: center;
+}
+
+  .ant-steps .ant-steps-item:not(.ant-steps-item-active) > .ant-steps-item-container[role='button'] .ant-steps-item-title,  .ant-steps .ant-steps-item:not(.ant-steps-item-active) > .ant-steps-item-container[role='button'] .ant-steps-item-subtitle,  .ant-steps .ant-steps-item:not(.ant-steps-item-active) > .ant-steps-item-container[role='button'] .ant-steps-item-description,  .ant-steps .ant-steps-item:not(.ant-steps-item-active) > .ant-steps-item-container[role='button'] .ant-steps-item-icon .ant-steps-icon{
+    text-align: center;
+}
+
+ .th-erp-steps .ant-steps-vertical > .ant-steps-item:not(:last-child) > .ant-steps-item-container > .ant-steps-item-tail{
+    margin-left: 26px;
+    margin-top: 50px;
+    padding-bottom: 60px;
+}
+
+.th-erp-steps .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    text-align: center;
+}
+
+.th-erp-steps .ant-steps-item-title{
+    width: 100px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.th-erp-steps .ant-steps-vertical > .ant-steps-item {
+    display: block;
+    flex:1 1 1;
+    padding-left: 0;
+    overflow: visible;
+}
+.th-erp-steps .ant-steps-item-title {
+    line-height:inherit;
+}
+.th-erp-steps .ant-steps-vertical > .ant-steps-item .ant-steps-item-title {
+    line-height:inherit;
+    text-align: center;
+}
+
+.ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon {
+    background: #1B4CCB;
+}
+.ant-steps-item-process .ant-steps-item-icon {
+    background-color: #fff;
+    border-color: #1B4CCB;
+}
+
+.ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    color: #1B4CCB;
+}
+
+.ant-steps-item-finish .ant-steps-item-icon {
+    background-color: #1B4CCB;
+    border-color: #1B4CCB;
+}
+
+.ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+    color: #fff;
+    
+}
+
+.ant-steps-item-container > .ant-steps-item-icon .ant-steps-icon{
+    font-size: 14px;
+}
+
+.ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
+    background-color: #1B4CCB;
+    font-weight: 700;
+}
+
+.ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    color: #1B4CCB;
+}
+
+.th-padding-card{
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #d9d9d9;
+}
+
+.th-padding-card .ant-form-item {
+    margin-bottom: 0px !important;
+}
+
+.th-form-bottom-0 .ant-form-item {
+    margin-bottom: 0px !important;
+}
+
+.th-small-steps {
+    display: flex;
+  justify-content: space-between;
+  }
+  
+  @media (max-width: 576px) {
+    .th-small-steps .ant-steps-item {
+        flex-direction: column;
+        align-items: center;
+  }
+}
+
+.ant-checkbox-wrapper:hover .ant-checkbox-inner, .ant-checkbox:hover .ant-checkbox-inner, .ant-checkbox-input:focus + .ant-checkbox-inner {
+    border-color: #1b4ccb;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+    background-color: #1b4ccb;
+}
+  
+.th-primary-contact-checkbox .ant-form-item-control-input{
+    min-height: auto;
+}
+
+.th-primary-contact-check .ant-space-item .ant-form-item{
+    margin-bottom: 0px !important;
+}   
+
+.th-primary-contact-check .ant-checkbox-inner{
+    border-color: #1B4CCB !important;
+}

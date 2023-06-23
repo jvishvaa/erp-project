@@ -224,6 +224,8 @@ const QuestionCard = ({
         setFileUploadInProgress(false);
         setAlert('error', 'File upload failed');
       }
+    } else {
+      setAlert('error', 'Please upload valid file');
     }
   };
 
@@ -246,6 +248,7 @@ const QuestionCard = ({
     } else {
       setAttachmentPreviews((prevState) => [...prevState, ...resource]);
       setAttachments((prevState) => [...prevState, ...resource]);
+      setAlert('success', 'File added successfully');
     }
 
     setSelectedResources([]);
@@ -278,6 +281,7 @@ const QuestionCard = ({
           return [...prevState];
         });
       }
+      setAlert('error', 'File removed successfully');
     } else {
       setAttachmentPreviews((prevState) => {
         prevState.splice(pdfIndex, 1);
@@ -288,6 +292,7 @@ const QuestionCard = ({
         return [...prevState];
       });
     }
+    setAlert('error', 'File removed successfully');
   };
 
   useEffect(() => {

@@ -103,8 +103,6 @@ const dummyRound = [
   { id: 1, round: 1, name: '1' },
   { id: 2, round: 2, name: '2' },
   { id: 3, round: 3, name: '3' },
-  { id: 4, round: 4, name: '4' },
-  { id: 5, round: 5, name: '5' },
 ];
 const AdminCreateBlog = () => {
   const classes = useStyles();
@@ -211,7 +209,6 @@ const AdminCreateBlog = () => {
       setSelectedSubActivityId(value?.id);
       fetchCriteria(value?.id);
       setVisible(true);
-      console.log(value);
     }
   };
 
@@ -275,7 +272,6 @@ const AdminCreateBlog = () => {
         },
       })
       .then((res) => {
-        console.log('res', res);
         setLoading(false);
         if (res?.data) {
           const transformedData = res?.data?.result?.map((obj) => ({
@@ -419,7 +415,9 @@ const AdminCreateBlog = () => {
       const all = grades.slice();
       const allGradeIds = all.map((item) => parseInt(item?.id));
       const reqAllGradeIds = all.map((item) => parseInt(item?.grade_id));
-      const reqAllGradeIds2 = grades.filter((item)=>value.includes(item.id)).map((item) => parseInt(item?.grade_id))
+      const reqAllGradeIds2 = grades
+        .filter((item) => value.includes(item.id))
+        .map((item) => parseInt(item?.grade_id));
       const allGradeName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedGrade(reqAllGradeIds);
@@ -433,7 +431,12 @@ const AdminCreateBlog = () => {
       } else {
         setSelectedGrade(reqAllGradeIds2);
         setSelectedGradeName(event);
-        fetchSections(selectedAcademicYear?.id, selectedBranch, reqAllGradeIds2, moduleId);
+        fetchSections(
+          selectedAcademicYear?.id,
+          selectedBranch,
+          reqAllGradeIds2,
+          moduleId
+        );
       }
     }
   };
@@ -443,11 +446,13 @@ const AdminCreateBlog = () => {
       const all = sectionList.slice();
       const reqAllSectionIds = all.map((item) => parseInt(item.section_id));
       const allSectionIds = all.map((item) => parseInt(item.id));
-      const reqAllSectionIds2 = sectionList.filter((item)=>value.includes(item.id)).map((item) => parseInt(item?.section_id))
+      const reqAllSectionIds2 = sectionList
+        .filter((item) => value.includes(item.id))
+        .map((item) => parseInt(item?.section_id));
       const allSectionName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedSection(reqAllSectionIds);
-        setSelectedSectionName(allSectionName)
+        setSelectedSectionName(allSectionName);
         formRef.current.setFieldsValue({
           section: allSectionIds,
           date: null,
@@ -458,7 +463,7 @@ const AdminCreateBlog = () => {
         //   date: null,
         // });
         setSelectedSection(reqAllSectionIds2);
-        setSelectedSectionName(event)
+        setSelectedSectionName(event);
       }
     }
   };
@@ -587,7 +592,7 @@ const AdminCreateBlog = () => {
       message.error('Please Select Section');
       return;
     }
-    if (isVisibleRound && (selectedRound?.length === 0 && physicalId !== '')) {
+    if (isVisibleRound && selectedRound?.length === 0 && physicalId !== '') {
       setLoading(false);
       message.error('Please Select Round');
       return;
@@ -633,7 +638,7 @@ const AdminCreateBlog = () => {
       formData.append('is_draft', physicalId ? false : true);
       formData.append('template_type', 'template');
       formData.append('template_id', checked);
-      if(isVisibleRound){
+      if (isVisibleRound) {
         formData.append('round_count', selectedRoundID);
       }
       axios
@@ -717,8 +722,6 @@ const AdminCreateBlog = () => {
         }
       )
       .then((response) => {
-        console.log(response, 'session');
-
         setActivityStorage(response.data.result);
 
         localStorage.setItem(
@@ -850,12 +853,16 @@ const AdminCreateBlog = () => {
 
   const branchOptions = branchDropdown?.map((each) => {
     return (
-      <Option key={each?.id} value={each?.id} id={each?.id} branch_name={each?.branch_name}>
+      <Option
+        key={each?.id}
+        value={each?.id}
+        id={each?.id}
+        branch_name={each?.branch_name}
+      >
         {each?.branch_name}
       </Option>
     );
   });
-
 
   const gradeOptions = grades?.map((each) => {
     return (
@@ -1117,7 +1124,7 @@ const AdminCreateBlog = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      
+
                       {physicalId ? (
                         <div className='col-md-2 col-6'>
                           <div className='mb-2 text-left'>Criteria Title</div>
@@ -1153,37 +1160,37 @@ const AdminCreateBlog = () => {
 
                       {physicalId ? (
                         <>
-                        {isVisibleRound ? (
-                          <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                          <div className='mb-2 text-left'>Round</div>
-                          <Form.Item name='round'>
-                            <Select
-                              allowClear
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              placeholder={'Select Round'}
-                              value={selectedRound || []}
-                              showSearch
-                              optionFilterProp='children'
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              onChange={(event, value) => {
-                                handleRound(event, value);
-                              }}
-                              className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                              bordered={true}
-                            >
-                              {roundOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        ) : (
-                          ''
-                        )}
+                          {isVisibleRound ? (
+                            <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                              <div className='mb-2 text-left'>Round</div>
+                              <Form.Item name='round'>
+                                <Select
+                                  allowClear
+                                  suffixIcon={<DownOutlined className='th-grey' />}
+                                  placeholder={'Select Round'}
+                                  value={selectedRound || []}
+                                  showSearch
+                                  optionFilterProp='children'
+                                  filterOption={(input, options) => {
+                                    return (
+                                      options.children
+                                        .toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                    );
+                                  }}
+                                  onChange={(event, value) => {
+                                    handleRound(event, value);
+                                  }}
+                                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                                  bordered={true}
+                                >
+                                  {roundOptions}
+                                </Select>
+                              </Form.Item>
+                            </div>
+                          ) : (
+                            ''
+                          )}
                         </>
                       ) : (
                         ''
@@ -1226,7 +1233,13 @@ const AdminCreateBlog = () => {
               <div className='col-md-6'>
                 <span className='th-grey th-14'>Description*</span>
                 <div className='th-editor py-2'>
-                  <TextArea rows={5} value={description} onChange={handleDescription} />
+                  <TextArea
+                    rows={5}
+                    value={description}
+                    onChange={handleDescription}
+                    maxLength={300}
+                    showCount
+                  />
                 </div>
               </div>
             </div>

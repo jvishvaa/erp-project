@@ -48,7 +48,7 @@ const EditSchoolDetailsForm = ({
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const { is_superuser: isSuperUser } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
+    JSON.parse(localStorage.getItem('userDetails')) || false;
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const [roles, setRoles] = useState('');
@@ -56,8 +56,8 @@ const EditSchoolDetailsForm = ({
   const [designation, setDesignation] = useState('');
   const [selectedDesignation, setSelectedDesignation] = useState('');
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
+  window.location.host.split('.')[0] === 'orchids' || 
+  window.location.host.split('.')[0] === 'qa' ||  window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
     ? true
     : false;
   useEffect(() => {
@@ -502,13 +502,7 @@ const EditSchoolDetailsForm = ({
               id='branch'
               name='branch'
               // disabled={isEditable}
-              disabled={
-                details?.user_level == 13 && index < currentFormLength && isOrchids
-                  ? !isSuperUser
-                  : index >= currentFormLength
-                  ? false
-                  : isEditable
-              }
+              disabled={details?.user_level == 13 && isOrchids ? true : false}
               key={`branch_${index}`}
               onChange={(e, value) => {
                 formik.setFieldValue('grade', []);
@@ -546,13 +540,7 @@ const EditSchoolDetailsForm = ({
               name='grade'
               key={`grade_${index}`}
               // disabled={isEditable}
-              disabled={
-                details?.user_level == 13 && index < currentFormLength && isOrchids
-                  ? !isSuperUser
-                  : index >= currentFormLength
-                  ? false
-                  : isEditable
-              }
+              disabled={details?.user_level == 13 && isOrchids ? true : false}
               onChange={(e, value) => {
                 formik.setFieldValue('section', []);
                 formik.setFieldValue('subjects', []);

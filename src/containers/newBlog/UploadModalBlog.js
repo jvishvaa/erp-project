@@ -7,7 +7,7 @@ import imageFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/imageF
 import excelFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/excelFileIcon.svg';
 import pdfFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/pdfFileIcon.svg';
 import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDropIcon.svg';
-import './index.css'
+import './index.css';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useHistory } from 'react-router-dom';
 
@@ -45,39 +45,40 @@ const UploadModalBlog = (props) => {
     return Math.round(parseFloat(bytes / Math.pow(k, i))) + ' ' + sizes[i];
   };
 
+  console.log('props', props);
   const handleUpload = () => {
     const formData = new FormData();
     uniqueFilesList.forEach((file) => {
-        formData.append('file', file);
+      formData.append('file', file);
     });
-      formData.append('branch_id', props?.branchId);
-      formData.append('name', props?.title);
-      formData.append('description', props?.description);
+    formData.append('branch_id', props?.branchId);
+    formData.append('name', props?.title);
+    formData.append('description', props?.description);
     //   formData.append('file', file);
-      formData.append('view_level', props?.view_level);
-      formData.append('user_id', props?.user_id);
+    formData.append('view_level', props?.view_level);
+    formData.append('user_id', props?.user_id);
 
-      axios
-        .post(`${endpoints.newBlog.postActivityCreateAPI}`, formData, {
-            headers: {
-                // Authorization: `${token}`,
-                'X-DTS-HOST': X_DTS_HOST,
-            },
-            
-        })
-        .then((res) => {
-          if (res?.data?.status_code === 200) {
-            message.success(res?.data?.message);
-            setFileList([]);
-            props.handleClose();
-            history.push('/blog/wall');
-            setUploading(false);
-          }
-        })
-        .catch((e) => {
-          message.error(e);
-        });
-   
+    axios
+      .post(`${endpoints.newBlog.postActivityCreateAPI}`, formData, {
+        headers: {
+          // Authorization: `${token}`,
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          message.success(res?.data?.message);
+          setFileList([]);
+          props.handleClose();
+          history.push('/blog/wall');
+        }
+      })
+      .catch((e) => {
+        message.error(e);
+      })
+      .finally(() => {
+        setUploading(false);
+      });
   };
   const { Dragger } = Upload;
   const draggerProps = {
@@ -93,11 +94,10 @@ const UploadModalBlog = (props) => {
     },
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
-      if (['jpeg', 'jpg', 'png','mp4', 'mpeg'].includes(type)) {
-        if (file[0]?.size > 58085272) {
+      if (['jpeg', 'jpg', 'png', 'mp4', 'mpeg'].includes(type)) {
+        if (file[0]?.size > 41943040) {
           setFileSizeError(true);
         } else {
-            console.log(file,'wt 88')
           setFileList([...fileList, ...file[1]]);
           setFileSizeError(false);
         }
@@ -194,7 +194,7 @@ const UploadModalBlog = (props) => {
           )}
           {fileSizeError && (
             <div className='row pt-3 justify-content-center th-red'>
-              This file size must be less than 50 MB
+              This file size must be less than 40 MB
             </div>
           )}
           {fileList?.length > 0 && (

@@ -47,7 +47,9 @@ import {
   message,
   Tag,
   Modal,
-  Tooltip} from 'antd';
+  Spin,
+  Tooltip,
+} from 'antd';
 
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
@@ -201,6 +203,7 @@ const VisualActivity = () => {
   const [subActivityId, setSubActivityId] = useState('');
   const [sudActId, setSubActId] = useState(history?.location?.state?.subActiveId);
   const [subActivityListData, setSubActivityListData] = useState([]);
+  const [loadingDetails, setLoadingDetails] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -427,7 +430,9 @@ const VisualActivity = () => {
       .get(
         `${
           endpoints.newBlog.physicalActivityListApi
-        }?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${id}&branch_ids=${boardId ? boardId : selectedBranch?.branch?.id}`,
+        }?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${id}&branch_ids=${
+          boardId ? boardId : selectedBranch?.branch?.id
+        }`,
         {
           params: {},
           headers: {
@@ -466,8 +471,7 @@ const VisualActivity = () => {
 
   useEffect(() => {
     if (moduleId && branch_update_user) {
-      if (selectedAcademicYear?.id > 0) 
-      setLoading(true);
+      if (selectedAcademicYear?.id > 0) setLoading(true);
       axios
         .get(
           `${endpoints.newBlog.activityBranch}?branch_ids=${selectedBranch?.branch?.id}`,
@@ -515,6 +519,7 @@ const VisualActivity = () => {
   }, [value, selectedBranch, searchFlag, currentPageAssigned, currentPageUnassign]);
   const [previewData, setPreviewData] = useState();
   const handlePreview = (data) => {
+    setLoadingDetails(true);
     setPreview(true);
     axios
       .get(`${endpoints.newBlog.previewDetails}${data?.id}/`, {
@@ -525,10 +530,17 @@ const VisualActivity = () => {
       .then((response) => {
         setPreviewData(response?.data?.result);
         setLoading(false);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setLoadingDetails(false);
       });
   };
   const closePreview = () => {
     setPreview(false);
+    setLoadingDetails(false);
   };
 
   const [activityStorage, setActivityStorage] = useState([]);
@@ -562,14 +574,11 @@ const VisualActivity = () => {
   const fetchSubActivityListData = () => {
     const { id } = localActivityData;
     axiosInstance
-      .get(
-        `${endpoints.newBlog.subActivityListApi}?type_id=${id}`,
-        {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        }
-      )
+      .get(`${endpoints.newBlog.subActivityListApi}?type_id=${id}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
       .then((result) => {
         setLoading(false);
         setSubActivityListData(result?.data?.result);
@@ -603,16 +612,15 @@ const VisualActivity = () => {
             <div className='col-md-6 pr-3 th-16 d-flex justify-content-end'>
               {user_level == 11 ? (
                 ''
-              ):(
-              <ButtonAnt
-                icon={<AppstoreAddOutlined />}
-                onClick={createPush}
-                disabled={user_level == 11}
-                className='th-button-active th-br-6 th-pointer th-16'
-              >
-                Create {localActivityData.name}
-              </ButtonAnt>
-
+              ) : (
+                <ButtonAnt
+                  icon={<AppstoreAddOutlined />}
+                  onClick={createPush}
+                  disabled={user_level == 11}
+                  className='th-button-active th-br-6 th-pointer th-16'
+                >
+                  Create {localActivityData.name}
+                </ButtonAnt>
               )}
             </div>
           </div>
@@ -628,12 +636,12 @@ const VisualActivity = () => {
                   }
                   loading={loading}
                   pagination={{
+                    position: ['bottomCenter'],
                     total: totalCountAssigned,
                     current: Number(currentPageAssigned),
                     pageSize: limitAssigned,
                     showSizeChanger: false,
                     onChange: (e) => {
-                      console.log('Pagination', e);
                       handlePaginationAssign(e);
                     },
                   }}
@@ -651,289 +659,104 @@ const VisualActivity = () => {
             className='th-upload-modal'
             title={`Preview -${localActivityData.name}`}
           >
-            <div className='row th-bg-white p-2 pb-3'>
-              <div className='col-12'>
-                <span className='th-black-1 th-fw-500 th-25'>{previewData?.title}</span>
-              </div>
-              <div className='col-12'>
-                <span className='th-grey th-12'>
-                  Submission on -
-                  {moment(previewData?.submission_date).format('DD/MM/YYYY')}
-                </span>
-              </div>
-              <div className='col-12 mt-3'>
-                <div className='row th-12 th-grey'>
-                  <div className='col-2 px-0 th-14'>
-                    <div className='d-flex justify-content-between'>
-                      <span>Grades</span>
-                      <span>:&nbsp;</span>
-                    </div>
-                  </div>
-                  <div className='col-10 pl-0'>
-                    <span>
-                      {previewData?.grades
-                        .slice(0, 2)
-                        .map((item) => item?.name)
-                        .toString()}
-                    </span>
-                    {previewData?.grades.length > 2 && (
-                      <Tooltip
-                        placement='bottomLeft'
-                        title={
-                          <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
-                            {previewData?.grades?.map((item) => (
-                              <div>{item?.name}</div>
-                            ))}
-                          </div>
-                        }
-                        trigger='click'
-                        className='th-pointer'
-                        zIndex={2000}
-                      >
-                        <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
-                          Show All
-                        </span>
-                      </Tooltip>
-                    )}
-                  </div>
-                </div>
-                <div className='row th-12 th-grey'>
-                  <div className='col-2 px-0 th-14'>
-                    <div className='d-flex justify-content-between'>
-                      <span>Sections</span>
-                      <span>:&nbsp;</span>
-                    </div>
-                  </div>
-                  <div className='col-10 pl-0'>
-                    <span>
-                      {previewData?.sections
-                        .slice(0, 2)
-                        .map((item) => item?.name)
-                        .toString()}
-                    </span>
-                    {previewData?.sections.length > 2 && (
-                      <Tooltip
-                        placement='bottomLeft'
-                        title={
-                          <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
-                            {previewData?.sections?.map((item) => (
-                              <div>{item?.name}</div>
-                            ))}
-                          </div>
-                        }
-                        trigger='click'
-                        className='th-pointer'
-                        zIndex={2000}
-                      >
-                        <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
-                          Show All
-                        </span>
-                      </Tooltip>
-                    )}
-                  </div>
-                </div>
-                <div className='row th-12 th-grey'>
-                  <div className='d-flex flex-column'>
-                    <div className='th-14'>Instructions</div>
-                    <div>{previewData?.description}</div>
-                  </div>
+            {loadingDetails ? (
+              <div className='row'>
+                <div className='col-12 py-5 text-center'>
+                  <Spin tip='Loading..' />
                 </div>
               </div>
-            </div>
-          </Modal>
-          <Dialog
-            // open={assigned}
-            // onClose={handleClose}
-            maxWidth={maxWidth}
-            style={{ borderRadius: '10px' }}
-          >
-            <div style={{ width: '503px' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div>
-                  <DoneIcon style={{ color: 'green', fontSize: '81px' }} />
+            ) : (
+              <div className='row th-bg-white p-2 pb-3'>
+                <div className='col-12'>
+                  <span className='th-black-1 th-fw-500 th-25'>{previewData?.title}</span>
                 </div>
-                <div style={{ fontSize: '20px', marginBottom: '2px' }}>
-                  Blog Successfully Assigned
+                <div className='col-12'>
+                  <span className='th-grey th-12'>
+                    Submission on -
+                    {moment(previewData?.submission_date).format('DD/MM/YYYY')}
+                  </span>
                 </div>
-                <div style={{ fontSize: '15px', marginBottom: '24px' }}>
-                  Check Assigned tab for new submissions
-                </div>
-                <div style={{ marginBottom: '15px' }}>
-                  <Button variant='contained' size='small'>
-                    Okay
-                  </Button>{' '}
-                </div>
-              </div>
-            </div>
-          </Dialog>
-          {assigned == true && (
-            <Dialog
-              open={assigned}
-              aria-labelledby='alert-dialog-title'
-              aria-describedby='alert-dialog-description'
-            >
-              <DialogTitle id='draggable-dialog-title'>
-                <strong>Assign Details</strong>
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText>Are you sure you want to assign ?</DialogContentText>
-              </DialogContent>
-
-              <Divider className={classes.divider} />
-              <DialogActions>
-                <Button style={{ backgroundColor: 'lightgray' }} onClick={closeconfirm}>
-                  Cancel
-                </Button>
-                <Button
-                  color='primary'
-                  variant='contained'
-                  style={{ color: 'white' }}
-                  onClick={confirmassign}
-                >
-                  Confirm
-                </Button>
-              </DialogActions>
-            </Dialog>
-          )}
-          <Dialog open={view} maxWidth={maxWidth}>
-            {' '}
-            <div style={{ width: '700px' }}>
-              <Grid
-                container
-                direction='row'
-                alignItems='center'
-                justifyContent='space-between'
-                style={{ justifyContent: 'space-between' }}
-              >
-                <Grid item>
-                  <Typography>
-                    <strong
-                      style={{
-                        fontSize: '14px',
-                        color: themeContext.palette.primary.main,
-                      }}
-                    >
-                      Please Select Your Branch
-                    </strong>
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <IconButton size='small' style={{ visibility: 'hidden' }}>
-                    <Close />
-                  </IconButton>
-                </Grid>
-                <Grid item>
-                  <IconButton size='small' onClick={() => handleClose()}>
-                    <Close />
-                  </IconButton>
-                </Grid>
-              </Grid>
-
-              <Divider className={classes.divider} />
-              <Grid
-                container
-                direction='row'
-                style={{ marginLeft: '5px', marginBottom: '20px' }}
-              >
-                {branchView == true && (
-                  <Grid item>
-                    Branch Name:{' '}
-                    <Button
-                      size='small'
-                      color='primary'
-                      className={classes.buttonColor}
-                      variant='contained'
-                      onClick={branchViewed}
-                      endIcon={<ArrowDropDownIcon />}
-                      style={{ width: '576px' }}
-                    >
-                      {data == '' ? 'Select' : data.label}
-                    </Button>
-                  </Grid>
-                )}
-                {data && (
-                  <Grid
-                    item
-                    style={{
-                      marginLeft: '580px',
-                      marginTop: '25px',
-                    }}
-                  >
-                    <Button variant='contained' size='small' color='primary'>
-                      {' '}
-                      Proceed
-                    </Button>
-                  </Grid>
-                )}
-                {branchSearch == true && branchView == false && (
-                  <Grid item style={{ display: 'flex' }}>
-                    Branch Name:&nbsp;
-                    <Paper
-                      style={{
-                        border: '1px solid gray',
-                        width: '576px',
-                        height: '321px',
-                        overflowY: 'auto',
-                      }}
-                    >
-                      <div>
-                        <TextField
-                          placeholder='Type Text...'
-                          style={{ background: 'lightgray', width: '574px' }}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position='start'>
-                                <SearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                          variant='standard'
-                        />
+                <div className='col-12 mt-3'>
+                  <div className='row th-12 th-grey'>
+                    <div className='col-2 px-0 th-14'>
+                      <div className='d-flex justify-content-between'>
+                        <span>Grades</span>
+                        <span>:&nbsp;</span>
                       </div>
-                      <div>
-                        <TableContainer>
-                          <Table aria-label='simple table'>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell className={classes.searchTable}>
-                                  Branch Name
-                                </TableCell>
-                                <TableCell className={classes.searchTable} align='right'>
-                                  Total Submitted
-                                </TableCell>
-                                <TableCell className={classes.searchTable} align='right'>
-                                  Reviewed
-                                </TableCell>
-                                <TableCell className={classes.searchTable} align='right'>
-                                  Review Pending
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {months.map((option) => (
-                                <TableRow
-                                  key={option.value}
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => handleDate(option)}
-                                >
-                                  <TableCell component='th' scope='row'>
-                                    {option.value}
-                                  </TableCell>
-                                  <TableCell align='right'>{option.label}</TableCell>
-                                  <TableCell align='right'>22</TableCell>
-                                  <TableCell align='right'>30</TableCell>
-                                </TableRow>
+                    </div>
+                    <div className='col-10 pl-0'>
+                      <span>
+                        {previewData?.grades
+                          .slice(0, 2)
+                          .map((item) => item?.name)
+                          .toString()}
+                      </span>
+                      {previewData?.grades.length > 2 && (
+                        <Tooltip
+                          placement='bottomLeft'
+                          title={
+                            <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
+                              {previewData?.grades?.map((item) => (
+                                <div>{item?.name}</div>
                               ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
+                            </div>
+                          }
+                          trigger='click'
+                          className='th-pointer'
+                          zIndex={2000}
+                        >
+                          <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
+                            Show All
+                          </span>
+                        </Tooltip>
+                      )}
+                    </div>
+                  </div>
+                  <div className='row th-12 th-grey'>
+                    <div className='col-2 px-0 th-14'>
+                      <div className='d-flex justify-content-between'>
+                        <span>Sections</span>
+                        <span>:&nbsp;</span>
                       </div>
-                    </Paper>
-                  </Grid>
-                )}
-              </Grid>
-            </div>
-          </Dialog>
+                    </div>
+                    <div className='col-10 pl-0'>
+                      <span>
+                        {previewData?.sections
+                          .slice(0, 2)
+                          .map((item) => item?.name)
+                          .toString()}
+                      </span>
+                      {previewData?.sections.length > 2 && (
+                        <Tooltip
+                          placement='bottomLeft'
+                          title={
+                            <div style={{ maxHeight: '150px', overflowY: 'scroll' }}>
+                              {previewData?.sections?.map((item) => (
+                                <div>{item?.name}</div>
+                              ))}
+                            </div>
+                          }
+                          trigger='click'
+                          className='th-pointer'
+                          zIndex={2000}
+                        >
+                          <span className='th-bg-grey th-12 th-black-1 p-1 th-br-6 ml-1 th-pointer'>
+                            Show All
+                          </span>
+                        </Tooltip>
+                      )}
+                    </div>
+                  </div>
+                  <div className='row th-12 th-grey'>
+                    <div className='d-flex flex-column'>
+                      <div className='th-14'>Instructions</div>
+                      <div>{previewData?.description}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </Modal>
         </div>
       </Layout>
     </div>

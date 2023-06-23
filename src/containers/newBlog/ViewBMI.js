@@ -78,7 +78,9 @@ const ViewBMI = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const selectedBranch = useSelector((state) => state.commonFilterReducer?.selectedBranch)
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [subjectId, setSubjectId] = useState();
   const [subjectName, setSubjectName] = useState();
   const [totalSubmitted, setTotalSubmitted] = useState([]);
@@ -253,11 +255,14 @@ const ViewBMI = () => {
       if (branchIds) {
         setLoading(true);
         axios
-          .get(`${endpoints.newBlog.activityGrade}?branch_ids=${selectedBranch?.branch?.id}`, {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-            },
-          })
+          .get(
+            `${endpoints.newBlog.activityGrade}?branch_ids=${selectedBranch?.branch?.id}`,
+            {
+              headers: {
+                'X-DTS-HOST': X_DTS_HOST,
+              },
+            }
+          )
           .then((response) => {
             setGradeList(response?.data?.result);
             setLoading(false);
@@ -273,11 +278,11 @@ const ViewBMI = () => {
   const goSearch = () => {
     setLoading(true);
     if (gradeId == undefined) {
-      message.error('Please Select Grade ')
+      message.error('Please Select Grade ');
       setLoading(false);
       return;
     } else if (subjectId == undefined) {
-      message.error('Please Select Section')
+      message.error('Please Select Section');
       setLoading(false);
       return;
     } else {
@@ -309,9 +314,15 @@ const ViewBMI = () => {
       subject: null,
       // board: null,
     });
+    setSubjectData([]);
+    setSubjectId();
+    setSubjectName('');
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
+    } else {
+      setGradeId(null);
+      setGradeName(null);
     }
   };
 
@@ -404,6 +415,9 @@ const ViewBMI = () => {
       // setSubjectId(item.value);
       setSubjectId(item.value);
       setSubjectName(item?.mappingId);
+    } else {
+      setSubjectId(null);
+      setSubjectName('');
     }
   };
 
@@ -425,7 +439,8 @@ const ViewBMI = () => {
     );
   });
 
-  const erpAPI = () => {
+  const fetchBMIList = () => {
+    setLoading(true);
     axios
       .get(`${endpoints.newBlog.erpDataStudentsAPI}?section_mapping_id=${subjectName}`, {
         headers: {
@@ -435,9 +450,13 @@ const ViewBMI = () => {
       .then((response) => {
         setSourceData(response?.data?.result);
         setTotalSubmitted(response?.data?.result);
-        // ActivityManagement(response?.data?.result)
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
         setFlag(false);
-        // message.success(response?.data?.message)
+
         setLoading(false);
       });
   };
@@ -454,19 +473,10 @@ const ViewBMI = () => {
           },
         })
         .then((response) => {
-          message.success(response?.data?.message)
+          message.success(response?.data?.message);
           setLoading(false);
         });
     }
-  };
-
-  const getTotalSubmitted = () => {
-    // if (props) {
-    setLoading(true);
-    erpAPI();
-    setLoading(false);
-
-    // }
   };
 
   useEffect(() => {
@@ -477,7 +487,7 @@ const ViewBMI = () => {
 
   useEffect(() => {
     if (flag) {
-      getTotalSubmitted();
+      fetchBMIList();
     }
   }, [selectedBranch, gradeId, flag, currentPage]);
 
@@ -509,7 +519,11 @@ const ViewBMI = () => {
               </IconButton>
             </div>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16' onClick={handleGoBack}>
+              <Breadcrumb.Item
+                href='/dashboard'
+                className='th-grey th-16'
+                onClick={handleGoBack}
+              >
                 Physical Activities
               </Breadcrumb.Item>
               <Breadcrumb.Item href='/dashboard' className='th-black th-16'>
@@ -563,6 +577,7 @@ const ViewBMI = () => {
                       onChange={(e, value) => {
                         handleSubject(value);
                       }}
+                      allowClear
                       onClear={handleClearSubject}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       bordered={true}
@@ -579,6 +594,7 @@ const ViewBMI = () => {
                     type='primary'
                     icon={<SearchOutlined />}
                     onClick={goSearch}
+                    loading={loading}
                     size={'medium'}
                   >
                     Search

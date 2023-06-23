@@ -7,9 +7,7 @@ import './styles.scss';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import Loader from 'containers/sure-learning/hoc/loader';
-import {
-  UserAddOutlined,
-} from '@ant-design/icons';
+import { UserAddOutlined } from '@ant-design/icons';
 import { Tag, Table as TableAnt, message } from 'antd';
 
 const StyledRating = withStyles((theme) => ({
@@ -166,14 +164,14 @@ const Published = (props) => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           setLoading(false);
-          message.success(res?.data?.message)
+          message.success(res?.data?.message);
           getTotalPublish();
         }
       })
       .catch((err) => {
         console.log(err, 'res4');
         setLoading(false);
-        message.error('Server Error')
+        message.error('Server Error');
       });
   };
 
@@ -250,109 +248,22 @@ const Published = (props) => {
     <>
       {loading && <Loader />}
       <div className='col-12 px-0'>
-        {user_level == 11 ? (
+        {/* {user_level == 11 ? (
           ''
-        ) : (
-          <TableAnt
-            columns={columns}
-            dataSource={totalPublish}
-            className='th-table'
-            rowClassName={(record, index) =>
-              `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-            }
-            loading={loading}
-            pagination={false}
-            scroll={{ x: totalPublish.length > 0 ? 'max-content' : null, y: 600 }}
-          />
-        )}
+        ) : ( */}
+        <TableAnt
+          columns={columns}
+          dataSource={totalPublish}
+          className='th-table'
+          rowClassName={(record, index) =>
+            `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+          }
+          loading={loading}
+          pagination={false}
+          scroll={{ x: totalPublish.length > 0 ? 'max-content' : null, y: 600 }}
+        />
+        {/* )} */}
       </div>
-
-      {/* <Paper className={`${classes.root} common-table`} id='singleStudent'>
-        {user_level == 11 ? (
-          ''
-        ) : (
-          <TableContainer
-            className={`table table-shadow view_users_table ${classes.container}`}
-          >
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead className={`${classes.columnHeader} table-header-row`}>
-                <TableRow>
-                  <TableCell
-                    className={classes.tableCell}
-                    style={{ whiteSpace: 'nowrap' }}
-                  >
-                    S No.
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>Student Name</TableCell>
-                  <TableCell className={classes.tableCell}>Grade</TableCell>
-                  <TableCell className={classes.tableCell}>Submission Date</TableCell>
-                  <TableCell className={classes.tableCell}>Overall Score</TableCell>
-                  <TableCell className={classes.tableCell}></TableCell>
-
-                  <TableCell style={{ width: '267px' }} className={classes.tableCell}>
-                    Actions
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              {totalPublish?.map((response, index) => (
-                <TableBody>
-                  <TableRow hover role='checkbox' tabIndex={-1}>
-                    <TableCell className={classes.tableCells}>{index + 1}</TableCell>
-                    <TableCell className={classes.tableCells}>{response?.name}</TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {response?.grade}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {response?.submitted_on.slice(0, 10)}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      <StyledRating
-                        name={`rating${index}`}
-                        size='small'
-                        readOnly
-                        precision={0.5}
-                        defaultValue={response?.given_rating}
-                        max={parseInt(response?.rating)}
-                      />
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {' '}
-                      <StarsIcon style={{ color: '#F7B519' }} />
-                    </TableCell>
-
-                    <TableCell className={classes.tableCells}>
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        className={classes.buttonColor1}
-                        onClick={() => handleUnPublish(response)}
-                      >
-                        Un-Publish
-                      </Button>
-                      &nbsp;&nbsp;
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              ))}
-            </Table>
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={Number(currentPage) - 1}
-              onChangePage={(e, page) => {
-                handlePagination(e, page);
-              }}
-              rowsPerPageOptions={false}
-              className='table-pagination'
-              classes={{
-                spacer: classes.tablePaginationSpacer,
-                toolbar: classes.tablePaginationToolbar,
-              }}
-            />
-          </TableContainer>
-        )}
-      </Paper> */}
     </>
   );
 };

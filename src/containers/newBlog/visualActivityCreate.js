@@ -153,7 +153,7 @@ const VisualActivityCreate = () => {
         const transformedData = data?.map((obj) => ({
           id: obj?.grade_id,
           name: obj?.grade__grade_name,
-          mapping_id:obj?.id
+          mapping_id: obj?.id,
         }));
         setGradeList(transformedData);
         setLoading(false);
@@ -267,8 +267,10 @@ const VisualActivityCreate = () => {
       setSelectedSection([]);
       const all = gradeList.slice();
       const allGradeId = all.map((item) => item.id);
-      const reqAllGradeIds = all.map((item)=> parseInt(item?.mapping_id))
-      const reqAllGradeIds2 = gradeList.filter((item)=> value.includes(item.mapping_id)).map((item) => item.id)
+      const reqAllGradeIds = all.map((item) => parseInt(item?.mapping_id));
+      const reqAllGradeIds2 = gradeList
+        .filter((item) => value.includes(item.mapping_id))
+        .map((item) => item.id);
       const allGradeName = all.map((item) => item);
       if (value.includes('All')) {
         setSelectedGrade(allGradeId);
@@ -283,7 +285,12 @@ const VisualActivityCreate = () => {
         // const gradeName = value.map((item) => item?.name)
         setSelectedGrade(reqAllGradeIds2);
         setSelectedGradeName(event);
-        fetchSectionsFun(selectedAcademicYear?.id, selectedBranch, reqAllGradeIds2, moduleId);
+        fetchSectionsFun(
+          selectedAcademicYear?.id,
+          selectedBranch,
+          reqAllGradeIds2,
+          moduleId
+        );
         // formRef.current.setFieldsValue({
         //   grade: value,
         //   section: [],
@@ -300,7 +307,9 @@ const VisualActivityCreate = () => {
       const allSectionId = all.map((item) => parseInt(item?.mapping_id));
       const reqAllSectionIds = sectionDropdown.map((item) => parseInt(item?.id));
       const allSectionName = all.map((item) => item);
-      const reqAllSectionIds2 = sectionList.filter((item)=>value.includes(item.id)).map((item) => parseInt(item?.section_id))
+      const reqAllSectionIds2 = sectionList
+        .filter((item) => value.includes(item.id))
+        .map((item) => parseInt(item?.section_id));
       if (value.includes('All')) {
         setSelectedSection(reqAllSectionIds);
         setSelectedSectionName(allSectionName);
@@ -522,7 +531,12 @@ const VisualActivityCreate = () => {
 
   const branchOption = branchList.map((each) => {
     return (
-      <Option key={each?.id} value={each?.id} id={each?.id} branch_name={each?.branch_name}>
+      <Option
+        key={each?.id}
+        value={each?.id}
+        id={each?.id}
+        branch_name={each?.branch_name}
+      >
         {each?.branch_name}
       </Option>
     );
@@ -530,7 +544,12 @@ const VisualActivityCreate = () => {
 
   const gradeOption = gradeList.map((each) => {
     return (
-      <Option key={each?.mapping_id} value={each?.mapping_id} id={each?.id} name={each?.name}>
+      <Option
+        key={each?.mapping_id}
+        value={each?.mapping_id}
+        id={each?.id}
+        name={each?.name}
+      >
         {each?.name}
       </Option>
     );
@@ -569,7 +588,7 @@ const VisualActivityCreate = () => {
   };
 
   const handleClearSection = () => {
-    setSelectedSection([])
+    setSelectedSection([]);
   };
 
   const handleCriteriaTitle = (e, value) => {
@@ -789,7 +808,13 @@ const VisualActivityCreate = () => {
             <div className='col-md-6'>
               <span className='th-grey th-14'>Description*</span>
               <div className='th-editor py-2'>
-                <TextArea rows={5} value={description} onChange={handleDescription} />
+                <TextArea
+                  rows={5}
+                  value={description}
+                  onChange={handleDescription}
+                  maxLength={300}
+                  showCount
+                />
               </div>
             </div>
           </div>

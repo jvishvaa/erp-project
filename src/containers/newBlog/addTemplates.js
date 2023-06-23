@@ -53,7 +53,9 @@ function AddTemplates() {
   const [openModal, setOpenModal] = useState(false);
   const fileRef = useRef();
   const [loading, setLoading] = useState(false);
-
+  const blogActivityId = localStorage.getItem('BlogActivityId')
+    ? JSON.parse(localStorage.getItem('BlogActivityId'))
+    : {};
   const handleImage = () => {
     setTrued(true);
     setImage(
@@ -68,19 +70,19 @@ function AddTemplates() {
   };
   const handleTextArea = () => {
     if (!height) {
-      message.error('Please Add Height')
+      message.error('Please Add Height');
       return;
     } else if (!width) {
-      message.error("Please Add Width")
+      message.error('Please Add Width');
       return;
     } else if (!placeholder) {
-      message.error("Please Add Pleaceholder")
+      message.error('Please Add Pleaceholder');
       return;
     } else if (!x) {
-      message.error('Please Add X- Cordinate')
+      message.error('Please Add X- Cordinate');
       return;
     } else if (!y) {
-      message.error('Please Add y-Cordinate')
+      message.error('Please Add y-Cordinate');
       return;
     }
     showDrawer(false);
@@ -146,16 +148,34 @@ function AddTemplates() {
             },
           })
           .then((response) => {
-            message.success(response?.data?.message)
-            history.push('/blog/blogview');
+            message.success(response?.data?.message);
+            if (blogActivityId.length > 0) {
+              history.push('/blog/blogview');
+            } else {
+              history.push('/blog/wall/central/redirect');
+            }
+          })
+          .catch((err) => {
+            message.error(err.message);
+          })
+          .finally(() => {
             setLoading(false);
           });
       }
     }
   };
   const onFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setFileUrl(URL.createObjectURL(event.target.files[0]));
+    let file = event.target.files[0];
+    if (file.type.includes('image/')) {
+      if (file.size > 41943040) {
+        message.error('Image size must be less than 40 MB');
+      } else {
+        setSelectedFile(file);
+        setFileUrl(URL.createObjectURL(file));
+      }
+    } else {
+      message.error('Please select image file only');
+    }
   };
   const getActivityCategory = () => {
     setLoading(true);
@@ -166,15 +186,15 @@ function AddTemplates() {
         },
       })
       .then((response) => {
-        dummyFunction(response.data.result)
+        dummyFunction(response.data.result);
         setLoading(false);
       });
   };
 
-  const dummyFunction =(data) => {
-    let res = data.filter((item) => item?.name == "Blog Activity")
-    setActivityCategory(res)
-  }
+  const dummyFunction = (data) => {
+    let res = data.filter((item) => item?.name == 'Blog Activity');
+    setActivityCategory(res);
+  };
 
   useEffect(() => {
     getActivityCategory();
@@ -191,8 +211,8 @@ function AddTemplates() {
     setFileUrl(null);
     setSelectedFile(null);
     fileRef.current.value = null;
-    message.success('Successfull Template Deleted')
-    return
+    message.success('Successfull Template Deleted');
+    return;
   };
 
   const handleGoBack = () => {
@@ -220,10 +240,16 @@ function AddTemplates() {
           <div className='row'>
             <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
-                <Breadcrumb.Item href='/blog/wall/central/redirect' className='th-black th-pointer th-16'>
+                <Breadcrumb.Item
+                  onClick={() => history.push('/blog/wall/central/redirect')}
+                  className='th-black th-pointer th-16'
+                >
                   Activity Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href='/blog/createratingtype' className='th-black th-pointer th-16'>
+                <Breadcrumb.Item
+                  onClick={() => history.push('/blog/createratingtype')}
+                  className='th-black th-pointer th-16'
+                >
                   Create Rating
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href='' className='th-black th-pointer th-16'>
@@ -261,8 +287,8 @@ function AddTemplates() {
                   <Input
                     type='file'
                     inputRef={fileRef}
-                    accept='image/x-png,image/gif,image/jpeg,image/jpeg,video/mp4'
-                    inputProps={{ accept: '.mp4,.jpeg,.png' }}
+                    accept='image/x-png,image/gif,image/jpeg,'
+                    inputProps={{ accept: '.jpeg,.png,.jpg' }}
                     onChange={onFileChange}
                     // onChange={handleFileChange}
                   />
@@ -307,7 +333,12 @@ function AddTemplates() {
               </div>
               <div className='d-flex justify-content-center align-item-center row p-0'>
                 <div className='col-3 p-0 mt-4'>
-                  <Button type='primary' className='w-100 th-400' onClick={submitProcess}>
+                  <Button
+                    type='primary'
+                    className='w-100 th-400'
+                    loading={loading}
+                    onClick={submitProcess}
+                  >
                     Submit
                   </Button>
                 </div>

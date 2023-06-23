@@ -29,10 +29,13 @@ class CreateUser extends Component {
       activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
-      isOrchids : window.location.host.split('.')[0] === 'orchids' ||
-      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
-        ? true
-        : false,
+      isOrchids:
+        window.location.host.split('.')[0] === 'orchids' ||
+        window.location.host.split('.')[0] === 'qa' ||
+        window.location.host.split('.')[0] === 'mcollege' ||
+        window.location.host.split('.')[0] === 'dps'
+          ? true
+          : false,
       loading: false,
       user: {
         first_name: '',
@@ -136,11 +139,10 @@ class CreateUser extends Component {
     );
   };
 
-
   onCreateUser = (requestWithParentorGuradianDetails) => {
     this.setState({
-      loading: true
-    })
+      loading: true,
+    });
     const { user } = this.state;
     const { createUser, history } = this.props;
     let requestObj = user;
@@ -166,7 +168,7 @@ class CreateUser extends Component {
       profile,
       parent,
       userLevel,
-      designation
+      designation,
     } = requestObj;
 
     const {
@@ -249,13 +251,12 @@ class CreateUser extends Component {
       // designation: designation?.id
     };
 
-    if(this.state.isOrchids == true){
-      requestObj['user_level'] = userLevel?.id
-      if(userLevel?.id != 13){
-        requestObj['designation'] = designation?.id
+    if (this.state.isOrchids == true) {
+      requestObj['user_level'] = userLevel?.id;
+      if (userLevel?.id != 13) {
+        requestObj['designation'] = designation?.id;
       }
     }
-
 
     if (!requestWithParentorGuradianDetails) {
       delete requestObj.parent;
@@ -268,14 +269,14 @@ class CreateUser extends Component {
 
     createUser(requestObjFormData)
       .then(() => {
-        this.setState({ loading: false })
+        this.setState({ loading: false });
         history.push('/user-management/view-users');
         setAlert('success', 'User created Successfully');
       })
       .catch(() => {
         this.setState({
-          loading: false
-        })
+          loading: false,
+        });
         setAlert('error', 'User Creation Failed');
       });
   };
@@ -301,84 +302,84 @@ class CreateUser extends Component {
           componentName='User Management'
           childComponentName='Create User'
         />
-          <div className='create-user-container'>
-            <div className='bulk-upload-check-box-container'>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={bulkUpload}
-                    onChange={this.handleToggleBulkUploadView}
-                    name='checked'
-                    color='primary'
-                  />
-                }
-                label={<Typography color='secondary'>Upload Excel</Typography>}
+        <div className='create-user-container'>
+          <div className='bulk-upload-check-box-container'>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={bulkUpload}
+                  onChange={this.handleToggleBulkUploadView}
+                  name='checked'
+                  color='primary'
+                />
+              }
+              label={<Typography color='secondary'>Upload Excel</Typography>}
+            />
+          </div>
+          {bulkUpload ? (
+            <div className='bulk-upload-container'>
+              <BulkUpload
+                onUploadSuccess={() => {
+                  this.handleToggleBulkUploadView();
+                }}
               />
             </div>
-            {bulkUpload ? (
-              <div className='bulk-upload-container'>
-                <BulkUpload
-                  onUploadSuccess={() => {
-                    this.handleToggleBulkUploadView();
-                  }}
-                />
+          ) : (
+            <>
+              <Stepper
+                activeStep={activeStep}
+                alternativeLabel
+                className={`${classes.stepper} stepper`}
+                connector={<CustomStepperConnector />}
+              >
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel
+                      StepIconComponent={CustomStepperIcon}
+                      classes={{
+                        alternativeLabel: classes.stepLabel,
+                      }}
+                    >
+                      {label}
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+              <div className={classes.formContainer}>
+                {activeStep === 0 && (
+                  <SchoolDetailsForm
+                    onSubmit={this.onSubmitSchoolDetails}
+                    details={user}
+                    isEdit={false}
+                  />
+                )}
+                {activeStep === 1 && (
+                  <UserDetailsForm
+                    isEdit={false}
+                    onSubmit={this.onSubmitUserDetails}
+                    details={user}
+                    handleBack={this.handleBack}
+                    toggleParentForm={this.toggleParentForm}
+                    toggleGuardianForm={this.toggleGuardianForm}
+                    showParentForm={showParentForm}
+                    showGuardianForm={showGuardianForm}
+                    isSubmitting={creatingUser}
+                  />
+                )}
+                {activeStep === 2 && (
+                  <GuardianDetailsForm
+                    onSubmit={this.onSubmitGuardianDetails}
+                    details={user.parent}
+                    handleBack={this.handleBack}
+                    showParentForm={showParentForm}
+                    showGuardianForm={showGuardianForm}
+                    isSubmitting={creatingUser}
+                  />
+                )}
               </div>
-            ) : (
-              <>
-                <Stepper
-                  activeStep={activeStep}
-                  alternativeLabel
-                  className={`${classes.stepper} stepper`}
-                  connector={<CustomStepperConnector />}
-                >
-                  {steps.map((label) => (
-                    <Step key={label}>
-                      <StepLabel
-                        StepIconComponent={CustomStepperIcon}
-                        classes={{
-                          alternativeLabel: classes.stepLabel,
-                        }}
-                      >
-                        {label}
-                      </StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
-                <div className={classes.formContainer}>
-                  {activeStep === 0 && (
-                    <SchoolDetailsForm
-                      onSubmit={this.onSubmitSchoolDetails}
-                      details={user}
-                      isEdit={false}
-                    />
-                  )}
-                  {activeStep === 1 && (
-                    <UserDetailsForm
-                      isEdit={false}
-                      onSubmit={this.onSubmitUserDetails}
-                      details={user}
-                      handleBack={this.handleBack}
-                      toggleParentForm={this.toggleParentForm}
-                      toggleGuardianForm={this.toggleGuardianForm}
-                      showParentForm={showParentForm}
-                      showGuardianForm={showGuardianForm}
-                      isSubmitting={creatingUser}
-                    />
-                  )}
-                  {activeStep === 2 && (
-                    <GuardianDetailsForm
-                      onSubmit={this.onSubmitGuardianDetails}
-                      details={user.parent}
-                      handleBack={this.handleBack}
-                      showParentForm={showParentForm}
-                      showGuardianForm={showGuardianForm}
-                      isSubmitting={creatingUser}
-                    />
-                  )}
-                </div>
-              </>
-            )}
-            {/* <div>
+            </>
+          )}
+          {/* <div>
           <div>
             <Button
               disabled={activeStep === 0}
@@ -392,7 +393,7 @@ class CreateUser extends Component {
             </Button>
           </div>
         </div> */}
-          </div>
+        </div>
       </Layout>
     );
   }

@@ -111,23 +111,14 @@ const BlogWall = () => {
     'Section',
     'Blog of the Month',
   ];
-  // const options = [
-  //   { id: 1, value: 'All' },
-  //   { id: 2, value: 'Blogs' },
-  //   { id: 3, value: 'Dance', visible: isStudent },
-  //   { id: 4, value: 'Music', visible: isStudent },
-  //   { id: 5, value: 'Posts' },
-  //   { id: 6, value: 'Public Speaking', visible: isStudent },
-  //   { id: 7, value: 'Theatre', visible: isStudent },
-  //   { id: 8, value: 'Visual Art', visible: isStudent },
-  //   { id: 9, value: 'Physical Activity', visible: isStudent },
-  // ].filter((item) => item?.visible !== false);
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(null);
   const [showPostDetailsModal, setShowPostDetailsModal] = useState(false);
   const [showOtherActivityModal, setShowOtherActivityModal] = useState(false);
+  const [showPublicSpeakingModal, setShowPublicSpeakingModal] = useState(false);
   const [selectedOtherActivity, setSelectedOtherActivity] = useState(null);
+  const [selectedPublicSpeaking, setSelectedPublicSpeaking] = useState(null);
   const [postModalContentData, setPostModalContentData] = useState(null);
   const [selectedPostData, setSelectedPostData] = useState();
   const [currentComment, setCurrentComment] = useState(null);
@@ -146,7 +137,6 @@ const BlogWall = () => {
   const [categoriesList, setCategoriesList] = useState([]);
 
   const fetchCategoryOptions = (id) => {
-    setLoading(true);
     axios
       .get(`${endpoints.newBlog.getCategoryOptions}?user_id=${id}`, {
         headers: {
@@ -162,9 +152,6 @@ const BlogWall = () => {
       })
       .catch((err) => {
         message.error(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
 
@@ -272,39 +259,15 @@ const BlogWall = () => {
         );
         setUserId(response?.data?.result?.user_id);
         fetchCategoryOptions(response?.data?.result?.user_id);
-        // setLoading(false);
         setShowTab('1');
+      })
+      .catch((err) => {
+        message.error(err?.message);
+        setLoading(false);
       });
   };
 
-  // useEffect(() => {
-  //   if (localStorage.getItem('ActivityManagementSession') == null) ActvityLocalStorage();
-  // }, [window.location.pathname]);
-  // const ActvityLocalStorage = () => {
-  //   setLoading(true);
-  //   axios
-  //     .post(
-  //       `${endpoints.newBlog.activityWebLogin}`,
-  //       {},
-  //       {
-  //         headers: {
-  //           Authorization: `${token}`,
-  //           'X-DTS-HOST': X_DTS_HOST,
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       localStorage.setItem(
-  //         'ActivityManagement',
-  //         JSON.stringify(response?.data?.result)
-  //       );
-  //       getActivitySession();
-  //       setLoading(false);
-  //     });
-  // };
-
   const fetchGradeData = () => {
-    // setLoading(true);
     axios
       .get(
         `${endpoints.newBlog.activityGrade}?branch_ids=${selectedBranch?.branch?.id}`,
@@ -316,10 +279,9 @@ const BlogWall = () => {
       )
       .then((response) => {
         setGradeList(response?.data?.result);
-        // setLoading(false);
       })
       .catch((error) => {
-        setLoading(false);
+        message.error(error?.message);
       });
   };
 
@@ -336,7 +298,6 @@ const BlogWall = () => {
   }, [selectedBranch]);
 
   const blogListApiCall = () => {
-    setLoading(true);
     axios
       .get(`${endpoints.newBlog.blogListDropApi}`, {
         params: {
@@ -350,11 +311,10 @@ const BlogWall = () => {
       .then((response) => {
         if (response.status === 200) {
           setBlogList(response?.data?.result);
-          // setLoading(false);
         }
       })
-      .catch(() => {
-        // setLoading(false);
+      .catch((error) => {
+        message.error(error?.message);
       });
   };
 
@@ -463,7 +423,6 @@ const BlogWall = () => {
       .catch((error) => {});
   };
   const fetchPostDetails = (data) => {
-    //  setLoading(true);
     axios
       .get(`${endpoints.newBlog.postActivityViewMoreAPI}${data?.id}/`, {
         headers: {
@@ -473,10 +432,13 @@ const BlogWall = () => {
       .then((response) => {
         setPostModalContentData(response?.data?.result);
         fetchCurrentComments({ post_id: data?.id, user_id: userId });
-        //  setLoading(false);
-        //  setOpenModal(true);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        message.error(error?.message);
+      })
+      .finally(() => {
+        setDetailsLoading(false);
+      });
   };
   const getWhatsAppDetails = (params = {}) => {
     axios
@@ -495,7 +457,6 @@ const BlogWall = () => {
 
   let array = [];
   const getRatingView = ({ data, otherActvity }) => {
-    setDetailsLoading(true);
     axios
       .get(`${endpoints.newBlog.studentReviewss}?booking_detail_id=${data}`, {
         headers: {
@@ -513,9 +474,11 @@ const BlogWall = () => {
           array.push(temp);
         });
         setRatingReview(array);
-        setDetailsLoading(false);
       })
-      .catch(() => {
+      .catch((error) => {
+        message.error(error?.message);
+      })
+      .finally(() => {
         setDetailsLoading(false);
       });
   };
@@ -574,17 +537,20 @@ const BlogWall = () => {
     getWhatsAppDetails(null);
   };
   const handleShowBlogDetailsDrawer = (blogData) => {
+    setDetailsLoading(true);
     setShowBlogDetailsDrawer(true);
     setImageData(JSON.parse(blogData?.template?.html_file));
     setBlogDrawerData(blogData);
     getRatingView({ data: blogData?.booking_id, otherActvity: false });
   };
   const handleShowPostDetailsModal = (postData) => {
+    setDetailsLoading(true);
     setSelectedPostData(postData);
     setShowPostDetailsModal(true);
     fetchPostDetails(postData);
   };
   const handleShowOtherActivityModal = (data) => {
+    setDetailsLoading(true);
     if (data?.type == 'Public Speaking') {
       let ratings = JSON.parse(data?.grading?.grade_scheme_markings);
       setPublicSpeakingrating(ratings);
@@ -592,9 +558,13 @@ const BlogWall = () => {
     } else {
       getRatingView({ data: data?.booking_detail?.id, otherActvity: true });
     }
-    setSelectedOtherActivity(data);
-    setShowOtherActivityModal(true);
-    // fetchPostDetails(data);
+    if (data?.type !== 'Public Speaking') {
+      setShowOtherActivityModal(true);
+      setSelectedOtherActivity(data);
+    } else {
+      setShowPublicSpeakingModal(true);
+      setSelectedPublicSpeaking(data);
+    }
   };
   const fetchStudentPublicSpeakingDetails = (params = {}) => {
     axios
@@ -615,7 +585,12 @@ const BlogWall = () => {
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        message.error(error?.message);
+      })
+      .finally(() => {
+        setDetailsLoading(false);
+      });
   };
   const PostContent = () => {
     return (
@@ -624,7 +599,7 @@ const BlogWall = () => {
           {!(user_level == '13' || user_level == '10') && (
             <div className='col-12 px-0'>
               <div className='row align-items-end'>
-                <div className='col-md-2 col-5 px-0 px-md-2'>
+                <div className='col-md-3 col-5 px-0 px-md-2'>
                   <div className='mb-2 text-left'>Grade</div>
                   <Select
                     className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
@@ -634,7 +609,7 @@ const BlogWall = () => {
                     placement='bottomRight'
                     placeholder='Select Grade'
                     suffixIcon={<DownOutlined className='th-black-1' />}
-                    dropdownMatchSelectWidth={false}
+                    dropdownMatchSelectWidth={true}
                     onChange={(e, val) => handleGradeChange(val)}
                     allowClear
                     menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
@@ -642,7 +617,7 @@ const BlogWall = () => {
                     {gradeOptions}
                   </Select>
                 </div>{' '}
-                <div className='col-md-2 col-5 px-0 px-md-2'>
+                <div className='col-md-3 col-5 px-0 px-md-2'>
                   <div className='mb-2 text-left'>Blog List</div>
                   <Select
                     className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
@@ -652,7 +627,7 @@ const BlogWall = () => {
                     placement='bottomRight'
                     placeholder='Select Blog List'
                     suffixIcon={<DownOutlined className='th-black-1' />}
-                    dropdownMatchSelectWidth={false}
+                    dropdownMatchSelectWidth={true}
                     onChange={(e, val) => handleBlogListChange(e, val)}
                     allowClear
                     menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
@@ -669,7 +644,7 @@ const BlogWall = () => {
                     showToday={false}
                     suffixIcon={<DownOutlined />}
                     onChange={(value) => handleDateChange(value)}
-                    className='th-range-picker th-br-4 w-80'
+                    className='th-range-picker th-br-4 th-width-100'
                     separator={'to'}
                     format={'DD/MM/YYYY'}
                   />
@@ -752,7 +727,6 @@ const BlogWall = () => {
                                           height='200px'
                                           objectFit={'cover'}
                                           className='th-br-5'
-                                          // poster={item?.content?.thumbnail_url}
                                         />
                                       </>
                                     ) : (
@@ -969,15 +943,13 @@ const BlogWall = () => {
                                         className='text-truncate th-black-1 th-fw-500 th-width-75'
                                         title={item?.name}
                                       >
-                                        {item?.type == 'Public Speaking'
-                                          ? ` ${data?.first_name} ${data?.last_name}`
-                                          : item?.name}
+                                        {item?.name}
                                       </div>
                                       <div>
                                         <span className='px-2 th-br-8 th-bg-grey'>
                                           <span className='th-12 th-fw-500 th-primary'>
                                             {item?.type == 'Public Speaking'
-                                              ? item?.grade
+                                              ? item?.grade?.name
                                               : item?.section?.name}
                                           </span>
                                         </span>
@@ -1110,127 +1082,137 @@ const BlogWall = () => {
             }
             width={window.innerWidth < 768 ? '90vw' : '70vw'}
           >
-            <div className='row'>
-              <div className='col-7'>
-                <div className='row th-br-8' style={{ outline: '2px solid #d9d9d9' }}>
-                  <div className='col-12 py-1'>
-                    <img
-                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                      width='130'
-                      alt='image'
-                    />
+            <>
+              {detailsLoading ? (
+                <div className='row' style={{ height: '75vh' }}>
+                  <div className='col-12 text-center py-5'>
+                    <Spin size='large' tip='Loading...' />
                   </div>
-                  <div className='col-12 py-2'>
-                    <div
-                      style={{
-                        backgroundImage: `url(${blogDrawerData?.template?.template_path})`,
-                        height: '75vh',
-                        backgroundSize: 'contain',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <div className=''>
+                </div>
+              ) : (
+                <div className='row'>
+                  <div className='col-7'>
+                    <div className='row th-br-8' style={{ outline: '2px solid #d9d9d9' }}>
+                      <div className='col-12 py-1'>
+                        <img
+                          src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                          width='130'
+                          alt='image'
+                        />
+                      </div>
+                      <div className='col-12 py-2'>
                         <div
-                          className='text-center th-white th-br-4 px-1 py-1'
                           style={{
-                            background: `rgba(0,0,0,0.45)`,
-                            maxWidth: `${imageData[0]?.width}px`,
-                            maxHeight: `${imageData[0]?.height}px`,
-                            overflowY: 'auto',
+                            backgroundImage: `url(${blogDrawerData?.template?.template_path})`,
+                            height: '75vh',
+                            backgroundSize: 'contain',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                           }}
                         >
-                          <span className='p-2 th-12'>{blogDrawerData?.content}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='col-5'>
-                <div className='row justify-content-between'>
-                  <div className='col-12 py-2 px-0'>
-                    <div className='d-flex align-items-center'>
-                      <Avatar size={50} icon={<UserOutlined />} />
-                      <div className='d-flex flex-column ml-2'>
-                        <div
-                          className='text-truncate th-black-1 th-fw-500'
-                          title={blogDrawerData?.name}
-                        >
-                          {blogDrawerData?.name}
-                        </div>
-                        <div>
-                          <span className='th-12 th-fw-500 th-black-2'>
-                            {blogDrawerData?.branch?.name}
-                          </span>
-                        </div>
-                        <div>
-                          <span className='th-12 th-fw-500 th-black-2'>
-                            {blogDrawerData?.section?.name}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-12 px-0'>
-                    <div
-                      className='th-bg-grey py-3 px-2 th-br-8'
-                      style={{ outline: '1px solid #d9d9d9' }}
-                    >
-                      <div className=' th-12 th-black-2'>
-                        Title :{' '}
-                        <span className='th-16 th-fw-500 th-black-1'>
-                          {blogDrawerData?.activity_detail?.title}
-                        </span>
-                      </div>
-                      <div
-                        className='mt-2'
-                        style={{ overflowY: 'auto', maxHeight: '25vh' }}
-                      >
-                        <span className='th-12 th-black-2'>Description :&nbsp;</span>
-                        <span className='th-16 th-fw-400 th-black-1'>
-                          {blogDrawerData?.content}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-12 py-2 px-0'>
-                    <div className='py-2 th-fw-600'>Review</div>
-                    <div
-                      className='p-2 th-bg-grey th-br-8'
-                      style={{ outline: '1px solid #d9d9d9' }}
-                    >
-                      {ratingReview?.map((obj, index) => {
-                        return (
-                          <div key={index}>
-                            <div className='row justify-content-between align-items-center'>
-                              {' '}
-                              <div className='th-fw-500'>{obj?.name}</div>
-                              <Rate
-                                disabled
-                                defaultValue={obj?.given_rating}
-                                count={parseInt(obj?.level)}
-                              />
-                            </div>
-                            <div>
-                              <Input
-                                title={obj?.remarks}
-                                disabled
-                                value={obj?.remarks}
-                                className='th-bg-white th-black- w-100 th-br-5'
-                              />
+                          <div className=''>
+                            <div
+                              className='text-center th-white th-br-4 px-1 py-1'
+                              style={{
+                                background: `rgba(0,0,0,0.45)`,
+                                maxWidth: `${imageData[0]?.width}px`,
+                                maxHeight: `${imageData[0]?.height}px`,
+                                overflowY: 'auto',
+                              }}
+                            >
+                              <span className='p-2 th-12'>{blogDrawerData?.content}</span>
                             </div>
                           </div>
-                        );
-                      })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-5'>
+                    <div className='row justify-content-between'>
+                      <div className='col-12 py-2 px-0'>
+                        <div className='d-flex align-items-center'>
+                          <Avatar size={50} icon={<UserOutlined />} />
+                          <div className='d-flex flex-column ml-2'>
+                            <div
+                              className='text-truncate th-black-1 th-fw-500'
+                              title={blogDrawerData?.name}
+                            >
+                              {blogDrawerData?.name}
+                            </div>
+                            <div>
+                              <span className='th-12 th-fw-500 th-black-2'>
+                                {blogDrawerData?.branch?.name}
+                              </span>
+                            </div>
+                            <div>
+                              <span className='th-12 th-fw-500 th-black-2'>
+                                {blogDrawerData?.section?.name}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-12 px-0'>
+                        <div
+                          className='th-bg-grey py-3 px-2 th-br-8'
+                          style={{ outline: '1px solid #d9d9d9' }}
+                        >
+                          <div className=' th-12 th-black-2'>
+                            Title :{' '}
+                            <span className='th-16 th-fw-500 th-black-1'>
+                              {blogDrawerData?.activity_detail?.title}
+                            </span>
+                          </div>
+                          <div
+                            className='mt-2'
+                            style={{ overflowY: 'auto', maxHeight: '25vh' }}
+                          >
+                            <span className='th-12 th-black-2'>Description :&nbsp;</span>
+                            <span className='th-16 th-fw-400 th-black-1'>
+                              {blogDrawerData?.activity_detail?.description}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-12 py-2 px-0'>
+                        <div className='py-2 th-fw-600'>Review</div>
+                        <div
+                          className='p-2 th-bg-grey th-br-8'
+                          style={{ outline: '1px solid #d9d9d9' }}
+                        >
+                          {ratingReview?.map((obj, index) => {
+                            return (
+                              <div key={index}>
+                                <div className='row justify-content-between align-items-center'>
+                                  {' '}
+                                  <div className='th-fw-500'>{obj?.name}</div>
+                                  <Rate
+                                    disabled
+                                    defaultValue={obj?.given_rating}
+                                    count={parseInt(obj?.level)}
+                                  />
+                                </div>
+                                <div>
+                                  <Input
+                                    title={obj?.remarks}
+                                    disabled
+                                    value={obj?.remarks}
+                                    className='th-bg-white th-black- w-100 th-br-5'
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           </Drawer>
         )}
         {showPostDetailsModal && (
@@ -1244,217 +1226,392 @@ const BlogWall = () => {
             onCancel={() => {
               setShowPostDetailsModal(false);
               setCurrentComment(null);
-              handleSearch();
             }}
             width={'80vw'}
             footer={null}
             closeIcon={<CloseOutlined />}
           >
-            <div className='row'>
-              <div className='col-8 carousel-global'>
-                <Carousel
-                  infiniteLoop={true}
-                  showArrows={true}
-                  showThumbs={true}
-                  showStatus={false}
-                  emulateTouch={true}
-                  renderThumbs={customRenderThumb}
-                >
-                  {postModalContentData?.content?.map((item, index) => {
-                    return (
-                      <div className='image'>
-                        {item.file_type === 'image/png' ||
-                        item.file_type === 'image/jpeg' ? (
-                          <img
-                            src={item?.s3_url}
-                            alt={'image'}
-                            thumb={item?.s3_url}
-                            key={index}
-                            width='100%'
-                            loading='lazy'
-                          />
-                        ) : (
-                          <ReactPlayer
-                            url={item?.s3_url}
-                            thumb={item?.s3_url}
-                            key={index}
-                            width='100%'
-                            height='100%'
-                            playIcon={
-                              <Tooltip title='play'>
-                                <Button
-                                  style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    height: '30vh',
-                                    width: '30vw',
-                                  }}
-                                  shape='circle'
-                                  icon={
-                                    <PlayCircleOutlined
-                                      style={{ color: 'white', fontSize: '70px' }}
-                                    />
-                                  }
-                                />
-                              </Tooltip>
-                            }
-                            alt={'video'}
-                            controls={true}
-                          />
-                        )}
-                      </div>
-
-                      //  </div>
-                    );
-                  })}
-                </Carousel>
-              </div>
-              <div className='col-4'>
-                <div className='d-flex flex-column align-items-end'>
-                  <div className='row justify-content-between'>
-                    <div className='col-12 py-2 px-0'>
-                      <div className='d-flex align-items-center'>
-                        <Avatar size={40} icon={<UserOutlined />} />
-                        <div className='d-flex flex-column ml-2'>
-                          <div
-                            className='text-truncate th-black-1 th-fw-500'
-                            title={selectedPostData?.name}
-                          >
-                            {selectedPostData?.name}
-                          </div>
-                          <div>
-                            <span className='th-12 th-fw-500 th-black-2'>
-                              {selectedPostData?.section?.name}
-                            </span>
-                          </div>
-                          <div>
-                            <span className='th-12 th-fw-500 th-black-2'>
-                              {selectedPostData?.branch?.name}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='col-12 px-0'>
-                      <div
-                        className=' py-1 mb-1'
-                        style={{
-                          borderTop: '1px solid #d9d9d9',
-                          borderBottom: '1px solid #d9d9d9',
-                        }}
-                      >
-                        <div
-                          className='mt-2 th-12 th-grey-1'
-                          style={{ overflowY: 'auto', maxHeight: '10vh' }}
-                        >
-                          {selectedPostData?.description}
-                        </div>
-                      </div>
-                      <div
-                        className='py-2'
-                        style={{
-                          borderBottom: '1px solid #d9d9d9',
-                        }}
-                      >
-                        <div className='d-flex justify-content-between'>
-                          <div className='th-16 th-fw-600 th-black-1'>
-                            Comments
-                            {commentsList?.data?.length > 0
-                              ? `(${commentsList?.data?.length})`
-                              : null}
-                          </div>
-                          <div>
-                            {' '}
-                            <span
-                              className='px-3 py-2 th-br-20'
-                              style={{ border: '1px solid #d9d9d9' }}
-                            >
-                              <span className='mr-2 th-12 th-fw-700 th-grey'>
-                                {commentsList?.like_count}
-                              </span>
-                              <span>
-                                <img
-                                  src={commentsList?.is_post_liked ? likedIcon : clapIcon}
-                                  height={20}
-                                  className='th-pointer'
-                                  onClick={() =>
-                                    !commentsList?.is_post_liked
-                                      ? submitComment({ type: 'like' })
-                                      : null
-                                  }
-                                />
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                        <div className='mt-2' style={{ height: 250, overflowY: 'auto' }}>
-                          {commentsList?.data?.length > 0 ? (
-                            commentsList?.data?.map((each) => {
-                              return (
-                                <div className='my-1'>
-                                  <Comment
-                                    author={
-                                      <div className='th-fw-500 th-16'>
-                                        {each?.view_stats?.viewer?.name}
-                                      </div>
-                                    }
-                                    avatar={<Avatar size={40} icon={<UserOutlined />} />}
-                                    content={<p>{each?.comment}</p>}
-                                    datetime={
-                                      <Tooltip
-                                        title={moment(each?.created_on).format(
-                                          'MMM Do,YYYY'
-                                        )}
-                                      >
-                                        <div>
-                                          {moment(each?.created_on).format('MMM Do,YYYY')}
-                                        </div>
-                                      </Tooltip>
-                                    }
-                                  />
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <div>No Comments yet. Be the first one.</div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+            <>
+              {detailsLoading ? (
+                <div className='row'>
+                  <div className='col-12 text-center py-5'>
+                    <Spin size='large' tip='Loading...' />
                   </div>
-                  <div className='row mt-1'>
-                    <div className='col-12 px-0 my-2'>
-                      <Input.TextArea
-                        className='th-br-8'
-                        autoSize={{
-                          minRows: 2,
-                          maxRows: 4,
-                        }}
-                        value={currentComment}
-                        placeholder='write something'
-                        onChange={(e) => setCurrentComment(e.target.value)}
-                      />
-                    </div>
-                    <div className='col-12 px-0 text-right'>
-                      <span
-                        className='th-button-active mt-2 th-width-40 th-br-8 p-1 th-12 text-center th-pointer'
-                        onClick={() => submitComment({ type: 'comment' })}
-                      >
-                        <span>Add Comment </span>
-                        {/* <span className='ml-2'>
+                </div>
+              ) : (
+                <div className='row'>
+                  <div className='col-8 carousel-global'>
+                    <Carousel
+                      infiniteLoop={true}
+                      showArrows={true}
+                      showThumbs={true}
+                      showStatus={false}
+                      emulateTouch={true}
+                      renderThumbs={customRenderThumb}
+                    >
+                      {postModalContentData?.content?.map((item, index) => {
+                        return (
+                          <div className='image'>
+                            {item.file_type === 'image/png' ||
+                            item.file_type === 'image/jpeg' ? (
+                              <img
+                                src={item?.s3_url}
+                                alt={'image'}
+                                thumb={item?.s3_url}
+                                key={index}
+                                width='100%'
+                                loading='lazy'
+                              />
+                            ) : (
+                              <ReactPlayer
+                                url={item?.s3_url}
+                                thumb={item?.s3_url}
+                                key={index}
+                                width='100%'
+                                height='100%'
+                                playIcon={
+                                  <Tooltip title='play'>
+                                    <Button
+                                      style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        height: '30vh',
+                                        width: '30vw',
+                                      }}
+                                      shape='circle'
+                                      icon={
+                                        <PlayCircleOutlined
+                                          style={{ color: 'white', fontSize: '70px' }}
+                                        />
+                                      }
+                                    />
+                                  </Tooltip>
+                                }
+                                alt={'video'}
+                                controls={true}
+                              />
+                            )}
+                          </div>
+
+                          //  </div>
+                        );
+                      })}
+                    </Carousel>
+                  </div>
+                  <div className='col-4'>
+                    <div className='d-flex flex-column align-items-end'>
+                      <div className='row justify-content-between'>
+                        <div className='col-12 py-2 px-0'>
+                          <div className='d-flex align-items-center'>
+                            <Avatar size={40} icon={<UserOutlined />} />
+                            <div className='d-flex flex-column ml-2'>
+                              <div
+                                className='text-truncate th-black-1 th-fw-500'
+                                title={selectedPostData?.name}
+                              >
+                                {selectedPostData?.name}
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedPostData?.section?.name}
+                                </span>
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedPostData?.branch?.name}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-12 px-0'>
+                          <div
+                            className=' py-1 mb-1'
+                            style={{
+                              borderTop: '1px solid #d9d9d9',
+                              borderBottom: '1px solid #d9d9d9',
+                            }}
+                          >
+                            <div
+                              className='mt-2 th-12 th-grey-1'
+                              style={{ overflowY: 'auto', maxHeight: '10vh' }}
+                            >
+                              {selectedPostData?.description}
+                            </div>
+                          </div>
+                          <div
+                            className='py-2'
+                            style={{
+                              borderBottom: '1px solid #d9d9d9',
+                            }}
+                          >
+                            <div className='d-flex justify-content-between'>
+                              <div className='th-16 th-fw-600 th-black-1'>
+                                Comments
+                                {commentsList?.data?.length > 0
+                                  ? `(${commentsList?.data?.length})`
+                                  : null}
+                              </div>
+                              <div>
+                                {' '}
+                                <span
+                                  className='px-3 py-2 th-br-20'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                >
+                                  <span className='mr-2 th-12 th-fw-700 th-grey'>
+                                    {commentsList?.like_count}
+                                  </span>
+                                  <span>
+                                    <img
+                                      src={
+                                        commentsList?.is_post_liked ? likedIcon : clapIcon
+                                      }
+                                      height={20}
+                                      className='th-pointer'
+                                      onClick={() =>
+                                        !commentsList?.is_post_liked
+                                          ? submitComment({ type: 'like' })
+                                          : null
+                                      }
+                                    />
+                                  </span>
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              className='mt-2'
+                              style={{ height: 250, overflowY: 'auto' }}
+                            >
+                              {commentsList?.data?.length > 0 ? (
+                                commentsList?.data?.map((each) => {
+                                  return (
+                                    <div className='my-1'>
+                                      <Comment
+                                        author={
+                                          <div className='th-fw-500 th-16'>
+                                            {each?.view_stats?.viewer?.name}
+                                          </div>
+                                        }
+                                        avatar={
+                                          <Avatar size={40} icon={<UserOutlined />} />
+                                        }
+                                        content={<p>{each?.comment}</p>}
+                                        datetime={
+                                          <Tooltip
+                                            title={moment(each?.created_on).format(
+                                              'MMM Do,YYYY'
+                                            )}
+                                          >
+                                            <div>
+                                              {moment(each?.created_on).format(
+                                                'MMM Do,YYYY'
+                                              )}
+                                            </div>
+                                          </Tooltip>
+                                        }
+                                      />
+                                    </div>
+                                  );
+                                })
+                              ) : (
+                                <div>No Comments yet. Be the first one.</div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='row mt-1'>
+                        <div className='col-12 px-0 my-2'>
+                          <Input.TextArea
+                            className='th-br-8'
+                            autoSize={{
+                              minRows: 2,
+                              maxRows: 4,
+                            }}
+                            value={currentComment}
+                            placeholder='write something'
+                            onChange={(e) => setCurrentComment(e.target.value)}
+                          />
+                        </div>
+                        <div className='col-12 px-0 text-right'>
+                          <span
+                            className='th-button-active mt-2 th-width-40 th-br-8 p-1 th-12 text-center th-pointer'
+                            onClick={() => submitComment({ type: 'comment' })}
+                          >
+                            <span>Add Comment </span>
+                            {/* <span className='ml-2'>
                         <SendOutlined />
                       </span> */}
-                      </span>
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
+          </Modal>
+        )}
+        {showPublicSpeakingModal && (
+          <Modal
+            title={selectedOtherActivity?.type}
+            className='th-upload-modal'
+            centered
+            visible={showPublicSpeakingModal}
+            destroyOnClose={true}
+            onOk={() => {
+              setShowPublicSpeakingModal(false);
+              setChatDetails([]);
+            }}
+            onCancel={() => {
+              setShowPublicSpeakingModal(false);
+              setChatDetails([]);
+            }}
+            width={'80vw'}
+            footer={null}
+            closeIcon={<CloseOutlined />}
+          >
+            <>
+              {detailsLoading ? (
+                <div className='row' style={{ height: '75vh' }}>
+                  <div className='col-12 text-center py-5'>
+                    <Spin size='large' tip='Loading...' />
+                  </div>
+                </div>
+              ) : (
+                <div className='row p-3'>
+                  <div className='col-7 '>
+                    <div className='d-flex align-items-center h-100'>
+                      <video
+                        preload='auto'
+                        controls
+                        src={selectedPublicSpeaking?.asset?.signed_URL}
+                        className='th-br-5'
+                        style={{
+                          height: '500px',
+                          width: '100%',
+                          objectFit: 'fill',
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className='col-5' style={{ height: 600, overflowY: 'auto' }}>
+                    <div className='row justify-content-between'>
+                      <div className='col-12 py-2 px-0'>
+                        <div className='d-flex justify-content-between'>
+                          <div className='d-flex align-items-center'>
+                            <Avatar size={40} icon={<UserOutlined />} />
+                            <div className='d-flex flex-column ml-2'>
+                              <div className=' th-black-1 th-fw-500'>
+                                {selectedPublicSpeaking?.name}
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedPublicSpeaking?.branch?.name}
+                                </span>
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedPublicSpeaking?.grade?.name}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-12 py-2 px-0'>
+                        <>
+                          {selectedPublicSpeaking?.state == 'graded' ? (
+                            <Table
+                              className='th-table'
+                              columns={columns}
+                              loading={loading}
+                              dataSource={publicSpeakingrating}
+                              pagination={false}
+                              rowClassName={(record, index) =>
+                                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                              }
+                              scroll={{ y: '400px' }}
+                            />
+                          ) : (
+                            ''
+                          )}
+                        </>
+                      </div>
+                    </div>
+                    <div className='row mt-2 align-item-center'>
+                      <div className='col-6 px-0'>
+                        <span className='th-18 th-fw-600'>
+                          Comments
+                          {chatDetails?.length > 0 ? `(${chatDetails?.length})` : null}
+                        </span>
+                      </div>
+                      <div className='col-6 text-right'>
+                        <span
+                          className='th-pointer'
+                          onClick={() =>
+                            getWhatsAppDetails({
+                              erp_id: data?.erp,
+                              created_at__date__gte:
+                                studentPubliSpeakingData?.created_at__date__gte,
+                              created_at__date__lte:
+                                studentPubliSpeakingData?.created_at__date__lte,
+                              activity_id: studentPubliSpeakingData?.activity,
+                            })
+                          }
+                        >
+                          <RedoOutlined />
+                        </span>
+                      </div>
+
+                      <div className='row'>
+                        {chatDetails?.length > 0 ? (
+                          <>
+                            {chatDetails?.map((item, index) => {
+                              if (item?.is_reply == true) {
+                                return (
+                                  <Comment
+                                    author={
+                                      <div className='th-fw-500 th-16'>{item?.name}</div>
+                                    }
+                                    avatar={<Avatar size={40} icon={<UserOutlined />} />}
+                                    content={<p>{item?.message}</p>}
+                                    datetime={
+                                      <>
+                                        <div
+                                          title={moment(item?.sent_at).format(
+                                            'MMM Do,YYYY'
+                                          )}
+                                        >
+                                          {moment(item?.sent_at).format('MMM Do,YYYY')}
+                                        </div>
+                                      </>
+                                    }
+                                  />
+                                );
+                              }
+                            })}
+                          </>
+                        ) : (
+                          <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
+                            No Comments Submitted
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           </Modal>
         )}
         {showOtherActivityModal && (
           <Modal
-            title={selectedOtherActivity?.type}
+            title={
+              <div className='d-flex justify-conten-end'>
+                <span>{selectedOtherActivity?.type}</span>
+              </div>
+            }
             className='th-upload-modal'
             centered
             visible={showOtherActivityModal}
@@ -1463,100 +1620,83 @@ const BlogWall = () => {
             onCancel={() => {
               setShowOtherActivityModal(false);
             }}
-            width={'80vw'}
+            width={'60vw'}
             footer={null}
             closeIcon={<CloseOutlined />}
           >
-            <div className='row p-3'>
-              <div className='col-7 '>
-                <div className='d-flex align-items-center h-100'>
-                  {selectedOtherActivity?.type == 'Public Speaking' ? (
-                    <video
-                      preload='auto'
-                      controls
-                      src={selectedOtherActivity?.asset?.signed_URL}
-                      className='th-br-5'
-                      style={{
-                        height: '500px',
-                        width: '100%',
-                        objectFit: 'fill',
-                      }}
-                    />
-                  ) : selectedOtherActivity?.content?.file_type === 'image/png' ||
-                    selectedOtherActivity?.content?.file_type === 'image/jpeg' ? (
-                    <img
-                      src={
-                        selectedOtherActivity?.content?.s3_path
-                          ? selectedOtherActivity?.content?.s3_path
-                          : getActivityIcon(selectedOtherActivity?.type)
-                      }
-                      alt={'image'}
-                      width='100%'
-                      loading='lazy'
-                    />
-                  ) : (
-                    <video
-                      preload='auto'
-                      controls
-                      src={selectedOtherActivity?.content?.s3_path}
-                      className='th-br-5'
-                      style={{
-                        height: '500px',
-                        width: '100%',
-                        objectFit: 'fill',
-                      }}
-                    />
-                  )}
+            <>
+              {detailsLoading ? (
+                <div className='row' style={{ height: '75vh' }}>
+                  <div className='col-12 text-center py-5'>
+                    <Spin size='large' tip='Loading...' />
+                  </div>
                 </div>
-              </div>
-              <div className='col-5' style={{ height: 600, overflowY: 'auto' }}>
-                <div className='row justify-content-between'>
-                  <div className='col-12 py-2 px-0'>
-                    <div className='d-flex align-items-center'>
-                      <Avatar size={40} icon={<UserOutlined />} />
-                      <div className='d-flex flex-column ml-2'>
-                        <div className=' th-black-1 th-fw-500'>
-                          {selectedOtherActivity?.type == 'Public Speaking'
-                            ? selectedOtherActivity?.group?.activity?.name
-                            : selectedOtherActivity?.activity_detail?.title}
-                        </div>
-                        <div>
-                          <span className='th-12 th-fw-500 th-black-2'>
-                            {selectedOtherActivity?.type == 'Public Speaking'
-                              ? selectedOtherActivity?.grade
-                              : selectedOtherActivity?.grade?.name}
-                          </span>
-                        </div>
-                      </div>
+              ) : (
+                <div
+                  className='row p-3'
+                  style={{ maxHeight: '85vh', overflowY: 'scroll' }}
+                >
+                  <div className='col-12'>
+                    <div className='d-flex align-items-center h-100'>
+                      {selectedOtherActivity?.content?.file_type === 'image/png' ||
+                      selectedOtherActivity?.content?.file_type === 'image/jpeg' ? (
+                        <img
+                          src={
+                            selectedOtherActivity?.content?.s3_path
+                              ? selectedOtherActivity?.content?.s3_path
+                              : getActivityIcon(selectedOtherActivity?.type)
+                          }
+                          alt={'image'}
+                          width='100%'
+                          loading='lazy'
+                        />
+                      ) : (
+                        <video
+                          preload='auto'
+                          controls
+                          src={selectedOtherActivity?.content?.s3_path}
+                          className='th-br-5'
+                          style={{
+                            height: '400px',
+                            width: '100%',
+                            objectFit: 'fill',
+                          }}
+                        />
+                      )}
                     </div>
                   </div>
-                  <div className='col-12 py-2 px-0'>
-                    {selectedOtherActivity?.type == 'Public Speaking' ? (
-                      <>
-                        {selectedOtherActivity?.state == 'graded' ? (
-                          <Table
-                            className='th-table'
-                            columns={columns}
-                            loading={loading}
-                            dataSource={
-                              selectedOtherActivity?.type == 'Public Speaking'
-                                ? publicSpeakingrating
-                                : null
-                            }
-                            pagination={false}
-                            rowClassName={(record, index) =>
-                              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                            }
-                            scroll={{ y: '400px' }}
+                  <div className='col-12'>
+                    <div className='row justify-content-between mt-3'>
+                      <div className='col-12 py-2 px-0'>
+                        <div className='d-flex justify-content-between'>
+                          <div className='d-flex align-items-center'>
+                            <Avatar size={40} icon={<UserOutlined />} />
+                            <div className='d-flex flex-column ml-2'>
+                              <div className=' th-black-1 th-fw-500'>
+                                {selectedOtherActivity?.name}
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedOtherActivity?.branch?.name}
+                                </span>
+                              </div>
+                              <div>
+                                <span className='th-12 th-fw-500 th-black-2'>
+                                  {selectedOtherActivity?.grade?.name}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <img
+                            src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                            width='130'
+                            alt='image'
                           />
-                        ) : (
-                          ''
-                        )}
-                      </>
-                    ) : (
-                      <>
+                        </div>
+                      </div>
+                      <div className='col-12 py-2 px-0'>
                         <div
-                          className='th-bg-grey py-3 px-2 th-br-8'
+                          className='th-bg-grey p-3 th-br-8'
                           style={{ outline: '1px solid #d9d9d9' }}
                         >
                           <div className=' th-12 th-black-2'>
@@ -1566,112 +1706,61 @@ const BlogWall = () => {
                             </span>
                           </div>
                           <div
-                            className='mt-2'
+                            className='mt-2 text-justify'
                             style={{ overflowY: 'auto', maxHeight: '25vh' }}
                           >
                             <span className='th-12 th-black-2'>Description :&nbsp;</span>
-                            <span className='th-16 th-fw-400 th-black-1'>
+                            <span className='th-16 th-fw-400 th-black-1 '>
                               {selectedOtherActivity?.activity_detail?.description}
                             </span>
                           </div>
                         </div>
+                        <div className='row align-items-center text-center py-2 th-fw-600'>
+                          <div className='col-6'>Questions</div>
+                          <div className='col-6'>Options</div>
+                        </div>
                         <div
-                          className='p-2 mt-2 th-br-8'
+                          className='p-2 th-br-8'
                           style={{ outline: '1px solid #d9d9d9' }}
                         >
                           {ratingReview?.map((obj, index) => {
                             return (
-                              <div className='row py-1 align-items-center'>
-                                <div className='col-6 pl-1' key={index}>
-                                  {obj?.name}
-                                </div>
-                                <div className='col-6 pr-1'>
-                                  <Input
-                                    disabled
+                              <div
+                                className='row py-1 text-justify text-center'
+                                style={{
+                                  borderBottom:
+                                    index == ratingReview?.length - 1
+                                      ? null
+                                      : '1px solid #d9d9d9',
+                                }}
+                              >
+                                <div className='col-6'>{obj?.name}</div>
+                                <div className='col-6'>
+                                  <div
+                                    className='text-wrap th-bg-grey p-2'
                                     title={
                                       obj?.remarks?.filter(
                                         (item) => item.status == true
                                       )[0]?.name
                                     }
-                                    value={
+                                  >
+                                    {
                                       obj?.remarks?.filter(
                                         (item) => item.status == true
                                       )[0]?.name
                                     }
-                                  />
+                                  </div>
                                 </div>
                               </div>
                             );
                           })}
                         </div>
-                      </>
-                    )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                {selectedOtherActivity?.type == 'Public Speaking' && (
-                  <div className='row mt-2 align-item-center'>
-                    <div className='col-6 px-0'>
-                      <span className='th-18 th-fw-600'>
-                        Comments
-                        {chatDetails?.length > 0 ? `(${chatDetails?.length})` : null}
-                      </span>
-                    </div>
-                    <div className='col-6 text-right'>
-                      <span
-                        className='th-pointer'
-                        onClick={() =>
-                          getWhatsAppDetails({
-                            erp_id: data?.erp,
-                            created_at__date__gte:
-                              studentPubliSpeakingData?.created_at__date__gte,
-                            created_at__date__lte:
-                              studentPubliSpeakingData?.created_at__date__lte,
-                            activity_id: studentPubliSpeakingData?.activity,
-                          })
-                        }
-                      >
-                        <RedoOutlined />
-                      </span>
-                    </div>
-
-                    <div className='row'>
-                      {chatDetails.length > 0 ? (
-                        <>
-                          {chatDetails.map((item, index) => {
-                            if (item?.is_reply == true) {
-                              return (
-                                <Comment
-                                  author={
-                                    <div className='th-fw-500 th-16'>{item?.name}</div>
-                                  }
-                                  avatar={<Avatar size={40} icon={<UserOutlined />} />}
-                                  content={<p>{item?.message}</p>}
-                                  datetime={
-                                    <>
-                                      <div
-                                        title={moment(item?.sent_at).format(
-                                          'MMM Do,YYYY'
-                                        )}
-                                      >
-                                        {moment(item?.sent_at).format('MMM Do,YYYY')}
-                                      </div>
-                                    </>
-                                  }
-                                />
-                              );
-                            }
-                          })}
-                        </>
-                      ) : (
-                        <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
-                          No Comments Submitted
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+              )}
+            </>
           </Modal>
         )}
       </>

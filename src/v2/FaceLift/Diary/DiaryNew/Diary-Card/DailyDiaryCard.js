@@ -675,7 +675,10 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   <div className='col-12 pl-0 th-10'>
                     <div className='th-fw-600 th-black-1'>Title</div>
                   </div>
-                  <div className='col-12 px-0 th-fw-500 th-black-2 text-truncate th-16'>
+                  <div
+                    className='col-12 px-0 th-fw-500 th-black-2 text-truncate th-16'
+                    title={diary?.teacher_report?.homework}
+                  >
                     {diary?.teacher_report?.homework}
                   </div>
                   <div className='row align-items-center'>
@@ -1242,7 +1245,10 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                       <div className='row pt-1'>
                         <div className='col-12 pr-0 th-black-1'>Title</div>
                         <div className='col-12 px-3 '>
-                          <div className='th-bg-white p-1 th-br-6 text-truncate'>
+                          <div
+                            className='th-bg-white p-1 th-br-6 text-truncate'
+                            title={diary?.teacher_report?.homework}
+                          >
                             {diary?.teacher_report?.homework}
                           </div>
                         </div>

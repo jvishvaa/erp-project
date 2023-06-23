@@ -40,8 +40,14 @@ function AttachmentPreviewerUI() {
   const { extension, src = '', name } = (attachments || [])[currentAttachmentIndex] || {};
   const history = useHistory()
   const [webviewer, setWebViewer] = useState(false)
-
-  
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const user_level = userData?.user_level;
+  const levelMatch = user_level == 11 || user_level == 10 || user_level == 8 ? true : false ;
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' && levelMatch ||
+  window.location.host.split('.')[0] === 'localhost:3000' && levelMatch || window.location.host.split('.')[0] === 'qa' && levelMatch
+    ? true
+    : false;
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
@@ -157,7 +163,8 @@ function AttachmentPreviewerUI() {
                       src={pptFileSrc}
                       className='attachment-viewer-frame-preview-iframe'
                     />
-                    <div className='overlayDwnld' style={{ height: '22px' , width: '94px' , bottom: '13px' , position: 'absolute' , background: '#444444' , right: '18px' }} ></div>
+                    {isOrchids ? '' : 
+                    <div className='overlayDwnld' style={{ height: '22px' , width: '94px' , bottom: '13px' , position: 'absolute' , background: '#444444' , right: '18px' }} ></div> }
                   </>
                 ) : (
                   // <PdfjsPreview url={src} />

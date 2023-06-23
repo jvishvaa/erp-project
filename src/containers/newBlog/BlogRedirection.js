@@ -7,7 +7,7 @@ import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
 import { Breadcrumb, Button, message, Spin } from 'antd';
-import {RightCircleOutlined} from "@ant-design/icons";
+import { RightCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { getActivityIcon } from 'v2/generalActivityFunction';
@@ -39,7 +39,6 @@ const BlogWallRedirect = () => {
   }, []);
 
   const getActivitySession = () => {
-    setLoading(true);
     axios
       .post(
         `${endpoints.newBlog.activitySessionLogin}`,
@@ -56,16 +55,13 @@ const BlogWallRedirect = () => {
           'ActivityManagementSession',
           JSON.stringify(response?.data?.result)
         );
-
-        setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        message.error(err?.message);
       });
   };
 
   const ActvityLocalStorage = () => {
-    setLoading(true);
     axios
       .post(
         `${endpoints.newBlog.activityWebLogin}`,
@@ -82,9 +78,10 @@ const BlogWallRedirect = () => {
           'ActivityManagement',
           JSON.stringify(response?.data?.result)
         );
-        setLoading(false);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        message.error(err?.message);
+      });
   };
 
   const fetchActivityTypeList = () => {
@@ -96,6 +93,7 @@ const BlogWallRedirect = () => {
         },
       })
       .then((result) => {
+        setActivityData(result?.data?.result);
         const physicalData = result?.data?.result.filter(
           (item) => item?.name == 'Physical Activity'
         );
@@ -112,7 +110,6 @@ const BlogWallRedirect = () => {
           (item) => item?.name == 'Public Speaking'
         );
         setPublicSubId(publicActivityData[0]?.id);
-        setActivityData(result?.data?.result);
         const musicActivityData = result?.data?.result.filter(
           (item) => item?.name.toLowerCase() === 'music'
         );
@@ -125,9 +122,11 @@ const BlogWallRedirect = () => {
           (item) => item?.name.toLowerCase() === 'theatre'
         );
         setTheaterSubId(theaterActivityData[0]);
-        setLoading(false);
       })
       .catch((err) => {
+        message.err(err.message);
+      })
+      .finally(() => {
         setLoading(false);
       });
     // }
@@ -266,8 +265,8 @@ const BlogWallRedirect = () => {
                                 </span>
                               </div>
                             </div>
-                            <div className='row align-item-center'>
-                              <div className='col-sm-6 pl-0'>
+                            <div className='row align-items-center'>
+                              <div className='col-sm-6 pl-0 pr-1'>
                                 <div className='th-12 th-fw-300 text-capitalize th-black-1'>
                                   Last Updated
                                 </div>
@@ -275,14 +274,13 @@ const BlogWallRedirect = () => {
                                   {moment(each?.last_update).format('ll')}
                                 </div>
                               </div>
-                              <div className='col-sm-6 text-sm-right px-0 px-sm-2 pt-1 pt-sm-0'>
-                                <Button
-                                  className='th-button-active th-br-6 text-truncate th-pointer'
+                              <div className='col-sm-6  px-0 pt-1 pt-sm-0'>
+                                <div
+                                  className='th-button-active th-br-6 text-truncate th-pointer text-center p-1'
                                   onClick={() => handleExplore(each)}
-                                  icon={<RightCircleOutlined />}
                                 >
-                                  Explore
-                                </Button>
+                                  <RightCircleOutlined /> Explore
+                                </div>
                               </div>
                             </div>
                           </div>

@@ -67,7 +67,9 @@ const VisualActivityReview = () => {
   const history = useHistory();
   const [value, setValue] = React.useState(0);
   const localActivityData = JSON.parse(localStorage.getItem('ActivityData')) || {};
-  const subLocalActivityData = localStorage.getItem('VisualActivityId') ? JSON.parse(localStorage.getItem('VisualActivityId')) : "";
+  const subLocalActivityData = localStorage.getItem('VisualActivityId')
+    ? JSON.parse(localStorage.getItem('VisualActivityId'))
+    : '';
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -103,7 +105,9 @@ const VisualActivityReview = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
 
-  const selectedBranchGlobal = useSelector((state) => state.commonFilterReducer?.selectedBranch)
+  const selectedBranchGlobal = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [subjectId, setSubjectId] = useState();
   const [subjectName, setSubjectName] = useState();
 
@@ -141,10 +145,9 @@ const VisualActivityReview = () => {
     // setBranchList(transformedData);
   };
 
-
-  useEffect(() =>{
-    fetchGrades()
-  },[])
+  useEffect(() => {
+    fetchGrades();
+  }, []);
 
   const fetchGrades = () => {
     setSelectedBranch([]);
@@ -179,11 +182,11 @@ const VisualActivityReview = () => {
   const goSearch = () => {
     setLoading(true);
     if (gradeId == undefined) {
-      message.error('Please Select Grade ')
+      message.error('Please Select Grade ');
       setLoading(false);
       return;
     } else if (subjectId == undefined) {
-      message.error('Please Select Section')
+      message.error('Please Select Section');
       setLoading(false);
       return;
     } else {
@@ -217,12 +220,17 @@ const VisualActivityReview = () => {
   const handleGrade = (item) => {
     formRef.current.setFieldsValue({
       subject: null,
-      // board: null,
     });
+    setGradeId();
+    setGradeName();
     setFlag(false);
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
+    } else {
+      setSubjectData([]);
+      setSubjectId();
+      setSubjectName();
     }
   };
 
@@ -307,6 +315,9 @@ const VisualActivityReview = () => {
     if (item) {
       setSubjectId(item.value);
       setSubjectName(item?.mappingId);
+    } else {
+      setSubjectId();
+      setSubjectName();
     }
   };
 
@@ -346,7 +357,7 @@ const VisualActivityReview = () => {
                   onClick={() => history.goBack()}
                   className='th-black-1 th-16'
                 >
-                    {localActivityData?.name}
+                  {localActivityData?.name}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href='' className='th-grey th-16'>
                   {subLocalActivityData?.title}
@@ -422,6 +433,7 @@ const VisualActivityReview = () => {
                         className='th-button-active th-br-6 text-truncate th-pointer'
                         icon={<SearchOutlined />}
                         onClick={goSearch}
+                        loading={flag}
                       >
                         Search
                       </ButtonAnt>
