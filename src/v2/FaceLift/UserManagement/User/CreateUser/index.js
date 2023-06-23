@@ -87,7 +87,8 @@ const CreateUser = () => {
       config_key: 'subject_limit',
     });
     getRoleApi();
-    fetchBranches(module);
+    if(!params?.id){
+      fetchBranches(module);}
   }, []);
   useEffect(() => {
 if(moduleId){
@@ -354,15 +355,17 @@ if(moduleId){
         var gradeObj = transformedSchoolDetails?.grade?.pop();
         var sectionObj = transformedSchoolDetails?.section?.pop();
         var subjectObj = transformedSchoolDetails?.subjects?.pop();
+        var academicYearObj = transformedSchoolDetails?.academic_year?.pop();
         var schoolDetails = {
           user_level: transformedSchoolDetails?.user_level,
           designation: transformedSchoolDetails?.designation?.id,
-          academic_year: transformedSchoolDetails?.academic_year?.pop()[0]?.session_year,
+          academic_year: academicYearObj[0]?.session_year,
           branch: transformedUser?.branch?.pop()?.map((e) => e.id),
           grade: gradeObj?.map((e) => e.grade_name),
           section: sectionObj?.map((e) => e.section_name),
           subjects: subjectObj?.map((e) => e.item_id),
         };
+        let editYear = academicYearObj[0]?.id
         setSectionMappingId(sectionObj?.map((e) => e?.item_id));
         var studentInformation = {
           first_name: transformedUser?.first_name,
@@ -391,16 +394,19 @@ if(moduleId){
         setSelectedSubjects(subjectObj?.map((e) => e?.id));
         setSingleParent(transformedUser?.single_parent ? true : false);
         fetchDesignation(schoolDetails?.user_level);
-        fetchGrades(schoolDetails?.branch, null);
+        fetchBranches(moduleId,editYear);
+        fetchGrades(schoolDetails?.branch, null,editYear);
         fetchSections(
           gradeObj?.map((e) => e.id),
           null,
-          schoolDetails?.branch
+          schoolDetails?.branch,
+          editYear
         );
         fetchSubjects(
           sectionObj?.map((e) => e.id),
           schoolDetails?.branch,
-          gradeObj?.map((e) => e.id)
+          gradeObj?.map((e) => e.id),
+          editYear
         );
         setSchoolFormValues(schoolDetails);
         setStudentFormValues(studentInformation);
@@ -458,11 +464,11 @@ if(moduleId){
       });
   };
 
-  const fetchBranches = (module) => {
+  const fetchBranches = (module,editYear) => {
     if (selectedYear) {
       axiosInstance
         .get(
-          `${endpoints.academics.branches}?session_year=${selectedYear?.id}&module_id=${module}`
+          `${endpoints.academics.branches}?session_year=${params?.id?editYear:selectedYear?.id}&module_id=${module}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
@@ -493,14 +499,14 @@ if(moduleId){
     }
   };
 
-  const fetchGrades = (branches, branch_code) => {
+  const fetchGrades = (branches, branch_code,editYear) => {
     if (branches?.length > 0) {
       setBranchCode(branch_code);
       setSelectedBranch(branches);
       axiosInstance
         .get(
           `${endpoints.academics.grades}?session_year=${
-            selectedYear?.id
+            params?.id?editYear: selectedYear?.id
           }&branch_id=${branches?.toString()}&module_id=${moduleId}`
         )
         .then((response) => {
@@ -533,12 +539,12 @@ if(moduleId){
     }
   };
 
-  const fetchSections = (grades, grade_id, editBranch) => {
+  const fetchSections = (grades, grade_id, editBranch,editYear) => {
     if (grades?.length > 0) {
       setSelectedGrade(grades);
       axiosInstance
         .get(
-          `${endpoints.academics.sections}?session_year=${selectedYear?.id}&branch_id=${
+          `${endpoints.academics.sections}?session_year=${params?.id?editYear: selectedYear?.id}&branch_id=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade_id=${grades?.toString()}&module_id=${moduleId}`
         )
@@ -573,12 +579,12 @@ if(moduleId){
     }
   };
 
-  const fetchSubjects = (sections, editBranch, editGrade) => {
+  const fetchSubjects = (sections, editBranch, editGrade,editYear) => {
     if (sections?.length > 0) {
       setSelectedSections(sections);
       axiosInstance
         .get(
-          `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${
+          `${endpoints.academics.subjects}?session_year=${params?.id?editYear: selectedYear?.id}&branch=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade=${
             editGrade ? editGrade?.toString() : selectedGrade?.toString()

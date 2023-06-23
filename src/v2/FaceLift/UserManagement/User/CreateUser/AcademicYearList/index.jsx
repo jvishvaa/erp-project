@@ -28,7 +28,7 @@ const AcademicYearList = ({
   is_superuser,
   editId,
   userLevel,
-  isOrchids
+  isOrchids,
 }) => {
   const acadForm = useRef();
   const [moduleId, setModuleId] = useState('');
@@ -77,7 +77,7 @@ const AcademicYearList = ({
         section: currentObj?.section,
         subjects: currentObj?.subjects,
       });
-      fetchBranches(currentObj?.academic_year);
+      fetchBranches(currentObj?.academic_year, module);
       fetchGrades(currentObj?.branch, null, module, currentObj?.academic_year);
       fetchSections(
         currentObj?.editGrade,
@@ -110,7 +110,7 @@ const AcademicYearList = ({
       })
       .catch(() => {});
   };
-  const fetchBranches = (session_year) => {
+  const fetchBranches = (session_year, module) => {
     setSelectedYear(session_year);
     axiosInstance
       .get(
@@ -336,7 +336,7 @@ const AcademicYearList = ({
                 maxTagCount={3}
                 allowClear
                 value={currentObj?.branch}
-                disabled={currentObj?.isEdit && userLevel===13 && isOrchids}
+                disabled={currentObj?.isEdit && userLevel === 13 && isOrchids}
                 onChange={(e, obj) => {
                   if (e.includes('all')) {
                     let values = branches?.map((e) => e?.id);
@@ -390,7 +390,7 @@ const AcademicYearList = ({
                 maxTagCount={3}
                 allowClear
                 value={currentObj?.grade}
-                disabled={currentObj?.isEdit && userLevel===13 && isOrchids}
+                disabled={currentObj?.isEdit && userLevel === 13 && isOrchids}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {
                   if (e.includes('all')) {
