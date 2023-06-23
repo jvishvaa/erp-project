@@ -78,7 +78,8 @@ const AssignUserRole = () => {
         selectedRole,
         selectedAcadBranch?.branch?.id,
         selectedGrade,
-        selectedSection
+        selectedSection,
+        'default'
       );
     }
 
@@ -230,7 +231,8 @@ const AssignUserRole = () => {
     selectedRole,
     selectedBranch,
     selectedGrade,
-    selectedSection
+    selectedSection,
+    calltype
   ) => {
     let userRoleParams = selectedRole || '';
     let branchParams = selectedBranch || '';
@@ -238,17 +240,17 @@ const AssignUserRole = () => {
     let sectionParams = selectedSection.length > 0 ? selectedSection : '';
     let searchParams = searchedData || '';
     let sessionyearparams = selectedYear ? selectedYear?.id : '';
-    if (
-      selectedRole == '' &&
-      searchedData == '' &&
-      selectedBranch == '' &&
-      selectedGrade == '' &&
-      selectedSection == ''
-    ) {
-      message.error('Please select atleast one filter to view data');
-      return;
+    if (calltype !== 'default') {
+      if (
+        selectedRole == '' &&
+        searchedData == '' &&
+        selectedGrade == '' &&
+        selectedSection == ''
+      ) {
+        message.error('Please select atleast one filter to view data');
+        return;
+      }
     }
-
     let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}${
       sessionyearparams ? `&session_year=${selectedYear?.id}` : ''
     }${userRoleParams ? `&role=${selectedRole}` : ''}${
@@ -403,7 +405,7 @@ const AssignUserRole = () => {
     setSelectedSection('');
     setSelectedUsers([]);
     setShowFilter(true);
-    filterData(1, '', '', selectedAcadBranch?.branch?.id, '', '');
+    filterData(1, '', '', selectedAcadBranch?.branch?.id, '', '', 'default');
     formRef.current.resetFields();
   };
 
@@ -455,7 +457,8 @@ const AssignUserRole = () => {
             selectedRole,
             selectedAcadBranch?.branch?.id,
             selectedGrade,
-            selectedSection
+            selectedSection,
+            'default'
           );
           formRef.current.setFieldsValue({
             assignrole: null,
@@ -714,7 +717,8 @@ const AssignUserRole = () => {
                               selectedRole,
                               selectedAcadBranch?.branch?.id,
                               selectedGrade,
-                              selectedSection
+                              selectedSection,
+                              'default'
                             );
                           }}
                           className='text-center'
