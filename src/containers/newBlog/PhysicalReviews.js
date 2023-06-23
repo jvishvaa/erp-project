@@ -568,7 +568,7 @@ const PhysicalReviewed = (props) => {
                     <th style={{ textAlign: 'center' }}> Rounds </th>
                     {tableHeader?.map((item, i) => (
                       <th style={{ padding: '5px' }}>
-                        {<div className='text-justify'>{item?.name}</div>}
+                        {<div className='text-justify text-break'>{item?.name}</div>}
                       </th>
                     ))}
                   </tr>

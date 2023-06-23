@@ -1172,7 +1172,7 @@ const BlogWall = () => {
                           >
                             <span className='th-12 th-black-2'>Description :&nbsp;</span>
                             <span className='th-16 th-fw-400 th-black-1'>
-                              {blogDrawerData?.content}
+                              {blogDrawerData?.activity_detail?.description}
                             </span>
                           </div>
                         </div>

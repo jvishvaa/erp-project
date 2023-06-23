@@ -105,6 +105,12 @@ const SchoolInformation = ({
     handleNext();
     setLoading(false);
   };
+  const isOrchids =
+    (window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa' ||  window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
+    ? true
+    : 
+    false);
    return (
     <React.Fragment>
       <div
@@ -202,6 +208,7 @@ const SchoolInformation = ({
                 <Select
                   maxTagCount={3}
                   allowClear
+                  disabled={editId && userLevel===13 && isOrchids}
                   getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, obj) => {
                     if (e.includes('all')) {
@@ -257,6 +264,7 @@ const SchoolInformation = ({
                   maxTagCount={3}
                   allowClear
                   getPopupContainer={(trigger) => trigger.parentNode}
+                  disabled={editId && userLevel===13 && isOrchids}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
                       let values = grades?.map((e) => e?.grade_name);
@@ -414,6 +422,9 @@ const SchoolInformation = ({
                 roleConfig={roleConfig}
                 user_level={user_level}
                 is_superuser={is_superuser}
+                editId={editId}
+                userLevel={userLevel}
+                isOrchids={isOrchids}
               />
             ))}
             <div className='d-flex justify-content-end align-items-center my-4 '>

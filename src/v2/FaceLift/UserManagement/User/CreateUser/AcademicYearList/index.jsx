@@ -17,6 +17,7 @@ import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
 const { Option } = Select;
+
 const AcademicYearList = ({
   multipleAcademicYear,
   setMultipleAcademicYear,
@@ -25,6 +26,9 @@ const AcademicYearList = ({
   roleConfig,
   user_level,
   is_superuser,
+  editId,
+  userLevel,
+  isOrchids
 }) => {
   const acadForm = useRef();
   const [moduleId, setModuleId] = useState('');
@@ -332,6 +336,7 @@ const AcademicYearList = ({
                 maxTagCount={3}
                 allowClear
                 value={currentObj?.branch}
+                disabled={currentObj?.isEdit && userLevel===13 && isOrchids}
                 onChange={(e, obj) => {
                   if (e.includes('all')) {
                     let values = branches?.map((e) => e?.id);
@@ -385,6 +390,7 @@ const AcademicYearList = ({
                 maxTagCount={3}
                 allowClear
                 value={currentObj?.grade}
+                disabled={currentObj?.isEdit && userLevel===13 && isOrchids}
                 getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {
                   if (e.includes('all')) {

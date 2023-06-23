@@ -157,6 +157,7 @@ const AssignUserLevel = () => {
     setSearchedData('');
     setShowFilter(true);
     setUserData([]);
+    setSelectedUsers([]);
     formRef.current.resetFields();
     filterData(1, '', '', 'default');
   };
@@ -339,7 +340,7 @@ const AssignUserLevel = () => {
                 )}
               </Form>
 
-              <div className='row mt-4'>
+              <div className='row mt-2'>
                 {showFilterPage ? (
                   <div className='col-12'>
                     <Result
