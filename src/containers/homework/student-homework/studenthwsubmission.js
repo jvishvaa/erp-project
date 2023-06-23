@@ -459,8 +459,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.mp4') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.doc') > 0
+        fil.name.toLowerCase().lastIndexOf('.mp4') > 0
+        // fil.name.toLowerCase().lastIndexOf('.doc') > 0
         // fil.name.toLowerCase().lastIndexOf('.docx') > 0
       ) {
         setUploadLoading(true);
@@ -1433,7 +1433,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   </div>
                   <small className={classes.acceptedfiles}>
                     {' '}
-                    Accepted files: jpeg,jpg,mp3,mp4,pdf,png,doc,docx
+                    Accepted files: jpeg,jpg,mp3,mp4,pdf,png
                   </small>
                 </>
                 <div className='bulk_upload_attachments'>
