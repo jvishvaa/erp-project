@@ -884,7 +884,7 @@ const User = () => {
                               <SearchOutlined className='site-form-item-icon th-grey' />
                             }
                             allowClear
-                            onChange={(e) => onChangeSearch(pageNo, e.target.value)}
+                            onChange={(e) => onChangeSearch(1, e.target.value)}
                           />
                         </Form.Item>
                       </Form>

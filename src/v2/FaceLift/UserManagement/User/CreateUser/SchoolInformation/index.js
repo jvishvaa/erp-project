@@ -8,6 +8,7 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Radio,
   Row,
   Select,
@@ -15,6 +16,7 @@ import {
 import { PlusOutlined, UserOutlined } from '@ant-design/icons';
 import TextArea from 'antd/lib/input/TextArea';
 import AcademicYearList from '../AcademicYearList';
+import { useParams } from 'react-router-dom';
 const SchoolInformation = ({
   roles,
   designations,
@@ -44,24 +46,22 @@ const SchoolInformation = ({
   setSubjects,
   maxSubjectSelection,
   roleConfig,
+  editSessionYear,
 }) => {
   const schoolForm = useRef();
   const [loading, setLoading] = useState(false);
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const is_superuser = userData?.is_superuser;
   const user_level = userData?.user_level;
+  const params = useParams();
   useEffect(() => {
     if (schoolFormValues && Object.keys(schoolFormValues).length > 0) {
       schoolForm.current.setFieldsValue(schoolFormValues);
-      if (!schoolFormValues.academic_year) {
-        schoolForm.current.setFieldsValue({
-          academic_year: selectedYear?.session_year,
-        });
-      }
+    } else {
+      schoolForm.current.setFieldsValue({
+        academic_year: selectedYear?.session_year,
+      });
     }
-    schoolForm.current.setFieldsValue({
-      academic_year: selectedYear?.session_year,
-    });
   }, [schoolFormValues]);
 
   const roleOption = roles?.map((each) => (
@@ -100,18 +100,55 @@ const SchoolInformation = ({
     </Select.Option>
   ));
   const handleSubmit = (formValues) => {
+    if (editId) {
+      let validateMultipeAcadFields = multipleAcademicYear?.filter(
+        (each) =>
+          !each?.academic_year ||
+          each?.branch?.length == 0 ||
+          each?.grade?.length == 0 ||
+          each?.section?.length == 0 ||
+          each?.subjects?.length == 0
+      );
+      if (validateMultipeAcadFields?.length > 0) {
+        if (!validateMultipeAcadFields[0]?.academic_year) {
+          message.error(
+            'Academic Year, Branch, Grade, Section and Subject are required fields!'
+          );
+          return;
+        }
+        if (validateMultipeAcadFields[0]?.branch?.length < 1) {
+          message.error('Branch,Grade, Section and Subject are a required field!');
+          return;
+        }
+        if (validateMultipeAcadFields[0]?.grade?.length < 1) {
+          message.error('Grade,Section and Subject are  a required field!');
+          return;
+        }
+        if (validateMultipeAcadFields[0]?.section?.length < 1) {
+          message.error('Section and Subject are  a required field!');
+          return;
+        }
+        if (validateMultipeAcadFields[0]?.subjects?.length < 1) {
+          message.error('Subject is a required field!');
+          return;
+        }
+      }
+    }
     setLoading(true);
     setSchoolFormValues(formValues);
     handleNext();
     setLoading(false);
   };
   const isOrchids =
-    (window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa' ||  window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
-    ? true
-    : 
-    false);
-   return (
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'mcollege' ||
+    window.location.host.split('.')[0] === 'aolschool' ||
+    window.location.host.split('.')[0] === 'dps' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
+      ? true
+      : false;
+  return (
     <React.Fragment>
       <div
         className='px-2'
@@ -137,7 +174,7 @@ const SchoolInformation = ({
               >
                 <Select
                   onChange={(e) => {
-                    fetchDesignation(e);
+                    fetchDesignation({ user_level: e });
                     setUserLevel(e);
                     schoolForm.current.resetFields(['designation']);
                   }}
@@ -188,7 +225,7 @@ const SchoolInformation = ({
               <Form.Item name={'academic_year'} label='Academic Year'>
                 <Input
                   disabled
-                  value={selectedYear?.session_year}
+                  // value={params?.id ? schoolFormValues?.academic_year:selectedYear?.session_year}
                   placeholder='Academic Year'
                   className='w-100'
                 />
@@ -208,7 +245,12 @@ const SchoolInformation = ({
                 <Select
                   maxTagCount={3}
                   allowClear
-                  disabled={editId && userLevel===13 && isOrchids}
+                  disabled={
+                    editId &&
+                    isOrchids &&
+                    !(is_superuser || user_level === 1) &&
+                    userLevel === 13
+                  }
                   getPopupContainer={(trigger) => trigger.parentNode}
                   onChange={(e, obj) => {
                     if (e.includes('all')) {
@@ -217,10 +259,10 @@ const SchoolInformation = ({
                         branch: values,
                       });
                       let branch_code = branches?.map((i) => i.branch_code);
-                      fetchGrades(values, branch_code);
+                      fetchGrades(values, branch_code, editSessionYear);
                     } else {
                       let branch_code = obj?.map((i) => i.code);
-                      fetchGrades(e, branch_code);
+                      fetchGrades(e, branch_code, editSessionYear);
                     }
 
                     schoolForm.current.resetFields(['grade', 'section', 'subjects']);
@@ -264,16 +306,31 @@ const SchoolInformation = ({
                   maxTagCount={3}
                   allowClear
                   getPopupContainer={(trigger) => trigger.parentNode}
-                  disabled={editId && userLevel===13 && isOrchids}
+                  disabled={
+                    editId &&
+                    isOrchids &&
+                    !(is_superuser || user_level === 1) &&
+                    userLevel === 13
+                  }
                   onChange={(e, value) => {
                     if (e.includes('all')) {
                       let values = grades?.map((e) => e?.grade_name);
                       schoolForm.current.setFieldsValue({
                         grade: values,
                       });
-                      fetchSections(grades?.map((e) => e?.id));
+                      fetchSections(
+                        grades?.map((e) => e?.id),
+                        null,
+                        null,
+                        editSessionYear
+                      );
                     } else {
-                      fetchSections(value?.map((e) => e.id));
+                      fetchSections(
+                        value?.map((e) => e.id),
+                        null,
+                        null,
+                        editSessionYear
+                      );
                     }
                     schoolForm.current.resetFields(['section', 'subjects']);
 
@@ -320,11 +377,21 @@ const SchoolInformation = ({
                       schoolForm.current.setFieldsValue({
                         section: values,
                       });
-                      fetchSubjects(sections?.map((e) => e?.id));
+                      fetchSubjects(
+                        sections?.map((e) => e?.id),
+                        null,
+                        null,
+                        editSessionYear
+                      );
                       setSectionMappingId(sections?.map((e) => e?.item_id));
                     } else {
                       setSectionMappingId(value?.map((e) => e?.mapping_id));
-                      fetchSubjects(value?.map((e) => e.id));
+                      fetchSubjects(
+                        value?.map((e) => e.id),
+                        null,
+                        null,
+                        editSessionYear
+                      );
                     }
                     schoolForm.current.resetFields(['subjects']);
                     setSubjects([]);
