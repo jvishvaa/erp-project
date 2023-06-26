@@ -283,9 +283,31 @@ const AcademicYearList = ({
     }
     setMultipleAcademicYear([...newData]);
   };
+  const onChangeGrade = (value,mappinIds) => {
+    let newData = multipleAcademicYear;
+    for (let i = 0; i < newData.length; i++) {
+      if (newData[i].id === currentObj.id) {
+        newData[i]['grade'] = value;
+        newData[i]['editGrade'] = mappinIds;
+      }
+    }
+    setMultipleAcademicYear([...newData]);
+  };
+
+  const onChangeSection = (value,mappinIds) => {
+    let newData = multipleAcademicYear;
+    for (let i = 0; i < newData.length; i++) {
+      if (newData[i].id === currentObj.id) {
+        newData[i]['section'] = value;
+        newData[i]['editSection'] = mappinIds;
+      }
+    }
+    setMultipleAcademicYear([...newData]);
+  };
   const handleDelete = () => {
     setMultipleAcademicYear(multipleAcademicYear?.filter((e) => e.id !== currentObj?.id));
   };
+  console.log(multipleAcademicYear,'multipleAcademicYear')
   return (
     <React.Fragment>
       <Form ref={acadForm} layout='vertical'>
@@ -296,7 +318,7 @@ const AcademicYearList = ({
               <Select
                 disabled={currentObj?.isEdit}
                 onChange={(e, obj) => {
-                  fetchBranches(e);
+                  fetchBranches(e,moduleId);
                   acadForm.current.resetFields([
                     'branch',
                     'grade',
@@ -403,7 +425,7 @@ const AcademicYearList = ({
                     fetchSections(value?.map((e) => e.id));
                   }
                   acadForm.current.resetFields(['section', 'subjects']);
-                  // onChange(e, 'grade');
+                  onChangeGrade(e,value?.map((e) => e.id));
                   setSections([]);
                   setSubjects([]);
                 }}
@@ -447,10 +469,10 @@ const AcademicYearList = ({
                       section: values,
                     });
                     fetchSubjects(sections?.map((e) => e?.id));
-                    onChange(values, 'section');
+                    onChangeSection(values, value?.map((e) => e.id));
                   } else {
                     fetchSubjects(value?.map((e) => e.id));
-                    onChange(e, 'section');
+                    onChangeSection(e, value?.map((e) => e.id));
                   }
                   acadForm.current.resetFields(['subjects']);
                   setSubjects([]);
@@ -533,7 +555,7 @@ const AcademicYearList = ({
               </Select>
             </Form.Item>
           </Col>
-          {!currentObj?.isEdit && (
+          {userLevel !== 13  && !isOrchids && (
             <Col md={4}>
               <Form.Item label=' '>
                 <Popconfirm

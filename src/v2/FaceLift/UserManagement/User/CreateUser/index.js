@@ -50,6 +50,7 @@ const CreateUser = () => {
   const [loading, setLoading] = useState(false);
   const [roleConfig, setRoleConfig] = useState([]);
   const [maxSubjectSelection, setMaxSubjectSelection] = useState(null);
+  const [editSessionYear,setEditSessionYear]= useState(null)
   const [siblings, setSiblings] = useState([
     {
       id: Math.random(),
@@ -87,23 +88,27 @@ const CreateUser = () => {
       config_key: 'subject_limit',
     });
     getRoleApi();
-    if(!params?.id){
-      fetchBranches(module);}
+    if (!params?.id) {
+      fetchBranches({
+        module_id: module,
+        session_year: selectedYear?.id,
+      });
+    }
   }, []);
   useEffect(() => {
-if(moduleId){
-  if (params?.id) {
-    setEditId(params?.id);
-    fetchUserData(
-      {
-        erp_user_id: params?.id,
-      },
-      moduleId
-    );
-  }
-}
-  }, [moduleId])
-  
+    if (moduleId) {
+      if (params?.id) {
+        setEditId(params?.id);
+        fetchUserData(
+          {
+            erp_user_id: params?.id,
+          },
+          moduleId
+        );
+      }
+    }
+  }, [moduleId]);
+
   const fetchRoleConfig = (params = {}) => {
     setLoading(true);
     axiosInstance
@@ -365,7 +370,8 @@ if(moduleId){
           section: sectionObj?.map((e) => e.section_name),
           subjects: subjectObj?.map((e) => e.item_id),
         };
-        let editYear = academicYearObj[0]?.id
+        let editYear = academicYearObj[0]?.id;
+        setEditSessionYear(editYear)
         setSectionMappingId(sectionObj?.map((e) => e?.item_id));
         var studentInformation = {
           first_name: transformedUser?.first_name,
@@ -393,9 +399,12 @@ if(moduleId){
         setGuardian(studentInformation?.single_parent);
         setSelectedSubjects(subjectObj?.map((e) => e?.id));
         setSingleParent(transformedUser?.single_parent ? true : false);
-        fetchDesignation(schoolDetails?.user_level);
-        fetchBranches(moduleId,editYear);
-        fetchGrades(schoolDetails?.branch, null,editYear);
+        fetchDesignation({user_level:schoolDetails?.user_level});
+        fetchBranches({
+          module_id: moduleId,
+          session_year: editYear,
+        });
+        fetchGrades(schoolDetails?.branch, null, editYear);
         fetchSections(
           gradeObj?.map((e) => e.id),
           null,
@@ -449,9 +458,10 @@ if(moduleId){
       });
   };
 
-  const fetchDesignation = (id) => {
+  const fetchDesignation = (params={}) => {
     axios
-      .get(`${endpoints.userManagement.userDesignation}?user_level=${id}`, {
+      .get(`${endpoints.userManagement.userDesignation}`, {
+        params:{...params},
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -464,12 +474,10 @@ if(moduleId){
       });
   };
 
-  const fetchBranches = (module,editYear) => {
+  const fetchBranches = (params = {}) => {
     if (selectedYear) {
       axiosInstance
-        .get(
-          `${endpoints.academics.branches}?session_year=${params?.id?editYear:selectedYear?.id}&module_id=${module}`
-        )
+        .get(`${endpoints.academics.branches}`, { params: { ...params } })
         .then((response) => {
           if (response.data.status_code === 200) {
             var data = response?.data?.data?.results.map((obj) => {
@@ -499,14 +507,14 @@ if(moduleId){
     }
   };
 
-  const fetchGrades = (branches, branch_code,editYear) => {
+  const fetchGrades = (branches, branch_code, editYear) => {
     if (branches?.length > 0) {
       setBranchCode(branch_code);
       setSelectedBranch(branches);
       axiosInstance
         .get(
           `${endpoints.academics.grades}?session_year=${
-            params?.id?editYear: selectedYear?.id
+            params?.id ? editYear : selectedYear?.id
           }&branch_id=${branches?.toString()}&module_id=${moduleId}`
         )
         .then((response) => {
@@ -539,12 +547,14 @@ if(moduleId){
     }
   };
 
-  const fetchSections = (grades, grade_id, editBranch,editYear) => {
+  const fetchSections = (grades, grade_id, editBranch, editYear) => {
     if (grades?.length > 0) {
       setSelectedGrade(grades);
       axiosInstance
         .get(
-          `${endpoints.academics.sections}?session_year=${params?.id?editYear: selectedYear?.id}&branch_id=${
+          `${endpoints.academics.sections}?session_year=${
+            params?.id ? editYear : selectedYear?.id
+          }&branch_id=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade_id=${grades?.toString()}&module_id=${moduleId}`
         )
@@ -579,12 +589,14 @@ if(moduleId){
     }
   };
 
-  const fetchSubjects = (sections, editBranch, editGrade,editYear) => {
+  const fetchSubjects = (sections, editBranch, editGrade, editYear) => {
     if (sections?.length > 0) {
       setSelectedSections(sections);
       axiosInstance
         .get(
-          `${endpoints.academics.subjects}?session_year=${params?.id?editYear: selectedYear?.id}&branch=${
+          `${endpoints.academics.subjects}?session_year=${
+            params?.id ? editYear : selectedYear?.id
+          }&branch=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade=${
             editGrade ? editGrade?.toString() : selectedGrade?.toString()
@@ -853,7 +865,7 @@ if(moduleId){
             </Steps>
           </div> */}
           <Spin spinning={loading} tip='Loading..' size='large' className='th-primary'>
-            <div className='d-flex  '>
+            <div className='d-flex  pb-5'>
               <div className='d-none d-xs-none d-sm-none d-md-block'>
                 <div
                   className='text-center th-erp-steps '
@@ -949,6 +961,7 @@ if(moduleId){
                           setSubjects={setSubjects}
                           maxSubjectSelection={maxSubjectSelection}
                           roleConfig={roleConfig}
+                          editSessionYear={editSessionYear}
                         />
                       </>
                     )}
