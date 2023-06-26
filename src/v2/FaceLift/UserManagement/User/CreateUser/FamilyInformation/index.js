@@ -358,7 +358,7 @@ const FamilyInformation = ({
                     name='father_age'
                     label="Father's Age"
                   >
-                    <InputNumber />
+                    <InputNumber min={0}/>
                   </Form.Item>
                 </Col>
                 <Col className='py-2' md={24}>
@@ -647,7 +647,7 @@ const FamilyInformation = ({
                     name='mother_age'
                     label="Mother's Age"
                   >
-                    <InputNumber />
+                    <InputNumber min={0}/>
                   </Form.Item>
                 </Col>
 
@@ -923,7 +923,7 @@ const FamilyInformation = ({
                     name='guardian_age'
                     label="Guardian's Age"
                   >
-                    <InputNumber />
+                    <InputNumber min={0}/>
                   </Form.Item>
                 </Col>
                 <Col className='py-2' md={24}>

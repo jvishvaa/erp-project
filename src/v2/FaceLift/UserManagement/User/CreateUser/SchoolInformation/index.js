@@ -45,6 +45,7 @@ const SchoolInformation = ({
   setSubjects,
   maxSubjectSelection,
   roleConfig,
+  editSessionYear
 }) => {
   const schoolForm = useRef();
   const [loading, setLoading] = useState(false);
@@ -136,7 +137,7 @@ const SchoolInformation = ({
               >
                 <Select
                   onChange={(e) => {
-                    fetchDesignation(e);
+                    fetchDesignation({user_level:e});
                     setUserLevel(e);
                     schoolForm.current.resetFields(['designation']);
                   }}
@@ -216,10 +217,10 @@ const SchoolInformation = ({
                         branch: values,
                       });
                       let branch_code = branches?.map((i) => i.branch_code);
-                      fetchGrades(values, branch_code);
+                      fetchGrades(values, branch_code,editSessionYear);
                     } else {
                       let branch_code = obj?.map((i) => i.code);
-                      fetchGrades(e, branch_code);
+                      fetchGrades(e, branch_code,editSessionYear);
                     }
 
                     schoolForm.current.resetFields(['grade', 'section', 'subjects']);
@@ -270,9 +271,9 @@ const SchoolInformation = ({
                       schoolForm.current.setFieldsValue({
                         grade: values,
                       });
-                      fetchSections(grades?.map((e) => e?.id));
+                      fetchSections(grades?.map((e) => e?.id),null,null,editSessionYear);
                     } else {
-                      fetchSections(value?.map((e) => e.id));
+                      fetchSections(value?.map((e) => e.id),null,null,editSessionYear);
                     }
                     schoolForm.current.resetFields(['section', 'subjects']);
 
@@ -319,11 +320,11 @@ const SchoolInformation = ({
                       schoolForm.current.setFieldsValue({
                         section: values,
                       });
-                      fetchSubjects(sections?.map((e) => e?.id));
+                      fetchSubjects(sections?.map((e) => e?.id),null,null,editSessionYear);
                       setSectionMappingId(sections?.map((e) => e?.item_id));
                     } else {
                       setSectionMappingId(value?.map((e) => e?.mapping_id));
-                      fetchSubjects(value?.map((e) => e.id));
+                      fetchSubjects(value?.map((e) => e.id),null,null,editSessionYear);
                     }
                     schoolForm.current.resetFields(['subjects']);
                     setSubjects([]);
