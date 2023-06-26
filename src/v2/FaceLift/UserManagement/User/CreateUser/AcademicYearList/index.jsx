@@ -28,7 +28,7 @@ const AcademicYearList = ({
   is_superuser,
   editId,
   userLevel,
-  isOrchids
+  isOrchids,
 }) => {
   const acadForm = useRef();
   const [moduleId, setModuleId] = useState('');
@@ -77,7 +77,7 @@ const AcademicYearList = ({
         section: currentObj?.section,
         subjects: currentObj?.subjects,
       });
-      fetchBranches(currentObj?.academic_year);
+      fetchBranches(currentObj?.academic_year, module);
       fetchGrades(currentObj?.branch, null, module, currentObj?.academic_year);
       fetchSections(
         currentObj?.editGrade,
@@ -110,7 +110,7 @@ const AcademicYearList = ({
       })
       .catch(() => {});
   };
-  const fetchBranches = (session_year) => {
+  const fetchBranches = (session_year, module) => {
     setSelectedYear(session_year);
     axiosInstance
       .get(
@@ -283,6 +283,27 @@ const AcademicYearList = ({
     }
     setMultipleAcademicYear([...newData]);
   };
+  const onChangeGrade = (value, mappinIds) => {
+    let newData = multipleAcademicYear;
+    for (let i = 0; i < newData.length; i++) {
+      if (newData[i].id === currentObj.id) {
+        newData[i]['grade'] = value;
+        newData[i]['editGrade'] = mappinIds;
+      }
+    }
+    setMultipleAcademicYear([...newData]);
+  };
+
+  const onChangeSection = (value, mappinIds) => {
+    let newData = multipleAcademicYear;
+    for (let i = 0; i < newData.length; i++) {
+      if (newData[i].id === currentObj.id) {
+        newData[i]['section'] = value;
+        newData[i]['editSection'] = mappinIds;
+      }
+    }
+    setMultipleAcademicYear([...newData]);
+  };
   const handleDelete = () => {
     setMultipleAcademicYear(multipleAcademicYear?.filter((e) => e.id !== currentObj?.id));
   };
@@ -296,7 +317,7 @@ const AcademicYearList = ({
               <Select
                 disabled={currentObj?.isEdit}
                 onChange={(e, obj) => {
-                  fetchBranches(e);
+                  fetchBranches(e, moduleId);
                   acadForm.current.resetFields([
                     'branch',
                     'grade',
@@ -336,7 +357,12 @@ const AcademicYearList = ({
                 maxTagCount={3}
                 allowClear
                 value={currentObj?.branch}
-                disabled={currentObj?.isEdit && userLevel===13 && isOrchids}
+                disabled={
+                  currentObj?.isEdit &&
+                  isOrchids &&
+                  !(is_superuser || user_level === 1) &&
+                  userLevel === 13
+                }
                 onChange={(e, obj) => {
                   if (e.includes('all')) {
                     let values = branches?.map((e) => e?.id);
@@ -390,7 +416,12 @@ const AcademicYearList = ({
                 maxTagCount={3}
                 allowClear
                 value={currentObj?.grade}
-                disabled={currentObj?.isEdit && userLevel===13 && isOrchids}
+                disabled={
+                  currentObj?.isEdit &&
+                  isOrchids &&
+                  !(is_superuser || user_level === 1) &&
+                  userLevel === 13
+                }
                 getPopupContainer={(trigger) => trigger.parentNode}
                 onChange={(e, value) => {
                   if (e.includes('all')) {
@@ -399,11 +430,18 @@ const AcademicYearList = ({
                       grade: values,
                     });
                     fetchSections(grades?.map((e) => e?.id));
+                    onChangeGrade(
+                      values,
+                      grades?.map((e) => e.id)
+                    );
                   } else {
                     fetchSections(value?.map((e) => e.id));
+                    onChangeGrade(
+                      e,
+                      value?.map((e) => e.id)
+                    );
                   }
                   acadForm.current.resetFields(['section', 'subjects']);
-                  // onChange(e, 'grade');
                   setSections([]);
                   setSubjects([]);
                 }}
@@ -447,10 +485,16 @@ const AcademicYearList = ({
                       section: values,
                     });
                     fetchSubjects(sections?.map((e) => e?.id));
-                    onChange(values, 'section');
+                    onChangeSection(
+                      values,
+                      sections?.map((e) => e.id)
+                    );
                   } else {
                     fetchSubjects(value?.map((e) => e.id));
-                    onChange(e, 'section');
+                    onChangeSection(
+                      e,
+                      value?.map((e) => e.id)
+                    );
                   }
                   acadForm.current.resetFields(['subjects']);
                   setSubjects([]);
@@ -533,7 +577,7 @@ const AcademicYearList = ({
               </Select>
             </Form.Item>
           </Col>
-          {!currentObj?.isEdit && (
+          {(!currentObj?.isEdit || (userLevel !== 13 && !isOrchids)) && (
             <Col md={4}>
               <Form.Item label=' '>
                 <Popconfirm
