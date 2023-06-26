@@ -360,7 +360,7 @@ const AcademicYearList = ({
                 disabled={
                   currentObj?.isEdit &&
                   isOrchids &&
-                  (!is_superuser || user_level !== 1) &&
+                  !(is_superuser || user_level === 1) &&
                   userLevel === 13
                 }
                 onChange={(e, obj) => {
@@ -419,7 +419,7 @@ const AcademicYearList = ({
                 disabled={
                   currentObj?.isEdit &&
                   isOrchids &&
-                  (!is_superuser || user_level !== 1) &&
+                  !(is_superuser || user_level === 1) &&
                   userLevel === 13
                 }
                 getPopupContainer={(trigger) => trigger.parentNode}
