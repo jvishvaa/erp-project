@@ -144,7 +144,8 @@ const SchoolInformation = ({
     window.location.host.split('.')[0] === 'qa' ||
     window.location.host.split('.')[0] === 'mcollege' ||
     window.location.host.split('.')[0] === 'aolschool' ||
-    window.location.host.split('.')[0] === 'dps'
+    window.location.host.split('.')[0] === 'dps' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
       ? true
       : false;
   return (
@@ -247,7 +248,7 @@ const SchoolInformation = ({
                   disabled={
                     editId &&
                     isOrchids &&
-                    (!is_superuser || user_level !== 1) &&
+                    !(is_superuser || user_level === 1) &&
                     userLevel === 13
                   }
                   getPopupContainer={(trigger) => trigger.parentNode}
@@ -308,7 +309,7 @@ const SchoolInformation = ({
                   disabled={
                     editId &&
                     isOrchids &&
-                    (!is_superuser || user_level !== 1) &&
+                    !(is_superuser || user_level === 1) &&
                     userLevel === 13
                   }
                   onChange={(e, value) => {
