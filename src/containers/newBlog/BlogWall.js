@@ -70,10 +70,9 @@ const columns = [
 ];
 
 const BlogWall = () => {
-  let data = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const user_level = data?.user_level;
-  const isStudent = user_level == 13;
-  const token = data?.token;
+  const { user_level, erp, token } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const history = useHistory();
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -88,8 +87,6 @@ const BlogWall = () => {
   const [endDate, setEndDate] = useState('');
   const [branchIds, setBranchIds] = useState('');
   const [userId, setUserId] = useState();
-
-  const [branchList, setBranchList] = useState([]);
   const [selectedGradeId, setSelectedGradeIds] = useState('');
   const [blogList, setBlogList] = useState([]);
   const [selectedBlogListId, setSelectedBlogListId] = useState('');
@@ -125,26 +122,18 @@ const BlogWall = () => {
   const [commentsList, setCommentsList] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [listCount, setListCount] = useState('');
-
-  const branchOptions = branchList?.map((each) => {
-    return (
-      <Option value={each?.id} key={each?.id}>
-        {each?.name}
-      </Option>
-    );
-  });
   const [firstLoad, setFirstLoad] = useState(false);
   const [categoriesList, setCategoriesList] = useState([]);
 
-  const fetchCategoryOptions = (id) => {
+  const fetchCategoryOptions = (erp) => {
     axios
-      .get(`${endpoints.newBlog.getCategoryOptions}?user_id=${id}`, {
+      .get(`${endpoints.newBlog.getCategoryOptions}?erp_id=${erp}`, {
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
         },
       })
       .then((response) => {
-        if (response.status === 200) {
+        if (response.data?.status_code === 200) {
           setCategoriesList(response?.data?.activity_types);
           setCategoriesFilter(response?.data?.activity_types[0]?.name);
           setFirstLoad(true);
@@ -152,12 +141,16 @@ const BlogWall = () => {
       })
       .catch((err) => {
         message.error(err.message);
+        setLoading(false);
       });
   };
 
   useEffect(() => {
     getActivitySession();
-  }, []);
+    if (erp) {
+      fetchCategoryOptions(erp);
+    }
+  }, [erp]);
 
   let funBranchName = (item) => {
     //item?.branch?.name
@@ -258,7 +251,6 @@ const BlogWall = () => {
           JSON.stringify(response?.data?.result)
         );
         setUserId(response?.data?.result?.user_id);
-        fetchCategoryOptions(response?.data?.result?.user_id);
         setShowTab('1');
       })
       .catch((err) => {
@@ -376,13 +368,13 @@ const BlogWall = () => {
     if (showTab == 1) {
       fetchPostWall({
         publish_level: 'Intra Orchids Level',
-        user_id: userId,
+        erp_id: erp,
         session_year: selectedAcademicYear?.session_year,
       });
     } else if (showTab == 2) {
       fetchPostWall({
         publish_level: 'Branch Level',
-        user_id: userId,
+        erp_id: erp,
         branch_ids: selectedBranch?.branch?.id,
         session_year: selectedAcademicYear?.session_year,
       });
@@ -390,13 +382,13 @@ const BlogWall = () => {
       fetchPostWall({
         publish_level: 'Grade Level',
         branch_ids: selectedBranch?.branch?.id,
-        user_id: userId,
+        erp_id: erp,
         session_year: selectedAcademicYear?.session_year,
       });
     } else if (showTab == 4) {
       fetchPostWall({
         publish_level: 'Section Level',
-        user_id: userId,
+        erp_id: erp,
         branch_ids: selectedBranch?.branch?.id,
         session_year: selectedAcademicYear?.session_year,
       });
@@ -404,7 +396,7 @@ const BlogWall = () => {
       fetchPostWall({
         is_best_blog: 'true',
         branch_ids: selectedBranch?.branch?.id,
-        user_id: userId,
+        erp_id: erp,
         session_year: selectedAcademicYear?.session_year,
       });
     }
@@ -578,7 +570,7 @@ const BlogWall = () => {
         if (response?.data?.status_code == 200) {
           setStudentPubliSpeakingData(response?.data?.result);
           getWhatsAppDetails({
-            erp_id: data?.erp,
+            erp_id: erp,
             created_at__date__gte: response?.data?.result?.created_at__date__gte,
             created_at__date__lte: response?.data?.result?.created_at__date__lte,
             activity_id: response?.data?.result?.activity,
@@ -1551,7 +1543,7 @@ const BlogWall = () => {
                           className='th-pointer'
                           onClick={() =>
                             getWhatsAppDetails({
-                              erp_id: data?.erp,
+                              erp_id: erp,
                               created_at__date__gte:
                                 studentPubliSpeakingData?.created_at__date__gte,
                               created_at__date__lte:
