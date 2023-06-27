@@ -48,7 +48,7 @@ const { TabPane } = Tabs;
 
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
+    window.location.host.split('.')[0] === 'qa'
     ? true
     : false;
 
@@ -104,6 +104,7 @@ const StudentHomeworkNew = withRouter(
     const [evaluatedSubject, setEvaluatedSubject] = useState([]);
     const [SubjectSelected, setSubjectSelected] = useState('all');
     const [dueDate, setDeuDate] = useState();
+    const [showSubjectCount, setShowSubjectCount] = useState(10);
 
     const [subjectList, setSubjectList] = useState([]);
     const [showGrievanceModal, setShowGrievanceModal] = useState(false);
@@ -656,25 +657,44 @@ const StudentHomeworkNew = withRouter(
                 style={{ width: '90%', margin: '0 auto' }}
                 className='d-flex justify-content-between'
               >
-                <div className='col-md-8 my-4 p-0'>
-                  <Button
-                    onClick={() => handleSubjectFilter('all')}
-                    className={`${
-                      SubjectSelected == 'all' ? 'th-button-active' : 'th-button'
-                    }  th-pointer m-1 th-br-5`}
-                  >
-                    All Subject
-                  </Button>
-                  {subjectList?.map((sub) => (
+                <div className='col-md-8 my-4 p-0 row'>
+                  <div className='col-md-2 col-6 p-1'>
+
                     <Button
-                      className={`${
-                        sub?.id == SubjectSelected?.id ? 'th-button-active' : 'th-button'
-                      } th-pointer m-1 th-br-5`}
-                      onClick={() => handleSubjectFilter(sub)}
+                      onClick={() => handleSubjectFilter('all')}
+                      className={`${SubjectSelected == 'all' ? 'th-button-active' : 'th-button'
+                        } th-width-100 th-br-6 text-truncate th-pointer`}
                     >
-                      {sub?.subject_name}
+                      All Subject
                     </Button>
+                  </div>
+                  {subjectList?.slice(0, showSubjectCount).map((sub) => (
+                    <div className='col-md-2 col-6 p-1'>
+                      <Tooltip title={sub?.subject_name} >
+                      <Button
+                        className={`${sub?.id == SubjectSelected?.id ? 'th-button-active' : 'th-button'
+                          } th-width-100 th-br-6 text-truncate th-pointer`}
+                        onClick={() => handleSubjectFilter(sub)}
+                      >
+                        {sub?.subject_name}
+                      </Button>
+                      </Tooltip>
+                    </div>
                   ))}
+                  {subjectList.length > 10 && (
+                    <div className='col-md-2 col-6 p-1'>
+                      <Button
+                        className='th-width-100 th-br-6 text-truncate th-pointer th-button'
+                        onClick={() => {
+                          showSubjectCount == subjectList.length
+                            ? setShowSubjectCount(10)
+                            : setShowSubjectCount(subjectList.length);
+                        }}
+                      >
+                        Show {showSubjectCount == subjectList.length ? 'Less' : 'All'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div className='col-md-4 mt-4 justify-content-end d-flex'>
                   <Button
@@ -803,9 +823,7 @@ const StudentHomeworkNew = withRouter(
                                           )}
                                         </div>
                                       </div>
-                                      {/* <div >
-                                                                            <img src={Atachment} style={{ width: '25px', transform: 'rotate(25deg)' }} />
-                                                                        </div> */}
+                              
                                     </div>
                                   </div>
                                 </div>
@@ -821,7 +839,14 @@ const StudentHomeworkNew = withRouter(
                               alignItems: 'center',
                             }}
                           >
-                            <Empty />{' '}
+                            <Empty
+                              description={
+                                <span className='th-18 ' >
+                                  No Homework Assigned Today
+                                </span>
+                              }
+                            >
+                            </Empty>
                           </div>
                         )}
                       </div>
@@ -952,7 +977,14 @@ const StudentHomeworkNew = withRouter(
                               alignItems: 'center',
                             }}
                           >
-                            <Empty />{' '}
+                            <Empty
+                              description={
+                                <span className='th-18 '>
+                                  No Homework Assigned Today
+                                </span>
+                              }
+                            >
+                            </Empty>
                           </div>
                         )}
                       </div>
@@ -1064,7 +1096,14 @@ const StudentHomeworkNew = withRouter(
                               alignItems: 'center',
                             }}
                           >
-                            <Empty />{' '}
+                            <Empty
+                              description={
+                                <span className='th-18 '>
+                                  No Homework Assigned Today
+                                </span>
+                              }
+                            >
+                            </Empty>
                           </div>
                         )}
                       </div>
@@ -1176,7 +1215,14 @@ const StudentHomeworkNew = withRouter(
                               alignItems: 'center',
                             }}
                           >
-                            <Empty />{' '}
+                            <Empty
+                              description={
+                                <span className='th-18 '>
+                                  No Homework Assigned Today
+                                </span>
+                              }
+                            >
+                            </Empty>
                           </div>
                         )}
                       </div>
