@@ -657,7 +657,7 @@ const StudentHomeworkNew = withRouter(
                 style={{ width: '90%', margin: '0 auto' }}
                 className='d-flex justify-content-between'
               >
-                <div className='col-md-8 my-4 p-0 row'>
+                <div className='col-md-10 my-4 p-0 row'>
                   <div className='col-md-2 col-6 p-1'>
 
                     <Button
@@ -696,7 +696,7 @@ const StudentHomeworkNew = withRouter(
                     </div>
                   )}
                 </div>
-                <div className='col-md-4 mt-4 justify-content-end d-flex'>
+                <div className='col-md-2 mt-4 justify-content-end d-flex'>
                   <Button
                     onClick={viewanalytics}
                     style={{ background: '#F19325', color: 'white' }}
@@ -980,7 +980,7 @@ const StudentHomeworkNew = withRouter(
                             <Empty
                               description={
                                 <span className='th-18 '>
-                                  No Homework Assigned Today
+                                  No Homeworks Are Pending
                                 </span>
                               }
                             >
@@ -1099,7 +1099,7 @@ const StudentHomeworkNew = withRouter(
                             <Empty
                               description={
                                 <span className='th-18 '>
-                                  No Homework Assigned Today
+                                  No Homeworks Are Submitted
                                 </span>
                               }
                             >
@@ -1218,7 +1218,7 @@ const StudentHomeworkNew = withRouter(
                             <Empty
                               description={
                                 <span className='th-18 '>
-                                  No Homework Assigned Today
+                                  No Homeworks Are Evaluated
                                 </span>
                               }
                             >
