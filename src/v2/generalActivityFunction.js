@@ -5,6 +5,11 @@ import physicalActivityImage from '../assets/images/physical activity.jpg';
 import musicImage from '../assets/images/music-01.jpg';
 import theaterImage from '../assets/images/theater-02.jpg';
 import danceImage from '../assets/images/dance-02.jpg';
+import swimIcon from 'v2/Assets/dashboardIcons/activityIcons/swim.png';
+import skatingIcon from 'v2/Assets/dashboardIcons/activityIcons/skating.png';
+import runningIcon from 'v2/Assets/dashboardIcons/activityIcons/running.png';
+import jumpingIcon from 'v2/Assets/dashboardIcons/activityIcons/jumping.png';
+import throwingIcon from 'v2/Assets/dashboardIcons/activityIcons/throwing.png';
 
 export const getActivityIcon = (value) => {
   switch (value) {
@@ -59,3 +64,19 @@ export const ActivityTypes = [
   'Blog Activity',
   'Posts',
 ];
+
+export const getActivitySportsIcon = (value) => {
+  if (['swimming', 'swim'].includes(value)) {
+    return swimIcon;
+  } else if (['skating', 'skate', 'skates'].includes(value)) {
+    return skatingIcon;
+  } else if (['running', 'sprinting', 'run', 'sprint'].includes(value)) {
+    return runningIcon;
+  } else if (['jumping', 'jump'].includes(value)) {
+    return jumpingIcon;
+  } else if (['throwing', 'throw'].includes(value)) {
+    return throwingIcon;
+  } else {
+    return physicalActivityImage;
+  }
+};

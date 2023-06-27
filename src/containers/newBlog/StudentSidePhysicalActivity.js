@@ -12,7 +12,7 @@ import {
   PlayCircleOutlined,
   FundViewOutlined,
   PieChartOutlined,
-  SnippetsOutlined,
+  DownOutlined,
   EyeOutlined,
   CaretRightOutlined,
 } from '@ant-design/icons';
@@ -27,19 +27,22 @@ import {
   Space,
   Button,
   message,
-  Input,
+  Form,
   Spin,
-  Typography,
+  Select,
 } from 'antd';
 import moment from 'moment';
 import ReactPlayer from 'react-player';
 import BMIDetailsImage from '../../assets/images/Body_Mass_Index.jpg';
-import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+
+const { Option } = Select;
 
 const StudentSidePhysicalActivity = () => {
-  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
-  const userIdLocal = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
+  const formRef = useRef();
   const history = useHistory();
+  const userIdLocal =
+    JSON.parse(localStorage.getItem('ActivityManagement'))?.id ||
+    history?.location?.state?.activity?.student_id;
   const activityDetails = history?.location?.state?.activity;
   const [loading, setLoading] = useState(false);
   const [ratingReview, setRatingReview] = useState([]);
@@ -64,6 +67,8 @@ const StudentSidePhysicalActivity = () => {
   const [loadingBMI, setLoadingBMI] = useState(false);
   const [playVideo, setPlayVideo] = useState(true);
   const [physicalActivityToggle, setPhysicalActivityToggle] = useState(false);
+  const [subActivityListData, setSubActivityListData] = useState([]);
+  const [subActivityID, setSubActivityID] = useState();
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
@@ -80,6 +85,7 @@ const StudentSidePhysicalActivity = () => {
   };
 
   const fetchStudentActivityList = (params = {}) => {
+    setActivityListData([]);
     setLoading(true);
     axios
       .get(`${endpoints.newBlog.studentSideApi}`, {
@@ -95,12 +101,12 @@ const StudentSidePhysicalActivity = () => {
           setTotalPagesAssigned(response?.data?.page_size);
           setCurrentPageAssigned(response?.data?.page);
           setLimitAssigned(Number(limitAssigned));
-          if (physicalActivityToggle) {
-          }
         }
-        setLoading(false);
       })
       .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
@@ -125,20 +131,6 @@ const StudentSidePhysicalActivity = () => {
       return '';
     }
   };
-
-  useEffect(() => {
-    fetchStudentActivityList({
-      user_id: userIdLocal?.id,
-      activity_type: activityDetails?.id.join(','),
-      activity_detail_id: 'null',
-      is_reviewed: 'True',
-      is_submitted: 'True',
-      page: currentPageAssigned,
-      page_size: limitAssigned,
-      activity_name: 'Physical Activity',
-      is_round_available: physicalActivityToggle,
-    });
-  }, [currentPageAssigned, physicalActivityToggle]);
 
   const handleShowReview = async (data) => {
     setLoadingMedia(true);
@@ -189,7 +181,7 @@ const StudentSidePhysicalActivity = () => {
 
   const fetchBMIData = () => {
     const params = {
-      student_id: userIdLocal?.id,
+      student_id: userIdLocal,
     };
     axios
       .get(`${endpoints.newBlog.getStudentBMIApi}`, {
@@ -229,14 +221,39 @@ const StudentSidePhysicalActivity = () => {
         setLoadingMedia(false);
       });
   };
-  let roundsArray = [];
-  const filterRound = (data) => {
-    if (roundsArray.indexOf(data) !== -1) {
-      return '';
-    } else {
-      roundsArray.push(data);
-      return data;
-    }
+  const fetchSubActivityListData = (params = {}) => {
+    axios
+      .get(`${endpoints.newBlog.subActivityListApi}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          setSubActivityListData(res?.data?.result);
+          if (history?.location?.state?.activity?.activity_sub_type_name) {
+            let subActivity = history?.location?.state?.activity?.activity_sub_type_name;
+            let currentSubActivity = res?.data?.result.filter(
+              (el) => el?.sub_type == subActivity
+            );
+            if (currentSubActivity.length > 0) {
+              setSubActivityID(currentSubActivity[0]?.id);
+              formRef.current.setFieldsValue({
+                sub_activity: subActivity,
+              });
+            }
+          } else {
+            setSubActivityID(res?.data?.result[0]?.id);
+            formRef.current.setFieldsValue({
+              sub_activity: res?.data?.result[0]?.sub_type,
+            });
+          }
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
   };
 
   const columnsOld = [
@@ -433,6 +450,14 @@ const StudentSidePhysicalActivity = () => {
     setPhysicalActivityToggle(event.target.checked);
   };
 
+  const subActivityOption = subActivityListData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.id}>
+        {each?.sub_type}
+      </Option>
+    );
+  });
+
   useEffect(() => {
     if (ratingReview.length > 0) {
       transformTable(ratingReview);
@@ -474,6 +499,32 @@ const StudentSidePhysicalActivity = () => {
   const handlePaginationAssign = (page) => {
     setCurrentPageAssigned(page);
   };
+  const handleSubActivity = (e) => {
+    setSubActivityID(e);
+  };
+
+  useEffect(() => {
+    fetchSubActivityListData({
+      type_id: activityDetails?.id?.toString(),
+      is_type: true,
+    });
+  }, [window.location.hostname]);
+
+  useEffect(() => {
+    if (subActivityID) {
+      fetchStudentActivityList({
+        user_id: userIdLocal,
+        activity_type: subActivityID,
+        activity_detail_id: 'null',
+        is_reviewed: 'True',
+        is_submitted: 'True',
+        page: currentPageAssigned,
+        page_size: limitAssigned,
+        activity_name: 'Physical Activity',
+        is_round_available: physicalActivityToggle,
+      });
+    }
+  }, [currentPageAssigned, physicalActivityToggle, subActivityID]);
 
   return (
     <div>
@@ -483,7 +534,7 @@ const StudentSidePhysicalActivity = () => {
             <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
                 <Breadcrumb.Item
-                  onClick={() => history.goBack()}
+                  onClick={() => history.push('/blog/wall/redirect')}
                   className='th-grey th-pointer th-16'
                 >
                   Activities Management
@@ -505,15 +556,46 @@ const StudentSidePhysicalActivity = () => {
             </div>
 
             <div className='col-12 th-bg-white py-3 mt-3 th-br-4'>
-              <div className='d-flex align-items-center pb-2'>
-                <span className='th-fw-600'>Question and Answer(Enable or Disable)</span>
-                <span className='ml-3'>
-                  <Switch
-                    onChange={handlePhysicalActivityToggle}
-                    checked={physicalActivityToggle}
-                  />
-                </span>
-              </div>
+              <Form id='filterForm' ref={formRef} layout={'vertical'}>
+                <div className='row row align-items-end'>
+                  <div className='col-md-2 col-6 px-0'>
+                    <Form.Item name='sub_activity' label='Sub-Activity Type'>
+                      <Select
+                        placeholder='Select Sub-Activity'
+                        showSearch
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e) => {
+                          handleSubActivity(e);
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                        bordered={true}
+                      >
+                        {subActivityOption}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-6'>
+                    <div className='d-flex align-items-center pb-2'>
+                      <span className='th-fw-600'>
+                        Question and Answer(Enable or Disable)
+                      </span>
+                      <span className='ml-3'>
+                        <Switch
+                          onChange={handlePhysicalActivityToggle}
+                          checked={physicalActivityToggle}
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Form>
 
               <div className='row '>
                 <div className='col-12 px-0'>
@@ -536,7 +618,7 @@ const StudentSidePhysicalActivity = () => {
                       },
                     }}
                     scroll={{
-                      x: window.innerWidth > 600 ? '100%' : 'max-content',
+                      x: window.innerWidth > 600 ? null : 'max-content',
                     }}
                   />
                 </div>

@@ -42,7 +42,6 @@ import TeacherwiseDiaryReport from 'v2/FaceLift/DiaryReport/TeacherwiseDiaryRepo
 import StudentSidePhysicalActivity from 'containers/newBlog/StudentSidePhysicalActivity';
 import BlogActivityView from 'containers/newBlog/BlogActivityView';
 import ViewBMI from 'containers/newBlog/ViewBMI';
-
 import endpoints from 'config/endpoints';
 import axios from 'axios';
 import CreateDiary from 'v2/FaceLift/Diary/DiaryNew/CreateDiary';
@@ -71,6 +70,7 @@ import MarkAttendance from 'v2/FaceLift/Attendance/MarkAttendance';
 import UserBulkUpload from 'v2/FaceLift/UserManagement/User/CreateUser/BulkUpload';
 import LoginFormSSO from 'containers/login/ssologin';
 import ReportPipeline from 'v2/FaceLift/ReportPipeline';
+import ActivityMangementDashboard from 'v2/FaceLift/ActivityManagement/ActivityMangementDashboard';
 
 const V2Router = () => {
   useEffect(() => {
@@ -109,7 +109,7 @@ const V2Router = () => {
   }, []);
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
-      window.location.host.split('.')[0] === 'qa'
+    window.location.host.split('.')[0] === 'qa'
       ? true
       : false;
 
@@ -347,6 +347,10 @@ const V2Router = () => {
                         </Route>
                         <Route path='/report-pipeline'>
                           {({ match }) => <ReportPipeline match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/activity-management-dashboard'>
+                          {({ match }) => <ActivityMangementDashboard match={match} />}
                         </Route>
                         ,{/* v1 router */}
                         {V1Router?.map((item) => {
