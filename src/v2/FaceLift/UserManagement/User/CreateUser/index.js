@@ -21,6 +21,7 @@ import SiblingInformation from './SiblingInformation';
 import StudentInformation from './StudentInformationForm';
 import axios from 'axios';
 import endpoints from 'v2/config/endpoints';
+import endpointsV1 from 'config/endpoints';
 import Layout from 'containers/Layout';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
@@ -348,7 +349,15 @@ const CreateUser = () => {
           siblings: user?.siblings,
         };
         setParentId(user.parent_details?.id);
-        if (user?.parent_details?.email === user?.parent_details?.father_email) {
+        if (
+          user?.parent_details?.email === null ||
+          user?.parent_details?.email === undefined ||
+          user?.parent_details?.email === ''
+        ) {
+          setFatherPrimaryEmail(false);
+          setMotherPrimaryEmail(false);
+          setGuardianPrimaryEmail(false);
+        } else if (user?.parent_details?.email === user?.parent_details?.father_email) {
           setFatherPrimaryEmail(true);
           setMotherPrimaryEmail(false);
           setGuardianPrimaryEmail(false);
@@ -356,12 +365,24 @@ const CreateUser = () => {
           setFatherPrimaryEmail(false);
           setMotherPrimaryEmail(true);
           setGuardianPrimaryEmail(false);
-        } else {
+        } else if (user?.parent_details?.email === user?.parent_details?.guardian_email) {
           setFatherPrimaryEmail(false);
           setMotherPrimaryEmail(false);
           setGuardianPrimaryEmail(true);
+        } else {
+          setFatherPrimaryEmail(false);
+          setMotherPrimaryEmail(false);
+          setGuardianPrimaryEmail(false);
         }
-        if (user?.contact === user?.parent_details?.father_mobile) {
+        if (
+          user?.contact === null ||
+          user?.contact === undefined ||
+          user?.contact === ''
+        ) {
+          setFatherPrimaryEmail(false);
+          setMotherPrimaryEmail(false);
+          setGuardianPrimaryEmail(false);
+        } else if (user?.contact === user?.parent_details?.father_mobile) {
           setFatherPrimary(true);
           setMotherPrimary(false);
           setGuardianPrimary(false);
@@ -369,10 +390,14 @@ const CreateUser = () => {
           setFatherPrimary(false);
           setMotherPrimary(true);
           setGuardianPrimary(false);
-        } else {
+        } else if (user?.contact === user?.parent_details?.guardian_mobile) {
           setFatherPrimary(false);
           setMotherPrimary(false);
           setGuardianPrimary(true);
+        } else {
+          setFatherPrimary(false);
+          setMotherPrimary(false);
+          setGuardianPrimary(false);
         }
         setUserDetails(transformedUser);
         var transformedSchoolDetails = transformedUser;
@@ -884,7 +909,7 @@ const CreateUser = () => {
     setPasswordLoading(true);
     const password = passwordFormRef.current.getFieldsValue()?.new_password;
     axiosInstance
-      .post(`${endpoints.userManagement.passwordChange}`, {
+      .post(`${endpointsV1.userManagement.passwordChange}`, {
         user_id: params?.id,
         password: password,
       })

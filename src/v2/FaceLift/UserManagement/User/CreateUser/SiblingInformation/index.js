@@ -83,6 +83,7 @@ const SiblingInformation = ({
                     <Col>
                       <Form.Item label='Age'>
                         <InputNumber
+                          min={1}
                           onChange={(e) => {
                             handleChange(e, each?.id, 'age');
                           }}

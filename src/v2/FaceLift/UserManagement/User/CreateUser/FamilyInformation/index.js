@@ -100,6 +100,18 @@ const FamilyInformation = ({
         message.error(`Enter Guardian's Contact Number!`);
         return;
       }
+      if (fatherPrimaryEmail && !formValues?.father_email) {
+        message.error(`Enter Father's Email!`);
+        return;
+      }
+      if (motherPrimaryEmail && !formValues?.mother_email) {
+        message.error(`Enter Mother's Email!`);
+        return;
+      }
+      if (guardianPrimaryEmail && !formValues?.guardian_email) {
+        message.error(`Enter Guardian's Email!`);
+        return;
+      }
     }
     if (userLevel === 13) {
       if (
