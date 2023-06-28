@@ -67,6 +67,7 @@ const CreateUser = () => {
   const [editSessionYear, setEditSessionYear] = useState(null);
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [endProgress, setEndProgress] = useState(false);
   const [siblings, setSiblings] = useState([
     {
       id: Math.random(),
@@ -690,6 +691,7 @@ const CreateUser = () => {
 
   const handleSubmit = (formValues) => {
     setLoading(true);
+    setEndProgress(true);
     let familyValues = {};
     if (userLevel === 13) {
       familyValues = familyFormValues;
@@ -872,6 +874,7 @@ const CreateUser = () => {
           history.push('/user-management/view-users');
         })
         .catch((error) => {
+          setEndProgress(false);
           message.error(error?.response?.data?.message ?? 'Something went wrong!');
         })
         .finally(() => {
@@ -893,6 +896,7 @@ const CreateUser = () => {
         })
         .catch((error) => {
           message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          setEndProgress(false);
         })
         .finally(() => {
           setLoading(false);
@@ -1007,7 +1011,9 @@ const CreateUser = () => {
                     trailColor='primary'
                     width={100}
                     type='circle'
-                    percent={Math.ceil((currentStep / totalStep) * 100)}
+                    percent={
+                      endProgress ? 100 : Math.ceil((currentStep / totalStep) * 100)
+                    }
                   />
                   <div className='th-primary th-18 th-fw-600'>
                     Step {currentStep + 1}/{totalStep}

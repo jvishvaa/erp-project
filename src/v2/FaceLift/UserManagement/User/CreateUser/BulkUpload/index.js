@@ -636,6 +636,7 @@ const BulkUpload = () => {
                         rowKey={(record) => record?.id}
                         dataSource={roleList}
                         pagination={false}
+                        style={{ minHeight: '270px' }}
                         scroll={{
                           y: 200,
                         }}
@@ -650,6 +651,7 @@ const BulkUpload = () => {
                         columns={userLevelColumns}
                         rowKey={(record) => record?.id}
                         dataSource={userLevelList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           y: 200,
@@ -666,10 +668,11 @@ const BulkUpload = () => {
                         columns={designationColumns}
                         rowKey={(record) => record?.id}
                         dataSource={userDesignationList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
@@ -741,10 +744,11 @@ const BulkUpload = () => {
                         columns={gradeColumns}
                         rowKey={(record) => record?.id}
                         dataSource={gradeList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
@@ -758,10 +762,11 @@ const BulkUpload = () => {
                         columns={sectionColumns}
                         rowKey={(record) => record?.id}
                         dataSource={sectionList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
@@ -775,10 +780,11 @@ const BulkUpload = () => {
                         columns={subjectColumns}
                         rowKey={(record) => record?.id}
                         dataSource={subjectList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
@@ -791,10 +797,11 @@ const BulkUpload = () => {
                         columns={qualificationColumns}
                         rowKey={(record) => record?.id}
                         dataSource={qualificationList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
