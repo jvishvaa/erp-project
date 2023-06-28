@@ -82,27 +82,31 @@ const ActivityMangementDashboard = () => {
         <div className='col-12 py-3'>
           <div className='th-bg-white py-2'>
             <div className='row align-items-center py-2'>
-              <div className='col-3'>
+              <div className='col-sm-3'>
                 <span className='th-fw-500 th-16'>Sports Activities</span>
               </div>
               {Object.keys(studentBMIDetails).length > 0 && (
-                <div className='col-9'>
+                <div className='col-sm-9 py-2 py-sm-0'>
                   <div
                     className='row py-1 align-items-center th-br-8 th-fw-500'
                     style={{ outline: '1px solid #d9d9d9' }}
                   >
-                    <div className='col-md-3'>BMI Details : </div>
-                    <div className='col-md-3'>
+                    <div className='col-sm-3 col-6'>
+                      BMI : <span className='th-primary'>{studentBMIDetails?.bmi}</span>
+                    </div>
+                    <div className='col-sm-3 col-6'>
                       Height :{' '}
                       <span className='th-primary'>{studentBMIDetails?.height} cm</span>
                     </div>
-                    <div className='col-md-3'>
+                    <div className='col-sm-3 col-6'>
                       Wieght :{' '}
                       <span className='th-primary'>{studentBMIDetails?.weight} KGs</span>
                     </div>
-                    <div className='col-md-3'>
+                    <div className='col-sm-3 col-6 text-truncate'>
                       Status :{' '}
-                      <span className='th-primary'>{studentBMIDetails?.remarks} </span>
+                      <span className='th-primary' title={studentBMIDetails?.remarks}>
+                        {studentBMIDetails?.remarks}{' '}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -119,9 +123,12 @@ const ActivityMangementDashboard = () => {
                     .length > 0 ? (
                     Object.keys(sportsDetails)
                       .filter((el) => sportsDetails[el].length > 0)
+                      .sort(
+                        (a, b) => moment(b[0]?.review_date) - moment(a[0]?.review_date)
+                      )
                       .map((item) => {
                         return (
-                          <div className='col-4 mb-4'>
+                          <div className='col-sm-4 mb-4'>
                             <div
                               className='th-br-8 th-bg-grey p-2 border-card'
                               style={{ height: 170 }}
