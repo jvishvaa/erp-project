@@ -1,5 +1,18 @@
-import { Breadcrumb, Card, message, Progress, Spin, Steps } from 'antd';
-import React, { useEffect, useState } from 'react';
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Progress,
+  Row,
+  Spin,
+  Steps,
+} from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import './index.css';
 import './index.css';
 import FamilyInformation from './FamilyInformation';
@@ -50,7 +63,9 @@ const CreateUser = () => {
   const [loading, setLoading] = useState(false);
   const [roleConfig, setRoleConfig] = useState([]);
   const [maxSubjectSelection, setMaxSubjectSelection] = useState(null);
-  const [editSessionYear,setEditSessionYear]= useState(null)
+  const [editSessionYear, setEditSessionYear] = useState(null);
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
   const [siblings, setSiblings] = useState([
     {
       id: Math.random(),
@@ -59,10 +74,14 @@ const CreateUser = () => {
       age: 0,
       grade_name: '',
       school_name: '',
+      is_delete: false,
+      is_edit: false,
     },
   ]);
   const history = useHistory();
   const params = useParams();
+  const passwordFormRef = useRef();
+
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   useEffect(() => {
     let NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -371,7 +390,7 @@ const CreateUser = () => {
           subjects: subjectObj?.map((e) => e.item_id),
         };
         let editYear = academicYearObj[0]?.id;
-        setEditSessionYear(editYear)
+        setEditSessionYear(editYear);
         setSectionMappingId(sectionObj?.map((e) => e?.item_id));
         var studentInformation = {
           first_name: transformedUser?.first_name,
@@ -399,7 +418,7 @@ const CreateUser = () => {
         setGuardian(studentInformation?.single_parent);
         setSelectedSubjects(subjectObj?.map((e) => e?.id));
         setSingleParent(transformedUser?.single_parent ? true : false);
-        fetchDesignation({user_level:schoolDetails?.user_level});
+        fetchDesignation({ user_level: schoolDetails?.user_level });
         fetchBranches({
           module_id: moduleId,
           session_year: editYear,
@@ -420,9 +439,13 @@ const CreateUser = () => {
         setSchoolFormValues(schoolDetails);
         setStudentFormValues(studentInformation);
         setFamilyFormValues(transformedUser?.parent);
+        let userSibling = transformedUser?.siblings ?? [];
+        for (let i = 0; i < userSibling?.length; i++) {
+          userSibling[i].is_edit = true;
+        }
         setSiblings(
-          transformedUser?.siblings?.length > 0
-            ? transformedUser?.siblings
+          userSibling?.length > 0
+            ? userSibling
             : [
                 {
                   id: Math.random(),
@@ -431,6 +454,7 @@ const CreateUser = () => {
                   age: 0,
                   grade_name: '',
                   school_name: '',
+                  is_delete: false,
                 },
               ]
         );
@@ -458,10 +482,10 @@ const CreateUser = () => {
       });
   };
 
-  const fetchDesignation = (params={}) => {
+  const fetchDesignation = (params = {}) => {
     axios
       .get(`${endpoints.userManagement.userDesignation}`, {
-        params:{...params},
+        params: { ...params },
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -778,9 +802,33 @@ const CreateUser = () => {
       );
     }
     // FAMILY INFO
-
+    let siblingArr = [];
+    for (let i = 0; i < siblings?.length; i++) {
+      if (!siblings[i].is_edit && siblings[i].is_delete) continue;
+      if (
+        !siblings[i].is_edit &&
+        !siblings[i].name &&
+        !siblings[i].age &&
+        !siblings[i].gender &&
+        !siblings[i].grade_name &&
+        !siblings[i].school_name
+      ) {
+        continue;
+      }
+      var obj = {};
+      if (siblings[i].is_edit) {
+        obj.id = siblings[i].id;
+      }
+      obj.name = siblings[i].name;
+      obj.age = siblings[i].age;
+      obj.gender = siblings[i].gender;
+      obj.grade_name = siblings[i].grade_name;
+      obj.school_name = siblings[i].school_name;
+      obj.is_delete = siblings[i].is_delete;
+      siblingArr.push(obj);
+    }
     //SIBLING INFO
-    formData.append('siblings', JSON.stringify(siblings));
+    formData.append('siblings', JSON.stringify(siblingArr));
     if (editId) {
       formData.append('erp_id', userDetails?.erp_id);
       let section_mapping = multipleAcademicYear?.flatMap((each) => each?.section) ?? [];
@@ -825,6 +873,38 @@ const CreateUser = () => {
           setLoading(false);
         });
     }
+  };
+
+  const closePasswordModal = () => {
+    setOpenPasswordModal(false);
+    passwordFormRef.current.resetFields();
+  };
+
+  const handleChangePassword = () => {
+    setPasswordLoading(true);
+    const password = passwordFormRef.current.getFieldsValue()?.new_password;
+    axiosInstance
+      .post(`${endpoints.userManagement.passwordChange}`, {
+        user_id: params?.id,
+        password: password,
+      })
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          message.success(res?.data?.message);
+          closePasswordModal();
+          history.push({
+            pathname: '/user-management/view-users',
+          });
+        } else {
+          message.error(res?.data?.message);
+        }
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message ?? 'Something went wrong!');
+      })
+      .finally(() => {
+        setPasswordLoading(false);
+      });
   };
   let totalStep = userLevel && userLevel === 13 ? 4 : 3;
   return (
@@ -1005,6 +1085,7 @@ const CreateUser = () => {
                         setMotherPrimaryEmail={setMotherPrimaryEmail}
                         guardianPrimaryEmail={guardianPrimaryEmail}
                         setGuardianPrimaryEmail={setGuardianPrimaryEmail}
+                        setOpenPasswordModal={setOpenPasswordModal}
                       />
                     )}
                     {currentStep === 3 && (
@@ -1015,6 +1096,7 @@ const CreateUser = () => {
                         handleSubmit={handleSubmit}
                         loading={loading}
                         editId={editId}
+                        setOpenPasswordModal={setOpenPasswordModal}
                       />
                     )}
                   </div>
@@ -1046,6 +1128,91 @@ const CreateUser = () => {
           </Spin>
         </div>
       </>
+      <Modal
+        title='Change Password'
+        onOk={() => {
+          console.log('');
+        }}
+        visible={openPasswordModal}
+        onCancel={closePasswordModal}
+        footer={[
+          <Button onClick={closePasswordModal}>Cancel</Button>,
+          <Button
+            loading={passwordLoading}
+            htmlType='submit'
+            form='passwordForm'
+            type='primary'
+          >
+            Submit
+          </Button>,
+        ]}
+      >
+        <div className='p-4'>
+          <Form
+            layout='vertical'
+            ref={passwordFormRef}
+            id='passwordForm'
+            onFinish={handleChangePassword}
+          >
+            <div className='row'>
+              <div className='col-md-12'>
+                <Form.Item
+                  label='New Password'
+                  name={'new_password'}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Enter new password!',
+                    },
+                    {
+                      validator: (_, value) => {
+                        if (value && !/^.{8,}$/.test(value)) {
+                          return Promise.reject(
+                            `Password should be of more than 8 characters!`
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                >
+                  <Input.Password placeholder='New Password' className='w-100' />
+                </Form.Item>
+              </div>
+              <div className='col-md-12'>
+                <Form.Item
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Confirm password!',
+                    },
+                    {
+                      validator: (_, value) => {
+                        if (value && !/^.{8,}$/.test(value)) {
+                          return Promise.reject(
+                            `Password should be of more than 8 characters!`
+                          );
+                        }
+                        if (
+                          value &&
+                          value !== passwordFormRef.current.getFieldsValue().new_password
+                        ) {
+                          return Promise.reject(`Password doesn't match!`);
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                  label='Confirm Password'
+                  name={'confirm_password'}
+                >
+                  <Input.Password placeholder='Confirm Password' className='w-100' />
+                </Form.Item>
+              </div>
+            </div>
+          </Form>
+        </div>
+      </Modal>
     </React.Fragment>
   );
 };

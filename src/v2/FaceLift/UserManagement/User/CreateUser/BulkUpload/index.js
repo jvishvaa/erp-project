@@ -65,6 +65,29 @@ const BulkUpload = () => {
     },
   ];
 
+  const qualificationList = [
+    {
+      key: 1,
+      label: 'School Pass Out',
+      value: 'school_pass_out',
+    },
+    {
+      key: 2,
+      label: 'Graduate',
+      value: 'graduate',
+    },
+    {
+      key: 3,
+      label: 'Post Graduate',
+      value: 'post_graduate',
+    },
+    {
+      key: 4,
+      label: 'Doctorate',
+      value: 'doctorate',
+    },
+  ];
+
   const allowedFiles = ['.xls', '.xlsx'];
   const draggerProps = {
     showUploadList: false,
@@ -124,7 +147,7 @@ const BulkUpload = () => {
       });
     }
     fetchUserLevel();
-    fetchUserRoles()
+    fetchUserRoles();
   }, []);
 
   useEffect(() => {
@@ -133,14 +156,14 @@ const BulkUpload = () => {
     }
   }, [moduleId, selectedYear]);
   const fetchUserRoles = async () => {
-    axiosInstance.get(
-      `${endpoints.communication.roles}`
-    ).then((response)=>{
-        setRoleList(response?.data?.result)
-    }).
-    catch ((error)=> {
-      message.error(error.response.message.data??'Something went!');
-    })
+    axiosInstance
+      .get(`${endpoints.communication.roles}`)
+      .then((response) => {
+        setRoleList(response?.data?.result);
+      })
+      .catch((error) => {
+        message.error(error.response.message.data ?? 'Something went!');
+      });
   };
   const fetchBranches = async () => {
     if (selectedYear) {
@@ -462,6 +485,23 @@ const BulkUpload = () => {
     },
   ];
 
+  const qualificationColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>Value</span>,
+      dataIndex: 'value',
+      width: '50%',
+      className: 'text-center',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Qualification</span>,
+      dataIndex: 'label',
+      width: '50%',
+      className: 'text-center',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+  ];
+
   return (
     <React.Fragment>
       <>
@@ -586,7 +626,7 @@ const BulkUpload = () => {
                   </div>
 
                   <div className='row'>
-                  <div className='col-md-4'>
+                    <div className='col-md-4'>
                       <Table
                         className='th-table'
                         rowClassName={(record, index) =>
@@ -735,6 +775,22 @@ const BulkUpload = () => {
                         columns={subjectColumns}
                         rowKey={(record) => record?.id}
                         dataSource={subjectList}
+                        pagination={false}
+                        scroll={{
+                          x: window.innerWidth < 600 ? 'max-content' : null,
+                          y: 'calc(200px)',
+                        }}
+                      />
+                    </div>
+                    <div className='col-md-4'>
+                      <Table
+                        className='th-table mt-3'
+                        rowClassName={(record, index) =>
+                          index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                        }
+                        columns={qualificationColumns}
+                        rowKey={(record) => record?.id}
+                        dataSource={qualificationList}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,

@@ -15,7 +15,12 @@ import {
   Space,
   Tooltip,
 } from 'antd';
-import { InfoCircleFilled, UserOutlined } from '@ant-design/icons';
+import {
+  InfoCircleFilled,
+  LockOutlined,
+  LockTwoTone,
+  UserOutlined,
+} from '@ant-design/icons';
 import TextArea from 'antd/lib/input/TextArea';
 import countryList from 'containers/user-management/list';
 const FamilyInformation = ({
@@ -44,6 +49,7 @@ const FamilyInformation = ({
   setMotherPrimaryEmail,
   guardianPrimaryEmail,
   setGuardianPrimaryEmail,
+  setOpenPasswordModal,
 }) => {
   useEffect(() => {
     if (familyFormValues && Object.keys(familyFormValues).length > 0) {
@@ -63,6 +69,9 @@ const FamilyInformation = ({
   const [selectedImageFather, setSelectedImageFather] = useState(null);
   const [selectedImageMother, setSelectedImageMother] = useState(null);
   const [selectedImageGuardian, setSelectedImageGuardian] = useState(null);
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const is_superuser = userData?.is_superuser;
+  const user_level = userData?.user_level;
   const onSubmit = (formValues) => {
     setFamilyFormValues({
       ...formValues,
@@ -155,6 +164,33 @@ const FamilyInformation = ({
     <Select.Option key={each?.country} value={each?.callingCode}>
       {/* {each?.country} ( */}
       {each?.callingCode}
+    </Select.Option>
+  ));
+  const qualificationList = [
+    {
+      key: 1,
+      label: 'School Pass Out',
+      value: 'school_pass_out',
+    },
+    {
+      key: 2,
+      label: 'Graduate',
+      value: 'graduate',
+    },
+    {
+      key: 3,
+      label: 'Post Graduate',
+      value: 'post_graduate',
+    },
+    {
+      key: 4,
+      label: 'Doctorate',
+      value: 'doctorate',
+    },
+  ];
+  const qualificationOptions = qualificationList?.map((each) => (
+    <Select.Option key={each?.key} value={each?.value}>
+      {each?.label}
     </Select.Option>
   ));
   return (
@@ -358,7 +394,7 @@ const FamilyInformation = ({
                     name='father_age'
                     label="Father's Age"
                   >
-                    <InputNumber min={0}/>
+                    <InputNumber min={0} />
                   </Form.Item>
                 </Col>
                 <Col className='py-2' md={24}>
@@ -437,7 +473,9 @@ const FamilyInformation = ({
                         name='father_qualification'
                         label="Father's Qualification"
                       >
-                        <Input className='' />
+                        <Select className='w-100' placeholder='Select Qualification'>
+                          {qualificationOptions}
+                        </Select>
                       </Form.Item>
                     </Col>
                     <Col md={6}>
@@ -647,7 +685,7 @@ const FamilyInformation = ({
                     name='mother_age'
                     label="Mother's Age"
                   >
-                    <InputNumber min={0}/>
+                    <InputNumber min={0} />
                   </Form.Item>
                 </Col>
 
@@ -727,7 +765,9 @@ const FamilyInformation = ({
                         name='mother_qualification'
                         label="Mother's Qualification"
                       >
-                        <Input className='' />
+                        <Select className='w-100' placeholder='Select Qualification'>
+                          {qualificationOptions}
+                        </Select>
                       </Form.Item>
                     </Col>
                     <Col md={6}>
@@ -923,7 +963,7 @@ const FamilyInformation = ({
                     name='guardian_age'
                     label="Guardian's Age"
                   >
-                    <InputNumber min={0}/>
+                    <InputNumber min={0} />
                   </Form.Item>
                 </Col>
                 <Col className='py-2' md={24}>
@@ -1003,7 +1043,9 @@ const FamilyInformation = ({
                         name='guardian_qualification'
                         label="Guardian's Qualification"
                       >
-                        <Input className='' />
+                        <Select className='w-100' placeholder='Select Qualification'>
+                          {qualificationOptions}
+                        </Select>
                       </Form.Item>
                     </Col>
                     <Col md={6}>
@@ -1087,13 +1129,11 @@ const FamilyInformation = ({
                   {
                     validator: (_, value) => {
                       if (value && !/^\d{6}$/.test(value)) {
-                        return Promise.reject(
-                          `Enter Valid Pincode`
-                        );
+                        return Promise.reject(`Enter Valid Pincode`);
                       }
                       return Promise.resolve();
                     },
-                  }
+                  },
                 ]}
                 name={'pin_code'}
                 label='Pincode'
@@ -1198,6 +1238,24 @@ const FamilyInformation = ({
         >
           Back
         </Button>
+        {userLevel !== 13
+          ? editId &&
+            (is_superuser ||
+              user_level === 1 ||
+              user_level === 8 ||
+              user_level === 26) && (
+              <Button
+                onClick={() => {
+                  setOpenPasswordModal(true);
+                }}
+                icon={<LockOutlined />}
+                type='primary'
+                className='ml-3 px-4'
+              >
+                Change Password
+              </Button>
+            )
+          : null}
         {userLevel !== 13 ? (
           <Button
             htmlType='submit'
