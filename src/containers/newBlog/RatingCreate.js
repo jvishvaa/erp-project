@@ -2284,20 +2284,17 @@ const RatingCreate = () => {
                                       </div>
                                     ))
                                   : 'No Option In The List'}
-                                <div
-                                  className='col-12'
-                                  style={{ padding: '0.5rem 0rem' }}
-                                >
-                                  <Button
-                                    icon={<PlusOutlined />}
-                                    onClick={handleOptionInputAddEdit}
-                                    type='primary'
-                                  >
-                                    Add Option
-                                  </Button>
-                                </div>
                               </>
                             )}
+                            <div className='col-12' style={{ padding: '0.5rem 0rem' }}>
+                              <Button
+                                icon={<PlusOutlined />}
+                                onClick={handleOptionInputAddEdit}
+                                type='primary'
+                              >
+                                Add Option
+                              </Button>
+                            </div>
                             <div className='col-12 padding-style'>
                               <Button type='primary' onClick={handleOptionSubmitEdit}>
                                 Submit

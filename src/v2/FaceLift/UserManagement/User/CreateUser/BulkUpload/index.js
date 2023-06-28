@@ -455,7 +455,7 @@ const BulkUpload = () => {
     {
       title: <span className='th-white th-fw-700 '>Mapping ID</span>,
       dataIndex: 'subject__id',
-      width: '20%',
+      width: '40%',
       className: 'text-center',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
