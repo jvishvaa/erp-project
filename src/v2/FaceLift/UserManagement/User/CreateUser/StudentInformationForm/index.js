@@ -133,7 +133,19 @@ const StudentInformation = ({
             <Col className='py-2' md={8}>
               <Form.Item
                 name={'first_name'}
-                rules={[{ required: true, message: 'First name is required!' }]}
+                rules={[
+                  { required: true, message: 'First name is required!' },
+                  {
+                    validator: (_, value) => {
+                      if (value && !/^.{0,30}$/.test(value)) {
+                        return Promise.reject(
+                          `First Name should not exceed 30 characters!`
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
+                ]}
                 label='First Name'
               >
                 <Input className='w-100' />
@@ -141,14 +153,41 @@ const StudentInformation = ({
             </Col>
             {/* <Col md={1} /> */}
             <Col className='py-2' md={8}>
-              <Form.Item name={'middle_name'} label='Middle Name'>
+              <Form.Item
+                name={'middle_name'}
+                label='Middle Name'
+                rules={[
+                  {
+                    validator: (_, value) => {
+                      if (value && !/^.{0,30}$/.test(value)) {
+                        return Promise.reject(
+                          `Middle Name should not exceed 30 characters!`
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
+                ]}
+              >
                 <Input className='w-100' />
               </Form.Item>
             </Col>
             {/* <Col md={1} /> */}
             <Col className='py-2' md={8}>
               <Form.Item
-                rules={[{ required: true, message: 'Last name is required!' }]}
+                rules={[
+                  { required: true, message: 'Last name is required!' },
+                  {
+                    validator: (_, value) => {
+                      if (value && !/^.{0,30}$/.test(value)) {
+                        return Promise.reject(
+                          `Last Name should not exceed 30 characters!`
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
+                ]}
                 name={'last_name'}
                 label='Last Name'
               >
