@@ -239,6 +239,7 @@ const BulkUpload = () => {
       return;
     }
     setRequestSent(true);
+    setLoading(true);
     const formData = new FormData();
     formData.append('branch', selectedBranch);
     formData.append('branch_code', selectedBranchCode);
@@ -266,6 +267,7 @@ const BulkUpload = () => {
       })
       .finally(() => {
         setRequestSent(false);
+        setLoading(false);
       });
   };
 
@@ -287,7 +289,6 @@ const BulkUpload = () => {
   };
 
   const fetchUserDesignation = (value) => {
-    setLoading(true);
     axios
       .get(`${endpoints.lessonPlan.designation}?user_level=${value}`, {
         headers: {
@@ -298,7 +299,6 @@ const BulkUpload = () => {
         if (res?.data?.status_code === 200) {
           setUserDesignationList(res?.data?.result);
         }
-        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -455,7 +455,7 @@ const BulkUpload = () => {
     {
       title: <span className='th-white th-fw-700 '>Mapping ID</span>,
       dataIndex: 'subject__id',
-      width: '40%',
+      width: '20%',
       className: 'text-center',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
@@ -564,8 +564,9 @@ const BulkUpload = () => {
                     <Button
                       type='primary'
                       className='ant-btn btn-block th-br-4 ant-btn-primary '
-                      disabled={requestSent}
+                      // disabled={requestSent}
                       onClick={handleUploadUser}
+                      loading={loading}
                     >
                       Upload
                     </Button>
@@ -664,7 +665,6 @@ const BulkUpload = () => {
                         rowClassName={(record, index) =>
                           index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                         }
-                        loading={loading}
                         columns={designationColumns}
                         rowKey={(record) => record?.id}
                         dataSource={userDesignationList}

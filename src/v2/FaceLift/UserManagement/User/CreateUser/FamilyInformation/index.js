@@ -325,6 +325,16 @@ const FamilyInformation = ({
                           (userLevel !== 13 && parent && parent?.includes('parent')),
                         message: `Father's First Name is required!`,
                       },
+                      {
+                        validator: (_, value) => {
+                          if (value && !/^.{0,30}$/.test(value)) {
+                            return Promise.reject(
+                              `First Name should not exceed 30 characters!`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      },
                     ]}
                     name={'father_first_name'}
                     label="Father's First Name"
@@ -341,6 +351,16 @@ const FamilyInformation = ({
                           !singleParent ||
                           (userLevel !== 13 && parent && parent?.includes('parent')),
                         message: `Father's Last Name is required!`,
+                      },
+                      {
+                        validator: (_, value) => {
+                          if (value && !/^.{0,30}$/.test(value)) {
+                            return Promise.reject(
+                              `Last Name should not exceed 30 characters!`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
                     name={'father_last_name'}
@@ -614,6 +634,16 @@ const FamilyInformation = ({
                           (userLevel !== 13 && parent && parent?.includes('parent')),
                         message: `Mother's First Name is required!`,
                       },
+                      {
+                        validator: (_, value) => {
+                          if (value && !/^.{0,30}$/.test(value)) {
+                            return Promise.reject(
+                              `First Name should not exceed 30 characters!`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      },
                     ]}
                     name={'mother_first_name'}
                     label="Mother's First Name"
@@ -630,6 +660,16 @@ const FamilyInformation = ({
                           !singleParent ||
                           (userLevel !== 13 && parent && parent?.includes('parent')),
                         message: `Mother's Last Name is required!`,
+                      },
+                      {
+                        validator: (_, value) => {
+                          if (value && !/^.{0,30}$/.test(value)) {
+                            return Promise.reject(
+                              `Last Name should not exceed 30 characters!`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
                     name={'mother_last_name'}
@@ -896,6 +936,16 @@ const FamilyInformation = ({
                           (userLevel !== 13 && parent && parent?.includes('guardian')),
                         message: `Guardian's First Name is required!`,
                       },
+                      {
+                        validator: (_, value) => {
+                          if (value && !/^.{0,30}$/.test(value)) {
+                            return Promise.reject(
+                              `First Name should not exceed 30 characters!`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      },
                     ]}
                     name={'guardian_first_name'}
                     label="Guardian's First Name"
@@ -911,6 +961,16 @@ const FamilyInformation = ({
                           guardian === 'guardian' ||
                           (userLevel !== 13 && parent && parent?.includes('guardian')),
                         message: `Guardian's Last Name is required!`,
+                      },
+                      {
+                        validator: (_, value) => {
+                          if (value && !/^.{0,30}$/.test(value)) {
+                            return Promise.reject(
+                              `Last Name should not exceed 30 characters!`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
                     name={'guardian_last_name'}
