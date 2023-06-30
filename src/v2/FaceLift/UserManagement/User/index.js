@@ -473,17 +473,23 @@ const User = () => {
     }
   };
 
-  const filterData = (pageNo, branch, userLevel, grade, section, status) => {
-    setSearchData('');
-    searchRef.current.resetFields();
-
+  const filterData = (pageNo, branch, userLevel, grade, section, status, search) => {
     let userLevelParams = userLevel || '';
     let branchParams = branch || '';
     let gradeParams = grade || '';
     let sectionParams = section || '';
     let statusparams = status || '';
+    let searchParams = search || '';
 
-    if (userLevel == '' && branch == '' && grade == '' && section == '' && status == '') {
+    if (
+      userLevel == '' &&
+      branch == '' &&
+      grade == '' &&
+      section == '' &&
+      status == '' &&
+      searchData == '' &&
+      search === ''
+    ) {
       message.error('Please select atleast one filter to view data');
       return;
     }
@@ -496,7 +502,9 @@ const User = () => {
       userLevelParams.length > 0 ? `&user_level=${userLevel}` : ''
     }${gradeParams.length > 0 ? `&grade=${grade}` : ''}${
       sectionParams.length > 0 ? `&section_mapping_id=${section}` : ''
-    }${statusparams ? `&status=${statusparams}` : ''}`;
+    }${statusparams ? `&status=${statusparams}` : ''}${
+      searchParams ? `&search=${searchParams}` : ''
+    }`;
 
     setLoading(true);
     axiosInstance
@@ -884,7 +892,18 @@ const User = () => {
                               <SearchOutlined className='site-form-item-icon th-grey' />
                             }
                             allowClear
-                            onChange={(e) => onChangeSearch(1, e.target.value)}
+                            onChange={(e) => {
+                              setSearchData(e.target.value);
+                              filterData(
+                                pageNo,
+                                branch,
+                                userLevel,
+                                grade,
+                                section,
+                                status,
+                                e.target.value
+                              );
+                            }}
                           />
                         </Form.Item>
                       </Form>
@@ -902,7 +921,8 @@ const User = () => {
                                 userLevel,
                                 grade,
                                 section,
-                                status
+                                status,
+                                searchData
                               )
                             }
                           >
