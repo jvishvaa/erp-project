@@ -99,7 +99,7 @@ const ActivityMangementDashboard = () => {
                       <span className='th-primary'>{studentBMIDetails?.height} cm</span>
                     </div>
                     <div className='col-sm-3 col-6'>
-                      Wieght :{' '}
+                      weight :{' '}
                       <span className='th-primary'>{studentBMIDetails?.weight} KGs</span>
                     </div>
                     <div className='col-sm-3 col-6 text-truncate'>
@@ -197,12 +197,20 @@ const ActivityMangementDashboard = () => {
                                             <div className='row'>
                                               <div className='col-8 th-truncate-2 text-break pr-1'>
                                                 <div title={round?.level?.name}>
-                                                  {' '}
-                                                  {round?.level?.name} :
+                                                  {index + 1}.{round?.level?.name} :
                                                 </div>
                                               </div>
                                               <div className='col-4 th-fw-500 th-truncate-2 text-break pl-1'>
-                                                <div title={rating}>{rating}</div>
+                                                <div
+                                                  className='px-2 th-br-4'
+                                                  style={{
+                                                    width: 'fit-content',
+                                                    backgroundColor: '#f1e9e9',
+                                                  }}
+                                                  title={rating}
+                                                >
+                                                  {rating}
+                                                </div>
                                               </div>
                                             </div>
                                           </div>
