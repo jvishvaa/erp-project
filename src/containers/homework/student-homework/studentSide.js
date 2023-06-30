@@ -681,7 +681,7 @@ const StudentHomeworkNew = withRouter(
                       </Tooltip>
                     </div>
                   ))}
-                  {subjectList.length > 10 && (
+                  {subjectList?.length > 10 && (
                     <div className='col-md-2 col-6 p-1'>
                       <Button
                         className='th-width-100 th-br-6 text-truncate th-pointer th-button'
