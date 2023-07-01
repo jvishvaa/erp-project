@@ -136,7 +136,9 @@ const CreateUser = () => {
       .get(`/assessment/check-sys-config/`, { params: { ...params } })
       .then((response) => {
         if (response.data.status_code === 200) {
-          setRoleConfig(JSON.parse(response.data?.result[1]) ?? []);
+          setRoleConfig(
+            response.data?.result?.length > 1 ? JSON.parse(response.data?.result[1]) : []
+          );
           setMaxSubjectSelection(Number(response.data?.result[0]) ?? null);
         }
       })
