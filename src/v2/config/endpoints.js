@@ -280,6 +280,11 @@ export default {
     viewStaff: '/erp_user/non_acad_user_data/',
     bulkUpload: '/erp_user/uploaded-users-status/',
   },
+
+  activityManagementDashboard: {
+    studentbmiDetails: `${newBlogURL}/api/get_student_bmi/`,
+    studentSportsDetails: `${newBlogURL}/api/dashboard_student_activity_get/`,
+  },
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing

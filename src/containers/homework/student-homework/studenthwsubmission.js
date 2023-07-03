@@ -63,6 +63,7 @@ import {
   Button,
   Empty,
   Checkbox,
+  Tooltip,
 } from 'antd';
 import { LeftOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -886,10 +887,12 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             ) : null}
 
             <div
-              className='row justify-content-between th-br-10 my-2 p-3'
+              className='row justify-content-between th-br-10 my-2 p-3 col-md-12'
               style={{ background: '#EEF2F8' }}
             >
-              <div className='th-14 th-fw-600'>Homework Title : {homeworkTitle}</div>
+              <Tooltip title={homeworkTitle} >
+              <div className='th-14 th-fw-600 col-md-8 text-truncate'>Homework Title : {homeworkTitle}</div>
+              </Tooltip>
               {homeworkSubmission.status === 1 && (
                 <div className='checkWrapper'>
                   <div className='homework_block_questionwise_check'>
