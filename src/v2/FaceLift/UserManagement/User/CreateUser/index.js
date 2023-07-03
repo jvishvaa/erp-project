@@ -806,24 +806,21 @@ const CreateUser = () => {
     if (parentId) parentObj.id = parentId;
     parentObj.email = email;
     formData.append('parent', JSON.stringify(parentObj));
-    if (familyValues?.father_photo && !typeof familyValues?.father_photo === 'string') {
+    if (familyValues?.father_photo && typeof familyValues?.father_photo !== 'string') {
       formData.append(
         'father_photo',
         familyValues?.father_photo,
         familyValues?.father_photo?.name
       );
     }
-    if (familyValues.mother_photo && !typeof familyValues?.mother_photo === 'string') {
+    if (familyValues.mother_photo && typeof familyValues?.mother_photo !== 'string') {
       formData.append(
         'mother_photo',
         familyValues?.mother_photo,
         familyValues?.mother_photo?.name
       );
     }
-    if (
-      familyValues.guardian_photo &&
-      !typeof familyValues?.guardian_photo === 'string'
-    ) {
+    if (familyValues.guardian_photo && typeof familyValues?.guardian_photo !== 'string') {
       formData.append(
         'guardian_photo',
         familyValues?.guardian_photo,
