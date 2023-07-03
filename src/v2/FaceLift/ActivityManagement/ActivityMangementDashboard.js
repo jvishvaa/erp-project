@@ -74,8 +74,16 @@ const ActivityMangementDashboard = () => {
       <div className='row'>
         <div className='col-12'>
           <Breadcrumb separator='>'>
+            <Breadcrumb.Item
+              className='th-grey th-16 th-pointer'
+              onClick={() => {
+                history.push('/dashboard');
+              }}
+            >
+              Dashboard
+            </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1 th-16'>
-              Activity Management Dashboard
+              Sports Dashboard
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -99,7 +107,7 @@ const ActivityMangementDashboard = () => {
                       <span className='th-primary'>{studentBMIDetails?.height} cm</span>
                     </div>
                     <div className='col-sm-3 col-6'>
-                      weight :{' '}
+                      Weight :{' '}
                       <span className='th-primary'>{studentBMIDetails?.weight} KGs</span>
                     </div>
                     <div className='col-sm-3 col-6 text-truncate'>

@@ -63,15 +63,25 @@ const StudentDashboardConfigOff = () => {
         {checkOrigin ? (
           <>
             {user_level === 13 ? (
-              <div
-                className='col-md-6 th-black-1 th-20 th-fw-400'
-                style={{ display: 'flex', flexDirection: 'row-reverse' }}
-              >
-                <Button onClick={studentrefer}>
-                  <UsergroupAddOutlined />
-                  Orchids Ambassador Program
-                </Button>
-              </div>
+              <>
+                <div className='col-md-3 text-right pr-0'>
+                  <Button
+                    className='th-br-4'
+                    onClick={() => history.push('/activity-management-dashboard')}
+                  >
+                    Sports Dashboard
+                  </Button>
+                </div>
+                <div
+                  className='col-md-3 th-black-1 th-20 th-fw-400'
+                  style={{ display: 'flex', flexDirection: 'row-reverse' }}
+                >
+                  <Button onClick={studentrefer}>
+                    <UsergroupAddOutlined />
+                    Orchids Ambassador Program
+                  </Button>
+                </div>
+              </>
             ) : (
               ''
             )}
