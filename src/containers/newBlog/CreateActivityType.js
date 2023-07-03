@@ -228,8 +228,13 @@ const CreateActivityType = () => {
 
   const submitActivity = () => {
     setLoadingCreate(true);
-    if (!ActivityType) {
+    if (!ActivityType.trim().length) {
       message.error('Please Enter Activity Type');
+      setLoadingCreate(false);
+      return;
+    }
+    if (ActivityType.includes('Physical Activity') && !SubActivityType.trim().length) {
+      message.error('Please Enter Sub Activity Type');
       setLoadingCreate(false);
       return;
     } else {
@@ -249,6 +254,7 @@ const CreateActivityType = () => {
             return;
           } else {
             setActivityType('');
+            setSubActivityType('');
             setAccordianBulkFilter(false);
             getActivityCategory();
             message.success('Activity Created Successfully');

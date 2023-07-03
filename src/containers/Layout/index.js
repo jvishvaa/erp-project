@@ -1211,7 +1211,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/non-academic-staff');
         break;
       }
-
+      case 'Activity Dashboard': {
+        history.push('/activity-management-dashboard');
+        break;
+      }
 
       default:
         break;

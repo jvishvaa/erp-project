@@ -65,6 +65,29 @@ const BulkUpload = () => {
     },
   ];
 
+  const qualificationList = [
+    {
+      key: 1,
+      label: 'School Pass Out',
+      value: 'school_pass_out',
+    },
+    {
+      key: 2,
+      label: 'Graduate',
+      value: 'graduate',
+    },
+    {
+      key: 3,
+      label: 'Post Graduate',
+      value: 'post_graduate',
+    },
+    {
+      key: 4,
+      label: 'Doctorate',
+      value: 'doctorate',
+    },
+  ];
+
   const allowedFiles = ['.xls', '.xlsx'];
   const draggerProps = {
     showUploadList: false,
@@ -124,7 +147,7 @@ const BulkUpload = () => {
       });
     }
     fetchUserLevel();
-    fetchUserRoles()
+    fetchUserRoles();
   }, []);
 
   useEffect(() => {
@@ -133,14 +156,14 @@ const BulkUpload = () => {
     }
   }, [moduleId, selectedYear]);
   const fetchUserRoles = async () => {
-    axiosInstance.get(
-      `${endpoints.communication.roles}`
-    ).then((response)=>{
-        setRoleList(response?.data?.result)
-    }).
-    catch ((error)=> {
-      message.error(error.response.message.data??'Something went!');
-    })
+    axiosInstance
+      .get(`${endpoints.communication.roles}`)
+      .then((response) => {
+        setRoleList(response?.data?.result);
+      })
+      .catch((error) => {
+        message.error(error.response.message.data ?? 'Something went!');
+      });
   };
   const fetchBranches = async () => {
     if (selectedYear) {
@@ -216,6 +239,7 @@ const BulkUpload = () => {
       return;
     }
     setRequestSent(true);
+    setLoading(true);
     const formData = new FormData();
     formData.append('branch', selectedBranch);
     formData.append('branch_code', selectedBranchCode);
@@ -243,6 +267,7 @@ const BulkUpload = () => {
       })
       .finally(() => {
         setRequestSent(false);
+        setLoading(false);
       });
   };
 
@@ -264,7 +289,6 @@ const BulkUpload = () => {
   };
 
   const fetchUserDesignation = (value) => {
-    setLoading(true);
     axios
       .get(`${endpoints.lessonPlan.designation}?user_level=${value}`, {
         headers: {
@@ -275,7 +299,6 @@ const BulkUpload = () => {
         if (res?.data?.status_code === 200) {
           setUserDesignationList(res?.data?.result);
         }
-        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -432,7 +455,7 @@ const BulkUpload = () => {
     {
       title: <span className='th-white th-fw-700 '>Mapping ID</span>,
       dataIndex: 'subject__id',
-      width: '20%',
+      width: '40%',
       className: 'text-center',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
@@ -457,6 +480,23 @@ const BulkUpload = () => {
       title: <span className='th-white th-fw-700'>Role Name</span>,
       dataIndex: 'role_name',
       width: '60%',
+      className: 'text-center',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+  ];
+
+  const qualificationColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>Value</span>,
+      dataIndex: 'value',
+      width: '50%',
+      className: 'text-center',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Qualification</span>,
+      dataIndex: 'label',
+      width: '50%',
       className: 'text-center',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
@@ -524,8 +564,9 @@ const BulkUpload = () => {
                     <Button
                       type='primary'
                       className='ant-btn btn-block th-br-4 ant-btn-primary '
-                      disabled={requestSent}
+                      // disabled={requestSent}
                       onClick={handleUploadUser}
+                      loading={loading}
                     >
                       Upload
                     </Button>
@@ -586,7 +627,7 @@ const BulkUpload = () => {
                   </div>
 
                   <div className='row'>
-                  <div className='col-md-4'>
+                    <div className='col-md-4'>
                       <Table
                         className='th-table'
                         rowClassName={(record, index) =>
@@ -596,6 +637,7 @@ const BulkUpload = () => {
                         rowKey={(record) => record?.id}
                         dataSource={roleList}
                         pagination={false}
+                        style={{ minHeight: '270px' }}
                         scroll={{
                           y: 200,
                         }}
@@ -610,6 +652,7 @@ const BulkUpload = () => {
                         columns={userLevelColumns}
                         rowKey={(record) => record?.id}
                         dataSource={userLevelList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           y: 200,
@@ -622,14 +665,14 @@ const BulkUpload = () => {
                         rowClassName={(record, index) =>
                           index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                         }
-                        loading={loading}
                         columns={designationColumns}
                         rowKey={(record) => record?.id}
                         dataSource={userDesignationList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
@@ -701,10 +744,11 @@ const BulkUpload = () => {
                         columns={gradeColumns}
                         rowKey={(record) => record?.id}
                         dataSource={gradeList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
@@ -718,10 +762,11 @@ const BulkUpload = () => {
                         columns={sectionColumns}
                         rowKey={(record) => record?.id}
                         dataSource={sectionList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
                         }}
                       />
                     </div>
@@ -735,10 +780,28 @@ const BulkUpload = () => {
                         columns={subjectColumns}
                         rowKey={(record) => record?.id}
                         dataSource={subjectList}
+                        style={{ minHeight: '270px' }}
                         pagination={false}
                         scroll={{
                           x: window.innerWidth < 600 ? 'max-content' : null,
-                          y: 'calc(200px)',
+                          y: 200,
+                        }}
+                      />
+                    </div>
+                    <div className='col-md-4'>
+                      <Table
+                        className='th-table mt-3'
+                        rowClassName={(record, index) =>
+                          index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                        }
+                        columns={qualificationColumns}
+                        rowKey={(record) => record?.id}
+                        dataSource={qualificationList}
+                        style={{ minHeight: '270px' }}
+                        pagination={false}
+                        scroll={{
+                          x: window.innerWidth < 600 ? 'max-content' : null,
+                          y: 200,
                         }}
                       />
                     </div>

@@ -451,3 +451,10 @@ svg {
     z-index: 1200 !important;
   }
 }
+
+.border-card {
+  border: 1px solid #d9d9d9 !important;
+}
+.border-card:hover {
+  border: 1px solid #1b4ccb !important;
+}

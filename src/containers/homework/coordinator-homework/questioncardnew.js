@@ -187,7 +187,6 @@ const QuestionCardNew = ({
       return null;
     }
     const isValid = FileValidators(file);
-    !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
     if (isValid?.isValid) {
       try {
         if (
@@ -232,7 +231,11 @@ const QuestionCardNew = ({
         setAlert('error', 'File upload failed');
       }
     } else {
-      setAlert('error', 'Please upload valid file');
+      if (isValid?.msg) {
+        setAlert('error', isValid?.msg);
+      } else {
+        setAlert('error', 'Please upload valid file');
+      }
     }
   };
 

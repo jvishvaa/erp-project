@@ -63,11 +63,14 @@ const StudentDashboardConfigOff = () => {
         {checkOrigin ? (
           <>
             {user_level === 13 ? (
-              <div
-                className='col-md-6 th-black-1 th-20 th-fw-400'
-                style={{ display: 'flex', flexDirection: 'row-reverse' }}
-              >
-                <Button onClick={studentrefer}>
+              <div className='col-md-6 text-right'>
+                <Button
+                  className='th-br-4 mr-2'
+                  onClick={() => history.push('/activity-management-dashboard')}
+                >
+                  Sports Dashboard
+                </Button>
+                <Button onClick={studentrefer} className='th-br-4'>
                   <UsergroupAddOutlined />
                   Orchids Ambassador Program
                 </Button>

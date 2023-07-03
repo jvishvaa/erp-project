@@ -577,7 +577,26 @@ const AcademicYearList = ({
               </Select>
             </Form.Item>
           </Col>
-          {(!currentObj?.isEdit || (userLevel !== 13 && !isOrchids)) && (
+          {currentObj?.isEdit ? (
+            userLevel == 13 && isOrchids ? null : (
+              <Col md={4}>
+                <Form.Item label=' '>
+                  <Popconfirm
+                    onConfirm={() => {
+                      handleDelete();
+                    }}
+                    title='Are you sure to delete?'
+                    okText='Yes'
+                    cancelText='No'
+                  >
+                    <Button type='primary' icon={<DeleteOutlined />}>
+                      Delete
+                    </Button>
+                  </Popconfirm>
+                </Form.Item>
+              </Col>
+            )
+          ) : (
             <Col md={4}>
               <Form.Item label=' '>
                 <Popconfirm
