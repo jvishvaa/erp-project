@@ -55,7 +55,7 @@ const StudentDashboardConfigOn = () => {
 
   return (
     <div className=''>
-      <div className='row th-16 justify-content-between'>
+      <div className='row th-16 justify-content-between py-2'>
         <div className='col-md-6 th-black-1 th-20 th-fw-400'>
           Good {time < 12 ? 'Morning' : time < 16 ? 'Afternoon' : 'Evening'},
           <span className='text-capitalize pr-2'>{first_name}</span>
@@ -64,15 +64,25 @@ const StudentDashboardConfigOn = () => {
         {checkOrigin ? (
           <>
             {user_level === 13 ? (
-              <div
-                className='col-md-6 th-black-1 th-20 th-fw-400'
-                style={{ display: 'flex', flexDirection: 'row-reverse' }}
-              >
-                <Button onClick={studentrefer}>
-                  <UsergroupAddOutlined />
-                  Orchids Ambassador Program
-                </Button>
-              </div>
+              <>
+                <div className='col-md-3 text-right pr-0'>
+                  <Button
+                    className='th-br-4'
+                    onClick={() => history.push('/activity-management-dashboard')}
+                  >
+                    Sports Dashboard
+                  </Button>
+                </div>
+                <div
+                  className='col-md-3 th-black-1 th-20 th-fw-400'
+                  style={{ display: 'flex', flexDirection: 'row-reverse' }}
+                >
+                  <Button onClick={studentrefer}>
+                    <UsergroupAddOutlined />
+                    Orchids Ambassador Program
+                  </Button>
+                </div>
+              </>
             ) : (
               ''
             )}
