@@ -12,6 +12,8 @@ import { Autocomplete } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = makeStyles((theme) => ({
   formTextFields: {
@@ -25,11 +27,11 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   addtimetablebtn: {
-    backgroundColor:  `${theme.palette.v2Color2.primaryV2} !important`,
+    backgroundColor: `${theme.palette.v2Color2.primaryV2} !important`,
     marginTop: '5px',
     marginLeft: '12%',
     '&:hover': {
-      backgroundColor:  `${theme.palette.v2Color2.primaryV2} !important`,
+      backgroundColor: `${theme.palette.v2Color2.primaryV2} !important`,
     },
   },
   addperiodbutton: {
@@ -50,9 +52,10 @@ const TeacherDetailsDialogue = (props) => {
     branch_name,
     section_name,
     grade_name,
+    buddy_teacher_id,
+    buddy_teacher_name,
   } = periodData;
   const classes = useStyles();
-
   return (
     <Grid>
       <div style={{ marginTop: '10%' }}>{''}</div>
@@ -207,6 +210,40 @@ const TeacherDetailsDialogue = (props) => {
                   />
                 )}
               />
+
+              {buddy_teacher_id && (
+                <>
+                  <FormControlLabel
+                    disabled={true}
+                    control={
+                      <Checkbox
+                        checked={buddy_teacher_id ? true : false}
+                        name='checkedB'
+                        color='primary'
+                      />
+                    }
+                    label='Assign Buddy Teacher'
+                  />
+                  <Autocomplete
+                    fullWidth
+                    id='combo-box-demo'
+                    value={buddy_teacher_name}
+                    disabled={true}
+                    options={[]}
+                    getOptionLabel={(option) => option}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size='small'
+                        fullWidth
+                        label='Buddy Teacher'
+                        variant='outlined'
+                      />
+                    )}
+                  />
+                </>
+              )}
             </div>
           )}
           <div className={classes.formTextFields}>

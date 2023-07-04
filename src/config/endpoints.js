@@ -12,7 +12,7 @@ const {
     newBlogURL,
     erpBlogURL,
     msOriginUrl,
-    crm
+    crm,
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -34,8 +34,8 @@ export default {
   auth: {
     login: '/auth/login/',
     mobileLogin: '/erp_user/erp-contact-login/',
-    crmHcmToken : `${crm}/qbox/hmac_token/`,
-    generateLoginToken : `/erp_user/login_token/`,
+    crmHcmToken: `${crm}/qbox/hmac_token/`,
+    generateLoginToken: `/erp_user/login_token/`,
   },
   checkAcademicView: {
     isAcademicView: '/period/period-erp-system-config/',
@@ -107,6 +107,7 @@ export default {
     editPeriod: '/period/period/',
     collidingPeriod: 'period/deactivate_period/',
     teacherTimeTable: '/period/teacher-retrieve-week-periods/',
+    getTeacherList: 'timetable/v3/teachers/',
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
