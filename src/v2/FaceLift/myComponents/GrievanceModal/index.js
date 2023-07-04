@@ -1,5 +1,5 @@
 import React, { useState, createRef } from 'react';
-import { Modal, message, Input, Button, Form } from 'antd';
+import { Modal, message, Input, Button, Form, Radio } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ const { TextArea } = Input;
 const GrievanceModal = (props) => {
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [description, setDescription] = useState('');
+  const [issueOrigin, setIssueOrigin] = useState(null);
   const [attachment, setAttachment] = useState();
   const [resquestSent, setResquestSent] = useState(false);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -20,6 +21,17 @@ const GrievanceModal = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+
+  const originOptions = [
+    {
+      label: 'Web',
+      value: 'web',
+    },
+    {
+      label: 'App',
+      value: 'app',
+    },
+  ];
 
   const handleImage = (e) => {
     let allowedExtension = [
@@ -43,9 +55,18 @@ const GrievanceModal = (props) => {
       props.handleClose();
     }
   };
-
+  const handleIssueOriginChange = (e) => {
+    setIssueOrigin(e.target.value);
+  };
   const handleSubmit = () => {
-    if (description) {
+    if (!issueOrigin) {
+      message.error('Please select origin of the issue!');
+      return;
+    }
+    if (!description.trim().length) {
+      message.error('Please enter description!');
+      return;
+    } else {
       const payload = new FormData();
       payload.append('finance_session_year', selectedAcademicYear?.session_year);
       payload.append('branch_id', selectedBranch?.branch?.id);
@@ -56,6 +77,7 @@ const GrievanceModal = (props) => {
       payload.append('raised_by', userDetails?.erp);
       payload.append('description', description);
       payload.append('source_module', props?.module);
+      payload.append('issue_origin', issueOrigin);
 
       if (attachment) {
         payload.append('file', attachment);
@@ -82,8 +104,6 @@ const GrievanceModal = (props) => {
         .finally(() => {
           setResquestSent(false);
         });
-    } else {
-      message.error('Please enter description!');
     }
   };
   return (
@@ -116,6 +136,19 @@ const GrievanceModal = (props) => {
       >
         <Form id='grievanceForm' layout='vertical' ref={formRef}>
           <div className='row px-2 pt-2'>
+            <div className='col-12'>
+              <Form.Item
+                name='issue_origin'
+                label='Where are you facing this issue?'
+                rules={[{ required: true, message: 'Please select issue origin' }]}
+              >
+                <Radio.Group
+                  options={originOptions}
+                  onChange={handleIssueOriginChange}
+                  value={issueOrigin}
+                />
+              </Form.Item>
+            </div>
             <div className='col-12'>
               <Form.Item
                 name='description'
