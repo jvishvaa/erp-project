@@ -24,12 +24,12 @@ const GrievanceModal = (props) => {
 
   const originOptions = [
     {
-      label: 'Web',
-      value: 'web',
+      label: 'Desktop',
+      value: 'desktop',
     },
     {
-      label: 'App',
-      value: 'app',
+      label: 'Mobile',
+      value: 'mobile',
     },
   ];
 
