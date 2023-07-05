@@ -355,50 +355,6 @@ const V2Router = () => {
                           {({ match }) => <ActivityMangementDashboard match={match} />}
                         </Route>
                         ,
-                        <Route path='/master-management/grade-table'>
-                          {({ match }) => <GradeTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/section-table'>
-                          {({ match }) => <SectionTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/subject-table'>
-                          {({ match }) => <SubjectTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/academic-year-table'>
-                          {({ match }) => <AcademicYearTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/chapter-type-table'>
-                          {({ match }) => <ChapterTypeTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/message-type-table'>
-                          {({ match }) => <MessageTypeTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/subject/grade'>
-                          {({ match }) => <ListandFilterv2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/branch-acad-table'>
-                          {({ match }) => <BranchAcadTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/branch-table'>
-                          {({ match }) => <BranchTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/topic-table'>
-                          {({ match }) => <TopicTablev2 match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/master-management/subject-mapping-table'>
-                          {({ match }) => <SubjectMappingTablev2 match={match} />}
-                        </Route>
-                        ,
                         <Route path='/student-strength'>
                           {({ match }) => <StudentStrength match={match} />}
                         </Route>
@@ -406,7 +362,7 @@ const V2Router = () => {
                         <Route path='/student_count_report'>
                           {({ match }) => <StudentCountReport match={match} />}
                         </Route>
-                        ,{/* v1 router */},{/* v1 router */}
+                        ,{/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}
