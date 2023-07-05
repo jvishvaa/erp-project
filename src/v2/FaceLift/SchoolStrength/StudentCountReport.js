@@ -47,7 +47,7 @@ const StudentCountReport = () => {
     if (acadYear !== undefined && branch !== undefined)
       axios
         .get(
-          `${endpoints.academics.getStudentCountReportData}?session_year=${
+          `${endpoints.academics.getStudentCountReportDataV2}?session_year=${
             acadYear !== undefined ? acadYear : ''
           }&branch_id=${branch !== undefined ? branch : ''}`
         )

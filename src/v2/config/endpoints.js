@@ -59,7 +59,8 @@ export default {
     teacherAttendanceData: '/erp_user/erpuser-attendance-erp/',
     teacherAttendanceSent: '/erp_user/erpuser-attendance/',
     getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
-    getStudentCountReportData: '/erp_user/grade-section-wise-student-count-v2/',
+    getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
+    getStudentCountReportDataV2: '/erp_user/grade-section-wise-student-count-v2/',
     getConfigAnnouncement: '/assessment/check-sys-config/',
   },
   adminDashboard: {
