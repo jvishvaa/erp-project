@@ -71,6 +71,8 @@ import UserBulkUpload from 'v2/FaceLift/UserManagement/User/CreateUser/BulkUploa
 import LoginFormSSO from 'containers/login/ssologin';
 import ReportPipeline from 'v2/FaceLift/ReportPipeline';
 import ActivityMangementDashboard from 'v2/FaceLift/ActivityManagement/ActivityMangementDashboard';
+import StudentStrength from 'v2/FaceLift/SchoolStrength';
+import StudentCountReport from 'v2/FaceLift/SchoolStrength/StudentCountReport';
 
 const V2Router = () => {
   useEffect(() => {
@@ -351,6 +353,14 @@ const V2Router = () => {
                         ,
                         <Route path='/activity-management-dashboard'>
                           {({ match }) => <ActivityMangementDashboard match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/student-strength'>
+                          {({ match }) => <StudentStrength match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/student_count_report'>
+                          {({ match }) => <StudentCountReport match={match} />}
                         </Route>
                         ,{/* v1 router */}
                         {V1Router?.map((item) => {
