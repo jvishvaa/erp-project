@@ -71,6 +71,8 @@ import UserBulkUpload from 'v2/FaceLift/UserManagement/User/CreateUser/BulkUploa
 import LoginFormSSO from 'containers/login/ssologin';
 import ReportPipeline from 'v2/FaceLift/ReportPipeline';
 import ActivityMangementDashboard from 'v2/FaceLift/ActivityManagement/ActivityMangementDashboard';
+import StudentStrength from 'v2/FaceLift/SchoolStrength';
+import StudentCountReport from 'v2/FaceLift/SchoolStrength/StudentCountReport';
 
 const V2Router = () => {
   useEffect(() => {
@@ -352,7 +354,59 @@ const V2Router = () => {
                         <Route path='/activity-management-dashboard'>
                           {({ match }) => <ActivityMangementDashboard match={match} />}
                         </Route>
-                        ,{/* v1 router */}
+                        ,
+                        <Route path='/master-management/grade-table'>
+                          {({ match }) => <GradeTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/section-table'>
+                          {({ match }) => <SectionTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/subject-table'>
+                          {({ match }) => <SubjectTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/academic-year-table'>
+                          {({ match }) => <AcademicYearTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/chapter-type-table'>
+                          {({ match }) => <ChapterTypeTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/message-type-table'>
+                          {({ match }) => <MessageTypeTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/subject/grade'>
+                          {({ match }) => <ListandFilterv2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/branch-acad-table'>
+                          {({ match }) => <BranchAcadTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/branch-table'>
+                          {({ match }) => <BranchTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/topic-table'>
+                          {({ match }) => <TopicTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/subject-mapping-table'>
+                          {({ match }) => <SubjectMappingTablev2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/student-strength'>
+                          {({ match }) => <StudentStrength match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/student_count_report'>
+                          {({ match }) => <StudentCountReport match={match} />}
+                        </Route>
+                        ,{/* v1 router */},{/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}
