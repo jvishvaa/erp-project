@@ -387,7 +387,7 @@ const TimeTable = (props) => {
                       {...params}
                       size='small'
                       fullWidth
-                      label='Period Type'
+                      label='Period Type*'
                       variant='outlined'
                     />
                   )}
@@ -413,7 +413,7 @@ const TimeTable = (props) => {
                         {...params}
                         size='small'
                         fullWidth
-                        label='Subject'
+                        label='Subject*'
                         variant='outlined'
                       />
                     )}
@@ -431,7 +431,7 @@ const TimeTable = (props) => {
                       style={{ minWidth: 150 }}
                       autoOk
                       format='hh:mm A'
-                      label='Period Start Time'
+                      label='Period Start Time*'
                       value={selectedStartTime}
                       onChange={setselectedStartTime}
                     />
@@ -446,7 +446,7 @@ const TimeTable = (props) => {
                       style={{ minWidth: 150 }}
                       autoOk
                       format='hh:mm A'
-                      label='Period End Time'
+                      label='Period End Time*'
                       value={selectedEndTime}
                       onChange={setselectedEndTime}
                     />
@@ -478,7 +478,7 @@ const TimeTable = (props) => {
                         {...params}
                         size='small'
                         fullWidth
-                        label='Assigned Teacher'
+                        label='Assigned Teacher*'
                         variant='outlined'
                       />
                     )}
@@ -514,7 +514,7 @@ const TimeTable = (props) => {
                           {...params}
                           size='small'
                           fullWidth
-                          label='Buddy Teacher'
+                          label={`Buddy Teacher${addBuddyTeacher ? '*' : ''}`}
                           variant='outlined'
                         />
                       )}
@@ -540,7 +540,7 @@ const TimeTable = (props) => {
                       variant='outlined'
                       fullWidth
                       size='small'
-                      label='Day'
+                      label='Day*'
                     />
                   )}
                 />
