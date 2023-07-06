@@ -331,6 +331,7 @@ const AcademicYearList = ({
                   setSubjects([]);
                 }}
                 getPopupContainer={(trigger) => trigger.parentNode}
+                listHeight={150}
                 showSearch
                 filterOption={(input, options) => {
                   return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -383,6 +384,7 @@ const AcademicYearList = ({
                   setSubjects([]);
                 }}
                 getPopupContainer={(trigger) => trigger.parentNode}
+                listHeight={150}
                 showSearch
                 filterOption={(input, options) => {
                   return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -423,6 +425,7 @@ const AcademicYearList = ({
                   userLevel === 13
                 }
                 getPopupContainer={(trigger) => trigger.parentNode}
+                listHeight={150}
                 onChange={(e, value) => {
                   if (e.includes('all')) {
                     let values = grades?.map((e) => e?.grade_name);
@@ -478,6 +481,7 @@ const AcademicYearList = ({
                 allowClear
                 value={currentObj?.section}
                 getPopupContainer={(trigger) => trigger.parentNode}
+                listHeight={150}
                 onChange={(e, value) => {
                   if (e.includes('all')) {
                     let values = sections?.map((e) => e?.item_id);
@@ -545,6 +549,7 @@ const AcademicYearList = ({
                 allowClear
                 value={currentObj?.subjects}
                 getPopupContainer={(trigger) => trigger.parentNode}
+                listHeight={150}
                 maxLength={maxSubjectSelection ?? subjects?.length}
                 onChange={(e, value) => {
                   if (e.includes('all')) {
