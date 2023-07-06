@@ -261,7 +261,7 @@ const EditPeriodDialog = (props) => {
                   {...params}
                   size='small'
                   fullWidth
-                  label='Period Type'
+                  label={`Period Type${props?.user_level !== 13 ? '*' : ''}`}
                   variant='outlined'
                 />
               )}
@@ -285,7 +285,7 @@ const EditPeriodDialog = (props) => {
                     {...params}
                     size='small'
                     fullWidth
-                    label='Subject'
+                    label={`Subject${props?.user_level !== 13 ? '*' : ''}`}
                     variant='outlined'
                   />
                 )}
@@ -304,7 +304,7 @@ const EditPeriodDialog = (props) => {
                   autoOk
                   disabled={isEdit}
                   format='hh:mm A'
-                  label='Starting Time'
+                  label={`Starting Time${props?.user_level !== 13 ? '*' : ''}`}
                   value={selectedStartTime}
                   onChange={setselectedStartTime}
                 />
@@ -319,7 +319,7 @@ const EditPeriodDialog = (props) => {
                   autoOk
                   disabled={isEdit}
                   format='hh:mm A'
-                  label='Ending Time'
+                  label={`Ending Time${props?.user_level !== 13 ? '*' : ''}`}
                   value={selectedEndTime}
                   onChange={setselectedEndTime}
                 />
@@ -347,27 +347,29 @@ const EditPeriodDialog = (props) => {
                     {...params}
                     size='small'
                     fullWidth
-                    label='Assigned Teacher'
+                    label={`Assigned Teacher${props?.user_level !== 13 ? '*' : ''}`}
                     variant='outlined'
                   />
                 )}
               />
 
-              <FormControlLabel
-                disabled={isEdit}
-                control={
-                  <Checkbox
-                    checked={addBuddyTeacher}
-                    onChange={() => {
-                      setAddBuddyTeacher((prevState) => !prevState);
-                      setBuddyTeacherId(null);
-                    }}
-                    name='checkedB'
-                    color='primary'
-                  />
-                }
-                label='Assign Buddy Teacher'
-              />
+              {props?.user_level !== 13 && (
+                <FormControlLabel
+                  disabled={isEdit}
+                  control={
+                    <Checkbox
+                      checked={addBuddyTeacher}
+                      onChange={() => {
+                        setAddBuddyTeacher((prevState) => !prevState);
+                        setBuddyTeacherId(null);
+                      }}
+                      name='checkedB'
+                      color='primary'
+                    />
+                  }
+                  label='Assign Buddy Teacher'
+                />
+              )}
               {addBuddyTeacher && (
                 <Autocomplete
                   fullWidth
@@ -384,13 +386,16 @@ const EditPeriodDialog = (props) => {
                     setBuddyTeacher(option);
                     setBuddyTeacherId(option?.user_id);
                   }}
+                  className={props?.user_level == 13 ? 'pt-3' : ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       size='small'
                       fullWidth
-                      label='Buddy Teacher'
+                      label={`Buddy Teacher${
+                        addBuddyTeacher && props?.user_level !== 13 ? '*' : ''
+                      }`}
                       variant='outlined'
                     />
                   )}
@@ -424,7 +429,7 @@ const EditPeriodDialog = (props) => {
                   variant='outlined'
                   fullWidth
                   size='small'
-                  label='Day'
+                  label={`Day${props?.user_level !== 13 ? '*' : ''}`}
                 />
               )}
             />
