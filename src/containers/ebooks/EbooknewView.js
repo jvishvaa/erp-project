@@ -485,6 +485,7 @@ const EbookView = (props) => {
                 <div className='mb-2 text-left'>Subject</div>
                 <Form.Item name='subject'>
                   <Select
+                    allowClear
                     placeholder='Select Subject'
                     showSearch
                     optionFilterProp='children'
@@ -568,6 +569,7 @@ const EbookView = (props) => {
                   total={total}
                   page={page}
                   handlePageChange={handlePageChange}
+                  centralSubject={centralSubject}
                 />
               </div>
             ) : (
