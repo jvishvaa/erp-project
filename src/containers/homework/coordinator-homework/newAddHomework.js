@@ -117,7 +117,7 @@ const AddHomeworkCordNew = ({
       question: '',
       attachments: [],
       is_attachment_enable: false,
-      max_attachment: 2,
+      max_attachment: 10,
       penTool: false,
     },
   ]);
