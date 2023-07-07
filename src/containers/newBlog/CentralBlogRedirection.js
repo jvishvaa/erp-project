@@ -314,10 +314,10 @@ const CentralBlogRedirection = () => {
           ) : activityListData.length > 0 ? (
             <div className='row p-3'>
               {activityListData?.map((each, index) => (
-                <div className='col-md-4 mb-2 '>
+                <div className='col-md-3' style={{ marginBottom: 30 }}>
                   <div className='th-br-10 th-bg-grey shadow-sm wall_card'>
                     <div className='row p-3'>
-                      <div className='col-4 px-0 th-br-5' style={{ height: 150 }}>
+                      <div className='col-4 px-0 th-br-5' style={{ height: 100 }}>
                         <img
                           src={getActivityIcon(each?.name)}
                           alt='Icon'
@@ -333,18 +333,18 @@ const CentralBlogRedirection = () => {
                         <div className='d-flex flex-column justify-content-between h-100'>
                           <div className='d-flex flex-column align-item-center th-black-1 '>
                             <div className=''>
-                              <span className='th-18 th-fw-700 text-capitalize'>
+                              <span className='th-16 th-fw-700 text-capitalize'>
                                 {each?.name}
                               </span>
                             </div>
-                            <div>
+                            {/* <div>
                               <span className='th-12 th-fw-300'>
                                 {each?.count}{' '}
                                 {each?.count == 1 ? 'Activity' : 'Activities'}
                               </span>
-                            </div>
+                            </div> */}
                           </div>
-                          <div className='d-flex flex-column th-bg-pink align-item-center th-br-5'>
+                          {/* <div className='d-flex flex-column th-bg-pink align-item-center th-br-5'>
                             <div className=''>
                               <span className='th-12 th-fw-300 ml-2 text-capitalize th-blue-1'>
                                 Recently Added
@@ -353,17 +353,17 @@ const CentralBlogRedirection = () => {
                             <div>
                               <span className='th-12 th-fw-500 ml-2'>{each?.title}</span>
                             </div>
-                          </div>
+                          </div> */}
                           <div className='row align-items-center'>
-                            <div className='col-sm-6 pl-0'>
-                              <div className='th-12 th-fw-300 text-capitalize th-black-1'>
+                            {/* <div className='col-sm-6 pl-0'> */}
+                            {/* <div className='th-12 th-fw-300 text-capitalize th-black-1'>
                                 Last Updated
                               </div>
                               <div className='th-12 th-fw-400'>
                                 {moment(each?.last_update).format('ll')}
-                              </div>
-                            </div>
-                            <div className='col-sm-6  px-0 pt-1 pt-sm-0'>
+                              </div> */}
+                            {/* </div> */}
+                            <div className='col-sm-10  px-0 pt-1 pt-sm-0'>
                               <div
                                 className='th-button-active th-br-6 text-truncate th-pointer text-center p-1'
                                 onClick={() => handleExplore(each)}
