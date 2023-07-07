@@ -4,7 +4,7 @@ import { Breadcrumb, Select, Button, message, Table, Spin } from 'antd';
 
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { DownOutlined } from '@ant-design/icons';
+import { RedoOutlined } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import * as FileSaver from 'file-saver';
@@ -19,78 +19,46 @@ const StudentCountReport = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const formRef = createRef();
-  const [branchList, setBranchList] = useState([]);
-  const [branchId, setBranchId] = useState(null);
   const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [filterData, setFilterData] = useState([]);
   const [tableColumn, setTableColumn] = useState([]);
 
   useEffect(() => {
-    setBranchId(null);
-    setFilterData([]);
     setTableColumn([]);
-    fetchBranchList(selectedAcademicYear?.id);
+    getStudentCountReportData(selectedAcademicYear?.id, selectedBranch?.branch?.id);
   }, []);
 
-  const filterDataValidate = () => {
-    if (!branchId) {
-      message.error('Please Select Branch');
-      return;
-    } else {
-      getStudentCountReportData(selectedAcademicYear?.id, branchId);
-    }
-  };
-
   const getStudentCountReportData = (acadYear, branch) => {
-    if (acadYear !== undefined && branch !== undefined)
-      axios
-        .get(
-          `${endpoints.academics.getStudentCountReportDataV2}?session_year=${
-            acadYear !== undefined ? acadYear : ''
-          }&branch_id=${branch !== undefined ? branch : ''}`
-        )
-        .then((res) => {
-          const list = res.data || [];
-          const firstObject = list[0] || {};
-          const cols = [];
-          for (const key in firstObject) {
-            const col = {
-              title: <span className='th-white th-fw-700 text-capitalize'> {key} </span>,
-              dataIndex: key,
-              align: 'center',
-              render: (text, row) => <p>{text}</p>,
-            };
-            cols.push(col);
-          }
-          setTableColumn(cols);
-          setFilterData(res.data);
-        })
-        .catch((err) => {});
-  };
-
-  const branchOptions = branchList?.map((item) => {
-    return (
-      <Option key={item.branch.id} value={item.branch.id}>
-        {item.branch.branch_name}
-      </Option>
-    );
-  });
-
-  const fetchBranchList = (e) => {
-    if (e) {
-      setLoading(true);
-      axios
-        .get(`${endpoints.academics.branches}?session_year=${e}`, {})
-        .then((response) => {
-          setBranchList(response?.data?.data?.results || []);
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
+    if (acadYear !== undefined && branch !== undefined) setLoading(true);
+    axios
+      .get(
+        `${endpoints.academics.getStudentCountReportData}?session_year=${
+          acadYear !== undefined ? acadYear : ''
+        }&branch_id=${branch !== undefined ? branch : ''}`
+      )
+      .then((res) => {
+        const list = res.data || [];
+        const firstObject = list[0] || {};
+        const cols = [];
+        for (const key in firstObject) {
+          const col = {
+            title: <span className='th-white th-fw-700 text-capitalize'> {key} </span>,
+            dataIndex: key,
+            align: 'center',
+            render: (text, row) => <p>{text}</p>,
+          };
+          cols.push(col);
+        }
+        setTableColumn(cols);
+        setFilterData(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
   };
 
   const fileExtension = '.xlsx';
@@ -105,55 +73,33 @@ const StudentCountReport = () => {
   return (
     <Layout>
       <div className='row'>
-        <div className='col-md-12'>
+        <div className='col-md-8'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/dashboard' className='th-grey'>
+            <Breadcrumb.Item className='th-black-1 th-16'>
               Student Count Report
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-
         <div className='col-md-12 mt-3'>
           <div className='row th-bg-white p-2'>
-            <div className='row py-4'>
-              <div className='col-md-3'>
-                <span className='th-grey th-14'>Branch*</span>
-                <Select
-                  showSearch
-                  placeholder='Select Branch'
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  className='w-100 th-black-1 th-bg-grey th-br-4 mt-1'
-                  placement='bottomRight'
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                  dropdownMatchSelectWidth={false}
-                  value={branchId}
-                  allowClear={true}
-                  onChange={(e) => {
-                    setBranchId(e);
-                  }}
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                >
-                  {branchOptions}
-                </Select>
-              </div>
-              <div className='col-md-6 py-4'>
+            <div className='row py-3'>
+              <div className='col-12 text-right'>
                 <span>
-                  <Button
-                    type='primary'
-                    className='th-br-4 mr-md-3 th-pointer'
-                    onClick={filterDataValidate}
+                  <span
+                    className='p-sm-3 p-3 th-22'
+                    onClick={() =>
+                      getStudentCountReportData(
+                        selectedAcademicYear?.id,
+                        selectedBranch?.branch?.id
+                      )
+                    }
                   >
-                    Filter
-                  </Button>
+                    <RedoOutlined className='th-primary' />
+                  </span>
                   <Button
                     className='th-br-4 mr-md-3 th-pointer'
                     onClick={() => exportTo(filterData, 'StudentCountData')}
-                    disabled={!branchId}
+                    disabled={!selectedBranch?.branch?.id}
                   >
                     Download Report
                   </Button>
@@ -171,7 +117,7 @@ const StudentCountReport = () => {
               <div className='row'>
                 <div className='col-md-12'>
                   <>
-                    {filterData?.length !== 0 ? (
+                    {filterData?.length > 0 ? (
                       <Table
                         className='th-table'
                         rowClassName={(record, index) =>
