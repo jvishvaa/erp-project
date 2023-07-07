@@ -15,7 +15,7 @@ import {
 
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { RightSquareOutlined, CloseOutlined } from '@ant-design/icons';
+import { RightSquareOutlined, CloseOutlined, RedoOutlined } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import axiosInstance from 'v2/config/axios';
 import FileSaver from 'file-saver';
@@ -28,11 +28,9 @@ const StudentStrength = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const formRef = createRef();
-  const [branchList, setBranchList] = useState([]);
-  const [selectedAcadYear, setSelectedAcadmeicYear] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
-  const [selectedBranch, setSelectedBranch] = useState(null);
   const [gradeId, setGradeId] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredData, setFilteredData] = useState([]);
@@ -53,15 +51,14 @@ const StudentStrength = () => {
   };
 
   useEffect(() => {
-    fetchBranchList(selectedAcademicYear?.id);
-    setSelectedAcadmeicYear(selectedAcademicYear?.id);
-  }, []);
+    fetchSchoolStrengthData(page);
+  }, [page]);
 
   const fetchAllBranchStrengthExcel = () => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.studentListApis.downloadExcelAllstudents2}?academic_year_id=${selectedAcadYear}`,
+        `${endpoints.studentListApis.downloadExcelAllstudents2}?academic_year_id=${selectedAcademicYear?.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -86,7 +83,7 @@ const StudentStrength = () => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.studentListApis.downloadBranchWiseStudent2}?academic_year_id=${selectedAcadYear}&branch_id=${selectedBranch}`,
+        `${endpoints.studentListApis.downloadBranchWiseStudent2}?academic_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -107,77 +104,52 @@ const StudentStrength = () => {
       });
   };
 
-  const fetchBranchList = (e) => {
-    if (e) {
-      axios
-        .get(`${endpoints.academics.branches}?session_year=${e}`, {})
-        .then((response) => {
-          setBranchList(response?.data?.data?.results || []);
-        })
-        .catch(() => {});
-    }
-  };
-
   const fetchSchoolStrengthData = (pageNumber) => {
-    if (validateSchoolStrengthData()) {
-      setLoading(true);
-      axios
-        .get(
-          `${
-            endpoints.studentListApis.branchWiseStudentCount
-          }?academic_year_id=${selectedAcadYear}&branch_id=${selectedBranch}&page_number=${
-            pageNumber || 1
-          }&page_size=${15}`,
-          {}
-        )
-        .then((result) => {
-          setLoading(false);
-          if (result?.data?.status_code === 200) {
-            setTotalPages(result.data?.total_pages);
-            setFilteredData(result.data?.data?.grade_wise_data);
-            setFilteredDataOverallStat(result?.data?.data?.overall_stat);
-          } else {
-            message.error(result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          message.error(error.message);
-        });
-    }
+    setLoading(true);
+    axios
+      .get(
+        `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
+          selectedAcademicYear?.id
+        }&branch_id=${selectedBranch?.branch?.id}&page_number=${
+          pageNumber || 1
+        }&page_size=${15}`,
+        {}
+      )
+      .then((result) => {
+        setLoading(false);
+        if (result?.data?.status_code === 200) {
+          setTotalPages(result.data?.total_pages);
+          setFilteredData(result.data?.data?.grade_wise_data);
+          setFilteredDataOverallStat(result?.data?.data?.overall_stat);
+        } else {
+          message.error(result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        message.error(error.message);
+      });
   };
 
   const fetchGradeWiseData = (gradeId) => {
-    if (validateSchoolStrengthData()) {
-      setLoadingDrawer(true);
-      setviewDrawer(true);
-      axios
-        .get(
-          `${endpoints.studentListApis.gradeWiseStudentCount}?academic_year_id=${selectedAcadYear}&branch_id=${selectedBranch}&grade_id=${gradeId}`
-        )
-        .then((result) => {
-          setLoadingDrawer(false);
-          if (result && result?.data?.status_code === 200) {
-            setSelecteGradeWiseData(result && result?.data?.data);
-          } else {
-            message.error(result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setLoadingDrawer(false);
-          message.error(error.message);
-        });
-    }
-  };
-
-  const validateSchoolStrengthData = () => {
-    let isFormValid = true;
-    if (!selectedBranch) {
-      message.error('Please Select Branch');
-      isFormValid = false;
-    }
-
-    return isFormValid;
+    setLoadingDrawer(true);
+    setviewDrawer(true);
+    axios
+      .get(
+        `${endpoints.studentListApis.gradeWiseStudentCount}?academic_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${gradeId}`
+      )
+      .then((result) => {
+        setLoadingDrawer(false);
+        if (result && result?.data?.status_code === 200) {
+          setSelecteGradeWiseData(result && result?.data?.data);
+        } else {
+          message.error(result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setLoadingDrawer(false);
+        message.error(error.message);
+      });
   };
 
   const sectionFilterData = (sectionMapping) => {
@@ -185,8 +157,8 @@ const StudentStrength = () => {
     axios
       .get(
         !sectionMapping
-          ? `${endpoints.studentListApis.gradeWiseStudentCount}?academic_year_id=${selectedAcadYear}&branch_id=${selectedBranch}&grade_id=${gradeId}`
-          : `${endpoints.studentListApis.gradeWiseStudentCount}?academic_year_id=${selectedAcadYear}&branch_id=${selectedBranch}&grade_id=${gradeId}&mapping_id=${sectionMapping}`
+          ? `${endpoints.studentListApis.gradeWiseStudentCount}?academic_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${gradeId}`
+          : `${endpoints.studentListApis.gradeWiseStudentCount}?academic_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${gradeId}&mapping_id=${sectionMapping}`
       )
       .then((result) => {
         setLoadingDrawer(false);
@@ -211,20 +183,13 @@ const StudentStrength = () => {
     );
   });
 
-  const branchOptions = branchList?.map((each) => {
-    return (
-      <Option key={each.branch.id} value={each.branch.id}>
-        {each.branch.branch_name}
-      </Option>
-    );
-  });
-
   const columns = [
     {
       title: <span className='th-white th-fw-700 '>S.No</span>,
       dataIndex: 'name',
       key: 'name',
       align: 'center',
+      width: '13%',
       render: (id, record, index) => {
         ++index;
         return index;
@@ -236,30 +201,33 @@ const StudentStrength = () => {
       dataIndex: 'name',
       key: 'name',
       align: 'center',
-      render: (text, row) => <p>{row.name ? row.name : <b>NA</b>}</p>,
+      width: '35%',
+      render: (text, row) => <span>{row.name ? row.name : <b>NA</b>}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Erp No</span>,
       dataIndex: 'erp_id',
       key: 'erp_id',
       align: 'center',
-      render: (text, row) => <p>{row.erp_id ? row.erp_id : <b>NA</b>}</p>,
+      width: '32%',
+      render: (text, row) => <span>{row.erp_id ? row.erp_id : <b>NA</b>}</span>,
     },
     {
       title: <span className='th-white th-fw-700 '>Status</span>,
       dataIndex: 'is_active',
       key: 'is_active',
       align: 'center',
+      width: '20%',
       render: (text, item) => (
-        <p>
+        <span>
           {item.is_active && !item.is_delete ? (
             'Active'
           ) : item.is_active || (!item.is_active && item.is_delete) ? (
             <span style={{ color: 'rgb(157, 157, 157)' }}>Deleted</span>
           ) : (
-            'In Active'
+            <span className='th-red'>In Active</span>
           )}
-        </p>
+        </span>
       ),
     },
   ];
@@ -267,53 +235,26 @@ const StudentStrength = () => {
     <Layout>
       <>
         <div className='row'>
-          <div className='col-md-12'>
+          <div className='col-md-8'>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
-                Dashboard
+              <Breadcrumb.Item className='th-black-1 th-16'>
+                School Strength
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1'>School Strength</Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className='col-md-12 mt-3'>
             <div className='th-bg-white'>
-              <div className='row py-3 align-items-center'>
-                <div className='col-md-3'>
-                  <Select
-                    showSearch
-                    placeholder='Select Branch*'
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    className='w-100 th-black-1 th-bg-grey th-br-4 mt-1'
-                    placement='bottomRight'
-                    dropdownMatchSelectWidth={false}
-                    value={selectedBranch}
-                    allowClear={true}
-                    onChange={(e) => {
-                      setSelectedBranch(e);
-                    }}
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
+              <div className='row py-3'>
+                <div className='col-12 text-right'>
+                  <span
+                    className='th-pointer p-sm-3 p-3 th-22'
+                    onClick={() => fetchSchoolStrengthData(page)}
                   >
-                    {branchOptions}
-                  </Select>
-                </div>
-                <div className='col-md-4'>
+                    <RedoOutlined className='th-primary' />
+                  </span>
                   <Button
                     type='primary'
                     className='th-br-4 th-pointer mr-2'
-                    onClick={() => {
-                      fetchSchoolStrengthData(page);
-                    }}
-                  >
-                    Filter
-                  </Button>
-                  <Button
-                    type='primary'
-                    className='th-br-4 th-pointer'
                     onClick={() => {
                       fetchBranchStrengthExcel();
                     }}
@@ -321,9 +262,6 @@ const StudentStrength = () => {
                   >
                     Download Branch Strength
                   </Button>
-                </div>
-
-                <div className='offset-md-1 col-md-4 text-right'>
                   <Button
                     className='th-br-4 th-pointer mr-2'
                     onClick={() => {
@@ -354,30 +292,33 @@ const StudentStrength = () => {
                           className='row pt-2 align-items-center th-bg-white th-br-8 th-16 th-grey th-fw-500'
                           style={{ outline: '1px solid #d9d9d9' }}
                         >
-                          <div className='col-md-3 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
+                          <span className='p-3 p-sm-3'>
                             Total Strength:{' '}
                             <span className='th-primary'>
                               {filteredDataOverallStat.total_strength}
                             </span>
-                          </div>
-                          <div className='col-md-3 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                          </span>
+                          <span className='p-3 p-sm-3'>
                             Total Active:{' '}
                             <span className='th-green'>
                               {filteredDataOverallStat.total_active}
                             </span>
-                          </div>
-                          <div className='col-md-3 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                          </span>
+                          <span className='p-3 p-sm-3'>
+                            {filteredDataOverallStat.new_admissions}
+                          </span>
+                          <span className='p-3 p-sm-3'>
                             Temporary Inactive:{' '}
                             <span className='th-yellow'>
                               {filteredDataOverallStat.total_temporary_inactive}
                             </span>
-                          </div>
-                          <div className='col-md-3 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+                          </span>
+                          <span className='p-3 p-sm-3'>
                             Permanent Inactive:{' '}
                             <span className='th-red'>
                               {filteredDataOverallStat.total_permanent_inactive}
                             </span>
-                          </div>
+                          </span>
                         </div>
                       </div>
                     ) : null}
@@ -404,7 +345,7 @@ const StudentStrength = () => {
                               <div className='row mt-2'>
                                 <div className='col'>
                                   <div>
-                                    Total:{' '}
+                                    Total Strength:{' '}
                                     <span className='th-fw-600'>
                                       {input.student_count}
                                     </span>
@@ -467,12 +408,12 @@ const StudentStrength = () => {
         </div>
 
         <Drawer
-          title={<span className='th-fw-500'>School Strength({data?.grade_name})</span>}
+          title={<span className='th-fw-500'>School Strength</span>}
           placement='right'
           onClose={handleCloseViewLevelMore}
           zIndex={1300}
           visible={viewDrawer}
-          width={'45vw'}
+          width={'50vw'}
           closable={false}
           className='th-resources-drawer'
           extra={
@@ -486,8 +427,18 @@ const StudentStrength = () => {
               <div className='col-12 px-0 th-bg-white '>
                 <div className='row mt-2'>
                   <div className='col'>
+                    <div>{data?.grade_name}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-12 px-0 th-bg-white '>
+                <div className='row mt-2'>
+                  <div className='col'>
                     <div>
-                      Total: <span className='th-fw-600'>{data?.student_count}</span>
+                      Total Strength:{' '}
+                      <span className='th-fw-600'>{data?.student_count}</span>
                     </div>
                   </div>
                   <div className='col text-right justify-content-end'>
@@ -549,17 +500,17 @@ const StudentStrength = () => {
                         `'th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
                       }
                       pagination={false}
-                      scroll={{ x: true }}
+                      scroll={{ y: '50vh' }}
                       loading={loadingDrawer}
                       columns={columns}
                       dataSource={selectedGradeWiseData?.students}
                     />
                   ) : (
                     <div
-                      className='row justify-content-center align-item-center mt-5'
+                      className='row justify-content-center align-item-center mt-5 th-g-white'
                       style={{ height: '47 vh' }}
                     >
-                      <img src={NoDataIcon} />
+                      <h6>Students Not Found</h6>
                     </div>
                   )}
                 </>
