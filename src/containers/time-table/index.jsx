@@ -468,8 +468,10 @@ const TimeTable = (props) => {
                       if (option?.user_id) {
                         setAssignedTeacherID(option?.user_id);
                         setBuddyTeacherId(null);
+                        setAddBuddyTeacher(false);
                       } else {
                         setAddBuddyTeacher(false);
+                        setBuddyTeacherId(null);
                       }
                     }}
                     filterSelectedOptions
