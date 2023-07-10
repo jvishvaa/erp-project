@@ -356,6 +356,7 @@ const StudentSideVisualActivity = () => {
                         alt={'image'}
                         width='100%'
                         loading='lazy'
+                        style={{height: '60vh'}}
                       />
                     ) : (
                       <ReactPlayer

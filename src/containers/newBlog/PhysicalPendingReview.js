@@ -700,7 +700,7 @@ const PhysicalPendingReview = (props) => {
 
   return (
     <>
-      <div className='row th-bg-white th-br-5 m-3'>
+      <div className='row th-bg-white th-br-5 mb-3'>
         {loading ? (
           <div
             className='d-flex align-items-center justify-content-center w-100'
@@ -719,7 +719,7 @@ const PhysicalPendingReview = (props) => {
               }
               loading={loading}
               scroll={{ x: totalSubmitted.length > 0 ? 'max-content' : null, y: 600 }}
-              pagination={false}
+              pagination={true}
             />
           </div>
         )}
@@ -927,7 +927,7 @@ const PhysicalPendingReview = (props) => {
                             color: 'white',
                           }}
                         >
-                          <th style={{ textAlign: 'center' }}> Rounds </th>
+                          <th style={{ textAlign: 'center' }}> Attempts </th>
                           {tableHeader?.map((item, i) => (
                             <th>{item?.name}</th>
                           ))}
