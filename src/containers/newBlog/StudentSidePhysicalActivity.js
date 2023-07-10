@@ -71,12 +71,27 @@ const StudentSidePhysicalActivity = () => {
   // const [physicalActivityToggle, setPhysicalActivityToggle] = useState(false);
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [subActivityID, setSubActivityID] = useState();
-
   const [showActivityTab, setShowActivityTab] = useState('1');
+  const [sportDashboard, setSportDashboard] = useState(false)
 
   const onActivityTabChange = (key) => {
     setCurrentPageAssigned(1);
     setShowActivityTab(key);
+    formRef.current.setFieldsValue({
+      sub_activity: subActivityID ? subActivityID : activityDetails?.id[0],
+    });
+    fetchStudentActivityList({
+      user_id: userIdLocal,
+      activity_type: subActivityID,
+      activity_detail_id: 'null',
+      is_reviewed: 'True',
+      is_submitted: 'True',
+      page: currentPageAssigned,
+      page_size: limitAssigned,
+      activity_name: 'Physical Activity',
+      is_round_available: key === '1' ? false : true,
+    });
+
     if (key === '3') {
       handleViewBMI();
     }
@@ -243,20 +258,32 @@ const StudentSidePhysicalActivity = () => {
       })
       .then((res) => {
         if (res.data.status_code === 200) {
-          setSubActivityListData(res?.data?.result);
+          setSubActivityListData(res?.data?.result.reverse());
           if (history?.location?.state?.activity?.activity_sub_type_name) {
             let subActivity = history?.location?.state?.activity?.activity_sub_type_name;
             let currentSubActivity = res?.data?.result.filter(
               (el) => el?.sub_type == subActivity
             );
-            // if (currentSubActivity.length > 0) {
-            //   setSubActivityID(currentSubActivity[0]?.id);
-            //   formRef.current.setFieldsValue({
-            //     sub_activity: subActivity,
-            //   });
-            // }
+            fetchStudentActivityList({
+              user_id: userIdLocal,
+              activity_type: currentSubActivity[0]?.id,
+              activity_detail_id: 'null',
+              is_reviewed: 'True',
+              is_submitted: 'True',
+              page: currentPageAssigned,
+              page_size: limitAssigned,
+              activity_name: 'Physical Activity',
+              is_round_available: showActivityTab === '1' ? false : true,
+            });
+            setSportDashboard(true)
+            if (currentSubActivity.length > 0) {
+              setSubActivityID(currentSubActivity[0]?.id);
+              formRef.current.setFieldsValue({
+                sub_activity: subActivity,
+              });
+            }
           }
-          //  else {
+          // else {
           //   setSubActivityID(res?.data?.result[0]?.id);
           //   formRef.current.setFieldsValue({
           //     sub_activity: res?.data?.result[0]?.sub_type,
@@ -514,6 +541,17 @@ const StudentSidePhysicalActivity = () => {
   };
   const handleSubActivity = (e) => {
     setSubActivityID(e);
+    fetchStudentActivityList({
+      user_id: userIdLocal,
+      activity_type: e,
+      activity_detail_id: 'null',
+      is_reviewed: 'True',
+      is_submitted: 'True',
+      page: currentPageAssigned,
+      page_size: limitAssigned,
+      activity_name: 'Physical Activity',
+      is_round_available: showActivityTab === '1' ? false : true,
+    });
   };
 
   useEffect(() => {
@@ -522,28 +560,68 @@ const StudentSidePhysicalActivity = () => {
       is_type: true,
     });
     setSubActivityID(activityDetails?.id[0]);
+    formRef.current.setFieldsValue({
+      sub_activity: activityDetails?.id[0],
+    });
   }, [window.location.hostname]);
 
-  useEffect(() => {
-    formRef.current.setFieldsValue({
-      sub_activity: subActivityID ? subActivityID : activityDetails?.id[0],
-      miniolympic_sub_activity: subActivityID ? subActivityID : activityDetails?.id[0],
-    });
+  const SelectFilter = () => {
+    return (
+      <Form id='filterForm' ref={formRef} layout={'vertical'}>
+        <div className='row align-items-end'>
+          <div className='col-md-2 col-6 mb-3'>
+            {/* <Form.Item name='sub_activity' label='Sub-Activity Type'> */}
+            <label htmlFor='sub_activity' >Sub-Activity Type</label>
+            <Select
+              placeholder='Select Sub-Activity'
+              showSearch
+              value={subActivityID}
+              suffixIcon={<DownOutlined className='th-grey' />}
+              optionFilterProp='children'
+              filterOption={(input, options) => {
+                return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              }}
+              onChange={(e) => {
+                handleSubActivity(e);
+              }}
+              className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+              bordered={true}
+            >
+              {subActivityOption}
+            </Select>
+            {/* </Form.Item> */}
+          </div>
+          {/* <div className='col-md-6'>
+        <div className='d-flex align-items-center pb-2'>
+          <span className='th-fw-600'>
+            Question and Answer(Enable or Disable)
+          </span>
+          <span className='ml-3'>
+            <Switch
+              onChange={handlePhysicalActivityToggle}
+              checked={physicalActivityToggle}
+            />
+          </span>
+        </div>
+      </div> */}
+        </div>
+      </Form>
+    );
+  };
 
-    if (subActivityID) {
-      fetchStudentActivityList({
-        user_id: userIdLocal,
-        activity_type: subActivityID,
-        activity_detail_id: 'null',
-        is_reviewed: 'True',
-        is_submitted: 'True',
-        page: currentPageAssigned,
-        page_size: limitAssigned,
-        activity_name: 'Physical Activity',
-        is_round_available: showActivityTab === '1' ? false : true,
-      });
-    }
-  }, [currentPageAssigned, showActivityTab, subActivityID]);
+  useEffect(() => {
+    fetchStudentActivityList({
+      user_id: userIdLocal,
+      activity_type: activityDetails?.id[0],
+      activity_detail_id: 'null',
+      is_reviewed: 'True',
+      is_submitted: 'True',
+      page: currentPageAssigned,
+      page_size: limitAssigned,
+      activity_name: 'Physical Activity',
+      is_round_available: showActivityTab === '1' ? false : true,
+    });
+  }, [activityDetails]);
 
   return (
     <div>
@@ -583,48 +661,7 @@ const StudentSidePhysicalActivity = () => {
                 activeKey={showActivityTab}
               >
                 <TabPane tab='Sports Activities' key='1'>
-                  <Form id='filterForm' ref={formRef} layout={'vertical'}>
-                    <div className='row align-items-end'>
-                      <div className='col-md-2 col-6'>
-                        <Form.Item name='sub_activity' label='Sub-Activity Type'>
-                          <Select
-                            placeholder='Select Sub-Activity'
-                            showSearch
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            optionFilterProp='children'
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            onChange={(e) => {
-                              handleSubActivity(e);
-                            }}
-                            className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                            bordered={true}
-                          >
-                            {subActivityOption}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      {/* <div className='col-md-6'>
-                        <div className='d-flex align-items-center pb-2'>
-                          <span className='th-fw-600'>
-                            Question and Answer(Enable or Disable)
-                          </span>
-                          <span className='ml-3'>
-                            <Switch
-                              onChange={handlePhysicalActivityToggle}
-                              checked={physicalActivityToggle}
-                            />
-                          </span>
-                        </div>
-                      </div> */}
-                    </div>
-                  </Form>
-
+                  {SelectFilter()}
                   <div className='row pb-3'>
                     <div className='col-12'>
                       <Table
@@ -654,50 +691,7 @@ const StudentSidePhysicalActivity = () => {
                   </div>
                 </TabPane>
                 <TabPane tab='Mini Olympics' key='2'>
-                  <Form id='filterForm' ref={formRef} layout={'vertical'}>
-                    <div className='row align-items-end'>
-                      <div className='col-md-2 col-6'>
-                        <Form.Item
-                          name='miniolympic_sub_activity'
-                          label='Sub-Activity Type'
-                        >
-                          <Select
-                            placeholder='Select Sub-Activity'
-                            showSearch
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            optionFilterProp='children'
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            onChange={(e) => {
-                              handleSubActivity(e);
-                            }}
-                            className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                            bordered={true}
-                          >
-                            {subActivityOption}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      {/* <div className='col-md-6'>
-                        <div className='d-flex align-items-center pb-2'>
-                          <span className='th-fw-600'>
-                            Question and Answer(Enable or Disable)
-                          </span>
-                          <span className='ml-3'>
-                            <Switch
-                              onChange={handlePhysicalActivityToggle}
-                              checked={physicalActivityToggle}
-                            />
-                          </span>
-                        </div>
-                      </div> */}
-                    </div>
-                  </Form>
+                  {SelectFilter()}
 
                   <div className='row pb-3'>
                     <div className='col-12'>
