@@ -10,7 +10,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import Loading from '../../components/loader/loader';
 import { getModuleInfo } from '../../utility-functions';
 
-const Filter = ({ handleFilter, clearFilter }) => {
+const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [acadList, setAcadList] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -107,7 +107,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
-    
+    handleClearFilter()
   }
 
   return (
