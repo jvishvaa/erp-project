@@ -96,7 +96,8 @@ const PhysicalActivity = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const [subActivityId, setSubActivityId] = useState('');
-  const [sudActId, setSubActId] = useState(history?.location?.state?.subActiveId);
+  const [sudActId, setSubActId] = useState(history?.location?.state?.subActiveId[0]);
+  const [subOptId, setSubOptId] = useState(history?.location?.state?.subActiveId)
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [previewLoading, setPreviewLoading] = useState(false);
 
@@ -280,6 +281,10 @@ const PhysicalActivity = () => {
 
   useEffect(() => {
     getAssinged();
+    let defaultId = physicalActivityId[0]
+    formRef.current.setFieldsValue({
+      sub_activity: sudActId ? sudActId : defaultId
+    })
   }, [currentPageAssigned, sudActId]);
   const getAssinged = () => {
     setLoading(true);
@@ -288,7 +293,7 @@ const PhysicalActivity = () => {
         `${
           endpoints.newBlog.physicalActivityListApi
         }?section_ids=null&user_id=null&is_draft=false&page=${currentPageAssigned}&page_size=${limitAssigned}&activity_type=${
-          sudActId ? sudActId : physicalActivityId
+          sudActId ? sudActId : physicalActivityId[0]
         }&branch_ids=${selectedBranch?.branch?.id}`,
         {
           headers: {
@@ -512,7 +517,7 @@ const PhysicalActivity = () => {
     axiosInstance
       .get(
         `${endpoints.newBlog.subActivityListApi}?type_id=${
-          sudActId ? sudActId : physicalActivityId
+          subOptId ? subOptId : physicalActivityId
         }&is_type=${true}`,
         {
           headers: {
@@ -522,7 +527,7 @@ const PhysicalActivity = () => {
       )
       .then((result) => {
         setLoading(false);
-        setSubActivityListData(result?.data?.result);
+        setSubActivityListData(result?.data?.result?.reverse());
       });
   };
 
@@ -699,7 +704,7 @@ const PhysicalActivity = () => {
                   <div className='row align-items-center'>
                     <div className='col-md-2 col-6 pl-0'>
                       <div className='mb-2 text-left'>Sub-Activity Type </div>
-                      <Form.Item name='sub-activity'>
+                      <Form.Item name='sub_activity'>
                         <Select
                           placeholder='Select Sub-Activity'
                           showSearch
