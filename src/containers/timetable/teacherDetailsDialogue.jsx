@@ -213,7 +213,7 @@ const TeacherDetailsDialogue = (props) => {
 
               {buddy_teacher_id && (
                 <>
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     disabled={true}
                     control={
                       <Checkbox
@@ -223,8 +223,9 @@ const TeacherDetailsDialogue = (props) => {
                       />
                     }
                     label='Assign Buddy Teacher'
-                  />
+                  /> */}
                   <Autocomplete
+                    className='pt-3'
                     fullWidth
                     id='combo-box-demo'
                     value={buddy_teacher_name}
