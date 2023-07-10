@@ -11,7 +11,7 @@ import Loading from '../../components/loader/loader';
 import { getModuleInfo } from '../../utility-functions';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
+const Filter = ({ handleFilter, clearFilter, setclearFilter , setFiltered }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const [acadList, setAcadList] = useState([]);
@@ -297,6 +297,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
     setSelectedChapterList('');
     setSelectedKeyConcept('');
     setSelectedBoardId([]);
+    setFiltered(false)
   }
 
   useEffect(() => {

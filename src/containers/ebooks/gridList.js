@@ -73,26 +73,26 @@ function GridList(props) {
     if (ebookName && ebookName.includes('NCERT')) {
       window.open(necrtUrl);
     } else {
-      const {host}= new URL(axiosInstance.defaults.baseURL) 
+      const { host } = new URL(axiosInstance.defaults.baseURL)
       const hostSplitArray = host.split('.')
       const subDomainLevels = hostSplitArray.length - 2
       let domain = ''
       let subDomain = ''
       let subSubDomain = ''
-      if(hostSplitArray.length > 2){
-          domain = hostSplitArray.slice(hostSplitArray.length-2).join('')
+      if (hostSplitArray.length > 2) {
+        domain = hostSplitArray.slice(hostSplitArray.length - 2).join('')
       }
-      if(subDomainLevels === 2){
-          subSubDomain = hostSplitArray[0]
-          subDomain = hostSplitArray[1]
-      } else if(subDomainLevels === 1){
-          subDomain = hostSplitArray[0]
+      if (subDomainLevels === 2) {
+        subSubDomain = hostSplitArray[0]
+        subDomain = hostSplitArray[1]
+      } else if (subDomainLevels === 1) {
+        subDomain = hostSplitArray[0]
       }
       setPdfUrl(url && url);
       setLoading(true);
       setOpen(true);
       axiosInstance
-        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`        
+        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`
         )
         .then(({ data }) => {
           console.log(data);
@@ -119,7 +119,7 @@ function GridList(props) {
               <Grid item md={4} xs={12} key={item.id}>
                 <Grid container spacing={2}>
                   <Grid item md={12} xs={12}>
-                  <Card
+                    <Card
                       style={{
                         width: '100%',
                         height: '160px',
@@ -163,7 +163,7 @@ function GridList(props) {
                               <Typography
                                 title={item && item.ebook_name}
                                 className={classes.textEffect}
-                                color = "secondary"
+                                color="secondary"
                                 style={{
                                   fontSize: '14px',
                                   fontWeight: 'bold',
@@ -176,7 +176,7 @@ function GridList(props) {
                             </Grid>
                             <Grid item md={12} xs={12}>
                               <Typography
-                              color = "secondary"
+                                color="secondary"
                                 title={
                                   item &&
                                   item.updated_at &&
@@ -200,7 +200,7 @@ function GridList(props) {
                                   height: '25px',
                                   fontSize: '15px',
                                   borderRadius: '6px',
-                                  color:'white',
+                                  color: 'white',
                                 }}
                                 onClick={() => handleClickOpen(item)}
                               >
@@ -224,9 +224,14 @@ function GridList(props) {
           <Grid item md={12} xs={12}>
             <div className={classes.periodDataUnavailable}>
               <SvgIcon component={() => <img src={unfiltered} alt='crash' />} />
-              <Typography variant='h6' color='secondary'>
-                NO DATA FOUND
-              </Typography>
+              {props?.filtered == true ?
+                <Typography variant='h6' color='secondary'>
+                  No Ebooks Available For The Selected Subject
+                </Typography> :
+                <Typography variant='h6' color='secondary'>
+                  Please Select Filters
+                </Typography>
+              }
             </div>
           </Grid>
         </Grid>
