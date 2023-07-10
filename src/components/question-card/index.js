@@ -722,7 +722,7 @@ const QuestionCard = ({
                             }
                           });
                           if (typeof url == 'object') {
-                            return Object.values(url).map((item, i) => {
+                            return Object?.values(url)?.map((item, i) => {
                               let imageIndex = Object.keys(url)[i];
                               return (
                                 <div className='attachment'>
@@ -879,7 +879,7 @@ const QuestionCard = ({
                       native
                       labelId='demo-customized-select-label'
                       id='demo-customized-select'
-                      defaultValue={2}
+                      defaultValue={10}
                       onChange={(e) => setmaxAttachment(e.target.value)}
                       value={maxattachment}
                       disabled={window.location.pathname.includes('/diary/')}

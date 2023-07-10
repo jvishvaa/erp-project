@@ -57,8 +57,8 @@ const qa = {
     CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
-    // baseURL: `${window.location.origin}/qbox`,
-    baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURL: `${window.location.origin}/qbox`,
+    // baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseURLCentral: 'https://mgmt.qa.letseduvate.com/qbox',
     baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',

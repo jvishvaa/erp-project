@@ -318,7 +318,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         });
         maxVal += resultdata.hw_questions.questions[i].max_attachment;
       }
-
       setMaxCount(maxVal);
     }
   };
@@ -373,9 +372,11 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 attachments: [],
                 comments: '',
               });
-              maxVal += result.data.data.hw_questions[i].max_attachment;
-            }
+              if(result.data.data.hw_questions[i]?.is_attachment_enable == true){
+                maxVal += result.data.data.hw_questions[i].max_attachment;
+              }
 
+            }
             setMaxCount(maxVal);
           } else if (homeworkSubmission.status === 2 || homeworkSubmission.status === 3) {
             setDesc(result.data.data.homework.description);
@@ -392,10 +393,12 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   homework_question: result.data.data.hw_questions[i].question_id,
                   attachments: result.data.data.hw_questions[i].submitted_files,
                 });
-                // maxVal += result.data.data.hw_questions[i].max_attachment;
+              if(result.data.data.hw_questions[i]?.is_attachment_enable == true){
+                maxVal += result.data.data.hw_questions[i].max_attachment;
+              }
               }
 
-              setMaxCount(10);
+              setMaxCount(maxVal);
 
               setSubjectQuestions(result.data.data.hw_questions);
               if (homeworkSubmission.status === 3) {
@@ -728,8 +731,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       if (bulkDataDisplay.length >= totalMaxAttachment[totalMaxAttachment.length - 1]) {
         setAlert(
           'warning',
-          `Can\'t upload more than ${
-            totalMaxAttachment[totalMaxAttachment.length - 1]
+          `Can\'t upload more than ${totalMaxAttachment[totalMaxAttachment.length - 1]
           } attachments in total.`
         );
         handleCloseCorrectionModal();
@@ -891,7 +893,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
               style={{ background: '#EEF2F8' }}
             >
               <Tooltip title={homeworkTitle} >
-              <div className='th-14 th-fw-600 col-md-8 text-truncate'>Homework Title : {homeworkTitle}</div>
+                <div className='th-14 th-fw-600 col-md-8 text-truncate'>Homework Title : {homeworkTitle}</div>
               </Tooltip>
               {homeworkSubmission.status === 1 && (
                 <div className='checkWrapper'>
@@ -941,28 +943,28 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
 
                   {isQuestionWise && homeworkSubmission.status == 1 && (
                     <div className='questionWiseAttachmentsContainer before submit'>
-                      <IconButton
-                        fontSize='small'
-                        id='file-icon'
-                        disableRipple
-                        component='label'
-                        className={classes.attachmentIcon}
-                      >
-                        <AttachmentIcon fontSize='small' />
-                        <input
-                          type='file'
-                          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
-                          onChange={(e) => {
-                            uploadFileHandler(e, index, question.max_attachment);
-                            e.target.value = null;
-                          }}
-                          className={classes.fileInput}
-                        />
-                      </IconButton>
-                      <small style={{ width: '100%', color: '#014b7e' }}>
-                        {' '}
-                        Accepted files: jpeg,jpg,mp3,mp4,pdf,png
-                      </small>
+                        <IconButton
+                          fontSize='small'
+                          id='file-icon'
+                          disableRipple
+                          component='label'
+                          className={classes.attachmentIcon}
+                        >
+                          <AttachmentIcon fontSize='small' />
+                          <input
+                            type='file'
+                            accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
+                            onChange={(e) => {
+                              uploadFileHandler(e, index, question.max_attachment);
+                              e.target.value = null;
+                            }}
+                            className={classes.fileInput}
+                          />
+                        </IconButton>
+                        <small style={{ width: '100%', color: '#014b7e' }}>
+                          {' '}
+                          Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                        </small>
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
@@ -1111,9 +1113,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                             'preview',
                                             'download',
                                             homeworkSubmission.status === 1 &&
-                                              question.is_pen_editor_enable &&
-                                              !item.includes('/lesson_plan_file/') &&
-                                              'pentool',
+                                            question.is_pen_editor_enable &&
+                                            !item.includes('/lesson_plan_file/') &&
+                                            'pentool',
                                           ]}
                                         />
                                       </div>
@@ -1139,13 +1141,13 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           url.includes('/lesson_plan_file/')
                                             ? ['download']
                                             : [
-                                                'preview',
-                                                'download',
-                                                homeworkSubmission.status === 1 &&
-                                                  question.is_pen_editor_enable &&
-                                                  !url.includes('/lesson_plan_file/') &&
-                                                  'pentool',
-                                              ]
+                                              'preview',
+                                              'download',
+                                              homeworkSubmission.status === 1 &&
+                                              question.is_pen_editor_enable &&
+                                              !url.includes('/lesson_plan_file/') &&
+                                              'pentool',
+                                            ]
                                         }
                                       />
                                     </div>
@@ -1261,138 +1263,140 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         question.submitted_files?.length > 0) ||
                         (homeworkSubmission.status === 3 &&
                           question.evaluated_files?.length > 0)) && (
-                        <div className='attachments-container'>
-                          {(() => {
-                            document.body.style.overflow = 'hidden';
-                          })()}
-                          <Typography component='h4' color='primary' className='header'>
-                            {homeworkSubmission.status === 2
-                              ? 'Submitted Files'
-                              : 'Evaluated Files'}
-                          </Typography>
-                          <div className='attachments-list-outer-container'>
-                            <div className='prev-btn'>
-                              {question?.submitted_files?.length > 1 && (
-                                <IconButton onClick={() => handleScroll('left')}>
-                                  <ArrowBackIosIcon />
-                                </IconButton>
-                              )}
-                            </div>
-                            {homeworkSubmission.status === 2 && (
-                              <SimpleReactLightbox>
-                                <div
-                                  className='attachments-list'
-                                  ref={scrollableContainer}
-                                  onScroll={(e) => {
-                                    e.preventDefault();
-                                  }}
-                                >
-                                  {question.submitted_files.map((url, i) => (
-                                    <>
-                                      <div className='attachment'>
-                                        <Attachment
-                                          key={`homework_student_question_attachment_${i}`}
-                                          fileUrl={url}
-                                          fileName={`Attachment-${i + 1}`}
-                                          urlPrefix={
-                                            url.includes('/lesson_plan_file/')
-                                              ? `${endpoints.homework.resourcesFiles}`
-                                              : `${endpoints.discussionForum.s3}/homework`
-                                          }
-                                          index={i}
-                                          actions={['preview', 'download']}
-                                        />
-                                      </div>
-                                    </>
-                                  ))}
+                          <div className='attachments-container'>
+                            {(() => {
+                              document.body.style.overflow = 'hidden';
+                            })()}
+                            <Typography component='h4' color='primary' className='header'>
+                              {homeworkSubmission.status === 2
+                                ? 'Submitted Files'
+                                : 'Evaluated Files'}
+                            </Typography>
+                            <div className='attachments-list-outer-container'>
+                              <div className='prev-btn'>
+                                {question?.submitted_files?.length > 1 && (
+                                  <IconButton onClick={() => handleScroll(index,'left')}>
+                                    <ArrowBackIosIcon />
+                                  </IconButton>
+                                )}
+                              </div>
+                              {homeworkSubmission.status === 2 && (
+                                <SimpleReactLightbox>
                                   <div
-                                    style={{
-                                      position: 'absolute',
-                                      visibility: 'hidden',
-                                      height: '0px',
-                                      width: '0px',
+                                    className='attachments-list'
+                                    ref={scrollableContainer}
+                                    onScroll={(e) => {
+                                      e.preventDefault();
                                     }}
+                                    id={`homework_student_question_container_${index}`}
                                   >
-                                    <SRLWrapper>
-                                      {question.submitted_files.map((url, i) => (
-                                        <img
-                                          src={
-                                            url.includes('/lesson_plan_file/')
-                                              ? `${endpoints.homework.resourcesFiles}${url}`
-                                              : `${endpoints.discussionForum.s3}/homework/${url}`
-                                          }
-                                          onError={(e) => {
-                                            e.target.src = placeholder;
-                                          }}
-                                          alt={`Attachment-${i + 1}`}
-                                          style={{ height: '0px' }}
-                                        />
-                                      ))}
-                                    </SRLWrapper>
+                                    {question.submitted_files.map((url, i) => (
+                                      <>
+                                        <div className='attachment'>
+                                          <Attachment
+                                            key={`homework_student_question_attachment_${i}`}
+                                            fileUrl={url}
+                                            fileName={`Attachment-${i + 1}`}
+                                            urlPrefix={
+                                              url.includes('/lesson_plan_file/')
+                                                ? `${endpoints.homework.resourcesFiles}`
+                                                : `${endpoints.discussionForum.s3}/homework`
+                                            }
+                                            index={i}
+                                            actions={['preview', 'download']}
+                                          />
+                                        </div>
+                                      </>
+                                    ))}
+                                    <div
+                                      style={{
+                                        position: 'absolute',
+                                        visibility: 'hidden',
+                                        height: '0px',
+                                        width: '0px',
+                                      }}
+                                    >
+                                      <SRLWrapper>
+                                        {question.submitted_files.map((url, i) => (
+                                          <img
+                                            src={
+                                              url.includes('/lesson_plan_file/')
+                                                ? `${endpoints.homework.resourcesFiles}${url}`
+                                                : `${endpoints.discussionForum.s3}/homework/${url}`
+                                            }
+                                            onError={(e) => {
+                                              e.target.src = placeholder;
+                                            }}
+                                            alt={`Attachment-${i + 1}`}
+                                            style={{ height: '0px' }}
+                                          />
+                                        ))}
+                                      </SRLWrapper>
+                                    </div>
                                   </div>
-                                </div>
-                              </SimpleReactLightbox>
-                            )}
-                            {homeworkSubmission.status === 3 && (
-                              <SimpleReactLightbox>
-                                <div
-                                  className='attachments-list'
-                                  ref={scrollableContainer}
-                                  onScroll={(e) => {
-                                    e.preventDefault();
-                                  }}
-                                >
-                                  {question.evaluated_files.map((url, i) => (
-                                    <>
-                                      <div className='attachment'>
-                                        <Attachment
-                                          key={`homework_student_question_attachment_${i}`}
-                                          fileUrl={url}
-                                          fileName={`Attachment-${i + 1}`}
-                                          urlPrefix={
-                                            url.includes('/lesson_plan_file/')
-                                              ? `${endpoints.homework.resourcesFiles}`
-                                              : `${endpoints.discussionForum.s3}/homework`
-                                          }
-                                          index={i}
-                                          actions={['preview', 'download']}
-                                        />
-                                      </div>
-                                    </>
-                                  ))}
-                                  <div
-                                    style={{ position: 'absolute', visibility: 'hidden' }}
-                                  >
-                                    <SRLWrapper>
-                                      {question.evaluated_files.map((url, i) => (
-                                        <img
-                                          src={
-                                            url.includes('/lesson_plan_file/')
-                                              ? `${endpoints.homework.resourcesFiles}${url}`
-                                              : `${endpoints.discussionForum.s3}/homework/${url}`
-                                          }
-                                          onError={(e) => {
-                                            e.target.src = placeholder;
-                                          }}
-                                          alt={`Attachment-${i + 1}`}
-                                          style={{ height: '0px' }}
-                                        />
-                                      ))}
-                                    </SRLWrapper>
-                                  </div>
-                                </div>
-                              </SimpleReactLightbox>
-                            )}
-                            <div className='next-btn'>
-                              {question?.submitted_files?.length > 1 && (
-                                <IconButton onClick={() => handleScroll('right')}>
-                                  <ArrowForwardIosIcon color='primary' />
-                                </IconButton>
+                                </SimpleReactLightbox>
                               )}
+                              {homeworkSubmission.status === 3 && (
+                                <SimpleReactLightbox>
+                                  <div
+                                    className='attachments-list'
+                                    ref={scrollableContainer}
+                                    onScroll={(e) => {
+                                      e.preventDefault();
+                                    }}
+                                    id={`homework_student_question_container_${index}`}
+                                  >
+                                    {question.evaluated_files.map((url, i) => (
+                                      <>
+                                        <div className='attachment'>
+                                          <Attachment
+                                            key={`homework_student_question_attachment_${i}`}
+                                            fileUrl={url}
+                                            fileName={`Attachment-${i + 1}`}
+                                            urlPrefix={
+                                              url.includes('/lesson_plan_file/')
+                                                ? `${endpoints.homework.resourcesFiles}`
+                                                : `${endpoints.discussionForum.s3}/homework`
+                                            }
+                                            index={i}
+                                            actions={['preview', 'download']}
+                                          />
+                                        </div>
+                                      </>
+                                    ))}
+                                    <div
+                                      style={{ position: 'absolute', visibility: 'hidden' }}
+                                    >
+                                      <SRLWrapper>
+                                        {question.evaluated_files.map((url, i) => (
+                                          <img
+                                            src={
+                                              url.includes('/lesson_plan_file/')
+                                                ? `${endpoints.homework.resourcesFiles}${url}`
+                                                : `${endpoints.discussionForum.s3}/homework/${url}`
+                                            }
+                                            onError={(e) => {
+                                              e.target.src = placeholder;
+                                            }}
+                                            alt={`Attachment-${i + 1}`}
+                                            style={{ height: '0px' }}
+                                          />
+                                        ))}
+                                      </SRLWrapper>
+                                    </div>
+                                  </div>
+                                </SimpleReactLightbox>
+                              )}
+                              <div className='next-btn'>
+                                {question?.submitted_files?.length > 1 && (
+                                  <IconButton onClick={() => handleScroll(index,'right')}>
+                                    <ArrowForwardIosIcon color='primary' />
+                                  </IconButton>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </>
                   )}
                   {isQuestionWise && homeworkSubmission.status == 3 && (
@@ -1419,7 +1423,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     >
                       Bulk Upload
                       {bulkDataDisplay?.length < maxCount ||
-                      bulkDataDisplay === undefined ? (
+                        bulkDataDisplay === undefined ? (
                         <input
                           type='file'
                           accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'

@@ -67,8 +67,8 @@ const qa = {
     CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
-    // baseURL: `${window.location.origin}/qbox`,
-    baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURL: `${window.location.origin}/qbox`,
+    // baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
