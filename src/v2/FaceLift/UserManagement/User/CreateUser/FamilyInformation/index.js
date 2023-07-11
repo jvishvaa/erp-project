@@ -118,7 +118,7 @@ const FamilyInformation = ({
         !formValues.father_aadhaar &&
         !formValues.mother_aadhaar &&
         !formValues.guardian_aadhaar &&
-        !formValues.aadhaar_number
+        !formValues.aadhaar
       ) {
         message.error(
           `Either of Father's or Mother's or Guardian's or Student's aadhar is required!`
@@ -378,6 +378,19 @@ const FamilyInformation = ({
                           guardian === 'father' ||
                           (userLevel !== 13 && parent && parent?.includes('parent')),
                         message: `Father's Email is required!`,
+                      },
+                      {
+                        validator: (_, value) => {
+                          if (
+                            value &&
+                            !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+                              value
+                            )
+                          ) {
+                            return Promise.reject(`Invalid email!`);
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
                     name='father_email'
@@ -688,6 +701,19 @@ const FamilyInformation = ({
                           (userLevel !== 13 && parent && parent?.includes('parent')),
                         message: `Mother's Email is required!`,
                       },
+                      {
+                        validator: (_, value) => {
+                          if (
+                            value &&
+                            !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+                              value
+                            )
+                          ) {
+                            return Promise.reject(`Invalid email!`);
+                          }
+                          return Promise.resolve();
+                        },
+                      },
                     ]}
                     name='mother_email'
                     label={
@@ -988,6 +1014,19 @@ const FamilyInformation = ({
                           guardian === 'guardian' ||
                           (userLevel !== 13 && parent && parent?.includes('guardian')),
                         message: `Guardian's Email is required!`,
+                      },
+                      {
+                        validator: (_, value) => {
+                          if (
+                            value &&
+                            !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+                              value
+                            )
+                          ) {
+                            return Promise.reject(`Invalid email!`);
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
                     name='guardian_email'
@@ -1297,6 +1336,12 @@ const FamilyInformation = ({
         <Button
           onClick={() => {
             let formValues = familyRef.current.getFieldsValue();
+            setGuardianPrimary(false);
+            setGuardianPrimaryEmail(false);
+            setFatherPrimary(false);
+            setFatherPrimaryEmail(false);
+            setMotherPrimary(false);
+            setMotherPrimaryEmail(false);
             setFamilyFormValues({
               ...formValues,
               father_photo: selectedImageFather,
