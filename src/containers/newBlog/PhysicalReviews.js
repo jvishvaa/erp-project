@@ -573,7 +573,7 @@ const PhysicalReviewed = (props) => {
                     <th style={{ textAlign: 'center' }}> Attempts </th>
                     {tableHeader?.map((item, i) => (
                       <th style={{ padding: '5px' }}>
-                        {<div className='text-justify text-break'>{item?.name}</div>}
+                        {<div className='text-center text-break'>{item?.name}</div>}
                       </th>
                     ))}
                   </tr>
@@ -594,7 +594,7 @@ const PhysicalReviewed = (props) => {
                           )[0].remarks;
                           return (
                             <td style={{ padding: '5px' }}>
-                              <div className='text-justify'>{remarks}</div>
+                              <div className='text-center'>{remarks}</div>
                             </td>
                           );
                         })}
