@@ -64,6 +64,8 @@ import {
   Empty,
   Checkbox,
   Tooltip,
+  Progress,
+  Modal
 } from 'antd';
 import { LeftOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -221,6 +223,33 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   const [bulkTeacherRemark, setBulkTeacherRemark] = useState();
   const fileUploadInput = useRef(null);
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [ percentValue , setPercentValue ] = useState(10)
+  const [uploadStart, setUploadStart] = useState(false);
+
+
+  let idInterval = null;
+  useEffect(() => {
+    console.log(uploadStart , 'start' , percentValue ,idInterval);
+    if(uploadStart == true && percentValue < 90){
+      console.log(percentValue , 'pval');
+      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount) ), 1000);
+    }
+
+    return () => {
+      clearInterval(idInterval);
+      setPercentValue(10)
+    };
+  }, [uploadStart]);
+
+  const checkCount = (count) => {
+    console.log(count , 'count');
+    if(count < 90){
+      return count+5;
+    }else {
+      return count;
+    }
+  }
+
 
   const handleHomeworkSubmit = () => {
     let count = 0;
@@ -372,7 +401,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 attachments: [],
                 comments: '',
               });
-              if(result.data.data.hw_questions[i]?.is_attachment_enable == true){
+              if (result.data.data.hw_questions[i]?.is_attachment_enable == true) {
                 maxVal += result.data.data.hw_questions[i].max_attachment;
               }
 
@@ -393,9 +422,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   homework_question: result.data.data.hw_questions[i].question_id,
                   attachments: result.data.data.hw_questions[i].submitted_files,
                 });
-              if(result.data.data.hw_questions[i]?.is_attachment_enable == true){
-                maxVal += result.data.data.hw_questions[i].max_attachment;
-              }
+                if (result.data.data.hw_questions[i]?.is_attachment_enable == true) {
+                  maxVal += result.data.data.hw_questions[i].max_attachment;
+                }
               }
 
               setMaxCount(maxVal);
@@ -445,7 +474,10 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   }, []);
 
   const handleBulkNotification = () => {
-    if (bulkDataDisplay?.length >= maxCount) {
+    if(maxCount == 0){
+      message.error('File Upload Restriction, please contact subject teacher')
+    }
+    else if (bulkDataDisplay?.length >= maxCount) {
       setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
     } else {
       fileUploadInput.current.click();
@@ -467,7 +499,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         // fil.name.toLowerCase().lastIndexOf('.doc') > 0
         // fil.name.toLowerCase().lastIndexOf('.docx') > 0
       ) {
-        setUploadLoading(true);
+        setUploadStart(true);
         const formData = new FormData();
         formData.append('file', fil);
         axiosInstance
@@ -482,26 +514,28 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   list.push(arr[k]);
                   setBulkDataDisplay(list);
                 }
-                setUploadLoading(false);
+                setPercentValue(100)
+                setUploadStart(false);
               } else {
                 list.push(e.target.files[0]);
                 setBulkDataDisplay(list);
                 bulkData.push(result.data.data);
-                setUploadLoading(false);
+                setPercentValue(100)
+                setUploadStart(false);
               }
               setAlert('success', result.data.message);
             } else {
-              setUploadLoading(false);
+              setUploadStart(false);
               setAlert('error', result.data.message);
             }
           })
           .catch((error) => {
-            setUploadLoading(false);
+            setUploadStart(false);
             // setAlert('error',error.message)
           });
         console.log('homework', fil);
       } else {
-        setUploadLoading(false);
+        setUploadStart(false);
         setAlert(
           'error',
           'Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable'
@@ -535,9 +569,13 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       });
   };
 
-  const uploadFileHandler = (e, index, maxVal) => {
+  const uploadFileHandler = (e, index, maxVal, question) => {
+    console.log(question , 'ques');
     e.persist();
-    if (attachmentCount[index] >= maxVal) {
+    if(question?.is_attachment_enable == false){
+      message.error('File Upload Restriction, please contact subject teacher')
+    }
+    else if (attachmentCount[index] >= maxVal) {
       setAlert(
         'warning',
         `Can\'t upload more than ${maxVal} attachments for question ${index + 1}`
@@ -552,7 +590,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.mp4') > 0
       ) {
-        setLoading(true);
+        setPercentValue(10)
+        setUploadStart(true);
         const formData = new FormData();
         formData.append('file', fil);
         axiosInstance
@@ -568,22 +607,24 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   list[index].push(arr[k]);
                   setAttachmentDataDisplay(list);
                 }
-                setLoading(false);
+                setUploadStart(false);
+                setPercentValue(100)
               } else {
                 attachmentCount[index]++;
                 list[index] = [...attachmentDataDisplay[index], result.data.data];
                 setAttachmentDataDisplay(list);
                 attachmentData[index].attachments.push(result.data.data);
-                setLoading(false);
+                setUploadStart(false);
+                setPercentValue(100)
               }
               setAlert('success', result.data.message);
             } else {
-              setLoading(false);
+              setUploadStart(false);
               setAlert('error', result.data.message);
             }
           })
           .catch((error) => {
-            setLoading(false);
+            setUploadStart(false);
             // setAlert('error',error.response.result.error_msg)
           });
       } else {
@@ -837,7 +878,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     setLoading(true);
     axiosInstance
       .put(`${endpoints.homework.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`)
-      .then((result) => {});
+      .then((result) => { });
   };
 
   return (
@@ -924,7 +965,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 handleClose={handleCloseCorrectionModal}
                 alert={undefined}
                 open={penToolOpen}
-                callBackOnPageChange={() => {}}
+                callBackOnPageChange={() => { }}
                 handleSaveFile={handleSaveEvaluatedFile}
               />
             )}
@@ -943,28 +984,28 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
 
                   {isQuestionWise && homeworkSubmission.status == 1 && (
                     <div className='questionWiseAttachmentsContainer before submit'>
-                        <IconButton
-                          fontSize='small'
-                          id='file-icon'
-                          disableRipple
-                          component='label'
-                          className={classes.attachmentIcon}
-                        >
-                          <AttachmentIcon fontSize='small' />
-                          <input
-                            type='file'
-                            accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
-                            onChange={(e) => {
-                              uploadFileHandler(e, index, question.max_attachment);
-                              e.target.value = null;
-                            }}
-                            className={classes.fileInput}
-                          />
-                        </IconButton>
-                        <small style={{ width: '100%', color: '#014b7e' }}>
-                          {' '}
-                          Accepted files: jpeg,jpg,mp3,mp4,pdf,png
-                        </small>
+                      <IconButton
+                        fontSize='small'
+                        id='file-icon'
+                        disableRipple
+                        component='label'
+                        className={classes.attachmentIcon}
+                      >
+                        <AttachmentIcon fontSize='small' />
+                        <input
+                          type='file'
+                          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
+                          onChange={(e) => {
+                            uploadFileHandler(e, index, question.max_attachment , question);
+                            e.target.value = null;
+                          }}
+                          className={classes.fileInput}
+                        />
+                      </IconButton>
+                      <small style={{ width: '100%', color: '#014b7e' }}>
+                        {' '}
+                        Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                      </small>
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
@@ -1275,7 +1316,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             <div className='attachments-list-outer-container'>
                               <div className='prev-btn'>
                                 {question?.submitted_files?.length > 1 && (
-                                  <IconButton onClick={() => handleScroll(index,'left')}>
+                                  <IconButton onClick={() => handleScroll(index, 'left')}>
                                     <ArrowBackIosIcon />
                                   </IconButton>
                                 )}
@@ -1389,7 +1430,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                               )}
                               <div className='next-btn'>
                                 {question?.submitted_files?.length > 1 && (
-                                  <IconButton onClick={() => handleScroll(index,'right')}>
+                                  <IconButton onClick={() => handleScroll(index, 'right')}>
                                     <ArrowForwardIosIcon color='primary' />
                                   </IconButton>
                                 )}
@@ -1534,7 +1575,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             : 'All Evaluated Files'}
                         </Typography>
                         <div className='attachments-list-outer-container'>
-                          {}
+                          { }
                           <div className='prev-btn'>
                             {submittedEvaluatedFilesBulk.length > 5 && (
                               <IconButton onClick={() => handleScroll('left')}>
@@ -1880,6 +1921,17 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     </Button>
                   </DialogActions>
                 </Dialog>
+                <Modal maskClosable={false} closable={false} footer={null} visible={uploadStart} width={1000} centered>
+                  <Progress
+                    strokeColor={{
+                      from: '#108ee9',
+                      to: '#87d068',
+                    }}
+                    percent={percentValue}
+                    status="active"
+                    className='p-4'
+                  />
+                </Modal>
               </div>
             </div>
           </div>

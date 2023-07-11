@@ -46,7 +46,10 @@ import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-
+import {
+  Progress,
+  Modal
+} from 'antd';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -153,6 +156,33 @@ const QuestionCard = ({
     }
   };
 
+  const [ percentValue , setPercentValue ] = useState(10)
+  const [uploadStart, setUploadStart] = useState(false);
+
+
+  let idInterval = null;
+  useEffect(() => {
+    console.log(fileUploadInProgress , 'start' , percentValue ,idInterval);
+    if(fileUploadInProgress == true && percentValue < 90){
+      console.log(percentValue , 'pval');
+      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount) ), 1000);
+    }
+
+    return () => {
+      clearInterval(idInterval);
+      setPercentValue(10)
+    };
+  }, [fileUploadInProgress]);
+
+  const checkCount = (count) => {
+    console.log(count , 'count');
+    if(count < 90){
+      return count+5;
+    }else {
+      return count;
+    }
+  }
+
   useEffect(() => {
     if (edit) {
       setisEdit(false);
@@ -194,6 +224,7 @@ const QuestionCard = ({
         ) {
           const fd = new FormData();
           fd.append('file', file);
+          setPercentValue(10)
           setFileUploadInProgress(true);
           const filePath = await uploadFile(fd);
           const final = Object.assign({}, filePath);
@@ -212,7 +243,9 @@ const QuestionCard = ({
               setAttachmentPreviews((prevState) => [...prevState, filePath]);
             }
           }
+          setPercentValue(100)
           setFileUploadInProgress(false);
+
           setAlert('success', 'File uploaded successfully');
           setSizeValied('');
         } else {
@@ -640,7 +673,7 @@ const QuestionCard = ({
                       rows={4}
                       rowsMax={6}
                       value={questionData}
-                      // disabled={true}
+                    // disabled={true}
                     />
                     <FormHelperText style={{ color: 'red' }}>
                       {question.errors?.question}
@@ -661,14 +694,14 @@ const QuestionCard = ({
                         }}
                         ref={fileUploadInput}
                       />
-                      {fileUploadInProgress ? (
+                      {/* {fileUploadInProgress ? (
                         <div>
                           <CircularProgress
                             color='primary'
                             style={{ width: '25px', height: '25px', margin: '5px' }}
                           />
                         </div>
-                      ) : (
+                      ) : ( */}
                         <>
                           <IconButton
                             onClick={() => fileUploadInput.current.click()}
@@ -686,7 +719,7 @@ const QuestionCard = ({
                             Accepted files: jpeg,jpg,mp3,mp4,pdf,png
                           </small>
                         </>
-                      )}
+                      {/* )} */}
                     </div>
                     <div></div>
                   </Grid>
@@ -768,7 +801,7 @@ const QuestionCard = ({
                                   index={cindex}
                                   actions={
                                     url.includes('/lesson_plan_file/') &&
-                                    !url.includes('png')
+                                      !url.includes('png')
                                       ? ['download', 'delete']
                                       : ['preview', 'download', 'delete']
                                   }
@@ -851,6 +884,10 @@ const QuestionCard = ({
                     <Switch
                       onChange={(e) => {
                         setEnableAttachments(e.target.checked);
+                        if (e.target.checked == true) {
+                          setmaxAttachment(10)
+                        }
+                        console.log(e.target.checked);
                       }}
                       name='checkedA'
                       color='primary'
@@ -1234,7 +1271,7 @@ const QuestionCard = ({
                                                   extension:
                                                     '.' +
                                                     resource.split('.')[
-                                                      resource.split('.').length - 1
+                                                    resource.split('.').length - 1
                                                     ],
                                                 },
                                               ],
@@ -1289,6 +1326,17 @@ const QuestionCard = ({
           )}
         </Grid>
       </Drawer>
+      <Modal maskClosable={false} closable={false} footer={null} visible={fileUploadInProgress} width={1000} centered>
+        <Progress
+          strokeColor={{
+            from: '#108ee9',
+            to: '#87d068',
+          }}
+          percent={percentValue}
+          status="active"
+          className='p-4'
+        />
+      </Modal>
     </Grid>
   );
 };

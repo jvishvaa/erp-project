@@ -100,6 +100,8 @@ const QuestionCardNew = ({
   subject,
   queIndexCounter,
   setLoading,
+  setUploadStart,
+  setPercentValue
 }) => {
   const classes = useStyles();
   const selectedAcademicYear = useSelector(
@@ -158,6 +160,8 @@ const QuestionCardNew = ({
     }
   };
 
+
+
   useEffect(() => {
     if (edit) {
       setisEdit(false);
@@ -200,7 +204,8 @@ const QuestionCardNew = ({
           const fd = new FormData();
           fd.append('file', file);
           // setFileUploadInProgress(true);
-          setLoading(true);
+          setUploadStart(true);
+          setPercentValue(10)
           const filePath = await uploadFile(fd);
           const final = Object.assign({}, filePath);
           if (file.type === 'application/pdf') {
@@ -219,7 +224,8 @@ const QuestionCardNew = ({
             }
           }
           // setFileUploadInProgress(false);
-          setLoading(false);
+          setPercentValue(100)
+          setUploadStart(false);
           setAlert('success', 'File uploaded successfully');
           setSizeValied('');
         } else {
@@ -227,7 +233,8 @@ const QuestionCardNew = ({
         }
       } catch (e) {
         // setFileUploadInProgress(false);
-        setLoading(false);
+        setPercentValue(100)
+        setUploadStart(false);
         setAlert('error', 'File upload failed');
       }
     } else {
@@ -712,6 +719,9 @@ const QuestionCardNew = ({
                       <Checkbox
                         onChange={(e) => {
                           setEnableAttachments(e.target.checked);
+                          if(e.target.checked == true){
+                            setmaxAttachment(10)
+                          }
                         }}
                         checked={enableAttachments}
                         className='th-13'
