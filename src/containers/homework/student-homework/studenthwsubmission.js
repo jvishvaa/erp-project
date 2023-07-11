@@ -498,8 +498,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         fil.name.toLowerCase().lastIndexOf('.mp4') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.avi') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.3gp') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.hevc') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.mpeg4') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.m4v') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.mpeg-4') > 0 
         // fil.name.toLowerCase().lastIndexOf('.doc') > 0
         // fil.name.toLowerCase().lastIndexOf('.docx') > 0
@@ -543,7 +542,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         setUploadStart(false);
         setAlert(
           'error',
-          'Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4 , .avi, .3gp , .hevc, .mpeg4) and pdf(.pdf) are acceptable'
+          'Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4 , .avi, .3gp , .m4v) and pdf(.pdf) are acceptable'
         );
       }
     }
@@ -596,8 +595,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         fil.name.toLowerCase().lastIndexOf('.mp4') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.avi') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.3gp') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.hevc') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.mpeg4') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.m4v') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.mpeg-4') > 0 
       ) {
         setPercentValue(10)
@@ -640,7 +638,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       } else {
         setAlert(
           'error',
-          'Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4, .avi, .3gp , .hevc, .mpeg4) and pdf(.pdf) are acceptable'
+          'Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4, .avi, .3gp , .m4v) and pdf(.pdf) are acceptable'
         );
       }
     }
@@ -1004,7 +1002,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         <AttachmentIcon fontSize='small' />
                         <input
                           type='file'
-                          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .avi, .hevc, .3gp, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF .AVI, .HEVC, .3GP , .mpeg4, .MPEG4 , .MPEG-4'
+                          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .avi, .3gp, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF .AVI, .3GP , .m4v, .M4V , .MPEG-4'
                           onChange={(e) => {
                             uploadFileHandler(e, index, question.max_attachment , question);
                             e.target.value = null;
@@ -1477,7 +1475,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         bulkDataDisplay === undefined ? (
                         <input
                           type='file'
-                          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .avi, .hevc, .3gp, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF, .AVI, .HEVC, .3GP , .mpeg4, .MPEG4 , .MPEG-4'
+                          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .avi, .3gp, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF, .AVI, .3GP , .m4v, .M4V , .MPEG-4'
                           style={{ display: 'none' }}
                           id='raised-button-file'
                           onChange={(e) => {
