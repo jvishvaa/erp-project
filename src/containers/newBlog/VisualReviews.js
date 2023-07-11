@@ -257,7 +257,7 @@ const VisualReviews = (props) => {
               <div className={file?.s3_path ? 'col-12' : 'd-none'}>
                 {file?.file_type === 'image/jpeg' || file?.file_type === 'image/png' ? (
                   <img
-                    style={{ height: '60vh' }}
+                    // style={{ height: '60vh' }}
                     src={file?.s3_path}
                     thumb={file?.s3_path}
                     alt={'image'}
