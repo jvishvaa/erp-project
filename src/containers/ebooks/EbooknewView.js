@@ -166,6 +166,15 @@ const EbookView = (props) => {
     setSubjectName('');
     setvolumeId('');
     setvolumeName('');
+    setEbookData([]);
+    fetchEbooksDefault({
+      book_type: '3',
+      session_year: selectedAcademicYear?.session_year,
+      page_number: page,
+      page_size: '10',
+      domain_name: domain_name,
+    });
+    setRecently(true);
     formRef.current.setFieldsValue({
       grade: null,
       subject: null,
@@ -190,6 +199,7 @@ const EbookView = (props) => {
   const handleClearBoard = () => {
     setvolumeId('');
     setvolumeName('');
+    setEbookData([]);
   };
 
   const handlePageChange = (e) => {
