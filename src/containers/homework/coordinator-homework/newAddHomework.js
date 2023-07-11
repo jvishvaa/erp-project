@@ -253,6 +253,13 @@ const AddHomeworkCordNew = ({
     if (questions.filter((item) => item?.question == '')?.length > 0) {
       return message.error('Please Add Questions');
     }
+    let NewQuestionList = questions?.map((item,index) => {
+      if(item?.is_attachment_enable == false){
+        questions[index]['max_attachment'] = 0
+      } else if(item?.is_attachment_enable == true && questions[index]['max_attachment'] == 0){
+        questions[index]['max_attachment'] = 10
+      }
+    })
     const isFormValid = validateHomework();
     if (isFormValid) {
       setLoading(true);
