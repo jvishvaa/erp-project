@@ -251,7 +251,7 @@ const EbookCards = (props) => {
                     {console.log(props, 'pros')}
                     <Empty style={{ marginTop: '5%' }} description={
                         <>
-                            {props?.centralSubject ?
+                            {props?.centralSubject  && props?.volumeId ?
                                 <span>
                                     No Ebooks Available For The Selected Subject
                                 </span> :
