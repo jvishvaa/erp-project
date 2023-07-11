@@ -41,6 +41,7 @@ import {
   DatePicker,
   Button,
   Breadcrumb,
+  Modal, Progress
 } from 'antd';
 import {
   CloseCircleOutlined,
@@ -139,6 +140,32 @@ const AddHomeworkCordNew = ({
     setDateValue(value);
   };
   const formRef = createRef();
+  const [percentValue, setPercentValue] = useState(10)
+  const [uploadStart, setUploadStart] = useState(false);
+
+
+  let idInterval = null;
+  useEffect(() => {
+    console.log(uploadStart, 'start', percentValue, idInterval);
+    if (uploadStart == true && percentValue < 90) {
+      console.log(percentValue, 'pval');
+      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount)), 1000);
+    }
+
+    return () => {
+      clearInterval(idInterval);
+      setPercentValue(10)
+    };
+  }, [uploadStart]);
+
+  const checkCount = (count) => {
+    console.log(count, 'count');
+    if (count < 90) {
+      return count + 5;
+    } else {
+      return count;
+    }
+  }
 
   console.log(propData, 'props');
   console.log(selectedHomeworkDetails, 'history');
@@ -551,6 +578,8 @@ const AddHomeworkCordNew = ({
                   subject={params?.id}
                   queIndexCounter={queIndexCounter}
                   setLoading={setLoading}
+                  setUploadStart={setUploadStart}
+                  setPercentValue={setPercentValue}
                 />
               ))}
             </div>
@@ -570,6 +599,17 @@ const AddHomeworkCordNew = ({
           </div>
         </Form>
       </div>
+      <Modal maskClosable={false} closable={false} footer={null} visible={uploadStart} width={1000} centered>
+        <Progress
+          strokeColor={{
+            from: '#108ee9',
+            to: '#87d068',
+          }}
+          percent={percentValue}
+          status="active"
+          className='p-4'
+        />
+      </Modal>
     </Layout>
   );
 };
