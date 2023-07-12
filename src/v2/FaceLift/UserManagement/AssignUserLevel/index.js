@@ -15,6 +15,7 @@ import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import Layout from 'containers/Layout';
 import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { useState } from 'react';
 
 const AssignUserLevel = () => {
@@ -40,6 +41,16 @@ const AssignUserLevel = () => {
     window.location.host.split('.')[0] === 'qa'
       ? true
       : false;
+
+      const selectedBranch = useSelector(
+        (state) => state.commonFilterReducer?.selectedBranch
+      );
+
+      const isOrchidsbachu =
+      window.location.host.split('.')[0] === 'orchids' ||
+      window.location.host.split('.')[0] === 'localhost:3000'
+        ? true
+        : false;
 
   useEffect(() => {
     fetchUserLevel();
@@ -360,7 +371,7 @@ const AssignUserLevel = () => {
                       loading={loading}
                       columns={columns}
                       rowKey={(record) => record?.user_id}
-                      rowSelection={{ ...rowSelection }}
+                      rowSelection={ selectedBranch?.branch?.id == 248 && isOrchidsbachu ? '' : { ...rowSelection }}
                       dataSource={userData}
                       pagination={false}
                       scroll={{ y: '300px' }}

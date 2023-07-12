@@ -22,6 +22,11 @@ const AnnouncementList = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'localhost:3000'
+    ? true
+    : false;
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
   const [loading, setLoading] = useState(false);
@@ -321,6 +326,8 @@ const AnnouncementList = () => {
                   )}
                 </Tabs>
               </div>
+              {selectedBranch?.branch?.id == 248 && isOrchids ? '' : 
+              <>
               {userLevel !== 12 && userLevel !== 13 && (
                 <div
                   style={{ position: 'fixed', bottom: '5%', right: '2%' }}
@@ -332,7 +339,7 @@ const AnnouncementList = () => {
                     Create New
                   </span>
                 </div>
-              )}
+              )} </> }
             </div>
           </div>
         </div>
