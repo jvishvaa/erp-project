@@ -327,6 +327,9 @@ const FamilyInformation = ({
                       },
                       {
                         validator: (_, value) => {
+                          if (value && value?.trim()?.length === 0) {
+                            return Promise.reject(`Enter atleast one character`);
+                          }
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `First Name should not exceed 30 characters!`
@@ -354,6 +357,9 @@ const FamilyInformation = ({
                       },
                       {
                         validator: (_, value) => {
+                          if (value && value?.trim()?.length === 0) {
+                            return Promise.reject(`Enter atleast one character`);
+                          }
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `Last Name should not exceed 30 characters!`
@@ -533,6 +539,15 @@ const FamilyInformation = ({
                               (userLevel !== 13 && parent && parent?.includes('parent')),
                             message: `Father's Occupation is required!`,
                           },
+                          {
+                            validator: (_, value) => {
+                              if (value && value?.trim()?.length === 0) {
+                                return Promise.reject(`Enter atleast one character`);
+                              }
+
+                              return Promise.resolve();
+                            },
+                          },
                         ]}
                         name='father_occupation'
                         label="Father's Occupation"
@@ -649,6 +664,9 @@ const FamilyInformation = ({
                       },
                       {
                         validator: (_, value) => {
+                          if (value && value?.trim()?.length === 0) {
+                            return Promise.reject(`Enter atleast one character`);
+                          }
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `First Name should not exceed 30 characters!`
@@ -676,6 +694,10 @@ const FamilyInformation = ({
                       },
                       {
                         validator: (_, value) => {
+                          if (value && value?.trim()?.length === 0) {
+                            return Promise.reject(`Enter atleast one character`);
+                          }
+
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `Last Name should not exceed 30 characters!`
@@ -858,6 +880,15 @@ const FamilyInformation = ({
                               (userLevel !== 13 && parent && parent?.includes('parent')),
                             message: `Mother's Occupation is required!`,
                           },
+                          {
+                            validator: (_, value) => {
+                              if (value && value?.trim()?.length === 0) {
+                                return Promise.reject(`Enter atleast one character`);
+                              }
+
+                              return Promise.resolve();
+                            },
+                          },
                         ]}
                         name='mother_occupation'
                         label="Mother's Occupation"
@@ -964,6 +995,9 @@ const FamilyInformation = ({
                       },
                       {
                         validator: (_, value) => {
+                          if (value && value?.trim()?.length === 0) {
+                            return Promise.reject(`Enter atleast one character`);
+                          }
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `First Name should not exceed 30 characters!`
@@ -990,6 +1024,10 @@ const FamilyInformation = ({
                       },
                       {
                         validator: (_, value) => {
+                          if (value && value?.trim()?.length === 0) {
+                            return Promise.reject(`Enter atleast one character`);
+                          }
+
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `Last Name should not exceed 30 characters!`
@@ -1169,6 +1207,15 @@ const FamilyInformation = ({
                                 parent &&
                                 parent?.includes('guardian')),
                             message: `Guardian's Occupation is required!`,
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (value && value?.trim()?.length === 0) {
+                                return Promise.reject(`Enter atleast one character`);
+                              }
+
+                              return Promise.resolve();
+                            },
                           },
                         ]}
                         name='guardian_occupation'
