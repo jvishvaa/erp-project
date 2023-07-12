@@ -39,7 +39,12 @@ const ChangePassword = (props) => {
   const [openModal, setOpenModal] = useState(true);
   const [errorPassword, setErrorPassword] = useState('');
   const classes = useStyles();
-
+  const erp_id = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'qa'
+    ? true
+    : false;
   const handleCancel = () => {
     close(false);
   };
@@ -63,6 +68,16 @@ const ChangePassword = (props) => {
     if (newPassword === previousPassword) {
       setErrorPassword('New password is same as the previous password');
       return;
+    }
+    if(isOrchids){
+      if (newPassword === erp_id) {
+        setErrorPassword('ERP ID and Password Cannot be Same');
+        return;
+      }
+      if (confirmNewPassword === erp_id) {
+        setErrorPassword('ERP ID and Password Cannot be Same');
+        return;
+      }
     }
     setErrorPassword('');
     const changePasswordUrl = `${endpoints.communication.userStatusChange}${id}/change-password/`;
