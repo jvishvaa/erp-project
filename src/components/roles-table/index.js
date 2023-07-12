@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import TablePagination from '@material-ui/core/TablePagination';
 import moment from 'moment';
 import useStyles from './useStyles';
+import { useSelector } from 'react-redux';
 import './styles.scss';
 
 const columns = [
@@ -33,6 +34,14 @@ const columns = [
 
 const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage }) => {
   const classes = useStyles();
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'localhost:3000'
+    ? true
+    : false;
   return (
     <Paper className={`${classes.root} roles-table`}>
       <TableContainer className={classes.container}>
@@ -70,6 +79,7 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
                             key={column.id}
                             align={column.align}
                           >
+                          {selectedBranch?.branch?.id == 248 && isOrchids ? '' : 
                             <IconButton
                               onClick={() => {
                                 onEdit(role);
@@ -77,7 +87,7 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
                               title='Edit role'
                             >
                               <EditOutlinedIcon color='primary' />
-                            </IconButton>
+                            </IconButton> }
                             <IconButton
                               onClick={() => {
                                 onDelete(role);
