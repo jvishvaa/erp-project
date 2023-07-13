@@ -783,6 +783,8 @@ const CreateUser = () => {
         studentFormValues?.profile,
         studentFormValues?.profile?.name
       );
+    } else if (!studentFormValues?.profile) {
+      formData.append('profile', '');
     }
     // STUDENT INFO
 
@@ -812,6 +814,8 @@ const CreateUser = () => {
         familyValues?.father_photo,
         familyValues?.father_photo?.name
       );
+    } else if (!familyValues?.father_photo) {
+      formData.append('father_photo', '');
     }
     if (familyValues.mother_photo && typeof familyValues?.mother_photo !== 'string') {
       formData.append(
@@ -819,6 +823,8 @@ const CreateUser = () => {
         familyValues?.mother_photo,
         familyValues?.mother_photo?.name
       );
+    } else if (!familyValues?.mother_photo) {
+      formData.append('mother_photo', '');
     }
     if (familyValues.guardian_photo && typeof familyValues?.guardian_photo !== 'string') {
       formData.append(
@@ -826,6 +832,8 @@ const CreateUser = () => {
         familyValues?.guardian_photo,
         familyValues?.guardian_photo?.name
       );
+    } else if (!familyValues?.guardian_photo) {
+      formData.append('guardian_photo', '');
     }
     // FAMILY INFO
     let siblingArr = [];
