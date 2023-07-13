@@ -581,7 +581,6 @@ const ViewBMITableCustom = (props) => {
         width={1000}
         centered
       >
-        {console.log({ selectedStudentDetails })}
         <Row style={{ padding: '0.5rem 1rem' }}>
           <Col span={24}>
             <div

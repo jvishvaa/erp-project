@@ -567,15 +567,11 @@ const StudentSidePhysicalActivity = () => {
 
   const SelectFilter = () => {
     return (
-      <Form id='filterForm' ref={formRef} layout={'vertical'}>
+      <Form id='filterForm' ref={formRef} layout={'horizontal'}>
         <div className='row align-items-end'>
-          <div className='col-md-2 col-6 mb-3'>
+          <div className='col-md-2 mb-3'>
             {/* <Form.Item name='sub_activity' label='Sub-Activity Type'> */}
             <label htmlFor='sub_activity'>Sub-Activity Type</label>
-
-            {/* </Form.Item> */}
-          </div>
-          <div className='col-md-3 mb-3'>
             <Select
               placeholder='Select Sub-Activity'
               showSearch
@@ -593,6 +589,7 @@ const StudentSidePhysicalActivity = () => {
             >
               {subActivityOption}
             </Select>
+            {/* </Form.Item> */}
           </div>
           {/* <div className='col-md-6'>
         <div className='d-flex align-items-center pb-2'>
