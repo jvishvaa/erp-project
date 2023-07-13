@@ -566,7 +566,7 @@ const PhysicalPendingReview = (props) => {
     if (!firstLoad) {
       fetchisRoundAvailable();
     }
-  });
+  }, []);
 
   const classes = useStyles();
   const ReviewPage = () => {

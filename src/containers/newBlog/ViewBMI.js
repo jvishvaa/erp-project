@@ -520,13 +520,13 @@ const ViewBMI = () => {
             </div>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
-                href='/dashboard'
+                href='/physical/activity'
                 className='th-grey th-16'
                 onClick={handleGoBack}
               >
                 Physical Activities
               </Breadcrumb.Item>
-              <Breadcrumb.Item href='/dashboard' className='th-black th-16'>
+              <Breadcrumb.Item className='th-black th-16'>
                 BMI List
               </Breadcrumb.Item>
             </Breadcrumb>
