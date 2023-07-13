@@ -285,12 +285,11 @@ const TimeTable = (props) => {
   };
   const addPeriod = () => {
     if (periodType?.type === 'Lecture') {
-      if (
-        !assignedTeacherID ||
-        !sectionIdOption ||
-        days.length === 0 ||
-        (addBuddyTeacher && !buddyTeacherId)
-      ) {
+      if (addBuddyTeacher && !buddyTeacherId) {
+        setAlert('Warning', 'Please Fill all Fields');
+        return;
+      }
+      if (!assignedTeacherID || !sectionIdOption || days.length === 0) {
         setAlert('Warning', 'Please Fill all Fields');
       } else {
         createPeriodAPI();
@@ -302,20 +301,21 @@ const TimeTable = (props) => {
         createPeriodAPI();
       }
     } else if (periodType?.type === 'Competitions') {
-      if (
-        days.length === 0 ||
-        !assignedTeacherID ||
-        (addBuddyTeacher && !buddyTeacherId)
-      ) {
+      if (addBuddyTeacher && !buddyTeacherId) {
+        setAlert('Warning', 'Please Fill all Fields');
+        return;
+      }
+      if (days.length === 0 || !assignedTeacherID) {
         setAlert('Warning', 'Please Fill all Fields');
       } else {
         createPeriodAPI();
       }
     } else if (periodType?.type === 'Miscellaneous Event') {
-      if (
-        (days.length === 0 && !assignedTeacherID) ||
-        (addBuddyTeacher && !buddyTeacherId)
-      ) {
+      if (addBuddyTeacher && !buddyTeacherId) {
+        setAlert('Warning', 'Please Fill all Fields');
+        return;
+      }
+      if (days.length === 0 && !assignedTeacherID) {
         setAlert('Warning', 'Please Select All Fields');
       } else {
         createPeriodAPI();

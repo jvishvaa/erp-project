@@ -220,9 +220,9 @@ const CreateActivityType = () => {
       });
   };
 
-  useEffect(() => {
-    getAssinged();
-  }, []);
+  // useEffect(() => {
+  //   getAssinged();
+  // }, []);
   const [ActivityType, setActivityType] = useState('');
   const [SubActivityType, setSubActivityType] = useState('');
 

@@ -381,8 +381,8 @@ const PhysicalActivity = () => {
 
   useEffect(() => {
     if (selectedBranch) {
-      getUnAssinged();
-      getAssinged();
+      // getUnAssinged();
+      // getAssinged();
     }
   }, [value, selectedBranch, currentPageAssigned, currentPageUnassign]);
   const [previewData, setPreviewData] = useState();

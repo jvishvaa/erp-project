@@ -135,6 +135,9 @@ const EditPeriodDialog = (props) => {
       setAlert('Warning', 'Please Select Period Type');
     } else if (!days) {
       setAlert('Warning', 'Please Select Day');
+    } else if (addBuddyTeacher && !buddyTeacherId) {
+      setAlert('Warning', 'Please select buddy teacher');
+      return;
     } else {
       let obj = {
         period_type_id: periodTypeId,

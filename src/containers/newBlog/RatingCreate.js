@@ -375,9 +375,9 @@ const RatingCreate = () => {
       });
   };
 
-  useEffect(() => {
-    getAssinged();
-  }, []);
+  // useEffect(() => {
+  //   getAssinged();
+  // }, []);
 
   const validateActivityTypeSubmit = () => {
     let isFormValid = true;
