@@ -783,7 +783,7 @@ const CreateUser = () => {
         studentFormValues?.profile,
         studentFormValues?.profile?.name
       );
-    } else if (!studentFormValues?.profile) {
+    } else if (!studentFormValues?.profile && !studentFormValues?.profile_photo) {
       formData.append('profile', '');
     }
     // STUDENT INFO

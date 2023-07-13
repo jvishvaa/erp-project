@@ -65,10 +65,10 @@ const User = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const isOrchidsbachu =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'localhost:3000'
-    ? true
-    : false;
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
+      ? true
+      : false;
 
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
@@ -209,13 +209,16 @@ const User = () => {
                     />
                   </Popconfirm>
                 )}
-                {selectedBranch?.branch?.id == 248 && isOrchidsbachu ? '' : 
-                <Link to={`/user-management/edit-user/${data.id}`}>
-                  <EditOutlined
-                    title='Edit'
-                    style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
-                  />
-                </Link>}
+                {selectedBranch?.branch?.id == 248 && isOrchidsbachu ? (
+                  ''
+                ) : (
+                  <Link to={`/user-management/edit-user/${data.id}`}>
+                    <EditOutlined
+                      title='Edit'
+                      style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
+                    />
+                  </Link>
+                )}
               </>
             ) : (
               ''
@@ -902,16 +905,34 @@ const User = () => {
                             }
                             allowClear
                             onChange={(e) => {
-                              setSearchData(e.target.value);
-                              filterData(
-                                pageNo,
-                                branch,
-                                userLevel,
-                                grade,
-                                section,
-                                status,
-                                e.target.value
-                              );
+                              if (e.target.value?.trim()?.length > 0) {
+                                setSearchData(e.target.value);
+                                filterData(
+                                  pageNo,
+                                  branch,
+                                  userLevel,
+                                  grade,
+                                  section,
+                                  status,
+                                  e.target.value
+                                );
+                              } else {
+                                setSearchData(e.target.value);
+                                if (userLevel || grade || section || status) {
+                                  filterData(
+                                    pageNo,
+                                    branch,
+                                    userLevel,
+                                    grade,
+                                    section,
+                                    status,
+                                    e.target.value
+                                  );
+                                } else {
+                                  setUserData([]);
+                                  setShowFilter(true);
+                                }
+                              }
                             }}
                           />
                         </Form.Item>
@@ -963,15 +984,18 @@ const User = () => {
                           </Button>
                         </div>
                         <div className='col-md-6 col-sm-6 col-12 pl-1'>
-                          {selectedBranch?.branch?.id == 248 && isOrchidsbachu ? '' : 
-                          <Button
-                            onClick={() => history.push(`/user-management/create-user`)}
-                            className='btn-block th-br-4 th-12'
-                            type='primary'
-                            // icon={<PlusCircleOutlined style={{ color: '#fffff' }} />}
-                          >
-                            Create User
-                          </Button> }
+                          {selectedBranch?.branch?.id == 248 && isOrchidsbachu ? (
+                            ''
+                          ) : (
+                            <Button
+                              onClick={() => history.push(`/user-management/create-user`)}
+                              className='btn-block th-br-4 th-12'
+                              type='primary'
+                              // icon={<PlusCircleOutlined style={{ color: '#fffff' }} />}
+                            >
+                              Create User
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>
