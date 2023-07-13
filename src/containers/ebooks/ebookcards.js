@@ -14,7 +14,7 @@ import { withRouter } from 'react-router-dom';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 import EbookPdf from 'containers/ebooks/EbookPDF';
-import { Card, Divider, Tag, Button, Pagination, Empty } from 'antd';
+import { Card, Divider, Tag, Button, Pagination, Empty, message } from 'antd';
 import moment from 'moment';
 import './newebook.scss';
 import {
@@ -117,6 +117,9 @@ const EbookCards = (props) => {
                 })
                 .catch((error) => {
                     console.log(error);
+                    if(error.response.data.status_code == 402){
+                        message.error("Access has been denied, please contact your Branch Administration for further assistance")
+                    }
                 });
         }
     };
