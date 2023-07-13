@@ -72,7 +72,7 @@ const StudentSidePhysicalActivity = () => {
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [subActivityID, setSubActivityID] = useState();
   const [showActivityTab, setShowActivityTab] = useState('1');
-  const [sportDashboard, setSportDashboard] = useState(false)
+  const [sportDashboard, setSportDashboard] = useState(false);
 
   const onActivityTabChange = (key) => {
     setCurrentPageAssigned(1);
@@ -275,7 +275,7 @@ const StudentSidePhysicalActivity = () => {
               activity_name: 'Physical Activity',
               is_round_available: showActivityTab === '1' ? false : true,
             });
-            setSportDashboard(true)
+            setSportDashboard(true);
             if (currentSubActivity.length > 0) {
               setSubActivityID(currentSubActivity[0]?.id);
               formRef.current.setFieldsValue({
@@ -571,7 +571,11 @@ const StudentSidePhysicalActivity = () => {
         <div className='row align-items-end'>
           <div className='col-md-2 col-6 mb-3'>
             {/* <Form.Item name='sub_activity' label='Sub-Activity Type'> */}
-            <label htmlFor='sub_activity' >Sub-Activity Type</label>
+            <label htmlFor='sub_activity'>Sub-Activity Type</label>
+
+            {/* </Form.Item> */}
+          </div>
+          <div className='col-md-3 mb-3'>
             <Select
               placeholder='Select Sub-Activity'
               showSearch
@@ -589,7 +593,6 @@ const StudentSidePhysicalActivity = () => {
             >
               {subActivityOption}
             </Select>
-            {/* </Form.Item> */}
           </div>
           {/* <div className='col-md-6'>
         <div className='d-flex align-items-center pb-2'>
