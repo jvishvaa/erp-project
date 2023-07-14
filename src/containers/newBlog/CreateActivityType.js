@@ -340,10 +340,16 @@ const CreateActivityType = () => {
           <div className='row'>
             <div className='col-md-6 pl-2'>
               <Breadcrumb separator='>'>
-                <Breadcrumb.Item href='/physical/activity' className='th-grey th-16'>
+                <Breadcrumb.Item
+                  href='/blog/wall/central/redirect'
+                  className='th-grey th-16'
+                >
                   Activity Management
                 </Breadcrumb.Item>
-                <Breadcrumb.Item className='th-black th-16'> Create Activity</Breadcrumb.Item>
+                <Breadcrumb.Item className='th-black th-16'>
+                  {' '}
+                  Create Activity
+                </Breadcrumb.Item>
               </Breadcrumb>
             </div>
           </div>
