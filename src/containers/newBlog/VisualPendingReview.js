@@ -416,12 +416,12 @@ const VisualPendingReview = (props) => {
     }
   };
   const columns = [
-    // {
-    //   title: <span className='th-white th-fw-700'>SL No.</span>,
-    //   align: 'center',
-    //   width: '15%',
-    //   render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
-    // },
+    {
+      title: <span className='th-white th-fw-700'>SL No.</span>,
+      align: 'center',
+      width: '15%',
+      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
+    },
     {
       title: <span className='th-white th-fw-700'>Student's Name</span>,
       align: 'center',

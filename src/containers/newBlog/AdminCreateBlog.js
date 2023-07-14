@@ -594,7 +594,7 @@ const AdminCreateBlog = () => {
     }
     if (isVisibleRound && selectedRound?.length === 0 && physicalId !== '') {
       setLoading(false);
-      message.error('Please Select Round');
+      message.error('Please Select Attempt');
       return;
     }
     if (selectedCriteria?.length === 0 && physicalId !== '') {
@@ -1162,12 +1162,12 @@ const AdminCreateBlog = () => {
                         <>
                           {isVisibleRound ? (
                             <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                              <div className='mb-2 text-left'>Round</div>
+                              <div className='mb-2 text-left'>Attempt</div>
                               <Form.Item name='round'>
                                 <Select
                                   allowClear
                                   suffixIcon={<DownOutlined className='th-grey' />}
-                                  placeholder={'Select Round'}
+                                  placeholder={'Select Attempt'}
                                   value={selectedRound || []}
                                   showSearch
                                   optionFilterProp='children'

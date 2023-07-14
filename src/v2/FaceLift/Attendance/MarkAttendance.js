@@ -602,7 +602,7 @@ const MarkStudentAttendance = () => {
                 </span>
               </div>
             )}
-            <div className='col-12' style={{ height: '50vh' }}>
+            <div className='col-12' style={{ position: 'relative' }}>
               <Table
                 className='th-table '
                 rowClassName={(record, index) =>
@@ -613,64 +613,64 @@ const MarkStudentAttendance = () => {
                 pagination={false}
                 rowKey={(record) => record?.id}
                 dataSource={userListData}
-                scroll={{ x: userListData?.length > 0 ? 'max-content' : null, y: '32vh' }}
+                scroll={{
+                  x: userListData?.length > 0 ? 'max-content' : null,
+                  y: '400px',
+                }}
               />
-            </div>
-          </div>
-          {userListData?.length > 0 && (
-            <div
-              className='th-width-98 th-bg-grey'
-              style={{ position: 'absolute', bottom: '10px' }}
-            >
-              <div className='col-12 py-2'>
-                <div
-                  className='row py-2 align-items-center th-br-8 th-14 th-grey th-fw-500 th-bg-white'
-                  style={{ outline: '1px solid #d9d9d9' }}
-                >
-                  <div className='col-8'>
-                    <div className='row'>
-                      <div className='col-md-4 col-6  w-100'>
-                        Total:{' '}
-                        <span className='th-primary'>
-                          {handleNumberView(userAggregateData?.total)}
-                        </span>
-                      </div>
-                      <div className='col-md-4 col-6 '>
-                        Present:{' '}
-                        <span className='th-green'>
-                          {handleNumberView(presentCount ?? 0)}
-                        </span>
-                      </div>
-                      <div className='col-md-4 col-6 '>
-                        Absent:{' '}
-                        <span className='th-fw-500 th-red'>
-                          {handleNumberView(absentCount ?? 0)}
-                        </span>
-                      </div>
-                      {selectedUserLevel == 13 && isOrchids && (
-                        <div className='col-12 th-fw-600 th-black-1 pt-1'>
-                          Note : - When attendance is confirmed, an SMS will be sent to
-                          the absentees
+
+              {userListData?.length > 0 && (
+                <div className='col-12 py-2 px-0 th-bg-grey'>
+                  <div
+                    className='row py-2 align-items-center th-br-8 th-14 th-grey th-fw-500 th-bg-white'
+                    style={{ outline: '1px solid #d9d9d9' }}
+                  >
+                    <div className='col-8'>
+                      <div className='row'>
+                        <div className='col-md-4 col-6  w-100'>
+                          Total:{' '}
+                          <span className='th-primary'>
+                            {handleNumberView(userAggregateData?.total)}
+                          </span>
                         </div>
-                      )}
+                        <div className='col-md-4 col-6 '>
+                          Present:{' '}
+                          <span className='th-green'>
+                            {handleNumberView(presentCount ?? 0)}
+                          </span>
+                        </div>
+                        <div className='col-md-4 col-6 '>
+                          Absent:{' '}
+                          <span className='th-fw-500 th-red'>
+                            {handleNumberView(absentCount ?? 0)}
+                          </span>
+                        </div>
+                        {selectedUserLevel == 13 && isOrchids && (
+                          <div className='col-12 th-fw-600 th-black-1 pt-1'>
+                            Note : - When attendance is confirmed, an SMS will be sent to
+                            the absentees
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className='col-4 text-right'>
+                      <Button
+                        loading={confirmLoading}
+                        className='th-bg-primary th-white th-br-4 th-width-50'
+                        onClick={() => {
+                          hanldeMarkAttedance();
+                        }}
+                      >
+                        Confirm Attendance
+                      </Button>
                     </div>
                   </div>
-
-                  <div className='col-4 text-right'>
-                    <Button
-                      loading={confirmLoading}
-                      className='th-bg-primary th-white th-br-4 th-width-50'
-                      onClick={() => {
-                        hanldeMarkAttedance();
-                      }}
-                    >
-                      Confirm Attendance
-                    </Button>
-                  </div>
                 </div>
-              </div>
+              )}
             </div>
-          )}
+          </div>
+
           <Modal
             visible={showNotificationModal}
             centered

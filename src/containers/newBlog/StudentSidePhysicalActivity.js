@@ -30,12 +30,14 @@ import {
   Form,
   Spin,
   Select,
+  Tabs,
 } from 'antd';
 import moment from 'moment';
 import ReactPlayer from 'react-player';
 import BMIDetailsImage from '../../assets/images/Body_Mass_Index.jpg';
 
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 const StudentSidePhysicalActivity = () => {
   const formRef = useRef();
@@ -52,7 +54,7 @@ const StudentSidePhysicalActivity = () => {
   const [showSideDrawer, setShowSideDrawer] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(false);
   const [mediaFiles, setMediaFiles] = useState({});
-  const [showBMIModal, setShowBMIModal] = useState(false);
+  // const [showBMIModal, setShowBMIModal] = useState(false);
   const [studentBMIData, setStudentBMIData] = useState([]);
   const [visible, setVisible] = useState(false);
   const [customRatingReview, setCustomRatingReview] = useState([]);
@@ -66,9 +68,34 @@ const StudentSidePhysicalActivity = () => {
   const [loadingMedia, setLoadingMedia] = useState(false);
   const [loadingBMI, setLoadingBMI] = useState(false);
   const [playVideo, setPlayVideo] = useState(true);
-  const [physicalActivityToggle, setPhysicalActivityToggle] = useState(false);
+  // const [physicalActivityToggle, setPhysicalActivityToggle] = useState(false);
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [subActivityID, setSubActivityID] = useState();
+  const [showActivityTab, setShowActivityTab] = useState('1');
+  const [sportDashboard, setSportDashboard] = useState(false);
+
+  const onActivityTabChange = (key) => {
+    setCurrentPageAssigned(1);
+    setShowActivityTab(key);
+    formRef.current.setFieldsValue({
+      sub_activity: subActivityID ? subActivityID : activityDetails?.id[0],
+    });
+    fetchStudentActivityList({
+      user_id: userIdLocal,
+      activity_type: subActivityID,
+      activity_detail_id: 'null',
+      is_reviewed: 'True',
+      is_submitted: 'True',
+      page: currentPageAssigned,
+      page_size: limitAssigned,
+      activity_name: 'Physical Activity',
+      is_round_available: key === '1' ? false : true,
+    });
+
+    if (key === '3') {
+      handleViewBMI();
+    }
+  };
 
   const handleCloseViewMore = () => {
     setShowDrawer(false);
@@ -134,12 +161,12 @@ const StudentSidePhysicalActivity = () => {
 
   const handleShowReview = async (data) => {
     setLoadingMedia(true);
-    setIsRoundAvailable(physicalActivityToggle);
-    getRatingView(data?.id, physicalActivityToggle);
+    setIsRoundAvailable(showActivityTab === '1' ? false : true);
+    getRatingView(data?.id, showActivityTab === '1' ? false : true);
     fetchMedia(data?.id);
     setSelectedActivity(data);
   };
-  const handleViewBMIModal = (data) => {
+  const handleViewBMI = (data) => {
     setLoadingBMI(true);
     fetchBMIData(data?.id);
   };
@@ -193,7 +220,7 @@ const StudentSidePhysicalActivity = () => {
       .then((response) => {
         if (response.data?.status_code === 200) {
           setStudentBMIData(response?.data?.result);
-          setShowBMIModal(true);
+          // setShowBMIModal(true);
         } else {
           message.error('No BMI record found for the student');
         }
@@ -231,24 +258,37 @@ const StudentSidePhysicalActivity = () => {
       })
       .then((res) => {
         if (res.data.status_code === 200) {
-          setSubActivityListData(res?.data?.result);
+          setSubActivityListData(res?.data?.result.reverse());
           if (history?.location?.state?.activity?.activity_sub_type_name) {
             let subActivity = history?.location?.state?.activity?.activity_sub_type_name;
             let currentSubActivity = res?.data?.result.filter(
               (el) => el?.sub_type == subActivity
             );
+            fetchStudentActivityList({
+              user_id: userIdLocal,
+              activity_type: currentSubActivity[0]?.id,
+              activity_detail_id: 'null',
+              is_reviewed: 'True',
+              is_submitted: 'True',
+              page: currentPageAssigned,
+              page_size: limitAssigned,
+              activity_name: 'Physical Activity',
+              is_round_available: showActivityTab === '1' ? false : true,
+            });
+            setSportDashboard(true);
             if (currentSubActivity.length > 0) {
               setSubActivityID(currentSubActivity[0]?.id);
               formRef.current.setFieldsValue({
                 sub_activity: subActivity,
               });
             }
-          } else {
-            setSubActivityID(res?.data?.result[0]?.id);
-            formRef.current.setFieldsValue({
-              sub_activity: res?.data?.result[0]?.sub_type,
-            });
           }
+          // else {
+          //   setSubActivityID(res?.data?.result[0]?.id);
+          //   formRef.current.setFieldsValue({
+          //     sub_activity: res?.data?.result[0]?.sub_type,
+          //   });
+          // }
         }
       })
       .catch((err) => {
@@ -293,9 +333,9 @@ const StudentSidePhysicalActivity = () => {
             color='geekblue'
             className='th-br-5 th-pointer py-1'
             onClick={() => {
-              if (physicalActivityToggle) {
+              if (showActivityTab === '2') {
                 setShowDrawer(true);
-              } else {
+              } else if (showActivityTab === '1') {
                 setShowSideDrawer(true);
               }
               handleShowReview(row);
@@ -348,7 +388,7 @@ const StudentSidePhysicalActivity = () => {
       },
     },
     {
-      title: <span className='th-white th-fw-700 '>Round 1</span>,
+      title: <span className='th-white th-fw-700 '>Attempt 1</span>,
       dataIndex: 'created_at',
       align: 'center',
       render: (text, row) => {
@@ -362,7 +402,7 @@ const StudentSidePhysicalActivity = () => {
       },
     },
     {
-      title: <span className='th-white th-fw-700 '>Round 2</span>,
+      title: <span className='th-white th-fw-700 '>Attempt 2</span>,
       dataIndex: 'created_at',
       align: 'center',
       render: (text, row) => {
@@ -376,7 +416,7 @@ const StudentSidePhysicalActivity = () => {
       },
     },
     {
-      title: <span className='th-white th-fw-700 '>Round 3</span>,
+      title: <span className='th-white th-fw-700 '>Attempt 3</span>,
       dataIndex: 'created_at',
       align: 'center',
       render: (text, row) => {
@@ -445,10 +485,10 @@ const StudentSidePhysicalActivity = () => {
     },
   ];
 
-  const handlePhysicalActivityToggle = (event) => {
-    setCurrentPageAssigned(1);
-    setPhysicalActivityToggle(event.target.checked);
-  };
+  // const handlePhysicalActivityToggle = (event) => {
+  //   setCurrentPageAssigned(1);
+  //   setPhysicalActivityToggle(event.target.checked);
+  // };
 
   const subActivityOption = subActivityListData?.map((each) => {
     return (
@@ -501,6 +541,17 @@ const StudentSidePhysicalActivity = () => {
   };
   const handleSubActivity = (e) => {
     setSubActivityID(e);
+    fetchStudentActivityList({
+      user_id: userIdLocal,
+      activity_type: e,
+      activity_detail_id: 'null',
+      is_reviewed: 'True',
+      is_submitted: 'True',
+      page: currentPageAssigned,
+      page_size: limitAssigned,
+      activity_name: 'Physical Activity',
+      is_round_available: showActivityTab === '1' ? false : true,
+    });
   };
 
   useEffect(() => {
@@ -508,123 +559,227 @@ const StudentSidePhysicalActivity = () => {
       type_id: activityDetails?.id?.toString(),
       is_type: true,
     });
+    setSubActivityID(activityDetails?.id[0]);
+    formRef.current.setFieldsValue({
+      sub_activity: activityDetails?.id[0],
+    });
   }, [window.location.hostname]);
 
+  const SelectFilter = () => {
+    return (
+      <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+        <div className='row align-items-end'>
+          <div className='col-md-2 mb-3'>
+            {/* <Form.Item name='sub_activity' label='Sub-Activity Type'> */}
+            <label htmlFor='sub_activity'>Sub-Activity Type</label>
+            <Select
+              placeholder='Select Sub-Activity'
+              showSearch
+              value={subActivityID}
+              suffixIcon={<DownOutlined className='th-grey' />}
+              optionFilterProp='children'
+              filterOption={(input, options) => {
+                return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              }}
+              onChange={(e) => {
+                handleSubActivity(e);
+              }}
+              className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+              bordered={true}
+            >
+              {subActivityOption}
+            </Select>
+            {/* </Form.Item> */}
+          </div>
+          {/* <div className='col-md-6'>
+        <div className='d-flex align-items-center pb-2'>
+          <span className='th-fw-600'>
+            Question and Answer(Enable or Disable)
+          </span>
+          <span className='ml-3'>
+            <Switch
+              onChange={handlePhysicalActivityToggle}
+              checked={physicalActivityToggle}
+            />
+          </span>
+        </div>
+      </div> */}
+        </div>
+      </Form>
+    );
+  };
+
   useEffect(() => {
-    if (subActivityID) {
-      fetchStudentActivityList({
-        user_id: userIdLocal,
-        activity_type: subActivityID,
-        activity_detail_id: 'null',
-        is_reviewed: 'True',
-        is_submitted: 'True',
-        page: currentPageAssigned,
-        page_size: limitAssigned,
-        activity_name: 'Physical Activity',
-        is_round_available: physicalActivityToggle,
-      });
-    }
-  }, [currentPageAssigned, physicalActivityToggle, subActivityID]);
+    fetchStudentActivityList({
+      user_id: userIdLocal,
+      activity_type: activityDetails?.id[0],
+      activity_detail_id: 'null',
+      is_reviewed: 'True',
+      is_submitted: 'True',
+      page: currentPageAssigned,
+      page_size: limitAssigned,
+      activity_name: 'Physical Activity',
+      is_round_available: showActivityTab === '1' ? false : true,
+    });
+  }, [activityDetails]);
 
   return (
     <div>
       <Layout>
-        <div className='px-3'>
-          <div className='row align-items-center'>
-            <div className='col-md-6 pl-2'>
-              <Breadcrumb separator='>'>
-                <Breadcrumb.Item
-                  onClick={() => history.push('/blog/wall/redirect')}
-                  className='th-grey th-pointer th-16'
-                >
-                  Activities Management
-                </Breadcrumb.Item>
-                <Breadcrumb.Item className='th-black th-16'>
-                  {activityDetails?.name}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </div>
-            <div className='col-md-6 text-right'>
-              <Button
-                className='th-button-active th-br-6 text-truncate th-pointer'
-                icon={<FundViewOutlined />}
-                loading={loadingBMI}
-                onClick={handleViewBMIModal}
+        <div className='row pt-3 pb-3'>
+          <div className='col-md-6 pl-2' style={{ zIndex: 2 }}>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item
+                onClick={() => history.push('/blog/wall/redirect')}
+                className='th-grey th-pointer th-16'
               >
-                View BMI
-              </Button>
-            </div>
+                Activities Management
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black th-16'>
+                {activityDetails?.name}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+          {/* <div className='col-md-6 text-right'>
+            <Button
+              className='th-button-active th-br-6 text-truncate th-pointer'
+              icon={<FundViewOutlined />}
+              loading={loadingBMI}
+              onClick={handleViewBMI}
+            >
+              View BMI
+            </Button>
+          </div> */}
+        </div>
 
-            <div className='col-12 th-bg-white py-3 mt-3 th-br-4'>
-              <Form id='filterForm' ref={formRef} layout={'vertical'}>
-                <div className='row row align-items-end'>
-                  <div className='col-md-2 col-6 px-0'>
-                    <Form.Item name='sub_activity' label='Sub-Activity Type'>
-                      <Select
-                        placeholder='Select Sub-Activity'
-                        showSearch
-                        suffixIcon={<DownOutlined className='th-grey' />}
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
+        <div className='row mb-3'>
+          <div className='col-12'>
+            <div className='th-tabs th-bg-white'>
+              <Tabs
+                type='card'
+                onChange={onActivityTabChange}
+                activeKey={showActivityTab}
+              >
+                <TabPane tab='Sports Activities' key='1'>
+                  {SelectFilter()}
+                  <div className='row pb-3'>
+                    <div className='col-12'>
+                      <Table
+                        columns={columnsOld}
+                        dataSource={activityListData}
+                        className='th-table'
+                        rowClassName={(record, index) =>
+                          `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                        }
+                        loading={loading}
+                        pagination={{
+                          position: ['bottomCenter'],
+                          total: totalCountAssigned,
+                          current: Number(currentPageAssigned),
+                          pageSize: limitAssigned,
+                          showSizeChanger: false,
+                          onChange: (e) => {
+                            handlePaginationAssign(e);
+                          },
                         }}
-                        onChange={(e) => {
-                          handleSubActivity(e);
+                        scroll={{
+                          y: 300,
+                          x: window.innerWidth > 600 ? null : 'max-content',
                         }}
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                        bordered={true}
-                      >
-                        {subActivityOption}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                  <div className='col-md-6'>
-                    <div className='d-flex align-items-center pb-2'>
-                      <span className='th-fw-600'>
-                        Question and Answer(Enable or Disable)
-                      </span>
-                      <span className='ml-3'>
-                        <Switch
-                          onChange={handlePhysicalActivityToggle}
-                          checked={physicalActivityToggle}
-                        />
-                      </span>
+                      />
                     </div>
                   </div>
-                </div>
-              </Form>
+                </TabPane>
+                <TabPane tab='Mini Olympics' key='2'>
+                  {SelectFilter()}
 
-              <div className='row '>
-                <div className='col-12 px-0'>
-                  <Table
-                    columns={physicalActivityToggle ? columns : columnsOld}
-                    dataSource={activityListData}
-                    className='th-table'
-                    rowClassName={(record, index) =>
-                      `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
-                    }
-                    loading={loading}
-                    pagination={{
-                      position: ['bottomCenter'],
-                      total: totalCountAssigned,
-                      current: Number(currentPageAssigned),
-                      pageSize: limitAssigned,
-                      showSizeChanger: false,
-                      onChange: (e) => {
-                        handlePaginationAssign(e);
-                      },
-                    }}
-                    scroll={{
-                      x: window.innerWidth > 600 ? null : 'max-content',
-                    }}
-                  />
-                </div>
-              </div>
+                  <div className='row pb-3'>
+                    <div className='col-12'>
+                      <Table
+                        columns={columns}
+                        dataSource={activityListData}
+                        className='th-table'
+                        rowClassName={(record, index) =>
+                          `${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                        }
+                        loading={loading}
+                        pagination={{
+                          position: ['bottomCenter'],
+                          total: totalCountAssigned,
+                          current: Number(currentPageAssigned),
+                          pageSize: limitAssigned,
+                          showSizeChanger: false,
+                          onChange: (e) => {
+                            handlePaginationAssign(e);
+                          },
+                        }}
+                        scroll={{
+                          y: 300,
+                          x: window.innerWidth > 600 ? null : 'max-content',
+                        }}
+                      />
+                    </div>
+                  </div>
+                </TabPane>
+                <TabPane tab='Peak Test' key='3'>
+                  <div className='row d-flex px-3 py-2'>
+                    <div className='col-md-4 px-0 col-12 d-flex'>
+                      <div
+                        className='col-12 th-primary d-flex align-item-center px-0 '
+                        style={{ alignItems: 'center' }}
+                      >
+                        <span className='th-14 th-black pr-2'>Index : </span>
+                        <Button
+                          icon={<EyeOutlined />}
+                          type='primary'
+                          onClick={() => setVisible(true)}
+                        >
+                          Click Here To Check BMI Chart
+                        </Button>
+                      </div>
+                      <Modal
+                        title='BMI Chart'
+                        centered
+                        visible={visible}
+                        open={visible}
+                        footer={false}
+                        onCancel={() => setVisible(false)}
+                        width={1000}
+                      >
+                        <img
+                          src={BMIDetailsImage}
+                          style={{
+                            height: '100%',
+                            width: '100%',
+                            objectFit: '-webkit-fill-available',
+                          }}
+                        />
+                      </Modal>
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-12' style={{ padding: '1rem 1rem' }}>
+                      <Table
+                        className='th-table'
+                        rowClassName={(record, index) =>
+                          `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                        }
+                        pagination={false}
+                        columns={columnsBMI}
+                        dataSource={studentBMIData}
+                        loading={loadingBMI}
+                        scroll={{
+                          y: 300,
+                          x: window.innerWidth > 600 ? null : 'max-content',
+                        }}
+                      />
+                    </div>
+                  </div>
+                </TabPane>
+              </Tabs>
             </div>
-            <Modal
+
+            {/* <Modal
               title='BMI Details'
               className='th-upload-modal'
               visible={showBMIModal}
@@ -693,7 +848,8 @@ const StudentSidePhysicalActivity = () => {
                   </div>
                 </>
               )}
-            </Modal>
+            </Modal> */}
+
             <Drawer
               title={
                 <div className='th-fw-500 d-flex justify-content-between'>

@@ -64,7 +64,10 @@ const StudentInformation = ({
     setStudentFormValues({
       ...formValues,
       profile: photo,
-      profile_photo: studentFormValues?.profile_photo ?? '',
+      profile_photo:
+        selectedImage && studentFormValues?.profile_photo
+          ? studentFormValues?.profile_photo
+          : '',
     });
     handleNext();
   };
@@ -137,6 +140,9 @@ const StudentInformation = ({
                   { required: true, message: 'First name is required!' },
                   {
                     validator: (_, value) => {
+                      if (value && value?.trim()?.length === 0) {
+                        return Promise.reject(`Name cannot be empty!`);
+                      }
                       if (value && !/^.{0,30}$/.test(value)) {
                         return Promise.reject(
                           `First Name should not exceed 30 characters!`
@@ -159,6 +165,9 @@ const StudentInformation = ({
                 rules={[
                   {
                     validator: (_, value) => {
+                      if (value && value?.trim()?.length === 0) {
+                        return Promise.reject(`Enter atleast one character!`);
+                      }
                       if (value && !/^.{0,30}$/.test(value)) {
                         return Promise.reject(
                           `Middle Name should not exceed 30 characters!`
@@ -179,6 +188,9 @@ const StudentInformation = ({
                   { required: true, message: 'Last name is required!' },
                   {
                     validator: (_, value) => {
+                      if (value && value?.trim()?.length === 0) {
+                        return Promise.reject(`Name cannot be empty!`);
+                      }
                       if (value && !/^.{0,30}$/.test(value)) {
                         return Promise.reject(
                           `Last Name should not exceed 30 characters!`
@@ -237,7 +249,20 @@ const StudentInformation = ({
             {userLevel === 13 && (
               <>
                 <Col md={8} className='py-2'>
-                  <Form.Item name={'birth_place'} label='Place of Birth'>
+                  <Form.Item
+                    rules={[
+                      {
+                        validator: (_, value) => {
+                          if (value && value?.trim()?.length === 0) {
+                            return Promise.reject(`Enter atleast one character!`);
+                          }
+                          return Promise.resolve();
+                        },
+                      },
+                    ]}
+                    name={'birth_place'}
+                    label='Place of Birth'
+                  >
                     <Input className='w-100' />
                   </Form.Item>
                 </Col>
@@ -247,7 +272,20 @@ const StudentInformation = ({
               <Row gutter={24}>
                 {userLevel === 13 && (
                   <Col md={8} className='py-2'>
-                    <Form.Item name={'old_school_name'} label='Previous School Name'>
+                    <Form.Item
+                      rules={[
+                        {
+                          validator: (_, value) => {
+                            if (value && value?.trim()?.length === 0) {
+                              return Promise.reject(`Enter atleast one character!`);
+                            }
+                            return Promise.resolve();
+                          },
+                        },
+                      ]}
+                      name={'old_school_name'}
+                      label='Previous School Name'
+                    >
                       <Input className='' />
                     </Form.Item>
                   </Col>
@@ -275,6 +313,16 @@ const StudentInformation = ({
                 <Row gutter={24}>
                   <Col className='py-2' md={8}>
                     <Form.Item
+                      rules={[
+                        {
+                          validator: (_, value) => {
+                            if (value && value?.trim()?.length === 0) {
+                              return Promise.reject(`Enter atleast one character!`);
+                            }
+                            return Promise.resolve();
+                          },
+                        },
+                      ]}
                       name={'special_needs'}
                       label='1. Any Special Needs for the Child'
                     >
@@ -283,6 +331,16 @@ const StudentInformation = ({
                   </Col>
                   <Col className='py-2' md={8}>
                     <Form.Item
+                      rules={[
+                        {
+                          validator: (_, value) => {
+                            if (value && value?.trim()?.length === 0) {
+                              return Promise.reject(`Enter atleast one character!`);
+                            }
+                            return Promise.resolve();
+                          },
+                        },
+                      ]}
                       name={'medical_info'}
                       label='2. Allergy/Injury Information'
                     >

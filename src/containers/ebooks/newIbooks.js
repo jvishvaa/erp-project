@@ -283,10 +283,10 @@ const NewIbook = (props) => {
                         {data?.length > 0 && data.map((data, index) => (
                             <>
                                 <div className='ebookCard' style={{ margin: '1%' }} >
-                                    <Divider className='' orientation='left' orientationMargin='0' style={{margin: '1% 0'}} >
+                                    <Divider className='' orientation='left' orientationMargin='0' style={{ margin: '1% 0' }} >
                                         <span className='th-fw-600 th-18'>{data?.concept}</span>
                                     </Divider>
-                                    <div style={{display: 'flex' , flexWrap: 'wrap'}} >
+                                    <div style={{ display: 'flex', flexWrap: 'wrap' }} >
                                         {data?.data?.map((item, index) => (
                                             <Card
                                                 hoverable
@@ -327,7 +327,7 @@ const NewIbook = (props) => {
 
                     </div>
                     {data?.length > 0 && (
-                        <div style={{ display: 'flex', justifyContent: 'center' , marginBottom: '1%' }} >
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1%' }} >
                             <Pagination defaultCurrent={props?.page} total={props?.total} onChange={props?.handlePageChange} pageSize={10} />
                         </div>
                     )}
@@ -364,7 +364,17 @@ const NewIbook = (props) => {
                     </Dialog>
                 </div>
                 : <div style={{ minHeight: '50vh' }} >
-                    <Empty style={{ marginTop: '5%' }} />
+                    <Empty style={{ marginTop: '5%' }} description={
+                        <>
+                            {props?.centralSubject ?
+                                <span>
+                                    No Ibooks Available For The Selected Subject
+                                </span> :
+                                <span>
+                                    Please Select Filters
+                                </span>}
+                        </>
+                    } />
                 </div>
             }
         </>
