@@ -64,7 +64,10 @@ const StudentInformation = ({
     setStudentFormValues({
       ...formValues,
       profile: photo,
-      profile_photo: studentFormValues?.profile_photo ?? '',
+      profile_photo:
+        selectedImage && studentFormValues?.profile_photo
+          ? studentFormValues?.profile_photo
+          : '',
     });
     handleNext();
   };
