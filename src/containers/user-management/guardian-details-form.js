@@ -61,7 +61,7 @@ const GuardianDetailsForm = ({
           : details.mother_mobile,
       mother_photo: details.mother_photo,
       father_photo: details.father_photo,
-      guardian_photo:details.guardian_photo,
+      guardian_photo: details.guardian_photo,
       address: details.address,
       guardian_first_name: details.guardian_first_name,
       guardian_middle_name: details.guardian_middle_name,
@@ -88,7 +88,6 @@ const GuardianDetailsForm = ({
     // pageTop.current.scrollIntoView();
     containerRef.current.scrollTop = 0;
   }, []);
-
 
   const handleFatherMobileNumber = (e) => {
     formik.setFieldValue('father_mobile', e.target.value.toString());
@@ -224,7 +223,7 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='father_mobile'
                     name='father_mobile'
-                    onChange={(e)=>handleFatherMobileNumber(e)}
+                    onChange={(e) => handleFatherMobileNumber(e)}
                     inputProps={{ maxLength: 10 }}
                     type='number'
                     onInput={(e) => {
@@ -403,7 +402,7 @@ const GuardianDetailsForm = ({
                         .slice(0, 10);
                     }}
                     min={0}
-                    onChange={(e)=>handleMotherMobileNumber(e)}
+                    onChange={(e) => handleMotherMobileNumber(e)}
                     value={formik.values.mother_mobile}
                     label='Mobile no.'
                   />
@@ -462,7 +461,7 @@ const GuardianDetailsForm = ({
             <Grid container spacing={4}>
               <Grid item md={12} xs={12} className='profile-img-container'>
                 <ImageUpload
-                  id='mother-image'
+                  id='guardian-image'
                   value={formik.values.guardian_photo}
                   onChange={(value) => {
                     formik.setFieldValue('guardian_photo', value);
@@ -556,7 +555,7 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='guardian_mobile'
                     name='guardian_mobile'
-                    onChange={(e)=>handleGuardianMobileNumber(e)}
+                    onChange={(e) => handleGuardianMobileNumber(e)}
                     value={formik.values.guardian_mobile}
                     type='number'
                     onInput={(e) => {
