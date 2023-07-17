@@ -93,6 +93,7 @@ const ListCard = (props) => {
           showTab={showTab}
           setTab={props?.setTab}
           handleClose={handleCloseModal}
+          allowedPublishBranches={props?.allowedPublishBranches}
         />
       )}
     </>
